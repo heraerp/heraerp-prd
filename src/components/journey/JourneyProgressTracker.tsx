@@ -122,7 +122,9 @@ export function JourneyProgressTracker({
                   <div
                     className={cn(
                       'h-0.5 w-full transition-all duration-500',
-                      step.status === 'completed' ? 'bg-purple-600' : 'bg-gray-300 dark:bg-muted-foreground/10'
+                      step.status === 'completed'
+                        ? 'bg-purple-600'
+                        : 'bg-gray-300 dark:bg-muted-foreground/10'
                     )}
                   />
                 </div>
@@ -187,7 +189,8 @@ export function JourneyProgressTracker({
                       'text-xs sm:text-sm font-semibold transition-colors duration-300',
                       step.status === 'completed' && 'text-purple-600 dark:text-purple-400',
                       step.status === 'current' && 'text-gray-100 dark:text-foreground',
-                      step.status === 'pending' && 'text-muted-foreground dark:text-muted-foreground'
+                      step.status === 'pending' &&
+                        'text-muted-foreground dark:text-muted-foreground'
                     )}
                   >
                     {step.title}

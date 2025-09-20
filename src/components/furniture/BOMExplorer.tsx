@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-
 interface BOMComponent {
   id: string
   name: string
@@ -37,7 +36,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
   const [error, setError] = useState<string | null>(null)
   const [bomData, setBomData] = useState<BOMComponent | null>(null)
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set())
-  
+
   useEffect(() => {
     loadBOMData()
   }, [productId, organizationId])
@@ -46,20 +45,23 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
     try {
       setLoading(true)
       setError(null)
-      
+
       // Get product details
-  const { data: products } = await universalApi.read({ table: 'core_entities', organizationId })
+      const { data: products } = await universalApi.read({ table: 'core_entities', organizationId })
       const product = products?.find((p: any) => p.id === productId)
       if (!product) throw new Error('Product not found')
-      
+
       // Get BOM relationships
-  const { data: relationships } = await universalApi.read({ table: 'core_relationships', organizationId })
-      
+      const { data: relationships } = await universalApi.read({
+        table: 'core_relationships',
+        organizationId
+      })
+
       // Find BOM for this product
-  const productBomRel = relationships?.find(
+      const productBomRel = relationships?.find(
         (r: any) => r.from_entity_id === productId && r.relationship_type === 'has_bom'
       )
-      
+
       if (!productBomRel) {
         setBomData({
           id: product.id,
@@ -73,26 +75,29 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
         return
       }
 
-// Get BOM entity
-  const bom = products?.find((e: any) => e.id === productBomRel.to_entity_id)
+      // Get BOM entity
+      const bom = products?.find((e: any) => e.id === productBomRel.to_entity_id)
       if (!bom) throw new Error('BOM not found')
-      
+
       // Get BOM components
-  const bomComponentRels = relationships?.filter(
-        (r: any) => r.from_entity_id === bom.id && r.relationship_type === 'includes_component'
-      ) || []
-      
+      const bomComponentRels =
+        relationships?.filter(
+          (r: any) => r.from_entity_id === bom.id && r.relationship_type === 'includes_component'
+        ) || []
+
       // Build component tree
-  const components: BOMComponent[] = []
+      const components: BOMComponent[] = []
       for (const rel of bomComponentRels) {
         const component = products?.find((e: any) => e.id === rel.to_entity_id)
         if (component) {
           // Get supplier info
-  const supplierRel = relationships?.find(
+          const supplierRel = relationships?.find(
             (r: any) => r.to_entity_id === component.id && r.relationship_type === 'sources'
           )
-          const supplier = supplierRel ? products?.find((e: any) => e.id === supplierRel.from_entity_id) : null
-          
+          const supplier = supplierRel
+            ? products?.find((e: any) => e.id === supplierRel.from_entity_id)
+            : null
+
           components.push({
             id: component.id,
             name: component.entity_name,
@@ -108,7 +113,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
           })
         }
       }
-      
+
       setBomData({
         id: product.id,
         name: product.entity_name,
@@ -138,7 +143,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       } else {
         newSet.add(nodeId)
       }
-    return newSet
+      return newSet
     })
   }
 
@@ -146,10 +151,12 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
     const isExpanded = expandedNodes.has(node.id)
     const hasChildren = node.children && node.children.length > 0
     const indentClass = `pl-${Math.min(level * 4, 16)}`
-    
-    
+
     return (
-      <div key={node.id} className="bg-[var(--color-body)] border-l-2 border-[var(--color-border)]/50 ml-2">
+      <div
+        key={node.id}
+        className="bg-[var(--color-body)] border-l-2 border-[var(--color-border)]/50 ml-2"
+      >
         <div
           className={cn(
             'flex items-center gap-3 p-3 hover:bg-[var(--color-body)]/50 rounded-lg transition-colors cursor-pointer',
@@ -167,12 +174,16 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
             </Button>
           )}
           {!hasChildren && <div className="bg-[var(--color-body)] w-5" />}
-          
+
           <div className="flex items-center gap-2 flex-1">
-            {node.type === 'product' && <Package className="h-5 w-5 text-[var(--color-icon-secondary)]" />}
-            {node.type === 'bom' && <Layers className="h-5 w-5 text-[var(--color-icon-secondary)]" />}
+            {node.type === 'product' && (
+              <Package className="h-5 w-5 text-[var(--color-icon-secondary)]" />
+            )}
+            {node.type === 'bom' && (
+              <Layers className="h-5 w-5 text-[var(--color-icon-secondary)]" />
+            )}
             {node.type === 'material' && <Factory className="h-5 w-5 text-green-500" />}
-            
+
             <div className="bg-[var(--color-body)] flex-1">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-[var(--color-text-primary)]">{node.name}</span>
@@ -212,7 +223,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
                 )}
               </div>
             </div>
-            
+
             {node.totalCost && level === 0 && (
               <div className="text-right">
                 <div className="text-sm text-[var(--color-text-secondary)]">Total Cost</div>
@@ -223,14 +234,14 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
             )}
           </div>
         </div>
-        
+
         {isExpanded && hasChildren && (
           <div className="ml-4">{node.children!.map(child => renderBOMNode(child, level + 1))}</div>
         )}
       </div>
     )
   }
-  
+
   if (loading) {
     return (
       <Card className={cn('bg-[var(--color-body)]/50 border-[var(--color-border)]', className)}>
@@ -250,7 +261,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       </Card>
     )
   }
-  
+
   if (error) {
     return (
       <Card className={cn('bg-[var(--color-body)]/50 border-[var(--color-border)]', className)}>
@@ -275,7 +286,7 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
       </Card>
     )
   }
-  
+
   if (!bomData) {
     return (
       <Card className={cn('bg-[var(--color-body)]/50 border-[var(--color-border)]', className)}>
@@ -286,12 +297,14 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-[var(--color-text-secondary)] py-8">No BOM data available</p>
+          <p className="text-center text-[var(--color-text-secondary)] py-8">
+            No BOM data available
+          </p>
         </CardContent>
       </Card>
     )
   }
-  
+
   return (
     <Card className={cn('bg-[var(--color-body)]/50 border-[var(--color-border)]', className)}>
       <CardHeader>

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for payment operations',
           details: 'Ensure middleware is properly configured'
@@ -51,8 +51,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Get idempotency key from headers or payload
-    const idempotencyKey = request.headers.get('idempotency-key') || 
-                          (validatedPayload as any).idempotency_key
+    const idempotencyKey =
+      request.headers.get('idempotency-key') || (validatedPayload as any).idempotency_key
 
     // Prepare payload for procedure execution
     const payload = {
@@ -101,7 +101,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         procedure_duration_ms: result.duration_ms
       }
     })
-
   } catch (error) {
     console.error('Payment capture error:', error)
 
@@ -144,14 +143,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'INTENT_NOT_FOUND': 404,
-    'INTENT_NOT_CAPTURABLE': 400,
-    'AMOUNT_MISMATCH': 400,
-    'PAYMENT_GATEWAY_FAILURE': 502,
-    'INSUFFICIENT_GIFT_CARD_BALANCE': 400,
-    'INSUFFICIENT_DEPOSIT_BALANCE': 400,
-    'DUPLICATE_CAPTURE': 409,
-    'CAPTURE_PROCESSING_ERROR': 500
+    INTENT_NOT_FOUND: 404,
+    INTENT_NOT_CAPTURABLE: 400,
+    AMOUNT_MISMATCH: 400,
+    PAYMENT_GATEWAY_FAILURE: 502,
+    INSUFFICIENT_GIFT_CARD_BALANCE: 400,
+    INSUFFICIENT_DEPOSIT_BALANCE: 400,
+    DUPLICATE_CAPTURE: 409,
+    CAPTURE_PROCESSING_ERROR: 500
   }
 
   return errorMap[errorCode] || 500

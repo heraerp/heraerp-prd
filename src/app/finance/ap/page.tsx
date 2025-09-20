@@ -243,7 +243,9 @@ export default function AccountsPayablePage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Accounts Payable
           </h1>
-          <p className="text-foreground/60 mt-1">Manage vendor payments and outstanding liabilities</p>
+          <p className="text-foreground/60 mt-1">
+            Manage vendor payments and outstanding liabilities
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
@@ -311,7 +313,9 @@ export default function AccountsPayablePage() {
                 <p className="text-2xl font-bold text-foreground">
                   ₹{(apMetrics.totalPayable / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-foreground/40 mt-1">{apMetrics.vendorCount} active vendors</p>
+                <p className="text-xs text-foreground/40 mt-1">
+                  {apMetrics.vendorCount} active vendors
+                </p>
               </div>
             </div>
 
@@ -342,7 +346,9 @@ export default function AccountsPayablePage() {
                   <TrendingUp className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h3 className="text-foreground/60 text-sm font-medium mb-1">Avg Payment Days</h3>
-                <p className="text-2xl font-bold text-foreground">{apMetrics.averagePaymentDays} days</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {apMetrics.averagePaymentDays} days
+                </p>
                 <p className="text-xs text-foreground/40 mt-1">Within terms</p>
               </div>
             </div>
@@ -354,7 +360,9 @@ export default function AccountsPayablePage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Payables Aging Analysis</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Payables Aging Analysis
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={agingData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -471,7 +479,9 @@ export default function AccountsPayablePage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <Building2 className="h-5 w-5 text-emerald-400" />
-                        <h3 className="text-lg font-semibold text-foreground">{vendor.vendorName}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {vendor.vendorName}
+                        </h3>
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-background/10 text-foreground/60">
                           {vendor.vendorCode}
                         </span>
@@ -511,7 +521,9 @@ export default function AccountsPayablePage() {
                         </div>
                         <div>
                           <p className="text-xs text-foreground/60 mb-1">Payment Terms</p>
-                          <p className="text-lg font-semibold text-foreground">{vendor.paymentTerms}</p>
+                          <p className="text-lg font-semibold text-foreground">
+                            {vendor.paymentTerms}
+                          </p>
                         </div>
                       </div>
 
@@ -578,11 +590,19 @@ export default function AccountsPayablePage() {
                     <th className="text-left py-4 pl-6 text-sm font-medium text-foreground/60">
                       Invoice #
                     </th>
-                    <th className="text-left py-4 text-sm font-medium text-foreground/60">Vendor</th>
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">
+                      Vendor
+                    </th>
                     <th className="text-left py-4 text-sm font-medium text-foreground/60">Date</th>
-                    <th className="text-left py-4 text-sm font-medium text-foreground/60">Due Date</th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Amount</th>
-                    <th className="text-center py-4 text-sm font-medium text-foreground/60">Status</th>
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">
+                      Due Date
+                    </th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Amount
+                    </th>
+                    <th className="text-center py-4 text-sm font-medium text-foreground/60">
+                      Status
+                    </th>
                     <th className="text-right py-4 pr-6 text-sm font-medium text-foreground/60">
                       Actions
                     </th>

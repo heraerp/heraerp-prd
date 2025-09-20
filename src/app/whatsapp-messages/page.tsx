@@ -333,7 +333,9 @@ export default function WhatsAppMessagesPage() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6 text-foreground" />
               </div>
-              <p className="text-3xl font-bold !text-foreground">{analytics?.avgResponseTime || '-'}</p>
+              <p className="text-3xl font-bold !text-foreground">
+                {analytics?.avgResponseTime || '-'}
+              </p>
               <p className="text-sm !text-gray-300 mt-1 font-medium">time</p>
               <p className="text-xs !text-muted-foreground mt-2">Avg Response</p>
             </div>
@@ -591,7 +593,9 @@ export default function WhatsAppMessagesPage() {
                       <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mx-auto mb-4">
                         <MessageCircle className="w-10 h-10 text-foreground" />
                       </div>
-                      <p className="!text-muted-foreground">Select a conversation to view messages</p>
+                      <p className="!text-muted-foreground">
+                        Select a conversation to view messages
+                      </p>
                     </div>
                   </div>
                 )}
@@ -614,7 +618,9 @@ export default function WhatsAppMessagesPage() {
                     <div className="space-y-2">
                       {analytics.popularTimeSlots.map(slot => (
                         <div key={slot.hour} className="flex items-center gap-2">
-                          <span className="text-sm w-16 !text-muted-foreground">{slot.hour}:00</span>
+                          <span className="text-sm w-16 !text-muted-foreground">
+                            {slot.hour}:00
+                          </span>
                           <div className="flex-1 bg-muted-foreground/10 rounded-full h-4">
                             <div
                               className="bg-gradient-to-r from-green-500 to-emerald-600 h-4 rounded-full"

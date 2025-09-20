@@ -376,7 +376,9 @@ export default function CashflowDashboard({
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
                     <div className="p-4 bg-muted dark:bg-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Beginning Cash</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Beginning Cash
+                      </p>
                       <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {formatCurrency(currentStatement.cash_beginning)}
                       </p>
@@ -542,10 +544,14 @@ function CashflowMetricCard({
               {icon}
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
+              <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+                {title}
+              </p>
               <p
                 className={`text-2xl font-bold ${
-                  value >= 0 ? 'text-gray-100 dark:text-foreground' : 'text-red-600 dark:text-red-400'
+                  value >= 0
+                    ? 'text-gray-100 dark:text-foreground'
+                    : 'text-red-600 dark:text-red-400'
                 }`}
               >
                 {formatCurrency(value)}

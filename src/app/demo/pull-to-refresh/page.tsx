@@ -26,7 +26,7 @@ export default function PullToRefreshDemo() {
   const handleRefresh = async () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     // Update data
     setData(generateDemoData())
     setRefreshCount(prev => prev + 1)
@@ -46,12 +46,9 @@ export default function PullToRefreshDemo() {
         </TabsList>
 
         <TabsContent value="circular" className="h-[calc(100%-3rem)]">
-          <PullToRefresh 
-            onRefresh={handleRefresh}
-            className="h-full"
-          >
-            <DemoContent 
-              data={data} 
+          <PullToRefresh onRefresh={handleRefresh} className="h-full">
+            <DemoContent
+              data={data}
               refreshCount={refreshCount}
               onProgrammaticRefresh={triggerProgrammaticRefresh}
             />
@@ -59,18 +56,18 @@ export default function PullToRefreshDemo() {
         </TabsContent>
 
         <TabsContent value="linear" className="h-[calc(100%-3rem)]">
-          <PullToRefresh 
+          <PullToRefresh
             onRefresh={handleRefresh}
             indicatorStyle="linear"
             className="h-full"
             messages={{
-              pull: "Pull down for latest sales data",
-              release: "Release to update dashboard",
-              refreshing: "Updating sales metrics..."
+              pull: 'Pull down for latest sales data',
+              release: 'Release to update dashboard',
+              refreshing: 'Updating sales metrics...'
             }}
           >
-            <DemoContent 
-              data={data} 
+            <DemoContent
+              data={data}
               refreshCount={refreshCount}
               onProgrammaticRefresh={triggerProgrammaticRefresh}
             />
@@ -78,38 +75,36 @@ export default function PullToRefreshDemo() {
         </TabsContent>
 
         <TabsContent value="custom" className="h-[calc(100%-3rem)]">
-          <PullToRefresh 
+          <PullToRefresh
             ref={refreshRef}
             onRefresh={handleRefresh}
             indicatorStyle="custom"
             className="h-full"
             customIndicator={(state, progress) => (
               <div className="flex flex-col items-center gap-2">
-                <div 
+                <div
                   className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10"
                   style={{
                     transform: `scale(${0.5 + progress * 0.5})`,
                     opacity: 0.5 + progress * 0.5
                   }}
                 >
-                  <TrendingUp 
+                  <TrendingUp
                     className="h-6 w-6 text-primary"
                     style={{
-                      transform: state === 'refreshing' 
-                        ? 'rotate(0deg)' 
-                        : `rotate(${progress * 360}deg)`
+                      transform:
+                        state === 'refreshing' ? 'rotate(0deg)' : `rotate(${progress * 360}deg)`
                     }}
                   />
                 </div>
                 <span className="text-sm font-medium text-muted-foreground">
-                  {state === 'refreshing' 
-                    ? 'Syncing data...' 
-                    : `${Math.round(progress * 100)}% - ${state === 'readyToRefresh' ? 'Release!' : 'Pull more'}`
-                  }
+                  {state === 'refreshing'
+                    ? 'Syncing data...'
+                    : `${Math.round(progress * 100)}% - ${state === 'readyToRefresh' ? 'Release!' : 'Pull more'}`}
                 </span>
               </div>
             )}
-            onPull={(progress) => {
+            onPull={progress => {
               console.log('Pull progress:', progress)
             }}
             onRefreshStart={() => {
@@ -119,8 +114,8 @@ export default function PullToRefreshDemo() {
               console.log('Refresh completed')
             }}
           >
-            <DemoContent 
-              data={data} 
+            <DemoContent
+              data={data}
               refreshCount={refreshCount}
               onProgrammaticRefresh={triggerProgrammaticRefresh}
             />
@@ -142,9 +137,7 @@ function DemoContent({ data, refreshCount, onProgrammaticRefresh }: DemoContentP
     <div className="min-h-full bg-white p-4 dark:bg-gray-950">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Sales Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sales Dashboard</h1>
         <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
           <span>Last updated: {data.lastUpdated}</span>
           <Badge variant="secondary">
@@ -189,15 +182,9 @@ function DemoContent({ data, refreshCount, onProgrammaticRefresh }: DemoContentP
       <Card className="mb-6 p-6">
         <h2 className="mb-4 text-lg font-semibold">Actions</h2>
         <div className="flex flex-wrap gap-4">
-          <Button onClick={onProgrammaticRefresh}>
-            Programmatic Refresh
-          </Button>
-          <Button variant="outline">
-            Export Data
-          </Button>
-          <Button variant="outline">
-            View Reports
-          </Button>
+          <Button onClick={onProgrammaticRefresh}>Programmatic Refresh</Button>
+          <Button variant="outline">Export Data</Button>
+          <Button variant="outline">View Reports</Button>
         </div>
       </Card>
 

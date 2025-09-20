@@ -617,7 +617,9 @@ export function KitchenDisplaySystem() {
                   {station.icon}
                   <span>{station.name}</span>
                   {metrics && metrics.itemsPending > 0 && (
-                    <Badge className="bg-red-500 text-foreground text-xs">{metrics.itemsPending}</Badge>
+                    <Badge className="bg-red-500 text-foreground text-xs">
+                      {metrics.itemsPending}
+                    </Badge>
                   )}
                 </div>
               </Button>

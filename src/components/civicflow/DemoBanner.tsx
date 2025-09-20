@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { AlertCircle, X } from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, X } from 'lucide-react'
+import { useState } from 'react'
 
 interface DemoBannerProps {
-  orgName?: string;
-  onDismiss?: () => void;
+  orgName?: string
+  onDismiss?: () => void
 }
 
-export function DemoBanner({ orgName = "CivicFlow Demo Org", onDismiss }: DemoBannerProps) {
-  const [isVisible, setIsVisible] = useState(true);
+export function DemoBanner({ orgName = 'CivicFlow Demo Org', onDismiss }: DemoBannerProps) {
+  const [isVisible, setIsVisible] = useState(true)
 
   const handleDismiss = () => {
-    setIsVisible(false);
-    onDismiss?.();
-  };
+    setIsVisible(false)
+    onDismiss?.()
+  }
 
-  if (!isVisible) return null;
+  if (!isVisible) return null
 
   return (
     <div className="bg-gradient-glow text-accent-fg">
@@ -41,5 +41,5 @@ export function DemoBanner({ orgName = "CivicFlow Demo Org", onDismiss }: DemoBa
         </div>
       </div>
     </div>
-  );
+  )
 }

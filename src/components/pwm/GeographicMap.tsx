@@ -251,10 +251,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
       {/* Region Breakdown */}
       <div className="space-y-3">
         {regions.map(region => (
-          <div
-            key={region.name}
-            className="p-4 rounded-lg bg-muted/30 border border-border/50"
-          >
+          <div key={region.name} className="p-4 rounded-lg bg-muted/30 border border-border/50">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground" />

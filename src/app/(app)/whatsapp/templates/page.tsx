@@ -12,10 +12,10 @@ import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Edit,
+  Trash2,
   Search,
   MessageSquare,
   Eye,
@@ -39,24 +39,19 @@ export default function WhatsAppTemplatesPage() {
   const [formMode, setFormMode] = React.useState<'create' | 'edit' | null>(null)
   const [previewTemplate, setPreviewTemplate] = React.useState<WaTemplate | null>(null)
 
-  const {
-    templates,
-    isTemplatesLoading,
-    templatesError,
-    saveTemplate,
-    deleteTemplate,
-    config
-  } = useWhatsappApi(currentOrganization?.id || '')
+  const { templates, isTemplatesLoading, templatesError, saveTemplate, deleteTemplate, config } =
+    useWhatsappApi(currentOrganization?.id || '')
 
   // Filter templates based on search
   const filteredTemplates = React.useMemo(() => {
     if (!searchTerm.trim()) return templates
 
     const search = searchTerm.toLowerCase()
-    return templates.filter(template => 
-      template.name.toLowerCase().includes(search) ||
-      template.body.toLowerCase().includes(search) ||
-      template.category.toLowerCase().includes(search)
+    return templates.filter(
+      template =>
+        template.name.toLowerCase().includes(search) ||
+        template.body.toLowerCase().includes(search) ||
+        template.category.toLowerCase().includes(search)
     )
   }, [templates, searchTerm])
 
@@ -78,15 +73,15 @@ export default function WhatsAppTemplatesPage() {
     try {
       await deleteTemplate.mutateAsync(template.name)
       toast({
-        title: "Template Deleted",
+        title: 'Template Deleted',
         description: `Template "${template.name}" has been deleted successfully.`,
-        variant: "default"
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Delete Failed",
-        description: error instanceof Error ? error.message : "Failed to delete template",
-        variant: "destructive"
+        title: 'Delete Failed',
+        description: error instanceof Error ? error.message : 'Failed to delete template',
+        variant: 'destructive'
       })
     }
   }
@@ -100,16 +95,16 @@ export default function WhatsAppTemplatesPage() {
     try {
       await saveTemplate.mutateAsync(template)
       toast({
-        title: formMode === 'create' ? "Template Created" : "Template Updated",
+        title: formMode === 'create' ? 'Template Created' : 'Template Updated',
         description: `Template "${template.name}" has been ${formMode === 'create' ? 'created' : 'updated'} successfully.`,
-        variant: "default"
+        variant: 'default'
       })
       handleFormClose()
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save template",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save template',
+        variant: 'destructive'
       })
     }
   }
@@ -117,28 +112,34 @@ export default function WhatsAppTemplatesPage() {
   const getStatusBadge = (template: WaTemplate) => {
     switch (template.status) {
       case 'approved':
-        return <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Approved
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Approved
+          </Badge>
+        )
       case 'pending':
-        return <Badge variant="outline" className="text-yellow-700 border-yellow-300 bg-yellow-50">
-          <Clock className="h-3 w-3 mr-1" />
-          Pending
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-yellow-700 border-yellow-300 bg-yellow-50">
+            <Clock className="h-3 w-3 mr-1" />
+            Pending
+          </Badge>
+        )
       case 'rejected':
-        return <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
-          <AlertCircle className="h-3 w-3 mr-1" />
-          Rejected
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Rejected
+          </Badge>
+        )
       case 'disabled':
-        return <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
-          Disabled
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+            Disabled
+          </Badge>
+        )
       default:
-        return <Badge variant="outline">
-          Draft
-        </Badge>
+        return <Badge variant="outline">Draft</Badge>
     }
   }
 
@@ -169,7 +170,6 @@ export default function WhatsAppTemplatesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -189,12 +189,9 @@ export default function WhatsAppTemplatesPage() {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <Button
-            onClick={handleCreateTemplate}
-            disabled={!config?.enabled}
-          >
+          <Button onClick={handleCreateTemplate} disabled={!config?.enabled}>
             <Plus className="h-4 w-4 mr-2" />
             New Template
           </Button>
@@ -206,7 +203,7 @@ export default function WhatsAppTemplatesPage() {
         <Alert className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            WhatsApp integration is not enabled. 
+            WhatsApp integration is not enabled.
             <Button variant="link" className="px-2 h-auto font-normal underline">
               Configure WhatsApp settings
             </Button>
@@ -224,7 +221,7 @@ export default function WhatsAppTemplatesPage() {
               <Input
                 placeholder="Search templates by name, content, or category..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -258,10 +255,9 @@ export default function WhatsAppTemplatesPage() {
                 {searchTerm ? 'No templates found' : 'No templates yet'}
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                {searchTerm 
+                {searchTerm
                   ? 'Try adjusting your search criteria.'
-                  : 'Create your first WhatsApp message template to get started.'
-                }
+                  : 'Create your first WhatsApp message template to get started.'}
               </p>
               {!searchTerm && config?.enabled && (
                 <Button onClick={handleCreateTemplate}>
@@ -274,14 +270,12 @@ export default function WhatsAppTemplatesPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredTemplates.map((template) => (
+          {filteredTemplates.map(template => (
             <Card key={template.name} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <CardTitle className="text-lg font-semibold">
-                      {template.name}
-                    </CardTitle>
+                    <CardTitle className="text-lg font-semibold">{template.name}</CardTitle>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className={getCategoryColor(template.category)}>
                         {template.category}
@@ -292,12 +286,13 @@ export default function WhatsAppTemplatesPage() {
                       </Badge>
                       {template.variables.length > 0 && (
                         <Badge variant="outline">
-                          {template.variables.length} variable{template.variables.length !== 1 ? 's' : ''}
+                          {template.variables.length} variable
+                          {template.variables.length !== 1 ? 's' : ''}
                         </Badge>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -324,7 +319,7 @@ export default function WhatsAppTemplatesPage() {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <div className="space-y-3">
                   <div>
@@ -333,12 +328,12 @@ export default function WhatsAppTemplatesPage() {
                       {template.body}
                     </div>
                   </div>
-                  
+
                   {template.variables.length > 0 && (
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Variables:</p>
                       <div className="flex flex-wrap gap-1">
-                        {template.variables.map((variable) => (
+                        {template.variables.map(variable => (
                           <Badge key={variable} variant="secondary" className="text-xs">
                             {`{{${variable}}}`}
                           </Badge>
@@ -346,17 +341,15 @@ export default function WhatsAppTemplatesPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>
-                      Created: {template.created_at 
+                      Created:{' '}
+                      {template.created_at
                         ? new Date(template.created_at).toLocaleDateString()
-                        : 'Unknown'
-                      }
+                        : 'Unknown'}
                     </span>
-                    {template.hera_template_id && (
-                      <span>MSP ID: {template.hera_template_id}</span>
-                    )}
+                    {template.hera_template_id && <span>MSP ID: {template.hera_template_id}</span>}
                   </div>
                 </div>
               </CardContent>

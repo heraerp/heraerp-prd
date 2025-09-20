@@ -403,7 +403,9 @@ export default function APITestingPage() {
                                 </div>
                                 <div className="flex-1">
                                   <h3 className="font-medium text-foreground">{test.name}</h3>
-                                  <p className="text-sm text-muted-foreground">{test.description}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {test.description}
+                                  </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <Badge variant="outline" className="text-xs">
@@ -445,7 +447,9 @@ export default function APITestingPage() {
                                 </div>
                                 <div className="flex-1">
                                   <h3 className="font-medium text-foreground">{test.name}</h3>
-                                  <p className="text-sm text-muted-foreground">{test.description}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {test.description}
+                                  </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <Badge variant="outline" className="text-xs">
@@ -557,7 +561,9 @@ export default function APITestingPage() {
                       <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-9000 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                         <Code className="w-8 h-8 text-foreground" />
                       </div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">Select an API to test</h3>
+                      <h3 className="text-lg font-medium text-foreground mb-2">
+                        Select an API to test
+                      </h3>
                       <p className="text-muted-foreground">
                         Choose from Phase 1 or Phase 2 APIs to see live results
                       </p>

@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  ShoppingCart, 
-  Plus, 
-  Minus, 
-  X, 
-  CreditCard, 
+import {
+  ShoppingCart,
+  Plus,
+  Minus,
+  X,
+  CreditCard,
   User,
   Tag,
   DollarSign,
@@ -96,7 +96,7 @@ export function CartSidebar({
     if (newQuantity === 0) {
       onRemoveItem(itemId)
     } else {
-      onUpdateItem(itemId, { 
+      onUpdateItem(itemId, {
         quantity: newQuantity,
         line_amount: newQuantity * item.unit_price
       })
@@ -143,7 +143,7 @@ export function CartSidebar({
             {/* Cart Items */}
             <ScrollArea className="flex-1 px-6">
               <div className="space-y-3 pb-4">
-                {ticket.lineItems.map((item) => (
+                {ticket.lineItems.map(item => (
                   <div
                     key={item.id}
                     className="group p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-colors"
@@ -155,7 +155,7 @@ export function CartSidebar({
                           {truncateText(item.entity_name, 25)}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <Badge 
+                          <Badge
                             variant={item.entity_type === 'service' ? 'default' : 'secondary'}
                             className="text-xs h-5"
                           >
@@ -229,31 +229,33 @@ export function CartSidebar({
             {/* Discounts and Tips */}
             {(ticket.discounts.length > 0 || ticket.tips.length > 0) && (
               <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-700">
-                {ticket.discounts.map((discount) => (
+                {ticket.discounts.map(discount => (
                   <div key={discount.id} className="flex items-center justify-between py-1 text-sm">
                     <div className="flex items-center gap-2 text-green-600">
                       <Tag className="w-3 h-3" />
-                      <span className="truncate">
-                        {truncateText(discount.description, 20)}
-                      </span>
+                      <span className="truncate">{truncateText(discount.description, 20)}</span>
                     </div>
                     <span className="font-medium text-green-600">
-                      -{discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}
+                      -
+                      {discount.type === 'percentage'
+                        ? `${discount.value}%`
+                        : `$${discount.value.toFixed(2)}`}
                     </span>
                   </div>
                 ))}
 
-                {ticket.tips.map((tip) => (
+                {ticket.tips.map(tip => (
                   <div key={tip.id} className="flex items-center justify-between py-1 text-sm">
                     <div className="flex items-center gap-2 text-blue-600">
                       <DollarSign className="w-3 h-3" />
                       <span className="truncate">
-                        {tip.stylist_name ? `Tip for ${tip.stylist_name.split(' ')[0]}` : 'General Tip'} ({tip.method})
+                        {tip.stylist_name
+                          ? `Tip for ${tip.stylist_name.split(' ')[0]}`
+                          : 'General Tip'}{' '}
+                        ({tip.method})
                       </span>
                     </div>
-                    <span className="font-medium text-blue-600">
-                      +${tip.amount.toFixed(2)}
-                    </span>
+                    <span className="font-medium text-blue-600">+${tip.amount.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -266,7 +268,7 @@ export function CartSidebar({
                   <span>Subtotal:</span>
                   <span>${totals.subtotal.toFixed(2)}</span>
                 </div>
-                
+
                 {totals.discountAmount > 0 && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>Discount:</span>
@@ -289,7 +291,7 @@ export function CartSidebar({
                 )}
 
                 <Separator />
-                
+
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total:</span>
                   <span>${totals.total.toFixed(2)}</span>

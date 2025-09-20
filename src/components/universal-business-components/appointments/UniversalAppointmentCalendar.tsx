@@ -324,7 +324,9 @@ export function UniversalAppointmentCalendar({
         <div className="grid gap-4 md:grid-cols-4 text-center">
           <div>
             <div className="text-2xl font-bold text-primary">{filteredAppointments.length}</div>
-            <div className="text-sm text-muted-foreground">Total {config.appointmentLabels.plural}</div>
+            <div className="text-sm text-muted-foreground">
+              Total {config.appointmentLabels.plural}
+            </div>
           </div>
           <div>
             <div className="text-2xl font-bold text-green-600">

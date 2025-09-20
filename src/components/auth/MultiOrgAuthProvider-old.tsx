@@ -264,13 +264,28 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
               if (demoRouteMap[basePath]) {
                 selectedOrg = allDemoOrgs.find(o => o.subdomain === demoRouteMap[basePath]) || null
               }
-              
+
               // Check for salon app routes (dashboard, appointments, etc.)
-              const salonAppRoutes = ['/dashboard', '/appointments', '/pos', '/customers', '/settings', '/reports', '/whatsapp', '/inventory', '/finance', '/admin', '/accountant', '/customer']
+              const salonAppRoutes = [
+                '/dashboard',
+                '/appointments',
+                '/pos',
+                '/customers',
+                '/settings',
+                '/reports',
+                '/whatsapp',
+                '/inventory',
+                '/finance',
+                '/admin',
+                '/accountant',
+                '/customer'
+              ]
               console.log('Checking salon routes for pathname:', pathname)
               console.log('Salon routes:', salonAppRoutes)
-              
-              if (salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+
+              if (
+                salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))
+              ) {
                 console.log('Salon route detected, searching for demo-salon org')
                 selectedOrg = allDemoOrgs.find(o => o.subdomain === 'demo-salon') || null
                 console.log('Selected salon org:', selectedOrg)
@@ -345,15 +360,17 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
           await loadUserOrganizations(initialSession.user)
         } else {
           // No session, check for HERA demo session first
-          const { checkHERADemoSession, shouldUseDemoSession } = await import('@/src/lib/auth/demo-session-bridge')
+          const { checkHERADemoSession, shouldUseDemoSession } = await import(
+            '@/src/lib/auth/demo-session-bridge'
+          )
           const pathname = window.location.pathname
-          
+
           console.log('No session found, checking for HERA demo session:', pathname)
-          
+
           // Check for HERA Authorization DNA demo session
           if (shouldUseDemoSession(pathname)) {
             const { demoUser, demoOrg, isExpired } = checkHERADemoSession()
-            
+
             if (demoUser && demoOrg && !isExpired) {
               console.log('🧬 HERA demo session found, using Authorization DNA')
               setUser(demoUser)
@@ -363,9 +380,25 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
             } else {
               console.log('No valid HERA demo session, using fallback demo')
               // Fallback to old demo logic for compatibility
-              const salonAppRoutes = ['/dashboard', '/appointments', '/pos', '/customers', '/settings', '/reports', '/whatsapp', '/inventory', '/finance', '/admin', '/accountant', '/customer']
-              
-              if (pathname.startsWith('/salon') || salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))) {
+              const salonAppRoutes = [
+                '/dashboard',
+                '/appointments',
+                '/pos',
+                '/customers',
+                '/settings',
+                '/reports',
+                '/whatsapp',
+                '/inventory',
+                '/finance',
+                '/admin',
+                '/accountant',
+                '/customer'
+              ]
+
+              if (
+                pathname.startsWith('/salon') ||
+                salonAppRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))
+              ) {
                 console.log('Creating fallback demo user and org for salon route')
                 const demoUser: DualUser = {
                   id: 'demo-user-salon',
@@ -375,7 +408,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
                   full_name: 'Demo Salon User',
                   role: 'owner'
                 }
-                
+
                 const demoOrg: Organization = {
                   id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Demo salon org ID (consistent with allDemoOrgs)
                   name: 'Bella Beauty Salon (Demo)',
@@ -386,7 +419,7 @@ export function MultiOrgAuthProvider({ children }: MultiOrgAuthProviderProps) {
                   permissions: ['*'],
                   is_active: true
                 }
-                
+
                 setUser(demoUser)
                 setOrganizations([demoOrg])
                 setCurrentOrganization(demoOrg)

@@ -5,7 +5,7 @@ export const BaseWriteSchema = z.object({
   orgId: z.string().uuid(),
   smart_code: z.string().regex(/^HERA\.SALON\.POS\.[A-Z0-9._]+\.v\d+$/),
   idempotency_key: z.string().min(8).optional(),
-  actor_user_id: z.string().uuid().optional(),
+  actor_user_id: z.string().uuid().optional()
 })
 
 // Service CRUD schemas
@@ -16,30 +16,35 @@ export const ServiceCreateSchema = BaseWriteSchema.extend({
     duration: z.number().int().min(15).max(480), // minutes
     tax_code: z.string().default('VAT5'),
     category: z.string().optional(),
-    description: z.string().optional(),
-  }),
+    description: z.string().optional()
+  })
 })
 
 export const ServiceUpdateSchema = BaseWriteSchema.extend({
-  service: z.object({
-    id: z.string().uuid(),
-    entity_name: z.string().min(3).max(100).optional(),
-    price: z.number().min(0).optional(),
-    duration: z.number().int().min(15).max(480).optional(),
-    tax_code: z.string().optional(),
-    category: z.string().optional(),
-    description: z.string().optional(),
-    status: z.enum(['active', 'archived']).optional(),
-  }).refine(data => {
-    const { id, ...rest } = data
-    return Object.keys(rest).length > 0
-  }, { message: "At least one field must be updated" }),
+  service: z
+    .object({
+      id: z.string().uuid(),
+      entity_name: z.string().min(3).max(100).optional(),
+      price: z.number().min(0).optional(),
+      duration: z.number().int().min(15).max(480).optional(),
+      tax_code: z.string().optional(),
+      category: z.string().optional(),
+      description: z.string().optional(),
+      status: z.enum(['active', 'archived']).optional()
+    })
+    .refine(
+      data => {
+        const { id, ...rest } = data
+        return Object.keys(rest).length > 0
+      },
+      { message: 'At least one field must be updated' }
+    )
 })
 
 export const ServiceDeleteSchema = BaseWriteSchema.extend({
   service: z.object({
-    id: z.string().uuid(),
-  }),
+    id: z.string().uuid()
+  })
 })
 
 // Product CRUD schemas
@@ -52,32 +57,37 @@ export const ProductCreateSchema = BaseWriteSchema.extend({
     category: z.string().optional(),
     uom: z.string().default('unit'),
     track_stock: z.boolean().default(true),
-    description: z.string().optional(),
-  }),
+    description: z.string().optional()
+  })
 })
 
 export const ProductUpdateSchema = BaseWriteSchema.extend({
-  product: z.object({
-    id: z.string().uuid(),
-    entity_name: z.string().min(3).max(100).optional(),
-    sku: z.string().min(3).max(50).optional(),
-    price: z.number().min(0).optional(),
-    tax_code: z.string().optional(),
-    category: z.string().optional(),
-    uom: z.string().optional(),
-    track_stock: z.boolean().optional(),
-    description: z.string().optional(),
-    status: z.enum(['active', 'archived']).optional(),
-  }).refine(data => {
-    const { id, ...rest } = data
-    return Object.keys(rest).length > 0
-  }, { message: "At least one field must be updated" }),
+  product: z
+    .object({
+      id: z.string().uuid(),
+      entity_name: z.string().min(3).max(100).optional(),
+      sku: z.string().min(3).max(50).optional(),
+      price: z.number().min(0).optional(),
+      tax_code: z.string().optional(),
+      category: z.string().optional(),
+      uom: z.string().optional(),
+      track_stock: z.boolean().optional(),
+      description: z.string().optional(),
+      status: z.enum(['active', 'archived']).optional()
+    })
+    .refine(
+      data => {
+        const { id, ...rest } = data
+        return Object.keys(rest).length > 0
+      },
+      { message: 'At least one field must be updated' }
+    )
 })
 
 export const ProductDeleteSchema = BaseWriteSchema.extend({
   product: z.object({
-    id: z.string().uuid(),
-  }),
+    id: z.string().uuid()
+  })
 })
 
 // Customer CRUD schemas
@@ -88,30 +98,35 @@ export const CustomerCreateSchema = BaseWriteSchema.extend({
     email: z.string().email().optional(),
     address: z.string().optional(),
     loyalty_points: z.number().int().min(0).default(0),
-    notes: z.string().optional(),
-  }),
+    notes: z.string().optional()
+  })
 })
 
 export const CustomerUpdateSchema = BaseWriteSchema.extend({
-  customer: z.object({
-    id: z.string().uuid(),
-    entity_name: z.string().min(3).max(100).optional(),
-    phone: z.string().min(10).max(20).optional(),
-    email: z.string().email().optional(),
-    address: z.string().optional(),
-    loyalty_points: z.number().int().min(0).optional(),
-    notes: z.string().optional(),
-    status: z.enum(['active', 'archived']).optional(),
-  }).refine(data => {
-    const { id, ...rest } = data
-    return Object.keys(rest).length > 0
-  }, { message: "At least one field must be updated" }),
+  customer: z
+    .object({
+      id: z.string().uuid(),
+      entity_name: z.string().min(3).max(100).optional(),
+      phone: z.string().min(10).max(20).optional(),
+      email: z.string().email().optional(),
+      address: z.string().optional(),
+      loyalty_points: z.number().int().min(0).optional(),
+      notes: z.string().optional(),
+      status: z.enum(['active', 'archived']).optional()
+    })
+    .refine(
+      data => {
+        const { id, ...rest } = data
+        return Object.keys(rest).length > 0
+      },
+      { message: 'At least one field must be updated' }
+    )
 })
 
 export const CustomerDeleteSchema = BaseWriteSchema.extend({
   customer: z.object({
-    id: z.string().uuid(),
-  }),
+    id: z.string().uuid()
+  })
 })
 
 // Query schemas
@@ -121,12 +136,12 @@ export const ListQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
   q: z.string().optional(),
   status: z.enum(['active', 'archived', 'all']).default('active'),
-  category: z.string().optional(),
+  category: z.string().optional()
 })
 
 export const GetByIdSchema = z.object({
   id: z.string().uuid(),
-  orgId: z.string().uuid(),
+  orgId: z.string().uuid()
 })
 
 // Response schemas for type safety
@@ -141,7 +156,7 @@ export const ServiceResponseSchema = z.object({
   description: z.string().nullable(),
   status: z.string(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 export const ProductResponseSchema = z.object({
@@ -157,7 +172,7 @@ export const ProductResponseSchema = z.object({
   description: z.string().nullable(),
   status: z.string(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 export const CustomerResponseSchema = z.object({
@@ -171,7 +186,7 @@ export const CustomerResponseSchema = z.object({
   notes: z.string().nullable(),
   status: z.string(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 // Type exports

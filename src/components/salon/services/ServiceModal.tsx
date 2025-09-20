@@ -13,10 +13,10 @@ import { Label } from '@/components/ui/label'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ServiceForm, ServiceFormSchema, ServiceWithDynamicData } from '@/schemas/service'
-import { 
-  Loader2, 
-  Save, 
-  X, 
+import {
+  Loader2,
+  Save,
+  X,
   Clock,
   DollarSign,
   Percent,
@@ -25,7 +25,7 @@ import {
   Wrench,
   Sparkles
 } from 'lucide-react'
-import { 
+import {
   PrimaryButtonDNA,
   SecondaryButtonDNA,
   FormFieldDNA,
@@ -129,7 +129,10 @@ export function ServiceModal({
         <DialogHeader className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle style={{ color: COLORS.champagne }} className="text-xl flex items-center gap-2">
+              <DialogTitle
+                style={{ color: COLORS.champagne }}
+                className="text-xl flex items-center gap-2"
+              >
                 <Sparkles className="w-5 h-5" style={{ color: COLORS.gold }} />
                 {service ? 'Edit Service' : 'Create New Service'}
               </DialogTitle>
@@ -150,18 +153,20 @@ export function ServiceModal({
             <div className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <Tag className="w-4 h-4" />
                   Basic Information
                 </h3>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormFieldDNA
                     type="text"
                     label="Service Name"
                     value={watch('name')}
-                    onChange={(value) => setValue('name', value)}
+                    onChange={value => setValue('name', value)}
                     placeholder="e.g., Premium Cut & Style"
                     error={errors.name?.message}
                     required
@@ -171,7 +176,7 @@ export function ServiceModal({
                     type="text"
                     label="Service Code"
                     value={watch('code') || ''}
-                    onChange={(value) => setValue('code', value.toUpperCase())}
+                    onChange={value => setValue('code', value.toUpperCase())}
                     placeholder="e.g., SVC001"
                     error={errors.code?.message}
                     helper="Optional unique identifier"
@@ -183,7 +188,7 @@ export function ServiceModal({
                     type="select"
                     label="Category"
                     value={watch('category') || ''}
-                    onChange={(value) => setValue('category', value)}
+                    onChange={value => setValue('category', value)}
                     options={categories.map(cat => ({ value: cat, label: cat }))}
                     placeholder="Select category"
                   />
@@ -192,7 +197,7 @@ export function ServiceModal({
                     type="number"
                     label="Duration (minutes)"
                     value={watch('duration_mins').toString()}
-                    onChange={(value) => setValue('duration_mins', parseInt(value) || 30)}
+                    onChange={value => setValue('duration_mins', parseInt(value) || 30)}
                     min={5}
                     max={480}
                     error={errors.duration_mins?.message}
@@ -204,9 +209,14 @@ export function ServiceModal({
               </div>
 
               {/* Pricing */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <DollarSign className="w-4 h-4" />
                   Pricing Configuration
                 </h3>
@@ -216,7 +226,7 @@ export function ServiceModal({
                     type="number"
                     label="Service Price"
                     value={watch('price').toString()}
-                    onChange={(value) => setValue('price', parseFloat(value) || 0)}
+                    onChange={value => setValue('price', parseFloat(value) || 0)}
                     min={0}
                     step={0.01}
                     error={errors.price?.message}
@@ -229,7 +239,7 @@ export function ServiceModal({
                     type="number"
                     label="Tax Rate"
                     value={watch('tax_rate')?.toString() || '5'}
-                    onChange={(value) => setValue('tax_rate', parseFloat(value) || 0)}
+                    onChange={value => setValue('tax_rate', parseFloat(value) || 0)}
                     min={0}
                     max={100}
                     step={0.01}
@@ -241,9 +251,17 @@ export function ServiceModal({
                 </div>
 
                 {/* Price Preview */}
-                <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.black + '30', border: '1px solid ' + COLORS.bronze + '33' }}>
+                <div
+                  className="p-4 rounded-lg"
+                  style={{
+                    backgroundColor: COLORS.black + '30',
+                    border: '1px solid ' + COLORS.bronze + '33'
+                  }}
+                >
                   <div className="flex justify-between items-center">
-                    <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>Total with Tax</span>
+                    <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                      Total with Tax
+                    </span>
                     <span className="text-lg font-semibold" style={{ color: COLORS.gold }}>
                       AED {(watch('price') * (1 + (watch('tax_rate') || 0) / 100)).toFixed(2)}
                     </span>
@@ -252,9 +270,14 @@ export function ServiceModal({
               </div>
 
               {/* Commission */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <Percent className="w-4 h-4" />
                   Commission Settings
                 </h3>
@@ -264,7 +287,7 @@ export function ServiceModal({
                     type="select"
                     label="Commission Type"
                     value={watch('commission_type') || 'percent'}
-                    onChange={(value) => setValue('commission_type', value as 'flat' | 'percent')}
+                    onChange={value => setValue('commission_type', value as 'flat' | 'percent')}
                     options={[
                       { value: 'percent', label: 'Percentage' },
                       { value: 'flat', label: 'Flat Rate' }
@@ -275,21 +298,30 @@ export function ServiceModal({
                     type="number"
                     label={`Commission Value`}
                     value={watch('commission_value')?.toString() || '20'}
-                    onChange={(value) => setValue('commission_value', parseFloat(value) || 0)}
+                    onChange={value => setValue('commission_value', parseFloat(value) || 0)}
                     min={0}
                     max={commissionType === 'percent' ? 100 : undefined}
                     step={0.01}
                     error={errors.commission_value?.message}
                     suffix={commissionType === 'percent' ? '%' : 'AED'}
-                    helper={commissionType === 'percent' ? 'Percentage of service price' : 'Fixed amount per service'}
+                    helper={
+                      commissionType === 'percent'
+                        ? 'Percentage of service price'
+                        : 'Fixed amount per service'
+                    }
                   />
                 </div>
               </div>
 
               {/* Additional Info */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <FileText className="w-4 h-4" />
                   Additional Details
                 </h3>
@@ -298,19 +330,28 @@ export function ServiceModal({
                   type="textarea"
                   label="Service Description"
                   value={watch('description') || ''}
-                  onChange={(value) => setValue('description', value)}
+                  onChange={value => setValue('description', value)}
                   placeholder="Describe the service, what's included, benefits..."
                   rows={3}
                   error={errors.description?.message}
                   helper="This description will be visible to customers"
                 />
 
-                <div className="flex items-center justify-between p-4 rounded-lg" 
-                     style={{ backgroundColor: COLORS.black + '30', border: '1px solid ' + COLORS.bronze + '33' }}>
+                <div
+                  className="flex items-center justify-between p-4 rounded-lg"
+                  style={{
+                    backgroundColor: COLORS.black + '30',
+                    border: '1px solid ' + COLORS.bronze + '33'
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     <Wrench className="w-5 h-5" style={{ color: COLORS.bronze }} />
                     <div>
-                      <Label htmlFor="requires_equipment" className="font-medium cursor-pointer" style={{ color: COLORS.champagne }}>
+                      <Label
+                        htmlFor="requires_equipment"
+                        className="font-medium cursor-pointer"
+                        style={{ color: COLORS.champagne }}
+                      >
                         Requires special equipment
                       </Label>
                       <p className="text-xs mt-1" style={{ color: COLORS.lightText, opacity: 0.7 }}>
@@ -334,11 +375,19 @@ export function ServiceModal({
               </div>
 
               {/* Smart Code Display */}
-              <div className="mt-6 p-4 rounded-lg" 
-                   style={{ backgroundColor: COLORS.black + '20', border: '1px solid ' + COLORS.bronze + '33' }}>
+              <div
+                className="mt-6 p-4 rounded-lg"
+                style={{
+                  backgroundColor: COLORS.black + '20',
+                  border: '1px solid ' + COLORS.bronze + '33'
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                    <p
+                      className="text-xs uppercase tracking-wider"
+                      style={{ color: COLORS.bronze }}
+                    >
                       Smart Code
                     </p>
                     <p className="font-mono text-sm mt-1" style={{ color: COLORS.champagne }}>
@@ -354,14 +403,11 @@ export function ServiceModal({
           </ScrollAreaDNA>
 
           {/* Fixed Footer with Actions */}
-          <div className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3" 
-               style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}>
-            <SecondaryButtonDNA
-              type="button"
-              icon={X}
-              onClick={onClose}
-              disabled={saving}
-            >
+          <div
+            className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3"
+            style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}
+          >
+            <SecondaryButtonDNA type="button" icon={X} onClick={onClose} disabled={saving}>
               Cancel
             </SecondaryButtonDNA>
             <PrimaryButtonDNA

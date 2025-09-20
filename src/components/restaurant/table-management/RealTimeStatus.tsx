@@ -120,7 +120,9 @@ export function RealTimeStatus({
                 isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
               }`}
             />
-            <span className="text-xs text-muted-foreground">{isConnected ? 'Live' : 'Offline'}</span>
+            <span className="text-xs text-muted-foreground">
+              {isConnected ? 'Live' : 'Offline'}
+            </span>
           </div>
         </div>
 

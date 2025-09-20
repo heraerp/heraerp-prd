@@ -347,7 +347,9 @@ export function OrderManager() {
               <div className="p-4">
                 {/* Timing Info */}
                 <div className="flex justify-between items-center mb-4 text-sm">
-                  <span className="text-muted-foreground">Ordered: {formatTimeAgo(order.order_time)}</span>
+                  <span className="text-muted-foreground">
+                    Ordered: {formatTimeAgo(order.order_time)}
+                  </span>
                   <span
                     className={`font-medium ${
                       order.status === 'approved' ? 'text-green-600' : 'text-orange-600'

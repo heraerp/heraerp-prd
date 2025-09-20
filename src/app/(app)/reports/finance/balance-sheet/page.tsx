@@ -18,7 +18,12 @@ import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
 import { ExportButtons } from '@/components/reports/ExportButtons'
 import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
 import { useUniversalReports } from '@/hooks/useUniversalReports'
-import { FinancialFilters, BalanceRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
+import {
+  FinancialFilters,
+  BalanceRow,
+  DrillDownResponse,
+  TransactionDetail
+} from '@/lib/schemas/reports'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 export default function BalanceSheetPage() {
@@ -28,9 +33,11 @@ export default function BalanceSheetPage() {
     account?: BalanceRow
     isOpen: boolean
   }>({ group: '', isOpen: false })
-  
+
   const [drillDownData, setDrillDownData] = React.useState<DrillDownResponse | null>(null)
-  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(null)
+  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(
+    null
+  )
   const [isDrillDownLoading, setIsDrillDownLoading] = React.useState(false)
   const [isTransactionLoading, setIsTransactionLoading] = React.useState(false)
 
@@ -44,15 +51,9 @@ export default function BalanceSheetPage() {
   }
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
-  
+
   // Main report data using useUniversalReports hook
-  const { 
-    isLoading, 
-    error, 
-    data: reportData,
-    getBalanceSheet,
-    clearError 
-  } = useUniversalReports()
+  const { isLoading, error, data: reportData, getBalanceSheet, clearError } = useUniversalReports()
 
   // Load balance sheet data
   React.useEffect(() => {
@@ -71,38 +72,178 @@ export default function BalanceSheetPage() {
     // Transform universal report data to balance sheet format
     const mockBalanceData: BalanceRow[] = [
       // ASSETS GROUP
-      { account_code: 'ASSETS_TOTAL', account_name: 'Total Assets', group: 'assets', amount: 250000, is_subtotal: true, level: 0 },
-      
+      {
+        account_code: 'ASSETS_TOTAL',
+        account_name: 'Total Assets',
+        group: 'assets',
+        amount: 250000,
+        is_subtotal: true,
+        level: 0
+      },
+
       // Current Assets
-      { account_code: 'CURR_ASSETS', account_name: 'Current Assets', group: 'assets', amount: 75000, is_subtotal: true, level: 1 },
-      { account_code: '1100', account_name: 'Cash in Bank', group: 'assets', amount: 35000, is_subtotal: false, level: 2 },
-      { account_code: '1200', account_name: 'Accounts Receivable', group: 'assets', amount: 15000, is_subtotal: false, level: 2 },
-      { account_code: '1300', account_name: 'Inventory - Products', group: 'assets', amount: 18000, is_subtotal: false, level: 2 },
-      { account_code: '1400', account_name: 'Prepaid Expenses', group: 'assets', amount: 7000, is_subtotal: false, level: 2 },
-      
+      {
+        account_code: 'CURR_ASSETS',
+        account_name: 'Current Assets',
+        group: 'assets',
+        amount: 75000,
+        is_subtotal: true,
+        level: 1
+      },
+      {
+        account_code: '1100',
+        account_name: 'Cash in Bank',
+        group: 'assets',
+        amount: 35000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '1200',
+        account_name: 'Accounts Receivable',
+        group: 'assets',
+        amount: 15000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '1300',
+        account_name: 'Inventory - Products',
+        group: 'assets',
+        amount: 18000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '1400',
+        account_name: 'Prepaid Expenses',
+        group: 'assets',
+        amount: 7000,
+        is_subtotal: false,
+        level: 2
+      },
+
       // Fixed Assets
-      { account_code: 'FIXED_ASSETS', account_name: 'Fixed Assets', group: 'assets', amount: 175000, is_subtotal: true, level: 1 },
-      { account_code: '1500', account_name: 'Salon Equipment', group: 'assets', amount: 120000, is_subtotal: false, level: 2 },
-      { account_code: '1600', account_name: 'Furniture & Fixtures', group: 'assets', amount: 80000, is_subtotal: false, level: 2 },
-      { account_code: '1700', account_name: 'Accumulated Depreciation', group: 'assets', amount: -25000, is_subtotal: false, level: 2 },
-      
+      {
+        account_code: 'FIXED_ASSETS',
+        account_name: 'Fixed Assets',
+        group: 'assets',
+        amount: 175000,
+        is_subtotal: true,
+        level: 1
+      },
+      {
+        account_code: '1500',
+        account_name: 'Salon Equipment',
+        group: 'assets',
+        amount: 120000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '1600',
+        account_name: 'Furniture & Fixtures',
+        group: 'assets',
+        amount: 80000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '1700',
+        account_name: 'Accumulated Depreciation',
+        group: 'assets',
+        amount: -25000,
+        is_subtotal: false,
+        level: 2
+      },
+
       // LIABILITIES GROUP
-      { account_code: 'LIABILITIES_TOTAL', account_name: 'Total Liabilities', group: 'liabilities', amount: 85000, is_subtotal: true, level: 0 },
-      
+      {
+        account_code: 'LIABILITIES_TOTAL',
+        account_name: 'Total Liabilities',
+        group: 'liabilities',
+        amount: 85000,
+        is_subtotal: true,
+        level: 0
+      },
+
       // Current Liabilities
-      { account_code: 'CURR_LIAB', account_name: 'Current Liabilities', group: 'liabilities', amount: 45000, is_subtotal: true, level: 1 },
-      { account_code: '2100', account_name: 'Accounts Payable', group: 'liabilities', amount: 25000, is_subtotal: false, level: 2 },
-      { account_code: '2200', account_name: 'Accrued Salaries', group: 'liabilities', amount: 12000, is_subtotal: false, level: 2 },
-      { account_code: '2300', account_name: 'VAT Payable', group: 'liabilities', amount: 8000, is_subtotal: false, level: 2 },
-      
+      {
+        account_code: 'CURR_LIAB',
+        account_name: 'Current Liabilities',
+        group: 'liabilities',
+        amount: 45000,
+        is_subtotal: true,
+        level: 1
+      },
+      {
+        account_code: '2100',
+        account_name: 'Accounts Payable',
+        group: 'liabilities',
+        amount: 25000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '2200',
+        account_name: 'Accrued Salaries',
+        group: 'liabilities',
+        amount: 12000,
+        is_subtotal: false,
+        level: 2
+      },
+      {
+        account_code: '2300',
+        account_name: 'VAT Payable',
+        group: 'liabilities',
+        amount: 8000,
+        is_subtotal: false,
+        level: 2
+      },
+
       // Long-term Liabilities
-      { account_code: 'LT_LIAB', account_name: 'Long-term Liabilities', group: 'liabilities', amount: 40000, is_subtotal: true, level: 1 },
-      { account_code: '2500', account_name: 'Equipment Loan', group: 'liabilities', amount: 40000, is_subtotal: false, level: 2 },
-      
+      {
+        account_code: 'LT_LIAB',
+        account_name: 'Long-term Liabilities',
+        group: 'liabilities',
+        amount: 40000,
+        is_subtotal: true,
+        level: 1
+      },
+      {
+        account_code: '2500',
+        account_name: 'Equipment Loan',
+        group: 'liabilities',
+        amount: 40000,
+        is_subtotal: false,
+        level: 2
+      },
+
       // EQUITY GROUP
-      { account_code: 'EQUITY_TOTAL', account_name: 'Total Equity', group: 'equity', amount: 165000, is_subtotal: true, level: 0 },
-      { account_code: '3100', account_name: 'Owner Capital', group: 'equity', amount: 100000, is_subtotal: false, level: 1 },
-      { account_code: '3200', account_name: 'Retained Earnings', group: 'equity', amount: 65000, is_subtotal: false, level: 1 }
+      {
+        account_code: 'EQUITY_TOTAL',
+        account_name: 'Total Equity',
+        group: 'equity',
+        amount: 165000,
+        is_subtotal: true,
+        level: 0
+      },
+      {
+        account_code: '3100',
+        account_name: 'Owner Capital',
+        group: 'equity',
+        amount: 100000,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '3200',
+        account_name: 'Retained Earnings',
+        group: 'equity',
+        amount: 65000,
+        is_subtotal: false,
+        level: 1
+      }
     ]
 
     // Balance validation
@@ -111,7 +252,7 @@ export default function BalanceSheetPage() {
     const totalEquity = 165000
     const difference = totalAssets - (totalLiabilities + totalEquity)
     const isBalanced = Math.abs(difference) < 0.01
-    
+
     // Financial ratios
     const currentAssets = 75000
     const currentLiabilities = 45000
@@ -141,7 +282,7 @@ export default function BalanceSheetPage() {
   // Handle drill-down clicks
   const handleDrillDown = async (row: BalanceRow) => {
     if (row.is_subtotal) return // Don't drill down on subtotals
-    
+
     setSelectedDrillDown({ group: row.group, account: row, isOpen: true })
     setIsDrillDownLoading(true)
     setDrillDownData(null)
@@ -150,7 +291,7 @@ export default function BalanceSheetPage() {
     try {
       // In production, this would call your drill-down API
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      
+
       const mockTransactions = [
         {
           transaction_id: 'def45678-e89b-12d3-a456-426614174000',
@@ -196,7 +337,7 @@ export default function BalanceSheetPage() {
     setIsTransactionLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 800))
-      
+
       const mockTransactionDetail: TransactionDetail = {
         transaction: {
           id: transactionId,
@@ -224,24 +365,34 @@ export default function BalanceSheetPage() {
             description: 'Balance sheet adjustment entry',
             quantity: undefined,
             unit_amount: undefined,
-            line_amount: 1500.00,
+            line_amount: 1500.0,
             smart_code: 'HERA.FIN.GL.CASH.ADJ.V1'
           },
           {
             line_number: 2,
-            line_type: 'credit', 
+            line_type: 'credit',
             entity_id: 'gl-account-3200',
             entity_name: 'Retained Earnings',
             description: 'Balance sheet adjustment entry',
             quantity: undefined,
             unit_amount: undefined,
-            line_amount: -1500.00,
+            line_amount: -1500.0,
             smart_code: 'HERA.FIN.GL.EQUITY.ADJ.V1'
           }
         ],
         related_entities: [
-          { entity_id: 'gl-account-1100', entity_type: 'gl_account', entity_name: 'Cash in Bank', role: 'debit_account' },
-          { entity_id: 'gl-account-3200', entity_type: 'gl_account', entity_name: 'Retained Earnings', role: 'credit_account' }
+          {
+            entity_id: 'gl-account-1100',
+            entity_type: 'gl_account',
+            entity_name: 'Cash in Bank',
+            role: 'debit_account'
+          },
+          {
+            entity_id: 'gl-account-3200',
+            entity_type: 'gl_account',
+            entity_name: 'Retained Earnings',
+            role: 'credit_account'
+          }
         ]
       }
 
@@ -267,10 +418,7 @@ export default function BalanceSheetPage() {
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
             Failed to load balance sheet: {error}
-            <button 
-              onClick={clearError}
-              className="ml-2 underline hover:no-underline"
-            >
+            <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>
           </AlertDescription>
@@ -284,22 +432,19 @@ export default function BalanceSheetPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to view reports.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to view reports.</AlertDescription>
         </Alert>
       </div>
     )
   }
 
-  const reportTitle = "Balance Sheet"
-  const reportPeriod = filters.from_date 
+  const reportTitle = 'Balance Sheet'
+  const reportPeriod = filters.from_date
     ? `As of ${new Date(filters.from_date + 'T00:00:00').toLocaleDateString('en-AE')}`
     : 'As of Today'
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -312,12 +457,12 @@ export default function BalanceSheetPage() {
           </p>
           {transformedData?.summary && (
             <div className="flex items-center gap-2 mt-2">
-              <Badge 
+              <Badge
                 variant="outline"
                 className={
                   transformedData.summary.is_balanced
-                    ? "text-emerald-700 border-emerald-300 bg-emerald-50"
-                    : "text-red-700 border-red-300 bg-red-50"
+                    ? 'text-emerald-700 border-emerald-300 bg-emerald-50'
+                    : 'text-red-700 border-red-300 bg-red-50'
                 }
               >
                 {transformedData.summary.is_balanced ? (
@@ -326,19 +471,18 @@ export default function BalanceSheetPage() {
                   <AlertCircle className="h-3 w-3 mr-1" />
                 )}
                 {transformedData.summary.is_balanced ? 'Balanced' : 'Unbalanced'}
-                {!transformedData.summary.is_balanced && 
-                  ` (Diff: ${transformedData.currency} ${transformedData.summary.balance_difference.toLocaleString('en-AE')})`
-                }
+                {!transformedData.summary.is_balanced &&
+                  ` (Diff: ${transformedData.currency} ${transformedData.summary.balance_difference.toLocaleString('en-AE')})`}
               </Badge>
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="text-violet-700 border-violet-300">
             {currentOrganization.name}
           </Badge>
-          
+
           {transformedData && (
             <ExportButtons
               reportType="balance_sheet"
@@ -370,14 +514,16 @@ export default function BalanceSheetPage() {
             summary={transformedData.summary}
             reportType="balance_sheet"
             currency={transformedData.currency}
-            onDrillDown={(group) => console.log(`Drill down on ${group}`)}
+            onDrillDown={group => console.log(`Drill down on ${group}`)}
           />
 
           {/* Financial Ratios Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Current Ratio</div>
+                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  Current Ratio
+                </div>
                 <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                   {transformedData.summary.current_ratio.toFixed(2)}
                 </div>
@@ -389,7 +535,9 @@ export default function BalanceSheetPage() {
 
             <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-green-700 dark:text-green-300">Debt-to-Equity Ratio</div>
+                <div className="text-sm font-medium text-green-700 dark:text-green-300">
+                  Debt-to-Equity Ratio
+                </div>
                 <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                   {transformedData.summary.debt_to_equity_ratio.toFixed(2)}
                 </div>
@@ -401,7 +549,9 @@ export default function BalanceSheetPage() {
 
             <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 border-purple-200 dark:border-purple-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Balance Check</div>
+                <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                  Balance Check
+                </div>
                 <div className="text-2xl font-bold text-purple-900 dark:text-purple-100 flex items-center gap-1">
                   {transformedData.summary.is_balanced ? (
                     <CheckCircle className="h-5 w-5 text-emerald-600" />
@@ -440,7 +590,9 @@ export default function BalanceSheetPage() {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-                <span className="ml-2 text-gray-600 dark:text-gray-400">Loading balance sheet data...</span>
+                <span className="ml-2 text-gray-600 dark:text-gray-400">
+                  Loading balance sheet data...
+                </span>
               </div>
             ) : (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -483,7 +635,10 @@ export default function BalanceSheetPage() {
               filters={[
                 { label: 'As of Date', value: filters.from_date || 'N/A' },
                 { label: 'Consolidated', value: filters.consolidated ? 'Yes' : 'No' },
-                { label: 'Balance Status', value: transformedData?.summary.is_balanced ? 'Balanced' : 'Unbalanced' }
+                {
+                  label: 'Balance Status',
+                  value: transformedData?.summary.is_balanced ? 'Balanced' : 'Unbalanced'
+                }
               ]}
             />
           }
@@ -493,15 +648,24 @@ export default function BalanceSheetPage() {
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="text-center">
                   <div className="text-lg font-semibold">Total Assets</div>
-                  <div className="text-xl">{transformedData.currency} {transformedData.summary.total_assets.toLocaleString('en-AE')}</div>
+                  <div className="text-xl">
+                    {transformedData.currency}{' '}
+                    {transformedData.summary.total_assets.toLocaleString('en-AE')}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-semibold">Total Liabilities</div>
-                  <div className="text-xl">{transformedData.currency} {transformedData.summary.total_liabilities.toLocaleString('en-AE')}</div>
+                  <div className="text-xl">
+                    {transformedData.currency}{' '}
+                    {transformedData.summary.total_liabilities.toLocaleString('en-AE')}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-semibold">Total Equity</div>
-                  <div className="text-xl">{transformedData.currency} {transformedData.summary.total_equity.toLocaleString('en-AE')}</div>
+                  <div className="text-xl">
+                    {transformedData.currency}{' '}
+                    {transformedData.summary.total_equity.toLocaleString('en-AE')}
+                  </div>
                 </div>
               </div>
               <BalanceSheetTable

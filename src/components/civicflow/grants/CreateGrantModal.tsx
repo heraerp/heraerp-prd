@@ -1,107 +1,107 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+  SelectValue
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
-import type { CreateGrantModalProps } from './props';
-import type { 
-  CreateGrantApplicationRequest, 
-  CreateGrantApplicationRequestSchema 
-} from '@/contracts/crm-grants';
-import { exact } from '@/utils/exact';
-import { useCreateGrant } from '@/hooks/use-grants';
+import type { CreateGrantModalProps } from './props'
+import type {
+  CreateGrantApplicationRequest,
+  CreateGrantApplicationRequestSchema
+} from '@/contracts/crm-grants'
+import { exact } from '@/utils/exact'
+import { useCreateGrant } from '@/hooks/use-grants'
 
 export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
   // Validate props at runtime
-  const { isOpen, onClose } = exact<CreateGrantModalProps>()(props);
-  
+  const { isOpen, onClose } = exact<CreateGrantModalProps>()(props)
+
   const [formData, setFormData] = useState<CreateGrantApplicationRequest>({
     applicant: {
       type: 'constituent',
-      id: '',
+      id: ''
     },
     round_id: '',
     summary: '',
     amount_requested: undefined,
     tags: [],
-    start_run: false,
-  });
-  const [tagInput, setTagInput] = useState('');
-  const createGrant = useCreateGrant();
+    start_run: false
+  })
+  const [tagInput, setTagInput] = useState('')
+  const createGrant = useCreateGrant()
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-    if (!formData.applicant.id || !formData.round_id) return;
+    e.preventDefault()
+    if (!formData.applicant.id || !formData.round_id) return
 
     try {
       // Validate form data with Zod before submission
-      const validatedData = CreateGrantApplicationRequestSchema.parse(formData);
-      await createGrant.mutateAsync(validatedData);
-      
+      const validatedData = CreateGrantApplicationRequestSchema.parse(formData)
+      await createGrant.mutateAsync(validatedData)
+
       // Reset form with exact type safety
       const resetFormData = exact<CreateGrantApplicationRequest>()({
         applicant: {
           type: 'constituent',
-          id: '',
+          id: ''
         },
         round_id: '',
         summary: '',
         amount_requested: undefined,
         tags: [],
-        start_run: false,
-      });
-      setFormData(resetFormData);
-      setTagInput('');
-      onClose();
+        start_run: false
+      })
+      setFormData(resetFormData)
+      setTagInput('')
+      onClose()
     } catch (error) {
       // Error is handled by the mutation
     }
-  };
+  }
 
   const handleAddTag = (): void => {
     if (tagInput.trim() && !formData.tags?.includes(tagInput.trim())) {
       setFormData(prev => ({
         ...prev,
         tags: [...(prev.tags || []), tagInput.trim()]
-      }));
-      setTagInput('');
+      }))
+      setTagInput('')
     }
-  };
+  }
 
   const handleRemoveTag = (tagToRemove: string): void => {
     setFormData(prev => ({
       ...prev,
       tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
-    }));
-  };
+    }))
+  }
 
   const handleKeyPress = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddTag();
+      e.preventDefault()
+      handleAddTag()
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -120,10 +120,12 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               <Label className="text-text-200">Applicant Type</Label>
               <Select
                 value={formData.applicant.type}
-                onValueChange={(value) => setFormData(prev => ({
-                  ...prev,
-                  applicant: { ...prev.applicant, type: value as 'constituent' | 'ps_org' }
-                }))}
+                onValueChange={value =>
+                  setFormData(prev => ({
+                    ...prev,
+                    applicant: { ...prev.applicant, type: value as 'constituent' | 'ps_org' }
+                  }))
+                }
               >
                 <SelectTrigger className="bg-bg border-border">
                   <SelectValue placeholder="Select applicant type" />
@@ -145,10 +147,12 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               <Input
                 placeholder="Enter applicant ID..."
                 value={formData.applicant.id}
-                onChange={(e) => setFormData(prev => ({
-                  ...prev,
-                  applicant: { ...prev.applicant, id: e.target.value }
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    applicant: { ...prev.applicant, id: e.target.value }
+                  }))
+                }
                 className="bg-bg border-border"
                 required
               />
@@ -161,7 +165,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
             <Input
               placeholder="Enter grant round ID..."
               value={formData.round_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, round_id: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, round_id: e.target.value }))}
               className="bg-bg border-border"
               required
             />
@@ -173,7 +177,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
             <Textarea
               placeholder="Brief description of the grant application..."
               value={formData.summary}
-              onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, summary: e.target.value }))}
               className="bg-bg border-border min-h-[100px]"
             />
           </div>
@@ -185,10 +189,12 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               type="number"
               placeholder="Enter amount..."
               value={formData.amount_requested || ''}
-              onChange={(e) => setFormData(prev => ({
-                ...prev,
-                amount_requested: e.target.value ? Number(e.target.value) : undefined
-              }))}
+              onChange={e =>
+                setFormData(prev => ({
+                  ...prev,
+                  amount_requested: e.target.value ? Number(e.target.value) : undefined
+                }))
+              }
               className="bg-bg border-border"
             />
           </div>
@@ -201,7 +207,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
                 <Input
                   placeholder="Add a tag..."
                   value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
+                  onChange={e => setTagInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="bg-bg border-border"
                 />
@@ -217,7 +223,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               </div>
               {formData.tags && formData.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
-                  {formData.tags.map((tag) => (
+                  {formData.tags.map(tag => (
                     <Badge
                       key={tag}
                       variant="secondary"
@@ -238,7 +244,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               type="checkbox"
               id="start_run"
               checked={formData.start_run}
-              onChange={(e) => setFormData(prev => ({ ...prev, start_run: e.target.checked }))}
+              onChange={e => setFormData(prev => ({ ...prev, start_run: e.target.checked }))}
               className="rounded border-border"
             />
             <label htmlFor="start_run" className="text-sm text-text-200">
@@ -261,14 +267,12 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               disabled={createGrant.isPending || !formData.applicant.id || !formData.round_id}
               className="bg-accent hover:bg-accent/90 text-accent-fg"
             >
-              {createGrant.isPending && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
+              {createGrant.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Application
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

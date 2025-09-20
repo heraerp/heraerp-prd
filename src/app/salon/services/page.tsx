@@ -20,11 +20,7 @@ import {
 import { ServiceForm, ServiceWithDynamicData } from '@/schemas/service'
 import { Plus, Search, Scissors, Download, Building2, Filter, X } from 'lucide-react'
 import { toast } from 'sonner'
-import { 
-  PageHeader, 
-  PageHeaderSearch, 
-  PageHeaderButton 
-} from '@/components/universal/PageHeader'
+import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -145,21 +141,24 @@ export default function SalonServicesPage() {
       {/* Main content wrapper with charcoal background for depth */}
       <div className="relative" style={{ minHeight: '100vh' }}>
         {/* Subtle gradient overlay for depth */}
-        <div className="absolute inset-0 pointer-events-none"
-             style={{
-               background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
                            radial-gradient(circle at 80% 20%, ${COLORS.bronze}05 0%, transparent 50%),
-                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`,
-             }} />
-        
+                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`
+          }}
+        />
+
         {/* Content container */}
-        <div className="container mx-auto px-6 py-8 relative" 
-             style={{ 
-               backgroundColor: COLORS.charcoal,
-               minHeight: '100vh',
-               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
-             }}>
-          
+        <div
+          className="container mx-auto px-6 py-8 relative"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            minHeight: '100vh',
+            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
+          }}
+        >
           <PageHeader
             title="Services"
             breadcrumbs={[
@@ -169,12 +168,12 @@ export default function SalonServicesPage() {
             ]}
             actions={
               <>
-                <PageHeaderSearch 
+                <PageHeaderSearch
                   value={searchQuery}
                   onChange={setSearchQuery}
                   placeholder="Search services..."
                 />
-                <PageHeaderButton 
+                <PageHeaderButton
                   variant="primary"
                   icon={Plus}
                   onClick={() => {
@@ -184,108 +183,101 @@ export default function SalonServicesPage() {
                 >
                   New Service
                 </PageHeaderButton>
-                <PageHeaderButton 
-                  variant="secondary"
-                  icon={Download}
-                  onClick={handleExport}
-                />
+                <PageHeaderButton variant="secondary" icon={Download} onClick={handleExport} />
               </>
             }
           />
 
           {/* Filters */}
-          <div
-            className="py-4 border-b"
-            style={{ borderColor: `${COLORS.bronze}33` }}
-          >
-        <div className="flex items-center gap-4">
-          {/* Status Tabs */}
-          <Tabs value={statusFilter} onValueChange={v => setStatusFilter(v as any)}>
-            <TabsList className="bg-background/30">
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="archived">Archived</TabsTrigger>
-              <TabsTrigger value="all">All</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="py-4 border-b" style={{ borderColor: `${COLORS.bronze}33` }}>
+            <div className="flex items-center gap-4">
+              {/* Status Tabs */}
+              <Tabs value={statusFilter} onValueChange={v => setStatusFilter(v as any)}>
+                <TabsList className="bg-background/30">
+                  <TabsTrigger value="active">Active</TabsTrigger>
+                  <TabsTrigger value="archived">Archived</TabsTrigger>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                </TabsList>
+              </Tabs>
 
-          {/* Filter Chips */}
-          <div className="flex items-center gap-2 flex-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className={showFilters ? 'text-foreground' : 'text-muted-foreground'}
-            >
-              <Filter className="h-4 w-4 mr-1" />
-              Filters
-            </Button>
+              {/* Filter Chips */}
+              <div className="flex items-center gap-2 flex-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={showFilters ? 'text-foreground' : 'text-muted-foreground'}
+                >
+                  <Filter className="h-4 w-4 mr-1" />
+                  Filters
+                </Button>
 
-            {categoryFilter && (
-              <Badge variant="secondary" className="gap-1 bg-muted/50">
-                {categoryFilter}
-                <X className="h-3 w-3 cursor-pointer" onClick={() => setCategoryFilter('')} />
-              </Badge>
+                {categoryFilter && (
+                  <Badge variant="secondary" className="gap-1 bg-muted/50">
+                    {categoryFilter}
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => setCategoryFilter('')} />
+                  </Badge>
+                )}
+              </div>
+
+              {/* Sort Dropdown */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-48 bg-background/30 border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name:asc">Name (A-Z)</SelectItem>
+                  <SelectItem value="name:desc">Name (Z-A)</SelectItem>
+                  <SelectItem value="updated_at:desc">Updated (Newest)</SelectItem>
+                  <SelectItem value="updated_at:asc">Updated (Oldest)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Expandable Filters */}
+            {showFilters && (
+              <div className="mt-4 pt-4 border-t border-border flex items-center gap-4">
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="w-48 bg-background/30 border-border">
+                    <SelectValue placeholder="All categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All categories</SelectItem>
+                    {categories.map(cat => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
           </div>
 
-          {/* Sort Dropdown */}
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-48 bg-background/30 border-border">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name:asc">Name (A-Z)</SelectItem>
-              <SelectItem value="name:desc">Name (Z-A)</SelectItem>
-              <SelectItem value="updated_at:desc">Updated (Newest)</SelectItem>
-              <SelectItem value="updated_at:asc">Updated (Oldest)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Expandable Filters */}
-        {showFilters && (
-          <div className="mt-4 pt-4 border-t border-border flex items-center gap-4">
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-48 bg-background/30 border-border">
-                <SelectValue placeholder="All categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All categories</SelectItem>
-                {categories.map(cat => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-      </div>
-
           {/* Content */}
           <div className="py-6">
-        <ServiceList
-          services={services}
-          loading={isLoading}
-          selectedIds={selectedIds}
-          onSelectAll={handleSelectAll}
-          onSelectOne={handleSelectOne}
-          onEdit={handleEdit}
-          onDuplicate={handleDuplicate}
-          onArchive={archiveMany}
-          onRestore={restoreMany}
-        />
-      </div>
+            <ServiceList
+              services={services}
+              loading={isLoading}
+              selectedIds={selectedIds}
+              onSelectAll={handleSelectAll}
+              onSelectOne={handleSelectOne}
+              onEdit={handleEdit}
+              onDuplicate={handleDuplicate}
+              onArchive={archiveMany}
+              onRestore={restoreMany}
+            />
+          </div>
 
-      {/* Bulk Actions */}
-      <BulkActionsBar
-        selectedCount={selectedIds.size}
-        onArchive={handleBulkArchive}
-        onRestore={handleBulkRestore}
-        onExport={handleExport}
-        onClear={() => setSelectedIds(new Set())}
-        showRestore={statusFilter === 'archived'}
-      />
+          {/* Bulk Actions */}
+          <BulkActionsBar
+            selectedCount={selectedIds.size}
+            onArchive={handleBulkArchive}
+            onRestore={handleBulkRestore}
+            onExport={handleExport}
+            onClear={() => setSelectedIds(new Set())}
+            showRestore={statusFilter === 'archived'}
+          />
 
           {/* Service Modal */}
           <ServiceModal

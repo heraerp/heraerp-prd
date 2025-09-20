@@ -5,7 +5,7 @@ export function parseCRMQuery(req: NextRequest): CRMQuery {
   const sp = req.nextUrl.searchParams
   const orgId = sp.get('orgId') || sp.get('organization_id') || ''
   const owner = sp.get('owner') || undefined
-  const stage = sp.getAll('stage').length ? sp.getAll('stage') : (sp.get('stage') || undefined)
+  const stage = sp.getAll('stage').length ? sp.getAll('stage') : sp.get('stage') || undefined
   const type = sp.get('type') || undefined
   const status = sp.get('status') || undefined
   const from = sp.get('from') || undefined

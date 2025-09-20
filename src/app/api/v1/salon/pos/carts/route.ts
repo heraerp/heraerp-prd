@@ -9,16 +9,21 @@ export async function POST(request: NextRequest) {
     const headersList = await headers()
     const idemKey = headersList.get('Idempotency-Key') ?? undefined
     const body = await request.json()
-    const { appointment_id, organization_id, idempotency_key, customer_id, stylist_id, chair_slug, dynamic } = body
-    
+    const {
+      appointment_id,
+      organization_id,
+      idempotency_key,
+      customer_id,
+      stylist_id,
+      chair_slug,
+      dynamic
+    } = body
+
     // Use header idempotency key if not in body
     const finalIdemKey = idemKey || idempotency_key
-    
+
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     // Feature flag gate
@@ -32,36 +37,38 @@ export async function POST(request: NextRequest) {
         header_smart_code: 'HERA.SALON.POS.CART.ACTIVE.V1',
         // Relationships are optional; include when available so Step 1 links remain intact
         relationships: {
-          ...(appointment_id ? { ORIGINATES_FROM: { type: 'appointment', id: appointment_id } } : {}),
+          ...(appointment_id
+            ? { ORIGINATES_FROM: { type: 'appointment', id: appointment_id } }
+            : {}),
           ...(customer_id ? { BILLS_TO: { type: 'customer', id: customer_id } } : {}),
-          ...(stylist_id ? { PERFORMED_BY: { type: 'staff', id: stylist_id } } : {}),
+          ...(stylist_id ? { PERFORMED_BY: { type: 'staff', id: stylist_id } } : {})
         },
         dynamic: {
           ...(dynamic ?? {}),
-          chair_slug: chair_slug ?? (dynamic?.chair_slug ?? null),
+          chair_slug: chair_slug ?? dynamic?.chair_slug ?? null,
           source: 'POS_UI',
-          appointment_id,
-        },
+          appointment_id
+        }
       }
 
       try {
-        const out = await runPlaybook('HERA.UNIV.TXN.HEADER.CREATE.V1', payload, { 
-          idempotencyKey: finalIdemKey 
+        const out = await runPlaybook('HERA.UNIV.TXN.HEADER.CREATE.V1', payload, {
+          idempotencyKey: finalIdemKey
         })
-        
+
         console.log('Playbook response:', JSON.stringify(out, null, 2))
-        
+
         // Normalize response to legacy shape expected by UI
         // The playbook returns { success, data: { transaction: {...} } }
         const transaction = out?.data?.transaction
         const cartId = transaction?.id
         const cartMetadata = transaction?.metadata ?? {}
-        
+
         if (!cartId) {
           console.error('Full playbook output:', out)
           throw new Error('No cart ID returned from playbook')
         }
-        
+
         return NextResponse.json({
           cart: {
             id: cartId,
@@ -69,22 +76,22 @@ export async function POST(request: NextRequest) {
             status: 'active',
             items: [],
             totals: { subtotal: 0, discount: 0, total: 0 },
-            metadata: cartMetadata,
+            metadata: cartMetadata
           },
-          _mode: 'playbook',
+          _mode: 'playbook'
         })
       } catch (e: any) {
         console.error('Playbook cart creation failed:', e)
         return NextResponse.json(
           { error: e?.message ?? 'Cart create failed (playbook)' },
-          { status: 422 },
+          { status: 422 }
         )
       }
     }
 
     // ---- Legacy path (default) ----
     // [Keep all existing code below unchanged]
-    
+
     // For appointment-based cart creation, keep existing logic
     if (!appointment_id) {
       return NextResponse.json(
@@ -103,7 +110,7 @@ export async function POST(request: NextRequest) {
         transaction_type: 'pos_cart',
         metadata: { idempotency_key }
       })
-      
+
       if (existingCartResult.data?.length) {
         // Return existing cart
         const existingCart = existingCartResult.data[0]
@@ -121,15 +128,12 @@ export async function POST(request: NextRequest) {
     })
 
     if (!appointmentResult.success || !appointmentResult.data?.length) {
-      return NextResponse.json(
-        { error: 'Appointment not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })
     }
 
     const appointment = appointmentResult.data[0]
     console.log('Appointment data:', appointment)
-    
+
     // Check appointment status - only allow SCHEDULED or IN_PROGRESS
     const appointmentStatus = appointment.metadata?.status || 'SCHEDULED'
     if (!['SCHEDULED', 'IN_PROGRESS'].includes(appointmentStatus)) {
@@ -141,26 +145,29 @@ export async function POST(request: NextRequest) {
 
     // Create POS cart transaction
     const cartCode = `CART-${Date.now()}`
-    const cartResult = await universalApi.createTransaction({
-      transaction_type: 'sale',
-      transaction_code: cartCode,
-      smart_code: 'HERA.SALON.POS.TXN.CART.V1',
-      organization_id,
-      source_entity_id: appointment.source_entity_id, // Customer
-      target_entity_id: appointment.target_entity_id, // Salon/Branch
-      total_amount: 0, // Will be calculated from lines
-      transaction_date: new Date().toISOString(),
-      metadata: {
-        appointment_id,
-        customer_id: appointment.source_entity_id,
-        stylist_id: appointment.metadata?.stylist_id,
-        chair_id: appointment.metadata?.chair_id,
-        state: 'ACTIVE',
-        idempotency_key,
-        ai_confidence: 0.95,
-        ai_insights: 'Cart created from appointment booking'
-      }
-    }, { skipValidation: true })
+    const cartResult = await universalApi.createTransaction(
+      {
+        transaction_type: 'sale',
+        transaction_code: cartCode,
+        smart_code: 'HERA.SALON.POS.TXN.CART.V1',
+        organization_id,
+        source_entity_id: appointment.source_entity_id, // Customer
+        target_entity_id: appointment.target_entity_id, // Salon/Branch
+        total_amount: 0, // Will be calculated from lines
+        transaction_date: new Date().toISOString(),
+        metadata: {
+          appointment_id,
+          customer_id: appointment.source_entity_id,
+          stylist_id: appointment.metadata?.stylist_id,
+          chair_id: appointment.metadata?.chair_id,
+          state: 'ACTIVE',
+          idempotency_key,
+          ai_confidence: 0.95,
+          ai_insights: 'Cart created from appointment booking'
+        }
+      },
+      { skipValidation: true }
+    )
 
     if (!cartResult.success || !cartResult.data) {
       console.error('Cart creation failed:', cartResult.error)
@@ -222,10 +229,12 @@ export async function POST(request: NextRequest) {
           appointment_line_id: appointmentLine.id,
           duration_min: appointmentLine.metadata?.duration || 30,
           source: 'APPOINTMENT',
-          staff_split: appointmentLine.metadata?.staff_split || [{ 
-            staff_id: appointment.metadata?.stylist_id, 
-            pct: 100 
-          }],
+          staff_split: appointmentLine.metadata?.staff_split || [
+            {
+              staff_id: appointment.metadata?.stylist_id,
+              pct: 100
+            }
+          ],
           service_name: appointmentLine.metadata?.service_name
         }
       })
@@ -297,20 +306,16 @@ export async function POST(request: NextRequest) {
       ...response,
       _mode: 'legacy'
     })
-
   } catch (error) {
     console.error('Error creating POS cart:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Helper function to build cart response
 async function buildCartResponse(cartId: string, organizationId: string) {
   universalApi.setOrganizationId(organizationId)
-  
+
   const cartResult = await universalApi.read('universal_transactions', {
     id: cartId,
     organization_id: organizationId
@@ -321,7 +326,7 @@ async function buildCartResponse(cartId: string, organizationId: string) {
   }
 
   const cart = cartResult.data[0]
-  
+
   // Fetch cart lines
   const linesResult = await universalApi.read('universal_transaction_lines', {
     transaction_id: cartId,
@@ -332,9 +337,9 @@ async function buildCartResponse(cartId: string, organizationId: string) {
 
   // Map lines with service details
   const mappedLines = await Promise.all(
-    lines.map(async (line) => {
+    lines.map(async line => {
       let serviceName = line.metadata?.service_name || 'Service'
-      
+
       if (line.line_entity_id) {
         const serviceResult = await universalApi.read('core_entities', {
           id: line.line_entity_id,

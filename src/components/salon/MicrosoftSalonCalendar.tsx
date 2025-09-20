@@ -292,7 +292,9 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                       <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {stylist.name}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        {stylist.title}
+                      </p>
                     </div>
                     <Badge
                       variant="secondary"
@@ -330,7 +332,9 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                         <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                           {apt.title}
                         </p>
-                        <p className="text-xs text-muted-foreground dark:text-muted-foreground">{apt.client}</p>
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                          {apt.client}
+                        </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Clock className="w-3 h-3 text-muted-foreground" />
                           <span className="text-xs text-muted-foreground dark:text-gray-300">
@@ -383,7 +387,11 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
               )}
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
                 <Button
@@ -392,7 +400,11 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                 >
                   Today
                 </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <ChevronRight className="w-5 h-5" />
                 </Button>
               </div>
@@ -418,13 +430,25 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Filter className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Settings className="w-5 h-5" />
                 </Button>
               </div>

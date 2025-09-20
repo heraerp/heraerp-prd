@@ -199,7 +199,11 @@ export function HeraDashboardLayout({
   className?: string
 }) {
   return (
-    <HeraLayout variant="full-width" padding="lg" className={cn('min-h-screen bg-gray-900', className)}>
+    <HeraLayout
+      variant="full-width"
+      padding="lg"
+      className={cn('min-h-screen bg-gray-900', className)}
+    >
       <div className="dashboard-grid">{children}</div>
     </HeraLayout>
   )

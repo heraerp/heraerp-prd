@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { UniversalTransactionFlow } from '@/lib/dna/components/transaction/UniversalTransactionFlow'
-import { 
+import {
   salonBookingSteps,
   restaurantOrderSteps,
   healthcareAppointmentSteps,
@@ -13,14 +13,20 @@ import {
 import { ServiceSelectionStep } from '@/lib/dna/components/transaction/steps/ServiceSelectionStep'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { 
-  Scissors, 
-  UtensilsCrossed, 
-  Heart, 
+import {
+  Scissors,
+  UtensilsCrossed,
+  Heart,
   ShoppingCart,
   Globe,
   Code,
@@ -36,12 +42,8 @@ const MockStepComponent: React.FC<any> = ({ data, onChange, errors }) => {
       <p className="text-muted-foreground">
         This is a placeholder step. In production, this would be a real component.
       </p>
-      <Button onClick={() => onChange({ demoField: 'Demo Value' })}>
-        Set Demo Value
-      </Button>
-      {data.demoField && (
-        <Badge variant="secondary">Value set: {data.demoField}</Badge>
-      )}
+      <Button onClick={() => onChange({ demoField: 'Demo Value' })}>Set Demo Value</Button>
+      {data.demoField && <Badge variant="secondary">Value set: {data.demoField}</Badge>}
     </div>
   )
 }
@@ -68,14 +70,18 @@ const demoRetailSteps = retailPurchaseSteps.map(step => ({
 }))
 
 export default function TransactionFlowDemoPage() {
-  const [selectedIndustry, setSelectedIndustry] = useState<'salon' | 'restaurant' | 'healthcare' | 'retail'>('salon')
+  const [selectedIndustry, setSelectedIndustry] = useState<
+    'salon' | 'restaurant' | 'healthcare' | 'retail'
+  >('salon')
   const [selectedLocale, setSelectedLocale] = useState('en')
-  const [selectedTheme, setSelectedTheme] = useState<'default' | 'minimal' | 'enterprise'>('default')
+  const [selectedTheme, setSelectedTheme] = useState<'default' | 'minimal' | 'enterprise'>(
+    'default'
+  )
   const [completedTransaction, setCompletedTransaction] = useState<any>(null)
   const [showCode, setShowCode] = useState(false)
-  
+
   const { toast } = useToast()
-  
+
   const industryConfig = {
     salon: {
       steps: demoSalonSteps,
@@ -102,35 +108,35 @@ export default function TransactionFlowDemoPage() {
       smartCode: 'HERA.RETAIL.TXN.FLOW.PURCHASE.V1'
     }
   }
-  
+
   const currentConfig = industryConfig[selectedIndustry]
   const Icon = currentConfig.icon
-  
+
   const handleComplete = async (data: any) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     setCompletedTransaction(data)
-    
+
     toast({
       title: 'Transaction Completed!',
       description: `${selectedIndustry} transaction processed successfully`,
       variant: 'default'
     })
   }
-  
+
   const handleSaveDraft = async (data: any) => {
     console.log('Saving draft:', data)
     // In real app, this would save to API
     return Promise.resolve()
   }
-  
+
   // Merge base translations with industry translations
   const mergedTranslations = mergeTranslations(
     UniversalTransactionFlow.defaultProps?.translations || {},
     industryTranslations
   )
-  
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       {/* Header */}
@@ -145,11 +151,11 @@ export default function TransactionFlowDemoPage() {
           </h1>
         </motion.div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Enterprise-grade multi-step transaction wizard with full localization support.
-          Works across all industries with smart code integration.
+          Enterprise-grade multi-step transaction wizard with full localization support. Works
+          across all industries with smart code integration.
         </p>
       </div>
-      
+
       {/* Configuration Panel */}
       <Card>
         <CardHeader>
@@ -163,7 +169,10 @@ export default function TransactionFlowDemoPage() {
             {/* Industry Selector */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Industry</label>
-              <Select value={selectedIndustry} onValueChange={(value: any) => setSelectedIndustry(value)}>
+              <Select
+                value={selectedIndustry}
+                onValueChange={(value: any) => setSelectedIndustry(value)}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -195,7 +204,7 @@ export default function TransactionFlowDemoPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {/* Locale Selector */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Language</label>
@@ -231,7 +240,7 @@ export default function TransactionFlowDemoPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {/* Theme Selector */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Theme</label>
@@ -246,7 +255,7 @@ export default function TransactionFlowDemoPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             {/* Code Toggle */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Developer Tools</label>
@@ -260,7 +269,7 @@ export default function TransactionFlowDemoPage() {
               </Button>
             </div>
           </div>
-          
+
           {/* Smart Code Display */}
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="font-mono">
@@ -272,7 +281,7 @@ export default function TransactionFlowDemoPage() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Transaction Flow */}
@@ -287,7 +296,7 @@ export default function TransactionFlowDemoPage() {
               </CardTitle>
             </CardHeader>
           </Card>
-          
+
           <UniversalTransactionFlow
             transactionType={`${selectedIndustry}-demo`}
             smartCode={currentConfig.smartCode}
@@ -308,7 +317,7 @@ export default function TransactionFlowDemoPage() {
             }}
           />
         </div>
-        
+
         {/* Code/Result Panel */}
         <div>
           <Tabs defaultValue="result" className="h-full">
@@ -316,7 +325,7 @@ export default function TransactionFlowDemoPage() {
               <TabsTrigger value="result">Result</TabsTrigger>
               <TabsTrigger value="code">Implementation</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="result" className="mt-4">
               <Card>
                 <CardHeader>
@@ -344,7 +353,7 @@ export default function TransactionFlowDemoPage() {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="code" className="mt-4">
               <Card>
                 <CardHeader>
@@ -355,7 +364,7 @@ export default function TransactionFlowDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { UniversalTransactionFlow } from '@/lib/dna/components/transaction'
+                    {`import { UniversalTransactionFlow } from '@/lib/dna/components/transaction'
 import { salonBookingSteps } from './transaction-flows.config'
 
 <UniversalTransactionFlow
@@ -381,7 +390,7 @@ import { salonBookingSteps } from './transaction-flows.config'
           </Tabs>
         </div>
       </div>
-      
+
       {/* Features */}
       <Card>
         <CardHeader>
@@ -398,7 +407,7 @@ import { salonBookingSteps } from './transaction-flows.config'
                 Built-in localization for global deployment with RTL support
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <Zap className="w-4 h-4" />
@@ -408,7 +417,7 @@ import { salonBookingSteps } from './transaction-flows.config'
                 Every step and transaction tagged with intelligent business context
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <Shield className="w-4 h-4" />

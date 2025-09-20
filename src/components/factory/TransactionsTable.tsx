@@ -113,7 +113,9 @@ export function TransactionsTable({
         className="bg-background dark:bg-muted rounded-2xl shadow-lg overflow-hidden"
       >
         <header className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border">
-          <h2 className="text-lg font-semibold text-gray-100 dark:text-foreground">Pipeline Runs</h2>
+          <h2 className="text-lg font-semibold text-gray-100 dark:text-foreground">
+            Pipeline Runs
+          </h2>
           <span className="text-sm text-muted-foreground dark:text-muted-foreground">
             {transactions.length} transactions
           </span>

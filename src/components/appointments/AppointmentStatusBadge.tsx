@@ -19,20 +19,20 @@ export function AppointmentStatusBadge({
   status,
   size = 'md',
   showDot = true,
-  className,
+  className
 }: AppointmentStatusBadgeProps) {
   const colors = STATUS_COLORS[status]
-  
+
   const sizeClasses = {
     sm: 'text-xs px-2 py-0.5',
     md: 'text-sm px-2.5 py-1',
-    lg: 'text-base px-3 py-1.5',
+    lg: 'text-base px-3 py-1.5'
   }
 
   const dotSizeClasses = {
     sm: 'w-1.5 h-1.5',
     md: 'w-2 h-2',
-    lg: 'w-2.5 h-2.5',
+    lg: 'w-2.5 h-2.5'
   }
 
   const statusLabels: Record<Appointment['status'], string> = {
@@ -42,7 +42,7 @@ export function AppointmentStatusBadge({
     service_complete: 'Service Complete',
     paid: 'Paid',
     closed: 'Closed',
-    cancelled: 'Cancelled',
+    cancelled: 'Cancelled'
   }
 
   return (
@@ -61,13 +61,19 @@ export function AppointmentStatusBadge({
           className={cn(
             'rounded-full',
             dotSizeClasses[size],
-            status === 'cancelled' || status === 'draft' ? 'bg-gray-400' :
-            status === 'confirmed' ? 'bg-primary' :
-            status === 'in_progress' ? 'bg-purple-500' :
-            status === 'service_complete' ? 'bg-secondary' :
-            status === 'paid' ? 'bg-green-500' :
-            status === 'closed' ? 'bg-blue-500' :
-            'bg-gray-400'
+            status === 'cancelled' || status === 'draft'
+              ? 'bg-gray-400'
+              : status === 'confirmed'
+                ? 'bg-primary'
+                : status === 'in_progress'
+                  ? 'bg-purple-500'
+                  : status === 'service_complete'
+                    ? 'bg-secondary'
+                    : status === 'paid'
+                      ? 'bg-green-500'
+                      : status === 'closed'
+                        ? 'bg-blue-500'
+                        : 'bg-gray-400'
           )}
         />
       )}

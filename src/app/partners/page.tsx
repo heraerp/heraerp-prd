@@ -277,7 +277,9 @@ function OldPartnersPage() {
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="font-semibold text-muted-foreground mb-2">Implementation Speed</h4>
+                    <h4 className="font-semibold text-muted-foreground mb-2">
+                      Implementation Speed
+                    </h4>
                     <p className="text-muted-foreground">
                       12-24 months. Massive upfront investment. Risk of failure.
                     </p>

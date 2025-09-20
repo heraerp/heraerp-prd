@@ -172,10 +172,18 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
               <table className="w-full text-sm">
                 <thead className="bg-muted border-b">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Account</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Description</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Debit</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Credit</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Account
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Description
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                      Debit
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                      Credit
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

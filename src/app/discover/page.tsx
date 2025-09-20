@@ -278,7 +278,9 @@ export default function DiscoverPage() {
                 className="relative overflow-hidden rounded-xl p-6 text-center group transition-all duration-700 hover:-translate-y-2 bg-background/60 dark:bg-muted/60 backdrop-blur-sm border border-border/60 dark:border-border/60 hover:bg-background/80 dark:hover:bg-muted/80 hover:shadow-lg"
               >
                 <stat.icon className="w-8 h-8 mx-auto mb-2 text-primary dark:text-blue-400" />
-                <p className="text-2xl font-bold text-foreground dark:text-foreground">{stat.value}</p>
+                <p className="text-2xl font-bold text-foreground dark:text-foreground">
+                  {stat.value}
+                </p>
                 <p className="text-sm text-slate-700 dark:text-slate-300">{stat.label}</p>
               </div>
             ))}
@@ -331,13 +333,17 @@ export default function DiscoverPage() {
                       <p className="text-2xl font-bold text-primary dark:text-blue-400">
                         {industry.metrics.setupTime}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Setup Time</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        Setup Time
+                      </p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                         {industry.metrics.costSavings}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Cost Savings</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        Cost Savings
+                      </p>
                     </div>
                   </div>
 

@@ -5,12 +5,35 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Search, Filter, Download, Eye, DollarSign, Clock, FileText, Brain, Target, TrendingUp } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
+  DollarSign,
+  Clock,
+  FileText,
+  Brain,
+  Target,
+  TrendingUp
+} from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-
 
 interface Tender {
   id: string
@@ -112,42 +135,53 @@ const mockTenders: Tender[] = [
   }
 ]
 
-export default function TenderListTable({ 
-  tenders = mockTenders, 
-  onFilter, 
+export default function TenderListTable({
+  tenders = mockTenders,
+  onFilter,
   onSearch
 }: TenderListTableProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [sortBy, setSortBy] = useState('closing_date')
 
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case 'active': return 'default'
-    case 'watchlist': return 'secondary'
-    case 'submitted': return 'outline'
-    case 'won': return 'default' // with green color
-    case 'lost': return 'destructive'
-    default: return 'secondary'
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'default'
+      case 'watchlist':
+        return 'secondary'
+      case 'submitted':
+        return 'outline'
+      case 'won':
+        return 'default' // with green color
+      case 'lost':
+        return 'destructive'
+      default:
+        return 'secondary'
+    }
   }
-}
 
-const getStrategyIcon = (strategy?: string) => {
-  switch (strategy) {
-    case 'aggressive': return <Target className="h-4 w-4 text-red-400" />
-    case 'moderate': return <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
-    case 'conservative': return <TrendingUp className="h-4 w-4 text-green-400" />
-    default: return null
+  const getStrategyIcon = (strategy?: string) => {
+    switch (strategy) {
+      case 'aggressive':
+        return <Target className="h-4 w-4 text-red-400" />
+      case 'moderate':
+        return <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
+      case 'conservative':
+        return <TrendingUp className="h-4 w-4 text-green-400" />
+      default:
+        return null
+    }
   }
-}
 
-// Filter tenders based on search and status
+  // Filter tenders based on search and status
   const filteredTenders = tenders.filter(tender => {
-    const matchesSearch = searchQuery === '' ||
+    const matchesSearch =
+      searchQuery === '' ||
       tender.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tender.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tender.department.toLowerCase().includes(searchQuery.toLowerCase())
-    
+
     const matchesStatus = statusFilter === 'all' || tender.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -168,7 +202,7 @@ const getStrategyIcon = (strategy?: string) => {
             className="pl-10 bg-[var(--color-body)]/50 border-[var(--color-border)] text-[var(--color-text-primary)] placeholder-gray-400"
           />
         </div>
-        
+
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-full md:w-[200px] bg-[var(--color-body)]/50 border-[var(--color-border)] text-[var(--color-text-primary)]">
             <SelectValue placeholder="Filter by status" />
@@ -182,7 +216,7 @@ const getStrategyIcon = (strategy?: string) => {
             <SelectItem value="lost">Lost</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-full md:w-[200px] bg-[var(--color-body)]/50 border-[var(--color-border)] text-[var(--color-text-primary)]">
             <SelectValue placeholder="Sort by" />
@@ -194,7 +228,7 @@ const getStrategyIcon = (strategy?: string) => {
             <SelectItem value="ai_confidence">AI Confidence</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <Button variant="outline" size="icon">
           <Download className="h-4 w-4" />
         </Button>
@@ -207,12 +241,18 @@ const getStrategyIcon = (strategy?: string) => {
             <TableHeader>
               <TableRow className="border-[var(--color-border)]/50">
                 <TableHead className="text-[var(--color-text-secondary)]">Tender Code</TableHead>
-                <TableHead className="text-[var(--color-text-secondary)]">Title & Department</TableHead>
+                <TableHead className="text-[var(--color-text-secondary)]">
+                  Title & Department
+                </TableHead>
                 <TableHead className="text-[var(--color-text-secondary)]">Status</TableHead>
                 <TableHead className="text-[var(--color-text-secondary)]">Closing</TableHead>
-                <TableHead className="text-[var(--color-text-secondary)] text-right">Value</TableHead>
+                <TableHead className="text-[var(--color-text-secondary)] text-right">
+                  Value
+                </TableHead>
                 <TableHead className="text-[var(--color-text-secondary)] text-right">EMD</TableHead>
-                <TableHead className="text-[var(--color-text-secondary)] text-center">Lots</TableHead>
+                <TableHead className="text-[var(--color-text-secondary)] text-center">
+                  Lots
+                </TableHead>
                 <TableHead className="text-[var(--color-text-secondary)] text-center">AI</TableHead>
                 <TableHead className="text-[var(--color-text-secondary)]">Actions</TableHead>
               </TableRow>
@@ -223,19 +263,25 @@ const getStrategyIcon = (strategy?: string) => {
                   key={tender.id}
                   className="border-[var(--color-border)]/50 hover:bg-[var(--color-sidebar)]/30 transition-colors"
                 >
-                  <TableCell className="font-mono text-sm text-[var(--color-text-primary)]">{tender.code}</TableCell>
+                  <TableCell className="font-mono text-sm text-[var(--color-text-primary)]">
+                    {tender.code}
+                  </TableCell>
                   <TableCell>
                     <div>
                       <p className="font-medium text-[var(--color-text-primary)]">{tender.title}</p>
-                      <p className="text-sm text-[var(--color-text-secondary)]">{tender.department}</p>
+                      <p className="text-sm text-[var(--color-text-secondary)]">
+                        {tender.department}
+                      </p>
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant={getStatusBadgeVariant(tender.status)}
                       className={cn(
-                        tender.status === 'won' && 'bg-green-600/20 text-green-400 border-green-600',
-                        tender.status === 'active' && 'bg-[var(--color-accent-indigo)]/20 text-[var(--color-text-secondary)] border-[var(--color-accent-indigo)]'
+                        tender.status === 'won' &&
+                          'bg-green-600/20 text-green-400 border-green-600',
+                        tender.status === 'active' &&
+                          'bg-[var(--color-accent-indigo)]/20 text-[var(--color-text-secondary)] border-[var(--color-accent-indigo)]'
                       )}
                     >
                       {tender.status}
@@ -245,18 +291,26 @@ const getStrategyIcon = (strategy?: string) => {
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                       <div>
-                        <p className="text-sm text-[var(--color-text-primary)]">{tender.closingDate}</p>
-                        <p className={cn(
-                          'text-xs',
-                          tender.daysLeft > 0 ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'
-                        )}>
+                        <p className="text-sm text-[var(--color-text-primary)]">
+                          {tender.closingDate}
+                        </p>
+                        <p
+                          className={cn(
+                            'text-xs',
+                            tender.daysLeft > 0
+                              ? 'text-[var(--color-text-secondary)]'
+                              : 'text-[var(--color-text-secondary)]'
+                          )}
+                        >
                           {tender.daysLeft > 0 ? `${tender.daysLeft} days left` : 'Closed'}
                         </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <p className="font-medium text-[var(--color-text-primary)]">{tender.estimatedValue}</p>
+                    <p className="font-medium text-[var(--color-text-primary)]">
+                      {tender.estimatedValue}
+                    </p>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
@@ -265,26 +319,38 @@ const getStrategyIcon = (strategy?: string) => {
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <span className="text-[var(--color-text-primary)] font-medium">{tender.lots}</span>
+                    <span className="text-[var(--color-text-primary)] font-medium">
+                      {tender.lots}
+                    </span>
                   </TableCell>
                   <TableCell className="text-center">
                     <div className="flex flex-col items-center gap-1">
                       {getStrategyIcon(tender.bidStrategy)}
                       {tender.aiConfidence && (
-                        <span className="text-xs text-[var(--color-text-secondary)]">{tender.aiConfidence}%</span>
+                        <span className="text-xs text-[var(--color-text-secondary)]">
+                          {tender.aiConfidence}%
+                        </span>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Link href={`/furniture/tender/${tender.code}`}>
-                        <Button size="sm" variant="outline" className="gap-1 hover:bg-[var(--color-hover)]">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1 hover:bg-[var(--color-hover)]"
+                        >
                           <Eye className="h-3 w-3" />
                           View
                         </Button>
                       </Link>
                       {tender.status === 'active' && (
-                        <Button size="sm" variant="outline" className="gap-1 hover:bg-[var(--color-hover)]">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1 hover:bg-[var(--color-hover)]"
+                        >
                           <FileText className="h-3 w-3" />
                           Bid
                         </Button>

@@ -62,7 +62,10 @@ export default function SalonDarkLayout({ children }: SalonDarkLayoutProps) {
 
       {/* Mobile Overlay */}
       {sidebarOpen && isMobile && (
-        <div className="fixed inset-0 bg-background/50 z-30" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 bg-background/50 z-30"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
     </div>
   )

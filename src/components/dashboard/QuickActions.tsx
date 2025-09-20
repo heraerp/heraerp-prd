@@ -3,13 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { 
-  Calendar,
-  CreditCard,
-  MessageSquare,
-  Receipt,
-  Plus
-} from 'lucide-react'
+import { Calendar, CreditCard, MessageSquare, Receipt, Plus } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -60,12 +54,12 @@ export function QuickActions({ organizationId }: QuickActionsProps) {
           Quick Actions
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent>
         <div className="grid grid-cols-1 gap-3">
           {actions.map((action, index) => {
             const Icon = action.icon
-            
+
             return (
               <Link
                 key={index}
@@ -77,19 +71,12 @@ export function QuickActions({ organizationId }: QuickActionsProps) {
                   className="w-full justify-start h-auto py-3 px-4 hover:shadow-md transition-all group-hover:-translate-y-0.5"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "p-2 rounded-lg bg-gradient-to-br",
-                      action.color
-                    )}>
+                    <div className={cn('p-2 rounded-lg bg-gradient-to-br', action.color)}>
                       <Icon className="h-4 w-4 text-white" />
                     </div>
                     <div className="text-left">
-                      <p className="font-medium text-sm">
-                        {action.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {action.description}
-                      </p>
+                      <p className="font-medium text-sm">{action.title}</p>
+                      <p className="text-xs text-muted-foreground">{action.description}</p>
                     </div>
                   </div>
                 </Button>

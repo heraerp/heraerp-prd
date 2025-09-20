@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
+import {
   EntityQuickView,
   EntityQuickViewHeader,
   EntityQuickViewBody,
@@ -10,10 +10,10 @@ import {
 } from '@/lib/dna/components/entity/EntityQuickView'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils/format'
-import { 
-  Package, 
-  Users, 
-  Building2, 
+import {
+  Package,
+  Users,
+  Building2,
   FileText,
   ShoppingCart,
   Eye,
@@ -46,13 +46,38 @@ const DEMO_ENTITIES = [
       payment_terms: 'NET30'
     },
     recent_transactions: [
-      { id: 'txn-1', transaction_type: 'sale', total_amount: 15000, transaction_date: new Date().toISOString() },
-      { id: 'txn-2', transaction_type: 'payment', total_amount: 15000, transaction_date: new Date().toISOString() },
-      { id: 'txn-3', transaction_type: 'sale', total_amount: 8500, transaction_date: new Date().toISOString() }
+      {
+        id: 'txn-1',
+        transaction_type: 'sale',
+        total_amount: 15000,
+        transaction_date: new Date().toISOString()
+      },
+      {
+        id: 'txn-2',
+        transaction_type: 'payment',
+        total_amount: 15000,
+        transaction_date: new Date().toISOString()
+      },
+      {
+        id: 'txn-3',
+        transaction_type: 'sale',
+        total_amount: 8500,
+        transaction_date: new Date().toISOString()
+      }
     ],
     related_entities: [
-      { id: 'proj-1', entity_name: 'Website Redesign', entity_type: 'project', relationship_type: 'customer_of' },
-      { id: 'inv-1', entity_name: 'INV-2025-001', entity_type: 'invoice', relationship_type: 'has_invoice' }
+      {
+        id: 'proj-1',
+        entity_name: 'Website Redesign',
+        entity_type: 'project',
+        relationship_type: 'customer_of'
+      },
+      {
+        id: 'inv-1',
+        entity_name: 'INV-2025-001',
+        entity_type: 'invoice',
+        relationship_type: 'has_invoice'
+      }
     ]
   },
   {
@@ -81,7 +106,7 @@ const DEMO_ENTITIES = [
     dynamic_fields: {
       sku: 'CHR-PREM-001',
       price: 299.99,
-      cost: 150.00,
+      cost: 150.0,
       stock_quantity: 45
     }
   },
@@ -113,7 +138,7 @@ export default function EntityQuickViewDemo() {
   const handleAction = (action: string, entity: any) => {
     toast({
       title: `${action === 'view' ? 'Viewing' : 'Editing'} ${entity.entity_name}`,
-      description: `Entity ID: ${entity.id}`,
+      description: `Entity ID: ${entity.id}`
     })
     console.log(`Action: ${action}`, entity)
   }
@@ -126,14 +151,15 @@ export default function EntityQuickViewDemo() {
           EntityQuickView Component Demo
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Hover over or click entities to see quick preview information. Long-press on mobile devices.
+          Hover over or click entities to see quick preview information. Long-press on mobile
+          devices.
         </p>
       </div>
 
       {/* Configuration Panel */}
       <div className="mb-8 p-6 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800">
         <h2 className="text-lg font-semibold mb-4">Configuration</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">Delay (ms)</label>
@@ -143,17 +169,17 @@ export default function EntityQuickViewDemo() {
               max="2000"
               step="100"
               value={customDelay}
-              onChange={(e) => setCustomDelay(Number(e.target.value))}
+              onChange={e => setCustomDelay(Number(e.target.value))}
               className="w-full"
             />
             <div className="text-xs text-gray-500 mt-1">{customDelay}ms</div>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium mb-2">Position</label>
             <select
               value={position}
-              onChange={(e) => setPosition(e.target.value as any)}
+              onChange={e => setPosition(e.target.value as any)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
             >
               <option value="auto">Auto</option>
@@ -163,13 +189,13 @@ export default function EntityQuickViewDemo() {
               <option value="right">Right</option>
             </select>
           </div>
-          
+
           <div className="space-y-2">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={showTransactions}
-                onChange={(e) => setShowTransactions(e.target.checked)}
+                onChange={e => setShowTransactions(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Show Transactions</span>
@@ -178,19 +204,19 @@ export default function EntityQuickViewDemo() {
               <input
                 type="checkbox"
                 checked={showRelated}
-                onChange={(e) => setShowRelated(e.target.checked)}
+                onChange={e => setShowRelated(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Show Related</span>
             </label>
           </div>
-          
+
           <div>
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={showActions}
-                onChange={(e) => setShowActions(e.target.checked)}
+                onChange={e => setShowActions(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Show Actions</span>
@@ -204,8 +230,8 @@ export default function EntityQuickViewDemo() {
         {/* Basic Examples */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold mb-3">Basic Entity Previews</h3>
-          
-          {DEMO_ENTITIES.map((entity) => (
+
+          {DEMO_ENTITIES.map(entity => (
             <EntityQuickView
               key={entity.id}
               entity={entity}
@@ -220,11 +246,19 @@ export default function EntityQuickViewDemo() {
             >
               <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors cursor-pointer">
                 <div className="flex items-start gap-3">
-                  {entity.entity_type === 'customer' && <Users className="w-5 h-5 text-blue-500 mt-0.5" />}
-                  {entity.entity_type === 'vendor' && <Building2 className="w-5 h-5 text-purple-500 mt-0.5" />}
-                  {entity.entity_type === 'product' && <Package className="w-5 h-5 text-green-500 mt-0.5" />}
-                  {entity.entity_type === 'gl_account' && <FileText className="w-5 h-5 text-orange-500 mt-0.5" />}
-                  
+                  {entity.entity_type === 'customer' && (
+                    <Users className="w-5 h-5 text-blue-500 mt-0.5" />
+                  )}
+                  {entity.entity_type === 'vendor' && (
+                    <Building2 className="w-5 h-5 text-purple-500 mt-0.5" />
+                  )}
+                  {entity.entity_type === 'product' && (
+                    <Package className="w-5 h-5 text-green-500 mt-0.5" />
+                  )}
+                  {entity.entity_type === 'gl_account' && (
+                    <FileText className="w-5 h-5 text-orange-500 mt-0.5" />
+                  )}
+
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900 dark:text-gray-100">
                       {entity.entity_name}
@@ -242,12 +276,12 @@ export default function EntityQuickViewDemo() {
         {/* Custom Content Example */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold mb-3">Custom Content Renderer</h3>
-          
+
           <EntityQuickView
             entity={DEMO_ENTITIES[2]} // Product
             delay={customDelay}
             position={position}
-            renderContent={(entity) => (
+            renderContent={entity => (
               <>
                 <EntityQuickViewHeader>
                   <div className="flex items-center gap-3">
@@ -258,7 +292,7 @@ export default function EntityQuickViewDemo() {
                     </div>
                   </div>
                 </EntityQuickViewHeader>
-                
+
                 <EntityQuickViewBody>
                   <div className="space-y-3">
                     <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -269,21 +303,29 @@ export default function EntityQuickViewDemo() {
                         Cost: {formatCurrency(entity.dynamic_fields?.cost || 0)}
                       </div>
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">In Stock</span>
-                      <span className="font-medium">{entity.dynamic_fields?.stock_quantity} units</span>
+                      <span className="font-medium">
+                        {entity.dynamic_fields?.stock_quantity} units
+                      </span>
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Margin</span>
                       <span className="font-medium text-green-600 dark:text-green-400">
-                        {((1 - (entity.dynamic_fields?.cost || 0) / (entity.dynamic_fields?.price || 1)) * 100).toFixed(1)}%
+                        {(
+                          (1 -
+                            (entity.dynamic_fields?.cost || 0) /
+                              (entity.dynamic_fields?.price || 1)) *
+                          100
+                        ).toFixed(1)}
+                        %
                       </span>
                     </div>
                   </div>
                 </EntityQuickViewBody>
-                
+
                 <EntityQuickViewFooter>
                   <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors">
                     <ShoppingCart className="w-4 h-4" />
@@ -307,8 +349,7 @@ export default function EntityQuickViewDemo() {
           {/* Inline Example */}
           <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              EntityQuickView also works inline with text. For example, 
-              {' '}
+              EntityQuickView also works inline with text. For example,{' '}
               <EntityQuickView
                 entity={DEMO_ENTITIES[0]}
                 delay={200}
@@ -318,8 +359,7 @@ export default function EntityQuickViewDemo() {
                 <span className="text-blue-600 dark:text-blue-400 underline cursor-pointer">
                   TechVantage Solutions
                 </span>
-              </EntityQuickView>
-              {' '}
+              </EntityQuickView>{' '}
               is one of our valued customers.
             </p>
           </div>
@@ -340,7 +380,7 @@ export default function EntityQuickViewDemo() {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
-                  {DEMO_ENTITIES.slice(0, 3).map((entity) => (
+                  {DEMO_ENTITIES.slice(0, 3).map(entity => (
                     <tr key={entity.id}>
                       <td className="px-4 py-3">
                         <EntityQuickView
@@ -378,9 +418,7 @@ export default function EntityQuickViewDemo() {
 
       {/* Usage Notes */}
       <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
-          Usage Notes
-        </h3>
+        <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Usage Notes</h3>
         <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
           <li>• Hover over entities to see preview (configurable delay)</li>
           <li>• Long-press on touch devices for mobile support</li>

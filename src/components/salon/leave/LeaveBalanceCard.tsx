@@ -53,7 +53,9 @@ export function LeaveBalanceCard({
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">{type}</p>
-          <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">{remaining} days</p>
+          <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
+            {remaining} days
+          </p>
         </div>
         <div className={`p-3 rounded-lg bg-gradient-to-r ${color} text-foreground`}>{icon}</div>
       </div>

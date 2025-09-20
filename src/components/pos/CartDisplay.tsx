@@ -115,7 +115,10 @@ export function CartDisplay() {
 
       case 'discount':
         return (
-          <div key={index} className="flex items-center justify-between p-3 border-b last:border-0 bg-green-50">
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 border-b last:border-0 bg-green-50"
+          >
             <div className="flex-1">
               <p className="font-medium text-green-700">Discount</p>
               {line.reason && <p className="text-sm text-gray-500">{line.reason}</p>}
@@ -139,7 +142,10 @@ export function CartDisplay() {
 
       case 'tip':
         return (
-          <div key={index} className="flex items-center justify-between p-3 border-b last:border-0 bg-blue-50">
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 border-b last:border-0 bg-blue-50"
+          >
             <div className="flex-1">
               <p className="font-medium text-blue-700">Gratuity</p>
             </div>
@@ -166,7 +172,7 @@ export function CartDisplay() {
       <div className="p-4 border-b">
         <h3 className="font-semibold text-lg">Shopping Cart</h3>
       </div>
-      
+
       {lines.length === 0 ? (
         <div className="p-8 text-center text-gray-500">
           <p>Your cart is empty</p>
@@ -174,10 +180,8 @@ export function CartDisplay() {
         </div>
       ) : (
         <>
-          <div className="max-h-[400px] overflow-y-auto">
-            {lines.map(renderLine)}
-          </div>
-          
+          <div className="max-h-[400px] overflow-y-auto">{lines.map(renderLine)}</div>
+
           <div className="p-4 border-t space-y-2">
             {totals.subtotal_services > 0 && (
               <div className="flex justify-between text-sm">
@@ -197,24 +201,24 @@ export function CartDisplay() {
                 <span>-{formatCurrency(totals.discount_total)}</span>
               </div>
             )}
-            
+
             <div className="flex justify-between text-sm pt-2 border-t">
               <span className="text-gray-600">Taxable Subtotal</span>
               <span>{formatCurrency(totals.taxable_subtotal)}</span>
             </div>
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">VAT ({(totals.tax_rate * 100).toFixed(0)}%)</span>
               <span>{formatCurrency(totals.tax_total)}</span>
             </div>
-            
+
             {totals.tip_total > 0 && (
               <div className="flex justify-between text-sm text-blue-600">
                 <span>Tip</span>
                 <span>+{formatCurrency(totals.tip_total)}</span>
               </div>
             )}
-            
+
             <div className="flex justify-between font-semibold text-lg pt-2 border-t">
               <span>Total</span>
               <span className="text-primary">{formatCurrency(totals.grand_total)}</span>

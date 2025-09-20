@@ -573,7 +573,9 @@ export function BookAppointmentModalModern({
                         >
                           <Users className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
                           <span className="font-semibold text-foreground">Walk-In</span>
-                          <span className="text-xs text-muted-foreground">Quick 30-min service</span>
+                          <span className="text-xs text-muted-foreground">
+                            Quick 30-min service
+                          </span>
                         </Button>
 
                         <Button
@@ -583,7 +585,9 @@ export function BookAppointmentModalModern({
                         >
                           <Calendar className="w-8 h-8 text-purple-400 group-hover:scale-110 transition-transform" />
                           <span className="font-semibold text-foreground">Regular Booking</span>
-                          <span className="text-xs text-muted-foreground">Standard appointment</span>
+                          <span className="text-xs text-muted-foreground">
+                            Standard appointment
+                          </span>
                         </Button>
 
                         <Button
@@ -692,7 +696,9 @@ export function BookAppointmentModalModern({
 
                         {/* Recent Customers */}
                         <div className="space-y-2">
-                          <p className="text-sm font-medium text-muted-foreground">Recent Customers</p>
+                          <p className="text-sm font-medium text-muted-foreground">
+                            Recent Customers
+                          </p>
                           <div className="grid grid-cols-2 gap-3">
                             {customers
                               .filter(
@@ -780,7 +786,9 @@ export function BookAppointmentModalModern({
                           >
                             <div className="text-left">
                               <p className="font-medium text-foreground">{service.entity_name}</p>
-                              <p className="text-xs text-muted-foreground">{service.duration} min</p>
+                              <p className="text-xs text-muted-foreground">
+                                {service.duration} min
+                              </p>
                             </div>
                             <p className="font-semibold text-green-400">AED {service.price}</p>
                           </Button>
@@ -1010,7 +1018,9 @@ export function BookAppointmentModalModern({
                             className="border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                           />
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-foreground">{service.entity_name}</p>
+                            <p className="text-sm font-medium text-foreground">
+                              {service.entity_name}
+                            </p>
                             <p className="text-xs text-muted-foreground">
                               {service.duration} min • AED {service.price}
                             </p>

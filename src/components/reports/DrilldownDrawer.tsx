@@ -7,16 +7,29 @@
 'use client'
 
 import React from 'react'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle
+} from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { 
-  X, 
-  FileText, 
+import {
+  X,
+  FileText,
   Calendar,
   DollarSign,
   User,
@@ -28,7 +41,12 @@ import {
   MoreHorizontal,
   Building
 } from 'lucide-react'
-import { TransactionSummary, TransactionDetail, DrillDownResponse, ReportCalculations } from '@/lib/schemas/reports'
+import {
+  TransactionSummary,
+  TransactionDetail,
+  DrillDownResponse,
+  ReportCalculations
+} from '@/lib/schemas/reports'
 import { cn } from '@/lib/utils'
 
 interface DrilldownDrawerProps {
@@ -70,12 +88,12 @@ export function DrilldownDrawer({
   totalPages = 1,
   className
 }: DrilldownDrawerProps) {
-  
-  const formatCurrency = (amount: number) => ReportCalculations.formatCurrency(amount, currency, locale)
-  
+  const formatCurrency = (amount: number) =>
+    ReportCalculations.formatCurrency(amount, currency, locale)
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString + 'T00:00:00')
-    return date.toLocaleDateString(locale, { 
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -85,11 +103,12 @@ export function DrilldownDrawer({
 
   const getTransactionTypeColor = (type: string) => {
     const colorMap: Record<string, string> = {
-      'pos_sale': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-      'appointment': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-      'payment': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-      'journal_entry': 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
-      'inventory_adjustment': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+      pos_sale: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+      appointment: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+      payment: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+      journal_entry: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+      inventory_adjustment:
+        'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
     }
     return colorMap[type] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
   }
@@ -99,7 +118,9 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Loading transactions...</span>
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+            Loading transactions...
+          </span>
         </div>
       )
     }
@@ -115,8 +136,8 @@ export function DrilldownDrawer({
 
     return (
       <div className="space-y-2">
-        {data.transactions.map((transaction) => (
-          <Card 
+        {data.transactions.map(transaction => (
+          <Card
             key={transaction.transaction_id}
             className="hover:bg-violet-50/50 dark:hover:bg-violet-950/20 transition-colors cursor-pointer"
             onClick={() => onTransactionClick?.(transaction.transaction_id)}
@@ -126,8 +147,8 @@ export function DrilldownDrawer({
                 <div className="space-y-1">
                   {/* Transaction Code and Type */}
                   <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className={getTransactionTypeColor(transaction.transaction_type)}
                     >
                       {transaction.transaction_code}
@@ -136,12 +157,12 @@ export function DrilldownDrawer({
                       {transaction.transaction_type.replace('_', ' ').toUpperCase()}
                     </Badge>
                   </div>
-                  
+
                   {/* Description */}
                   <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {transaction.description}
                   </div>
-                  
+
                   {/* Additional Info */}
                   <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-1">
@@ -168,7 +189,7 @@ export function DrilldownDrawer({
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Amount and Action */}
                 <div className="text-right space-y-1">
                   <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -177,7 +198,11 @@ export function DrilldownDrawer({
                   <div className="text-xs text-gray-500 dark:text-gray-400">
                     {transaction.line_count} line{transaction.line_count !== 1 ? 's' : ''}
                   </div>
-                  <Button variant="ghost" size="sm" className="h-auto p-1 text-violet-600 hover:text-violet-700">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto p-1 text-violet-600 hover:text-violet-700"
+                  >
                     <ExternalLink className="h-3 w-3" />
                   </Button>
                 </div>
@@ -194,7 +219,9 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Loading transaction details...</span>
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+            Loading transaction details...
+          </span>
         </div>
       )
     }
@@ -208,8 +235,8 @@ export function DrilldownDrawer({
     return (
       <div className="space-y-6">
         {/* Back Button */}
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => onTransactionClick?.('')}
           className="text-violet-600 hover:text-violet-700 hover:bg-violet-100 p-2"
         >
@@ -225,8 +252,8 @@ export function DrilldownDrawer({
                 <FileText className="h-4 w-4" />
                 Transaction Details
               </div>
-              <Badge 
-                variant="outline" 
+              <Badge
+                variant="outline"
                 className={getTransactionTypeColor(transaction.transaction_type)}
               >
                 {transaction.transaction_code}
@@ -237,19 +264,31 @@ export function DrilldownDrawer({
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Date</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Date
+                </label>
                 <p className="text-sm font-medium">{formatDate(transaction.transaction_date)}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Amount</label>
-                <p className="text-sm font-bold text-lg">{formatCurrency(transaction.total_amount)}</p>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Total Amount
+                </label>
+                <p className="text-sm font-bold text-lg">
+                  {formatCurrency(transaction.total_amount)}
+                </p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Transaction Type</label>
-                <p className="text-sm font-medium">{transaction.transaction_type.replace('_', ' ')}</p>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Transaction Type
+                </label>
+                <p className="text-sm font-medium">
+                  {transaction.transaction_type.replace('_', ' ')}
+                </p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Smart Code</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Smart Code
+                </label>
                 <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                   {transaction.smart_code}
                 </code>
@@ -259,7 +298,9 @@ export function DrilldownDrawer({
             {/* Reference Number */}
             {transaction.reference_number && (
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Reference</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  Reference
+                </label>
                 <p className="text-sm font-medium">{transaction.reference_number}</p>
               </div>
             )}
@@ -267,7 +308,9 @@ export function DrilldownDrawer({
             {/* Related Entities */}
             {related_entities && related_entities.length > 0 && (
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">Related Entities</label>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
+                  Related Entities
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {related_entities.map((entity, index) => (
                     <Badge key={index} variant="outline" className="text-xs">
@@ -302,7 +345,7 @@ export function DrilldownDrawer({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {lines.map((line) => (
+                  {lines.map(line => (
                     <TableRow key={line.line_number}>
                       <TableCell className="font-mono text-xs">{line.line_number}</TableCell>
                       <TableCell>
@@ -401,7 +444,7 @@ export function DrilldownDrawer({
             <span className="ml-2">• Total: {formatCurrency(data.total_amount)}</span>
           )}
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -412,16 +455,16 @@ export function DrilldownDrawer({
           >
             <ChevronLeft className="h-3 w-3" />
           </Button>
-          
+
           <div className="flex items-center gap-1">
             {[...Array(Math.min(5, totalPages))].map((_, i) => {
               const page = currentPage <= 3 ? i + 1 : currentPage - 2 + i
               if (page > totalPages) return null
-              
+
               return (
                 <Button
                   key={page}
-                  variant={page === currentPage ? "default" : "ghost"}
+                  variant={page === currentPage ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => onPageChange?.(page)}
                   className="h-8 w-8 p-0"
@@ -430,7 +473,7 @@ export function DrilldownDrawer({
                 </Button>
               )
             })}
-            
+
             {totalPages > 5 && currentPage < totalPages - 2 && (
               <>
                 <MoreHorizontal className="h-3 w-3 text-gray-400" />
@@ -445,7 +488,7 @@ export function DrilldownDrawer({
               </>
             )}
           </div>
-          
+
           <Button
             variant="outline"
             size="sm"
@@ -477,9 +520,9 @@ export function DrilldownDrawer({
                   </SheetDescription>
                 )}
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={onClose}
                 className="text-violet-600 hover:text-violet-700 hover:bg-violet-100 dark:text-violet-400 dark:hover:text-violet-300 dark:hover:bg-violet-900/50"
               >
@@ -487,14 +530,14 @@ export function DrilldownDrawer({
               </Button>
             </div>
           </SheetHeader>
-          
+
           {/* Content */}
           <ScrollArea className="flex-1">
             <div className="p-6">
               {selectedTransaction ? renderTransactionDetail() : renderTransactionsList()}
             </div>
           </ScrollArea>
-          
+
           {/* Footer Pagination */}
           {!selectedTransaction && renderPagination()}
         </div>

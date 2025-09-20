@@ -65,7 +65,7 @@ const mockSearchData: SearchResult[] = [
     url: '/customers/global-enterprises',
     smartCode: 'HERA.CRM.CUST.ENT.CORP.V1'
   },
-  
+
   // Products
   {
     id: 'prod-1',
@@ -86,7 +86,7 @@ const mockSearchData: SearchResult[] = [
     smartCode: 'HERA.INV.PROD.ENT.SPA.V1',
     metadata: { isPopular: true }
   },
-  
+
   // Transactions
   {
     id: 'txn-1',
@@ -116,14 +116,14 @@ const mockSearchData: SearchResult[] = [
     url: '/appointments/apt-2024-123',
     smartCode: 'HERA.SALON.APPT.TXN.BOOK.V1'
   },
-  
+
   // Reports
   {
     id: 'rpt-1',
     type: 'report',
     category: 'report',
     title: 'Daily Sales Report',
-    subtitle: 'View today\'s sales performance',
+    subtitle: "View today's sales performance",
     url: '/reports/daily-sales',
     smartCode: 'HERA.RPT.SALES.DAILY.v1',
     metadata: { isPopular: true }
@@ -146,7 +146,7 @@ const mockSearchData: SearchResult[] = [
     url: '/reports/inventory-valuation',
     smartCode: 'HERA.RPT.INV.VAL.v1'
   },
-  
+
   // Actions
   {
     id: 'act-1',
@@ -166,7 +166,7 @@ const mockSearchData: SearchResult[] = [
     action: () => console.log('Book appointment'),
     smartCode: 'HERA.ACTION.BOOK.APPT.v1'
   },
-  
+
   // Help
   {
     id: 'help-1',
@@ -200,27 +200,27 @@ export default function UniversalSearchDemoPage() {
     theme: 'command' as const,
     position: 'center' as const
   })
-  
+
   const { toast } = useToast()
-  
+
   const handleSelect = (result: SearchResult) => {
     setSelectedResult(result)
-    
+
     toast({
       title: 'Item Selected',
       description: `${result.title} - ${result.type}`,
       variant: 'default'
     })
-    
+
     console.log('Selected:', result)
   }
-  
+
   const handleSearch = (query: string) => {
     if (query && !searchHistory.includes(query)) {
       setSearchHistory(prev => [query, ...prev].slice(0, 5))
     }
   }
-  
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       {/* Header */}
@@ -239,7 +239,7 @@ export default function UniversalSearchDemoPage() {
           transactions, reports, and actions with intelligent suggestions.
         </p>
       </div>
-      
+
       {/* Configuration */}
       <Card>
         <CardHeader>
@@ -258,12 +258,12 @@ export default function UniversalSearchDemoPage() {
               <Switch
                 id="ai-suggestions"
                 checked={config.aiSuggestions}
-                onCheckedChange={(checked) => 
+                onCheckedChange={checked =>
                   setConfig(prev => ({ ...prev, aiSuggestions: checked }))
                 }
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="recent-searches" className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
@@ -272,12 +272,12 @@ export default function UniversalSearchDemoPage() {
               <Switch
                 id="recent-searches"
                 checked={config.recentSearches}
-                onCheckedChange={(checked) => 
+                onCheckedChange={checked =>
                   setConfig(prev => ({ ...prev, recentSearches: checked }))
                 }
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="voice-search" className="flex items-center gap-2">
                 <Mic className="w-4 h-4" />
@@ -286,12 +286,10 @@ export default function UniversalSearchDemoPage() {
               <Switch
                 id="voice-search"
                 checked={config.voiceSearch}
-                onCheckedChange={(checked) => 
-                  setConfig(prev => ({ ...prev, voiceSearch: checked }))
-                }
+                onCheckedChange={checked => setConfig(prev => ({ ...prev, voiceSearch: checked }))}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="command-palette" className="flex items-center gap-2">
                 <Command className="w-4 h-4" />
@@ -300,19 +298,17 @@ export default function UniversalSearchDemoPage() {
               <Switch
                 id="command-palette"
                 checked={config.commandPalette}
-                onCheckedChange={(checked) => 
+                onCheckedChange={checked =>
                   setConfig(prev => ({ ...prev, commandPalette: checked }))
                 }
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label>Theme</Label>
               <select
                 value={config.theme}
-                onChange={(e) => 
-                  setConfig(prev => ({ ...prev, theme: e.target.value as any }))
-                }
+                onChange={e => setConfig(prev => ({ ...prev, theme: e.target.value as any }))}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="default">Default</option>
@@ -320,14 +316,12 @@ export default function UniversalSearchDemoPage() {
                 <option value="command">Command</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Position</Label>
               <select
                 value={config.position}
-                onChange={(e) => 
-                  setConfig(prev => ({ ...prev, position: e.target.value as any }))
-                }
+                onChange={e => setConfig(prev => ({ ...prev, position: e.target.value as any }))}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="center">Center</option>
@@ -337,7 +331,7 @@ export default function UniversalSearchDemoPage() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Search Demo */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Search Component */}
@@ -358,11 +352,9 @@ export default function UniversalSearchDemoPage() {
                 {...config}
                 className="w-full"
               />
-              
+
               <div className="mt-4 space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Try searching for:
-                </p>
+                <p className="text-sm text-muted-foreground">Try searching for:</p>
                 <div className="flex flex-wrap gap-2">
                   {['customer', 'invoice', 'report', 'appointment', 'payment'].map(term => (
                     <Badge
@@ -384,7 +376,7 @@ export default function UniversalSearchDemoPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Search History */}
           {searchHistory.length > 0 && (
             <Card>
@@ -407,7 +399,7 @@ export default function UniversalSearchDemoPage() {
             </Card>
           )}
         </div>
-        
+
         {/* Results Display */}
         <div>
           <Tabs defaultValue="result" className="h-full">
@@ -415,7 +407,7 @@ export default function UniversalSearchDemoPage() {
               <TabsTrigger value="result">Selected Result</TabsTrigger>
               <TabsTrigger value="code">Implementation</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="result" className="mt-4">
               <Card>
                 <CardHeader>
@@ -428,20 +420,20 @@ export default function UniversalSearchDemoPage() {
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">Item Selected</span>
                       </div>
-                      
+
                       <div className="space-y-3 p-4 bg-muted rounded-lg">
                         <div>
                           <p className="text-sm font-medium text-muted-foreground">Title</p>
                           <p className="font-medium">{selectedResult.title}</p>
                         </div>
-                        
+
                         {selectedResult.subtitle && (
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">Subtitle</p>
                             <p>{selectedResult.subtitle}</p>
                           </div>
                         )}
-                        
+
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">{selectedResult.type}</Badge>
                           <Badge variant="outline">{selectedResult.category}</Badge>
@@ -451,7 +443,7 @@ export default function UniversalSearchDemoPage() {
                             </Badge>
                           )}
                         </div>
-                        
+
                         {selectedResult.url && (
                           <div>
                             <p className="text-sm font-medium text-muted-foreground">URL</p>
@@ -473,7 +465,7 @@ export default function UniversalSearchDemoPage() {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="code" className="mt-4">
               <Card>
                 <CardHeader>
@@ -484,7 +476,7 @@ export default function UniversalSearchDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { UniversalSearch } from '@/lib/dna/components/search'
+                    {`import { UniversalSearch } from '@/lib/dna/components/search'
 
 // Basic usage
 <UniversalSearch
@@ -534,7 +526,7 @@ interface SearchResult {
           </Tabs>
         </div>
       </div>
-      
+
       {/* Features */}
       <Card>
         <CardHeader>
@@ -551,7 +543,7 @@ interface SearchResult {
                 Smart suggestions and query understanding for better search results
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <Command className="w-4 h-4" />
@@ -561,7 +553,7 @@ interface SearchResult {
                 Quick access with ⌘K shortcut from anywhere in the application
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <Globe className="w-4 h-4" />

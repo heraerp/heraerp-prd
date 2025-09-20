@@ -5,14 +5,7 @@
 // ================================================================================
 
 import Link from 'next/link'
-import { 
-  Sparkles, 
-  Check,
-  ArrowRight,
-  Zap,
-  Building,
-  Globe
-} from 'lucide-react'
+import { Sparkles, Check, ArrowRight, Zap, Building, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
@@ -30,10 +23,10 @@ const PRICING_PLANS = [
       'Basic reporting',
       'Email support',
       '14-day free trial',
-      'Single location',
+      'Single location'
     ],
     cta: 'Start Free Trial',
-    href: '/signup',
+    href: '/signup'
   },
   {
     name: 'Professional',
@@ -51,10 +44,10 @@ const PRICING_PLANS = [
       'Multiple locations',
       'API access',
       'Custom integrations',
-      'Training included',
+      'Training included'
     ],
     cta: 'Start Free Trial',
-    href: '/signup',
+    href: '/signup'
   },
   {
     name: 'Enterprise',
@@ -71,11 +64,11 @@ const PRICING_PLANS = [
       'Unlimited locations',
       'White-label options',
       'SLA guarantee',
-      'On-premise deployment',
+      'On-premise deployment'
     ],
     cta: 'Contact Sales',
-    href: '/contact',
-  },
+    href: '/contact'
+  }
 ]
 
 export default function PricingPage() {
@@ -91,10 +84,18 @@ export default function PricingPage() {
             <span className="text-xl font-bold">HERA</span>
           </Link>
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/features" className="text-gray-600 hover:text-gray-900">Features</Link>
-            <Link href="/pricing" className="text-gray-900 font-medium">Pricing</Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
-            <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
+            <Link href="/features" className="text-gray-600 hover:text-gray-900">
+              Features
+            </Link>
+            <Link href="/pricing" className="text-gray-900 font-medium">
+              Pricing
+            </Link>
+            <Link href="/about" className="text-gray-600 hover:text-gray-900">
+              About
+            </Link>
+            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+              Contact
+            </Link>
           </div>
           <div className="flex items-center space-x-4">
             <Button variant="outline" asChild>
@@ -115,15 +116,18 @@ export default function PricingPage() {
               Simple, Transparent Pricing
             </h1>
             <p className="text-xl text-gray-600">
-              Start with a 14-day free trial. No credit card required.
-              Scale as you grow with our flexible plans.
+              Start with a 14-day free trial. No credit card required. Scale as you grow with our
+              flexible plans.
             </p>
           </div>
 
           {/* Pricing Cards */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {PRICING_PLANS.map((plan, index) => (
-              <Card key={index} className={`relative p-8 ${plan.popular ? 'ring-2 ring-purple-600' : ''}`}>
+              <Card
+                key={index}
+                className={`relative p-8 ${plan.popular ? 'ring-2 ring-purple-600' : ''}`}
+              >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <span className="bg-purple-600 text-white text-sm px-3 py-1 rounded-full">
@@ -131,8 +135,10 @@ export default function PricingPage() {
                     </span>
                   </div>
                 )}
-                
-                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${plan.color} flex items-center justify-center mb-6`}>
+
+                <div
+                  className={`w-12 h-12 rounded-lg bg-gradient-to-br ${plan.color} flex items-center justify-center mb-6`}
+                >
                   <plan.icon className="w-6 h-6 text-white" />
                 </div>
 
@@ -144,8 +150,8 @@ export default function PricingPage() {
                   <span className="text-gray-600">{plan.period}</span>
                 </div>
 
-                <Button 
-                  className="w-full mb-6" 
+                <Button
+                  className="w-full mb-6"
                   variant={plan.popular ? 'default' : 'outline'}
                   asChild
                 >
@@ -172,9 +178,7 @@ export default function PricingPage() {
       {/* Industry Solutions */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Industry-Specific Solutions
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Industry-Specific Solutions</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               'Salon & Spa',
@@ -184,7 +188,7 @@ export default function PricingPage() {
               'Professional Services',
               'Manufacturing',
               'Education',
-              'Non-Profit',
+              'Non-Profit'
             ].map((industry, index) => (
               <Card key={index} className="p-4 text-center hover:shadow-md transition-shadow">
                 <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
@@ -198,27 +202,25 @@ export default function PricingPage() {
       {/* FAQ */}
       <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Frequently Asked Questions
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-8">
             {[
               {
                 q: 'Can I change plans later?',
-                a: 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.',
+                a: 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.'
               },
               {
                 q: 'Do you offer discounts for annual billing?',
-                a: 'Yes, we offer 20% off when you pay annually. Contact our sales team for details.',
+                a: 'Yes, we offer 20% off when you pay annually. Contact our sales team for details.'
               },
               {
                 q: 'What happens after my trial ends?',
-                a: 'Your account remains active but read-only. Simply add a payment method to continue.',
+                a: 'Your account remains active but read-only. Simply add a payment method to continue.'
               },
               {
                 q: 'Can I get a demo before signing up?',
-                a: 'Absolutely! You can try our live demos or schedule a personalized demo with our team.',
-              },
+                a: 'Absolutely! You can try our live demos or schedule a personalized demo with our team.'
+              }
             ].map((faq, index) => (
               <div key={index}>
                 <h3 className="text-lg font-semibold mb-2">{faq.q}</h3>
@@ -232,9 +234,7 @@ export default function PricingPage() {
       {/* CTA Section */}
       <section className="py-20 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">
-            Ready to Get Started?
-          </h2>
+          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl mb-8 text-blue-100">
             Join thousands of businesses already using HERA.
           </p>
@@ -245,10 +245,13 @@ export default function PricingPage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10" asChild>
-              <Link href="/contact">
-                Talk to Sales
-              </Link>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-white border-white hover:bg-white/10"
+              asChild
+            >
+              <Link href="/contact">Talk to Sales</Link>
             </Button>
           </div>
         </div>
@@ -257,9 +260,7 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400 text-sm">
-            © 2024 HERA. All rights reserved.
-          </p>
+          <p className="text-gray-400 text-sm">© 2024 HERA. All rights reserved.</p>
         </div>
       </footer>
     </div>

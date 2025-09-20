@@ -646,7 +646,9 @@ export default function DubaiPOSSystem() {
                 {formatCurrency(product.price)}
               </span>
               {product.stock_on_hand !== undefined && (
-                <span className="text-xs text-muted-foreground">Stock: {product.stock_on_hand}</span>
+                <span className="text-xs text-muted-foreground">
+                  Stock: {product.stock_on_hand}
+                </span>
               )}
             </div>
 
@@ -807,7 +809,9 @@ export default function DubaiPOSSystem() {
             )}
 
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground dark:text-muted-foreground">VAT ({posConfig.vat_rate}%)</span>
+              <span className="text-muted-foreground dark:text-muted-foreground">
+                VAT ({posConfig.vat_rate}%)
+              </span>
               <span className="font-medium">{formatCurrency(cartTotals.tax)}</span>
             </div>
 
@@ -966,7 +970,9 @@ export default function DubaiPOSSystem() {
             {/* Receipt Summary */}
             <div className="mb-6 p-4 bg-muted dark:bg-muted rounded-lg">
               <div className="text-center mb-4">
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Receipt Number</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Receipt Number
+                </p>
                 <p className="text-2xl font-bold">{lastTransactionData.receiptNumber}</p>
               </div>
 

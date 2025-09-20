@@ -68,7 +68,7 @@ export default function WhatsAppPage() {
             <p className="text-xs text-green-600">+12% from last month</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Delivery Rate</CardTitle>
@@ -78,17 +78,19 @@ export default function WhatsAppPage() {
             <p className="text-xs text-gray-500">Industry avg: 95%</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Active Conversations</CardTitle>
+            <CardTitle className="text-sm font-medium text-gray-600">
+              Active Conversations
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">47</p>
             <p className="text-xs text-blue-600">23 new today</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Templates</CardTitle>
@@ -116,9 +118,7 @@ export default function WhatsAppPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {feature.description}
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
                   {feature.href === '#' && (
                     <p className="text-xs text-orange-500 mt-2">Coming soon</p>
                   )}

@@ -1,48 +1,44 @@
 'use client'
 
-import { api } from '@/lib/api-client';
-import { formatDateTime } from '@/lib/format';
-import { RunStatusBadge } from '@/components/RunStatusBadge';
-import { Button } from '@/components/ui/button';
-import type { RunHeader, TimelineEvent } from '@/types/runs';
-import { useEffect, useState } from 'react';
+import { api } from '@/lib/api-client'
+import { formatDateTime } from '@/lib/format'
+import { RunStatusBadge } from '@/components/RunStatusBadge'
+import { Button } from '@/components/ui/button'
+import type { RunHeader, TimelineEvent } from '@/types/runs'
+import { useEffect, useState } from 'react'
 
 // This is a client component for print-optimized rendering
-export default function RunPrintPage({
-  params,
-}: {
-  params: { runId: string };
-}) {
-  const [run, setRun] = useState<RunHeader | null>(null);
-  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function RunPrintPage({ params }: { params: { runId: string } }) {
+  const [run, setRun] = useState<RunHeader | null>(null)
+  const [timeline, setTimeline] = useState<TimelineEvent[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [runData, timelineData] = await Promise.all([
           api.runs.get(params.runId),
-          api.runs.timeline(params.runId),
-        ]);
-        setRun(runData);
-        setTimeline(timelineData);
+          api.runs.timeline(params.runId)
+        ])
+        setRun(runData)
+        setTimeline(timelineData)
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'Unknown error');
+        setError(error instanceof Error ? error.message : 'Unknown error')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [params.runId]);
+    fetchData()
+  }, [params.runId])
 
   if (loading) {
     return (
       <div className="print-page">
         <h1>Loading...</h1>
       </div>
-    );
+    )
   }
 
   if (error || !run) {
@@ -51,49 +47,55 @@ export default function RunPrintPage({
         <h1>Error Loading Run</h1>
         <p>Failed to load run data: {error || 'Unknown error'}</p>
       </div>
-    );
+    )
   }
 
-  const completedSteps = timeline.filter(e => e.event_type === 'step_completed').length;
-  const totalSteps = run.step_count || 0;
-  
-  const eventCounts = timeline.reduce((acc, event) => {
-    acc[event.event_type] = (acc[event.event_type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const completedSteps = timeline.filter(e => e.event_type === 'step_completed').length
+  const totalSteps = run.step_count || 0
+
+  const eventCounts = timeline.reduce(
+    (acc, event) => {
+      acc[event.event_type] = (acc[event.event_type] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
 
   return (
     <>
       <style jsx>{`
         @media print {
-          .no-print { display: none !important; }
-          .print-page { 
-            max-width: none !important; 
-            margin: 0 !important; 
+          .no-print {
+            display: none !important;
+          }
+          .print-page {
+            max-width: none !important;
+            margin: 0 !important;
             padding: 20mm !important;
             font-size: 12pt !important;
             line-height: 1.4 !important;
           }
-          .print-header { 
-            border-bottom: 2px solid #000; 
-            padding-bottom: 10mm; 
-            margin-bottom: 10mm; 
+          .print-header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 10mm;
+            margin-bottom: 10mm;
           }
-          .print-section { 
-            margin-bottom: 8mm; 
-            page-break-inside: avoid; 
+          .print-section {
+            margin-bottom: 8mm;
+            page-break-inside: avoid;
           }
-          .print-table { 
-            width: 100%; 
-            border-collapse: collapse; 
+          .print-table {
+            width: 100%;
+            border-collapse: collapse;
           }
-          .print-table th, .print-table td { 
-            border: 1px solid #ccc; 
-            padding: 4mm; 
-            text-align: left; 
+          .print-table th,
+          .print-table td {
+            border: 1px solid #ccc;
+            padding: 4mm;
+            text-align: left;
           }
-          .print-table th { 
-            background-color: #f5f5f5; 
+          .print-table th {
+            background-color: #f5f5f5;
           }
         }
         @page {
@@ -129,40 +131,58 @@ export default function RunPrintPage({
           <table className="print-table">
             <tbody>
               <tr>
-                <td><strong>Playbook Name</strong></td>
+                <td>
+                  <strong>Playbook Name</strong>
+                </td>
                 <td>{run.playbook_name}</td>
               </tr>
               <tr>
-                <td><strong>Version</strong></td>
+                <td>
+                  <strong>Version</strong>
+                </td>
                 <td>{run.playbook_version}</td>
               </tr>
               <tr>
-                <td><strong>Status</strong></td>
+                <td>
+                  <strong>Status</strong>
+                </td>
                 <td>
                   <RunStatusBadge status={run.status} />
                 </td>
               </tr>
               <tr>
-                <td><strong>Orchestrator</strong></td>
+                <td>
+                  <strong>Orchestrator</strong>
+                </td>
                 <td>{run.orchestrator_name}</td>
               </tr>
               <tr>
-                <td><strong>Started</strong></td>
+                <td>
+                  <strong>Started</strong>
+                </td>
                 <td>{formatDateTime(run.started_at)}</td>
               </tr>
               {run.completed_at && (
                 <tr>
-                  <td><strong>Completed</strong></td>
+                  <td>
+                    <strong>Completed</strong>
+                  </td>
                   <td>{formatDateTime(run.completed_at)}</td>
                 </tr>
               )}
               <tr>
-                <td><strong>Organization ID</strong></td>
+                <td>
+                  <strong>Organization ID</strong>
+                </td>
                 <td>{run.organization_id}</td>
               </tr>
               <tr>
-                <td><strong>Progress</strong></td>
-                <td>{completedSteps} of {totalSteps} steps completed</td>
+                <td>
+                  <strong>Progress</strong>
+                </td>
+                <td>
+                  {completedSteps} of {totalSteps} steps completed
+                </td>
               </tr>
             </tbody>
           </table>
@@ -232,5 +252,5 @@ export default function RunPrintPage({
         </div>
       </div>
     </>
-  );
+  )
 }

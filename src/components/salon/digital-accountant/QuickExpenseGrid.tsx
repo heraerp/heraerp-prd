@@ -175,14 +175,18 @@ export function QuickExpenseGrid({ onExpenseSelect, selectedCategory }: QuickExp
               <expense.icon className={cn('w-8 h-8', expense.color)} />
               <div className="text-center">
                 <p className="font-medium text-sm">{expense.name}</p>
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">{expense.category}</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  {expense.category}
+                </p>
               </div>
             </Button>
 
             {/* Quick amount selection */}
             {expandedCategory === expense.id && expense.commonAmounts && (
               <div className="absolute z-10 top-full mt-2 left-0 right-0 bg-background dark:bg-muted rounded-lg shadow-lg border border-border dark:border-border p-2">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground mb-2">Common amounts:</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground mb-2">
+                  Common amounts:
+                </p>
                 <div className="grid grid-cols-3 gap-1">
                   {expense.commonAmounts.map(amount => (
                     <Button

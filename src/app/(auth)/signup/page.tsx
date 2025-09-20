@@ -27,8 +27,8 @@ export default function SignupPage() {
       password: '',
       confirmPassword: '',
       name: '',
-      organizationName: '',
-    },
+      organizationName: ''
+    }
   })
 
   const onSubmit = async (data: SignupRequest) => {
@@ -51,9 +51,7 @@ export default function SignupPage() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-salon-gradient">
-            Create Your HERA Account
-          </h2>
+          <h2 className="text-3xl font-bold text-salon-gradient">Create Your HERA Account</h2>
           <p className="mt-2 text-sm text-gray-600">
             Start your 14-day free trial. No credit card required.
           </p>
@@ -89,7 +87,10 @@ export default function SignupPage() {
 
             {/* Organization Name Field */}
             <div>
-              <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="organizationName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Business Name
               </label>
               <input
@@ -159,7 +160,10 @@ export default function SignupPage() {
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Confirm Password
               </label>
               <input
@@ -208,18 +212,21 @@ export default function SignupPage() {
             {/* Terms */}
             <p className="text-xs text-gray-500 text-center">
               By signing up, you agree to our{' '}
-              <Link href="/terms" className="underline">Terms of Service</Link>
-              {' '}and{' '}
-              <Link href="/privacy" className="underline">Privacy Policy</Link>.
+              <Link href="/terms" className="underline">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link href="/privacy" className="underline">
+                Privacy Policy
+              </Link>
+              .
             </p>
           </form>
         </div>
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-xs text-gray-500">
-            Powered by HERA Universal Architecture
-          </p>
+          <p className="text-xs text-gray-500">Powered by HERA Universal Architecture</p>
         </div>
       </div>
     </div>

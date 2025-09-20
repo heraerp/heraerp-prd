@@ -844,10 +844,10 @@ export function RolePermissionManager() {
                                 {permission.risk_level}
                               </Badge>
                             </div>
-                            <p className="text-xs text-muted-foreground mb-2">{permission.description}</p>
-                            <code className="text-xs bg-muted px-1 rounded">
-                              {permission.id}
-                            </code>
+                            <p className="text-xs text-muted-foreground mb-2">
+                              {permission.description}
+                            </p>
+                            <code className="text-xs bg-muted px-1 rounded">{permission.id}</code>
                           </div>
                         </div>
                       )
@@ -874,7 +874,9 @@ export function RolePermissionManager() {
                 <div className="text-center py-8">
                   <History className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-muted-foreground">No audit entries yet</p>
-                  <p className="text-sm text-muted-foreground">Permission changes will appear here</p>
+                  <p className="text-sm text-muted-foreground">
+                    Permission changes will appear here
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -1006,7 +1008,9 @@ export function RolePermissionManager() {
                 <div className="text-center p-4 border rounded-lg">
                   <CheckCircle className="h-8 w-8 text-green-500 mx-auto mb-2" />
                   <p className="font-medium">Security Status</p>
-                  <p className="text-sm text-muted-foreground">All permissions properly configured</p>
+                  <p className="text-sm text-muted-foreground">
+                    All permissions properly configured
+                  </p>
                 </div>
                 <div className="text-center p-4 border rounded-lg">
                   <Shield className="h-8 w-8 text-blue-500 mx-auto mb-2" />
@@ -1016,7 +1020,9 @@ export function RolePermissionManager() {
                 <div className="text-center p-4 border rounded-lg">
                   <History className="h-8 w-8 text-purple-500 mx-auto mb-2" />
                   <p className="font-medium">Audit Trail</p>
-                  <p className="text-sm text-muted-foreground">{auditLogs.length} recent actions logged</p>
+                  <p className="text-sm text-muted-foreground">
+                    {auditLogs.length} recent actions logged
+                  </p>
                 </div>
               </div>
             </CardContent>

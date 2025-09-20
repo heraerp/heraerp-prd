@@ -21,7 +21,11 @@ interface PaymentMethodSelectorProps {
   isProcessing?: boolean
 }
 
-export function PaymentMethodSelector({ amount, onPayment, isProcessing }: PaymentMethodSelectorProps) {
+export function PaymentMethodSelector({
+  amount,
+  onPayment,
+  isProcessing
+}: PaymentMethodSelectorProps) {
   const [method, setMethod] = useState<'cash' | 'card'>('cash')
   const [cashReceived, setCashReceived] = useState('')
   const [cardReference, setCardReference] = useState('')
@@ -41,14 +45,14 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
       onPayment({
         method: 'cash',
         amount: amount,
-        reference: `CASH-${Date.now()}`,
+        reference: `CASH-${Date.now()}`
       })
     } else {
       onPayment({
         method: 'card',
         amount: amount,
         reference: cardReference || `CARD-${Date.now()}`,
-        card_last_four: cardLastFour,
+        card_last_four: cardLastFour
       })
     }
   }
@@ -69,10 +73,10 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
       <div className="grid grid-cols-2 gap-4">
         <Card
           className={cn(
-            "p-6 cursor-pointer transition-all border-2",
-            method === 'cash' 
-              ? "border-primary bg-primary/5" 
-              : "border-gray-200 hover:border-gray-300"
+            'p-6 cursor-pointer transition-all border-2',
+            method === 'cash'
+              ? 'border-primary bg-primary/5'
+              : 'border-gray-200 hover:border-gray-300'
           )}
           onClick={() => setMethod('cash')}
         >
@@ -84,10 +88,10 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
 
         <Card
           className={cn(
-            "p-6 cursor-pointer transition-all border-2",
-            method === 'card' 
-              ? "border-primary bg-primary/5" 
-              : "border-gray-200 hover:border-gray-300"
+            'p-6 cursor-pointer transition-all border-2',
+            method === 'card'
+              ? 'border-primary bg-primary/5'
+              : 'border-gray-200 hover:border-gray-300'
           )}
           onClick={() => setMethod('card')}
         >
@@ -115,7 +119,7 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
                   type="number"
                   placeholder="0.00"
                   value={cashReceived}
-                  onChange={(e) => setCashReceived(e.target.value)}
+                  onChange={e => setCashReceived(e.target.value)}
                   className="text-lg"
                   min="0"
                   step="0.01"
@@ -152,7 +156,7 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
                   id="card-ref"
                   placeholder="Transaction reference"
                   value={cardReference}
-                  onChange={(e) => setCardReference(e.target.value)}
+                  onChange={e => setCardReference(e.target.value)}
                 />
               </div>
 
@@ -162,14 +166,15 @@ export function PaymentMethodSelector({ amount, onPayment, isProcessing }: Payme
                   id="card-last"
                   placeholder="1234"
                   value={cardLastFour}
-                  onChange={(e) => setCardLastFour(e.target.value.slice(0, 4))}
+                  onChange={e => setCardLastFour(e.target.value.slice(0, 4))}
                   maxLength={4}
                 />
               </div>
 
               <div className="p-4 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-700">
-                  Card payment will be processed. In production, this would integrate with your payment processor.
+                  Card payment will be processed. In production, this would integrate with your
+                  payment processor.
                 </p>
               </div>
             </>

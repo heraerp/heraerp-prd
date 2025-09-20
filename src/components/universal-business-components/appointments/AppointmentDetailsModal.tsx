@@ -578,14 +578,14 @@ export function AppointmentDetailsModal({
 
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Smart Code</label>
-                  <p className="text-xs font-mono bg-muted px-2 py-1 rounded">
-                    {props.smartCode}
-                  </p>
+                  <p className="text-xs font-mono bg-muted px-2 py-1 rounded">{props.smartCode}</p>
                 </div>
 
                 {props.specialRequests && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Special Requests</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Special Requests
+                    </label>
                     <p className="text-sm bg-yellow-50 border border-yellow-200 rounded p-2">
                       {props.specialRequests}
                     </p>
@@ -728,7 +728,9 @@ export function AppointmentDetailsModal({
               <Brain className="w-4 h-4 mr-1" />
               {showAIInsights ? 'Hide' : 'Show'} AI
             </Button>
-            <span className="text-xs text-muted-foreground">Appointment ID: {props.appointmentId}</span>
+            <span className="text-xs text-muted-foreground">
+              Appointment ID: {props.appointmentId}
+            </span>
           </div>
 
           <div className="flex gap-2">

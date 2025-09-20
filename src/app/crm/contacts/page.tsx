@@ -380,7 +380,9 @@ export default function ContactsPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{contact.entity_name}</p>
-                        <p className="text-xs text-foreground/60">{contact.metadata?.title || 'N/A'}</p>
+                        <p className="text-xs text-foreground/60">
+                          {contact.metadata?.title || 'N/A'}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -390,7 +392,9 @@ export default function ContactsPage() {
                       <div>
                         <p className="text-sm text-foreground">{relation.company || 'N/A'}</p>
                         {contact.metadata?.department && (
-                          <p className="text-xs text-foreground/60">{contact.metadata.department}</p>
+                          <p className="text-xs text-foreground/60">
+                            {contact.metadata.department}
+                          </p>
                         )}
                       </div>
                     </div>

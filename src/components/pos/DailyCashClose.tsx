@@ -226,7 +226,9 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Total Sales</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Total Sales
+              </span>
               <DollarSign className="w-4 h-4 text-purple-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(totalDaySales)}</p>
@@ -240,7 +242,9 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Transactions</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Transactions
+              </span>
               <ShoppingCart className="w-4 h-4 text-primary" />
             </div>
             <p className="text-2xl font-bold">{totalTransactions}</p>
@@ -253,7 +257,9 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Active Shifts</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Active Shifts
+              </span>
               <Users className="w-4 h-4 text-green-600" />
             </div>
             <p className="text-2xl font-bold">{openShift ? 1 : 0}</p>
@@ -264,7 +270,9 @@ export default function DailyCashClose() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Card Batches</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Card Batches
+              </span>
               <CreditCard className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{cardBatches.length}</p>
@@ -320,19 +328,27 @@ export default function DailyCashClose() {
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Open Time</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Open Time
+                      </p>
                       <p className="font-medium">{shift.openTime.toLocaleTimeString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Sales</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Sales
+                      </p>
                       <p className="font-medium">{shift.salesCount} transactions</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Total
+                      </p>
                       <p className="font-medium">{formatCurrency(shift.totalSales)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Cash Expected</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Cash Expected
+                      </p>
                       <p className="font-medium">{formatCurrency(shift.cashExpected)}</p>
                     </div>
                   </div>
@@ -366,7 +382,9 @@ export default function DailyCashClose() {
 
                       <div className="border-t pt-4 flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Counted</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Total Counted
+                          </p>
                           <p className="text-2xl font-bold">{formatCurrency(cashCounted)}</p>
                           {cashCounted !== 0 && (
                             <p
@@ -418,7 +436,9 @@ export default function DailyCashClose() {
                     <div className="border-t pt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Cash Variance</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Cash Variance
+                          </p>
                           <p
                             className={cn(
                               'text-lg font-semibold',
@@ -434,7 +454,9 @@ export default function DailyCashClose() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Closed at</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Closed at
+                          </p>
                           <p className="font-medium">{shift.closeTime?.toLocaleTimeString()}</p>
                         </div>
                       </div>
@@ -475,12 +497,16 @@ export default function DailyCashClose() {
                       </div>
                       <div>
                         <p className="font-medium">{payment.method}</p>
-                        <p className="text-sm text-muted-foreground">{payment.count} transactions</p>
+                        <p className="text-sm text-muted-foreground">
+                          {payment.count} transactions
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">{formatCurrency(payment.amount)}</p>
-                      <p className="text-sm text-muted-foreground">{payment.percentage.toFixed(1)}%</p>
+                      <p className="text-sm text-muted-foreground">
+                        {payment.percentage.toFixed(1)}%
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -525,15 +551,21 @@ export default function DailyCashClose() {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Authorizations</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Authorizations
+                      </p>
                       <p className="text-xl font-semibold">{batch.authCount}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Amount</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Total Amount
+                      </p>
                       <p className="text-xl font-semibold">{formatCurrency(batch.totalAmount)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Settlement Date</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Settlement Date
+                      </p>
                       <p className="text-xl font-semibold">Tomorrow</p>
                     </div>
                   </div>
@@ -586,7 +618,9 @@ export default function DailyCashClose() {
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">VAT Report</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Tax collection summary</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Tax collection summary
+                </p>
               </CardContent>
             </Card>
 
@@ -610,7 +644,9 @@ export default function DailyCashClose() {
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold text-lg mb-1">Sales Analytics</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Performance insights</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Performance insights
+                </p>
               </CardContent>
             </Card>
           </div>

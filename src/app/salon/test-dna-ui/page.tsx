@@ -27,11 +27,11 @@ import {
   InfoBadgeDNA,
   ScrollAreaDNA
 } from '@/lib/dna/components/ui'
-import { 
-  Calendar, 
-  User, 
-  Mail, 
-  Phone, 
+import {
+  Calendar,
+  User,
+  Mail,
+  Phone,
   Search,
   Filter,
   Plus,
@@ -51,11 +51,23 @@ import {
 
 // Sample data for lists
 const sampleCustomers = [
-  { id: 1, name: 'Sarah Johnson', email: 'sarah@example.com', phone: '+1234567890', status: 'active' },
+  {
+    id: 1,
+    name: 'Sarah Johnson',
+    email: 'sarah@example.com',
+    phone: '+1234567890',
+    status: 'active'
+  },
   { id: 2, name: 'Mike Chen', email: 'mike@example.com', phone: '+0987654321', status: 'pending' },
-  { id: 3, name: 'Emma Wilson', email: 'emma@example.com', phone: '+1122334455', status: 'inactive' },
+  {
+    id: 3,
+    name: 'Emma Wilson',
+    email: 'emma@example.com',
+    phone: '+1122334455',
+    status: 'inactive'
+  },
   { id: 4, name: 'John Davis', email: 'john@example.com', phone: '+5544332211', status: 'active' },
-  { id: 5, name: 'Lisa Brown', email: 'lisa@example.com', phone: '+9988776655', status: 'active' },
+  { id: 5, name: 'Lisa Brown', email: 'lisa@example.com', phone: '+9988776655', status: 'active' }
 ]
 
 const statusOptions = [
@@ -101,22 +113,19 @@ export default function TestDNAUIPage() {
           subtitle="Complete UI kit with built-in dark mode support"
           icon={Settings}
           actions={
-            <ButtonDNA 
-              icon={theme === 'light' ? Clock : Calendar}
-              onClick={toggleTheme}
-            >
+            <ButtonDNA icon={theme === 'light' ? Clock : Calendar} onClick={toggleTheme}>
               {theme === 'light' ? 'Dark' : 'Light'} Mode
             </ButtonDNA>
           }
         />
-        
+
         <div className="container mx-auto px-6 py-8 space-y-12">
           {/* Form Section */}
           <section id="forms">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               Form Components
             </h2>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <CardDNA title="Customer Information" icon={User}>
                 <div className="space-y-4">
@@ -129,7 +138,7 @@ export default function TestDNAUIPage() {
                     icon={User}
                     helper="Legal name as it appears on documents"
                   />
-                  
+
                   <FormFieldDNA
                     type="email"
                     label="Email Address"
@@ -139,7 +148,7 @@ export default function TestDNAUIPage() {
                     icon={Mail}
                     error={email && !email.includes('@') ? 'Invalid email format' : undefined}
                   />
-                  
+
                   <FormFieldDNA
                     type="tel"
                     label="Phone Number"
@@ -148,7 +157,7 @@ export default function TestDNAUIPage() {
                     placeholder="+1 (555) 123-4567"
                     icon={Phone}
                   />
-                  
+
                   <FormFieldDNA
                     type="select"
                     label="Status"
@@ -162,7 +171,7 @@ export default function TestDNAUIPage() {
                   />
                 </div>
               </CardDNA>
-              
+
               <CardDNA title="Appointment Details" icon={Calendar}>
                 <div className="space-y-4">
                   <FormFieldDNA
@@ -172,7 +181,7 @@ export default function TestDNAUIPage() {
                     onChange={setDate}
                     icon={Calendar}
                   />
-                  
+
                   <FormFieldDNA
                     type="time"
                     label="Appointment Time"
@@ -180,7 +189,7 @@ export default function TestDNAUIPage() {
                     onChange={setTime}
                     icon={Clock}
                   />
-                  
+
                   <FormFieldDNA
                     type="textarea"
                     label="Special Notes"
@@ -190,7 +199,7 @@ export default function TestDNAUIPage() {
                     rows={4}
                     helper="This will be visible to the service provider"
                   />
-                  
+
                   <div className="flex gap-3">
                     <PrimaryButtonDNA
                       icon={Save}
@@ -201,10 +210,8 @@ export default function TestDNAUIPage() {
                     >
                       Save Appointment
                     </PrimaryButtonDNA>
-                    
-                    <SecondaryButtonDNA icon={ArrowLeft}>
-                      Cancel
-                    </SecondaryButtonDNA>
+
+                    <SecondaryButtonDNA icon={ArrowLeft}>Cancel</SecondaryButtonDNA>
                   </div>
                 </div>
               </CardDNA>
@@ -216,7 +223,7 @@ export default function TestDNAUIPage() {
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               Card Variants
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <CardDNA title="Default Card" icon={Settings}>
                 <p className="text-gray-600 dark:text-gray-400">
@@ -226,7 +233,7 @@ export default function TestDNAUIPage() {
                   <BadgeDNA>Default</BadgeDNA>
                 </div>
               </CardDNA>
-              
+
               <InfoCardDNA title="Information" icon={Info}>
                 <p className="text-gray-600 dark:text-gray-400">
                   Use for informational content and help messages.
@@ -235,7 +242,7 @@ export default function TestDNAUIPage() {
                   <InfoBadgeDNA>Info</InfoBadgeDNA>
                 </div>
               </InfoCardDNA>
-              
+
               <SuccessCardDNA title="Success State" icon={CheckCircle}>
                 <p className="text-gray-600 dark:text-gray-400">
                   Perfect for positive outcomes and confirmations.
@@ -244,7 +251,7 @@ export default function TestDNAUIPage() {
                   <SuccessBadgeDNA>Active</SuccessBadgeDNA>
                 </div>
               </SuccessCardDNA>
-              
+
               <WarningCardDNA title="Warning" icon={AlertCircle}>
                 <p className="text-gray-600 dark:text-gray-400">
                   Draw attention to important information.
@@ -254,16 +261,14 @@ export default function TestDNAUIPage() {
                 </div>
               </WarningCardDNA>
             </div>
-            
+
             <div className="mt-4">
               <DangerCardDNA title="Danger Zone" icon={XCircle} className="max-w-md">
                 <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  Use danger cards for destructive actions or critical errors. 
-                  Always provide clear warnings before irreversible actions.
+                  Use danger cards for destructive actions or critical errors. Always provide clear
+                  warnings before irreversible actions.
                 </p>
-                <DangerButtonDNA icon={Trash2}>
-                  Delete Account
-                </DangerButtonDNA>
+                <DangerButtonDNA icon={Trash2}>Delete Account</DangerButtonDNA>
               </DangerCardDNA>
             </div>
           </section>
@@ -273,37 +278,47 @@ export default function TestDNAUIPage() {
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               Button Styles
             </h2>
-            
+
             <CardDNA>
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Primary Actions</h3>
+                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">
+                    Primary Actions
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     <PrimaryButtonDNA icon={Plus}>Create New</PrimaryButtonDNA>
                     <PrimaryButtonDNA icon={Save}>Save Changes</PrimaryButtonDNA>
-                    <PrimaryButtonDNA loading loadingText="Processing...">Submit</PrimaryButtonDNA>
+                    <PrimaryButtonDNA loading loadingText="Processing...">
+                      Submit
+                    </PrimaryButtonDNA>
                   </div>
                 </div>
-                
+
                 <div>
-                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Secondary Actions</h3>
+                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">
+                    Secondary Actions
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     <SecondaryButtonDNA icon={ArrowLeft}>Go Back</SecondaryButtonDNA>
                     <SecondaryButtonDNA icon={Edit}>Edit Details</SecondaryButtonDNA>
                     <SecondaryButtonDNA disabled>Disabled</SecondaryButtonDNA>
                   </div>
                 </div>
-                
+
                 <div>
-                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Danger Actions</h3>
+                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">
+                    Danger Actions
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     <DangerButtonDNA icon={Trash2}>Delete Item</DangerButtonDNA>
                     <DangerButtonDNA icon={XCircle}>Cancel Subscription</DangerButtonDNA>
                   </div>
                 </div>
-                
+
                 <div>
-                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Ghost Actions</h3>
+                  <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">
+                    Ghost Actions
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     <GhostButtonDNA icon={Settings}>Settings</GhostButtonDNA>
                     <GhostButtonDNA icon={Filter}>Filter</GhostButtonDNA>
@@ -319,7 +334,7 @@ export default function TestDNAUIPage() {
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               Badge Types
             </h2>
-            
+
             <CardDNA>
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-2">
@@ -330,14 +345,27 @@ export default function TestDNAUIPage() {
                   <DangerBadgeDNA icon={XCircle}>Expired</DangerBadgeDNA>
                   <InfoBadgeDNA icon={Info}>New Feature</InfoBadgeDNA>
                 </div>
-                
+
                 <div>
-                  <h3 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Usage Examples</h3>
+                  <h3 className="font-medium mb-2 text-gray-900 dark:text-gray-100">
+                    Usage Examples
+                  </h3>
                   <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <p>• Use <span className="font-mono">SuccessBadgeDNA</span> for active states and positive outcomes</p>
-                    <p>• Use <span className="font-mono">WarningBadgeDNA</span> for pending actions or warnings</p>
-                    <p>• Use <span className="font-mono">DangerBadgeDNA</span> for errors or expired states</p>
-                    <p>• Use <span className="font-mono">InfoBadgeDNA</span> for informational labels</p>
+                    <p>
+                      • Use <span className="font-mono">SuccessBadgeDNA</span> for active states and
+                      positive outcomes
+                    </p>
+                    <p>
+                      • Use <span className="font-mono">WarningBadgeDNA</span> for pending actions
+                      or warnings
+                    </p>
+                    <p>
+                      • Use <span className="font-mono">DangerBadgeDNA</span> for errors or expired
+                      states
+                    </p>
+                    <p>
+                      • Use <span className="font-mono">InfoBadgeDNA</span> for informational labels
+                    </p>
                   </div>
                 </div>
               </div>
@@ -349,7 +377,7 @@ export default function TestDNAUIPage() {
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               List & Scroll Area
             </h2>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <CardDNA title="Customer List" icon={User}>
                 <div className="space-y-4 mb-4">
@@ -361,7 +389,7 @@ export default function TestDNAUIPage() {
                     placeholder="Search by name or email..."
                     icon={Search}
                   />
-                  
+
                   <FormFieldDNA
                     type="select"
                     label="Filter by Status"
@@ -371,15 +399,17 @@ export default function TestDNAUIPage() {
                     icon={Filter}
                   />
                 </div>
-                
+
                 <ScrollAreaDNA height="h-96">
                   <div className="space-y-2 pr-4">
                     {sampleCustomers
                       .filter(customer => {
                         if (search) {
                           const searchLower = search.toLowerCase()
-                          return customer.name.toLowerCase().includes(searchLower) ||
-                                 customer.email.toLowerCase().includes(searchLower)
+                          return (
+                            customer.name.toLowerCase().includes(searchLower) ||
+                            customer.email.toLowerCase().includes(searchLower)
+                          )
                         }
                         return true
                       })
@@ -404,11 +434,15 @@ export default function TestDNAUIPage() {
                                 {customer.phone}
                               </p>
                             </div>
-                            <BadgeDNA variant={
-                              customer.status === 'active' ? 'success' : 
-                              customer.status === 'pending' ? 'warning' : 
-                              'secondary'
-                            }>
+                            <BadgeDNA
+                              variant={
+                                customer.status === 'active'
+                                  ? 'success'
+                                  : customer.status === 'pending'
+                                    ? 'warning'
+                                    : 'secondary'
+                              }
+                            >
                               {customer.status}
                             </BadgeDNA>
                           </div>
@@ -417,7 +451,7 @@ export default function TestDNAUIPage() {
                   </div>
                 </ScrollAreaDNA>
               </CardDNA>
-              
+
               <CardDNA title="Service Pricing" icon={DollarSign}>
                 <ScrollAreaDNA height="h-[500px]">
                   <div className="space-y-3 pr-4">
@@ -433,10 +467,7 @@ export default function TestDNAUIPage() {
                       { name: 'Bridal Package', price: 800, duration: 300 },
                       { name: 'Kids Haircut', price: 35, duration: 20 }
                     ].map((service, index) => (
-                      <div
-                        key={index}
-                        className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                      >
+                      <div key={index} className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <div className="flex justify-between items-start mb-2">
                           <h4 className="font-medium text-gray-900 dark:text-gray-100">
                             {service.name}

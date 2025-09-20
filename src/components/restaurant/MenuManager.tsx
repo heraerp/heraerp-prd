@@ -342,7 +342,9 @@ export function MenuManager() {
                 <Search className="w-12 h-12 mx-auto" />
               </div>
               <h3 className="text-lg font-medium text-gray-100 mb-2">No menu items found</h3>
-              <p className="text-muted-foreground mb-4">Try adjusting your search terms or filters</p>
+              <p className="text-muted-foreground mb-4">
+                Try adjusting your search terms or filters
+              </p>
               <Button variant="outline">Clear Filters</Button>
             </Card>
           )}

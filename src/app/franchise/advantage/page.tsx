@@ -261,19 +261,25 @@ export default function AdvantagePage() {
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-muted-foreground dark:text-muted-foreground">{row.sap}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">
+                              {row.sap}
+                            </span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-muted-foreground dark:text-muted-foreground">{row.oracle}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">
+                              {row.oracle}
+                            </span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
                           <div className="flex items-center">
                             <X className="h-5 w-5 text-red-500 mr-2" />
-                            <span className="text-muted-foreground dark:text-muted-foreground">{row.others}</span>
+                            <span className="text-muted-foreground dark:text-muted-foreground">
+                              {row.others}
+                            </span>
                           </div>
                         </td>
                       </tr>

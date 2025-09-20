@@ -428,7 +428,9 @@ export default function APIMonitorPage() {
               <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                 16 APIs Monitored
               </Badge>
-              <span className="text-muted-foreground">Last updated: {new Date().toLocaleTimeString()}</span>
+              <span className="text-muted-foreground">
+                Last updated: {new Date().toLocaleTimeString()}
+              </span>
             </div>
             <div className="text-muted-foreground">
               "Performance is not just about speed, it's about reliability" - Steve Jobs

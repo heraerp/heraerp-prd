@@ -8,7 +8,7 @@
 
 import React, { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
+import {
   Calendar,
   Clock,
   Users,
@@ -64,7 +64,13 @@ interface Appointment {
 }
 
 // --- KPI Card Component ---
-function KpiCard({ icon: Icon, label, value, trend, iconBg }: {
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  trend,
+  iconBg
+}: {
   icon: React.ElementType
   label: string
   value: string | number
@@ -75,12 +81,8 @@ function KpiCard({ icon: Icon, label, value, trend, iconBg }: {
     <div className="glass-card p-6 group hover:scale-[1.02] transition-all">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">
-            {label}
-          </p>
-          <p className="text-3xl font-semibold text-text-100 tabular-nums">
-            {value}
-          </p>
+          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">{label}</p>
+          <p className="text-3xl font-semibold text-text-100 tabular-nums">{value}</p>
           {trend && (
             <p className="text-sm text-text-300 flex items-center gap-1">
               <span className={trend.isPositive ? 'text-gold-500' : 'text-red-400'}>
@@ -99,7 +101,12 @@ function KpiCard({ icon: Icon, label, value, trend, iconBg }: {
 }
 
 // --- Time Slot Component ---
-function TimeSlot({ time, isAvailable, isSelected, onClick }: {
+function TimeSlot({
+  time,
+  isAvailable,
+  isSelected,
+  onClick
+}: {
   time: string
   isAvailable: boolean
   isSelected: boolean
@@ -110,12 +117,12 @@ function TimeSlot({ time, isAvailable, isSelected, onClick }: {
       onClick={onClick}
       disabled={!isAvailable}
       className={cn(
-        "px-3 py-2 rounded-lg text-sm font-medium transition-all",
+        'px-3 py-2 rounded-lg text-sm font-medium transition-all',
         isAvailable
           ? isSelected
-            ? "bg-gradient-to-r from-gold-500 to-gold-400 text-charcoal-900 shadow-[0_8px_30px_rgba(212,175,55,0.35)]"
-            : "bg-white/5 text-text-300 hover:bg-white/10"
-          : "bg-charcoal-700 text-text-500 cursor-not-allowed opacity-50"
+            ? 'bg-gradient-to-r from-gold-500 to-gold-400 text-charcoal-900 shadow-[0_8px_30px_rgba(212,175,55,0.35)]'
+            : 'bg-white/5 text-text-300 hover:bg-white/10'
+          : 'bg-charcoal-700 text-text-500 cursor-not-allowed opacity-50'
       )}
     >
       {time}
@@ -124,7 +131,11 @@ function TimeSlot({ time, isAvailable, isSelected, onClick }: {
 }
 
 // --- Appointment Card Component ---
-function AppointmentCard({ appointment, onEdit, onCancel }: {
+function AppointmentCard({
+  appointment,
+  onEdit,
+  onCancel
+}: {
   appointment: Appointment
   onEdit: () => void
   onCancel: () => void
@@ -174,8 +185,8 @@ function AppointmentCard({ appointment, onEdit, onCancel }: {
             </div>
           </div>
         </div>
-        
-        <Badge className={cn("flex items-center gap-1", statusColors[appointment.status])}>
+
+        <Badge className={cn('flex items-center gap-1', statusColors[appointment.status])}>
           <StatusIcon className="w-3 h-3" />
           {appointment.status}
         </Badge>
@@ -190,9 +201,7 @@ function AppointmentCard({ appointment, onEdit, onCancel }: {
               <p className="text-xs text-text-500">{appointment.service.duration} mins</p>
             </div>
           </div>
-          <p className="text-lg font-semibold text-gold-400">
-            £{appointment.service.price}
-          </p>
+          <p className="text-lg font-semibold text-gold-400">£{appointment.service.price}</p>
         </div>
 
         <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
@@ -211,9 +220,7 @@ function AppointmentCard({ appointment, onEdit, onCancel }: {
       </div>
 
       {appointment.notes && (
-        <p className="text-sm text-text-500 mt-3 p-3 bg-white/5 rounded-lg">
-          {appointment.notes}
-        </p>
+        <p className="text-sm text-text-500 mt-3 p-3 bg-white/5 rounded-lg">{appointment.notes}</p>
       )}
 
       <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -237,7 +244,12 @@ function AppointmentCard({ appointment, onEdit, onCancel }: {
 }
 
 // --- Calendar Day Component ---
-function CalendarDay({ date, appointments, isSelected, onClick }: {
+function CalendarDay({
+  date,
+  appointments,
+  isSelected,
+  onClick
+}: {
   date: Date
   appointments: Appointment[]
   isSelected: boolean
@@ -250,30 +262,27 @@ function CalendarDay({ date, appointments, isSelected, onClick }: {
     <button
       onClick={onClick}
       className={cn(
-        "p-4 rounded-lg transition-all",
+        'p-4 rounded-lg transition-all',
         isSelected
-          ? "bg-gradient-to-br from-gold-500/20 to-gold-400/20 border-2 border-gold-500"
-          : "glass-card hover:scale-[1.02]",
-        isToday && !isSelected && "ring-2 ring-gold-500/30"
+          ? 'bg-gradient-to-br from-gold-500/20 to-gold-400/20 border-2 border-gold-500'
+          : 'glass-card hover:scale-[1.02]',
+        isToday && !isSelected && 'ring-2 ring-gold-500/30'
       )}
     >
       <div className="text-center">
-        <p className="text-xs text-text-500 uppercase">
-          {format(date, 'EEE')}
-        </p>
-        <p className={cn(
-          "text-2xl font-semibold mt-1",
-          isSelected ? "text-gold-400" : "text-text-100"
-        )}>
+        <p className="text-xs text-text-500 uppercase">{format(date, 'EEE')}</p>
+        <p
+          className={cn(
+            'text-2xl font-semibold mt-1',
+            isSelected ? 'text-gold-400' : 'text-text-100'
+          )}
+        >
           {format(date, 'd')}
         </p>
         {hasAppointments && (
           <div className="mt-2 flex justify-center gap-1">
             {appointments.slice(0, 3).map((_, idx) => (
-              <div
-                key={idx}
-                className="w-2 h-2 rounded-full bg-gold-500"
-              />
+              <div key={idx} className="w-2 h-2 rounded-full bg-gold-500" />
             ))}
             {appointments.length > 3 && (
               <span className="text-xs text-text-500">+{appointments.length - 3}</span>
@@ -308,10 +317,11 @@ export default function SalonAppointmentsV2Page() {
 
     if (searchTerm) {
       const search = searchTerm.toLowerCase()
-      filtered = filtered.filter(apt => 
-        apt.customer.name.toLowerCase().includes(search) ||
-        apt.service.name.toLowerCase().includes(search) ||
-        apt.staff.name.toLowerCase().includes(search)
+      filtered = filtered.filter(
+        apt =>
+          apt.customer.name.toLowerCase().includes(search) ||
+          apt.service.name.toLowerCase().includes(search) ||
+          apt.staff.name.toLowerCase().includes(search)
       )
     }
 
@@ -324,9 +334,7 @@ export default function SalonAppointmentsV2Page() {
 
   // Get appointments for each day
   const getAppointmentsForDate = (date: Date) => {
-    return filteredAppointments.filter(apt => 
-      isSameDay(parseISO(apt.date), date)
-    )
+    return filteredAppointments.filter(apt => isSameDay(parseISO(apt.date), date))
   }
 
   // Calculate stats
@@ -335,7 +343,7 @@ export default function SalonAppointmentsV2Page() {
     const todayAppts = appointments.filter(apt => isSameDay(parseISO(apt.date), today))
     const revenue = todayAppts.reduce((sum, apt) => sum + apt.service.price, 0)
     const utilization = Math.round((todayAppts.length / 20) * 100) // Assuming 20 slots per day
-    
+
     return {
       todayCount: todayAppts.length,
       revenue,
@@ -349,14 +357,14 @@ export default function SalonAppointmentsV2Page() {
     try {
       await cancelAppointment(id)
       toast({
-        title: "Appointment cancelled",
-        description: "The appointment has been cancelled successfully"
+        title: 'Appointment cancelled',
+        description: 'The appointment has been cancelled successfully'
       })
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to cancel appointment",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to cancel appointment',
+        variant: 'destructive'
       })
     }
   }
@@ -407,10 +415,7 @@ export default function SalonAppointmentsV2Page() {
               <Calendar className="w-4 h-4" />
               Calendar View
             </button>
-            <button 
-              className="gold-btn"
-              onClick={() => router.push('/salon/appointments/new')}
-            >
+            <button className="gold-btn" onClick={() => router.push('/salon/appointments/new')}>
               <Plus className="w-4 h-4" />
               New Appointment
             </button>
@@ -455,14 +460,14 @@ export default function SalonAppointmentsV2Page() {
                 type="text"
                 placeholder="Search appointments..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="glass-input w-full pl-10"
               />
             </div>
-            
-            <select 
+
+            <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="glass-select"
             >
               <option value="all">All Status</option>
@@ -477,10 +482,10 @@ export default function SalonAppointmentsV2Page() {
               <button
                 onClick={() => setViewMode('day')}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   viewMode === 'day'
-                    ? "bg-gold-500/10 text-gold-400 border border-gold-500/30"
-                    : "bg-white/5 text-text-300 hover:bg-white/10"
+                    ? 'bg-gold-500/10 text-gold-400 border border-gold-500/30'
+                    : 'bg-white/5 text-text-300 hover:bg-white/10'
                 )}
               >
                 Day
@@ -488,10 +493,10 @@ export default function SalonAppointmentsV2Page() {
               <button
                 onClick={() => setViewMode('week')}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   viewMode === 'week'
-                    ? "bg-gold-500/10 text-gold-400 border border-gold-500/30"
-                    : "bg-white/5 text-text-300 hover:bg-white/10"
+                    ? 'bg-gold-500/10 text-gold-400 border border-gold-500/30'
+                    : 'bg-white/5 text-text-300 hover:bg-white/10'
                 )}
               >
                 Week
@@ -548,9 +553,26 @@ export default function SalonAppointmentsV2Page() {
             <div className="glass-card p-6">
               <h3 className="font-semibold text-text-100 mb-4">Available Slots</h3>
               <div className="grid grid-cols-3 gap-2">
-                {['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', 
-                  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-                  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'].map(time => (
+                {[
+                  '09:00',
+                  '09:30',
+                  '10:00',
+                  '10:30',
+                  '11:00',
+                  '11:30',
+                  '12:00',
+                  '12:30',
+                  '13:00',
+                  '13:30',
+                  '14:00',
+                  '14:30',
+                  '15:00',
+                  '15:30',
+                  '16:00',
+                  '16:30',
+                  '17:00',
+                  '17:30'
+                ].map(time => (
                   <TimeSlot
                     key={time}
                     time={time}
@@ -587,12 +609,12 @@ export default function SalonAppointmentsV2Page() {
                 <Calendar className="w-12 h-12 mx-auto mb-4 text-text-500" />
                 <p className="text-text-300 text-lg">No appointments scheduled</p>
                 <p className="text-sm mt-2 text-text-500">
-                  {searchTerm || filterStatus !== 'all' 
-                    ? 'Try adjusting your filters' 
+                  {searchTerm || filterStatus !== 'all'
+                    ? 'Try adjusting your filters'
                     : `Book your first appointment for ${format(selectedDate, 'MMMM d')}`}
                 </p>
                 {!(searchTerm || filterStatus !== 'all') && (
-                  <button 
+                  <button
                     onClick={() => router.push('/salon/appointments/new')}
                     className="gold-btn mt-4"
                   >

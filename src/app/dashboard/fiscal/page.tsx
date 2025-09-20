@@ -381,7 +381,9 @@ export default function FiscalDashboardPage() {
                       </div>
                       <div>
                         <div className="font-medium">{step.description}</div>
-                        <div className="text-sm text-muted-foreground">Step {step.step_number} of 8</div>
+                        <div className="text-sm text-muted-foreground">
+                          Step {step.step_number} of 8
+                        </div>
                         {step.completed_at && (
                           <div className="text-xs text-muted-foreground mt-1">
                             Completed on {new Date(step.completed_at).toLocaleDateString()}

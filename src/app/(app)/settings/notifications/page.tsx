@@ -11,8 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Bell, 
+import {
+  Bell,
   Mail,
   MessageSquare,
   Smartphone,
@@ -45,15 +45,17 @@ export default function NotificationsSettingsPage() {
     try {
       await saveNotificationPolicy.mutateAsync(policy)
       toast({
-        title: "Notifications Updated",
-        description: "Your notification preferences have been saved successfully. Changes will apply to all future notifications.",
-        variant: "default"
+        title: 'Notifications Updated',
+        description:
+          'Your notification preferences have been saved successfully. Changes will apply to all future notifications.',
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save notification settings",
-        variant: "destructive"
+        title: 'Save Failed',
+        description:
+          error instanceof Error ? error.message : 'Failed to save notification settings',
+        variant: 'destructive'
       })
     }
   }
@@ -61,7 +63,7 @@ export default function NotificationsSettingsPage() {
   // Calculate notification stats
   const notificationStats = React.useMemo(() => {
     if (!notificationPolicy) return null
-    
+
     const enabledChannels = []
     if (notificationPolicy.email_enabled) enabledChannels.push('Email')
     if (notificationPolicy.sms_enabled) enabledChannels.push('SMS')
@@ -94,7 +96,6 @@ export default function NotificationsSettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -121,12 +122,13 @@ export default function NotificationsSettingsPage() {
       {/* Notification Stats Summary */}
       {notificationStats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Channels</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Active Channels
+                  </div>
                   <div className="text-2xl font-bold flex items-center gap-2">
                     {notificationStats.enabledChannels.length}
                     <span className="text-base font-normal text-gray-500">
@@ -143,7 +145,9 @@ export default function NotificationsSettingsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Event Types</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Event Types
+                  </div>
                   <div className="text-2xl font-bold flex items-center gap-2">
                     {notificationStats.enabledEvents.length}
                     <span className="text-base font-normal text-gray-500">
@@ -178,7 +182,9 @@ export default function NotificationsSettingsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">WhatsApp</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    WhatsApp
+                  </div>
                   <div className="text-2xl font-bold">
                     {notificationPolicy?.whatsapp_enabled ? 'On' : 'Off'}
                   </div>
@@ -191,7 +197,6 @@ export default function NotificationsSettingsPage() {
               </div>
             </CardContent>
           </Card>
-
         </div>
       )}
 
@@ -206,10 +211,10 @@ export default function NotificationsSettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {notificationStats.enabledChannels.map((channel) => (
-                <Badge 
+              {notificationStats.enabledChannels.map(channel => (
+                <Badge
                   key={channel}
-                  variant="outline" 
+                  variant="outline"
                   className="text-green-700 border-green-300 bg-green-50 dark:bg-green-950/30"
                 >
                   {channel === 'Email' && <Mail className="h-3 w-3 mr-1" />}
@@ -230,7 +235,9 @@ export default function NotificationsSettingsPage() {
           <CardContent className="py-12">
             <div className="flex items-center justify-center">
               <RefreshCw className="h-6 w-6 animate-spin text-blue-600 mr-3" />
-              <span className="text-gray-600 dark:text-gray-400">Loading notification settings...</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                Loading notification settings...
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -264,16 +271,14 @@ export default function NotificationsSettingsPage() {
               Notification Delivery
             </div>
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              • Changes apply immediately to all new events
-              • Existing scheduled notifications are not affected
-              • Quiet hours will suppress all non-urgent notifications
-              • Emergency alerts will always be delivered regardless of settings
-              • All notification preferences are logged for audit purposes
+              • Changes apply immediately to all new events • Existing scheduled notifications are
+              not affected • Quiet hours will suppress all non-urgent notifications • Emergency
+              alerts will always be delivered regardless of settings • All notification preferences
+              are logged for audit purposes
             </div>
           </div>
         </AlertDescription>
       </Alert>
-
     </div>
   )
 }

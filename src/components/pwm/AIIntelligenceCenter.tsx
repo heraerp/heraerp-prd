@@ -128,7 +128,9 @@ export function AIIntelligenceCenter({ organizationId }: AIIntelligenceCenterPro
           </div>
           <div>
             <p className="text-sm font-medium text-foreground">AI Active</p>
-            <p className="text-xs text-muted-foreground">Processing {insights?.length || 0} insights</p>
+            <p className="text-xs text-muted-foreground">
+              Processing {insights?.length || 0} insights
+            </p>
           </div>
         </div>
       </div>

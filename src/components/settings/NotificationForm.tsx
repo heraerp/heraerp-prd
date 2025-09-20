@@ -11,13 +11,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Bell, 
+import {
+  Bell,
   Save,
   Mail,
   MessageSquare,
@@ -163,7 +169,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
     events: form.watch('events')
   }
 
-  const handleQuietHoursPreset = (preset: typeof QUIET_HOURS_PRESETS[0]) => {
+  const handleQuietHoursPreset = (preset: (typeof QUIET_HOURS_PRESETS)[0]) => {
     if (preset.start === '' && preset.end === '') {
       form.setValue('quiet_hours.enabled', false)
     } else if (preset.start === 'custom') {
@@ -204,7 +210,6 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-      
       {/* Notification Channels */}
       <Card>
         <CardHeader className="pb-3">
@@ -220,17 +225,17 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
             {/* Email Notifications */}
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  watchedValues.emailEnabled 
-                    ? 'bg-blue-100 dark:bg-blue-950/30 text-blue-600' 
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.emailEnabled
+                      ? 'bg-blue-100 dark:bg-blue-950/30 text-blue-600'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                  }`}
+                >
                   <Mail className="h-4 w-4" />
                 </div>
                 <div>
@@ -240,18 +245,20 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               </div>
               <Switch
                 checked={watchedValues.emailEnabled}
-                onCheckedChange={(checked) => form.setValue('email_enabled', checked)}
+                onCheckedChange={checked => form.setValue('email_enabled', checked)}
               />
             </div>
 
             {/* SMS Notifications */}
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  watchedValues.smsEnabled 
-                    ? 'bg-green-100 dark:bg-green-950/30 text-green-600' 
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.smsEnabled
+                      ? 'bg-green-100 dark:bg-green-950/30 text-green-600'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                  }`}
+                >
                   <Smartphone className="h-4 w-4" />
                 </div>
                 <div>
@@ -261,18 +268,20 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               </div>
               <Switch
                 checked={watchedValues.smsEnabled}
-                onCheckedChange={(checked) => form.setValue('sms_enabled', checked)}
+                onCheckedChange={checked => form.setValue('sms_enabled', checked)}
               />
             </div>
 
             {/* WhatsApp Notifications */}
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  watchedValues.whatsappEnabled 
-                    ? 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600' 
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.whatsappEnabled
+                      ? 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                  }`}
+                >
                   <MessageSquare className="h-4 w-4" />
                 </div>
                 <div>
@@ -282,18 +291,20 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               </div>
               <Switch
                 checked={watchedValues.whatsappEnabled}
-                onCheckedChange={(checked) => form.setValue('whatsapp_enabled', checked)}
+                onCheckedChange={checked => form.setValue('whatsapp_enabled', checked)}
               />
             </div>
 
             {/* Push Notifications */}
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  watchedValues.pushEnabled 
-                    ? 'bg-purple-100 dark:bg-purple-950/30 text-purple-600' 
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.pushEnabled
+                      ? 'bg-purple-100 dark:bg-purple-950/30 text-purple-600'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                  }`}
+                >
                   <Bell className="h-4 w-4" />
                 </div>
                 <div>
@@ -303,10 +314,9 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               </div>
               <Switch
                 checked={watchedValues.pushEnabled}
-                onCheckedChange={(checked) => form.setValue('push_enabled', checked)}
+                onCheckedChange={checked => form.setValue('push_enabled', checked)}
               />
             </div>
-
           </div>
 
           {getEnabledChannelCount() === 0 && (
@@ -317,7 +327,6 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               </AlertDescription>
             </Alert>
           )}
-
         </CardContent>
       </Card>
 
@@ -336,15 +345,15 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
-          
           {Object.entries(eventsByCategory).map(([category, events]) => (
             <div key={category}>
-              <div className="font-medium text-gray-900 dark:text-gray-100 mb-3">
-                {category}
-              </div>
+              <div className="font-medium text-gray-900 dark:text-gray-100 mb-3">{category}</div>
               <div className="grid gap-3">
-                {events.map((event) => (
-                  <div key={event.key} className="flex items-center justify-between p-3 border rounded-lg">
+                {events.map(event => (
+                  <div
+                    key={event.key}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div className="flex items-center gap-3">
                       <event.icon className="h-4 w-4 text-gray-600" />
                       <div>
@@ -353,8 +362,11 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                       </div>
                     </div>
                     <Switch
-                      checked={watchedValues.events?.[event.key as keyof typeof watchedValues.events] || false}
-                      onCheckedChange={(checked) => 
+                      checked={
+                        watchedValues.events?.[event.key as keyof typeof watchedValues.events] ||
+                        false
+                      }
+                      onCheckedChange={checked =>
                         form.setValue(`events.${event.key}` as any, checked)
                       }
                     />
@@ -364,7 +376,6 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               {category !== 'System' && <Separator className="mt-4" />}
             </div>
           ))}
-
         </CardContent>
       </Card>
 
@@ -380,21 +391,21 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Enable Quiet Hours</Label>
-              <p className="text-sm text-gray-500">Automatically suppress notifications during quiet hours</p>
+              <p className="text-sm text-gray-500">
+                Automatically suppress notifications during quiet hours
+              </p>
             </div>
             <Switch
               checked={watchedValues.quietHours.enabled}
-              onCheckedChange={(checked) => form.setValue('quiet_hours.enabled', checked)}
+              onCheckedChange={checked => form.setValue('quiet_hours.enabled', checked)}
             />
           </div>
 
           {watchedValues.quietHours.enabled && (
             <div className="space-y-4">
-              
               {/* Quick Presets */}
               <div className="space-y-2">
                 <Label>Quick Presets</Label>
@@ -422,7 +433,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                     id="start_time"
                     type="time"
                     value={watchedValues.quietHours.start_time || ''}
-                    onChange={(e) => form.setValue('quiet_hours.start_time', e.target.value)}
+                    onChange={e => form.setValue('quiet_hours.start_time', e.target.value)}
                   />
                 </div>
 
@@ -432,7 +443,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                     id="end_time"
                     type="time"
                     value={watchedValues.quietHours.end_time || ''}
-                    onChange={(e) => form.setValue('quiet_hours.end_time', e.target.value)}
+                    onChange={e => form.setValue('quiet_hours.end_time', e.target.value)}
                   />
                 </div>
 
@@ -440,7 +451,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                   <Label htmlFor="timezone">Timezone</Label>
                   <Select
                     value={watchedValues.quietHours.timezone || 'Asia/Dubai'}
-                    onValueChange={(value) => form.setValue('quiet_hours.timezone', value)}
+                    onValueChange={value => form.setValue('quiet_hours.timezone', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -458,10 +469,8 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                   </Select>
                 </div>
               </div>
-
             </div>
           )}
-
         </CardContent>
       </Card>
 
@@ -500,7 +509,6 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
           )}
         </Button>
       </div>
-
     </form>
   )
 }

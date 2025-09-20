@@ -102,7 +102,9 @@ export function PredictiveAnalytics({ organizationId }: PredictiveAnalyticsProps
               entry.value && (
                 <p key={index} className="text-sm">
                   <span className="text-muted-foreground">{entry.name}:</span>
-                  <span className="ml-2 font-medium text-foreground">{formatCurrency(entry.value)}</span>
+                  <span className="ml-2 font-medium text-foreground">
+                    {formatCurrency(entry.value)}
+                  </span>
                 </p>
               )
           )}

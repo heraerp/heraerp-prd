@@ -286,7 +286,9 @@ export default function FinancialDocumentViewer() {
       <div className="min-h-screen bg-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading financial documents...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading financial documents...
+          </p>
         </div>
       </div>
     )
@@ -650,7 +652,9 @@ export default function FinancialDocumentViewer() {
                             </Badge>
                           </div>
                           <div>
-                            <Label className="text-xs text-muted-foreground">Transaction Date</Label>
+                            <Label className="text-xs text-muted-foreground">
+                              Transaction Date
+                            </Label>
                             <p className="font-medium">
                               {formatDate(
                                 new Date(selectedDocument.transaction_date),
@@ -685,7 +689,9 @@ export default function FinancialDocumentViewer() {
                             </div>
                           </div>
                           <div>
-                            <Label className="text-xs text-muted-foreground">Reference Number</Label>
+                            <Label className="text-xs text-muted-foreground">
+                              Reference Number
+                            </Label>
                             <p className="font-medium">
                               {selectedDocument.reference_number || '-'}
                             </p>
@@ -746,7 +752,9 @@ export default function FinancialDocumentViewer() {
                                   <TableCell>
                                     <div>
                                       <p className="font-medium">{line.account_code}</p>
-                                      <p className="text-xs text-muted-foreground">{line.account_name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {line.account_name}
+                                      </p>
                                     </div>
                                   </TableCell>
                                   <TableCell>{line.description || '-'}</TableCell>
@@ -812,7 +820,9 @@ export default function FinancialDocumentViewer() {
 
                           {selectedDocument.metadata && (
                             <div>
-                              <Label className="text-xs text-muted-foreground">Additional Metadata</Label>
+                              <Label className="text-xs text-muted-foreground">
+                                Additional Metadata
+                              </Label>
                               <pre className="mt-2 p-4 bg-muted dark:bg-muted rounded-lg text-xs overflow-auto">
                                 {JSON.stringify(selectedDocument.metadata, null, 2)}
                               </pre>

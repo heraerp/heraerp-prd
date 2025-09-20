@@ -48,7 +48,9 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
   const [error, setError] = useState<string | null>(null)
   const { currentOrganization } = useOrganization()
 
-  const createTransaction = async (payload: Omit<UniversalTransactionPayload, 'organization_id'>) => {
+  const createTransaction = async (
+    payload: Omit<UniversalTransactionPayload, 'organization_id'>
+  ) => {
     if (!currentOrganization?.id) {
       throw new Error('Organization context required - guardrail enforced')
     }
@@ -72,7 +74,7 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
       const completePayload = {
         ...payload,
         organization_id: currentOrganization.id,
-        transaction_date: payload.transaction_date || new Date().toISOString(),
+        transaction_date: payload.transaction_date || new Date().toISOString()
       }
 
       console.log('Creating universal transaction:', completePayload)
@@ -81,7 +83,7 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
       const response = await fetch('/api/v1/universal/transactions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(completePayload)
       })
@@ -93,9 +95,8 @@ export function useUniversalTxn(): UseUniversalTxnReturn {
 
       const result = await response.json()
       console.log('Transaction created:', result)
-      
-      return result
 
+      return result
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
@@ -129,19 +130,19 @@ export const SMART_CODES = {
   // POS Transactions
   POS_SALE: 'HERA.SALON.POS.SALE.TXN.V1',
   POS_PAYMENT: 'HERA.SALON.POS.PAYMENT.TXN.V1',
-  
+
   // Services
   SERVICE_APPOINTMENT: 'HERA.SALON.SVC.APPOINTMENT.TXN.V1',
   SERVICE_COMPLETE: 'HERA.SALON.SVC.COMPLETE.TXN.V1',
-  
+
   // Products
   PRODUCT_SALE: 'HERA.SALON.PROD.SALE.TXN.V1',
   INVENTORY_ADJUSTMENT: 'HERA.SALON.INV.ADJUSTMENT.TXN.V1',
-  
+
   // Payments
   CASH_PAYMENT: 'HERA.SALON.PAY.CASH.TXN.V1',
   CARD_PAYMENT: 'HERA.SALON.PAY.CARD.TXN.V1',
-  
+
   // Commission and Staff
-  STAFF_COMMISSION: 'HERA.SALON.STAFF.COMMISSION.TXN.V1',
+  STAFF_COMMISSION: 'HERA.SALON.STAFF.COMMISSION.TXN.V1'
 } as const

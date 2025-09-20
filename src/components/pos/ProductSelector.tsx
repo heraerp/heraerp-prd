@@ -27,17 +27,21 @@ export function ProductSelector({ products }: ProductSelectorProps) {
 
   // Group products by category
   const categories = Array.from(new Set(products.map(p => p.category || 'Other')))
-  const productsByCategory = categories.reduce((acc, category) => {
-    acc[category] = products.filter(p => (p.category || 'Other') === category)
-    return acc
-  }, {} as Record<string, ProductPrice[]>)
+  const productsByCategory = categories.reduce(
+    (acc, category) => {
+      acc[category] = products.filter(p => (p.category || 'Other') === category)
+      return acc
+    },
+    {} as Record<string, ProductPrice[]>
+  )
 
   // Filter products by search
   const filteredProducts = (categoryProducts: ProductPrice[]) => {
     if (!search) return categoryProducts
-    return categoryProducts.filter(product =>
-      product.product_name.toLowerCase().includes(search.toLowerCase()) ||
-      product.product_sku.toLowerCase().includes(search.toLowerCase())
+    return categoryProducts.filter(
+      product =>
+        product.product_name.toLowerCase().includes(search.toLowerCase()) ||
+        product.product_sku.toLowerCase().includes(search.toLowerCase())
     )
   }
 
@@ -50,7 +54,7 @@ export function ProductSelector({ products }: ProductSelectorProps) {
       product_name: product.product_name,
       qty: 1,
       unit_price: product.price,
-      on_hand: product.on_hand,
+      on_hand: product.on_hand
     })
   }
 
@@ -65,10 +69,10 @@ export function ProductSelector({ products }: ProductSelectorProps) {
     const isOutOfStock = product.on_hand === 0
 
     return (
-      <Card 
+      <Card
         className={cn(
-          "p-4 cursor-pointer transition-all",
-          isOutOfStock ? "opacity-50" : "hover:shadow-md"
+          'p-4 cursor-pointer transition-all',
+          isOutOfStock ? 'opacity-50' : 'hover:shadow-md'
         )}
         onClick={() => !isOutOfStock && handleAddProduct(product)}
       >
@@ -82,12 +86,13 @@ export function ProductSelector({ products }: ProductSelectorProps) {
           <span className="font-mono text-gray-500">{product.product_sku}</span>
           <div className="flex items-center gap-2">
             <Package className="h-3 w-3 text-gray-400" />
-            <Badge 
+            <Badge
               variant={stockStatus.color as any}
               className={cn(
-                "text-xs",
-                stockStatus.color === 'warning' && "bg-yellow-100 text-yellow-800 border-yellow-200",
-                stockStatus.color === 'destructive' && "bg-red-100 text-red-800 border-red-200"
+                'text-xs',
+                stockStatus.color === 'warning' &&
+                  'bg-yellow-100 text-yellow-800 border-yellow-200',
+                stockStatus.color === 'destructive' && 'bg-red-100 text-red-800 border-red-200'
               )}
             >
               {product.on_hand} units
@@ -113,22 +118,26 @@ export function ProductSelector({ products }: ProductSelectorProps) {
           placeholder="Search products..."
           className="pl-10"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
         />
       </div>
 
       {search ? (
         // Show all filtered results when searching
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {products.filter(product =>
-            product.product_name.toLowerCase().includes(search.toLowerCase()) ||
-            product.product_sku.toLowerCase().includes(search.toLowerCase())
-          ).map(product => (
-            <ProductCard key={product.product_sku} product={product} />
-          ))}
-          {products.filter(product =>
-            product.product_name.toLowerCase().includes(search.toLowerCase()) ||
-            product.product_sku.toLowerCase().includes(search.toLowerCase())
+          {products
+            .filter(
+              product =>
+                product.product_name.toLowerCase().includes(search.toLowerCase()) ||
+                product.product_sku.toLowerCase().includes(search.toLowerCase())
+            )
+            .map(product => (
+              <ProductCard key={product.product_sku} product={product} />
+            ))}
+          {products.filter(
+            product =>
+              product.product_name.toLowerCase().includes(search.toLowerCase()) ||
+              product.product_sku.toLowerCase().includes(search.toLowerCase())
           ).length === 0 && (
             <p className="text-gray-500 col-span-2 text-center py-8">
               No products found matching "{search}"
@@ -138,7 +147,10 @@ export function ProductSelector({ products }: ProductSelectorProps) {
       ) : (
         // Show categorized view when not searching
         <Tabs defaultValue={categories[0]} className="w-full">
-          <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}>
+          <TabsList
+            className="grid w-full"
+            style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}
+          >
             {categories.map(category => (
               <TabsTrigger key={category} value={category}>
                 {category}

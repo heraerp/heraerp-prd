@@ -130,9 +130,7 @@ export default function WhatsAppSetupGuide() {
                 Since WhatsApp needs a public URL, use ngrok to expose your local server:
               </p>
               <div className="ml-8 space-y-2">
-                <code className="block p-3 bg-muted dark:bg-muted rounded">
-                  ngrok http 3002
-                </code>
+                <code className="block p-3 bg-muted dark:bg-muted rounded">ngrok http 3002</code>
                 <p className="text-sm text-muted-foreground">
                   This will give you a URL like: https://abc123.ngrok.io
                 </p>

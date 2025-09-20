@@ -5,15 +5,16 @@ import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 
 export default function TestSalonPage() {
-  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs } = useMultiOrgAuth()
-  
+  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs } =
+    useMultiOrgAuth()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-8">
           🧪 Salon Demo Test Page
         </h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Authentication Status */}
           <div className="bg-white/80 backdrop-blur-xl border border-purple-200/50 rounded-lg p-6 shadow-xl">
@@ -33,7 +34,7 @@ export default function TestSalonPage() {
               </div>
             </div>
           </div>
-          
+
           {/* User Information */}
           <div className="bg-white/80 backdrop-blur-xl border border-purple-200/50 rounded-lg p-6 shadow-xl">
             <h2 className="text-xl font-semibold mb-4 text-purple-800">User Information</h2>
@@ -52,7 +53,7 @@ export default function TestSalonPage() {
               </div>
             </div>
           </div>
-          
+
           {/* Organization Information */}
           <div className="bg-white/80 backdrop-blur-xl border border-purple-200/50 rounded-lg p-6 shadow-xl md:col-span-2">
             <h2 className="text-xl font-semibold mb-4 text-purple-800">Organization Information</h2>
@@ -74,7 +75,9 @@ export default function TestSalonPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Plan:</span>
-                    <span className="capitalize">{currentOrganization?.subscription_plan || 'None'}</span>
+                    <span className="capitalize">
+                      {currentOrganization?.subscription_plan || 'None'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -94,7 +97,7 @@ export default function TestSalonPage() {
               </div>
             </div>
           </div>
-          
+
           {/* Quick Actions */}
           <div className="bg-white/80 backdrop-blur-xl border border-purple-200/50 rounded-lg p-6 shadow-xl md:col-span-2">
             <h2 className="text-xl font-semibold mb-4 text-purple-800">Quick Actions</h2>
@@ -120,7 +123,7 @@ export default function TestSalonPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Debug component */}
         <DemoOrgDebug />
       </div>

@@ -10,8 +10,8 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Settings, 
+import {
+  Settings,
   Server,
   Database,
   Shield,
@@ -36,12 +36,8 @@ import { useOrgSettings } from '@/lib/api/orgSettings'
 export default function SystemSettingsPage() {
   const { currentOrganization } = useOrganization()
 
-  const {
-    systemSettings,
-    isSystemSettingsLoading,
-    systemSettingsError,
-    featureFlags
-  } = useOrgSettings(currentOrganization?.id || '')
+  const { systemSettings, isSystemSettingsLoading, systemSettingsError, featureFlags } =
+    useOrgSettings(currentOrganization?.id || '')
 
   // Mock system health data (in production, this would come from API)
   const systemHealth = {
@@ -59,20 +55,26 @@ export default function SystemSettingsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <Badge className="bg-green-100 text-green-800 border-green-300">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Healthy
-        </Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 border-green-300">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Healthy
+          </Badge>
+        )
       case 'warning':
-        return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
-          <AlertCircle className="h-3 w-3 mr-1" />
-          Warning
-        </Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Warning
+          </Badge>
+        )
       case 'error':
-        return <Badge className="bg-red-100 text-red-800 border-red-300">
-          <XCircle className="h-3 w-3 mr-1" />
-          Error
-        </Badge>
+        return (
+          <Badge className="bg-red-100 text-red-800 border-red-300">
+            <XCircle className="h-3 w-3 mr-1" />
+            Error
+          </Badge>
+        )
       default:
         return <Badge variant="outline">Unknown</Badge>
     }
@@ -109,7 +111,6 @@ export default function SystemSettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -133,15 +134,14 @@ export default function SystemSettingsPage() {
 
       {/* System Health Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">API Status</div>
-                <div className="text-2xl font-bold">
-                  {getStatusBadge(systemHealth.api_status)}
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  API Status
                 </div>
+                <div className="text-2xl font-bold">{getStatusBadge(systemHealth.api_status)}</div>
               </div>
               <Server className="h-8 w-8 text-blue-500" />
             </div>
@@ -167,9 +167,7 @@ export default function SystemSettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Storage</div>
-                <div className="text-2xl font-bold">
-                  {systemHealth.storage_usage}%
-                </div>
+                <div className="text-2xl font-bold">{systemHealth.storage_usage}%</div>
               </div>
               <HardDrive className="h-8 w-8 text-orange-500" />
             </div>
@@ -189,7 +187,6 @@ export default function SystemSettingsPage() {
             </div>
           </CardContent>
         </Card>
-
       </div>
 
       {/* Loading State */}
@@ -227,24 +224,29 @@ export default function SystemSettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Organization Name</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Organization Name
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100 font-medium">
                       {systemSettings.organization_info?.name || 'Not Set'}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Organization Code</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Organization Code
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                       {systemSettings.organization_info?.code || 'Not Set'}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Industry</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Industry
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100">
                       {systemSettings.organization_info?.industry || 'Not Set'}
                     </div>
@@ -253,30 +255,36 @@ export default function SystemSettingsPage() {
 
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Registration Number</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Registration Number
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                       {systemSettings.organization_info?.registration_number || 'Not Set'}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Tax Number</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Tax Number
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100 font-mono text-sm">
                       {systemSettings.organization_info?.tax_number || 'Not Set'}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Established</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Established
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100">
-                      {systemSettings.organization_info?.established_date 
-                        ? new Date(systemSettings.organization_info.established_date).toLocaleDateString()
-                        : 'Not Set'
-                      }
+                      {systemSettings.organization_info?.established_date
+                        ? new Date(
+                            systemSettings.organization_info.established_date
+                          ).toLocaleDateString()
+                        : 'Not Set'}
                     </div>
                   </div>
                 </div>
-
               </div>
             </CardContent>
           </Card>
@@ -294,16 +302,16 @@ export default function SystemSettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
                 {Object.entries(featureFlags || {}).map(([feature, enabled]) => (
-                  <div key={feature} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={feature}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div>
                       <div className="font-medium text-sm capitalize">
                         {feature.replace(/_/g, ' ')}
                       </div>
-                      <div className="text-xs text-gray-500">
-                        Feature flag
-                      </div>
+                      <div className="text-xs text-gray-500">Feature flag</div>
                     </div>
                     {enabled ? (
                       <Badge className="bg-green-100 text-green-800 border-green-300">
@@ -324,7 +332,6 @@ export default function SystemSettingsPage() {
                     No feature flags configured
                   </div>
                 )}
-
               </div>
             </CardContent>
           </Card>
@@ -339,7 +346,6 @@ export default function SystemSettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
@@ -348,7 +354,7 @@ export default function SystemSettingsPage() {
                     </div>
                     {getStatusBadge(systemHealth.api_status)}
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
                       <Database className="h-4 w-4 text-green-500" />
@@ -356,7 +362,7 @@ export default function SystemSettingsPage() {
                     </div>
                     {getStatusBadge(systemHealth.database_status)}
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
                       <Zap className="h-4 w-4 text-yellow-500" />
@@ -374,7 +380,7 @@ export default function SystemSettingsPage() {
                     </div>
                     <span className="font-mono text-sm">{systemHealth.cpu_usage}%</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
                       <Activity className="h-4 w-4 text-red-500" />
@@ -382,16 +388,17 @@ export default function SystemSettingsPage() {
                     </div>
                     <span className="font-mono text-sm">{systemHealth.memory_usage}%</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-indigo-500" />
                       <span className="font-medium">System Uptime</span>
                     </div>
-                    <span className="font-mono text-sm">{formatUptime(systemHealth.uptime_hours)}</span>
+                    <span className="font-mono text-sm">
+                      {formatUptime(systemHealth.uptime_hours)}
+                    </span>
                   </div>
                 </div>
-
               </div>
             </CardContent>
           </Card>
@@ -406,10 +413,11 @@ export default function SystemSettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">SSL Certificate</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      SSL Certificate
+                    </div>
                     <div className="flex items-center gap-2">
                       <Badge className="bg-green-100 text-green-800 border-green-300">
                         <CheckCircle className="h-3 w-3 mr-1" />
@@ -418,9 +426,11 @@ export default function SystemSettingsPage() {
                       <span className="text-sm text-gray-500">Expires Dec 2024</span>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Data Encryption</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Data Encryption
+                    </div>
                     <div className="flex items-center gap-2">
                       <Badge className="bg-green-100 text-green-800 border-green-300">
                         <CheckCircle className="h-3 w-3 mr-1" />
@@ -432,14 +442,18 @@ export default function SystemSettingsPage() {
 
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Last Backup</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Last Backup
+                    </div>
                     <div className="text-gray-900 dark:text-gray-100 text-sm">
                       {formatDateTime(systemHealth.last_backup)}
                     </div>
                   </div>
-                  
+
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Backup Status</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Backup Status
+                    </div>
                     <div className="flex items-center gap-2">
                       <Badge className="bg-green-100 text-green-800 border-green-300">
                         <CheckCircle className="h-3 w-3 mr-1" />
@@ -448,7 +462,6 @@ export default function SystemSettingsPage() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </CardContent>
           </Card>
@@ -464,16 +477,15 @@ export default function SystemSettingsPage() {
               System Settings Information
             </div>
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              • System settings are read-only and managed by HERA administrators
-              • Feature flags control which features are available to your organization
-              • System health is monitored 24/7 with automatic alerting
-              • All system activities are logged with Smart Code: HERA.SYS.SETTINGS.VIEW.v1
-              • Contact support if you need changes to system configuration
+              • System settings are read-only and managed by HERA administrators • Feature flags
+              control which features are available to your organization • System health is monitored
+              24/7 with automatic alerting • All system activities are logged with Smart Code:
+              HERA.SYS.SETTINGS.VIEW.v1 • Contact support if you need changes to system
+              configuration
             </div>
           </div>
         </AlertDescription>
       </Alert>
-
     </div>
   )
 }

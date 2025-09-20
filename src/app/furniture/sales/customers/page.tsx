@@ -2,9 +2,26 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Plus, Search, Filter, MoreVertical, Phone, Mail, MapPin, Building2, Calendar, IndianRupee, TrendingUp, Edit, Trash2 } from 'lucide-react'
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreVertical,
+  Phone,
+  Mail,
+  MapPin,
+  Building2,
+  Calendar,
+  IndianRupee,
+  TrendingUp,
+  Edit,
+  Trash2
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { universalApi } from '@/lib/universal-api'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
@@ -16,19 +33,24 @@ export default function CustomersPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState<any>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
-  
+
   // Load customers from core_entities
-  const { data: customers, isLoading: customersLoading, refetch } = useUniversalData({
+  const {
+    data: customers,
+    isLoading: customersLoading,
+    refetch
+  } = useUniversalData({
     table: 'core_entities',
-    filter: item => item.entity_type === 'customer' && 
+    filter: item =>
+      item.entity_type === 'customer' &&
       item.organization_id === organizationId &&
-      (!searchTerm || 
+      (!searchTerm ||
         item.entity_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.entity_code?.toLowerCase().includes(searchTerm.toLowerCase())),
     organizationId,
     enabled: !!organizationId
   })
-  
+
   // Load customer dynamic data (contact info, credit limits, etc.)
   const { data: dynamicData } = useUniversalData({
     table: 'core_dynamic_data',
@@ -36,15 +58,16 @@ export default function CustomersPage() {
     organizationId,
     enabled: !!organizationId
   })
-  
+
   // Load sales transactions for customer metrics
   const { data: transactions } = useUniversalData({
     table: 'universal_transactions',
-    filter: item => item.organization_id === organizationId && item.transaction_type === 'sales_order',
+    filter: item =>
+      item.organization_id === organizationId && item.transaction_type === 'sales_order',
     organizationId,
     enabled: !!organizationId
   })
-  
+
   // Get customer dynamic fields
   const getCustomerField = (customerId: string, fieldName: string) => {
     const field = dynamicData?.find(d => d.entity_id === customerId && d.field_name === fieldName)
@@ -56,10 +79,10 @@ export default function CustomersPage() {
     const customerTransactions = transactions?.filter(t => t.from_entity_id === customerId) || []
     const totalRevenue = customerTransactions.reduce((sum, t) => sum + t.total_amount, 0)
     const orderCount = customerTransactions.length
-    const lastOrderDate = customerTransactions.sort((a, b) => 
-      new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+    const lastOrderDate = customerTransactions.sort(
+      (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
     )[0]?.transaction_date
-    
+
     return { totalRevenue, orderCount, lastOrderDate }
   }
 
@@ -67,20 +90,26 @@ export default function CustomersPage() {
   const filteredCustomers = customers?.filter(customer => {
     if (filterType === 'active') {
       const metrics = getCustomerMetrics(customer.id)
-      return metrics.orderCount > 0 && metrics.lastOrderDate && 
+      return (
+        metrics.orderCount > 0 &&
+        metrics.lastOrderDate &&
         new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+      )
     }
     if (filterType === 'inactive') {
       const metrics = getCustomerMetrics(customer.id)
-      return metrics.orderCount === 0 || !metrics.lastOrderDate || 
+      return (
+        metrics.orderCount === 0 ||
+        !metrics.lastOrderDate ||
         new Date(metrics.lastOrderDate) <= new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+      )
     }
     return true
   })
 
   const handleDeleteCustomer = async () => {
     if (!customerToDelete) return
-    
+
     setDeleteLoading(true)
     try {
       universalApi.setOrganizationId(organizationId!)
@@ -101,14 +130,18 @@ export default function CustomersPage() {
 
   const stats = {
     total: customers?.length || 0,
-    active: filteredCustomers?.filter(c => {
-      const metrics = getCustomerMetrics(c.id)
-      return metrics.orderCount > 0 && metrics.lastOrderDate && 
-        new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
-    }).length || 0,
+    active:
+      filteredCustomers?.filter(c => {
+        const metrics = getCustomerMetrics(c.id)
+        return (
+          metrics.orderCount > 0 &&
+          metrics.lastOrderDate &&
+          new Date(metrics.lastOrderDate) > new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+        )
+      }).length || 0,
     totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0
   }
-  
+
   if (orgLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[var(--color-body)]">
@@ -125,9 +158,7 @@ export default function CustomersPage() {
           <h1 className="bg-[var(--color-body)] text-2xl font-bold text-[var(--color-text-primary)]">
             Customers
           </h1>
-          <p className="text-[var(--color-text-secondary)]">
-            Manage your customer relationships
-          </p>
+          <p className="text-[var(--color-text-secondary)]">Manage your customer relationships</p>
         </div>
         <Link
           href="/furniture/sales/customers/new"
@@ -161,7 +192,7 @@ export default function CustomersPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-[var(--color-surface-raised)] overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
@@ -186,7 +217,7 @@ export default function CustomersPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-[var(--color-surface-raised)] overflow-hidden shadow rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
@@ -298,7 +329,10 @@ export default function CustomersPage() {
                 </tr>
               ) : filteredCustomers?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 text-center text-[var(--color-text-secondary)]">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-4 text-center text-[var(--color-text-secondary)]"
+                  >
                     {searchTerm || filterType !== 'all'
                       ? 'No customers found matching your criteria.'
                       : 'No customers yet. Add your first customer to get started.'}
@@ -310,7 +344,7 @@ export default function CustomersPage() {
                   const email = getCustomerField(customer.id, 'email')
                   const phone = getCustomerField(customer.id, 'phone')
                   const creditLimit = getCustomerField(customer.id, 'credit_limit')
-                  
+
                   return (
                     <tr key={customer.id} className="hover:bg-[var(--color-body)]">
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -397,8 +431,8 @@ export default function CustomersPage() {
               Delete Customer
             </h3>
             <p className="text-sm text-[var(--color-text-secondary)]">
-              Are you sure you want to delete <strong>{customerToDelete?.entity_name}</strong>? 
-              This action cannot be undone.
+              Are you sure you want to delete <strong>{customerToDelete?.entity_name}</strong>? This
+              action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">
               <button

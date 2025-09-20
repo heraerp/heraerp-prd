@@ -479,7 +479,9 @@ export function WhatsAppManager({
                 </Avatar>
                 <div>
                   <p className="font-medium">{selectedConversation.customerName}</p>
-                  <p className="text-sm text-muted-foreground">{selectedConversation.customerPhone}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedConversation.customerPhone}
+                  </p>
                 </div>
               </div>
 

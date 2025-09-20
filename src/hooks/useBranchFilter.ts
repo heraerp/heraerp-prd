@@ -1,7 +1,7 @@
 /**
  * Branch Filter Hook
  * Smart Code: HERA.HOOKS.BRANCH.FILTER.V1
- * 
+ *
  * Provides branch filtering capabilities for UI components:
  * - Branch selection state management
  * - Branch list loading
@@ -24,11 +24,11 @@ export interface UseBranchFilterReturn {
   branches: Branch[]
   loading: boolean
   error: string | null
-  
+
   // Actions
   setBranchId: (branchId: string | undefined) => void
   refreshBranches: () => Promise<void>
-  
+
   // Helpers
   selectedBranch: Branch | undefined
   hasMultipleBranches: boolean
@@ -43,14 +43,14 @@ export function useBranchFilter(
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Load branches on mount or organization change
   useEffect(() => {
     if (currentOrganization?.id) {
       loadBranches()
     }
   }, [currentOrganization?.id])
-  
+
   // Handle persistence
   useEffect(() => {
     if (persistKey && typeof window !== 'undefined') {
@@ -60,17 +60,17 @@ export function useBranchFilter(
       }
     }
   }, [persistKey, branches])
-  
+
   const loadBranches = async () => {
     if (!currentOrganization?.id) return
-    
+
     setLoading(true)
     setError(null)
-    
+
     try {
       const branchList = await getOrganizationBranches(currentOrganization.id)
       setBranches(branchList)
-      
+
       // Auto-select if only one branch
       if (branchList.length === 1 && !branchId) {
         setBranchIdState(branchList[0].id)
@@ -83,10 +83,10 @@ export function useBranchFilter(
       setLoading(false)
     }
   }
-  
+
   const setBranchId = (newBranchId: string | undefined) => {
     setBranchIdState(newBranchId)
-    
+
     // Persist if enabled
     if (persistKey && typeof window !== 'undefined') {
       if (newBranchId) {
@@ -96,10 +96,10 @@ export function useBranchFilter(
       }
     }
   }
-  
+
   const selectedBranch = branches.find(b => b.id === branchId)
   const hasMultipleBranches = branches.length > 1
-  
+
   return {
     branchId,
     branches,
@@ -121,21 +121,21 @@ export function useBranchComparison() {
   const [selectedBranches, setSelectedBranches] = useState<Set<string>>(new Set())
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
-  
+
   useEffect(() => {
     if (currentOrganization?.id) {
       loadBranches()
     }
   }, [currentOrganization?.id])
-  
+
   const loadBranches = async () => {
     if (!currentOrganization?.id) return
-    
+
     setLoading(true)
     try {
       const branchList = await getOrganizationBranches(currentOrganization.id)
       setBranches(branchList)
-      
+
       // Select all by default for comparison
       if (branchList.length > 0) {
         setSelectedBranches(new Set(branchList.map(b => b.id)))
@@ -147,7 +147,7 @@ export function useBranchComparison() {
       setLoading(false)
     }
   }
-  
+
   const toggleBranch = (branchId: string) => {
     setSelectedBranches(prev => {
       const next = new Set(prev)
@@ -159,15 +159,15 @@ export function useBranchComparison() {
       return next
     })
   }
-  
+
   const selectAll = () => {
     setSelectedBranches(new Set(branches.map(b => b.id)))
   }
-  
+
   const deselectAll = () => {
     setSelectedBranches(new Set())
   }
-  
+
   return {
     branches,
     selectedBranches: Array.from(selectedBranches),

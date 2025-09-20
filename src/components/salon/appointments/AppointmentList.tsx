@@ -84,7 +84,9 @@ export function AppointmentList({
       >
         <div className="p-12 text-center">
           <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-lg !text-muted-foreground dark:!text-muted-foreground">No appointments found</p>
+          <p className="text-lg !text-muted-foreground dark:!text-muted-foreground">
+            No appointments found
+          </p>
           <p className="text-sm !text-muted-foreground dark:!text-muted-foreground mt-2">
             Create your first appointment to get started
           </p>

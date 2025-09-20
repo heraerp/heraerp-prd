@@ -6,7 +6,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json()
     const parsed = ServiceUpdateSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Validation failed', details: parsed.error.flatten() },
@@ -27,10 +27,7 @@ export async function PATCH(req: NextRequest) {
       .single()
 
     if (fetchError || !existingEntity) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
     // Track what changed for audit
@@ -69,7 +66,7 @@ export async function PATCH(req: NextRequest) {
       { field: 'duration', value: service.duration, type: 'number' },
       { field: 'tax_code', value: service.tax_code, type: 'text' },
       { field: 'category', value: service.category, type: 'text' },
-      { field: 'description', value: service.description, type: 'text' },
+      { field: 'description', value: service.description, type: 'text' }
     ].filter(f => f.value !== undefined)
 
     for (const field of fieldsToUpdate) {
@@ -78,7 +75,7 @@ export async function PATCH(req: NextRequest) {
         entity_id: service.id,
         field_name: field.field,
         field_type: field.type,
-        smart_code: `${smart_code}.FIELD.${field.field.toUpperCase()}`,
+        smart_code: `${smart_code}.FIELD.${field.field.toUpperCase()}`
       }
 
       if (field.type === 'number') {
@@ -90,11 +87,9 @@ export async function PATCH(req: NextRequest) {
       }
 
       // Upsert the field
-      const { error: upsertError } = await supabase
-        .from('core_dynamic_data')
-        .upsert(fieldData, {
-          onConflict: 'organization_id,entity_id,field_name',
-        })
+      const { error: upsertError } = await supabase.from('core_dynamic_data').upsert(fieldData, {
+        onConflict: 'organization_id,entity_id,field_name'
+      })
 
       if (upsertError) {
         console.error(`Failed to update field ${field.field}:`, upsertError)
@@ -105,22 +100,20 @@ export async function PATCH(req: NextRequest) {
 
     // 3) Create audit transaction
     if (actor_user_id && Object.keys(changes).length > 0) {
-      await supabase
-        .from('universal_transactions')
-        .insert({
-          organization_id: orgId,
-          transaction_type: 'CATALOG_EVENT',
-          smart_code,
-          source_entity_id: actor_user_id,
-          target_entity_id: service.id,
-          total_amount: 0,
-          transaction_status: 'completed',
-          business_context: {
-            action: 'update',
-            entity_type: 'salon_service',
-            changes,
-          },
-        })
+      await supabase.from('universal_transactions').insert({
+        organization_id: orgId,
+        transaction_type: 'CATALOG_EVENT',
+        smart_code,
+        source_entity_id: actor_user_id,
+        target_entity_id: service.id,
+        total_amount: 0,
+        transaction_status: 'completed',
+        business_context: {
+          action: 'update',
+          entity_type: 'salon_service',
+          changes
+        }
+      })
     }
 
     // 4) Fetch and return updated service
@@ -131,28 +124,28 @@ export async function PATCH(req: NextRequest) {
       .eq('entity_id', service.id)
       .in('field_name', ['price', 'duration', 'tax_code', 'category', 'description'])
 
-    const dynamicFields = dynamicData?.reduce((acc, row) => {
-      if (row.field_name === 'price' || row.field_name === 'duration') {
-        acc[row.field_name] = row.field_value_number
-      } else {
-        acc[row.field_name] = row.field_value_text
-      }
-      return acc
-    }, {} as Record<string, any>) || {}
+    const dynamicFields =
+      dynamicData?.reduce(
+        (acc, row) => {
+          if (row.field_name === 'price' || row.field_name === 'duration') {
+            acc[row.field_name] = row.field_value_number
+          } else {
+            acc[row.field_name] = row.field_value_text
+          }
+          return acc
+        },
+        {} as Record<string, any>
+      ) || {}
 
     return NextResponse.json({
       id: service.id,
       entity_name: service.entity_name || existingEntity.entity_name,
       entity_type: 'salon_service',
       status: service.status || existingEntity.status,
-      ...dynamicFields,
+      ...dynamicFields
     })
-
   } catch (error) {
     console.error('Unexpected error in service update:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

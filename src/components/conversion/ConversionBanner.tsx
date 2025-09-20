@@ -101,7 +101,9 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.sessionDuration}
             </div>
-            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Time Spent</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+              Time Spent
+            </div>
           </div>
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
@@ -109,7 +111,9 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.featuresUsed.length}
             </div>
-            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Features Explored</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+              Features Explored
+            </div>
           </div>
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
@@ -117,7 +121,9 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.dataCreated}
             </div>
-            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Records Created</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+              Records Created
+            </div>
           </div>
 
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg backdrop-blur-sm">
@@ -125,7 +131,9 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
             <div className="text-lg font-bold text-gray-100 dark:text-foreground">
               {metrics.returnVisits}
             </div>
-            <div className="text-xs text-muted-foreground dark:text-muted-foreground">Return Visits</div>
+            <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+              Return Visits
+            </div>
           </div>
         </div>
 

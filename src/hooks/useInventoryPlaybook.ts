@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { ItemWithStock, ItemForm } from '@/schemas/inventory'
-import { listItems, createItem, updateItem, archiveItem, getStockLevel, upsertDynamicData } from '@/lib/playbook/inventory'
+import {
+  listItems,
+  createItem,
+  updateItem,
+  archiveItem,
+  getStockLevel,
+  upsertDynamicData
+} from '@/lib/playbook/inventory'
 import { toast } from 'sonner'
 import { debounce } from 'lodash'
 
@@ -62,7 +69,7 @@ export function useInventoryPlaybook({
             const stock = stockLevels[item.id]
             const onHand = stock?.on_hand || 0
             const reorderLevel = item.metadata?.reorder_level || 0
-            
+
             return {
               ...item,
               on_hand: onHand,
@@ -135,18 +142,14 @@ export function useInventoryPlaybook({
 
         // Initialize stock level for new items
         if (!itemId && result.id) {
-          await upsertDynamicData(
-            result.id,
-            'HERA.INVENTORY.STOCKLEVEL.V1',
-            {
-              item_id: result.id,
-              branch_id: branchId,
-              on_hand: 0,
-              available: 0,
-              allocated: 0,
-              last_updated: new Date().toISOString()
-            }
-          )
+          await upsertDynamicData(result.id, 'HERA.INVENTORY.STOCKLEVEL.V1', {
+            item_id: result.id,
+            branch_id: branchId,
+            on_hand: 0,
+            available: 0,
+            allocated: 0,
+            last_updated: new Date().toISOString()
+          })
         }
 
         // Refresh list
@@ -196,7 +199,16 @@ export function useInventoryPlaybook({
 
   // Export to CSV
   const exportCSV = useCallback(() => {
-    const headers = ['Name', 'SKU', 'Category', 'On Hand', 'Reorder Level', 'Avg Cost', 'Value', 'Status']
+    const headers = [
+      'Name',
+      'SKU',
+      'Category',
+      'On Hand',
+      'Reorder Level',
+      'Avg Cost',
+      'Value',
+      'Status'
+    ]
     const rows = items.map(item => [
       item.name,
       item.sku || '',
@@ -221,10 +233,7 @@ export function useInventoryPlaybook({
   }, [items])
 
   // Calculate stats
-  const lowStockItems = useMemo(
-    () => items.filter(item => item.low_stock).length,
-    [items]
-  )
+  const lowStockItems = useMemo(() => items.filter(item => item.low_stock).length, [items])
 
   return {
     items,

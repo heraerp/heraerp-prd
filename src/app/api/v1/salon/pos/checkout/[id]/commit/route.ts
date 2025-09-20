@@ -5,9 +5,15 @@ import { executeHeraPlaybook } from '@/lib/hera/execute-playbook'
 // Validation schema for checkout commit request
 const CheckoutCommitSchema = z.object({
   sale_metadata: z.record(z.any()).optional().default({}),
-  commission_base: z.enum(['before_line_discount', 'after_line_discount', 'after_all_discounts']).optional().default('after_line_discount'),
+  commission_base: z
+    .enum(['before_line_discount', 'after_line_discount', 'after_all_discounts'])
+    .optional()
+    .default('after_line_discount'),
   force_negative_stock: z.boolean().optional().default(false),
-  posting_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Posting date must be YYYY-MM-DD format').optional(),
+  posting_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Posting date must be YYYY-MM-DD format')
+    .optional(),
   journal_memo: z.string().optional().default('POS Sale Transaction')
 })
 
@@ -44,7 +50,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for checkout operations',
           details: 'Ensure middleware is properly configured'
@@ -129,7 +135,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         procedure_count: result.data.procedure_count || 4
       }
     })
-
   } catch (error) {
     console.error('Checkout commit error:', error)
 
@@ -172,23 +177,23 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'CHECKOUT_NOT_FOUND': 404,
-    'CHECKOUT_NOT_READY': 400,
-    'PAYMENT_TOTAL_MISMATCH': 400,
-    'CART_NOT_LOCKED': 400,
-    'SALE_CREATION_FAILED': 500,
-    'LINE_COPY_FAILED': 500,
-    'CART_CLOSE_FAILED': 500,
-    'SALE_NOT_COMMITTED': 400,
-    'INSUFFICIENT_STOCK': 400,
-    'PRODUCT_NOT_FOUND': 404,
-    'INVENTORY_UPDATE_FAILED': 500,
-    'COMMISSION_CALCULATION_ERROR': 500,
-    'FINANCE_DNA_NOT_ACTIVE': 400,
-    'GL_MAPPING_NOT_FOUND': 400,
-    'JOURNAL_NOT_BALANCED': 500,
-    'GL_ACCOUNT_NOT_FOUND': 404,
-    'JOURNAL_CREATION_FAILED': 500
+    CHECKOUT_NOT_FOUND: 404,
+    CHECKOUT_NOT_READY: 400,
+    PAYMENT_TOTAL_MISMATCH: 400,
+    CART_NOT_LOCKED: 400,
+    SALE_CREATION_FAILED: 500,
+    LINE_COPY_FAILED: 500,
+    CART_CLOSE_FAILED: 500,
+    SALE_NOT_COMMITTED: 400,
+    INSUFFICIENT_STOCK: 400,
+    PRODUCT_NOT_FOUND: 404,
+    INVENTORY_UPDATE_FAILED: 500,
+    COMMISSION_CALCULATION_ERROR: 500,
+    FINANCE_DNA_NOT_ACTIVE: 400,
+    GL_MAPPING_NOT_FOUND: 400,
+    JOURNAL_NOT_BALANCED: 500,
+    GL_ACCOUNT_NOT_FOUND: 404,
+    JOURNAL_CREATION_FAILED: 500
   }
 
   return errorMap[errorCode] || 500

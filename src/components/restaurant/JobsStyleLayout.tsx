@@ -188,7 +188,9 @@ export function JobsStyleLayout({
                     >
                       {getPageTitle()}
                     </h1>
-                    <p className={`text-sm ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                    <p
+                      className={`text-sm ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+                    >
                       {organization?.organization_name} •{' '}
                       {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
                     </p>
@@ -322,7 +324,9 @@ export function JobsStyleLayout({
               </span>
               <div className="flex items-center space-x-1">
                 <Zap className="w-3 h-3 text-yellow-500" />
-                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>HERA Platform</span>
+                <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>
+                  HERA Platform
+                </span>
               </div>
             </div>
           </div>
@@ -394,7 +398,9 @@ function CommandItem({
         <span className="text-sm">{label}</span>
       </div>
       {hotkey && (
-        <span className="text-xs text-muted-foreground font-mono group-hover:text-muted-foreground">{hotkey}</span>
+        <span className="text-xs text-muted-foreground font-mono group-hover:text-muted-foreground">
+          {hotkey}
+        </span>
       )}
     </div>
   )

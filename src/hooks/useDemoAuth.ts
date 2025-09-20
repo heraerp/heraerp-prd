@@ -27,7 +27,7 @@ interface UseDemoAuth extends DemoAuthState {
   initializeDemo: (demoType: DemoUserType) => Promise<boolean>
   logout: () => Promise<void>
   hasScope: (scope: string) => boolean
-  
+
   // Session info
   sessionExpiry: Date | null
   timeRemaining: number // milliseconds
@@ -36,7 +36,7 @@ interface UseDemoAuth extends DemoAuthState {
 
 export function useDemoAuth(): UseDemoAuth {
   const router = useRouter()
-  
+
   const [state, setState] = useState<DemoAuthState>({
     isAuthenticated: false,
     user: null,
@@ -75,14 +75,14 @@ export function useDemoAuth(): UseDemoAuth {
 
       // Check for demo session cookie
       const sessionCookie = getCookie('hera_demo_session')
-      
+
       if (sessionCookie) {
         const sessionData = JSON.parse(sessionCookie)
-        
+
         // Check if session is expired
         const expiryTime = new Date(sessionData.expires_at).getTime()
         const now = Date.now()
-        
+
         if (expiryTime > now) {
           console.log('🧬 HERA Demo: Existing session found', {
             entity_id: sessionData.user_entity_id,
@@ -112,71 +112,72 @@ export function useDemoAuth(): UseDemoAuth {
       }
 
       // No session found
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         isAuthenticated: false,
         user: null,
-        isLoading: false 
+        isLoading: false
       }))
-
     } catch (error) {
       console.error('💥 Session check error:', error)
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Session check failed'
       }))
     }
   }, [])
 
-  const initializeDemo = useCallback(async (demoType: DemoUserType): Promise<boolean> => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }))
+  const initializeDemo = useCallback(
+    async (demoType: DemoUserType): Promise<boolean> => {
+      try {
+        setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-      const result = await demoAuthService.initializeDemoSession(demoType)
-      
-      if (!result.success) {
-        setState(prev => ({ 
-          ...prev, 
+        const result = await demoAuthService.initializeDemoSession(demoType)
+
+        if (!result.success) {
+          setState(prev => ({
+            ...prev,
+            isLoading: false,
+            error: result.error || 'Demo initialization failed'
+          }))
+          return false
+        }
+
+        setState({
+          isAuthenticated: true,
+          user: result.user!,
           isLoading: false,
-          error: result.error || 'Demo initialization failed'
+          error: null
+        })
+
+        // Redirect to demo dashboard
+        if (result.redirect_url) {
+          router.push(result.redirect_url)
+        }
+
+        return true
+      } catch (error) {
+        console.error('💥 Demo initialization error:', error)
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: error instanceof Error ? error.message : 'Unknown error'
         }))
         return false
       }
-
-      setState({
-        isAuthenticated: true,
-        user: result.user!,
-        isLoading: false,
-        error: null
-      })
-
-      // Redirect to demo dashboard
-      if (result.redirect_url) {
-        router.push(result.redirect_url)
-      }
-
-      return true
-
-    } catch (error) {
-      console.error('💥 Demo initialization error:', error)
-      setState(prev => ({ 
-        ...prev, 
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }))
-      return false
-    }
-  }, [router])
+    },
+    [router]
+  )
 
   const logout = useCallback(async () => {
     try {
       await demoAuthService.clearDemoSession()
-      
+
       // Clear cookies
       document.cookie = 'hera_demo_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
       document.cookie = 'hera_org_context=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      
+
       setState({
         isAuthenticated: false,
         user: null,
@@ -185,10 +186,9 @@ export function useDemoAuth(): UseDemoAuth {
       })
 
       console.log('🧹 Demo session logged out')
-      
+
       // Redirect to home
       router.push('/')
-
     } catch (error) {
       console.error('💥 Logout error:', error)
     }
@@ -199,15 +199,18 @@ export function useDemoAuth(): UseDemoAuth {
     await logout()
   }, [logout])
 
-  const hasScope = useCallback((scope: string): boolean => {
-    if (!state.user?.scopes) return false
-    return demoAuthService.hasScope(scope, state.user.scopes)
-  }, [state.user?.scopes])
+  const hasScope = useCallback(
+    (scope: string): boolean => {
+      if (!state.user?.scopes) return false
+      return demoAuthService.hasScope(scope, state.user.scopes)
+    },
+    [state.user?.scopes]
+  )
 
   // Helper function to get cookie value
   const getCookie = (name: string): string | null => {
     if (typeof document === 'undefined') return null
-    
+
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
     if (parts.length === 2) {

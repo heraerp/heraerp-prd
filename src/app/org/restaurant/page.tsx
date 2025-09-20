@@ -155,7 +155,9 @@ export default function AuthenticatedRestaurantDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Redirecting to login...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Redirecting to login...
+          </p>
         </div>
       </div>
     )
@@ -166,7 +168,9 @@ export default function AuthenticatedRestaurantDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading restaurant dashboard...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading restaurant dashboard...
+          </p>
         </div>
       </div>
     )
@@ -223,7 +227,9 @@ export default function AuthenticatedRestaurantDashboard() {
                 <Shield className="w-3 h-3 mr-1" />
                 Authenticated
               </Badge>
-              <div className="text-sm text-muted-foreground dark:text-muted-foreground">{user?.email}</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                {user?.email}
+              </div>
             </div>
           </div>
         </div>
@@ -258,14 +264,18 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Orders</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Today's Orders
+                      </p>
                       <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {stats.todayOrders}
                       </p>
                     </div>
                     <Receipt className="w-8 h-8 text-orange-600" />
                   </div>
-                  {isHeadOffice && <p className="text-xs text-muted-foreground mt-2">All locations</p>}
+                  {isHeadOffice && (
+                    <p className="text-xs text-muted-foreground mt-2">All locations</p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -273,7 +283,9 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Revenue</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Today's Revenue
+                      </p>
                       <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         ${stats.todayRevenue}
                       </p>
@@ -287,7 +299,9 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Active Tables</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Active Tables
+                      </p>
                       <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                         {isHeadOffice ? '23' : '8'}
                       </p>
@@ -301,8 +315,12 @@ export default function AuthenticatedRestaurantDashboard() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg Order Time</p>
-                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">18 min</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        Avg Order Time
+                      </p>
+                      <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
+                        18 min
+                      </p>
                     </div>
                     <Clock className="w-8 h-8 text-primary" />
                   </div>
@@ -327,7 +345,9 @@ export default function AuthenticatedRestaurantDashboard() {
                           <Utensils className="w-5 h-5 text-foreground" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-100 dark:text-foreground">{dish.name}</p>
+                          <p className="font-medium text-gray-100 dark:text-foreground">
+                            {dish.name}
+                          </p>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             {dish.orders} orders
                           </p>
@@ -367,13 +387,17 @@ export default function AuthenticatedRestaurantDashboard() {
                           {order.status}
                         </Badge>
                         <div>
-                          <p className="font-medium text-gray-100 dark:text-foreground">{order.id}</p>
+                          <p className="font-medium text-gray-100 dark:text-foreground">
+                            {order.id}
+                          </p>
                           <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                             Table {order.table} • {order.items} items
                           </p>
                         </div>
                       </div>
-                      <div className="text-sm text-muted-foreground dark:text-muted-foreground">{order.time}</div>
+                      <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        {order.time}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -434,7 +458,9 @@ export default function AuthenticatedRestaurantDashboard() {
                               </p>
                             </div>
                             <div>
-                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">Orders</p>
+                              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                                Orders
+                              </p>
                               <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                                 23
                               </p>
@@ -480,7 +506,9 @@ export default function AuthenticatedRestaurantDashboard() {
                   </div>
 
                   <div className="p-4 rounded-lg bg-muted dark:bg-muted">
-                    <h3 className="font-medium text-gray-100 dark:text-foreground mb-2">Access Level</h3>
+                    <h3 className="font-medium text-gray-100 dark:text-foreground mb-2">
+                      Access Level
+                    </h3>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {isHeadOffice
                         ? 'Full access to all restaurant locations and consolidated reporting'

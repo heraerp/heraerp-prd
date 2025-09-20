@@ -130,9 +130,7 @@ export default function DocsHub() {
                 <CardDescription className="text-sm">Complete API documentation</CardDescription>
               </CardHeader>
               <CardContent>
-                <code className="text-xs bg-muted px-2 py-1 rounded">
-                  POST /api/v1/universal
-                </code>
+                <code className="text-xs bg-muted px-2 py-1 rounded">POST /api/v1/universal</code>
               </CardContent>
             </Card>
           </div>

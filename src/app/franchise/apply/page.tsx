@@ -632,7 +632,9 @@ export default function ApplyPage() {
                 <h3 className="font-semibold text-foreground dark:text-foreground mb-2">
                   {benefit.title}
                 </h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{benefit.description}</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {benefit.description}
+                </p>
               </div>
             ))}
           </div>

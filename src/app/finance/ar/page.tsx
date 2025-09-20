@@ -384,7 +384,9 @@ export default function AccountsReceivablePage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Receivables by Category</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Receivables by Category
+                </h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
@@ -585,11 +587,19 @@ export default function AccountsReceivablePage() {
                     <th className="text-left py-4 pl-6 text-sm font-medium text-foreground/60">
                       Invoice #
                     </th>
-                    <th className="text-left py-4 text-sm font-medium text-foreground/60">Customer</th>
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">
+                      Customer
+                    </th>
                     <th className="text-left py-4 text-sm font-medium text-foreground/60">Date</th>
-                    <th className="text-left py-4 text-sm font-medium text-foreground/60">Due Date</th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Amount</th>
-                    <th className="text-center py-4 text-sm font-medium text-foreground/60">Status</th>
+                    <th className="text-left py-4 text-sm font-medium text-foreground/60">
+                      Due Date
+                    </th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Amount
+                    </th>
+                    <th className="text-center py-4 text-sm font-medium text-foreground/60">
+                      Status
+                    </th>
                     <th className="text-right py-4 pr-6 text-sm font-medium text-foreground/60">
                       Actions
                     </th>

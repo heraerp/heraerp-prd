@@ -113,7 +113,7 @@ export function MovementList({ movements, loading }: MovementListProps) {
           <div
             key={movement.id}
             className="p-4 rounded-lg border transition-all hover:shadow-md"
-            style={{ 
+            style={{
               backgroundColor: COLORS.charcoal,
               borderColor: COLORS.bronze + '33'
             }}
@@ -121,10 +121,7 @@ export function MovementList({ movements, loading }: MovementListProps) {
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4">
                 {/* Type Icon */}
-                <div 
-                  className="p-3 rounded-lg"
-                  style={{ backgroundColor: config.bgColor + '20' }}
-                >
+                <div className="p-3 rounded-lg" style={{ backgroundColor: config.bgColor + '20' }}>
                   <Icon className="w-5 h-5" style={{ color: config.color }} />
                 </div>
 
@@ -138,14 +135,20 @@ export function MovementList({ movements, loading }: MovementListProps) {
                       {movement.transaction_code}
                     </Badge>
                     {movement.metadata?.reference && (
-                      <Badge variant="outline" className="text-xs"
-                             style={{ borderColor: COLORS.bronze + '50', color: COLORS.lightText }}>
+                      <Badge
+                        variant="outline"
+                        className="text-xs"
+                        style={{ borderColor: COLORS.bronze + '50', color: COLORS.lightText }}
+                      >
                         {movement.metadata.reference}
                       </Badge>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm" style={{ color: COLORS.lightText }}>
+                  <div
+                    className="flex items-center gap-4 text-sm"
+                    style={{ color: COLORS.lightText }}
+                  >
                     <span>{format(new Date(movement.when_ts), 'MMM dd, yyyy HH:mm')}</span>
                     {type === 'TRANSFER' && movement.from_entity_id && movement.to_entity_id && (
                       <>
@@ -160,7 +163,10 @@ export function MovementList({ movements, loading }: MovementListProps) {
                   {/* Movement Summary */}
                   <div className="flex items-center gap-6 mt-2">
                     <div>
-                      <span className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <span
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Items
                       </span>
                       <p className="font-medium" style={{ color: COLORS.lightText }}>
@@ -168,7 +174,10 @@ export function MovementList({ movements, loading }: MovementListProps) {
                       </p>
                     </div>
                     <div>
-                      <span className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <span
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Total Qty
                       </span>
                       <p className="font-medium" style={{ color: COLORS.lightText }}>
@@ -176,7 +185,10 @@ export function MovementList({ movements, loading }: MovementListProps) {
                       </p>
                     </div>
                     <div>
-                      <span className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <span
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Value
                       </span>
                       <p className="font-medium" style={{ color: COLORS.champagne }}>
@@ -184,13 +196,16 @@ export function MovementList({ movements, loading }: MovementListProps) {
                       </p>
                     </div>
                     <div>
-                      <span className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <span
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Status
                       </span>
-                      <Badge 
+                      <Badge
                         className={cn(
-                          "mt-1",
-                          movement.status === 'posted' 
+                          'mt-1',
+                          movement.status === 'posted'
                             ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
                             : 'bg-muted/20 text-muted-foreground border-muted-foreground/50'
                         )}
@@ -227,11 +242,7 @@ export function MovementList({ movements, loading }: MovementListProps) {
               <div className="mt-4 pt-4 border-t" style={{ borderColor: COLORS.bronze + '20' }}>
                 <div className="flex flex-wrap gap-2">
                   {movement.lines.slice(0, 3).map((line, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="secondary" 
-                      className="text-xs bg-muted/30"
-                    >
+                    <Badge key={index} variant="secondary" className="text-xs bg-muted/30">
                       {line.metadata?.item_name || `Item ${line.entity_id}`} × {Math.abs(line.qty)}
                     </Badge>
                   ))}
@@ -246,9 +257,14 @@ export function MovementList({ movements, loading }: MovementListProps) {
 
             {/* Posted By */}
             {movement.metadata?.posted_by && (
-              <div className="mt-3 flex items-center justify-between text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+              <div
+                className="mt-3 flex items-center justify-between text-xs"
+                style={{ color: COLORS.lightText, opacity: 0.7 }}
+              >
                 <span>Posted by {movement.metadata.posted_by}</span>
-                <span>{formatDistanceToNow(new Date(movement.created_at), { addSuffix: true })}</span>
+                <span>
+                  {formatDistanceToNow(new Date(movement.created_at), { addSuffix: true })}
+                </span>
               </div>
             )}
           </div>

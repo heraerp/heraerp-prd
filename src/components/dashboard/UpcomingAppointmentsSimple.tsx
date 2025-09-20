@@ -9,7 +9,7 @@ interface UpcomingAppointmentsSimpleProps {
 
 export function UpcomingAppointmentsSimple({ organizationId }: UpcomingAppointmentsSimpleProps) {
   console.log('📅 Simple appointments component rendered!', { organizationId })
-  
+
   return (
     <Card>
       <CardHeader>

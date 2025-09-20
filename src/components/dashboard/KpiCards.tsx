@@ -3,14 +3,7 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
-import { 
-  TrendingUp, 
-  Calendar, 
-  DollarSign, 
-  Package, 
-  MessageCircle,
-  Calculator
-} from 'lucide-react'
+import { TrendingUp, Calendar, DollarSign, Package, MessageCircle, Calculator } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
@@ -46,9 +39,9 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
       </div>
     )
   }
-  
+
   const today = new Date().toISOString().split('T')[0]
-  
+
   // Fetch sales data with stable configuration
   const { data: salesData, isLoading: salesLoading } = useUniversalReports({
     organizationId,
@@ -77,15 +70,15 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
   const netRevenue = grossSales * (1 - vatRate)
   const transactionCount = salesData?.summary?.transaction_count || 0
   const avgTicket = transactionCount > 0 ? grossSales / transactionCount : 0
-  
+
   const totalAppointments = appointmentStats?.total || 0
   const confirmedAppointments = appointmentStats?.confirmed || 0
   const inProgressAppointments = appointmentStats?.in_progress || 0
-  
+
   const waSent = waMetrics?.sent || 0
   const waDelivered = waMetrics?.delivered || 0
-  const deliveryRate = waSent > 0 ? (waDelivered / waSent * 100) : 0
-  
+  const deliveryRate = waSent > 0 ? (waDelivered / waSent) * 100 : 0
+
   const lowStockCount = inventoryData?.items?.length || 0
 
   const formatCurrency = (amount: number) => {
@@ -152,39 +145,34 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {kpis.map((kpi, index) => {
         const Icon = kpi.icon
-        
+
         return (
           <Link
             key={index}
             href={kpi.href}
             className="group focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-xl"
           >
-            <Card className={cn(
-              "relative overflow-hidden transition-all duration-300",
-              "hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02]",
-              "group-focus:shadow-2xl group-focus:-translate-y-1 group-focus:scale-[1.02]",
-              salonClasses.card,
-              salonClasses.hoverGlow
-            )}>
-              <div className={cn(
-                "absolute inset-0 opacity-20 bg-gradient-to-br",
-                kpi.color
-              )} />
+            <Card
+              className={cn(
+                'relative overflow-hidden transition-all duration-300',
+                'hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02]',
+                'group-focus:shadow-2xl group-focus:-translate-y-1 group-focus:scale-[1.02]',
+                salonClasses.card,
+                salonClasses.hoverGlow
+              )}
+            >
+              <div className={cn('absolute inset-0 opacity-20 bg-gradient-to-br', kpi.color)} />
               <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent dark:from-gray-900/50" />
-              
+
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
                 <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {kpi.title}
                 </CardTitle>
-                <div className={cn(
-                  "p-2 rounded-lg bg-gradient-to-br",
-                  kpi.color,
-                  "bg-opacity-20"
-                )}>
+                <div className={cn('p-2 rounded-lg bg-gradient-to-br', kpi.color, 'bg-opacity-20')}>
                   <Icon className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 {kpi.loading ? (
                   <div className="space-y-2">
@@ -193,10 +181,12 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
                   </div>
                 ) : (
                   <div className="relative z-10">
-                    <div className={cn(
-                      "text-2xl font-bold bg-gradient-to-br bg-clip-text text-transparent",
-                      kpi.color
-                    )}>
+                    <div
+                      className={cn(
+                        'text-2xl font-bold bg-gradient-to-br bg-clip-text text-transparent',
+                        kpi.color
+                      )}
+                    >
                       {kpi.value}
                     </div>
                     {kpi.subtitle && (

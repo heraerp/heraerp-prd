@@ -113,14 +113,14 @@ const BUSINESS_HOURS = {
 
 // Helper to assert UUID format
 function assertUuid(id: string) {
-  if (!/^[0-9a-fA-F-]{36}$/.test(id)) throw new Error(`Invalid organization_id: ${id}`);
+  if (!/^[0-9a-fA-F-]{36}$/.test(id)) throw new Error(`Invalid organization_id: ${id}`)
 }
 
 // Helper to check if component is mounted
 function useIsMounted() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  return mounted;
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  return mounted
 }
 
 export function SalonResourceCalendar({
@@ -134,7 +134,7 @@ export function SalonResourceCalendar({
   const organizationId = organization?.id || ''
   const branchId = organization?.metadata?.branch_id as string | undefined
   const mounted = useIsMounted()
-  
+
   // All hooks must be called before any conditional returns
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
@@ -160,7 +160,7 @@ export function SalonResourceCalendar({
   const dateRange = useMemo(() => {
     const start = new Date(selectedDate)
     const end = new Date(selectedDate)
-    
+
     switch (selectedView) {
       case 'day':
         // Just the selected day
@@ -178,10 +178,10 @@ export function SalonResourceCalendar({
         end.setDate(0)
         break
     }
-    
+
     start.setHours(0, 0, 0, 0)
     end.setHours(23, 59, 59, 999)
-    
+
     return {
       fromISO: start.toISOString(),
       toISO: end.toISOString()
@@ -189,22 +189,13 @@ export function SalonResourceCalendar({
   }, [selectedDate, selectedView])
 
   // Use calendar playbook hook to fetch data
-  const {
-    loading,
-    error,
-    appointments,
-    staff,
-    services,
-    customers,
-    staffById,
-    svcById,
-    custById
-  } = useCalendarPlaybook({
-    organization_id: organizationId,
-    branch_id: canViewAllBranches ? undefined : branchId,
-    fromISO: dateRange.fromISO,
-    toISO: dateRange.toISO
-  })
+  const { loading, error, appointments, staff, services, customers, staffById, svcById, custById } =
+    useCalendarPlaybook({
+      organization_id: organizationId,
+      branch_id: canViewAllBranches ? undefined : branchId,
+      fromISO: dateRange.fromISO,
+      toISO: dateRange.toISO
+    })
 
   // Assert valid UUID after all hooks
   useEffect(() => {
@@ -216,11 +207,16 @@ export function SalonResourceCalendar({
       }
     }
   }, [organizationId])
-  
+
   // Don't render calendar if no organization ID
   if (!organizationId && mounted) {
     return (
-      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+      <div
+        className={cn(
+          'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center',
+          className
+        )}
+      >
         <div className="text-center">
           <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">No organization selected</p>
@@ -235,7 +231,7 @@ export function SalonResourceCalendar({
       // Return hardcoded data for initial render to prevent hydration mismatch
       return []
     }
-    
+
     // Map staff data from Playbook to Stylist format
     return staff.map((s, index) => ({
       id: s.id,
@@ -254,7 +250,7 @@ export function SalonResourceCalendar({
   const getColorForIndex = (index: number): string => {
     const colors = [
       'bg-purple-600',
-      'bg-blue-600', 
+      'bg-blue-600',
       'bg-pink-600',
       'bg-amber-600',
       'bg-teal-600',
@@ -312,35 +308,35 @@ export function SalonResourceCalendar({
 
     // Service icons and colors mapping
     const serviceIconMap: Record<string, { icon: React.ReactNode; color: string }> = {
-      'brazilian': { icon: <Zap className="w-3 h-3" />, color: '#8B5CF6' },
-      'cut': { icon: <Scissors className="w-3 h-3" />, color: '#3B82F6' },
-      'color': { icon: <Palette className="w-3 h-3" />, color: '#EC4899' },
-      'bridal': { icon: <Crown className="w-3 h-3" />, color: '#F59E0B' },
-      'nails': { icon: <Sparkles className="w-3 h-3" />, color: '#10B981' },
-      'keratin': { icon: <Star className="w-3 h-3" />, color: '#8B5CF6' },
-      'default': { icon: <Scissors className="w-3 h-3" />, color: '#6B7280' }
+      brazilian: { icon: <Zap className="w-3 h-3" />, color: '#8B5CF6' },
+      cut: { icon: <Scissors className="w-3 h-3" />, color: '#3B82F6' },
+      color: { icon: <Palette className="w-3 h-3" />, color: '#EC4899' },
+      bridal: { icon: <Crown className="w-3 h-3" />, color: '#F59E0B' },
+      nails: { icon: <Sparkles className="w-3 h-3" />, color: '#10B981' },
+      keratin: { icon: <Star className="w-3 h-3" />, color: '#8B5CF6' },
+      default: { icon: <Scissors className="w-3 h-3" />, color: '#6B7280' }
     }
 
-    return appointments.map((apt) => {
+    return appointments.map(apt => {
       const startDate = new Date(apt.start_time)
       const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
-      
+
       // Get service info from services
       const service = apt.service_ids?.[0] ? svcById.get(apt.service_ids[0]) : null
       const serviceType = service?.category || 'default'
       const serviceInfo = serviceIconMap[serviceType] || serviceIconMap.default
-      
+
       // Get customer info
       const customer = apt.customer_id ? custById.get(apt.customer_id) : null
       const customerName = customer?.entity_name || 'Walk-in Customer'
-      
+
       // Get stylist info
       const stylist = apt.stylist_id ? staffById.get(apt.stylist_id) : null
       const stylistId = stylist?.id || apt.stylist_id || ''
-      
+
       // Get branch info - now comes from entity data
       const appointmentBranchId = apt.branch_id || branchId || ''
-      
+
       return {
         id: apt.id,
         title: service?.entity_name || apt.entity_name || 'Appointment',
@@ -350,8 +346,12 @@ export function SalonResourceCalendar({
         date: startDate,
         duration: service?.duration_minutes || 60,
         service: serviceType,
-        status: apt.status === 'completed' ? 'completed' : 
-                apt.status === 'cancelled' ? 'tentative' : 'confirmed',
+        status:
+          apt.status === 'completed'
+            ? 'completed'
+            : apt.status === 'cancelled'
+              ? 'tentative'
+              : 'confirmed',
         price: `AED ${apt.price || service?.price || 0}`,
         color: serviceInfo.color,
         icon: serviceInfo.icon,
@@ -459,7 +459,7 @@ export function SalonResourceCalendar({
       newTime: time,
       newStylist: stylistId
     })
-    
+
     // After API call succeeds, the useCalendarPlaybook hook will automatically
     // refresh the data and update the UI
   }
@@ -537,7 +537,12 @@ export function SalonResourceCalendar({
   // Show loading state
   if (loading && !mounted) {
     return (
-      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+      <div
+        className={cn(
+          'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center',
+          className
+        )}
+      >
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Loading calendar...</p>
@@ -549,7 +554,12 @@ export function SalonResourceCalendar({
   // Show error state
   if (error && !transformedAppointments.length && !staff.length) {
     return (
-      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+      <div
+        className={cn(
+          'flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center',
+          className
+        )}
+      >
         <div className="text-center">
           <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-4" />
           <p className="text-destructive font-semibold mb-2">Failed to load calendar data</p>
@@ -717,8 +727,12 @@ export function SalonResourceCalendar({
                   className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-100 dark:text-foreground">All Stylists</p>
-                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">View all team members</p>
+                  <p className="text-sm font-medium text-gray-100 dark:text-foreground">
+                    All Stylists
+                  </p>
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                    View all team members
+                  </p>
                 </div>
               </div>
 
@@ -761,7 +775,9 @@ export function SalonResourceCalendar({
                       <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {stylist.name}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        {stylist.title}
+                      </p>
                       {organizations.length > 0 && (
                         <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-0.5">
                           {organizations
@@ -916,10 +932,18 @@ export function SalonResourceCalendar({
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Filter className="w-5 h-5" />
                 </Button>
                 <Button
@@ -1271,7 +1295,7 @@ export function SalonResourceCalendar({
           // TODO: Call Playbook API to create the appointment
           // After API call succeeds, the useCalendarPlaybook hook will automatically
           // refresh the data and update the UI
-          
+
           setIsBookingOpen(false)
           setBookingSlot(null)
           onNewBooking?.()
@@ -1306,7 +1330,9 @@ function AppointmentCard({
         <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
           {appointment.title}
         </p>
-        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">{appointment.client}</p>
+        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
+          {appointment.client}
+        </p>
         {!compact && (
           <div className="flex items-center gap-2 mt-1">
             <Badge
@@ -1321,7 +1347,9 @@ function AppointmentCard({
               {appointment.price}
             </Badge>
             {stylist && (
-              <span className="text-xs text-muted-foreground dark:text-muted-foreground">{stylist.name}</span>
+              <span className="text-xs text-muted-foreground dark:text-muted-foreground">
+                {stylist.name}
+              </span>
             )}
           </div>
         )}

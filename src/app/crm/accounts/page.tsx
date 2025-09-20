@@ -62,7 +62,10 @@ export default function AccountsPage() {
   // Sample accounts data
   const [accounts, setAccounts] = useState<Account[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<{ name: string; status: 'active' | 'inactive' }>({ name: '', status: 'active' })
+  const [editForm, setEditForm] = useState<{ name: string; status: 'active' | 'inactive' }>({
+    name: '',
+    status: 'active'
+  })
   const [editBusy, setEditBusy] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
 
@@ -95,7 +98,9 @@ export default function AccountsPage() {
   async function loadAccounts() {
     try {
       console.debug('[accounts] using orgId', resolvedOrgId)
-      const res = await fetch(`/api/playbook/crm/accounts?orgId=${resolvedOrgId}`, { cache: 'no-store' })
+      const res = await fetch(`/api/playbook/crm/accounts?orgId=${resolvedOrgId}`, {
+        cache: 'no-store'
+      })
       if (!res.ok) throw new Error('Failed to load accounts')
       const data = await res.json()
       const items = (data.items || []).map((r: any) => ({
@@ -106,7 +111,7 @@ export default function AccountsPage() {
         website: r.website || '-',
         revenue: r.revenue || 0,
         employees: r.employees || 0,
-        status: ((r.status === 'archived' ? 'inactive' : (r.status || 'active')) as Account['status']),
+        status: (r.status === 'archived' ? 'inactive' : r.status || 'active') as Account['status'],
         rating: 3,
         lastContact: r.updated_at || r.created_at,
         opportunities: 0,
@@ -142,7 +147,7 @@ export default function AccountsPage() {
           account: {
             id: editingId,
             entity_name: editForm.name,
-            status: editForm.status === 'inactive' ? 'archived' : 'active',
+            status: editForm.status === 'inactive' ? 'archived' : 'active'
           }
         })
       })
@@ -201,14 +206,22 @@ export default function AccountsPage() {
             website: form.website || undefined,
             industry: form.industry || undefined,
             owner_id: undefined,
-            phone: undefined,
+            phone: undefined
           }
         })
       })
       if (!res.ok) throw new Error('Account creation failed')
       await loadAccounts()
       setIsCreating(false)
-      setForm({ name: '', industry: '', segment: 'Enterprise', website: '', revenue: '', employees: '', status: 'active' })
+      setForm({
+        name: '',
+        industry: '',
+        segment: 'Enterprise',
+        website: '',
+        revenue: '',
+        employees: '',
+        status: 'active'
+      })
     } catch (err: any) {
       setCreateError(err?.message || 'Failed to create account')
     } finally {
@@ -297,7 +310,11 @@ export default function AccountsPage() {
       </div>
 
       {isCreating && (
-        <form onSubmit={submitCreate} className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4 space-y-3" data-testid="create-account-form">
+        <form
+          onSubmit={submitCreate}
+          className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4 space-y-3"
+          data-testid="create-account-form"
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <input
               data-testid="account-name-input"
@@ -354,10 +371,20 @@ export default function AccountsPage() {
           </div>
           {createError && <p className="text-sm text-red-400">{createError}</p>}
           <div className="flex gap-2">
-            <button disabled={creating} data-testid="create-account-submit" className="px-4 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground">
+            <button
+              disabled={creating}
+              data-testid="create-account-submit"
+              className="px-4 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground"
+            >
               {creating ? 'Creating...' : 'Create Account'}
             </button>
-            <button type="button" onClick={() => setIsCreating(false)} className="px-4 py-2 rounded-md border border-border/10">Cancel</button>
+            <button
+              type="button"
+              onClick={() => setIsCreating(false)}
+              className="px-4 py-2 rounded-md border border-border/10"
+            >
+              Cancel
+            </button>
           </div>
         </form>
       )}
@@ -470,7 +497,11 @@ export default function AccountsPage() {
               </div>
 
               {editingId === account.id && (
-                <form onSubmit={submitEdit} className="mt-3 p-3 border border-border/10 rounded-lg bg-background/5" data-testid={`account-edit-form-${account.id}`}>
+                <form
+                  onSubmit={submitEdit}
+                  className="mt-3 p-3 border border-border/10 rounded-lg bg-background/5"
+                  data-testid={`account-edit-form-${account.id}`}
+                >
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <input
                       value={editForm.name}
@@ -487,10 +518,19 @@ export default function AccountsPage() {
                       <option value="inactive">Inactive</option>
                     </select>
                     <div className="flex gap-2">
-                      <button disabled={editBusy} className="px-3 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground">
+                      <button
+                        disabled={editBusy}
+                        className="px-3 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground"
+                      >
                         {editBusy ? 'Saving...' : 'Save'}
                       </button>
-                      <button type="button" onClick={() => setEditingId(null)} className="px-3 py-2 rounded-md border border-border/10">Cancel</button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(null)}
+                        className="px-3 py-2 rounded-md border border-border/10"
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                   {editError && <p className="text-sm text-red-400 mt-2">{editError}</p>}
@@ -503,7 +543,9 @@ export default function AccountsPage() {
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= account.rating ? 'text-[#FF5A09] fill-[#FF5A09]' : 'text-foreground/20'
+                      star <= account.rating
+                        ? 'text-[#FF5A09] fill-[#FF5A09]'
+                        : 'text-foreground/20'
                     }`}
                   />
                 ))}

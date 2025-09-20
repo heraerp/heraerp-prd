@@ -22,7 +22,11 @@ export default function GeographicMapPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/pwm">
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to PWM
                 </Button>

@@ -251,7 +251,9 @@ export function HCMDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+              {title}
+            </p>
             <p className="text-2xl font-bold mt-1">
               {value}
               {suffix}
@@ -536,22 +538,30 @@ export function HCMDashboard() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Diversity Index</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Diversity Index
+                  </p>
                   <p className="text-2xl font-bold">{metrics.diversityIndex.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground">Shannon Index</p>
                 </div>
                 <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg Tenure</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Avg Tenure
+                  </p>
                   <p className="text-2xl font-bold">{metrics.averageTenure} years</p>
                   <p className="text-xs text-muted-foreground">Organization average</p>
                 </div>
                 <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Overtime Hours</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Overtime Hours
+                  </p>
                   <p className="text-2xl font-bold">{metrics.overtimeHours}</p>
                   <p className="text-xs text-muted-foreground">This month</p>
                 </div>
                 <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">eNPS Score</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    eNPS Score
+                  </p>
                   <p className="text-2xl font-bold">+42</p>
                   <p className="text-xs text-muted-foreground">Employee satisfaction</p>
                 </div>

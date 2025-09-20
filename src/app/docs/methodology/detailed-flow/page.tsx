@@ -436,7 +436,9 @@ sequenceDiagram
 
               <TabsContent value="uat" className="mt-4">
                 <div className="bg-background dark:bg-gray-950 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <div className="text-muted-foreground">// Phase 5: UAT sign-off as transaction</div>
+                  <div className="text-muted-foreground">
+                    // Phase 5: UAT sign-off as transaction
+                  </div>
                   <pre>{`const signoff = {
   transaction_type: 'project_milestone',
   business_context: 'PROJECT.UAT.SIGNOFF.v1',
@@ -465,15 +467,21 @@ sequenceDiagram
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
                 <div className="text-3xl font-bold text-primary dark:text-blue-400">20x</div>
-                <div className="text-sm text-muted-foreground dark:text-gray-300">Faster Delivery</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">
+                  Faster Delivery
+                </div>
               </div>
               <div className="text-center p-4 bg-green-50 dark:bg-green-950 rounded-lg">
                 <div className="text-3xl font-bold text-green-600 dark:text-green-400">90%</div>
-                <div className="text-sm text-muted-foreground dark:text-gray-300">Cost Reduction</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">
+                  Cost Reduction
+                </div>
               </div>
               <div className="text-center p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
                 <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">0</div>
-                <div className="text-sm text-muted-foreground dark:text-gray-300">Structure Changes</div>
+                <div className="text-sm text-muted-foreground dark:text-gray-300">
+                  Structure Changes
+                </div>
               </div>
               <div className="text-center p-4 bg-cyan-50 dark:bg-cyan-950 rounded-lg">
                 <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">100%</div>

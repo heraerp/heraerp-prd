@@ -159,7 +159,9 @@ export function AppointmentCalendarView({
         <div className="grid grid-cols-7 gap-2 mb-4">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
             <div key={day} className="text-center">
-              <p className="text-sm font-medium !text-muted-foreground dark:!text-muted-foreground">{day}</p>
+              <p className="text-sm font-medium !text-muted-foreground dark:!text-muted-foreground">
+                {day}
+              </p>
             </div>
           ))}
         </div>

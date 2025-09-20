@@ -1,99 +1,99 @@
 /**
  * HERA Playbooks Authentication Provider
- * 
+ *
  * React context provider for playbook authentication state
  * with automatic organization context management.
  */
 
-'use client';
+'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { 
-  PlaybookAuthContext, 
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import {
+  PlaybookAuthContext,
   PlaybookAuthState,
-  playbookAuthService 
-} from '@/lib/playbooks/auth/playbook-auth';
+  playbookAuthService
+} from '@/lib/playbooks/auth/playbook-auth'
 
 // Create React context
-const PlaybookAuthReactContext = createContext<PlaybookAuthContext | null>(null);
+const PlaybookAuthReactContext = createContext<PlaybookAuthContext | null>(null)
 
 interface PlaybookAuthProviderProps {
-  children: ReactNode;
-  autoInitialize?: boolean;
-  requireAuth?: boolean;
-  fallbackComponent?: ReactNode;
+  children: ReactNode
+  autoInitialize?: boolean
+  requireAuth?: boolean
+  fallbackComponent?: ReactNode
 }
 
 /**
  * Playbook Authentication Provider Component
  */
-export function PlaybookAuthProvider({ 
-  children, 
+export function PlaybookAuthProvider({
+  children,
   autoInitialize = true,
   requireAuth = false,
-  fallbackComponent 
+  fallbackComponent
 }: PlaybookAuthProviderProps) {
-  const [authState, setAuthState] = useState<PlaybookAuthState>(playbookAuthService.getState());
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [authState, setAuthState] = useState<PlaybookAuthState>(playbookAuthService.getState())
+  const [isInitialized, setIsInitialized] = useState(false)
 
   // Subscribe to auth service changes
   useEffect(() => {
-    const unsubscribe = playbookAuthService.subscribe((state) => {
-      setAuthState(state);
-    });
+    const unsubscribe = playbookAuthService.subscribe(state => {
+      setAuthState(state)
+    })
 
-    return unsubscribe;
-  }, []);
+    return unsubscribe
+  }, [])
 
   // Auto-initialize on mount
   useEffect(() => {
     if (autoInitialize && !isInitialized) {
-      initializeAuth();
+      initializeAuth()
     }
-  }, [autoInitialize, isInitialized]);
+  }, [autoInitialize, isInitialized])
 
   const initializeAuth = async () => {
     try {
-      await playbookAuthService.refreshAuth();
+      await playbookAuthService.refreshAuth()
     } catch (error) {
-      console.error('Failed to initialize auth:', error);
+      console.error('Failed to initialize auth:', error)
     } finally {
-      setIsInitialized(true);
+      setIsInitialized(true)
     }
-  };
+  }
 
   // Auth context methods
   const login = async (email: string, password: string): Promise<boolean> => {
-    return playbookAuthService.login(email, password);
-  };
+    return playbookAuthService.login(email, password)
+  }
 
   const logout = async (): Promise<void> => {
-    return playbookAuthService.logout();
-  };
+    return playbookAuthService.logout()
+  }
 
   const refreshAuth = async (): Promise<void> => {
-    return initializeAuth();
-  };
+    return initializeAuth()
+  }
 
   const switchOrganization = async (orgId: string): Promise<void> => {
-    return playbookAuthService.switchOrganization(orgId);
-  };
+    return playbookAuthService.switchOrganization(orgId)
+  }
 
   const hasPermission = (permission: string): boolean => {
-    return playbookAuthService.hasPermission(permission);
-  };
+    return playbookAuthService.hasPermission(permission)
+  }
 
   const hasRole = (role: string): boolean => {
-    return playbookAuthService.hasRole(role);
-  };
+    return playbookAuthService.hasRole(role)
+  }
 
   const canExecutePlaybook = (playbookId: string): boolean => {
-    return playbookAuthService.canExecutePlaybook(playbookId);
-  };
+    return playbookAuthService.canExecutePlaybook(playbookId)
+  }
 
   const canManagePlaybooks = (): boolean => {
-    return playbookAuthService.canManagePlaybooks();
-  };
+    return playbookAuthService.canManagePlaybooks()
+  }
 
   // Build context value
   const contextValue: PlaybookAuthContext = {
@@ -110,7 +110,7 @@ export function PlaybookAuthProvider({
     hasRole,
     canExecutePlaybook,
     canManagePlaybooks
-  };
+  }
 
   // Show loading state during initialization
   if (!isInitialized && autoInitialize) {
@@ -119,76 +119,72 @@ export function PlaybookAuthProvider({
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2 text-gray-600">Initializing playbooks...</span>
       </div>
-    );
+    )
   }
 
   // Show auth required state
   if (requireAuth && !authState.isAuthenticated && isInitialized) {
     if (fallbackComponent) {
-      return <>{fallbackComponent}</>;
+      return <>{fallbackComponent}</>
     }
-    
+
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Authentication Required
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Please log in to access the playbooks system.
-          </p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600 mb-4">Please log in to access the playbooks system.</p>
           <PlaybookLoginForm />
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <PlaybookAuthReactContext.Provider value={contextValue}>
       {children}
     </PlaybookAuthReactContext.Provider>
-  );
+  )
 }
 
 /**
  * Hook to use playbook authentication context
  */
 export function usePlaybookAuthContext(): PlaybookAuthContext {
-  const context = useContext(PlaybookAuthReactContext);
-  
+  const context = useContext(PlaybookAuthReactContext)
+
   if (!context) {
-    throw new Error('usePlaybookAuthContext must be used within a PlaybookAuthProvider');
+    throw new Error('usePlaybookAuthContext must be used within a PlaybookAuthProvider')
   }
-  
-  return context;
+
+  return context
 }
 
 /**
  * Simple login form component
  */
 function PlaybookLoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
     try {
-      const success = await playbookAuthService.login(email, password);
-      
+      const success = await playbookAuthService.login(email, password)
+
       if (!success) {
-        setError('Invalid credentials. Please try again.');
+        setError('Invalid credentials. Please try again.')
       }
     } catch (error) {
-      setError('Login failed. Please try again.');
+      setError('Login failed. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
@@ -200,13 +196,13 @@ function PlaybookLoginForm() {
           id="email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           required
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           placeholder="Enter your email"
         />
       </div>
-      
+
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -215,16 +211,14 @@ function PlaybookLoginForm() {
           id="password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           required
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           placeholder="Enter your password"
         />
       </div>
 
-      {error && (
-        <div className="text-red-600 text-sm">{error}</div>
-      )}
+      {error && <div className="text-red-600 text-sm">{error}</div>}
 
       <button
         type="submit"
@@ -234,7 +228,7 @@ function PlaybookLoginForm() {
         {isLoading ? 'Signing In...' : 'Sign In'}
       </button>
     </form>
-  );
+  )
 }
 
 /**
@@ -243,14 +237,14 @@ function PlaybookLoginForm() {
 export function withPlaybookAuth<P extends object>(
   Component: React.ComponentType<P>,
   options?: {
-    requireAuth?: boolean;
-    requiredPermissions?: string[];
-    requiredRoles?: string[];
-    fallback?: ReactNode;
+    requireAuth?: boolean
+    requiredPermissions?: string[]
+    requiredRoles?: string[]
+    fallback?: ReactNode
   }
 ) {
   return function AuthenticatedComponent(props: P) {
-    const auth = usePlaybookAuthContext();
+    const auth = usePlaybookAuthContext()
 
     // Check authentication
     if (options?.requireAuth && !auth.isAuthenticated) {
@@ -258,53 +252,51 @@ export function withPlaybookAuth<P extends object>(
         <div className="text-center py-8">
           <p className="text-gray-600">Authentication required to access this page.</p>
         </div>
-      );
+      )
     }
 
     // Check permissions
     if (options?.requiredPermissions?.length) {
       const hasAllPermissions = options.requiredPermissions.every(permission =>
         auth.hasPermission(permission)
-      );
-      
+      )
+
       if (!hasAllPermissions) {
         return (
           <div className="text-center py-8">
             <p className="text-gray-600">You don't have permission to access this page.</p>
           </div>
-        );
+        )
       }
     }
 
     // Check roles
     if (options?.requiredRoles?.length) {
-      const hasRequiredRole = options.requiredRoles.some(role =>
-        auth.hasRole(role)
-      );
-      
+      const hasRequiredRole = options.requiredRoles.some(role => auth.hasRole(role))
+
       if (!hasRequiredRole) {
         return (
           <div className="text-center py-8">
             <p className="text-gray-600">You don't have the required role to access this page.</p>
           </div>
-        );
+        )
       }
     }
 
     // Show fallback if provided
     if (options?.fallback && auth.isLoading) {
-      return <>{options.fallback}</>;
+      return <>{options.fallback}</>
     }
 
-    return <Component {...props} />;
-  };
+    return <Component {...props} />
+  }
 }
 
 /**
  * Component for displaying current auth status (useful for debugging)
  */
 export function PlaybookAuthStatus() {
-  const auth = usePlaybookAuthContext();
+  const auth = usePlaybookAuthContext()
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg text-sm">
@@ -339,5 +331,5 @@ export function PlaybookAuthStatus() {
         </div>
       </div>
     </div>
-  );
+  )
 }

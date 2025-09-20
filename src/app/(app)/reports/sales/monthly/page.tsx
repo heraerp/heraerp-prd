@@ -28,9 +28,11 @@ export default function MonthlySalesReportPage() {
     row?: SalesRow
     isOpen: boolean
   }>({ type: 'service', isOpen: false })
-  
+
   const [drillDownData, setDrillDownData] = React.useState<DrillDownResponse | null>(null)
-  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(null)
+  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(
+    null
+  )
   const [isDrillDownLoading, setIsDrillDownLoading] = React.useState(false)
   const [isTransactionLoading, setIsTransactionLoading] = React.useState(false)
 
@@ -50,15 +52,9 @@ export default function MonthlySalesReportPage() {
   }
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
-  
+
   // Main report data using useUniversalReports hook
-  const { 
-    isLoading, 
-    error, 
-    data: reportData,
-    getMonthMetrics,
-    clearError 
-  } = useUniversalReports()
+  const { isLoading, error, data: reportData, getMonthMetrics, clearError } = useUniversalReports()
 
   // Load monthly sales data
   React.useEffect(() => {
@@ -73,14 +69,14 @@ export default function MonthlySalesReportPage() {
 
     // Transform universal report data to monthly sales format
     const mockSummary = {
-      total_gross: 68472.50,
-      total_net: 65212.50,
-      total_vat: 3260.00,
+      total_gross: 68472.5,
+      total_net: 65212.5,
+      total_vat: 3260.0,
       total_tips: 5420,
-      total_service: 55687.50,
-      total_product: 9525.00,
+      total_service: 55687.5,
+      total_product: 9525.0,
       transaction_count: 347,
-      average_ticket: 197.40,
+      average_ticket: 197.4,
       average_daily: 2209.11, // Total / 31 days
       working_days: 26,
       service_mix_percent: 85.4,
@@ -97,7 +93,7 @@ export default function MonthlySalesReportPage() {
 
       for (let day = 1; day <= Math.min(daysInMonth, 15); day++) {
         const date = `${year}-${month.padStart(2, '0')}-${day.toString().padStart(2, '0')}`
-        
+
         // Simulate varying daily performance
         const baseRevenue = 1800 + Math.random() * 800
         const serviceMix = 0.82 + Math.random() * 0.06
@@ -107,7 +103,7 @@ export default function MonthlySalesReportPage() {
         const vat = (serviceNet + productNet) * 0.05
         const gross = serviceNet + productNet + vat
         const txnCount = Math.floor(8 + Math.random() * 8)
-        
+
         dailyData.push({
           date,
           service_net: Math.round(serviceNet * 100) / 100,
@@ -131,7 +127,10 @@ export default function MonthlySalesReportPage() {
   }, [reportData, filters.currency, filters.month])
 
   // Handle drill-down clicks
-  const handleDrillDown = async (type: 'service' | 'product' | 'vat' | 'tips' | 'total', row?: SalesRow) => {
+  const handleDrillDown = async (
+    type: 'service' | 'product' | 'vat' | 'tips' | 'total',
+    row?: SalesRow
+  ) => {
     setSelectedDrillDown({ type, row, isOpen: true })
     setIsDrillDownLoading(true)
     setDrillDownData(null)
@@ -140,7 +139,7 @@ export default function MonthlySalesReportPage() {
     try {
       // In production, this would call your drill-down API
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      
+
       const mockTransactions = [
         {
           transaction_id: '789e0123-e89b-12d3-a456-426614174000',
@@ -150,19 +149,19 @@ export default function MonthlySalesReportPage() {
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Jennifer Williams',
           staff_name: 'Sofia Martinez',
-          total_amount: 320.00,
+          total_amount: 320.0,
           description: 'Premium Hair Package',
           line_count: 4
         },
         {
           transaction_id: '012e3456-e89b-12d3-a456-426614174001',
           transaction_date: row?.date || filters.month + '-01',
-          transaction_code: 'POS-2024-046', 
+          transaction_code: 'POS-2024-046',
           transaction_type: 'pos_sale',
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Amanda Davis',
           staff_name: 'Isabella Garcia',
-          total_amount: 245.00,
+          total_amount: 245.0,
           description: 'Hair Styling & Treatment',
           line_count: 3
         }
@@ -199,7 +198,7 @@ export default function MonthlySalesReportPage() {
     setIsTransactionLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 800))
-      
+
       const mockTransactionDetail: TransactionDetail = {
         transaction: {
           id: transactionId,
@@ -208,7 +207,7 @@ export default function MonthlySalesReportPage() {
           transaction_code: 'POS-2024-045',
           transaction_type: 'pos_sale',
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
-          total_amount: 320.00,
+          total_amount: 320.0,
           source_entity_id: 'customer-789',
           target_entity_id: 'salon-location-1',
           reference_number: 'APT-2024-089',
@@ -226,19 +225,19 @@ export default function MonthlySalesReportPage() {
             entity_name: 'Premium Hair Cut & Style',
             description: 'Premium Hair Cut & Styling',
             quantity: 1,
-            unit_amount: 180.00,
-            line_amount: 180.00,
+            unit_amount: 180.0,
+            line_amount: 180.0,
             smart_code: 'HERA.SALON.SERVICE.PREMIUM.v1'
           },
           {
             line_number: 2,
-            line_type: 'service', 
+            line_type: 'service',
             entity_id: 'service-treatment',
             entity_name: 'Hair Treatment',
             description: 'Deep Conditioning Treatment',
             quantity: 1,
-            unit_amount: 80.00,
-            line_amount: 80.00,
+            unit_amount: 80.0,
+            line_amount: 80.0,
             smart_code: 'HERA.SALON.SERVICE.TREATMENT.v1'
           },
           {
@@ -248,8 +247,8 @@ export default function MonthlySalesReportPage() {
             entity_name: 'Premium Shampoo',
             description: 'Professional Shampoo 300ml',
             quantity: 1,
-            unit_amount: 45.00,
-            line_amount: 45.00,
+            unit_amount: 45.0,
+            line_amount: 45.0,
             smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.v1'
           },
           {
@@ -265,15 +264,50 @@ export default function MonthlySalesReportPage() {
           }
         ],
         related_entities: [
-          { entity_id: 'customer-789', entity_type: 'customer', entity_name: 'Jennifer Williams', role: 'customer' },
-          { entity_id: 'staff-789', entity_type: 'employee', entity_name: 'Sofia Martinez', role: 'senior_stylist' },
-          { entity_id: 'salon-location-1', entity_type: 'location', entity_name: 'Main Salon', role: 'location' }
+          {
+            entity_id: 'customer-789',
+            entity_type: 'customer',
+            entity_name: 'Jennifer Williams',
+            role: 'customer'
+          },
+          {
+            entity_id: 'staff-789',
+            entity_type: 'employee',
+            entity_name: 'Sofia Martinez',
+            role: 'senior_stylist'
+          },
+          {
+            entity_id: 'salon-location-1',
+            entity_type: 'location',
+            entity_name: 'Main Salon',
+            role: 'location'
+          }
         ],
         auto_journal_entries: [
-          { account_code: '1100', account_name: 'Cash in Hand', debit_amount: 320.00, smart_code: 'HERA.FIN.GL.CASH.RECEIPT.V1' },
-          { account_code: '4100', account_name: 'Service Revenue', credit_amount: 260.00, smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.V1' },
-          { account_code: '4200', account_name: 'Product Revenue', credit_amount: 45.00, smart_code: 'HERA.FIN.GL.REVENUE.PRODUCT.V1' },
-          { account_code: '2100', account_name: 'VAT Payable', credit_amount: 15.25, smart_code: 'HERA.FIN.GL.VAT.PAYABLE.V1' }
+          {
+            account_code: '1100',
+            account_name: 'Cash in Hand',
+            debit_amount: 320.0,
+            smart_code: 'HERA.FIN.GL.CASH.RECEIPT.V1'
+          },
+          {
+            account_code: '4100',
+            account_name: 'Service Revenue',
+            credit_amount: 260.0,
+            smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.V1'
+          },
+          {
+            account_code: '4200',
+            account_name: 'Product Revenue',
+            credit_amount: 45.0,
+            smart_code: 'HERA.FIN.GL.REVENUE.PRODUCT.V1'
+          },
+          {
+            account_code: '2100',
+            account_name: 'VAT Payable',
+            credit_amount: 15.25,
+            smart_code: 'HERA.FIN.GL.VAT.PAYABLE.V1'
+          }
         ]
       }
 
@@ -299,10 +333,7 @@ export default function MonthlySalesReportPage() {
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
             Failed to load monthly sales report: {error}
-            <button 
-              onClick={clearError}
-              className="ml-2 underline hover:no-underline"
-            >
+            <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>
           </AlertDescription>
@@ -316,23 +347,22 @@ export default function MonthlySalesReportPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to view reports.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to view reports.</AlertDescription>
         </Alert>
       </div>
     )
   }
 
-  const reportTitle = "Monthly Sales Report"
-  const reportPeriod = filters.month ? new Date(filters.month + '-01T00:00:00').toLocaleDateString('en-AE', {
-    year: 'numeric', 
-    month: 'long'
-  }) : 'Current Month'
+  const reportTitle = 'Monthly Sales Report'
+  const reportPeriod = filters.month
+    ? new Date(filters.month + '-01T00:00:00').toLocaleDateString('en-AE', {
+        year: 'numeric',
+        month: 'long'
+      })
+    : 'Current Month'
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -345,26 +375,27 @@ export default function MonthlySalesReportPage() {
           </p>
           {transformedData?.summary.growth_vs_previous && (
             <div className="flex items-center gap-2 mt-2">
-              <Badge 
+              <Badge
                 variant="outline"
                 className={
-                  transformedData.summary.growth_vs_previous > 0 
-                    ? "text-emerald-700 border-emerald-300 bg-emerald-50"
-                    : "text-red-700 border-red-300 bg-red-50"
+                  transformedData.summary.growth_vs_previous > 0
+                    ? 'text-emerald-700 border-emerald-300 bg-emerald-50'
+                    : 'text-red-700 border-red-300 bg-red-50'
                 }
               >
                 <TrendingUp className="h-3 w-3 mr-1" />
-                {transformedData.summary.growth_vs_previous > 0 ? '+' : ''}{transformedData.summary.growth_vs_previous}% vs previous month
+                {transformedData.summary.growth_vs_previous > 0 ? '+' : ''}
+                {transformedData.summary.growth_vs_previous}% vs previous month
               </Badge>
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="text-violet-700 border-violet-300">
             {currentOrganization.name}
           </Badge>
-          
+
           {transformedData && (
             <ExportButtons
               reportType="monthly_sales"
@@ -395,16 +426,19 @@ export default function MonthlySalesReportPage() {
           <SalesSummaryCards
             summary={transformedData.summary}
             currency={transformedData.currency}
-            onDrillDown={(type) => handleDrillDown(type)}
+            onDrillDown={type => handleDrillDown(type)}
           />
 
           {/* Additional Monthly Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Average Daily Revenue</div>
+                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  Average Daily Revenue
+                </div>
                 <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                  {transformedData.currency} {transformedData.summary.average_daily?.toLocaleString('en-AE') || 'N/A'}
+                  {transformedData.currency}{' '}
+                  {transformedData.summary.average_daily?.toLocaleString('en-AE') || 'N/A'}
                 </div>
                 <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                   Based on {transformedData.summary.working_days} working days
@@ -414,26 +448,29 @@ export default function MonthlySalesReportPage() {
 
             <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-green-700 dark:text-green-300">Working Days</div>
+                <div className="text-sm font-medium text-green-700 dark:text-green-300">
+                  Working Days
+                </div>
                 <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                   {transformedData.summary.working_days}
                 </div>
-                <div className="text-xs text-green-600 dark:text-green-400 mt-1">
-                  This month
-                </div>
+                <div className="text-xs text-green-600 dark:text-green-400 mt-1">This month</div>
               </CardContent>
             </Card>
 
             <Card className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 border-purple-200 dark:border-purple-800">
               <CardContent className="p-4">
-                <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Revenue Growth</div>
+                <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                  Revenue Growth
+                </div>
                 <div className="text-2xl font-bold text-purple-900 dark:text-purple-100 flex items-center gap-1">
                   {transformedData.summary.growth_vs_previous > 0 ? (
                     <TrendingUp className="h-5 w-5 text-emerald-600" />
                   ) : (
                     <TrendingUp className="h-5 w-5 text-red-600 rotate-180" />
                   )}
-                  {transformedData.summary.growth_vs_previous > 0 ? '+' : ''}{transformedData.summary.growth_vs_previous}%
+                  {transformedData.summary.growth_vs_previous > 0 ? '+' : ''}
+                  {transformedData.summary.growth_vs_previous}%
                 </div>
                 <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
                   vs previous month
@@ -465,7 +502,9 @@ export default function MonthlySalesReportPage() {
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-                <span className="ml-2 text-gray-600 dark:text-gray-400">Loading monthly sales data...</span>
+                <span className="ml-2 text-gray-600 dark:text-gray-400">
+                  Loading monthly sales data...
+                </span>
               </div>
             ) : (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">

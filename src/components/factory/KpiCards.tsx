@@ -90,7 +90,9 @@ export function KpiCards({ kpis }: KpiCardsProps) {
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground dark:text-muted-foreground">{card.subtitle}</p>
+              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                {card.subtitle}
+              </p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground dark:text-muted-foreground">
                   Target: {card.target}

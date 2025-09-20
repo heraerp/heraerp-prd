@@ -58,31 +58,34 @@ export function usePosTicket(organizationId: string) {
   const [ticket, setTicket] = useState<PosTicket>({
     lineItems: [],
     discounts: [],
-    tips: [],
+    tips: []
   })
 
   // Add line item to ticket
-  const addLineItem = useCallback((item: {
-    entity_id: string
-    entity_type: 'service' | 'product'
-    entity_name: string
-    quantity: number
-    unit_price: number
-    stylist_id?: string
-    stylist_name?: string
-    appointment_id?: string
-  }) => {
-    const newItem: LineItem = {
-      id: uuidv4(),
-      ...item,
-      line_amount: item.quantity * item.unit_price
-    }
+  const addLineItem = useCallback(
+    (item: {
+      entity_id: string
+      entity_type: 'service' | 'product'
+      entity_name: string
+      quantity: number
+      unit_price: number
+      stylist_id?: string
+      stylist_name?: string
+      appointment_id?: string
+    }) => {
+      const newItem: LineItem = {
+        id: uuidv4(),
+        ...item,
+        line_amount: item.quantity * item.unit_price
+      }
 
-    setTicket(prev => ({
-      ...prev,
-      lineItems: [...prev.lineItems, newItem]
-    }))
-  }, [])
+      setTicket(prev => ({
+        ...prev,
+        lineItems: [...prev.lineItems, newItem]
+      }))
+    },
+    []
+  )
 
   // Update line item
   const updateLineItem = useCallback((id: string, updates: Partial<LineItem>) => {
@@ -153,24 +156,27 @@ export function usePosTicket(organizationId: string) {
   }, [])
 
   // Update ticket metadata
-  const updateTicketInfo = useCallback((updates: {
-    customer_id?: string
-    customer_name?: string
-    appointment_id?: string
-    notes?: string
-  }) => {
-    setTicket(prev => ({
-      ...prev,
-      ...updates
-    }))
-  }, [])
+  const updateTicketInfo = useCallback(
+    (updates: {
+      customer_id?: string
+      customer_name?: string
+      appointment_id?: string
+      notes?: string
+    }) => {
+      setTicket(prev => ({
+        ...prev,
+        ...updates
+      }))
+    },
+    []
+  )
 
   // Clear entire ticket
   const clearTicket = useCallback(() => {
     setTicket({
       lineItems: [],
       discounts: [],
-      tips: [],
+      tips: []
     })
   }, [])
 
@@ -213,66 +219,75 @@ export function usePosTicket(organizationId: string) {
   }, [ticket])
 
   // Optimistic update for quick actions
-  const quickAddItem = useCallback((entityId: string, entityName: string, price: number) => {
-    addLineItem({
-      entity_id: entityId,
-      entity_type: 'service', // Default to service
-      entity_name: entityName,
-      quantity: 1,
-      unit_price: price
-    })
-  }, [addLineItem])
+  const quickAddItem = useCallback(
+    (entityId: string, entityName: string, price: number) => {
+      addLineItem({
+        entity_id: entityId,
+        entity_type: 'service', // Default to service
+        entity_name: entityName,
+        quantity: 1,
+        unit_price: price
+      })
+    },
+    [addLineItem]
+  )
 
   // Bulk add items (e.g., from appointment)
-  const addItemsFromAppointment = useCallback((appointmentData: {
-    appointment_id: string
-    customer_id: string
-    customer_name: string
-    services: Array<{
-      id: string
-      name: string
-      price: number
-      stylist_id?: string
-      stylist_name?: string
-    }>
-  }) => {
-    // Clear existing ticket first
-    clearTicket()
-    
-    // Update ticket info
-    updateTicketInfo({
-      appointment_id: appointmentData.appointment_id,
-      customer_id: appointmentData.customer_id,
-      customer_name: appointmentData.customer_name
-    })
+  const addItemsFromAppointment = useCallback(
+    (appointmentData: {
+      appointment_id: string
+      customer_id: string
+      customer_name: string
+      services: Array<{
+        id: string
+        name: string
+        price: number
+        stylist_id?: string
+        stylist_name?: string
+      }>
+    }) => {
+      // Clear existing ticket first
+      clearTicket()
 
-    // Add all services
-    appointmentData.services.forEach(service => {
-      addLineItem({
-        entity_id: service.id,
-        entity_type: 'service',
-        entity_name: service.name,
-        quantity: 1,
-        unit_price: service.price,
-        stylist_id: service.stylist_id,
-        stylist_name: service.stylist_name,
-        appointment_id: appointmentData.appointment_id
+      // Update ticket info
+      updateTicketInfo({
+        appointment_id: appointmentData.appointment_id,
+        customer_id: appointmentData.customer_id,
+        customer_name: appointmentData.customer_name
       })
-    })
-  }, [addLineItem, updateTicketInfo, clearTicket])
+
+      // Add all services
+      appointmentData.services.forEach(service => {
+        addLineItem({
+          entity_id: service.id,
+          entity_type: 'service',
+          entity_name: service.name,
+          quantity: 1,
+          unit_price: service.price,
+          stylist_id: service.stylist_id,
+          stylist_name: service.stylist_name,
+          appointment_id: appointmentData.appointment_id
+        })
+      })
+    },
+    [addLineItem, updateTicketInfo, clearTicket]
+  )
 
   // Add customer to ticket (from search)
-  const addCustomerToTicket = useCallback((customerData: {
-    customer_id: string
-    customer_name: string
-    customer_email?: string
-    customer_phone?: string
-  }) => {
-    updateTicketInfo({
-      customer_id: customerData.customer_id,
-      customer_name: customerData.customer_name
-    })
-  }, [updateTicketInfo])
+  const addCustomerToTicket = useCallback(
+    (customerData: {
+      customer_id: string
+      customer_name: string
+      customer_email?: string
+      customer_phone?: string
+    }) => {
+      updateTicketInfo({
+        customer_id: customerData.customer_id,
+        customer_name: customerData.customer_name
+      })
+    },
+    [updateTicketInfo]
+  )
 
   // Validate ticket before payment
   const validateTicket = useCallback((): { isValid: boolean; errors: string[] } => {
@@ -291,9 +306,7 @@ export function usePosTicket(organizationId: string) {
     }
 
     // Check for invalid amounts
-    const invalidItems = ticket.lineItems.filter(
-      item => item.quantity <= 0 || item.unit_price < 0
-    )
+    const invalidItems = ticket.lineItems.filter(item => item.quantity <= 0 || item.unit_price < 0)
     if (invalidItems.length > 0) {
       errors.push('Invalid quantity or price on some items')
     }
@@ -331,7 +344,7 @@ export function usePosTicket(organizationId: string) {
   return {
     // State
     ticket,
-    
+
     // Actions
     addLineItem,
     updateLineItem,
@@ -342,17 +355,17 @@ export function usePosTicket(organizationId: string) {
     removeTip,
     updateTicketInfo,
     clearTicket,
-    
+
     // Convenience methods
     quickAddItem,
     addItemsFromAppointment,
     addCustomerToTicket,
-    
+
     // Computed values
     calculateTotals: () => memoizedTotals,
     getTicketSummary: () => memoizedSummary,
     validateTicket: () => memoizedValidation,
-    
+
     // State checks
     isEmpty: ticket.lineItems.length === 0,
     hasItems: ticket.lineItems.length > 0,

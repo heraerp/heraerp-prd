@@ -13,22 +13,28 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { 
-  MessageCircle, 
-  Send, 
-  AlertCircle, 
-  CheckCircle, 
+import {
+  MessageCircle,
+  Send,
+  AlertCircle,
+  CheckCircle,
   Phone,
   User,
   Clock,
@@ -44,7 +50,10 @@ import { useToast } from '@/components/ui/use-toast'
 const TestMessageSchema = z.object({
   customer_code: z.string().min(1, 'Customer code is required'),
   customer_name: z.string().min(1, 'Customer name is required'),
-  phone_number: z.string().min(10, 'Valid phone number is required').regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format'),
+  phone_number: z
+    .string()
+    .min(10, 'Valid phone number is required')
+    .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format'),
   template_name: z.string().min(1, 'Please select a template'),
   variables: z.record(z.string()).default({})
 })
@@ -57,18 +66,17 @@ interface SendTestMessageDialogProps {
   organizationId: string
 }
 
-export function SendTestMessageDialog({ open, onOpenChange, organizationId }: SendTestMessageDialogProps) {
+export function SendTestMessageDialog({
+  open,
+  onOpenChange,
+  organizationId
+}: SendTestMessageDialogProps) {
   const { toast } = useToast()
   const [previewVisible, setPreviewVisible] = React.useState(false)
   const [sendStatus, setSendStatus] = React.useState<'idle' | 'sending' | 'sent' | 'failed'>('idle')
 
-  const {
-    templates,
-    isTemplatesLoading,
-    sendMessage,
-    getCustomerPrefs,
-    setCustomerPrefs
-  } = useWhatsappApi(organizationId)
+  const { templates, isTemplatesLoading, sendMessage, getCustomerPrefs, setCustomerPrefs } =
+    useWhatsappApi(organizationId)
 
   const form = useForm<TestMessageFormData>({
     resolver: zodResolver(TestMessageSchema),
@@ -88,13 +96,13 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
 
   const previewText = React.useMemo(() => {
     if (!selectedTemplate) return ''
-    
+
     const variables = form.watch('variables')
     const substitutions = {
       customer_name: form.watch('customer_name'),
       ...variables
     }
-    
+
     return renderTemplate(selectedTemplate, substitutions)
   }, [selectedTemplate, form.watch('variables'), form.watch('customer_name')])
 
@@ -103,11 +111,12 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
     if (selectedTemplate) {
       const currentVariables = form.getValues('variables')
       const newVariables: Record<string, string> = {}
-      
+
       selectedTemplate.variables.forEach(varName => {
-        newVariables[varName] = currentVariables[varName] || selectedTemplate.sample?.[varName] || ''
+        newVariables[varName] =
+          currentVariables[varName] || selectedTemplate.sample?.[varName] || ''
       })
-      
+
       form.setValue('variables', newVariables)
       setPreviewVisible(true)
     } else {
@@ -118,19 +127,19 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
   const onSubmit = async (data: TestMessageFormData) => {
     if (!selectedTemplate) {
       toast({
-        title: "No Template Selected",
-        description: "Please select a template before sending.",
-        variant: "destructive"
+        title: 'No Template Selected',
+        description: 'Please select a template before sending.',
+        variant: 'destructive'
       })
       return
     }
 
     setSendStatus('sending')
-    
+
     try {
       // 1. Ensure customer has consent for testing
       const customerPrefs = await getCustomerPrefs(data.customer_code)
-      
+
       if (!customerPrefs?.opted_in) {
         // Auto opt-in for test customers
         await setCustomerPrefs.mutateAsync({
@@ -163,9 +172,9 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
 
       setSendStatus('sent')
       toast({
-        title: "Test Message Queued",
+        title: 'Test Message Queued',
         description: `Test message has been queued for delivery to ${data.phone_number}`,
-        variant: "default"
+        variant: 'default'
       })
 
       // Close dialog after success
@@ -174,13 +183,12 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
         setSendStatus('idle')
         form.reset()
       }, 2000)
-
     } catch (error) {
       setSendStatus('failed')
       toast({
-        title: "Test Message Failed",
-        description: error instanceof Error ? error.message : "Failed to send test message",
-        variant: "destructive"
+        title: 'Test Message Failed',
+        description: error instanceof Error ? error.message : 'Failed to send test message',
+        variant: 'destructive'
       })
     }
   }
@@ -200,13 +208,12 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
             Send Test WhatsApp Message
           </DialogTitle>
           <DialogDescription>
-            Send a test message to verify your WhatsApp configuration and templates.
-            This will queue a real message through the HERA MSP API.
+            Send a test message to verify your WhatsApp configuration and templates. This will queue
+            a real message through the HERA MSP API.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          
           {/* Recipient Information */}
           <Card>
             <CardHeader className="pb-3">
@@ -216,7 +223,6 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="customer_code">Customer Code</Label>
@@ -266,7 +272,6 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
                   </p>
                 )}
               </div>
-
             </CardContent>
           </Card>
 
@@ -276,23 +281,26 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
               <CardTitle className="text-lg">Message Template</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="space-y-2">
                 <Label htmlFor="template_name">Select Template</Label>
                 <Select
                   value={form.watch('template_name')}
-                  onValueChange={(value) => form.setValue('template_name', value)}
+                  onValueChange={value => form.setValue('template_name', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a message template" />
                   </SelectTrigger>
                   <SelectContent>
                     {isTemplatesLoading ? (
-                      <SelectItem value="" disabled>Loading templates...</SelectItem>
+                      <SelectItem value="" disabled>
+                        Loading templates...
+                      </SelectItem>
                     ) : templates.length === 0 ? (
-                      <SelectItem value="" disabled>No templates available</SelectItem>
+                      <SelectItem value="" disabled>
+                        No templates available
+                      </SelectItem>
                     ) : (
-                      templates.map((template) => (
+                      templates.map(template => (
                         <SelectItem key={template.name} value={template.name}>
                           <div className="flex items-center justify-between w-full">
                             <span>{template.name}</span>
@@ -316,7 +324,7 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
               {selectedTemplate && selectedTemplate.variables.length > 0 && (
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Template Variables</Label>
-                  {selectedTemplate.variables.map((varName) => (
+                  {selectedTemplate.variables.map(varName => (
                     <div key={varName} className="space-y-1">
                       <Label htmlFor={`var_${varName}`} className="text-sm">
                         {varName}
@@ -324,7 +332,7 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
                       <Input
                         id={`var_${varName}`}
                         value={form.watch('variables')[varName] || ''}
-                        onChange={(e) => {
+                        onChange={e => {
                           const variables = form.getValues('variables')
                           variables[varName] = e.target.value
                           form.setValue('variables', variables)
@@ -335,7 +343,6 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
                   ))}
                 </div>
               )}
-
             </CardContent>
           </Card>
 
@@ -368,9 +375,7 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
           {sendStatus === 'sending' && (
             <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
               <Clock className="h-4 w-4 animate-spin" />
-              <AlertDescription>
-                Sending test message through HERA MSP API...
-              </AlertDescription>
+              <AlertDescription>Sending test message through HERA MSP API...</AlertDescription>
             </Alert>
           )}
 
@@ -391,7 +396,6 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
               </AlertDescription>
             </Alert>
           )}
-
         </form>
 
         <Separator />
@@ -408,7 +412,7 @@ export function SendTestMessageDialog({ open, onOpenChange, organizationId }: Se
           <Button
             onClick={form.handleSubmit(onSubmit)}
             disabled={
-              sendStatus === 'sending' || 
+              sendStatus === 'sending' ||
               sendStatus === 'sent' ||
               !selectedTemplate ||
               !form.watch('phone_number') ||

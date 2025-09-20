@@ -12,10 +12,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus, 
-  Search, 
-  Edit, 
+import {
+  Plus,
+  Search,
+  Edit,
   Trash2,
   Users,
   Shield,
@@ -40,23 +40,19 @@ export default function RolesManagementPage() {
   const [selectedGrant, setSelectedGrant] = React.useState<RoleGrant | null>(null)
   const [showForm, setShowForm] = React.useState(false)
 
-  const {
-    roleGrants,
-    isRoleGrantsLoading,
-    roleGrantsError,
-    saveRoleGrant,
-    revokeRoleGrant
-  } = useOrgSettings(currentOrganization?.id || '')
+  const { roleGrants, isRoleGrantsLoading, roleGrantsError, saveRoleGrant, revokeRoleGrant } =
+    useOrgSettings(currentOrganization?.id || '')
 
   // Filter role grants based on search
   const filteredGrants = React.useMemo(() => {
     if (!searchTerm.trim()) return roleGrants
 
     const search = searchTerm.toLowerCase()
-    return roleGrants.filter(grant => 
-      grant.user_email.toLowerCase().includes(search) ||
-      grant.user_name?.toLowerCase().includes(search) ||
-      grant.roles.some(role => role.toLowerCase().includes(search))
+    return roleGrants.filter(
+      grant =>
+        grant.user_email.toLowerCase().includes(search) ||
+        grant.user_name?.toLowerCase().includes(search) ||
+        grant.roles.some(role => role.toLowerCase().includes(search))
     )
   }, [roleGrants, searchTerm])
 
@@ -81,15 +77,15 @@ export default function RolesManagementPage() {
     try {
       await revokeRoleGrant.mutateAsync(grant.user_email)
       toast({
-        title: "Access Revoked",
+        title: 'Access Revoked',
         description: `Role grant for "${grant.user_email}" has been revoked successfully.`,
-        variant: "default"
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Revoke Failed",
-        description: error instanceof Error ? error.message : "Failed to revoke role grant",
-        variant: "destructive"
+        title: 'Revoke Failed',
+        description: error instanceof Error ? error.message : 'Failed to revoke role grant',
+        variant: 'destructive'
       })
     }
   }
@@ -98,17 +94,17 @@ export default function RolesManagementPage() {
     try {
       await saveRoleGrant.mutateAsync(grant)
       toast({
-        title: selectedGrant ? "Grant Updated" : "Grant Created",
+        title: selectedGrant ? 'Grant Updated' : 'Grant Created',
         description: `Role grant for "${grant.user_email}" has been ${selectedGrant ? 'updated' : 'created'} successfully.`,
-        variant: "default"
+        variant: 'default'
       })
       setShowForm(false)
       setSelectedGrant(null)
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save role grant",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save role grant',
+        variant: 'destructive'
       })
     }
   }
@@ -155,9 +151,7 @@ export default function RolesManagementPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to manage user roles.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to manage user roles.</AlertDescription>
         </Alert>
       </div>
     )
@@ -165,7 +159,6 @@ export default function RolesManagementPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -185,7 +178,7 @@ export default function RolesManagementPage() {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button onClick={handleCreateGrant}>
             <Plus className="h-4 w-4 mr-2" />
@@ -201,10 +194,10 @@ export default function RolesManagementPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</div>
-                  <div className="text-2xl font-bold">
-                    {stat.count}
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {stat.title}
                   </div>
+                  <div className="text-2xl font-bold">{stat.count}</div>
                 </div>
                 <stat.icon className={`h-8 w-8 ${stat.color}`} />
               </div>
@@ -222,7 +215,7 @@ export default function RolesManagementPage() {
               <Input
                 placeholder="Search by email, name, or role..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -271,10 +264,9 @@ export default function RolesManagementPage() {
                     {searchTerm ? 'No active users found' : 'No users yet'}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    {searchTerm 
+                    {searchTerm
                       ? 'Try adjusting your search criteria.'
-                      : 'Grant roles to users to get started.'
-                    }
+                      : 'Grant roles to users to get started.'}
                   </p>
                   {!searchTerm && (
                     <Button onClick={handleCreateGrant}>
@@ -284,7 +276,7 @@ export default function RolesManagementPage() {
                   )}
                 </div>
               ) : (
-                <RoleTable 
+                <RoleTable
                   grants={activeGrants}
                   onEdit={handleEditGrant}
                   onRevoke={handleRevokeGrant}
@@ -304,7 +296,7 @@ export default function RolesManagementPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <RoleTable 
+                <RoleTable
                   grants={inactiveGrants}
                   onEdit={handleEditGrant}
                   onRevoke={handleRevokeGrant}
@@ -322,14 +314,12 @@ export default function RolesManagementPage() {
         <Info className="h-4 w-4" />
         <AlertDescription>
           <div className="space-y-1">
-            <div className="font-medium text-blue-800 dark:text-blue-200">
-              Policy as Data
-            </div>
+            <div className="font-medium text-blue-800 dark:text-blue-200">Policy as Data</div>
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              • Role grants are stored as configuration data in Sacred Six tables
-              • Actual authentication remains with your identity provider (IdP)
-              • Changes are logged for audit purposes with Smart Code: HERA.ORG.SETTINGS.ROLE_GRANTS.v1
-              • Use this to define who can access what within your organization
+              • Role grants are stored as configuration data in Sacred Six tables • Actual
+              authentication remains with your identity provider (IdP) • Changes are logged for
+              audit purposes with Smart Code: HERA.ORG.SETTINGS.ROLE_GRANTS.v1 • Use this to define
+              who can access what within your organization
             </div>
           </div>
         </AlertDescription>
@@ -346,7 +336,6 @@ export default function RolesManagementPage() {
           isSubmitting={saveRoleGrant.isPending}
         />
       )}
-
     </div>
   )
 }

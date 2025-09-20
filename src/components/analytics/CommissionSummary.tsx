@@ -73,7 +73,8 @@ export function CommissionSummary({ commission, stylistName }: CommissionSummary
 
         <div className="bg-purple-100/50 rounded-lg p-3">
           <p className="text-xs text-purple-700">
-            <strong>Note:</strong> This is a preview only. Actual commission will be calculated during payroll processing based on your salon's commission structure and policies.
+            <strong>Note:</strong> This is a preview only. Actual commission will be calculated
+            during payroll processing based on your salon's commission structure and policies.
           </p>
         </div>
       </div>

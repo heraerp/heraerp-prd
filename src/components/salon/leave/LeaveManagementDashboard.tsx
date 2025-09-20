@@ -300,11 +300,15 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Upcoming Leave</p>
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                      Upcoming Leave
+                    </p>
                     <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                       {leaveStats.upcomingLeave}
                     </p>
-                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Next 30 days</p>
+                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
+                      Next 30 days
+                    </p>
                   </div>
                   <div className="p-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 text-foreground">
                     <TrendingUp className="h-5 w-5" />
@@ -332,11 +336,15 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">Team on Leave</p>
+                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                      Team on Leave
+                    </p>
                     <p className="text-2xl font-bold !text-gray-100 dark:!text-foreground">
                       {leaveStats.teamOnLeave}
                     </p>
-                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">Today</p>
+                    <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">
+                      Today
+                    </p>
                   </div>
                   <div className="p-3 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-foreground">
                     <Users className="h-5 w-5" />

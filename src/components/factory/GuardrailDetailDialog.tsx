@@ -187,7 +187,9 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Total Checks</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                            Total Checks
+                          </p>
                           <p className="text-xl font-bold">{guardrailData.stats.total}</p>
                         </div>
                         <Shield className="w-8 h-8 text-muted-foreground" />
@@ -199,7 +201,9 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Passed</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                            Passed
+                          </p>
                           <p className="text-xl font-bold text-green-600">
                             {guardrailData.stats.passed}
                           </p>
@@ -213,7 +217,9 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Warnings</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                            Warnings
+                          </p>
                           <p className="text-xl font-bold text-orange-600">
                             {guardrailData.stats.warnings}
                           </p>
@@ -227,7 +233,9 @@ export function GuardrailDetailDialog({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">Failed</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                            Failed
+                          </p>
                           <p className="text-xl font-bold text-red-600">
                             {guardrailData.stats.failed}
                           </p>

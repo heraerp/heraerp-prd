@@ -75,7 +75,9 @@ export default function OrganizationSelectorPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/20 animate-pulse">
             <Building2 className="w-10 h-10 text-primary dark:text-blue-400" />
           </div>
-          <p className="text-muted-foreground dark:text-muted-foreground mt-4">Loading your organizations...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground mt-4">
+            Loading your organizations...
+          </p>
         </div>
       </div>
     )
@@ -107,11 +109,15 @@ export default function OrganizationSelectorPage() {
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
                   HERA Enterprise
                 </h1>
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Select Organization</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Select Organization
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">{user?.email}</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                {user?.email}
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -169,7 +175,9 @@ export default function OrganizationSelectorPage() {
                       {org.role}
                     </Badge>
                   </div>
-                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">{org.name}</CardTitle>
+                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">
+                    {org.name}
+                  </CardTitle>
                   <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground">
                     <Globe className="h-3 w-3" />
                     {org.subdomain}.heraerp.com
@@ -249,7 +257,9 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Shield className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Complete Isolation</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">
+              Complete Isolation
+            </h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Each organization has its own secure data space
             </p>
@@ -258,7 +268,9 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Globe className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Custom Subdomain</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">
+              Custom Subdomain
+            </h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Access each organization via its unique URL
             </p>
@@ -267,7 +279,9 @@ export default function OrganizationSelectorPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Users className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Team Collaboration</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">
+              Team Collaboration
+            </h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Invite team members to specific organizations
             </p>

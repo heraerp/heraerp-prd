@@ -42,7 +42,7 @@ const OrganizationContext = createContext<OrganizationContextType>({
   loading: true,
   switchOrganization: () => {},
   refreshOrganizations: async () => {},
-  isAppInstalled: () => false,
+  isAppInstalled: () => false
 })
 
 export function useOrganization() {
@@ -68,8 +68,8 @@ const mockOrganizations: Organization[] = [
     settings: {
       theme: 'dark',
       timezone: 'Asia/Dubai',
-      currency: 'AED',
-    },
+      currency: 'AED'
+    }
   },
   {
     id: 'org-2',
@@ -83,8 +83,8 @@ const mockOrganizations: Organization[] = [
     settings: {
       theme: 'light',
       timezone: 'America/New_York',
-      currency: 'USD',
-    },
+      currency: 'USD'
+    }
   },
   {
     id: 'org-3',
@@ -98,9 +98,9 @@ const mockOrganizations: Organization[] = [
     settings: {
       theme: 'dark',
       timezone: 'Europe/London',
-      currency: 'GBP',
-    },
-  },
+      currency: 'GBP'
+    }
+  }
 ]
 
 export function OrganizationProvider({ children }: { children: React.ReactNode }) {
@@ -119,15 +119,15 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
   const loadOrganizations = async () => {
     try {
       setLoading(true)
-      
+
       // In production, this would fetch from API
       // For now, use mock data
       setOrganizations(mockOrganizations)
-      
+
       // Set current org based on subdomain or localStorage
       const savedOrgId = localStorage.getItem('hera-current-org')
       const savedOrg = mockOrganizations.find(org => org.id === savedOrgId)
-      
+
       if (savedOrg) {
         setCurrentOrganization(savedOrg)
       } else if (mockOrganizations.length > 0) {
@@ -147,7 +147,7 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
     if (org) {
       setCurrentOrganization(org)
       localStorage.setItem('hera-current-org', orgId)
-      
+
       // In production, this would switch subdomain
       // For development, we could use path-based routing
       // e.g., /org/hairtalkz/dashboard
@@ -169,12 +169,10 @@ export function OrganizationProvider({ children }: { children: React.ReactNode }
     loading,
     switchOrganization,
     refreshOrganizations,
-    isAppInstalled,
+    isAppInstalled
   }
 
   return (
-    <OrganizationContext.Provider value={contextValue}>
-      {children}
-    </OrganizationContext.Provider>
+    <OrganizationContext.Provider value={contextValue}>{children}</OrganizationContext.Provider>
   )
 }

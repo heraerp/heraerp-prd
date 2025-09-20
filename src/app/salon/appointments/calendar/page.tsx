@@ -11,7 +11,7 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SalonAppointmentsCalendarPage() {
   const { organization } = useHERAAuth()
-  
+
   // Default salon organizations for the calendar
   const salonOrganizations = [
     {
@@ -20,7 +20,7 @@ export default function SalonAppointmentsCalendarPage() {
       organization_name: organization?.name || 'Hair Talkz • Park Regis Kris Kin (Karama)'
     }
   ]
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <SalonResourceCalendar

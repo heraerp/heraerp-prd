@@ -18,10 +18,10 @@ import { QuickActions } from '@/components/pos/QuickActions'
 import { CommissionSummary } from '@/components/analytics/CommissionSummary'
 import { useSession } from '@/lib/auth/session'
 import { PosApi } from '@/lib/api/pos'
-import { 
-  usePriceList, 
-  useLoadAppointment, 
-  useCheckout, 
+import {
+  usePriceList,
+  useLoadAppointment,
+  useCheckout,
   useCommission,
   useCartSummary,
   useCartStore,
@@ -37,13 +37,13 @@ export default function POSSalePage() {
   const cartStore = useCartStore()
   const commission = useCommission()
   const cartSummary = useCartSummary()
-  
+
   // Load price list
   const { data: priceList, isLoading: isPriceListLoading } = usePriceList(posApi)
-  
+
   // Load appointment if specified
   const { data: appointmentCart, isLoading: isAppointmentLoading } = useLoadAppointment(posApi)
-  
+
   // Checkout mutation
   const checkout = useCheckout(posApi)
 
@@ -56,13 +56,13 @@ export default function POSSalePage() {
 
   const handleCheckout = () => {
     if (!cartSummary.canCheckout) return
-    
+
     const txnId = generateTxnId()
     checkout.mutate({ txnId })
   }
 
   const showSmartCode = () => {
-    return cartStore.appointment_id 
+    return cartStore.appointment_id
       ? 'HERA.SALON.POS.SALE.FROM_APPT.V1'
       : 'HERA.SALON.POS.SALE.WALKIN.V1'
   }
@@ -132,9 +132,9 @@ export default function POSSalePage() {
 
           {/* Commission Preview */}
           {commission.service_subtotal > 0 && (
-            <CommissionSummary 
-              commission={commission} 
-              stylistName={cartStore.appointment_id ? "Lisa Chen" : undefined}
+            <CommissionSummary
+              commission={commission}
+              stylistName={cartStore.appointment_id ? 'Lisa Chen' : undefined}
             />
           )}
         </div>

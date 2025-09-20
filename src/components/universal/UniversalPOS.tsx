@@ -481,7 +481,9 @@ export function UniversalPOS({
                                   Stock: {item.stock}
                                 </span>
                               )}
-                              {item.brand && <span className="text-muted-foreground">{item.brand}</span>}
+                              {item.brand && (
+                                <span className="text-muted-foreground">{item.brand}</span>
+                              )}
                             </>
                           )}
                         </div>
@@ -492,7 +494,10 @@ export function UniversalPOS({
                         {config.currency}
                         {item.price}
                       </p>
-                      <Button size="sm" className={`${config.theme.accentColor} text-foreground mt-2`}>
+                      <Button
+                        size="sm"
+                        className={`${config.theme.accentColor} text-foreground mt-2`}
+                      >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>

@@ -640,7 +640,9 @@ export default function SalonBalanceSheetPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading balance sheet data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading balance sheet data...
+          </p>
         </div>
       </div>
     )
@@ -796,7 +798,9 @@ export default function SalonBalanceSheetPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Assets</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Total Assets
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(balanceSheet.totals.total_assets)}
                   </p>
@@ -810,7 +814,9 @@ export default function SalonBalanceSheetPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Working Capital</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Working Capital
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(balanceSheet.kpis.working_capital)}
                   </p>
@@ -824,7 +830,9 @@ export default function SalonBalanceSheetPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Current Ratio</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Current Ratio
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.current_ratio)}
                   </p>
@@ -841,7 +849,9 @@ export default function SalonBalanceSheetPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Debt to Equity</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Debt to Equity
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatRatio(balanceSheet.kpis.debt_to_equity)}
                   </p>
@@ -858,7 +868,9 @@ export default function SalonBalanceSheetPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Equity Ratio</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Equity Ratio
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatPercent(balanceSheet.kpis.equity_ratio * 100)}
                   </p>
@@ -1054,13 +1066,17 @@ export default function SalonBalanceSheetPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground dark:text-muted-foreground">Current Assets</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">
+                    Current Assets
+                  </span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_current_assets)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground dark:text-muted-foreground">Current Liabilities</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">
+                    Current Liabilities
+                  </span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_current_liabilities)}
                   </span>
@@ -1111,13 +1127,17 @@ export default function SalonBalanceSheetPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground dark:text-muted-foreground">Total Debt</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">
+                    Total Debt
+                  </span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_liabilities)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground dark:text-muted-foreground">Total Equity</span>
+                  <span className="text-muted-foreground dark:text-muted-foreground">
+                    Total Equity
+                  </span>
                   <span className="font-semibold">
                     {formatCurrency(balanceSheet.totals.total_equity)}
                   </span>

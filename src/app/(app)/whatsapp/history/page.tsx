@@ -11,12 +11,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  History, 
-  Search, 
+import {
+  History,
+  Search,
   Filter,
   Calendar,
   MessageCircle,
@@ -42,14 +48,9 @@ export default function WhatsAppHistoryPage() {
     offset: 0
   })
 
-  const {
-    messages,
-    isMessagesLoading,
-    messagesError,
-    templates,
-    config,
-    refetch
-  } = useWhatsappApi(currentOrganization?.id || '')
+  const { messages, isMessagesLoading, messagesError, templates, config, refetch } = useWhatsappApi(
+    currentOrganization?.id || ''
+  )
 
   // Update filters when organization changes
   React.useEffect(() => {
@@ -119,7 +120,6 @@ export default function WhatsAppHistoryPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -139,30 +139,19 @@ export default function WhatsAppHistoryPage() {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => refetch.messages()}
-            disabled={isMessagesLoading}
-          >
+          <Button variant="outline" onClick={() => refetch.messages()} disabled={isMessagesLoading}>
             <RefreshCw className={`h-4 w-4 mr-2 ${isMessagesLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            disabled={messages.length === 0}
-          >
+
+          <Button variant="outline" onClick={handleExport} disabled={messages.length === 0}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          
-          <Button
-            onClick={() => setSendDialogOpen(true)}
-            disabled={!config?.enabled}
-          >
+
+          <Button onClick={() => setSendDialogOpen(true)} disabled={!config?.enabled}>
             <MessageCircle className="h-4 w-4 mr-2" />
             Send Message
           </Button>
@@ -174,7 +163,7 @@ export default function WhatsAppHistoryPage() {
         <Alert className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950/30">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            WhatsApp integration is not enabled. 
+            WhatsApp integration is not enabled.
             <Button variant="link" className="px-2 h-auto font-normal underline">
               Configure WhatsApp settings
             </Button>
@@ -191,7 +180,7 @@ export default function WhatsAppHistoryPage() {
             <div className="text-2xl font-bold">{statusCounts.total}</div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="text-sm font-medium text-purple-600">Queued</div>
@@ -200,7 +189,7 @@ export default function WhatsAppHistoryPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="text-sm font-medium text-violet-600">Sent</div>
@@ -209,7 +198,7 @@ export default function WhatsAppHistoryPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="text-sm font-medium text-green-600">Delivered</div>
@@ -218,7 +207,7 @@ export default function WhatsAppHistoryPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="text-sm font-medium text-blue-600">Read</div>
@@ -227,7 +216,7 @@ export default function WhatsAppHistoryPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="text-sm font-medium text-red-600">Failed</div>
@@ -248,7 +237,6 @@ export default function WhatsAppHistoryPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-            
             {/* Date Range */}
             <div className="space-y-2">
               <Label htmlFor="date_from">From Date</Label>
@@ -256,7 +244,7 @@ export default function WhatsAppHistoryPage() {
                 id="date_from"
                 type="date"
                 value={filters.date_from || ''}
-                onChange={(e) => handleFilterChange('date_from', e.target.value)}
+                onChange={e => handleFilterChange('date_from', e.target.value)}
               />
             </div>
 
@@ -266,7 +254,7 @@ export default function WhatsAppHistoryPage() {
                 id="date_to"
                 type="date"
                 value={filters.date_to || ''}
-                onChange={(e) => handleFilterChange('date_to', e.target.value)}
+                onChange={e => handleFilterChange('date_to', e.target.value)}
               />
             </div>
 
@@ -275,7 +263,7 @@ export default function WhatsAppHistoryPage() {
               <Label>Status</Label>
               <Select
                 value={filters.status || 'all'}
-                onValueChange={(value) => 
+                onValueChange={value =>
                   handleFilterChange('status', value === 'all' ? undefined : value)
                 }
               >
@@ -298,7 +286,7 @@ export default function WhatsAppHistoryPage() {
               <Label>Template</Label>
               <Select
                 value={filters.template_name || 'all'}
-                onValueChange={(value) => 
+                onValueChange={value =>
                   handleFilterChange('template_name', value === 'all' ? undefined : value)
                 }
               >
@@ -307,7 +295,7 @@ export default function WhatsAppHistoryPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Templates</SelectItem>
-                  {templates.map((template) => (
+                  {templates.map(template => (
                     <SelectItem key={template.name} value={template.name}>
                       {template.name}
                     </SelectItem>
@@ -323,22 +311,17 @@ export default function WhatsAppHistoryPage() {
                 id="customer_code"
                 placeholder="Customer code..."
                 value={filters.customer_code || ''}
-                onChange={(e) => handleFilterChange('customer_code', e.target.value)}
+                onChange={e => handleFilterChange('customer_code', e.target.value)}
               />
             </div>
 
             {/* Actions */}
             <div className="space-y-2">
               <Label>&nbsp;</Label>
-              <Button
-                variant="outline"
-                onClick={handleClearFilters}
-                className="w-full"
-              >
+              <Button variant="outline" onClick={handleClearFilters} className="w-full">
                 Clear Filters
               </Button>
             </div>
-
           </div>
         </CardContent>
       </Card>

@@ -21,7 +21,12 @@ export default function CRMPipelineBoard() {
       setStages(s)
       const byStage: Record<string, any[]> = {}
       for (const st of s) {
-        const opps = await playbookCrmApi.opportunities({ orgId, stage: [st.id], page: 1, pageSize: 50 })
+        const opps = await playbookCrmApi.opportunities({
+          orgId,
+          stage: [st.id],
+          page: 1,
+          pageSize: 50
+        })
         byStage[st.id] = opps.items
       }
       setColumns(byStage)
@@ -37,8 +42,13 @@ export default function CRMPipelineBoard() {
     setColumns(prev => {
       const next = { ...prev }
       next[from] = (next[from] || []).filter((o: any) => o.id !== id)
-      const moved = Object.values(prev).flat().find((o: any) => o.id === id)
-      next[toStage] = [{ ...(moved || { id, entity_name: 'Unknown' }), stage: toStage }, ...(next[toStage] || [])]
+      const moved = Object.values(prev)
+        .flat()
+        .find((o: any) => o.id === id)
+      next[toStage] = [
+        { ...(moved || { id, entity_name: 'Unknown' }), stage: toStage },
+        ...(next[toStage] || [])
+      ]
       return next
     })
     try {
@@ -48,9 +58,12 @@ export default function CRMPipelineBoard() {
         idempotency_key: `opp-stage-${id}-${toStage}`,
         actor_user_id: 'actor-unknown',
         opportunity_id: id,
-        to_stage: toStage,
+        to_stage: toStage
       }
-      const res = await fetch('/api/playbook/crm/opportunity/update-stage', { method: 'POST', body: JSON.stringify(payload) })
+      const res = await fetch('/api/playbook/crm/opportunity/update-stage', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
       if (!res.ok) throw new Error('Update failed')
     } catch (e) {
       // revert on failure
@@ -58,7 +71,9 @@ export default function CRMPipelineBoard() {
         const next = { ...prev }
         next[toStage] = (next[toStage] || []).filter((o: any) => o.id !== dragged.id)
         // naive: do not restore exact order
-        const moved = Object.values(prev).flat().find((o: any) => o.id === dragged.id)
+        const moved = Object.values(prev)
+          .flat()
+          .find((o: any) => o.id === dragged.id)
         next[dragged.from] = [moved || { id: dragged.id }, ...(next[dragged.from] || [])]
         return next
       })
@@ -76,20 +91,30 @@ export default function CRMPipelineBoard() {
         <h1 className="text-2xl font-bold">CRM Pipeline</h1>
         <Button onClick={() => window.location.reload()}>Refresh</Button>
       </div>
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.max(1, stages.length)}, minmax(240px, 1fr))` }}>
-        {stages.map((st) => (
-          <div key={st.id} className="rounded-lg border bg-background/5 p-3"
-               onDragOver={(e) => e.preventDefault()}
-               onDrop={() => onDrop(st.id)}>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: `repeat(${Math.max(1, stages.length)}, minmax(240px, 1fr))` }}
+      >
+        {stages.map(st => (
+          <div
+            key={st.id}
+            className="rounded-lg border bg-background/5 p-3"
+            onDragOver={e => e.preventDefault()}
+            onDrop={() => onDrop(st.id)}
+          >
             <div className="font-semibold mb-2">{st.name}</div>
             <div className="space-y-2 min-h-[100px]">
-              {(columns[st.id] || []).map((opp) => (
-                <div key={opp.id}
-                     draggable
-                     onDragStart={() => onDragStart(opp.id, st.id)}
-                     className="p-3 rounded-md border bg-background/10 cursor-move">
+              {(columns[st.id] || []).map(opp => (
+                <div
+                  key={opp.id}
+                  draggable
+                  onDragStart={() => onDragStart(opp.id, st.id)}
+                  className="p-3 rounded-md border bg-background/10 cursor-move"
+                >
                   <div className="font-medium">{opp.entity_name}</div>
-                  <div className="text-xs text-muted-foreground">${(opp.amount || 0).toLocaleString()} • {opp.stage || st.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    ${(opp.amount || 0).toLocaleString()} • {opp.stage || st.name}
+                  </div>
                 </div>
               ))}
             </div>

@@ -122,7 +122,9 @@ export function UniversalFullPageLoading({
           </div>
         )}
 
-        <p className="text-xs text-muted-foreground mt-4">If this persists, please contact support</p>
+        <p className="text-xs text-muted-foreground mt-4">
+          If this persists, please contact support
+        </p>
       </div>
     </div>
   )
@@ -159,7 +161,10 @@ export function UniversalCardSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="bg-background border border-border rounded-lg p-6 animate-pulse">
+        <div
+          key={index}
+          className="bg-background border border-border rounded-lg p-6 animate-pulse"
+        >
           <div className="h-6 bg-gray-700 rounded mb-4 w-3/4"></div>
           <div className="space-y-2 mb-4">
             <div className="h-4 bg-gray-700 rounded"></div>

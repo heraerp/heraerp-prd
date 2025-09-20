@@ -1,10 +1,8 @@
 'use client'
 
 import React from 'react'
-import { cn }
-from '@/lib/utils'
-import NavigationLink
-from '@/components/navigation/NavigationLink'
+import { cn } from '@/lib/utils'
+import NavigationLink from '@/components/navigation/NavigationLink'
 
 interface FurnitureNavigationLinkProps {
   href: string
@@ -39,7 +37,9 @@ export function FurnitureNavigationLink({
         <Icon
           className={cn(
             'h-5 w-5 transition-colors duration-300',
-            active ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-secondary)]'
+            active
+              ? 'text-[var(--color-text-secondary)]'
+              : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-secondary)]'
           )}
         />
         {/* Badge indicator */}
@@ -73,11 +73,7 @@ export function FurnitureNavigationLink({
         {badge && (
           <p className="text-xs text-[var(--color-text-secondary)] mt-1">
             {badge}{' '}
-            {title === 'Sales'
-              ? 'active orders'
-              : title === 'Production'
-              ? 'in queue'
-              : 'alerts'}
+            {title === 'Sales' ? 'active orders' : title === 'Production' ? 'in queue' : 'alerts'}
           </p>
         )}
       </div>

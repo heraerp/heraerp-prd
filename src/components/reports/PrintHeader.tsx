@@ -50,57 +50,48 @@ export function PrintHeader({
   showLogo = true,
   className
 }: PrintHeaderProps) {
-
   return (
     <div className={`print-header bg-white dark:bg-gray-900 ${className}`}>
-      
       {/* Organization Header */}
       <div className="flex items-start justify-between mb-6">
-        
         {/* Organization Info */}
         <div className="flex items-start gap-4">
           {/* Logo */}
           {showLogo && organization?.logo_url && (
             <div className="flex-shrink-0">
-              <img 
-                src={organization.logo_url} 
+              <img
+                src={organization.logo_url}
                 alt={`${organization.name} logo`}
                 className="h-16 w-16 object-contain"
-                onError={(e) => {
+                onError={e => {
                   // Hide logo if it fails to load
                   e.currentTarget.style.display = 'none'
                 }}
               />
             </div>
           )}
-          
+
           {/* Organization Details */}
           <div className="space-y-1">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {organization?.name || 'Organization Name'}
             </h1>
-            
+
             {organization?.address && (
               <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
                 <Building2 className="h-3 w-3" />
                 {organization.address}
               </p>
             )}
-            
+
             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-              {organization?.phone && (
-                <span>Tel: {organization.phone}</span>
-              )}
-              {organization?.email && (
-                <span>Email: {organization.email}</span>
-              )}
-              {organization?.tax_id && (
-                <span>Tax ID: {organization.tax_id}</span>
-              )}
+              {organization?.phone && <span>Tel: {organization.phone}</span>}
+              {organization?.email && <span>Email: {organization.email}</span>}
+              {organization?.tax_id && <span>Tax ID: {organization.tax_id}</span>}
             </div>
           </div>
         </div>
-        
+
         {/* Report Metadata */}
         <div className="text-right space-y-1 text-sm">
           <div className="text-gray-600 dark:text-gray-400">Generated</div>
@@ -120,9 +111,9 @@ export function PrintHeader({
           </div>
         </div>
       </div>
-      
+
       <Separator className="my-4" />
-      
+
       {/* Report Header */}
       <div className="text-center space-y-3 mb-6">
         <div className="flex items-center justify-center gap-2">
@@ -131,26 +122,24 @@ export function PrintHeader({
             {reportTitle}
           </h2>
         </div>
-        
+
         {reportSubtitle && (
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {reportSubtitle}
-          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{reportSubtitle}</p>
         )}
-        
+
         <div className="flex items-center justify-center gap-2">
           <Calendar className="h-4 w-4 text-gray-500" />
           <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
             {reportPeriod}
           </span>
         </div>
-        
+
         <div className="flex items-center justify-center gap-4 text-sm">
           <Badge variant="outline" className="border-violet-300 text-violet-700">
             <Globe className="h-3 w-3 mr-1" />
             Currency: {currency}
           </Badge>
-          
+
           {branch && (
             <Badge variant="outline" className="border-blue-300 text-blue-700">
               <Building2 className="h-3 w-3 mr-1" />
@@ -159,7 +148,7 @@ export function PrintHeader({
           )}
         </div>
       </div>
-      
+
       {/* Filters Summary */}
       {filters.length > 0 && (
         <>
@@ -171,16 +160,18 @@ export function PrintHeader({
               {filters.map((filter, index) => (
                 <div key={index} className="text-sm">
                   <span className="text-gray-500 dark:text-gray-400">{filter.label}:</span>{' '}
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{filter.value}</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                    {filter.value}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
-          
+
           <Separator className="mb-6" />
         </>
       )}
-      
+
       {/* Print-specific styles */}
       <style jsx>{`
         @media print {
@@ -190,33 +181,33 @@ export function PrintHeader({
             -webkit-print-color-adjust: exact;
             color-adjust: exact;
           }
-          
+
           .print-header h1,
           .print-header h2,
           .print-header h3 {
             color: black !important;
           }
-          
+
           .print-header .text-gray-900 {
             color: black !important;
           }
-          
+
           .print-header .text-gray-600,
           .print-header .text-gray-500 {
             color: #666 !important;
           }
-          
+
           .print-header .border-violet-300,
           .print-header .border-blue-300 {
             border-color: #ccc !important;
           }
-          
+
           .print-header .text-violet-700,
           .print-header .text-blue-700,
           .print-header .text-violet-600 {
             color: #333 !important;
           }
-          
+
           .print-header .bg-gray-50 {
             background-color: #f9f9f9 !important;
             border: 1px solid #ddd !important;
@@ -228,8 +219,8 @@ export function PrintHeader({
 }
 
 // Utility component for print-specific layouts
-export function PrintLayout({ 
-  children, 
+export function PrintLayout({
+  children,
   header,
   footer,
   className = ''
@@ -241,26 +232,17 @@ export function PrintLayout({
 }) {
   return (
     <div className={`print-layout min-h-screen bg-white text-black ${className}`}>
-      
       {/* Print Header */}
-      {header && (
-        <div className="print-header-section mb-8">
-          {header}
-        </div>
-      )}
-      
+      {header && <div className="print-header-section mb-8">{header}</div>}
+
       {/* Main Content */}
-      <div className="print-content">
-        {children}
-      </div>
-      
+      <div className="print-content">{children}</div>
+
       {/* Print Footer */}
       {footer && (
-        <div className="print-footer-section mt-8 pt-4 border-t border-gray-300">
-          {footer}
-        </div>
+        <div className="print-footer-section mt-8 pt-4 border-t border-gray-300">{footer}</div>
       )}
-      
+
       {/* Print-specific styles */}
       <style jsx global>{`
         @media print {
@@ -268,7 +250,7 @@ export function PrintLayout({
             font-size: 12px !important;
             line-height: 1.3 !important;
           }
-          
+
           .print-layout {
             background: white !important;
             color: black !important;
@@ -276,59 +258,61 @@ export function PrintLayout({
             margin: 0 !important;
             padding: 0.5in !important;
           }
-          
+
           .print-header-section {
             margin-bottom: 0.3in !important;
           }
-          
+
           .print-footer-section {
             margin-top: 0.3in !important;
             padding-top: 0.1in !important;
             border-top: 1px solid #333 !important;
             page-break-inside: avoid;
           }
-          
+
           /* Table styles for print */
           table {
             width: 100% !important;
             border-collapse: collapse !important;
             font-size: 11px !important;
           }
-          
-          th, td {
+
+          th,
+          td {
             border: 1px solid #333 !important;
             padding: 4px 6px !important;
             text-align: left !important;
           }
-          
+
           th {
             background-color: #f0f0f0 !important;
             font-weight: bold !important;
             color: black !important;
           }
-          
+
           /* Amount columns */
-          .amount, .text-right {
+          .amount,
+          .text-right {
             text-align: right !important;
             font-family: 'Courier New', monospace !important;
           }
-          
+
           /* Hide non-essential elements */
           .no-print,
           button:not(.print-button),
           .print-hidden {
             display: none !important;
           }
-          
+
           /* Force page breaks */
           .page-break-before {
             page-break-before: always !important;
           }
-          
+
           .page-break-after {
             page-break-after: always !important;
           }
-          
+
           .page-break-inside-avoid {
             page-break-inside: avoid !important;
           }
@@ -339,11 +323,11 @@ export function PrintLayout({
 }
 
 // Print footer component
-export function PrintFooter({ 
+export function PrintFooter({
   organization,
   currency = 'AED',
   disclaimer,
-  pageNumbers = true 
+  pageNumbers = true
 }: {
   organization?: { name: string; website?: string }
   currency?: string
@@ -355,11 +339,9 @@ export function PrintFooter({
       <div className="flex justify-between items-center">
         <div>
           <div>Generated by HERA ERP System</div>
-          {organization?.website && (
-            <div>Visit us: {organization.website}</div>
-          )}
+          {organization?.website && <div>Visit us: {organization.website}</div>}
         </div>
-        
+
         <div className="text-right">
           <div>All amounts in {currency}</div>
           {disclaimer && <div className="mt-1">{disclaimer}</div>}
@@ -370,7 +352,7 @@ export function PrintFooter({
           )}
         </div>
       </div>
-      
+
       <style jsx>{`
         @media print {
           .page-number::after {

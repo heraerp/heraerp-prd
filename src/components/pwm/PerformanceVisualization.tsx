@@ -70,7 +70,9 @@ export function PerformanceVisualization({
       return (
         <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl">
           <p className="text-sm text-muted-foreground mb-2">{formatDate(label)}</p>
-          <p className="text-lg font-semibold text-foreground">{formatCurrency(payload[0].value)}</p>
+          <p className="text-lg font-semibold text-foreground">
+            {formatCurrency(payload[0].value)}
+          </p>
           {payload[1] && (
             <p className="text-sm text-slate-500 mt-1">
               Benchmark: {formatCurrency(payload[1].value)}

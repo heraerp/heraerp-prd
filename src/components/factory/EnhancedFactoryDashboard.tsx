@@ -358,7 +358,9 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Lead Time</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Lead Time
+                  </p>
                   <p className="text-2xl font-bold">{kpis.leadTimeDays}d</p>
                   <p className="text-xs text-muted-foreground">PLAN → RELEASE</p>
                 </div>
@@ -377,7 +379,9 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Coverage</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Coverage
+                  </p>
                   <div className="flex items-center gap-2">
                     <p className="text-2xl font-bold">{kpis.coverageAvg.toFixed(1)}%</p>
                     {kpis.coverageAvg < 60 ? (
@@ -417,7 +421,9 @@ export default function EnhancedFactoryDashboard() {
                 onClick={() => setGuardrailDialog({ open: true })}
               >
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Guardrail Pass</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Guardrail Pass
+                  </p>
                   <p className="text-2xl font-bold">{kpis.guardrailPassRate.toFixed(1)}%</p>
                   <p className="text-xs text-primary hover:underline">View details →</p>
                 </div>
@@ -436,7 +442,9 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Audit Ready</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Audit Ready
+                  </p>
                   <p
                     className={cn(
                       'text-2xl font-bold',
@@ -459,7 +467,9 @@ export default function EnhancedFactoryDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Fiscal Period</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Fiscal Period
+                  </p>
                   <p
                     className={cn(
                       'text-2xl font-bold',

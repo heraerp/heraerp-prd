@@ -1,67 +1,66 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
-import { useOrgStore } from '@/state/org';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { useQueryClient } from '@tanstack/react-query';
-import type { OrgId } from '@/types/common';
+import { useState } from 'react'
+import { useOrgStore } from '@/state/org'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useToast } from '@/hooks/use-toast'
+import { useQueryClient } from '@tanstack/react-query'
+import type { OrgId } from '@/types/common'
 
 export default function SettingsPage() {
-  const { currentOrgId, setCurrentOrgId, isHydrated } = useOrgStore();
-  const [inputOrgId, setInputOrgId] = useState(currentOrgId || '');
-  const [isUpdating, setIsUpdating] = useState(false);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { currentOrgId, setCurrentOrgId, isHydrated } = useOrgStore()
+  const [inputOrgId, setInputOrgId] = useState(currentOrgId || '')
+  const [isUpdating, setIsUpdating] = useState(false)
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
 
   const handleOrgChange = async () => {
     if (!inputOrgId.trim()) {
       toast({
-        title: "Invalid Organization ID",
-        description: "Please enter a valid organization ID.",
-        variant: "destructive",
-      });
-      return;
+        title: 'Invalid Organization ID',
+        description: 'Please enter a valid organization ID.',
+        variant: 'destructive'
+      })
+      return
     }
 
-    setIsUpdating(true);
-    
+    setIsUpdating(true)
+
     try {
       // Update the organization via the store (which persists via setOrgId)
-      setCurrentOrgId(inputOrgId.trim() as OrgId);
-      
+      setCurrentOrgId(inputOrgId.trim() as OrgId)
+
       // Show success message
       toast({
-        title: "Organization Updated",
-        description: `Switched to organization: ${inputOrgId.trim()}`,
-      });
+        title: 'Organization Updated',
+        description: `Switched to organization: ${inputOrgId.trim()}`
+      })
 
       // Trigger a soft refetch of active queries
-      await queryClient.refetchQueries({ type: 'active' });
-      
+      await queryClient.refetchQueries({ type: 'active' })
     } catch (error) {
-      console.error('Error updating organization:', error);
+      console.error('Error updating organization:', error)
       toast({
-        title: "Update Failed",
-        description: "Failed to update organization. Please try again.",
-        variant: "destructive",
-      });
+        title: 'Update Failed',
+        description: 'Failed to update organization. Please try again.',
+        variant: 'destructive'
+      })
     } finally {
-      setIsUpdating(false);
+      setIsUpdating(false)
     }
-  };
+  }
 
   const handleClearOrg = () => {
-    setCurrentOrgId(null);
-    setInputOrgId('');
+    setCurrentOrgId(null)
+    setInputOrgId('')
     toast({
-      title: "Organization Cleared",
-      description: "No organization is currently selected.",
-    });
-  };
+      title: 'Organization Cleared',
+      description: 'No organization is currently selected.'
+    })
+  }
 
   if (!isHydrated) {
     return (
@@ -74,7 +73,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -89,7 +88,8 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle>Organization Context</CardTitle>
             <CardDescription>
-              Set the organization ID for multi-tenant data access. All API calls will be scoped to this organization.
+              Set the organization ID for multi-tenant data access. All API calls will be scoped to
+              this organization.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -100,7 +100,7 @@ export default function SettingsPage() {
                 type="text"
                 placeholder="Enter organization ID (e.g., org_123456)"
                 value={inputOrgId}
-                onChange={(e) => setInputOrgId(e.target.value)}
+                onChange={e => setInputOrgId(e.target.value)}
                 disabled={isUpdating}
               />
               {currentOrgId && (
@@ -111,26 +111,24 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex gap-2">
-              <Button 
+              <Button
                 onClick={handleOrgChange}
                 disabled={isUpdating || inputOrgId.trim() === currentOrgId}
               >
                 {isUpdating ? 'Updating...' : 'Update Organization'}
               </Button>
-              
+
               {currentOrgId && (
-                <Button 
-                  variant="outline" 
-                  onClick={handleClearOrg}
-                  disabled={isUpdating}
-                >
+                <Button variant="outline" onClick={handleClearOrg} disabled={isUpdating}>
                   Clear
                 </Button>
               )}
             </div>
 
             <div className="text-sm text-gray-500 border-t pt-4">
-              <p><strong>Note:</strong> Changing the organization will:</p>
+              <p>
+                <strong>Note:</strong> Changing the organization will:
+              </p>
               <ul className="list-disc list-inside mt-1 space-y-1">
                 <li>Clear all cached data</li>
                 <li>Reload all active queries with the new organization context</li>
@@ -141,5 +139,5 @@ export default function SettingsPage() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

@@ -513,7 +513,9 @@ export default function FinanceReportsPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <FileText className="h-5 w-5 text-indigo-400" />
-                        <h3 className="text-lg font-semibold text-foreground">{schedule.reportName}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {schedule.reportName}
+                        </h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(schedule.status)}`}
                         >
@@ -540,7 +542,9 @@ export default function FinanceReportsPage() {
                         </div>
                         <div>
                           <p className="text-xs text-foreground/60 mb-1">Recipients</p>
-                          <p className="text-sm text-foreground">{schedule.recipients.length} emails</p>
+                          <p className="text-sm text-foreground">
+                            {schedule.recipients.length} emails
+                          </p>
                         </div>
                       </div>
 
@@ -583,7 +587,9 @@ export default function FinanceReportsPage() {
                   <Info className="h-6 w-6 text-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Report Scheduling Tips</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Report Scheduling Tips
+                  </h3>
                   <ul className="space-y-2 text-sm text-foreground/60">
                     <li className="flex items-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" />

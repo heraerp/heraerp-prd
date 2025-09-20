@@ -35,14 +35,14 @@ export default function ProductionOrdersPage() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
   const [searchTerm, setSearchTerm] = useState('')
-  
+
   // Load production orders from universal_transactions
   const { data: productionOrders, isLoading: ordersLoading } = useUniversalData({
     table: 'universal_transactions',
-    filter: item => 
-      item.transaction_type === 'production_order' && 
+    filter: item =>
+      item.transaction_type === 'production_order' &&
       item.organization_id === organizationId &&
-      (!searchTerm || 
+      (!searchTerm ||
         item.transaction_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchTerm.toLowerCase())),
     organizationId,
@@ -76,28 +76,40 @@ export default function ProductionOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-200', icon: Clock },
-      in_progress: { bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30', text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]', icon: Package },
-      completed: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-200', icon: CheckCircle },
-      cancelled: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-200', icon: AlertCircle }
+      pending: {
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+        text: 'text-yellow-800 dark:text-yellow-200',
+        icon: Clock
+      },
+      in_progress: {
+        bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30',
+        text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]',
+        icon: Package
+      },
+      completed: {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-800 dark:text-green-200',
+        icon: CheckCircle
+      },
+      cancelled: {
+        bg: 'bg-red-100 dark:bg-red-900/30',
+        text: 'text-red-800 dark:text-red-200',
+        icon: AlertCircle
+      }
     }
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
-    
-    
+
     return (
-      <Badge variant="outline" className={cn(
-            'border-0',
-            config.bg, config.text
-          )}>
+      <Badge variant="outline" className={cn('border-0', config.bg, config.text)}>
         <Icon className="h-3 w-3 mr-1" />
         {status.replace('_', ' ').charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
       </Badge>
     )
   }
 
-// Show loading state
+  // Show loading state
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] p-6">
@@ -114,7 +126,7 @@ export default function ProductionOrdersPage() {
     )
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -153,7 +165,9 @@ export default function ProductionOrdersPage() {
     },
     {
       label: 'In Progress',
-      value: productionOrders?.filter(o => o.metadata?.status === 'in_progress')?.length?.toString() || '0',
+      value:
+        productionOrders?.filter(o => o.metadata?.status === 'in_progress')?.length?.toString() ||
+        '0',
       icon: Clock,
       color: 'text-[var(--color-text-primary)]',
       description: 'Currently producing',
@@ -161,7 +175,9 @@ export default function ProductionOrdersPage() {
     },
     {
       label: 'Completed',
-      value: productionOrders?.filter(o => o.metadata?.status === 'completed')?.length?.toString() || '0',
+      value:
+        productionOrders?.filter(o => o.metadata?.status === 'completed')?.length?.toString() ||
+        '0',
       icon: CheckCircle,
       color: 'text-green-500',
       description: 'Ready for delivery',
@@ -169,7 +185,8 @@ export default function ProductionOrdersPage() {
     },
     {
       label: 'Pending',
-      value: productionOrders?.filter(o => o.metadata?.status === 'pending')?.length?.toString() || '0',
+      value:
+        productionOrders?.filter(o => o.metadata?.status === 'pending')?.length?.toString() || '0',
       icon: AlertCircle,
       color: 'text-red-500',
       description: 'Awaiting start',
@@ -190,7 +207,10 @@ export default function ProductionOrdersPage() {
                 Export
               </Button>
               <Link href="/furniture/production/orders/new">
-                <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+                <Button
+                  size="sm"
+                  className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+                >
                   <Plus className="h-4 w-4" />
                   New Order
                 </Button>
@@ -198,23 +218,27 @@ export default function ProductionOrdersPage() {
             </>
           }
         />
-        
+
         {/* Order Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {orderMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
-                  <metric.icon className={cn(
-            'h-4 w-4',
-            metric.color
-          )} />
+                  <metric.icon className={cn('h-4 w-4', metric.color)} />
                 </div>
-                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  {metric.value}
+                </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">
+                    Change: {metric.change}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -228,7 +252,7 @@ export default function ProductionOrdersPage() {
             <Input
               placeholder="Search orders by code or description..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -241,8 +265,12 @@ export default function ProductionOrdersPage() {
         {/* Orders Table */}
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
           <div className="text-center p-8">
-            <p className="text-[var(--color-text-secondary)]">Production orders table interface is being loaded...</p>
-            {ordersLoading && <p className="text-sm text-[var(--color-text-secondary)] mt-2">Loading orders...</p>}
+            <p className="text-[var(--color-text-secondary)]">
+              Production orders table interface is being loaded...
+            </p>
+            {ordersLoading && (
+              <p className="text-sm text-[var(--color-text-secondary)] mt-2">Loading orders...</p>
+            )}
           </div>
         </Card>
       </div>

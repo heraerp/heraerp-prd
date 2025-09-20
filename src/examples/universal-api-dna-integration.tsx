@@ -402,19 +402,25 @@ export default function UniversalAPIDNAIntegration() {
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Status:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Status:
+                          </span>
                           <span className="font-medium text-green-600 dark:text-green-400">
                             {restaurant.status || 'Active'}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Code:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Code:
+                          </span>
                           <span className="font-mono text-xs">
                             {restaurant.entity_code || `REST-${idx + 1}`}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Created:</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Created:
+                          </span>
                           <span className="text-xs">
                             {new Date(restaurant.created_at).toLocaleDateString()}
                           </span>

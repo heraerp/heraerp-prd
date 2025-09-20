@@ -159,7 +159,9 @@ export default function EnhancedLandingPage() {
                 <div className="w-8 h-8 bg-background dark:bg-background rounded-lg flex items-center justify-center">
                   <span className="text-sm font-bold text-foreground dark:text-black">H</span>
                 </div>
-                <span className="text-xl font-semibold text-gray-900 dark:text-foreground">HERA</span>
+                <span className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                  HERA
+                </span>
               </Link>
             </div>
             <nav className="hidden md:flex items-center gap-8">
@@ -262,7 +264,9 @@ export default function EnhancedLandingPage() {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-foreground mb-2">
                     {index + 1}. {stage.stage}
                   </h3>
-                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">{stage.description}</p>
+                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+                    {stage.description}
+                  </p>
                   <Button variant="link" className="text-primary dark:text-blue-400">
                     {stage.action}
                     <ChevronRight className="w-4 h-4 ml-1" />
@@ -337,19 +341,25 @@ export default function EnhancedLandingPage() {
                       <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {industry.stats.businesses}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Active Users</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        Active Users
+                      </p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
                         {industry.stats.revenue}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Monthly</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        Monthly
+                      </p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-primary dark:text-blue-400">
                         {industry.stats.time}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Setup Time</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        Setup Time
+                      </p>
                     </div>
                   </div>
 
@@ -423,7 +433,9 @@ export default function EnhancedLandingPage() {
               <Card key={item.name} className="p-6 text-center min-w-[200px]">
                 <item.icon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
                 <h4 className="font-semibold text-gray-900 dark:text-foreground">{item.name}</h4>
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">{item.coming}</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+                  {item.coming}
+                </p>
               </Card>
             ))}
           </div>
@@ -442,7 +454,9 @@ export default function EnhancedLandingPage() {
                 <h3 className="font-semibold text-gray-900 dark:text-foreground mb-2">
                   {prop.title}
                 </h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{prop.description}</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {prop.description}
+                </p>
               </div>
             ))}
           </div>

@@ -1,22 +1,14 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback }
-from 'react'
-import { createPortal }
-from 'react-dom'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
-import { usePathname, useRouter }
-from 'next/navigation'
-import { cn }
-from '@/lib/utils'
-import { useToast }
-from '@/hooks/use-toast'
-import { useHERAAuth }
-from '@/components/auth/HERAAuthProvider'
-import { FurnitureNavigationLink }
-from './FurnitureNavigationLink'
-import { FurnitureModalLink }
-from './FurnitureModalLink'
+import { usePathname, useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { FurnitureNavigationLink } from './FurnitureNavigationLink'
+import { FurnitureModalLink } from './FurnitureModalLink'
 import {
   Home,
   Package,
@@ -45,9 +37,7 @@ import {
   Brain,
   BookOpen,
   LogOut
-}
-from 'lucide-react'
-
+} from 'lucide-react'
 
 interface FurnitureDarkSidebarProps {
   onNavigate?: () => void
@@ -62,24 +52,48 @@ interface SidebarItem {
 }
 
 // Main sidebar items (compact view) - moved outside component to prevent recreation
-  const sidebarItems: SidebarItem[] = [
+const sidebarItems: SidebarItem[] = [
   { title: 'Home', href: '/furniture', icon: Home },
-  { title: 'Sales', href: '/furniture/sales', icon: ShoppingCart, badge: '47', badgeColor: 'bg-[var(--color-accent-teal)]' },
-  { title: 'Production', href: '/furniture/production', icon: Factory, badge: '23', badgeColor: 'bg-[var(--color-accent-indigo)]' },
+  {
+    title: 'Sales',
+    href: '/furniture/sales',
+    icon: ShoppingCart,
+    badge: '47',
+    badgeColor: 'bg-[var(--color-accent-teal)]'
+  },
+  {
+    title: 'Production',
+    href: '/furniture/production',
+    icon: Factory,
+    badge: '23',
+    badgeColor: 'bg-[var(--color-accent-indigo)]'
+  },
   { title: 'Products', href: '/furniture/products', icon: Package },
-  { title: 'Tender', href: '/furniture/tender', icon: FileText, badge: '12', badgeColor: 'bg-[var(--color-accent-teal)]/60' },
+  {
+    title: 'Tender',
+    href: '/furniture/tender',
+    icon: FileText,
+    badge: '12',
+    badgeColor: 'bg-[var(--color-accent-teal)]/60'
+  },
   { title: 'Settings', href: '/furniture/settings', icon: Settings }
 ]
 
 // All apps for the modal - moved outside component to prevent recreation
-  const allApps: SidebarItem[] = [
+const allApps: SidebarItem[] = [
   // Main Navigation
   { title: 'Dashboard', href: '/furniture', icon: Home },
   { title: 'Sales Orders', href: '/furniture/sales/orders', icon: ShoppingCart },
   { title: 'Production', href: '/furniture/production/orders', icon: Factory },
   { title: 'Products', href: '/furniture/products/catalog', icon: Package },
   // Items moved from main sidebar
-  { title: 'Inventory', href: '/furniture/inventory', icon: Truck, badge: '5', badgeColor: 'bg-red-500' },
+  {
+    title: 'Inventory',
+    href: '/furniture/inventory',
+    icon: Truck,
+    badge: '5',
+    badgeColor: 'bg-red-500'
+  },
   { title: 'Quality', href: '/furniture/quality', icon: CheckCircle },
   { title: 'Finance', href: '/furniture/finance', icon: DollarSign },
   { title: 'HR', href: '/furniture/hr', icon: Users },
@@ -117,7 +131,7 @@ interface SidebarItem {
 const bottomItems: SidebarItem[] = []
 
 // Apps Modal Component - Memoized to prevent unnecessary re-renders
-  const AppsModal = React.memo(function AppsModal({
+const AppsModal = React.memo(function AppsModal({
   isOpen,
   onClose,
   isActive,
@@ -132,7 +146,7 @@ const bottomItems: SidebarItem[] = []
 
   useEffect(() => {
     if (isOpen) {
-  setMounted(true)
+      setMounted(true)
     } else {
       const timeout = setTimeout(() => setMounted(false), 300)
       return () => clearTimeout(timeout)
@@ -151,7 +165,7 @@ const bottomItems: SidebarItem[] = []
         )}
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
@@ -164,7 +178,9 @@ const bottomItems: SidebarItem[] = []
           {/* Modal Header */}
           <div className="bg-[var(--color-body)] flex items-center justify-between p-6 border-b border-[var(--color-border)]/50">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">All Furniture Apps</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
+                All Furniture Apps
+              </h2>
               <p className="text-sm text-[var(--color-text-secondary)] mt-1">
                 Access all your furniture manufacturing tools
               </p>
@@ -176,15 +192,15 @@ const bottomItems: SidebarItem[] = []
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {allApps.map(app => {
                 const Icon = app.icon
                 const active = isActive(app.href)
-                
-    return (
+
+                return (
                   <FurnitureModalLink
                     key={app.href}
                     href={app.href}
@@ -208,15 +224,15 @@ const bottomItems: SidebarItem[] = []
 function FurnitureDarkSidebar({ onNavigate }: FurnitureDarkSidebarProps) {
   const pathname = usePathname()
 
-const router = useRouter()
+  const router = useRouter()
 
-const { toast } = useToast()
+  const { toast } = useToast()
 
-const { logout } = useHERAAuth()
+  const { logout } = useHERAAuth()
 
-const [showAppsModal, setShowAppsModal] = useState(false)
+  const [showAppsModal, setShowAppsModal] = useState(false)
 
-const isActive = useCallback(
+  const isActive = useCallback(
     (href: string) => {
       if (href === '/furniture' && pathname === '/furniture') return true
       if (href !== '/furniture' && pathname.startsWith(href)) return true
@@ -225,13 +241,13 @@ const isActive = useCallback(
     [pathname]
   )
 
-const handleNavClick = useCallback(() => {
+  const handleNavClick = useCallback(() => {
     if (onNavigate) {
-  onNavigate()
+      onNavigate()
     }
   }, [onNavigate])
 
-const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       console.log('Logout button clicked')
       toast({
@@ -249,7 +265,7 @@ const handleLogout = async () => {
       // Use window.location for a full page reload to clear any cached state
       window.location.href = '/auth/login'
     } catch (error) {
-  console.error('Logout error:', error)
+      console.error('Logout error:', error)
       toast({
         title: 'Logout failed',
         description: 'Please try again',
@@ -267,7 +283,9 @@ const handleLogout = async () => {
             <Armchair className="h-6 w-6 text-white" />
           </div>
           <div className="lg:hidden">
-            <h3 className="text-[var(--color-text-primary)] font-semibold">Kerala Furniture Works</h3>
+            <h3 className="text-[var(--color-text-primary)] font-semibold">
+              Kerala Furniture Works
+            </h3>
             <p className="text-xs text-[var(--color-text-secondary)]">Demo Account</p>
           </div>
           <span className="hidden lg:block text-[10px] text-[var(--color-text-secondary)] font-medium text-center">
@@ -282,8 +300,8 @@ const handleLogout = async () => {
           {sidebarItems.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
-    return (
+
+            return (
               <FurnitureNavigationLink
                 key={item.href}
                 href={item.href}
@@ -296,7 +314,7 @@ const handleLogout = async () => {
               />
             )
           })}
-          
+
           {/* More Apps Button */}
           <button
             onClick={() => setShowAppsModal(true)}
@@ -320,7 +338,6 @@ const handleLogout = async () => {
 
       {/* Bottom Section */}
       <div className="mt-auto border-t border-[var(--color-border)]/50 flex-shrink-0">
-
         {/* Logout Button */}
         <button
           type="button"
@@ -341,7 +358,9 @@ const handleLogout = async () => {
           )}
         >
           <LogOut className="h-5 w-5 flex-shrink-0" />
-          <span className="font-medium text-sm lg:text-[10px] lg:text-center">Logout from Demo</span>
+          <span className="font-medium text-sm lg:text-[10px] lg:text-center">
+            Logout from Demo
+          </span>
           {/* Tooltip - desktop only */}
           <div className="hidden lg:hidden absolute left-full ml-2 px-3 py-2 bg-[var(--color-body)] text-[var(--color-text-primary)] text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
             <p className="font-medium">Logout from Demo Account</p>

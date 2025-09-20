@@ -81,7 +81,9 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-foreground">Settings</h2>
-            <p className="text-muted-foreground mt-1">Customize your wealth management experience</p>
+            <p className="text-muted-foreground mt-1">
+              Customize your wealth management experience
+            </p>
           </div>
         </div>
       </div>
@@ -292,7 +294,9 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                   <Smartphone className="h-5 w-5 text-emerald-400" />
                   <div>
                     <p className="text-foreground font-medium">Transaction Confirmations</p>
-                    <p className="text-sm text-muted-foreground">Get notified of all transactions</p>
+                    <p className="text-sm text-muted-foreground">
+                      Get notified of all transactions
+                    </p>
                   </div>
                 </div>
                 <Switch
@@ -408,24 +412,15 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
             <h3 className="text-lg font-semibold text-foreground mb-4">Data Management</h3>
 
             <div className="space-y-4">
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-muted/50 border-border"
-              >
+              <Button variant="outline" className="w-full justify-start bg-muted/50 border-border">
                 <Download className="h-4 w-4 mr-2" />
                 Export Portfolio Data (CSV)
               </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-muted/50 border-border"
-              >
+              <Button variant="outline" className="w-full justify-start bg-muted/50 border-border">
                 <Download className="h-4 w-4 mr-2" />
                 Export Transaction History (PDF)
               </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-muted/50 border-border"
-              >
+              <Button variant="outline" className="w-full justify-start bg-muted/50 border-border">
                 <Download className="h-4 w-4 mr-2" />
                 Export Tax Documents (ZIP)
               </Button>

@@ -193,7 +193,9 @@ export default function OrganizationLayout({ children }: { children: React.React
                         <Building2 className="w-4 h-4 mr-2" />
                         <div className="flex-1">
                           <div className="font-medium">{org.name}</div>
-                          <div className="text-xs text-muted-foreground">{org.subdomain}.heraerp.com</div>
+                          <div className="text-xs text-muted-foreground">
+                            {org.subdomain}.heraerp.com
+                          </div>
                         </div>
                       </DropdownMenuItem>
                     ))}

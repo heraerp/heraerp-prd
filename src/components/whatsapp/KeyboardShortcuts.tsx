@@ -106,7 +106,9 @@ export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps
                       <div className="flex items-center gap-1">
                         {shortcut.keys.map((key, keyIndex) => (
                           <React.Fragment key={keyIndex}>
-                            {keyIndex > 0 && <span className="text-xs text-muted-foreground">+</span>}
+                            {keyIndex > 0 && (
+                              <span className="text-xs text-muted-foreground">+</span>
+                            )}
                             <Kbd>{key}</Kbd>
                           </React.Fragment>
                         ))}

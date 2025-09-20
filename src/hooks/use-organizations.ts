@@ -1,78 +1,92 @@
-'use client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { orgApi } from '@/lib/api-client';
-import type { OrganizationEntity, ContactEntity, RelationshipLink, ActivityLog } from '@/types/organizations';
+'use client'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { orgApi } from '@/lib/api-client'
+import type {
+  OrganizationEntity,
+  ContactEntity,
+  RelationshipLink,
+  ActivityLog
+} from '@/types/organizations'
 
 export const orgKeys = {
   all: ['organizations'] as const,
   list: (filters: Record<string, unknown>) => [...orgKeys.all, 'list', filters] as const,
   detail: (id: string) => [...orgKeys.all, 'detail', id] as const,
-  contacts: (orgEntityId: string) => [...orgKeys.all, 'contacts', orgEntityId] as const,
-};
+  contacts: (orgEntityId: string) => [...orgKeys.all, 'contacts', orgEntityId] as const
+}
 
-export function useOrganizationList(filters: { q?: string; type?: string; stage?: string; rm?: string; tag?: string; limit?: number; orgId?: string }) {
+export function useOrganizationList(filters: {
+  q?: string
+  type?: string
+  stage?: string
+  rm?: string
+  tag?: string
+  limit?: number
+  orgId?: string
+}) {
   return useQuery({
     queryKey: orgKeys.list(filters),
     queryFn: () => orgApi.listOrganizations(filters),
-    select: (res) => res.items as OrganizationEntity[],
-    retry: 3,
-  });
+    select: res => res.items as OrganizationEntity[],
+    retry: 3
+  })
 }
 
 export function useOrganization(id: string, orgId?: string) {
   return useQuery({
     queryKey: orgKeys.detail(id),
     queryFn: () => orgApi.getOrganization(id, orgId as any),
-    enabled: !!id,
-  });
+    enabled: !!id
+  })
 }
 
 export function useContacts(orgEntityId: string, orgId?: string) {
   return useQuery({
     queryKey: orgKeys.contacts(orgEntityId),
     queryFn: () => orgApi.listContacts(orgEntityId, orgId as any),
-    select: (res) => res.items as ContactEntity[],
-    enabled: !!orgEntityId,
-  });
+    select: res => res.items as ContactEntity[],
+    enabled: !!orgEntityId
+  })
 }
 
 export function useCreateOrganization() {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: orgApi.createOrganization,
-    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.all }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.all })
+  })
 }
 
 export function useUpdateOrganization(id: string, orgId?: string) {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
-    mutationFn: (patch: Partial<OrganizationEntity>) => orgApi.updateOrganization(id, patch, orgId as any),
+    mutationFn: (patch: Partial<OrganizationEntity>) =>
+      orgApi.updateOrganization(id, patch, orgId as any),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: orgKeys.detail(id) });
-      qc.invalidateQueries({ queryKey: orgKeys.all });
-    },
-  });
+      qc.invalidateQueries({ queryKey: orgKeys.detail(id) })
+      qc.invalidateQueries({ queryKey: orgKeys.all })
+    }
+  })
 }
 
 export function useCreateContact(orgEntityId: string) {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: orgApi.createContact,
-    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.contacts(orgEntityId) }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.contacts(orgEntityId) })
+  })
 }
 
 export function useLinkRelationship(orgId?: string) {
-  const qc = useQueryClient();
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: (rel: any) => orgApi.linkRelationship(rel, orgId as any),
-    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.all }),
-  });
+    onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.all })
+  })
 }
 
 export function useLogActivity(id: string, orgId: string) {
   return useMutation({
-    mutationFn: (activity: ActivityLog) => orgApi.logActivity(orgId, id, activity),
-  });
+    mutationFn: (activity: ActivityLog) => orgApi.logActivity(orgId, id, activity)
+  })
 }

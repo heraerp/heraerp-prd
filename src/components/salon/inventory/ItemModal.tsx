@@ -13,10 +13,10 @@ import { Label } from '@/components/ui/label'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ItemForm, ItemFormSchema, ItemWithStock } from '@/schemas/inventory'
-import { 
-  Loader2, 
-  Save, 
-  X, 
+import {
+  Loader2,
+  Save,
+  X,
   Package,
   Tag,
   Barcode,
@@ -26,7 +26,7 @@ import {
   AlertCircle,
   Sparkles
 } from 'lucide-react'
-import { 
+import {
   PrimaryButtonDNA,
   SecondaryButtonDNA,
   FormFieldDNA,
@@ -139,7 +139,10 @@ export function ItemModal({
         <DialogHeader className="px-6 pt-6 pb-2">
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle style={{ color: COLORS.champagne }} className="text-xl flex items-center gap-2">
+              <DialogTitle
+                style={{ color: COLORS.champagne }}
+                className="text-xl flex items-center gap-2"
+              >
                 <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
                 {item ? 'Edit Item' : 'Create New Item'}
               </DialogTitle>
@@ -160,18 +163,20 @@ export function ItemModal({
             <div className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <Tag className="w-4 h-4" />
                   Basic Information
                 </h3>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormFieldDNA
                     type="text"
                     label="Item Name"
                     value={watch('name')}
-                    onChange={(value) => setValue('name', value)}
+                    onChange={value => setValue('name', value)}
                     placeholder="e.g., Professional Shampoo 1L"
                     error={errors.name?.message}
                     required
@@ -181,7 +186,7 @@ export function ItemModal({
                     type="text"
                     label="SKU"
                     value={watch('sku') || ''}
-                    onChange={(value) => setValue('sku', value.toUpperCase())}
+                    onChange={value => setValue('sku', value.toUpperCase())}
                     placeholder="e.g., SHMP-PRO-1L"
                     error={errors.sku?.message}
                     helper="Stock Keeping Unit - unique identifier"
@@ -193,7 +198,7 @@ export function ItemModal({
                     type="text"
                     label="Barcode"
                     value={watch('barcode') || ''}
-                    onChange={(value) => setValue('barcode', value)}
+                    onChange={value => setValue('barcode', value)}
                     placeholder="Scan or enter barcode"
                     icon={Barcode}
                     error={errors.barcode?.message}
@@ -203,7 +208,7 @@ export function ItemModal({
                     type="select"
                     label="Category"
                     value={watch('category') || ''}
-                    onChange={(value) => setValue('category', value)}
+                    onChange={value => setValue('category', value)}
                     options={categories.map(cat => ({ value: cat, label: cat }))}
                     placeholder="Select category"
                   />
@@ -213,26 +218,40 @@ export function ItemModal({
                   type="select"
                   label="Unit of Measure"
                   value={watch('uom') || 'unit'}
-                  onChange={(value) => setValue('uom', value as any)}
+                  onChange={value => setValue('uom', value as any)}
                   options={UOM_OPTIONS}
                   required
                 />
               </div>
 
               {/* Stock Management */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <AlertCircle className="w-4 h-4" />
                   Stock Management
                 </h3>
 
-                <div className="flex items-center justify-between p-4 rounded-lg" 
-                     style={{ backgroundColor: COLORS.black + '30', border: '1px solid ' + COLORS.bronze + '33' }}>
+                <div
+                  className="flex items-center justify-between p-4 rounded-lg"
+                  style={{
+                    backgroundColor: COLORS.black + '30',
+                    border: '1px solid ' + COLORS.bronze + '33'
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     <Package className="w-5 h-5" style={{ color: COLORS.bronze }} />
                     <div>
-                      <Label htmlFor="track_stock" className="font-medium cursor-pointer" style={{ color: COLORS.champagne }}>
+                      <Label
+                        htmlFor="track_stock"
+                        className="font-medium cursor-pointer"
+                        style={{ color: COLORS.champagne }}
+                      >
                         Track stock levels
                       </Label>
                       <p className="text-xs mt-1" style={{ color: COLORS.lightText, opacity: 0.7 }}>
@@ -260,7 +279,7 @@ export function ItemModal({
                       type="number"
                       label="Reorder Level"
                       value={watch('reorder_level')?.toString() || ''}
-                      onChange={(value) => setValue('reorder_level', parseInt(value) || undefined)}
+                      onChange={value => setValue('reorder_level', parseInt(value) || undefined)}
                       min={0}
                       error={errors.reorder_level?.message}
                       helper="Stock level that triggers reorder alert"
@@ -270,7 +289,7 @@ export function ItemModal({
                       type="number"
                       label="Reorder Quantity"
                       value={watch('reorder_qty')?.toString() || ''}
-                      onChange={(value) => setValue('reorder_qty', parseInt(value) || undefined)}
+                      onChange={value => setValue('reorder_qty', parseInt(value) || undefined)}
                       min={0}
                       error={errors.reorder_qty?.message}
                       helper="Suggested quantity to order"
@@ -280,9 +299,14 @@ export function ItemModal({
               </div>
 
               {/* Costing & Tax */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
-                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
-                    style={{ color: COLORS.bronze }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
+                <h3
+                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   <DollarSign className="w-4 h-4" />
                   Costing & Tax
                 </h3>
@@ -292,7 +316,7 @@ export function ItemModal({
                     type="number"
                     label="Default Cost"
                     value={watch('cost')?.toString() || ''}
-                    onChange={(value) => setValue('cost', parseFloat(value) || undefined)}
+                    onChange={value => setValue('cost', parseFloat(value) || undefined)}
                     min={0}
                     step={0.01}
                     error={errors.cost?.message}
@@ -305,7 +329,7 @@ export function ItemModal({
                     type="number"
                     label="Tax Rate"
                     value={watch('tax_rate')?.toString() || '5'}
-                    onChange={(value) => setValue('tax_rate', parseFloat(value) || 0)}
+                    onChange={value => setValue('tax_rate', parseFloat(value) || 0)}
                     min={0}
                     max={100}
                     step={0.01}
@@ -318,11 +342,19 @@ export function ItemModal({
               </div>
 
               {/* Smart Code Display */}
-              <div className="mt-6 p-4 rounded-lg" 
-                   style={{ backgroundColor: COLORS.black + '20', border: '1px solid ' + COLORS.bronze + '33' }}>
+              <div
+                className="mt-6 p-4 rounded-lg"
+                style={{
+                  backgroundColor: COLORS.black + '20',
+                  border: '1px solid ' + COLORS.bronze + '33'
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                    <p
+                      className="text-xs uppercase tracking-wider"
+                      style={{ color: COLORS.bronze }}
+                    >
                       Smart Code
                     </p>
                     <p className="font-mono text-sm mt-1" style={{ color: COLORS.champagne }}>
@@ -338,14 +370,11 @@ export function ItemModal({
           </ScrollAreaDNA>
 
           {/* Fixed Footer with Actions */}
-          <div className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3" 
-               style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}>
-            <SecondaryButtonDNA
-              type="button"
-              icon={X}
-              onClick={onClose}
-              disabled={saving}
-            >
+          <div
+            className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3"
+            style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}
+          >
+            <SecondaryButtonDNA type="button" icon={X} onClick={onClose} disabled={saving}>
               Cancel
             </SecondaryButtonDNA>
             <PrimaryButtonDNA

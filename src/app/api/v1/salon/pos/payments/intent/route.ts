@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for payment operations',
           details: 'Ensure middleware is properly configured'
@@ -75,7 +75,6 @@ export async function POST(request: NextRequest) {
         procedure_duration_ms: result.duration_ms
       }
     })
-
   } catch (error) {
     console.error('Payment intent error:', error)
 
@@ -118,13 +117,13 @@ export async function POST(request: NextRequest) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'CHECKOUT_NOT_FOUND': 404,
-    'CHECKOUT_NOT_OPEN': 400,
-    'INVALID_PAYMENT_METHOD': 400,
-    'INVALID_PAYMENT_AMOUNT': 400,
-    'PAYMENT_GATEWAY_ERROR': 502,
-    'IDEMPOTENCY_CONFLICT': 409,
-    'DUPLICATE_INTENT': 409
+    CHECKOUT_NOT_FOUND: 404,
+    CHECKOUT_NOT_OPEN: 400,
+    INVALID_PAYMENT_METHOD: 400,
+    INVALID_PAYMENT_AMOUNT: 400,
+    PAYMENT_GATEWAY_ERROR: 502,
+    IDEMPOTENCY_CONFLICT: 409,
+    DUPLICATE_INTENT: 409
   }
 
   return errorMap[errorCode] || 500

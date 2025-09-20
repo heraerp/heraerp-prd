@@ -36,16 +36,12 @@ import {
 } from '@/lib/dna'
 
 // Import some example components to show they work
-import {
-  StatCardDNA,
-  BottomSheet,
-  useBottomSheet
-} from '@/lib/dna'
+import { StatCardDNA, BottomSheet, useBottomSheet } from '@/lib/dna'
 
 // Example lazy loading
-const LazyStatCard = lazy(() => 
-  import('@/lib/dna').then(module => ({ 
-    default: module.StatCardDNA 
+const LazyStatCard = lazy(() =>
+  import('@/lib/dna').then(module => ({
+    default: module.StatCardDNA
   }))
 )
 
@@ -66,15 +62,17 @@ const categoryDescriptions = {
 }
 
 export default function ExportSystemDemoPage() {
-  const [selectedCategory, setSelectedCategory] = useState<keyof typeof HERA_DNA_CATEGORIES | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<keyof typeof HERA_DNA_CATEGORIES | null>(
+    null
+  )
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null)
   const [loadedComponent, setLoadedComponent] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [loadingDemo, setLoadingDemo] = useState<string | null>(null)
-  
+
   const { toast } = useToast()
   const bottomSheet = useBottomSheet()
-  
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
     toast({
@@ -83,7 +81,7 @@ export default function ExportSystemDemoPage() {
       variant: 'default'
     })
   }
-  
+
   const handleDynamicLoad = async (componentKey: string) => {
     setIsLoading(true)
     try {
@@ -104,13 +102,13 @@ export default function ExportSystemDemoPage() {
       setIsLoading(false)
     }
   }
-  
+
   const handleLazyDemo = async (componentName: string) => {
     setLoadingDemo(componentName)
-    
+
     // Simulate loading delay
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     setLoadingDemo(null)
     toast({
       title: 'Lazy Loading Demo',
@@ -118,7 +116,7 @@ export default function ExportSystemDemoPage() {
       variant: 'default'
     })
   }
-  
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       {/* Header */}
@@ -133,11 +131,11 @@ export default function ExportSystemDemoPage() {
           </h1>
         </motion.div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Unified component library with tree-shaking support, dynamic loading, and comprehensive TypeScript integration.
-          Discover and import HERA DNA components efficiently.
+          Unified component library with tree-shaking support, dynamic loading, and comprehensive
+          TypeScript integration. Discover and import HERA DNA components efficiently.
         </p>
       </div>
-      
+
       {/* System Information */}
       <Card>
         <CardHeader>
@@ -151,17 +149,24 @@ export default function ExportSystemDemoPage() {
             <div>
               <h4 className="font-medium mb-2">Library Details</h4>
               <div className="space-y-1 text-sm">
-                <p><span className="font-medium">Name:</span> {HERA_DNA_INFO.name}</p>
-                <p><span className="font-medium">Version:</span> {HERA_DNA_INFO.version}</p>
-                <p><span className="font-medium">Components:</span> {HERA_DNA_INFO.components.total}</p>
-                <p><span className="font-medium">Smart Code:</span> 
+                <p>
+                  <span className="font-medium">Name:</span> {HERA_DNA_INFO.name}
+                </p>
+                <p>
+                  <span className="font-medium">Version:</span> {HERA_DNA_INFO.version}
+                </p>
+                <p>
+                  <span className="font-medium">Components:</span> {HERA_DNA_INFO.components.total}
+                </p>
+                <p>
+                  <span className="font-medium">Smart Code:</span>
                   <code className="ml-1 text-xs bg-muted px-1 rounded">
                     {HERA_DNA_INFO.smartCode}
                   </code>
                 </p>
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-medium mb-2">Categories</h4>
               <div className="flex flex-wrap gap-1">
@@ -172,7 +177,7 @@ export default function ExportSystemDemoPage() {
                 ))}
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-medium mb-2">Technology Stack</h4>
               <div className="flex flex-wrap gap-1">
@@ -186,7 +191,7 @@ export default function ExportSystemDemoPage() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Component Categories */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Category Browser */}
@@ -203,29 +208,31 @@ export default function ExportSystemDemoPage() {
                 {Object.entries(HERA_DNA_CATEGORIES).map(([categoryKey, components]) => {
                   const Icon = categoryIcons[categoryKey as keyof typeof categoryIcons]
                   const isSelected = selectedCategory === categoryKey
-                  
+
                   return (
                     <div
                       key={categoryKey}
-                      onClick={() => setSelectedCategory(categoryKey as keyof typeof HERA_DNA_CATEGORIES)}
+                      onClick={() =>
+                        setSelectedCategory(categoryKey as keyof typeof HERA_DNA_CATEGORIES)
+                      }
                       className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                        isSelected 
-                          ? 'border-primary bg-primary/5' 
+                        isSelected
+                          ? 'border-primary bg-primary/5'
                           : 'hover:border-primary/50 hover:bg-accent'
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                        }`}>
+                        <div
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                          }`}
+                        >
                           <Icon className="w-5 h-5" />
                         </div>
-                        
+
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium">
-                              {categoryKey.replace('_', ' ')}
-                            </h4>
+                            <h4 className="font-medium">{categoryKey.replace('_', ' ')}</h4>
                             <Badge variant="outline" className="text-xs">
                               {components.length} components
                             </Badge>
@@ -233,13 +240,13 @@ export default function ExportSystemDemoPage() {
                           <p className="text-sm text-muted-foreground mt-1">
                             {categoryDescriptions[categoryKey as keyof typeof categoryDescriptions]}
                           </p>
-                          
+
                           {isSelected && (
                             <div className="mt-3 space-y-2">
                               {components.map(component => (
                                 <div
                                   key={component}
-                                  onClick={(e) => {
+                                  onClick={e => {
                                     e.stopPropagation()
                                     setSelectedComponent(component)
                                   }}
@@ -260,7 +267,7 @@ export default function ExportSystemDemoPage() {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Component Details */}
         <div>
           <Tabs defaultValue="details" className="h-full">
@@ -269,7 +276,7 @@ export default function ExportSystemDemoPage() {
               <TabsTrigger value="import">Import</TabsTrigger>
               <TabsTrigger value="demo">Demo</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="details" className="mt-4">
               <Card>
                 <CardHeader>
@@ -282,7 +289,7 @@ export default function ExportSystemDemoPage() {
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">Component Selected</span>
                       </div>
-                      
+
                       {(() => {
                         const metadata = getComponentMetadata(selectedComponent)
                         return (
@@ -291,19 +298,23 @@ export default function ExportSystemDemoPage() {
                               <p className="text-sm font-medium text-muted-foreground">Name</p>
                               <p className="font-mono">{metadata.name}</p>
                             </div>
-                            
+
                             <div>
                               <p className="text-sm font-medium text-muted-foreground">Category</p>
-                              <Badge variant="outline">{metadata.category?.replace('_', ' ')}</Badge>
+                              <Badge variant="outline">
+                                {metadata.category?.replace('_', ' ')}
+                              </Badge>
                             </div>
-                            
+
                             <div>
                               <p className="text-sm font-medium text-muted-foreground">Version</p>
                               <Badge variant="outline">v{metadata.version}</Badge>
                             </div>
-                            
+
                             <div>
-                              <p className="text-sm font-medium text-muted-foreground">Smart Code</p>
+                              <p className="text-sm font-medium text-muted-foreground">
+                                Smart Code
+                              </p>
                               <div className="flex items-center gap-2">
                                 <code className="text-xs bg-background p-1 rounded">
                                   {metadata.smartCode}
@@ -324,15 +335,13 @@ export default function ExportSystemDemoPage() {
                   ) : (
                     <div className="text-center py-8">
                       <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">
-                        Select a component to see details
-                      </p>
+                      <p className="text-muted-foreground">Select a component to see details</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="import" className="mt-4">
               <Card>
                 <CardHeader>
@@ -348,41 +357,47 @@ export default function ExportSystemDemoPage() {
                         <p className="text-sm font-medium mb-2">Named Import (Recommended)</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { ${selectedComponent} } from '@/lib/dna'`}
+                            {`import { ${selectedComponent} } from '@/lib/dna'`}
                           </pre>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`import { ${selectedComponent} } from '@/lib/dna'`)}
+                            onClick={() =>
+                              copyToClipboard(`import { ${selectedComponent} } from '@/lib/dna'`)
+                            }
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium mb-2">With Types</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`}
+                            {`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`}
                           </pre>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`)}
+                            onClick={() =>
+                              copyToClipboard(
+                                `import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`
+                              )
+                            }
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium mb-2">Lazy Loading</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`const Lazy${selectedComponent} = lazy(() => 
+                            {`const Lazy${selectedComponent} = lazy(() => 
   import('@/lib/dna').then(module => ({ 
     default: module.${selectedComponent} 
   }))
@@ -392,34 +407,55 @@ export default function ExportSystemDemoPage() {
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`const Lazy${selectedComponent} = lazy(() => import('@/src/lib/dna').then(module => ({ default: module.${selectedComponent} })))`)}
+                            onClick={() =>
+                              copyToClipboard(
+                                `const Lazy${selectedComponent} = lazy(() => import('@/src/lib/dna').then(module => ({ default: module.${selectedComponent} })))`
+                              )
+                            }
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
-                      
+
                       <div>
                         <p className="text-sm font-medium mb-2">Dynamic Loading</p>
                         <div className="space-y-2">
                           <div className="relative">
                             <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { loadDNAComponent } from '@/lib/dna'
+                              {`import { loadDNAComponent } from '@/lib/dna'
 
-const component = await loadDNAComponent('${selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1)}')`}
+const component = await loadDNAComponent('${selectedComponent
+                                .toLowerCase()
+                                .replace(/([A-Z])/g, '-$1')
+                                .substring(1)}')`}
                             </pre>
                             <Button
                               size="sm"
                               variant="ghost"
                               className="absolute top-1 right-1"
-                              onClick={() => copyToClipboard(`import { loadDNAComponent } from '@/lib/dna'\n\nconst component = await loadDNAComponent('${selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1)}')`)}
+                              onClick={() =>
+                                copyToClipboard(
+                                  `import { loadDNAComponent } from '@/lib/dna'\n\nconst component = await loadDNAComponent('${selectedComponent
+                                    .toLowerCase()
+                                    .replace(/([A-Z])/g, '-$1')
+                                    .substring(1)}')`
+                                )
+                              }
                             >
                               <Copy className="w-3 h-3" />
                             </Button>
                           </div>
-                          
+
                           <Button
-                            onClick={() => handleDynamicLoad(selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1))}
+                            onClick={() =>
+                              handleDynamicLoad(
+                                selectedComponent
+                                  .toLowerCase()
+                                  .replace(/([A-Z])/g, '-$1')
+                                  .substring(1)
+                              )
+                            }
                             disabled={isLoading}
                             className="w-full"
                           >
@@ -449,7 +485,7 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="demo" className="mt-4">
               <Card>
                 <CardHeader>
@@ -470,23 +506,21 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
                             description="Direct import from DNA system"
                           />
                         </div>
-                        
+
                         <div className="p-3 border rounded-lg">
                           <p className="text-sm font-medium mb-2">BottomSheet with Hook</p>
-                          <Button onClick={bottomSheet.open}>
-                            Open BottomSheet
-                          </Button>
+                          <Button onClick={bottomSheet.open}>Open BottomSheet</Button>
                           <BottomSheet {...bottomSheet}>
                             <div className="p-6">
                               <h3 className="font-bold mb-2">Mobile Component Demo</h3>
                               <p className="text-muted-foreground">
-                                This BottomSheet was imported from the HERA DNA export system
-                                and uses the useBottomSheet hook.
+                                This BottomSheet was imported from the HERA DNA export system and
+                                uses the useBottomSheet hook.
                               </p>
                             </div>
                           </BottomSheet>
                         </div>
-                        
+
                         <div className="p-3 border rounded-lg">
                           <p className="text-sm font-medium mb-2">Lazy Loading Demo</p>
                           <div className="space-y-2">
@@ -504,13 +538,15 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
                                 'Load StatCard Lazily'
                               )}
                             </Button>
-                            
-                            <Suspense fallback={
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Loading component...
-                              </div>
-                            }>
+
+                            <Suspense
+                              fallback={
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Loading component...
+                                </div>
+                              }
+                            >
                               <LazyStatCard
                                 title="Lazy Loaded"
                                 value="Success!"
@@ -521,7 +557,7 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Component Registry Info */}
                     <div>
                       <h4 className="font-medium mb-3">Component Registry</h4>
@@ -544,7 +580,7 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
           </Tabs>
         </div>
       </div>
-      
+
       {/* Smart Codes Reference */}
       <Card>
         <CardHeader>
@@ -556,17 +592,11 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
               <div key={key} className="p-3 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-sm">{key.replace(/_/g, ' ')}</h4>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => copyToClipboard(code)}
-                  >
+                  <Button size="sm" variant="ghost" onClick={() => copyToClipboard(code)}>
                     <Copy className="w-3 h-3" />
                   </Button>
                 </div>
-                <code className="text-xs text-muted-foreground block break-all">
-                  {code}
-                </code>
+                <code className="text-xs text-muted-foreground block break-all">{code}</code>
               </div>
             ))}
           </div>

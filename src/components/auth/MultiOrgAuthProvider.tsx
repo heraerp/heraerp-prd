@@ -3,7 +3,7 @@
  * All imports of MultiOrgAuthProvider should now use HERAAuthProvider
  */
 
-export { 
+export {
   HERAAuthProvider as MultiOrgAuthProvider,
   useMultiOrgAuth,
   useHERAAuth

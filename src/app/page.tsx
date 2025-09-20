@@ -539,19 +539,25 @@ export default function LandingPage() {
                         <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.businesses}
                         </div>
-                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Active</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+                          Active
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.revenue}
                         </div>
-                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Revenue</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+                          Revenue
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-base sm:text-lg font-semibold text-foreground dark:text-foreground">
                           {industry.stats.time}
                         </div>
-                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">Setup</div>
+                        <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+                          Setup
+                        </div>
                       </div>
                     </div>
 

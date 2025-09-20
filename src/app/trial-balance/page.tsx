@@ -385,7 +385,9 @@ export default function TrialBalancePage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-100 mb-2">Trial Balance Report</h1>
-              <p className="text-muted-foreground text-lg">Enterprise financial position statement</p>
+              <p className="text-muted-foreground text-lg">
+                Enterprise financial position statement
+              </p>
             </div>
             <div className="flex items-center gap-4">
               <Button onClick={() => fetchTrialBalance()} variant="outline">

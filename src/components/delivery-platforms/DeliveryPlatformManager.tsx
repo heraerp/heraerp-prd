@@ -449,7 +449,9 @@ export function DeliveryPlatformManager() {
                         <span>{platform.name}</span>
                         <Badge className={getStatusColor(platform.status)}>{platform.status}</Badge>
                       </h4>
-                      <p className="text-sm text-muted-foreground capitalize">{platform.platform_type}</p>
+                      <p className="text-sm text-muted-foreground capitalize">
+                        {platform.platform_type}
+                      </p>
                     </div>
                   </div>
                   <button

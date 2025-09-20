@@ -29,10 +29,7 @@ async function getOrganizationContext(request: NextRequest): Promise<string> {
 }
 
 // GET /api/v1/entities/[id] - Get single entity
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
     const organizationId = await getOrganizationContext(request)
@@ -45,10 +42,7 @@ export async function GET(
       .single()
 
     if (error || !entity) {
-      return NextResponse.json(
-        { error: 'Entity not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Entity not found' }, { status: 404 })
     }
 
     // Get dynamic data
@@ -79,18 +73,12 @@ export async function GET(
     })
   } catch (error) {
     console.error('Get entity error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch entity' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch entity' }, { status: 500 })
   }
 }
 
 // PATCH /api/v1/entities/[id] - Update entity
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
     const organizationId = await getOrganizationContext(request)
@@ -112,10 +100,7 @@ export async function PATCH(
 
       if (updateError) {
         console.error('Update entity error:', updateError)
-        return NextResponse.json(
-          { error: 'Failed to update entity' },
-          { status: 500 }
-        )
+        return NextResponse.json({ error: 'Failed to update entity' }, { status: 500 })
       }
     }
 
@@ -145,15 +130,13 @@ export async function PATCH(
             .eq('field_name', key)
         } else {
           // Insert new field
-          await supabaseAdmin
-            .from('core_dynamic_data')
-            .insert({
-              entity_id: params.id,
-              organization_id: organizationId,
-              field_name: key,
-              field_value: fieldValue,
-              field_type: typeof value === 'object' ? 'json' : 'text'
-            })
+          await supabaseAdmin.from('core_dynamic_data').insert({
+            entity_id: params.id,
+            organization_id: organizationId,
+            field_name: key,
+            field_value: fieldValue,
+            field_type: typeof value === 'object' ? 'json' : 'text'
+          })
         }
       }
     }
@@ -162,9 +145,6 @@ export async function PATCH(
     return GET(request, { params })
   } catch (error) {
     console.error('Update entity error:', error)
-    return NextResponse.json(
-      { error: 'Failed to update entity' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update entity' }, { status: 500 })
   }
 }

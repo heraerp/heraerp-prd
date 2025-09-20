@@ -11,11 +11,11 @@ export async function GET(req: NextRequest) {
       pageSize: searchParams.get('pageSize'),
       q: searchParams.get('q'),
       status: searchParams.get('status'),
-      category: searchParams.get('category'),
+      category: searchParams.get('category')
     }
 
     const parsed = ListQuerySchema.safeParse(queryParams)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid query parameters', details: parsed.error.flatten() },
@@ -25,21 +25,24 @@ export async function GET(req: NextRequest) {
 
     const { orgId, page, pageSize, q, status, category } = parsed.data
     const supabase = createClient()
-    
+
     // Calculate offset
     const offset = (page - 1) * pageSize
 
     // Build base query
     let query = supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_name,
         entity_type,
         status,
         created_at,
         updated_at
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .eq('organization_id', orgId)
       .eq('entity_type', 'salon_service')
 
@@ -54,9 +57,11 @@ export async function GET(req: NextRequest) {
     }
 
     // Execute query with pagination
-    const { data: entities, count, error: entitiesError } = await query
-      .order('entity_name')
-      .range(offset, offset + pageSize - 1)
+    const {
+      data: entities,
+      count,
+      error: entitiesError
+    } = await query.order('entity_name').range(offset, offset + pageSize - 1)
 
     if (entitiesError) {
       console.error('Failed to fetch services:', entitiesError)
@@ -68,14 +73,14 @@ export async function GET(req: NextRequest) {
 
     // Fetch dynamic data for all entities
     const entityIds = entities?.map(e => e.id) || []
-    
+
     if (entityIds.length === 0) {
       return NextResponse.json({
         items: [],
         total: 0,
         page,
         pageSize,
-        totalPages: 0,
+        totalPages: 0
       })
     }
 
@@ -91,28 +96,33 @@ export async function GET(req: NextRequest) {
     }
 
     // Group dynamic data by entity
-    const dynamicByEntity = dynamicData?.reduce((acc, row) => {
-      if (!acc[row.entity_id]) acc[row.entity_id] = {}
-      
-      if (row.field_name === 'price' || row.field_name === 'duration') {
-        acc[row.entity_id][row.field_name] = row.field_value_number
-      } else {
-        acc[row.entity_id][row.field_name] = row.field_value_text
-      }
-      
-      return acc
-    }, {} as Record<string, Record<string, any>>) || {}
+    const dynamicByEntity =
+      dynamicData?.reduce(
+        (acc, row) => {
+          if (!acc[row.entity_id]) acc[row.entity_id] = {}
+
+          if (row.field_name === 'price' || row.field_name === 'duration') {
+            acc[row.entity_id][row.field_name] = row.field_value_number
+          } else {
+            acc[row.entity_id][row.field_name] = row.field_value_text
+          }
+
+          return acc
+        },
+        {} as Record<string, Record<string, any>>
+      ) || {}
 
     // Merge entities with dynamic data and apply category filter if needed
-    let services = entities?.map(entity => ({
-      ...entity,
-      ...dynamicByEntity[entity.id],
-      price: dynamicByEntity[entity.id]?.price || 0,
-      duration: dynamicByEntity[entity.id]?.duration || 60,
-      tax_code: dynamicByEntity[entity.id]?.tax_code || 'VAT5',
-      category: dynamicByEntity[entity.id]?.category || null,
-      description: dynamicByEntity[entity.id]?.description || null,
-    })) || []
+    let services =
+      entities?.map(entity => ({
+        ...entity,
+        ...dynamicByEntity[entity.id],
+        price: dynamicByEntity[entity.id]?.price || 0,
+        duration: dynamicByEntity[entity.id]?.duration || 60,
+        tax_code: dynamicByEntity[entity.id]?.tax_code || 'VAT5',
+        category: dynamicByEntity[entity.id]?.category || null,
+        description: dynamicByEntity[entity.id]?.description || null
+      })) || []
 
     // Apply category filter (done in memory since it's in dynamic data)
     if (category) {
@@ -126,14 +136,10 @@ export async function GET(req: NextRequest) {
       total: count || 0,
       page,
       pageSize,
-      totalPages,
+      totalPages
     })
-
   } catch (error) {
     console.error('Unexpected error in service list:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

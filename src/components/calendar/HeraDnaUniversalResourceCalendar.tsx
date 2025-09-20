@@ -1226,7 +1226,9 @@ export function HeraDnaUniversalResourceCalendar({
                   <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                     All {config.resourceNamePlural}
                   </p>
-                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">View all team members</p>
+                  <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                    View all team members
+                  </p>
                 </div>
               </div>
 
@@ -1269,7 +1271,9 @@ export function HeraDnaUniversalResourceCalendar({
                       <p className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {resource.name}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{resource.title}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        {resource.title}
+                      </p>
                       {organizations.length > 0 && (
                         <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-0.5">
                           {organizations
@@ -1465,10 +1469,18 @@ export function HeraDnaUniversalResourceCalendar({
               </Tabs>
 
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Search className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground dark:text-gray-300">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground dark:text-gray-300"
+                >
                   <Filter className="w-5 h-5" />
                 </Button>
                 <Button
@@ -1952,7 +1964,9 @@ function AppointmentCard({
         <p className="text-xs font-semibold text-gray-100 dark:text-foreground truncate">
           {appointment.title}
         </p>
-        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">{appointment.client}</p>
+        <p className="text-xs text-muted-foreground dark:text-gray-300 truncate">
+          {appointment.client}
+        </p>
         {!compact && (
           <div className="flex items-center gap-2 mt-1">
             <Badge
@@ -1967,7 +1981,9 @@ function AppointmentCard({
               {appointment.price}
             </Badge>
             {resource && (
-              <span className="text-xs text-muted-foreground dark:text-muted-foreground">{resource.name}</span>
+              <span className="text-xs text-muted-foreground dark:text-muted-foreground">
+                {resource.name}
+              </span>
             )}
           </div>
         )}
@@ -2089,7 +2105,9 @@ function LeaveRequestModal({
               <UserX className="w-5 h-5 text-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">Request Leave</h3>
+              <h3 className="text-lg font-semibold text-gray-100 dark:text-foreground">
+                Request Leave
+              </h3>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 {startDate && endDate
                   ? daysSelected === 1
@@ -2255,7 +2273,9 @@ function LeaveRequestModal({
                       <span className="text-sm font-medium text-gray-100 dark:text-foreground">
                         {option.label}
                       </span>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{option.hours}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                        {option.hours}
+                      </p>
                     </div>
                   </div>
                   <Clock className="w-4 h-4 text-muted-foreground" />

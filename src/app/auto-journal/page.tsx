@@ -606,7 +606,9 @@ export default function AutoJournalPage() {
                   <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 mx-auto text-green-500 mb-4" />
                     <h3 className="text-lg font-medium text-gray-100 mb-2">All Caught Up!</h3>
-                    <p className="text-muted-foreground">No transactions pending batch processing</p>
+                    <p className="text-muted-foreground">
+                      No transactions pending batch processing
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -635,7 +637,9 @@ export default function AutoJournalPage() {
                         </span>
                       </div>
                       <Progress value={85} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">85% automation rate achieved</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        85% automation rate achieved
+                      </p>
                     </div>
 
                     <div>
@@ -646,7 +650,9 @@ export default function AutoJournalPage() {
                         </span>
                       </div>
                       <Progress value={92} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">92% efficiency improvement</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        92% efficiency improvement
+                      </p>
                     </div>
 
                     <div>
@@ -680,7 +686,9 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">94.2%</span>
                       </div>
                       <Progress value={94} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">Improved +8.3% this period</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Improved +8.3% this period
+                      </p>
                     </div>
 
                     <div>
@@ -689,7 +697,9 @@ export default function AutoJournalPage() {
                         <span className="font-semibold">96.1%</span>
                       </div>
                       <Progress value={96} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">High reliability threshold</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        High reliability threshold
+                      </p>
                     </div>
 
                     <div>
@@ -838,7 +848,9 @@ export default function AutoJournalPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">Schedule Settings</h4>
-                        <p className="text-sm text-muted-foreground">Automated batch processing schedule</p>
+                        <p className="text-sm text-muted-foreground">
+                          Automated batch processing schedule
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-muted-foreground" />

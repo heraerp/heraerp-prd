@@ -44,7 +44,9 @@ export function TestimonialCard({
       >
         <div className="flex items-center mb-4">
           <div className="flex mr-2">{renderStars(rating)}</div>
-          <span className="text-sm text-muted-foreground dark:text-muted-foreground">{rating}/5</span>
+          <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+            {rating}/5
+          </span>
         </div>
         <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-4">
           "{testimonial}"

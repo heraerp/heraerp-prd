@@ -18,7 +18,10 @@ export async function GET(req: NextRequest) {
   if (error) {
     return NextResponse.json({ items: [] })
   }
-  const items = (data || []).map((r) => ({ id: r.entity_code || r.entity_name || r.id, name: r.entity_name }))
+  const items = (data || []).map(r => ({
+    id: r.entity_code || r.entity_name || r.id,
+    name: r.entity_name
+  }))
   const ok = LookupListSchema.safeParse({ items })
   if (!ok.success) return NextResponse.json({ error: ok.error.flatten() }, { status: 500 })
   return NextResponse.json({ items })

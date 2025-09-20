@@ -24,9 +24,15 @@ export default function AppointmentActivityPage() {
   const appointmentId = params.id as string
   const { organizationId } = useAuth()
   const appointmentsApi = createAppointmentsApi(apiClient)
-  
-  const { appointment, isLoading: appointmentLoading } = useAppointment(appointmentId, appointmentsApi)
-  const { data: activity, isLoading: activityLoading } = useAppointmentActivity(appointmentId, appointmentsApi)
+
+  const { appointment, isLoading: appointmentLoading } = useAppointment(
+    appointmentId,
+    appointmentsApi
+  )
+  const { data: activity, isLoading: activityLoading } = useAppointmentActivity(
+    appointmentId,
+    appointmentsApi
+  )
 
   const handleBack = () => {
     router.push(`/appointments/${appointmentId}`)
@@ -63,12 +69,10 @@ export default function AppointmentActivityPage() {
         >
           Back to Details
         </ButtonPrimary>
-        
+
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Appointment Activity
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Appointment Activity</h1>
             <AppointmentStatusBadge status={appointment.status} />
           </div>
           <p className="text-sm text-gray-600 mt-1">
@@ -79,7 +83,7 @@ export default function AppointmentActivityPage() {
 
       {/* Activity Timeline */}
       <Card>
-        <CardHeader 
+        <CardHeader
           title="Activity Timeline"
           subtitle="Complete history of appointment events and status changes"
         />
@@ -90,10 +94,7 @@ export default function AppointmentActivityPage() {
 
       {/* Audit Information */}
       <Card>
-        <CardHeader 
-          title="Audit Trail"
-          subtitle="System-level tracking for compliance"
-        />
+        <CardHeader title="Audit Trail" subtitle="System-level tracking for compliance" />
         <CardContent padding="md">
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">

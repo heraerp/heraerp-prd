@@ -26,17 +26,21 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
 
   // Group services by category
   const categories = Array.from(new Set(services.map(s => s.category || 'Other')))
-  const servicesByCategory = categories.reduce((acc, category) => {
-    acc[category] = services.filter(s => (s.category || 'Other') === category)
-    return acc
-  }, {} as Record<string, ServicePrice[]>)
+  const servicesByCategory = categories.reduce(
+    (acc, category) => {
+      acc[category] = services.filter(s => (s.category || 'Other') === category)
+      return acc
+    },
+    {} as Record<string, ServicePrice[]>
+  )
 
   // Filter services by search
   const filteredServices = (categoryServices: ServicePrice[]) => {
     if (!search) return categoryServices
-    return categoryServices.filter(service =>
-      service.service_name.toLowerCase().includes(search.toLowerCase()) ||
-      service.service_code.toLowerCase().includes(search.toLowerCase())
+    return categoryServices.filter(
+      service =>
+        service.service_name.toLowerCase().includes(search.toLowerCase()) ||
+        service.service_code.toLowerCase().includes(search.toLowerCase())
     )
   }
 
@@ -47,7 +51,7 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
       service_name: service.service_name,
       qty: 1,
       unit_price: service.price,
-      duration_min: service.duration_min,
+      duration_min: service.duration_min
     })
   }
 
@@ -58,7 +62,7 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
   }
 
   const ServiceCard = ({ service }: { service: ServicePrice }) => (
-    <Card 
+    <Card
       className="p-4 cursor-pointer hover:shadow-md transition-shadow"
       onClick={() => handleAddService(service)}
     >
@@ -87,22 +91,26 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
           placeholder="Search services..."
           className="pl-10"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
         />
       </div>
 
       {search ? (
         // Show all filtered results when searching
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {services.filter(service =>
-            service.service_name.toLowerCase().includes(search.toLowerCase()) ||
-            service.service_code.toLowerCase().includes(search.toLowerCase())
-          ).map(service => (
-            <ServiceCard key={service.service_code} service={service} />
-          ))}
-          {services.filter(service =>
-            service.service_name.toLowerCase().includes(search.toLowerCase()) ||
-            service.service_code.toLowerCase().includes(search.toLowerCase())
+          {services
+            .filter(
+              service =>
+                service.service_name.toLowerCase().includes(search.toLowerCase()) ||
+                service.service_code.toLowerCase().includes(search.toLowerCase())
+            )
+            .map(service => (
+              <ServiceCard key={service.service_code} service={service} />
+            ))}
+          {services.filter(
+            service =>
+              service.service_name.toLowerCase().includes(search.toLowerCase()) ||
+              service.service_code.toLowerCase().includes(search.toLowerCase())
           ).length === 0 && (
             <p className="text-gray-500 col-span-2 text-center py-8">
               No services found matching "{search}"
@@ -112,7 +120,10 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
       ) : (
         // Show categorized view when not searching
         <Tabs defaultValue={categories[0]} className="w-full">
-          <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}>
+          <TabsList
+            className="grid w-full"
+            style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}
+          >
             {categories.map(category => (
               <TabsTrigger key={category} value={category}>
                 {category}

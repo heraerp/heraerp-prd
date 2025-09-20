@@ -8,8 +8,11 @@ interface ISPModalProps {
   children?: React.ReactNode
 }
 
-export function ISPModal({ isOpen = false, onClose, title = 'ISP Modal', children }: ISPModalProps) {
-  return (
-    <div>{children}</div>
-  )
+export function ISPModal({
+  isOpen = false,
+  onClose,
+  title = 'ISP Modal',
+  children
+}: ISPModalProps) {
+  return <div>{children}</div>
 }

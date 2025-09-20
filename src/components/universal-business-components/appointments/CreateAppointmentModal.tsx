@@ -686,7 +686,9 @@ export function CreateAppointmentModal({
     <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-lg font-semibold">Select Date & Time</h3>
-        <p className="text-sm text-muted-foreground">Choose when you'd like to schedule the appointment</p>
+        <p className="text-sm text-muted-foreground">
+          Choose when you'd like to schedule the appointment
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -813,7 +815,9 @@ export function CreateAppointmentModal({
       <div className="text-center">
         <div className="text-4xl mb-2">✅</div>
         <h3 className="text-lg font-semibold">Confirm Appointment</h3>
-        <p className="text-sm text-muted-foreground">Review the details before creating the appointment</p>
+        <p className="text-sm text-muted-foreground">
+          Review the details before creating the appointment
+        </p>
       </div>
 
       <Card>
@@ -823,7 +827,9 @@ export function CreateAppointmentModal({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">{config.customerTitle}</Label>
+              <Label className="text-sm font-medium text-muted-foreground">
+                {config.customerTitle}
+              </Label>
               <p className="font-semibold">{customer.name}</p>
               <p className="text-sm text-muted-foreground">
                 {customer.phone} • {customer.email}

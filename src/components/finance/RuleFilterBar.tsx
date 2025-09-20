@@ -21,7 +21,14 @@ import {
 } from '@/components/ui/select'
 import { Search, Filter, RefreshCw } from 'lucide-react'
 
-export type CategoryFilter = 'all' | 'pos' | 'payments' | 'inventory' | 'commissions' | 'fiscal' | 'other'
+export type CategoryFilter =
+  | 'all'
+  | 'pos'
+  | 'payments'
+  | 'inventory'
+  | 'commissions'
+  | 'fiscal'
+  | 'other'
 
 interface RuleFilterBarProps {
   searchTerm: string
@@ -57,7 +64,7 @@ export function RuleFilterBar({
           <Input
             placeholder="Search by key or title..."
             value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={e => onSearchChange(e.target.value)}
             className="pl-9"
             aria-label="Search rules"
           />
@@ -70,13 +77,27 @@ export function RuleFilterBar({
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="hera-select-content">
-            <SelectItem value="all" className="hera-select-item">All Categories</SelectItem>
-            <SelectItem value="pos" className="hera-select-item">POS</SelectItem>
-            <SelectItem value="payments" className="hera-select-item">Payments</SelectItem>
-            <SelectItem value="inventory" className="hera-select-item">Inventory</SelectItem>
-            <SelectItem value="commissions" className="hera-select-item">Commissions</SelectItem>
-            <SelectItem value="fiscal" className="hera-select-item">Fiscal</SelectItem>
-            <SelectItem value="other" className="hera-select-item">Other</SelectItem>
+            <SelectItem value="all" className="hera-select-item">
+              All Categories
+            </SelectItem>
+            <SelectItem value="pos" className="hera-select-item">
+              POS
+            </SelectItem>
+            <SelectItem value="payments" className="hera-select-item">
+              Payments
+            </SelectItem>
+            <SelectItem value="inventory" className="hera-select-item">
+              Inventory
+            </SelectItem>
+            <SelectItem value="commissions" className="hera-select-item">
+              Commissions
+            </SelectItem>
+            <SelectItem value="fiscal" className="hera-select-item">
+              Fiscal
+            </SelectItem>
+            <SelectItem value="other" className="hera-select-item">
+              Other
+            </SelectItem>
           </SelectContent>
         </Select>
 
@@ -102,10 +123,7 @@ export function RuleFilterBar({
             disabled={isRefreshing}
             aria-label="Refresh rules"
           >
-            <RefreshCw className={cn(
-              "h-4 w-4",
-              isRefreshing && "animate-spin"
-            )} />
+            <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
           </Button>
         )}
       </div>

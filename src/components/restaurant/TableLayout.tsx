@@ -315,7 +315,9 @@ export function TableLayout({ isOnline, currentServer }: TableLayoutProps) {
                 <div className="text-2xl font-bold text-center mb-2">{table.number}</div>
 
                 {/* Table Info */}
-                <div className="text-xs text-muted-foreground text-center mb-2">{table.seats} seats</div>
+                <div className="text-xs text-muted-foreground text-center mb-2">
+                  {table.seats} seats
+                </div>
 
                 {/* Occupied Details */}
                 {table.status === 'occupied' && (

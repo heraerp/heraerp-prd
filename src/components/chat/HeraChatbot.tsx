@@ -266,7 +266,9 @@ export function HeraChatbot({
                 )}
               </Button>
             </div>
-            <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+            <p
+              className={`text-xs mt-2 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+            >
               Powered by HERA Universal Architecture •{' '}
               {organizationId === DEFAULT_ORG_ID ? 'Test Mode' : currentOrganization?.name}
             </p>

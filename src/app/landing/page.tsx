@@ -275,14 +275,20 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
                 <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">SAP</h3>
-                <p className="text-muted-foreground dark:text-muted-foreground mb-4">Generic sandbox</p>
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+                  Generic sandbox
+                </p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">18 months later</p>
               </Card>
 
               <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg border border-border/20 dark:border-border/50 p-6 text-center">
-                <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">Oracle</h3>
-                <p className="text-muted-foreground dark:text-muted-foreground mb-4">Template demo</p>
+                <h3 className="font-bold text-xl mb-2 text-gray-100 dark:text-foreground">
+                  Oracle
+                </h3>
+                <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+                  Template demo
+                </p>
                 <ArrowRight className="h-6 w-6 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-red-600 dark:text-red-400 font-semibold">12 months later</p>
               </Card>

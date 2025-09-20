@@ -493,7 +493,9 @@ export function UCRDeploymentManager({
                   className="mt-2"
                   min={effectiveFrom}
                 />
-                <p className="text-xs text-muted-foreground mt-1">Leave empty for permanent deployment</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Leave empty for permanent deployment
+                </p>
               </div>
             </div>
 
@@ -568,7 +570,9 @@ export function UCRDeploymentManager({
             <div className="flex items-center justify-between p-4 bg-muted dark:bg-muted rounded-lg">
               <div>
                 <Label htmlFor="requires_approval">Require Approval</Label>
-                <p className="text-sm text-muted-foreground">Manager approval needed before deployment</p>
+                <p className="text-sm text-muted-foreground">
+                  Manager approval needed before deployment
+                </p>
               </div>
               <Switch
                 id="requires_approval"
@@ -742,7 +746,9 @@ export function UCRDeploymentManager({
               <div className="text-center py-8">
                 <Clock className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
                 <p className="text-muted-foreground">No deployment history</p>
-                <p className="text-sm text-muted-foreground mt-1">This will be the first deployment</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  This will be the first deployment
+                </p>
               </div>
             )}
           </CardContent>
@@ -781,7 +787,9 @@ export function UCRDeploymentManager({
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <Rocket className="w-12 h-12 animate-pulse mx-auto text-purple-600 mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading deployment manager...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading deployment manager...
+          </p>
         </div>
       </div>
     )

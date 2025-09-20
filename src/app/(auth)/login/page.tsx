@@ -23,8 +23,8 @@ export default function LoginPage() {
     resolver: zodResolver(LoginRequest),
     defaultValues: {
       email: '',
-      password: '',
-    },
+      password: ''
+    }
   })
 
   const onSubmit = async (data: LoginRequest) => {
@@ -48,12 +48,8 @@ export default function LoginPage() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-salon-gradient">
-            Welcome to HERA
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to your salon management account
-          </p>
+          <h2 className="text-3xl font-bold text-salon-gradient">Welcome to HERA</h2>
+          <p className="mt-2 text-sm text-gray-600">Sign in to your salon management account</p>
         </div>
 
         {/* Login Form */}
@@ -140,10 +136,18 @@ export default function LoginPage() {
             <div className="mt-6 p-4 bg-blue-50 rounded-md border border-blue-200">
               <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h4>
               <div className="text-xs text-blue-700 space-y-1">
-                <div><strong>Owner:</strong> owner@hairtalkz.com</div>
-                <div><strong>Manager:</strong> manager@hairtalkz.com</div>
-                <div><strong>Stylist:</strong> stylist@hairtalkz.com</div>
-                <div className="pt-1"><em>Any password 6+ characters works</em></div>
+                <div>
+                  <strong>Owner:</strong> owner@hairtalkz.com
+                </div>
+                <div>
+                  <strong>Manager:</strong> manager@hairtalkz.com
+                </div>
+                <div>
+                  <strong>Stylist:</strong> stylist@hairtalkz.com
+                </div>
+                <div className="pt-1">
+                  <em>Any password 6+ characters works</em>
+                </div>
               </div>
             </div>
           </form>
@@ -151,9 +155,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-xs text-gray-500">
-            Powered by HERA Universal Architecture
-          </p>
+          <p className="text-xs text-gray-500">Powered by HERA Universal Architecture</p>
         </div>
       </div>
     </div>

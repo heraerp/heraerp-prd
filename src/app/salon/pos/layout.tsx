@@ -2,11 +2,7 @@
 
 import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
 
-export default function POSLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function POSLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen relative overflow-hidden">
       {/* Main background gradient */}
@@ -17,14 +13,12 @@ export default function POSLayout({
         <div className="absolute -bottom-40 -right-40 h-80 w-80 animate-blob rounded-full bg-pink-500 mix-blend-multiply blur-xl opacity-20 animation-delay-2000"></div>
         <div className="absolute top-1/2 left-1/3 h-80 w-80 animate-blob rounded-full bg-indigo-500 mix-blend-multiply blur-xl opacity-20 animation-delay-4000"></div>
       </div>
-      
+
       {/* Unified Salon Sidebar */}
       <SalonDarkSidebar />
-      
+
       {/* Main content */}
-      <div className="flex-1 relative z-10 ml-20">
-        {children}
-      </div>
+      <div className="flex-1 relative z-10 ml-20">{children}</div>
     </div>
   )
 }

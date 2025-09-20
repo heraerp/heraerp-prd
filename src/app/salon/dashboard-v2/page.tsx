@@ -8,17 +8,17 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-  DollarSign, 
-  Calendar, 
-  Users, 
-  Activity, 
-  Crown, 
-  Star, 
-  Package, 
-  Scissors, 
-  Receipt, 
-  ChevronRight, 
+import {
+  DollarSign,
+  Calendar,
+  Users,
+  Activity,
+  Crown,
+  Star,
+  Package,
+  Scissors,
+  Receipt,
+  ChevronRight,
   AlertCircle,
   TrendingUp,
   Clock,
@@ -28,7 +28,20 @@ import {
   Heart,
   Zap
 } from 'lucide-react'
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts'
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip as ReTooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { MouseGlow } from '@/components/salon/MouseGlow'
@@ -36,7 +49,14 @@ import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 
 // --- KPI Card Component ---
-function KpiCard({ icon: Icon, label, value, trend, description, iconBg }: {
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  trend,
+  description,
+  iconBg
+}: {
   icon: React.ElementType
   label: string
   value: string | number
@@ -48,26 +68,20 @@ function KpiCard({ icon: Icon, label, value, trend, description, iconBg }: {
     <div className="glass-card p-6 group hover:scale-[1.02] transition-all">
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">
-            {label}
-          </p>
-          <p className="text-3xl font-semibold text-text-100 tabular-nums">
-            {value}
-          </p>
+          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">{label}</p>
+          <p className="text-3xl font-semibold text-text-100 tabular-nums">{value}</p>
           {trend && (
             <p className="text-sm text-text-300 flex items-center gap-1">
-              <TrendingUp className={`w-4 h-4 ${trend.isPositive ? 'text-gold-500' : 'text-red-400'}`} />
+              <TrendingUp
+                className={`w-4 h-4 ${trend.isPositive ? 'text-gold-500' : 'text-red-400'}`}
+              />
               <span className={trend.isPositive ? 'text-gold-500' : 'text-red-400'}>
                 {trend.value}
               </span>
               <span>vs last period</span>
             </p>
           )}
-          {description && (
-            <p className="text-xs text-text-500 mt-1">
-              {description}
-            </p>
-          )}
+          {description && <p className="text-xs text-text-500 mt-1">{description}</p>}
         </div>
         <div className={`w-12 h-12 rounded-xl ${iconBg} flex items-center justify-center`}>
           <Icon className="w-6 h-6 text-gold-500" />
@@ -104,12 +118,10 @@ function StaffCard({ staff }: { staff: any }) {
             </p>
           </div>
         </div>
-        <p className="text-lg font-semibold text-gold-400">
-          £{staff.revenue.toLocaleString()}
-        </p>
+        <p className="text-lg font-semibold text-gold-400">£{staff.revenue.toLocaleString()}</p>
       </div>
       <div className="w-full bg-charcoal-700 rounded-full h-2">
-        <div 
+        <div
           className="h-2 bg-gradient-to-r from-gold-500 to-gold-400 rounded-full transition-all"
           style={{ width: `${Math.min(100, staff.utilization)}%` }}
         />
@@ -164,7 +176,7 @@ const emptyData = {
   inventory: [] as any[],
   membership: [] as any[],
   nps: { score: 0, promoters: 0, passives: 0, detractors: 0 },
-  txns: [] as any[],
+  txns: [] as any[]
 }
 
 // --- API Layer ---
@@ -172,17 +184,17 @@ const API_BASE_URL = '/api/v1'
 async function fetchAPI(path: string, params: Record<string, any> = {}) {
   const queryString = new URLSearchParams(params).toString()
   const url = `${API_BASE_URL}${path}${queryString ? '?' + queryString : ''}`
-  
+
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
     cache: 'no-store',
     credentials: 'include'
   })
-  
+
   if (!res.ok) {
     throw new Error(`API request failed: ${res.status} ${res.statusText}`)
   }
-  
+
   const data = await res.json().catch(() => ({}))
   return data
 }
@@ -199,58 +211,75 @@ export default function SalonDashboardV2Page() {
     let cancelled = false
     async function load() {
       if (!organization?.id) return
-      
+
       setLoading(true)
       setError(null)
-      
+
       try {
         const [kpis, rev, recent, styl, inv, mship, nps] = await Promise.all([
           fetchAPI('/salon/analytics/kpis', { range, organization_id: organization.id }),
-          fetchAPI('/salon/analytics/revenue/weekly', { weeks: 12, organization_id: organization.id }),
+          fetchAPI('/salon/analytics/revenue/weekly', {
+            weeks: 12,
+            organization_id: organization.id
+          }),
           fetchAPI('/salon/bookings/recent', { limit: 5, organization_id: organization.id }),
-          fetchAPI('/salon/staff/performance', { range, limit: 5, organization_id: organization.id }),
+          fetchAPI('/salon/staff/performance', {
+            range,
+            limit: 5,
+            organization_id: organization.id
+          }),
           fetchAPI('/salon/inventory/low-stock', { limit: 3, organization_id: organization.id }),
           fetchAPI('/salon/memberships/tiers', { organization_id: organization.id }),
-          fetchAPI('/salon/feedback/nps', { range, organization_id: organization.id }),
+          fetchAPI('/salon/feedback/nps', { range, organization_id: organization.id })
         ])
-        
+
         if (!cancelled) {
           setData({
-            kpis: kpis?.data ? {
-              revenueToday: kpis.data.revenueToday?.value || 0,
-              upcomingAppts: kpis.data.upcomingAppts?.value || 0,
-              avgTicket: kpis.data.avgTicket?.value || 0,
-              utilization: kpis.data.utilization?.value || 0
-            } : emptyData.kpis,
-            revenueSeries: rev?.data?.labels ? rev.data.labels.map((week: string, index: number) => ({
-              week,
-              revenue: rev.data.datasets[0]?.data[index] || 0
-            })) : emptyData.revenueSeries,
-            bookingsByService: recent?.data ? (() => {
-              const serviceCount: Record<string, number> = {};
-              recent.data.forEach((booking: any) => {
-                const service = booking.serviceName || 'Unknown';
-                serviceCount[service] = (serviceCount[service] || 0) + 1;
-              });
-              return Object.entries(serviceCount).map(([name, value]) => ({ name, value }));
-            })() : emptyData.bookingsByService,
-            recent: recent?.data ? recent.data.map((booking: any) => ({
-              id: booking.id,
-              when: format(new Date(booking.date), 'MMM d, h:mm a'),
-              client: booking.customerName,
-              service: booking.serviceName,
-              total: booking.price,
-              stylist: booking.staffName
-            })) : emptyData.recent,
+            kpis: kpis?.data
+              ? {
+                  revenueToday: kpis.data.revenueToday?.value || 0,
+                  upcomingAppts: kpis.data.upcomingAppts?.value || 0,
+                  avgTicket: kpis.data.avgTicket?.value || 0,
+                  utilization: kpis.data.utilization?.value || 0
+                }
+              : emptyData.kpis,
+            revenueSeries: rev?.data?.labels
+              ? rev.data.labels.map((week: string, index: number) => ({
+                  week,
+                  revenue: rev.data.datasets[0]?.data[index] || 0
+                }))
+              : emptyData.revenueSeries,
+            bookingsByService: recent?.data
+              ? (() => {
+                  const serviceCount: Record<string, number> = {}
+                  recent.data.forEach((booking: any) => {
+                    const service = booking.serviceName || 'Unknown'
+                    serviceCount[service] = (serviceCount[service] || 0) + 1
+                  })
+                  return Object.entries(serviceCount).map(([name, value]) => ({ name, value }))
+                })()
+              : emptyData.bookingsByService,
+            recent: recent?.data
+              ? recent.data.map((booking: any) => ({
+                  id: booking.id,
+                  when: format(new Date(booking.date), 'MMM d, h:mm a'),
+                  client: booking.customerName,
+                  service: booking.serviceName,
+                  total: booking.price,
+                  stylist: booking.staffName
+                }))
+              : emptyData.recent,
             stylists: styl?.data ? styl.data.slice(0, 5) : emptyData.stylists,
             inventory: inv?.data || emptyData.inventory,
             membership: mship?.data || emptyData.membership,
-            nps: nps?.data ? {
-              score: nps.data.npsScore || 0,
-              promoters: nps.data.breakdown?.promoters || 0,
-              passives: nps.data.breakdown?.passives || 0,
-              detractors: nps.data.breakdown?.detractors || 0
-            } : emptyData.nps,
+            nps: nps?.data
+              ? {
+                  score: nps.data.npsScore || 0,
+                  promoters: nps.data.breakdown?.promoters || 0,
+                  passives: nps.data.breakdown?.passives || 0,
+                  detractors: nps.data.breakdown?.detractors || 0
+                }
+              : emptyData.nps
           })
         }
       } catch (e) {
@@ -276,9 +305,7 @@ export default function SalonDashboardV2Page() {
       <div className="min-h-dvh text-text-100 bg-charcoal-900 flex items-center justify-center">
         <Alert className="max-w-sm">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Please log in to access the dashboard.
-          </AlertDescription>
+          <AlertDescription>Please log in to access the dashboard.</AlertDescription>
         </Alert>
       </div>
     )
@@ -322,7 +349,7 @@ export default function SalonDashboardV2Page() {
             <p className="text-text-500 mt-2">Welcome back, {organization.name}</p>
           </div>
           <div className="flex gap-2">
-            {['today', '7d', '30d', 'ytd'].map((r) => (
+            {['today', '7d', '30d', 'ytd'].map(r => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
@@ -343,7 +370,7 @@ export default function SalonDashboardV2Page() {
           <KpiCard
             icon={DollarSign}
             label="Revenue"
-            value={loading ? "..." : `£${data.kpis.revenueToday.toLocaleString()}`}
+            value={loading ? '...' : `£${data.kpis.revenueToday.toLocaleString()}`}
             trend={{ value: '+15%', isPositive: true }}
             description="Total sales today"
             iconBg="bg-gold-500/10"
@@ -351,7 +378,7 @@ export default function SalonDashboardV2Page() {
           <KpiCard
             icon={Calendar}
             label="Appointments"
-            value={loading ? "..." : data.kpis.upcomingAppts}
+            value={loading ? '...' : data.kpis.upcomingAppts}
             trend={{ value: '+8%', isPositive: true }}
             description="Upcoming today"
             iconBg="bg-emerald-500/10"
@@ -359,7 +386,7 @@ export default function SalonDashboardV2Page() {
           <KpiCard
             icon={ShoppingBag}
             label="Average Ticket"
-            value={loading ? "..." : `£${data.kpis.avgTicket}`}
+            value={loading ? '...' : `£${data.kpis.avgTicket}`}
             trend={{ value: '-5%', isPositive: false }}
             description="Per appointment"
             iconBg="bg-blue-500/10"
@@ -367,7 +394,7 @@ export default function SalonDashboardV2Page() {
           <KpiCard
             icon={Activity}
             label="Utilization"
-            value={loading ? "..." : `${data.kpis.utilization}%`}
+            value={loading ? '...' : `${data.kpis.utilization}%`}
             trend={{ value: '+12%', isPositive: true }}
             description="Staff capacity"
             iconBg="bg-purple-500/10"
@@ -394,20 +421,24 @@ export default function SalonDashboardV2Page() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data.revenueSeries}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#252932" />
-                    <XAxis dataKey="week" stroke="#9AA3AE" tick={{ fill: '#9AA3AE', fontSize: 12 }} />
-                    <YAxis stroke="#9AA3AE" tick={{ fill: '#9AA3AE', fontSize: 12 }} />
-                    <ReTooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#14161A', 
-                        border: '1px solid rgba(212,175,55,0.3)', 
-                        borderRadius: '8px' 
-                      }} 
+                    <XAxis
+                      dataKey="week"
+                      stroke="#9AA3AE"
+                      tick={{ fill: '#9AA3AE', fontSize: 12 }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="revenue" 
-                      stroke="#D4AF37" 
-                      strokeWidth={3} 
+                    <YAxis stroke="#9AA3AE" tick={{ fill: '#9AA3AE', fontSize: 12 }} />
+                    <ReTooltip
+                      contentStyle={{
+                        backgroundColor: '#14161A',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#D4AF37"
+                      strokeWidth={3}
                       dot={{ fill: '#D4AF37', strokeWidth: 2, r: 4 }}
                       activeDot={{ r: 6 }}
                     />
@@ -417,7 +448,8 @@ export default function SalonDashboardV2Page() {
             </div>
             <div className="mt-4 p-4 bg-gold-500/10 rounded-lg">
               <p className="text-sm text-gold-400">
-                <strong>Insight:</strong> Wednesday afternoons show 23% lower bookings. Consider a midweek promotion to boost revenue.
+                <strong>Insight:</strong> Wednesday afternoons show 23% lower bookings. Consider a
+                midweek promotion to boost revenue.
               </p>
             </div>
           </div>
@@ -440,7 +472,10 @@ export default function SalonDashboardV2Page() {
                     dataKey="value"
                   >
                     {data.bookingsByService.map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={CHART_COLORS[index % CHART_COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <ReTooltip />
@@ -454,8 +489,8 @@ export default function SalonDashboardV2Page() {
                 {data.bookingsByService.map((service: any, idx: number) => (
                   <div key={service.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
+                      <div
+                        className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }}
                       />
                       <span className="text-sm text-text-300">{service.name}</span>
@@ -521,9 +556,7 @@ export default function SalonDashboardV2Page() {
           <div className="glass-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-text-100">Low Stock Alerts</h3>
-              <Badge className="bg-red-500/10 text-red-400 border-red-500/30">
-                Critical
-              </Badge>
+              <Badge className="bg-red-500/10 text-red-400 border-red-500/30">Critical</Badge>
             </div>
             {loading ? (
               <div className="flex justify-center py-4">
@@ -534,13 +567,18 @@ export default function SalonDashboardV2Page() {
             ) : (
               <div className="space-y-3">
                 {data.inventory.map((item: any) => (
-                  <div key={item.sku} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                  <div
+                    key={item.sku}
+                    className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                  >
                     <div>
                       <p className="font-medium text-text-100">{item.name}</p>
                       <p className="text-xs text-text-500">SKU: {item.sku}</p>
                     </div>
                     <div className="text-right">
-                      <p className={`font-medium ${item.stock < item.min ? 'text-red-400' : 'text-text-100'}`}>
+                      <p
+                        className={`font-medium ${item.stock < item.min ? 'text-red-400' : 'text-text-100'}`}
+                      >
                         {item.stock} left
                       </p>
                       <p className="text-xs text-text-500">Min: {item.min}</p>
@@ -559,13 +597,20 @@ export default function SalonDashboardV2Page() {
             </div>
             <div className="space-y-3">
               {data.membership.map((tier: any) => (
-                <div key={tier.tier} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                <div
+                  key={tier.tier}
+                  className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                >
                   <div className="flex items-center gap-2">
-                    <Crown 
-                      className="w-4 h-4" 
-                      style={{ 
-                        color: tier.tier === 'Emerald' ? '#0F6F5C' : 
-                               tier.tier === 'Gold' ? '#D4AF37' : '#E8B4B8' 
+                    <Crown
+                      className="w-4 h-4"
+                      style={{
+                        color:
+                          tier.tier === 'Emerald'
+                            ? '#0F6F5C'
+                            : tier.tier === 'Gold'
+                              ? '#D4AF37'
+                              : '#E8B4B8'
                       }}
                     />
                     <span className="font-medium text-text-100">{tier.tier}</span>
@@ -615,17 +660,11 @@ export default function SalonDashboardV2Page() {
             <p className="text-sm text-text-500 mt-1">Common tasks and operations</p>
           </div>
           <div className="flex gap-2">
-            <button 
-              className="gold-btn"
-              onClick={() => router.push('/salon/appointments/new')}
-            >
+            <button className="gold-btn" onClick={() => router.push('/salon/appointments/new')}>
               <Calendar className="w-4 h-4" />
               New Booking
             </button>
-            <button 
-              className="ghost-btn"
-              onClick={() => router.push('/salon/customers/new')}
-            >
+            <button className="ghost-btn" onClick={() => router.push('/salon/customers/new')}>
               <Users className="w-4 h-4" />
               Add Customer
             </button>

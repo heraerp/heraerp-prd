@@ -360,9 +360,7 @@ export function ResourceEditModal({
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
                   <span>Smart Code:</span>
-                  <code className="bg-muted px-2 py-1 rounded text-xs">
-                    {formData.smart_code}
-                  </code>
+                  <code className="bg-muted px-2 py-1 rounded text-xs">{formData.smart_code}</code>
                 </div>
                 {formData.ai_confidence && (
                   <div className="flex items-center justify-between">

@@ -186,7 +186,9 @@ export function AuditProceduresWorkbench() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-100">Audit Procedures Workbench</h2>
-            <p className="text-muted-foreground">Plan, execute, and track audit testing procedures</p>
+            <p className="text-muted-foreground">
+              Plan, execute, and track audit testing procedures
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -261,7 +263,9 @@ export function AuditProceduresWorkbench() {
                     )}
                   </div>
                   <Progress value={stats.avg_completion} className="h-2 mt-2" />
-                  <p className="text-xs text-muted-foreground mt-1">{stats.avg_completion}% complete</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {stats.avg_completion}% complete
+                  </p>
                 </div>
               </CardContent>
             </Card>

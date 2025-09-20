@@ -192,8 +192,12 @@ export default function OpportunityPage() {
                 <div className="text-3xl font-bold text-foreground dark:text-foreground mb-2">
                   {item.stat}
                 </div>
-                <h3 className="font-semibold text-foreground dark:text-foreground mb-2">{item.label}</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{item.description}</p>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-2">
+                  {item.label}
+                </h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
@@ -346,7 +350,9 @@ export default function OpportunityPage() {
       <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">Real Success Story</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+              Real Success Story
+            </h2>
             <div className="bg-background/10 backdrop-blur-sm rounded-2xl p-8 border border-border/20 mb-8">
               <blockquote className="text-xl text-foreground leading-relaxed mb-6">
                 "I was burned out from 15 years of SAP consulting. Implementation projects took 18

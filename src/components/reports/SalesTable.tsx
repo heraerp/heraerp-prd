@@ -7,14 +7,21 @@
 'use client'
 
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
-  Eye, 
-  TrendingUp, 
-  TrendingDown, 
+import {
+  Eye,
+  TrendingUp,
+  TrendingDown,
   Clock,
   Calendar,
   ArrowUpDown,
@@ -49,14 +56,18 @@ export function SalesTable({
   sortDirection,
   className
 }: SalesTableProps) {
-  
-  const formatCurrency = (amount: number) => ReportCalculations.formatCurrency(amount, currency, locale)
-  
+  const formatCurrency = (amount: number) =>
+    ReportCalculations.formatCurrency(amount, currency, locale)
+
   const getSortIcon = (column: string) => {
     if (sortColumn !== column) return <ArrowUpDown className="h-3 w-3 opacity-50" />
-    return sortDirection === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+    return sortDirection === 'asc' ? (
+      <ArrowUp className="h-3 w-3" />
+    ) : (
+      <ArrowDown className="h-3 w-3" />
+    )
   }
-  
+
   const handleSort = (column: string) => {
     if (!onSort) return
     const direction = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc'
@@ -66,10 +77,7 @@ export function SalesTable({
   const renderTableHeader = () => (
     <TableHeader>
       <TableRow className="bg-violet-50 dark:bg-violet-950/50">
-        <TableHead 
-          scope="col"
-          className="font-semibold text-violet-900 dark:text-violet-100"
-        >
+        <TableHead scope="col" className="font-semibold text-violet-900 dark:text-violet-100">
           <Button
             variant="ghost"
             className="h-auto p-0 font-semibold hover:bg-transparent"
@@ -89,8 +97,8 @@ export function SalesTable({
             {getSortIcon(reportType === 'daily' ? 'hour' : 'date')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -103,8 +111,8 @@ export function SalesTable({
             {getSortIcon('service_net')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -117,8 +125,8 @@ export function SalesTable({
             {getSortIcon('product_net')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -131,8 +139,8 @@ export function SalesTable({
             {getSortIcon('vat')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -145,8 +153,8 @@ export function SalesTable({
             {getSortIcon('gross')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -159,8 +167,8 @@ export function SalesTable({
             {getSortIcon('txn_count')}
           </Button>
         </TableHead>
-        
-        <TableHead 
+
+        <TableHead
           scope="col"
           className="text-right font-semibold text-violet-900 dark:text-violet-100"
         >
@@ -173,12 +181,9 @@ export function SalesTable({
             {getSortIcon('avg_ticket')}
           </Button>
         </TableHead>
-        
+
         {onDrillDown && (
-          <TableHead 
-            scope="col"
-            className="font-semibold text-violet-900 dark:text-violet-100"
-          >
+          <TableHead scope="col" className="font-semibold text-violet-900 dark:text-violet-100">
             Actions
           </TableHead>
         )}
@@ -193,7 +198,7 @@ export function SalesTable({
     if (reportType === 'monthly' && row.date) {
       // Format date nicely
       const date = new Date(row.date + 'T00:00:00')
-      return date.toLocaleDateString(locale, { 
+      return date.toLocaleDateString(locale, {
         weekday: 'short',
         day: 'numeric',
         month: 'short'
@@ -204,30 +209,28 @@ export function SalesTable({
 
   const getRowVariant = (row: SalesRow, index: number) => {
     // Highlight high-performing rows
-    const isHighPerforming = row.gross > (data.reduce((sum, r) => sum + r.gross, 0) / data.length) * 1.5
-    const isLowPerforming = row.gross < (data.reduce((sum, r) => sum + r.gross, 0) / data.length) * 0.5
-    
-    const baseClasses = index % 2 === 0 
-      ? 'bg-white dark:bg-gray-900' 
-      : 'bg-gray-50/50 dark:bg-gray-800/50'
-    
+    const isHighPerforming =
+      row.gross > (data.reduce((sum, r) => sum + r.gross, 0) / data.length) * 1.5
+    const isLowPerforming =
+      row.gross < (data.reduce((sum, r) => sum + r.gross, 0) / data.length) * 0.5
+
+    const baseClasses =
+      index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50/50 dark:bg-gray-800/50'
+
     if (isHighPerforming) {
       return `${baseClasses} border-l-2 border-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/20`
     }
     if (isLowPerforming && row.gross > 0) {
       return `${baseClasses} border-l-2 border-amber-400 bg-amber-50/30 dark:bg-amber-950/20`
     }
-    
+
     return `${baseClasses} hover:bg-violet-50/50 dark:hover:bg-violet-950/20`
   }
 
   const renderTableBody = () => (
     <TableBody>
       {data.map((row, index) => (
-        <TableRow 
-          key={`${row.date || row.hour || index}`}
-          className={getRowVariant(row, index)}
-        >
+        <TableRow key={`${row.date || row.hour || index}`} className={getRowVariant(row, index)}>
           {/* Time/Date Column */}
           <TableCell className="font-medium">
             <div className="flex items-center gap-2">
@@ -244,7 +247,7 @@ export function SalesTable({
               )}
             </div>
           </TableCell>
-          
+
           {/* Service Revenue */}
           <TableCell className="text-right font-mono">
             <Button
@@ -255,12 +258,10 @@ export function SalesTable({
               disabled={!onDrillDown || row.service_net === 0}
             >
               {formatCurrency(row.service_net)}
-              {onDrillDown && row.service_net > 0 && (
-                <Eye className="h-3 w-3 ml-1 opacity-50" />
-              )}
+              {onDrillDown && row.service_net > 0 && <Eye className="h-3 w-3 ml-1 opacity-50" />}
             </Button>
           </TableCell>
-          
+
           {/* Product Revenue */}
           <TableCell className="text-right font-mono">
             <Button
@@ -271,17 +272,15 @@ export function SalesTable({
               disabled={!onDrillDown || row.product_net === 0}
             >
               {formatCurrency(row.product_net)}
-              {onDrillDown && row.product_net > 0 && (
-                <Eye className="h-3 w-3 ml-1 opacity-50" />
-              )}
+              {onDrillDown && row.product_net > 0 && <Eye className="h-3 w-3 ml-1 opacity-50" />}
             </Button>
           </TableCell>
-          
+
           {/* VAT */}
           <TableCell className="text-right font-mono text-gray-600 dark:text-gray-400">
             {formatCurrency(row.vat)}
           </TableCell>
-          
+
           {/* Gross Total */}
           <TableCell className="text-right">
             <div className="flex items-center justify-end gap-1">
@@ -304,22 +303,22 @@ export function SalesTable({
               )}
             </div>
           </TableCell>
-          
+
           {/* Transaction Count */}
           <TableCell className="text-right">
-            <Badge 
-              variant="secondary" 
+            <Badge
+              variant="secondary"
               className="font-mono bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
             >
               {row.txn_count.toLocaleString(locale)}
             </Badge>
           </TableCell>
-          
+
           {/* Average Ticket */}
           <TableCell className="text-right font-mono text-sm text-gray-600 dark:text-gray-400">
             {formatCurrency(row.avg_ticket)}
           </TableCell>
-          
+
           {/* Actions */}
           {onDrillDown && (
             <TableCell>
@@ -341,13 +340,16 @@ export function SalesTable({
   )
 
   const calculateTotals = () => {
-    return data.reduce((acc, row) => ({
-      service_net: acc.service_net + row.service_net,
-      product_net: acc.product_net + row.product_net,
-      vat: acc.vat + row.vat,
-      gross: acc.gross + row.gross,
-      txn_count: acc.txn_count + row.txn_count
-    }), { service_net: 0, product_net: 0, vat: 0, gross: 0, txn_count: 0 })
+    return data.reduce(
+      (acc, row) => ({
+        service_net: acc.service_net + row.service_net,
+        product_net: acc.product_net + row.product_net,
+        vat: acc.vat + row.vat,
+        gross: acc.gross + row.gross,
+        txn_count: acc.txn_count + row.txn_count
+      }),
+      { service_net: 0, product_net: 0, vat: 0, gross: 0, txn_count: 0 }
+    )
   }
 
   const totals = calculateTotals()
@@ -408,14 +410,13 @@ export function SalesTable({
         <div className="rounded-md border border-violet-200 dark:border-violet-800">
           <Table>
             <caption className="sr-only">
-              {reportType === 'daily' 
-                ? 'Hourly breakdown of sales revenue, VAT, and transaction counts' 
-                : 'Daily breakdown of sales revenue, VAT, and transaction counts'
-              }
+              {reportType === 'daily'
+                ? 'Hourly breakdown of sales revenue, VAT, and transaction counts'
+                : 'Daily breakdown of sales revenue, VAT, and transaction counts'}
             </caption>
             {renderTableHeader()}
             {renderTableBody()}
-            
+
             {/* Totals Footer */}
             <TableBody>
               <TableRow className="border-t-2 border-violet-300 dark:border-violet-700 bg-violet-100 dark:bg-violet-900/30 font-semibold">
@@ -445,10 +446,10 @@ export function SalesTable({
             </TableBody>
           </Table>
         </div>
-        
+
         {/* Footer Note */}
         <div className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
-          All amounts in {currency}. VAT rate: 5%. 
+          All amounts in {currency}. VAT rate: 5%.
           {reportType === 'daily' && ' Times shown in 24-hour format.'}
           {onDrillDown && ' Click on amounts to view transaction details.'}
         </div>

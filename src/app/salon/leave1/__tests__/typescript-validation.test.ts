@@ -230,7 +230,7 @@ const testLeaveRequestListProps: LeaveRequestListProps = {
 const testLeaveRequestModalProps: LeaveRequestModalProps = {
   open: true,
   onClose: () => {},
-  onSubmit: async (data) => console.log(data),
+  onSubmit: async data => console.log(data),
   staff: [assertStaff],
   policies: [assertLeavePolicy],
   holidays: []
@@ -276,10 +276,7 @@ export type {
 }
 
 // Export type guards
-export {
-  isLeaveRequest,
-  isLeaveBalance
-}
+export { isLeaveRequest, isLeaveBalance }
 
 // Test passed - all types are correctly defined
 console.log('✅ TypeScript validation passed - all types are correctly defined')

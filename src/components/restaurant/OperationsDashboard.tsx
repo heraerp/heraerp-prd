@@ -574,7 +574,9 @@ export function OperationsDashboard() {
                     </Badge>
                     <div className="flex items-center space-x-1 mt-1">
                       <Star className="w-3 h-3 text-yellow-500" />
-                      <span className="text-xs text-muted-foreground">{driver.rating.toFixed(1)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {driver.rating.toFixed(1)}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
+
     const searchParams = request.nextUrl.searchParams
     const limit = parseInt(searchParams.get('limit') || '10')
     const organizationId = searchParams.get('organization_id')
@@ -19,12 +19,14 @@ export async function GET(request: NextRequest) {
     // Get all products with stock information
     const { data: products, error } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_name,
         entity_code,
         metadata
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'product')
       .order('entity_name')
@@ -51,16 +53,26 @@ export async function GET(request: NextRequest) {
 
     // Process products to find low stock items
     let lowStockItems = []
-    
+
     if (products && products.length > 0) {
       lowStockItems = products
         .map(product => {
           // Extract stock levels from dynamic data
-          const currentStock = stockData.find(d => d.entity_id === product.id && d.field_name === 'current_stock')?.field_value_number || Math.floor(Math.random() * 5)
-          const minStock = stockData.find(d => d.entity_id === product.id && d.field_name === 'minimum_stock')?.field_value_number || 10
-          const reorderLevel = stockData.find(d => d.entity_id === product.id && d.field_name === 'reorder_level')?.field_value_number || 20
-          const unit = stockData.find(d => d.entity_id === product.id && d.field_name === 'unit')?.field_value_text || 'units'
-          const category = stockData.find(d => d.entity_id === product.id && d.field_name === 'category')?.field_value_text || 'General'
+          const currentStock =
+            stockData.find(d => d.entity_id === product.id && d.field_name === 'current_stock')
+              ?.field_value_number || Math.floor(Math.random() * 5)
+          const minStock =
+            stockData.find(d => d.entity_id === product.id && d.field_name === 'minimum_stock')
+              ?.field_value_number || 10
+          const reorderLevel =
+            stockData.find(d => d.entity_id === product.id && d.field_name === 'reorder_level')
+              ?.field_value_number || 20
+          const unit =
+            stockData.find(d => d.entity_id === product.id && d.field_name === 'unit')
+              ?.field_value_text || 'units'
+          const category =
+            stockData.find(d => d.entity_id === product.id && d.field_name === 'category')
+              ?.field_value_text || 'General'
 
           // Calculate status
           let status: 'critical' | 'low' | 'warning' = 'warning'
@@ -159,9 +171,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Low stock API error:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch low stock items', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Failed to fetch low stock items',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )

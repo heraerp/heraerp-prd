@@ -5,15 +5,7 @@
 // ================================================================================
 
 import React from 'react'
-import { 
-  Calendar, 
-  MessageSquare, 
-  User, 
-  Bot, 
-  DollarSign,
-  FileText,
-  AlertCircle
-} from 'lucide-react'
+import { Calendar, MessageSquare, User, Bot, DollarSign, FileText, AlertCircle } from 'lucide-react'
 import { formatDateTime, getRelativeTime, cn } from '@/lib/utils'
 import type { ActivityEvent } from '@/lib/schemas/appointment'
 
@@ -23,8 +15,8 @@ interface AppointmentTimelineProps {
 }
 
 export function AppointmentTimeline({ events, className }: AppointmentTimelineProps) {
-  const sortedEvents = [...events].sort((a, b) => 
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )
 
   const getEventIcon = (event: ActivityEvent) => {
@@ -125,18 +117,14 @@ export function AppointmentTimeline({ events, className }: AppointmentTimelinePr
                   <div>
                     <p className="text-sm text-gray-900">
                       {getEventDescription(event)}{' '}
-                      <span className="font-medium text-gray-900">
-                        by {event.actor.name}
-                      </span>
+                      <span className="font-medium text-gray-900">by {event.actor.name}</span>
                     </p>
-                    
+
                     {/* Show additional details */}
                     {event.details.reason && (
-                      <p className="mt-1 text-sm text-gray-600">
-                        Reason: {event.details.reason}
-                      </p>
+                      <p className="mt-1 text-sm text-gray-600">Reason: {event.details.reason}</p>
                     )}
-                    
+
                     {/* Show smart code and transaction ID for audit */}
                     <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
                       {event.smart_code && (

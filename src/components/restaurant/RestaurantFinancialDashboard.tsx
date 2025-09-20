@@ -211,7 +211,9 @@ export function RestaurantFinancialDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="restaurant-card">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Revenue
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -236,7 +238,9 @@ export function RestaurantFinancialDashboard() {
                 <p className="text-2xl font-bold text-green-600">
                   ${metrics.profitability.netProfit.toLocaleString()}
                 </p>
-                <p className="text-sm text-muted-foreground">Margin: {metrics.profitability.netMargin}%</p>
+                <p className="text-sm text-muted-foreground">
+                  Margin: {metrics.profitability.netMargin}%
+                </p>
               </div>
               <Target className="w-8 h-8 text-green-400 opacity-50" />
             </div>
@@ -253,7 +257,9 @@ export function RestaurantFinancialDashboard() {
                 <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.foodCost))}>
                   {metrics.kpis.foodCost}%
                 </p>
-                <p className="text-sm text-muted-foreground">${metrics.costs.food.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">
+                  ${metrics.costs.food.toLocaleString()}
+                </p>
               </div>
               <Package className="w-8 h-8 text-amber-400 opacity-50" />
             </div>
@@ -270,7 +276,9 @@ export function RestaurantFinancialDashboard() {
                 <p className={cn('text-2xl font-bold', getCostColor(metrics.kpis.laborCost))}>
                   {metrics.kpis.laborCost}%
                 </p>
-                <p className="text-sm text-muted-foreground">${metrics.costs.labor.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">
+                  ${metrics.costs.labor.toLocaleString()}
+                </p>
               </div>
               <Users className="w-8 h-8 text-blue-400 opacity-50" />
             </div>
@@ -427,7 +435,9 @@ export function RestaurantFinancialDashboard() {
                         </div>
                         <div>
                           <p className="font-medium">{category.category}</p>
-                          <p className="text-xs text-muted-foreground">{category.percentage}% of revenue</p>
+                          <p className="text-xs text-muted-foreground">
+                            {category.percentage}% of revenue
+                          </p>
                         </div>
                       </div>
                       <p className="font-semibold text-orange-600">${category.revenue}</p>
@@ -449,7 +459,10 @@ export function RestaurantFinancialDashboard() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {menuPerformance.lowPerformers.map((item, index) => (
-                  <div key={index} className="bg-background p-3 rounded-lg border border-yellow-200">
+                  <div
+                    key={index}
+                    className="bg-background p-3 rounded-lg border border-yellow-200"
+                  >
                     <p className="font-medium">{item.name}</p>
                     <div className="flex justify-between mt-2 text-sm">
                       <span className="text-muted-foreground">Sold: {item.sold}</span>

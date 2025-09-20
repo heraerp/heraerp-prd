@@ -30,15 +30,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Process appointments to extract information
-    const processedAppointments = (appointments || []).map((appointment) => {
+    const processedAppointments = (appointments || []).map(appointment => {
       // Parse entity_name which typically contains customer and service info
       const nameParts = appointment.entity_name.split(' - ')
       const customerName = nameParts[0] || 'Unknown Customer'
       const serviceName = nameParts[1] || 'Unknown Service'
-      
+
       // Extract metadata if available
       const metadata = appointment.metadata || {}
-      
+
       return {
         id: appointment.id,
         customerName,
@@ -59,7 +59,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Recent bookings API error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch recent bookings', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to fetch recent bookings',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }

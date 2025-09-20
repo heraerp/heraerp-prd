@@ -11,13 +11,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Calculator, 
+import {
+  Calculator,
   Save,
   Percent,
   DollarSign,
@@ -112,7 +118,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-      
       {/* Tax Settings */}
       <Card>
         <CardHeader className="pb-3">
@@ -122,7 +127,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="vat_rate" className="flex items-center justify-between">
@@ -138,21 +142,18 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   step="0.01"
                   min="0"
                   max="1"
-                  {...form.register('vat_rate', { 
+                  {...form.register('vat_rate', {
                     valueAsNumber: true,
-                    validate: (value) => value >= 0 && value <= 1 || 'VAT rate must be between 0% and 100%'
+                    validate: value =>
+                      (value >= 0 && value <= 1) || 'VAT rate must be between 0% and 100%'
                   })}
                   className="flex-1"
                 />
                 <Percent className="h-4 w-4 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500">
-                Enter as decimal (0.05 = 5%)
-              </p>
+              <p className="text-sm text-gray-500">Enter as decimal (0.05 = 5%)</p>
               {form.formState.errors.vat_rate && (
-                <p className="text-sm text-red-600">
-                  {form.formState.errors.vat_rate.message}
-                </p>
+                <p className="text-sm text-red-600">{form.formState.errors.vat_rate.message}</p>
               )}
             </div>
 
@@ -160,13 +161,13 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
               <Label htmlFor="currency">Currency</Label>
               <Select
                 value={watchedValues.currency}
-                onValueChange={(value) => form.setValue('currency', value)}
+                onValueChange={value => form.setValue('currency', value)}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {CURRENCY_OPTIONS.map((currency) => (
+                  {CURRENCY_OPTIONS.map(currency => (
                     <SelectItem key={currency.value} value={currency.value}>
                       <div className="flex items-center gap-2">
                         <span className="font-mono">{currency.symbol}</span>
@@ -186,21 +187,22 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
             </div>
             <Switch
               checked={form.watch('auto_calculate_tax')}
-              onCheckedChange={(checked) => form.setValue('auto_calculate_tax', checked)}
+              onCheckedChange={checked => form.setValue('auto_calculate_tax', checked)}
             />
           </div>
 
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Tax-inclusive Pricing</Label>
-              <p className="text-sm text-gray-500">Prices shown include tax (VAT is part of the price)</p>
+              <p className="text-sm text-gray-500">
+                Prices shown include tax (VAT is part of the price)
+              </p>
             </div>
             <Switch
               checked={form.watch('tax_inclusive_pricing')}
-              onCheckedChange={(checked) => form.setValue('tax_inclusive_pricing', checked)}
+              onCheckedChange={checked => form.setValue('tax_inclusive_pricing', checked)}
             />
           </div>
-
         </CardContent>
       </Card>
 
@@ -213,7 +215,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="space-y-2">
             <Label htmlFor="commission_rate" className="flex items-center justify-between">
               <span>Commission Rate</span>
@@ -228,17 +229,16 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                 step="0.01"
                 min="0"
                 max="1"
-                {...form.register('commission_rate', { 
+                {...form.register('commission_rate', {
                   valueAsNumber: true,
-                  validate: (value) => value >= 0 && value <= 1 || 'Commission rate must be between 0% and 100%'
+                  validate: value =>
+                    (value >= 0 && value <= 1) || 'Commission rate must be between 0% and 100%'
                 })}
                 className="flex-1"
               />
               <Percent className="h-4 w-4 text-gray-400" />
             </div>
-            <p className="text-sm text-gray-500">
-              Enter as decimal (0.35 = 35%)
-            </p>
+            <p className="text-sm text-gray-500">Enter as decimal (0.35 = 35%)</p>
             {form.formState.errors.commission_rate && (
               <p className="text-sm text-red-600">
                 {form.formState.errors.commission_rate.message}
@@ -253,7 +253,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
             </div>
             <Switch
               checked={watchedValues.tipsEnabled}
-              onCheckedChange={(checked) => form.setValue('tips_enabled', checked)}
+              onCheckedChange={checked => form.setValue('tips_enabled', checked)}
             />
           </div>
 
@@ -261,15 +261,16 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-1">
                 <Label>Include Tips in Commission</Label>
-                <p className="text-sm text-gray-500">Calculate commission on tips as well as service amount</p>
+                <p className="text-sm text-gray-500">
+                  Calculate commission on tips as well as service amount
+                </p>
               </div>
               <Switch
                 checked={watchedValues.includeTipsInCommission}
-                onCheckedChange={(checked) => form.setValue('include_tips_in_commission', checked)}
+                onCheckedChange={checked => form.setValue('include_tips_in_commission', checked)}
               />
             </div>
           )}
-
         </CardContent>
       </Card>
 
@@ -282,7 +283,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="max_discount" className="flex items-center justify-between">
@@ -298,16 +298,14 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   step="1"
                   min="0"
                   max="100"
-                  {...form.register('discount_policy.max_discount_percent', { 
+                  {...form.register('discount_policy.max_discount_percent', {
                     valueAsNumber: true
                   })}
                   className="flex-1"
                 />
                 <Percent className="h-4 w-4 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500">
-                Maximum discount percentage allowed
-              </p>
+              <p className="text-sm text-gray-500">Maximum discount percentage allowed</p>
             </div>
 
             <div className="space-y-2">
@@ -324,30 +322,31 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   step="1"
                   min="0"
                   max="100"
-                  {...form.register('discount_policy.approval_threshold_percent', { 
+                  {...form.register('discount_policy.approval_threshold_percent', {
                     valueAsNumber: true
                   })}
                   className="flex-1"
                 />
                 <Percent className="h-4 w-4 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500">
-                Discounts above this require manager approval
-              </p>
+              <p className="text-sm text-gray-500">Discounts above this require manager approval</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Require Manager Approval</Label>
-              <p className="text-sm text-gray-500">Manager approval needed for discounts above threshold</p>
+              <p className="text-sm text-gray-500">
+                Manager approval needed for discounts above threshold
+              </p>
             </div>
             <Switch
               checked={form.watch('discount_policy.requires_manager_approval')}
-              onCheckedChange={(checked) => form.setValue('discount_policy.requires_manager_approval', checked)}
+              onCheckedChange={checked =>
+                form.setValue('discount_policy.requires_manager_approval', checked)
+              }
             />
           </div>
-
         </CardContent>
       </Card>
 
@@ -360,38 +359,46 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {PAYMENT_METHOD_OPTIONS.map((method) => {
+            {PAYMENT_METHOD_OPTIONS.map(method => {
               const isSelected = watchedValues.paymentMethods.includes(method.value)
               return (
                 <div
                   key={method.value}
                   className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
-                    isSelected 
-                      ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/30' 
+                    isSelected
+                      ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/30'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => {
                     const current = watchedValues.paymentMethods
                     if (isSelected) {
-                      form.setValue('payment_methods', current.filter(m => m !== method.value))
+                      form.setValue(
+                        'payment_methods',
+                        current.filter(m => m !== method.value)
+                      )
                     } else {
                       form.setValue('payment_methods', [...current, method.value])
                     }
                   }}
                 >
                   <div className="flex items-center gap-3">
-                    <method.icon className={`h-4 w-4 ${isSelected ? 'text-violet-600' : 'text-gray-400'}`} />
-                    <span className={isSelected ? 'text-violet-900 dark:text-violet-100 font-medium' : ''}>
+                    <method.icon
+                      className={`h-4 w-4 ${isSelected ? 'text-violet-600' : 'text-gray-400'}`}
+                    />
+                    <span
+                      className={
+                        isSelected ? 'text-violet-900 dark:text-violet-100 font-medium' : ''
+                      }
+                    >
                       {method.label}
                     </span>
                   </div>
-                  <div className={`w-4 h-4 rounded border-2 ${
-                    isSelected 
-                      ? 'bg-violet-600 border-violet-600' 
-                      : 'border-gray-300'
-                  }`}>
+                  <div
+                    className={`w-4 h-4 rounded border-2 ${
+                      isSelected ? 'bg-violet-600 border-violet-600' : 'border-gray-300'
+                    }`}
+                  >
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="w-2 h-2 bg-white rounded-full" />
@@ -411,7 +418,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
               </AlertDescription>
             </Alert>
           )}
-
         </CardContent>
       </Card>
 
@@ -450,7 +456,6 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           )}
         </Button>
       </div>
-
     </form>
   )
 }

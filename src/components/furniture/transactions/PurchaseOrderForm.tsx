@@ -5,8 +5,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Plus, Trash2, Package, AlertCircle, CheckCircle } from 'lucide-react'
 
 interface PurchaseOrderLine {
@@ -45,16 +58,18 @@ export function PurchaseOrderForm({ onSubmit, loading = false }: PurchaseOrderFo
   }
 
   const updateLine = (lineId: string, field: keyof PurchaseOrderLine, value: any) => {
-    setLines(lines.map(line => {
-      if (line.id === lineId) {
-        const updatedLine = { ...line, [field]: value }
-        if (field === 'quantity' || field === 'unitPrice') {
-          updatedLine.totalPrice = updatedLine.quantity * updatedLine.unitPrice
+    setLines(
+      lines.map(line => {
+        if (line.id === lineId) {
+          const updatedLine = { ...line, [field]: value }
+          if (field === 'quantity' || field === 'unitPrice') {
+            updatedLine.totalPrice = updatedLine.quantity * updatedLine.unitPrice
+          }
+          return updatedLine
         }
-        return updatedLine
-      }
-      return line
-    }))
+        return line
+      })
+    )
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -93,11 +108,7 @@ export function PurchaseOrderForm({ onSubmit, loading = false }: PurchaseOrderFo
             </div>
             <div>
               <Label htmlFor="orderDate">Order Date</Label>
-              <Input
-                type="date"
-                value={orderDate}
-                onChange={(e) => setOrderDate(e.target.value)}
-              />
+              <Input type="date" value={orderDate} onChange={e => setOrderDate(e.target.value)} />
             </div>
           </div>
         </CardContent>
@@ -126,13 +137,13 @@ export function PurchaseOrderForm({ onSubmit, loading = false }: PurchaseOrderFo
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {lines.map((line) => (
+                  {lines.map(line => (
                     <TableRow key={line.id}>
                       <TableCell>
                         <Input
                           placeholder="Product name"
                           value={line.productName}
-                          onChange={(e) => updateLine(line.id, 'productName', e.target.value)}
+                          onChange={e => updateLine(line.id, 'productName', e.target.value)}
                         />
                       </TableCell>
                       <TableCell>
@@ -140,7 +151,7 @@ export function PurchaseOrderForm({ onSubmit, loading = false }: PurchaseOrderFo
                           type="number"
                           min="1"
                           value={line.quantity}
-                          onChange={(e) => updateLine(line.id, 'quantity', Number(e.target.value))}
+                          onChange={e => updateLine(line.id, 'quantity', Number(e.target.value))}
                         />
                       </TableCell>
                       <TableCell>
@@ -149,7 +160,7 @@ export function PurchaseOrderForm({ onSubmit, loading = false }: PurchaseOrderFo
                           min="0"
                           step="0.01"
                           value={line.unitPrice}
-                          onChange={(e) => updateLine(line.id, 'unitPrice', Number(e.target.value))}
+                          onChange={e => updateLine(line.id, 'unitPrice', Number(e.target.value))}
                         />
                       </TableCell>
                       <TableCell>

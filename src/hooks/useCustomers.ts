@@ -203,63 +203,33 @@ export function useCustomers(organizationId?: string) {
       universalApi.setOrganizationId(organizationId)
 
       if (customerData.email) {
-        fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'email',
-            customerData.email
-          )
-        )
+        fieldPromises.push(universalApi.setDynamicField(customerId, 'email', customerData.email))
       }
 
       if (customerData.phone) {
-        fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'phone',
-            customerData.phone
-          )
-        )
+        fieldPromises.push(universalApi.setDynamicField(customerId, 'phone', customerData.phone))
       }
 
       if (customerData.address) {
         fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'address',
-            customerData.address
-          )
+          universalApi.setDynamicField(customerId, 'address', customerData.address)
         )
       }
 
       if (customerData.dateOfBirth) {
         fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'date_of_birth',
-            customerData.dateOfBirth
-          )
+          universalApi.setDynamicField(customerId, 'date_of_birth', customerData.dateOfBirth)
         )
       }
 
       if (customerData.preferences) {
         fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'preferences',
-            customerData.preferences
-          )
+          universalApi.setDynamicField(customerId, 'preferences', customerData.preferences)
         )
       }
 
       if (customerData.notes) {
-        fieldPromises.push(
-          universalApi.setDynamicField(
-            customerId,
-            'notes',
-            customerData.notes
-          )
-        )
+        fieldPromises.push(universalApi.setDynamicField(customerId, 'notes', customerData.notes))
       }
 
       await Promise.all(fieldPromises)

@@ -38,8 +38,8 @@ export function BulkActionsBar({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 p-4",
-        "border-t transition-all duration-300 ease-out"
+        'fixed bottom-0 left-0 right-0 z-50 p-4',
+        'border-t transition-all duration-300 ease-out'
       )}
       style={{
         backgroundColor: COLORS.charcoal,
@@ -51,12 +51,7 @@ export function BulkActionsBar({
           <span className="text-sm font-medium" style={{ color: COLORS.lightText }}>
             {selectedCount} item{selectedCount === 1 ? '' : 's'} selected
           </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClear}
-            className="hover:bg-muted/20"
-          >
+          <Button variant="ghost" size="sm" onClick={onClear} className="hover:bg-muted/20">
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -82,11 +77,7 @@ export function BulkActionsBar({
             </Button>
           )}
 
-          <Button
-            onClick={onExport}
-            variant="outline"
-            className="border-border hover:bg-muted"
-          >
+          <Button onClick={onExport} variant="outline" className="border-border hover:bg-muted">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>

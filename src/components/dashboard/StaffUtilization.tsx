@@ -15,14 +15,14 @@ interface StaffUtilizationProps {
 
 export function StaffUtilization({ organizationId }: StaffUtilizationProps) {
   const today = new Date().toISOString().split('T')[0]
-  
+
   const { data, isLoading } = useStaffUtilization({
     organizationId,
     date: today
   })
 
   const staffData = data?.staff || []
-  
+
   // Sort by utilization percentage
   const sortedStaff = [...staffData].sort((a, b) => b.utilization - a.utilization)
 
@@ -67,32 +67,23 @@ export function StaffUtilization({ organizationId }: StaffUtilizationProps) {
           Staff Utilization Today
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1">
         {staffData.length === 0 ? (
           <div className="text-center py-8">
             <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">
-              No staff scheduled today
-            </p>
+            <p className="text-sm text-muted-foreground">No staff scheduled today</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {sortedStaff.slice(0, 5).map((staff) => (
+            {sortedStaff.slice(0, 5).map(staff => (
               <div key={staff.id} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium truncate flex-1">
-                    {staff.name}
-                  </span>
-                  <span className="text-muted-foreground ml-2">
-                    {staff.utilization}%
-                  </span>
+                  <span className="font-medium truncate flex-1">{staff.name}</span>
+                  <span className="text-muted-foreground ml-2">{staff.utilization}%</span>
                 </div>
                 <div className="relative">
-                  <Progress 
-                    value={staff.utilization} 
-                    className="h-2"
-                  />
+                  <Progress value={staff.utilization} className="h-2" />
                   <div
                     className={`absolute inset-0 h-2 rounded-full ${getUtilizationColor(staff.utilization)} opacity-80`}
                     style={{ width: `${staff.utilization}%` }}
@@ -105,14 +96,14 @@ export function StaffUtilization({ organizationId }: StaffUtilizationProps) {
             ))}
           </div>
         )}
-        
+
         {staffData.length > 5 && (
           <p className="text-xs text-muted-foreground text-center mt-4">
             +{staffData.length - 5} more staff members
           </p>
         )}
       </CardContent>
-      
+
       <CardFooter className="pt-3">
         <Link href="/staff/schedule" className="w-full">
           <Button variant="ghost" className="w-full">

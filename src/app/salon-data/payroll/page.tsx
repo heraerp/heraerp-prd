@@ -262,18 +262,24 @@ export default function SalonPayrollSystem() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Total Employees</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Total Employees
+              </span>
               <Users className="w-4 h-4 text-purple-600" />
             </div>
             <p className="text-2xl font-bold">{payrollStats.totalEmployees}</p>
-            <p className="text-xs text-muted-foreground mt-1">{payrollStats.activePayroll} active</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {payrollStats.activePayroll} active
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">YTD Payroll</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                YTD Payroll
+              </span>
               <DollarSign className="w-4 h-4 text-green-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(payrollStats.ytdPayroll)}</p>
@@ -286,7 +292,9 @@ export default function SalonPayrollSystem() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">YTD Taxes</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                YTD Taxes
+              </span>
               <Receipt className="w-4 h-4 text-orange-600" />
             </div>
             <p className="text-2xl font-bold">{formatCurrency(payrollStats.ytdTaxes)}</p>
@@ -297,7 +305,9 @@ export default function SalonPayrollSystem() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground dark:text-muted-foreground">Next Pay Date</span>
+              <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Next Pay Date
+              </span>
               <Calendar className="w-4 h-4 text-primary" />
             </div>
             <p className="text-2xl font-bold">
@@ -698,7 +708,9 @@ export default function SalonPayrollSystem() {
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </div>
               <h3 className="font-semibold text-lg mb-1">{report.title}</h3>
-              <p className="text-sm text-muted-foreground dark:text-muted-foreground">{report.description}</p>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                {report.description}
+              </p>
             </CardContent>
           </Card>
         ))}

@@ -489,7 +489,9 @@ export function DocumentManager({
                           )}
 
                           {document.notes && (
-                            <p className="text-sm text-muted-foreground mt-1 truncate">{document.notes}</p>
+                            <p className="text-sm text-muted-foreground mt-1 truncate">
+                              {document.notes}
+                            </p>
                           )}
                         </div>
                       </div>

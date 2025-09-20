@@ -10,7 +10,13 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-pattern'
@@ -27,7 +33,7 @@ interface OrderLine {
 export default function NewProductionOrderPage() {
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
-  
+
   const [formData, setFormData] = useState({
     customerId: '',
     deliveryDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
@@ -70,16 +76,18 @@ export default function NewProductionOrderPage() {
   }
 
   const updateOrderLine = (id: string, field: keyof OrderLine, value: any) => {
-    setOrderLines(orderLines.map(line => {
-      if (line.id === id) {
-        const updatedLine = { ...line, [field]: value }
-        if (field === 'quantity' || field === 'unitPrice') {
-          updatedLine.lineTotal = updatedLine.quantity * updatedLine.unitPrice
+    setOrderLines(
+      orderLines.map(line => {
+        if (line.id === id) {
+          const updatedLine = { ...line, [field]: value }
+          if (field === 'quantity' || field === 'unitPrice') {
+            updatedLine.lineTotal = updatedLine.quantity * updatedLine.unitPrice
+          }
+          return updatedLine
         }
-    return updatedLine
-      }
-    return line
-    }))
+        return line
+      })
+    )
   }
 
   const totalAmount = orderLines.reduce((sum, line) => sum + line.lineTotal, 0)
@@ -111,8 +119,12 @@ export default function NewProductionOrderPage() {
             <ArrowLeft className="h-5 w-5 text-[var(--color-icon-secondary)]" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">New Production Order</h1>
-            <p className="text-[var(--color-text-secondary)]">Create a new production order for customer</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
+              New Production Order
+            </h1>
+            <p className="text-[var(--color-text-secondary)]">
+              Create a new production order for customer
+            </p>
           </div>
         </div>
       </div>
@@ -120,13 +132,15 @@ export default function NewProductionOrderPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
-          <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-4">Order Information</h3>
+          <h3 className="text-lg font-medium text-[var(--color-text-primary)] mb-4">
+            Order Information
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="customer">Customer</Label>
               <Select
                 value={formData.customerId}
-                onValueChange={(value) => setFormData({ ...formData, customerId: value })}
+                onValueChange={value => setFormData({ ...formData, customerId: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select customer" />
@@ -147,7 +161,7 @@ export default function NewProductionOrderPage() {
                 id="deliveryDate"
                 type="date"
                 value={formData.deliveryDate}
-                onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
+                onChange={e => setFormData({ ...formData, deliveryDate: e.target.value })}
               />
             </div>
 
@@ -155,7 +169,7 @@ export default function NewProductionOrderPage() {
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={formData.priority}
-                onValueChange={(value) => setFormData({ ...formData, priority: value })}
+                onValueChange={value => setFormData({ ...formData, priority: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -174,7 +188,7 @@ export default function NewProductionOrderPage() {
               <Textarea
                 id="notes"
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Special instructions or notes for this order..."
               />
             </div>
@@ -200,18 +214,17 @@ export default function NewProductionOrderPage() {
             </Alert>
           ) : (
             <div className="space-y-4">
-              {orderLines.map((line) => (
+              {orderLines.map(line => (
                 <div key={line.id} className="grid grid-cols-12 gap-4 items-end">
                   <div className="col-span-4">
                     <Label>Product</Label>
                     <Select
                       value={line.productId}
-                      onValueChange={(value) => {
+                      onValueChange={value => {
                         const product = products?.find(p => p.id === value)
                         updateOrderLine(line.id, 'productId', value)
                         updateOrderLine(line.id, 'productName', product?.entity_name || '')
-                      }
-    }
+                      }}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select product" />
@@ -231,7 +244,9 @@ export default function NewProductionOrderPage() {
                     <Input
                       type="number"
                       value={line.quantity}
-                      onChange={(e) => updateOrderLine(line.id, 'quantity', parseInt(e.target.value) || 0)}
+                      onChange={e =>
+                        updateOrderLine(line.id, 'quantity', parseInt(e.target.value) || 0)
+                      }
                       min="1"
                     />
                   </div>
@@ -241,7 +256,9 @@ export default function NewProductionOrderPage() {
                     <Input
                       type="number"
                       value={line.unitPrice}
-                      onChange={(e) => updateOrderLine(line.id, 'unitPrice', parseFloat(e.target.value) || 0)}
+                      onChange={e =>
+                        updateOrderLine(line.id, 'unitPrice', parseFloat(e.target.value) || 0)
+                      }
                       min="0"
                       step="0.01"
                     />

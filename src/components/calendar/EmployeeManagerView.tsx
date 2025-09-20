@@ -482,7 +482,9 @@ export function EmployeeManagerView({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold text-gray-100 dark:text-foreground">{member}</h3>
+                        <h3 className="font-semibold text-gray-100 dark:text-foreground">
+                          {member}
+                        </h3>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                           {idx === 0
                             ? 'Celebrity Hair Artist'
@@ -495,7 +497,9 @@ export function EmployeeManagerView({
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">This Month</span>
+                        <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                          This Month
+                        </span>
                         <Badge variant="outline" className="text-xs">
                           {Math.floor(Math.random() * 3)} days off
                         </Badge>

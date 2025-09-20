@@ -7,12 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useSalonPosIntegration } from '@/lib/playbook/salon-pos-integration'
 import { cn } from '@/lib/utils'
 
@@ -47,7 +42,9 @@ export function StylistAssignmentModal({
   const [stylists, setStylists] = useState<Stylist[]>([])
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedStylistId, setSelectedStylistId] = useState<string | null>(currentStylistId || null)
+  const [selectedStylistId, setSelectedStylistId] = useState<string | null>(
+    currentStylistId || null
+  )
 
   const { getAvailableStylists } = useSalonPosIntegration(organizationId)
 
@@ -71,16 +68,17 @@ export function StylistAssignmentModal({
   }
 
   // Filter stylists based on search
-  const filteredStylists = stylists.filter(stylist =>
-    stylist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    stylist.specialties.some(specialty => 
-      specialty.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const filteredStylists = stylists.filter(
+    stylist =>
+      stylist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      stylist.specialties.some(specialty =>
+        specialty.toLowerCase().includes(searchQuery.toLowerCase())
+      )
   )
 
   const handleAssign = () => {
     if (!selectedStylistId) return
-    
+
     const selectedStylist = stylists.find(s => s.id === selectedStylistId)
     if (selectedStylist) {
       onAssign(selectedStylist.id, selectedStylist.name)
@@ -95,7 +93,11 @@ export function StylistAssignmentModal({
   }
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase()
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
   }
 
   return (
@@ -118,7 +120,7 @@ export function StylistAssignmentModal({
             <Input
               placeholder="Search stylists..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -139,16 +141,19 @@ export function StylistAssignmentModal({
                   <User className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="font-medium mb-2">No stylists found</h3>
                   <p className="text-sm text-muted-foreground">
-                    {searchQuery ? 'Try adjusting your search terms' : 'No stylists available for this service'}
+                    {searchQuery
+                      ? 'Try adjusting your search terms'
+                      : 'No stylists available for this service'}
                   </p>
                 </div>
               ) : (
-                filteredStylists.map((stylist) => (
+                filteredStylists.map(stylist => (
                   <Card
                     key={stylist.id}
                     className={cn(
-                      "cursor-pointer transition-all duration-200 hover:shadow-md",
-                      selectedStylistId === stylist.id && "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950/20"
+                      'cursor-pointer transition-all duration-200 hover:shadow-md',
+                      selectedStylistId === stylist.id &&
+                        'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-950/20'
                     )}
                     onClick={() => setSelectedStylistId(stylist.id)}
                   >
@@ -173,13 +178,13 @@ export function StylistAssignmentModal({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <h3 className="font-medium truncate">{stylist.name}</h3>
-                            <Badge 
-                              variant={stylist.available ? "default" : "secondary"}
+                            <Badge
+                              variant={stylist.available ? 'default' : 'secondary'}
                               className={cn(
-                                "text-xs",
-                                stylist.available 
-                                  ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
-                                  : "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+                                'text-xs',
+                                stylist.available
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                  : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
                               )}
                             >
                               {stylist.available ? 'Available' : 'Busy'}
@@ -211,7 +216,11 @@ export function StylistAssignmentModal({
                             {!stylist.available && stylist.next_available && (
                               <div className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                Next: {new Date(stylist.next_available).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                Next:{' '}
+                                {new Date(stylist.next_available).toLocaleTimeString([], {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
                               </div>
                             )}
                           </div>
@@ -229,7 +238,7 @@ export function StylistAssignmentModal({
             <Button variant="outline" onClick={handleClose} className="flex-1">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleAssign}
               disabled={!selectedStylistId}
               className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"

@@ -11,7 +11,7 @@ jest.mock('@/lib/playbook/hr_leave', () => ({
 // Mock date-fns
 jest.mock('date-fns', () => ({
   ...jest.requireActual('date-fns'),
-  format: jest.fn((date) => date.toLocaleDateString()),
+  format: jest.fn(date => date.toLocaleDateString()),
   differenceInDays: jest.fn(() => 3),
   isWeekend: jest.fn(() => false),
   eachDayOfInterval: jest.fn(() => [])
@@ -37,9 +37,9 @@ describe('LeaveRequestModal - Overflow Fix', () => {
 
   const mockHolidays = Array.from({ length: 10 }, (_, i) => ({
     id: `holiday-${i + 1}`,
-    metadata: { 
-      date: `2024-${String(i + 1).padStart(2, '0')}-01`, 
-      name: `Holiday ${i + 1}` 
+    metadata: {
+      date: `2024-${String(i + 1).padStart(2, '0')}-01`,
+      name: `Holiday ${i + 1}`
     }
   }))
 
@@ -52,7 +52,7 @@ describe('LeaveRequestModal - Overflow Fix', () => {
     Object.defineProperty(window, 'innerHeight', {
       writable: true,
       configurable: true,
-      value: 800,
+      value: 800
     })
   })
 
@@ -119,7 +119,7 @@ describe('LeaveRequestModal - Overflow Fix', () => {
 
     // Should be able to see first and last staff members
     expect(screen.getByText('Employee 1 (EMP001)')).toBeInTheDocument()
-    
+
     // Dropdown should be properly styled with hera-select-content
     const dropdown = screen.getByRole('listbox')
     expect(dropdown).toHaveClass('hera-select-content')
@@ -208,7 +208,7 @@ describe('LeaveRequestModal - Overflow Fix', () => {
 
     // Simulate Cmd+Enter (would normally require form to be filled)
     fireEvent.keyDown(window, { key: 'Enter', metaKey: true })
-    
+
     // Should still work even with scrolled content
     expect(screen.getByText('Submit Request')).toBeInTheDocument()
   })
@@ -247,10 +247,10 @@ describe('LeaveRequestModal - Overflow Fix', () => {
     )
 
     const dialogContent = container.querySelector('[role="dialog"] > div')
-    
+
     // Should have max width and height constraints
     expect(dialogContent).toHaveClass('sm:max-w-2xl', 'max-h-[90vh]')
-    
+
     // Should use flexbox for proper layout
     expect(dialogContent).toHaveClass('flex', 'flex-col')
   })

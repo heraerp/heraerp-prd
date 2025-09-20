@@ -327,7 +327,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
         <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
           <div>
             <h3 className="text-lg font-semibold text-gray-100">Reservations</h3>
-            <p className="text-sm text-muted-foreground mt-1">Manage table reservations and bookings</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Manage table reservations and bookings
+            </p>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -591,7 +593,9 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                   <Users className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="font-medium">{selectedReservation.customer_name}</p>
-                    <p className="text-sm text-muted-foreground">{selectedReservation.party_size} guests</p>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedReservation.party_size} guests
+                    </p>
                   </div>
                 </div>
 

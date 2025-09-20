@@ -513,7 +513,9 @@ export default function FurnitureSales() {
             <Card className="p-4 hover:scale-105 transition-all cursor-pointer bg-[var(--color-body)]/30 backdrop-blur-sm border-[var(--color-border)]/30 hover:bg-[var(--color-body)]/50">
               <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
                 <FileText className="h-8 w-8 text-[var(--color-icon-secondary)]" />
-                <span className="text-sm font-medium text-[var(--color-text-secondary)]">Proforma</span>{' '}
+                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  Proforma
+                </span>{' '}
               </div>
             </Card>{' '}
           </Link>
@@ -521,7 +523,9 @@ export default function FurnitureSales() {
             <Card className="p-4 hover:scale-105 transition-all cursor-pointer bg-[var(--color-body)]/30 backdrop-blur-sm border-[var(--color-border)]/30 hover:bg-[var(--color-body)]/50">
               <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
                 <ShoppingCart className="h-8 w-8 text-[var(--color-icon-secondary)]" />
-                <span className="text-sm font-medium text-[var(--color-text-secondary)]">Orders</span>{' '}
+                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  Orders
+                </span>{' '}
               </div>
             </Card>{' '}
           </Link>
@@ -529,7 +533,9 @@ export default function FurnitureSales() {
             <Card className="p-4 hover:scale-105 transition-all cursor-pointer bg-[var(--color-body)]/30 backdrop-blur-sm border-[var(--color-border)]/30 hover:bg-[var(--color-body)]/50">
               <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
                 <Truck className="h-8 w-8 text-[var(--color-icon-secondary)]" />
-                <span className="text-sm font-medium text-[var(--color-text-secondary)]">Dispatch</span>{' '}
+                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  Dispatch
+                </span>{' '}
               </div>
             </Card>{' '}
           </Link>
@@ -537,7 +543,9 @@ export default function FurnitureSales() {
             <Card className="p-4 hover:scale-105 transition-all cursor-pointer bg-[var(--color-body)]/30 backdrop-blur-sm border-[var(--color-border)]/30 hover:bg-[var(--color-body)]/50">
               <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
                 <Receipt className="h-8 w-8 text-green-500" />
-                <span className="text-sm font-medium text-[var(--color-text-secondary)]">Invoices</span>{' '}
+                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  Invoices
+                </span>{' '}
               </div>
             </Card>{' '}
           </Link>
@@ -545,7 +553,9 @@ export default function FurnitureSales() {
             <Card className="p-4 hover:scale-105 transition-all cursor-pointer bg-[var(--color-body)]/30 backdrop-blur-sm border-[var(--color-border)]/30 hover:bg-[var(--color-body)]/50">
               <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">
                 <Users className="h-8 w-8 text-indigo-500" />
-                <span className="text-sm font-medium text-[var(--color-text-secondary)]">Customers</span>{' '}
+                <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  Customers
+                </span>{' '}
               </div>
             </Card>{' '}
           </Link>{' '}

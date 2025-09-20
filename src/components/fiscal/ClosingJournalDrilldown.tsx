@@ -12,8 +12,20 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog'
 import {
   FileText,
   AlertCircle,
@@ -58,7 +70,9 @@ export function ClosingJournalDrilldown({
 }: ClosingJournalDrilldownProps) {
   const { currentOrganization } = useOrganization()
   const [searchTerm, setSearchTerm] = React.useState('')
-  const [filterType, setFilterType] = React.useState<'all' | 'revenue' | 'expense' | 'closing' | 'consolidation'>('all')
+  const [filterType, setFilterType] = React.useState<
+    'all' | 'revenue' | 'expense' | 'closing' | 'consolidation'
+  >('all')
   const [selectedJournal, setSelectedJournal] = React.useState<JournalEntrySummary | null>(null)
 
   // Get journal lines for selected journal
@@ -66,7 +80,7 @@ export function ClosingJournalDrilldown({
     queryKey: ['journal-lines', selectedJournal?.id],
     queryFn: async (): Promise<JournalLineItem[]> => {
       if (!selectedJournal || !currentOrganization) return []
-      
+
       try {
         const lines = await universalApi.getTransactionLines({
           transaction_id: selectedJournal.id
@@ -94,11 +108,13 @@ export function ClosingJournalDrilldown({
   // Filter journals based on search and filter
   const filteredJournals = React.useMemo(() => {
     return journals.filter(journal => {
-      const matchesSearch = searchTerm === '' || 
+      const matchesSearch =
+        searchTerm === '' ||
         journal.transaction_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         journal.description.toLowerCase().includes(searchTerm.toLowerCase())
 
-      const matchesFilter = filterType === 'all' ||
+      const matchesFilter =
+        filterType === 'all' ||
         (filterType === 'revenue' && journal.smart_code.includes('REVENUE')) ||
         (filterType === 'expense' && journal.smart_code.includes('EXPENSE')) ||
         (filterType === 'closing' && journal.smart_code.includes('CLOSE')) ||
@@ -110,11 +126,14 @@ export function ClosingJournalDrilldown({
 
   // Calculate totals
   const totals = React.useMemo(() => {
-    return filteredJournals.reduce((acc, journal) => ({
-      count: acc.count + 1,
-      debit: acc.debit + journal.total_debit,
-      credit: acc.credit + journal.total_credit
-    }), { count: 0, debit: 0, credit: 0 })
+    return filteredJournals.reduce(
+      (acc, journal) => ({
+        count: acc.count + 1,
+        debit: acc.debit + journal.total_debit,
+        credit: acc.credit + journal.total_credit
+      }),
+      { count: 0, debit: 0, credit: 0 }
+    )
   }, [filteredJournals])
 
   if (isLoading) {
@@ -186,7 +205,16 @@ export function ClosingJournalDrilldown({
   }
 
   const exportToCSV = () => {
-    const headers = ['JE Number', 'Date', 'Description', 'Step', 'Debit', 'Credit', 'Lines', 'Status']
+    const headers = [
+      'JE Number',
+      'Date',
+      'Description',
+      'Step',
+      'Debit',
+      'Credit',
+      'Lines',
+      'Status'
+    ]
     const rows = filteredJournals.map(je => [
       je.transaction_code,
       formatDate(je.transaction_date),
@@ -240,7 +268,7 @@ export function ClosingJournalDrilldown({
               <Input
                 placeholder="Search by JE number or description..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -265,7 +293,9 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total JEs</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Total JEs
+                    </div>
                     <div className="text-2xl font-bold text-violet-700 dark:text-violet-300">
                       {totals.count}
                     </div>
@@ -279,7 +309,9 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Debits</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Total Debits
+                    </div>
                     <div className="text-2xl font-bold text-green-700 dark:text-green-300">
                       {formatCurrency(totals.debit)}
                     </div>
@@ -293,7 +325,9 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Credits</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Total Credits
+                    </div>
                     <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
                       {formatCurrency(totals.credit)}
                     </div>
@@ -308,20 +342,18 @@ export function ClosingJournalDrilldown({
           {filteredJournals.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600 dark:text-gray-400">
-                No journal entries found
-              </p>
+              <p className="text-gray-600 dark:text-gray-400">No journal entries found</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredJournals.map((journal) => (
+              {filteredJournals.map(journal => (
                 <div
                   key={journal.id}
                   className="p-4 border rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
                   onClick={() => setSelectedJournal(journal)}
                   role="button"
                   tabIndex={0}
-                  onKeyPress={(e) => {
+                  onKeyPress={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       setSelectedJournal(journal)
                     }
@@ -352,9 +384,7 @@ export function ClosingJournalDrilldown({
                         <span className="text-blue-700 dark:text-blue-300">
                           CR: {formatCurrency(journal.total_credit)}
                         </span>
-                        <span className="text-gray-500">
-                          {journal.line_count} lines
-                        </span>
+                        <span className="text-gray-500">{journal.line_count} lines</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -368,11 +398,7 @@ export function ClosingJournalDrilldown({
                       >
                         {journal.status}
                       </Badge>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 w-8 p-0"
-                      >
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                         <Eye className="h-4 w-4" />
                       </Button>
                     </div>
@@ -424,13 +450,17 @@ export function ClosingJournalDrilldown({
                 <Badge variant="outline">{selectedJournal?.status}</Badge>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Debit</div>
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Total Debit
+                </div>
                 <div className="font-medium text-green-700 dark:text-green-300">
                   {selectedJournal && formatCurrency(selectedJournal.total_debit)}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Credit</div>
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Total Credit
+                </div>
                 <div className="font-medium text-blue-700 dark:text-blue-300">
                   {selectedJournal && formatCurrency(selectedJournal.total_credit)}
                 </div>
@@ -469,13 +499,18 @@ export function ClosingJournalDrilldown({
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {journalLines?.map((line) => (
-                      <tr key={line.line_number} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                    {journalLines?.map(line => (
+                      <tr
+                        key={line.line_number}
+                        className="hover:bg-gray-50 dark:hover:bg-gray-800/30"
+                      >
                         <td className="py-2 px-3 text-sm">{line.line_number}</td>
                         <td className="py-2 px-3">
                           <div className="text-sm">
                             <div className="font-mono">{line.account_code}</div>
-                            <div className="text-gray-600 dark:text-gray-400">{line.account_name}</div>
+                            <div className="text-gray-600 dark:text-gray-400">
+                              {line.account_name}
+                            </div>
                           </div>
                         </td>
                         <td className="py-2 px-3 text-sm text-gray-600 dark:text-gray-400">

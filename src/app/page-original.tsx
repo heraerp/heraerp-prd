@@ -98,22 +98,30 @@ export default function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 px-4">
               <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">70%</div>
-                <p className="text-sm md:text-base text-muted-foreground font-light">Cost Savings</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">
+                  Cost Savings
+                </p>
               </div>
 
               <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">2</div>
-                <p className="text-sm md:text-base text-muted-foreground font-light">Week Guarantee</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">
+                  Week Guarantee
+                </p>
               </div>
 
               <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">92%</div>
-                <p className="text-sm md:text-base text-muted-foreground font-light">Success Rate</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">
+                  Success Rate
+                </p>
               </div>
 
               <div className="text-center bg-background/20 backdrop-blur-xl border border-border/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-thin text-black mb-2 md:mb-4">0</div>
-                <p className="text-sm md:text-base text-muted-foreground font-light">Configuration</p>
+                <p className="text-sm md:text-base text-muted-foreground font-light">
+                  Configuration
+                </p>
               </div>
             </div>
           </div>
@@ -139,7 +147,9 @@ export default function HomePage() {
                       Solution
                     </th>
                     <th className="text-center py-8 px-8 font-light text-xl text-black">HERA</th>
-                    <th className="text-center py-8 px-8 font-light text-xl text-muted-foreground">SAP</th>
+                    <th className="text-center py-8 px-8 font-light text-xl text-muted-foreground">
+                      SAP
+                    </th>
                     <th className="text-center py-8 px-8 font-light text-xl text-muted-foreground">
                       Salesforce
                     </th>
@@ -149,14 +159,22 @@ export default function HomePage() {
                   <tr className="border-t border-border/10">
                     <td className="py-8 px-8 font-light text-muted-foreground">Implementation</td>
                     <td className="py-8 px-8 text-center font-light text-black">2 weeks</td>
-                    <td className="py-8 px-8 text-center font-light text-muted-foreground">12-21 months</td>
-                    <td className="py-8 px-8 text-center font-light text-muted-foreground">6+ months</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">
+                      12-21 months
+                    </td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">
+                      6+ months
+                    </td>
                   </tr>
                   <tr className="border-t border-border/10">
                     <td className="py-8 px-8 font-light text-muted-foreground">Annual Cost</td>
                     <td className="py-8 px-8 text-center font-light text-black">$50,000</td>
-                    <td className="py-8 px-8 text-center font-light text-muted-foreground">$150,000+</td>
-                    <td className="py-8 px-8 text-center font-light text-muted-foreground">$144,000+</td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">
+                      $150,000+
+                    </td>
+                    <td className="py-8 px-8 text-center font-light text-muted-foreground">
+                      $144,000+
+                    </td>
                   </tr>
                   <tr className="border-t border-border/10">
                     <td className="py-8 px-8 font-light text-muted-foreground">Success Rate</td>

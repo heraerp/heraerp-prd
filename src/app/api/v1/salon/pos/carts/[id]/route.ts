@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/lib/universal-api-v2'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     // Set organization context
@@ -27,14 +21,11 @@ export async function GET(
     })
 
     if (!cartResult.success || !cartResult.data?.length) {
-      return NextResponse.json(
-        { error: 'Cart not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Cart not found' }, { status: 404 })
     }
 
     const cart = cartResult.data[0]
-    
+
     // Fetch cart lines
     const linesResult = await universalApi.read('universal_transaction_lines', {
       transaction_id: params.id,
@@ -45,11 +36,11 @@ export async function GET(
 
     // Map lines with service details
     const mappedLines = await Promise.all(
-      lines.map(async (line) => {
+      lines.map(async line => {
         let serviceName = line.metadata?.service_name || 'Service'
         let serviceCode = ''
         let serviceDuration = line.metadata?.duration_min || 30
-        
+
         if (line.line_entity_id) {
           const serviceResult = await universalApi.read('core_entities', {
             id: line.line_entity_id,
@@ -92,7 +83,7 @@ export async function GET(
     if (relationshipsResult.data) {
       for (const rel of relationshipsResult.data) {
         relationships[rel.relationship_type] = rel.to_entity_id
-        
+
         // Fetch entity details for BILLS_TO relationship
         if (rel.relationship_type === 'BILLS_TO' && rel.to_entity_id) {
           const customerResult = await universalApi.read('core_entities', {
@@ -144,9 +135,6 @@ export async function GET(
     return NextResponse.json(response)
   } catch (error) {
     console.error('Error fetching cart:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

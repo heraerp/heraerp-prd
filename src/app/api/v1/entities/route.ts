@@ -81,7 +81,9 @@ export async function GET(request: NextRequest) {
 
       const { data: dynamicData, error: dynamicError } = await supabaseAdmin
         .from('core_dynamic_data')
-        .select('entity_id, field_name, field_type, field_value_text, field_value_number, field_value_boolean, field_value_date, field_value_json')
+        .select(
+          'entity_id, field_name, field_type, field_value_text, field_value_number, field_value_boolean, field_value_date, field_value_json'
+        )
         .in('entity_id', entityIds)
 
       if (!dynamicError && dynamicData) {
@@ -214,7 +216,11 @@ export async function POST(request: NextRequest) {
         if (typeof value === 'boolean') {
           return { ...baseData, field_type: 'boolean', field_value_boolean: value }
         } else if (typeof value === 'number') {
-          return { ...baseData, field_type: Number.isInteger(value) ? 'integer' : 'decimal', field_value_number: value }
+          return {
+            ...baseData,
+            field_type: Number.isInteger(value) ? 'integer' : 'decimal',
+            field_value_number: value
+          }
         } else if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
           return { ...baseData, field_type: 'json', field_value_json: value }
         } else if (value instanceof Date) {

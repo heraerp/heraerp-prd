@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/lib/universal-api-v2'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id')
     const expand = searchParams.get('expand')?.split(',') || []
-    
+
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     // Set organization context
@@ -28,14 +22,11 @@ export async function GET(
     })
 
     if (!appointmentResult.success || !appointmentResult.data?.length) {
-      return NextResponse.json(
-        { error: 'Appointment not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })
     }
 
     const appointmentTxn = appointmentResult.data[0]
-    
+
     // Fetch appointment lines (services)
     const linesResult = await universalApi.read('universal_transaction_lines', {
       transaction_id: appointmentTxn.id,
@@ -85,19 +76,23 @@ export async function GET(
       })
       if (staffResult.data?.length) {
         const staff = staffResult.data[0]
-        response.appointment.staff = [{
-          id: staff.id,
-          name: staff.entity_name
-        }]
+        response.appointment.staff = [
+          {
+            id: staff.id,
+            name: staff.entity_name
+          }
+        ]
       }
     }
 
     // Expand resources (chair/station)
     if (appointmentTxn.metadata?.chair_id) {
-      response.appointment.resources = [{
-        id: appointmentTxn.metadata.chair_id,
-        slug: appointmentTxn.metadata.chair_slug || `chair-${appointmentTxn.metadata.chair_id}`
-      }]
+      response.appointment.resources = [
+        {
+          id: appointmentTxn.metadata.chair_id,
+          slug: appointmentTxn.metadata.chair_slug || `chair-${appointmentTxn.metadata.chair_id}`
+        }
+      ]
     }
 
     // Expand deposits
@@ -126,23 +121,25 @@ export async function GET(
       })
       if (packageResult.data?.length) {
         const pkg = packageResult.data[0]
-        response.appointment.packages = [{
-          id: pkg.id,
-          name: pkg.entity_name,
-          remaining_uses: pkg.metadata?.remaining_uses || 0
-        }]
+        response.appointment.packages = [
+          {
+            id: pkg.id,
+            name: pkg.entity_name,
+            remaining_uses: pkg.metadata?.remaining_uses || 0
+          }
+        ]
       }
     }
 
     // Map service lines to planned_services
     if (expand.includes('planned_services') && lines.length > 0) {
       response.appointment.planned_services = await Promise.all(
-        lines.map(async (line) => {
+        lines.map(async line => {
           // Fetch service entity details
           let serviceName = 'Service'
           let duration = 30
           let staffSplit = [{ staff_id: appointmentTxn.metadata?.stylist_id, pct: 100 }]
-          
+
           if (line.line_entity_id) {
             const serviceResult = await universalApi.read('core_entities', {
               id: line.line_entity_id,
@@ -175,9 +172,6 @@ export async function GET(
     return NextResponse.json(response)
   } catch (error) {
     console.error('Error fetching appointment:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

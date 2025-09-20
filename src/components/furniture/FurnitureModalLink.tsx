@@ -1,11 +1,8 @@
 'use client'
 
 import React from 'react'
-import { cn }
-from '@/lib/utils'
-import { NavigationLink }
-from '@/components/navigation/NavigationLink'
-
+import { cn } from '@/lib/utils'
+import { NavigationLink } from '@/components/navigation/NavigationLink'
 
 interface FurnitureModalLinkProps {
   href: string
@@ -49,14 +46,18 @@ export function FurnitureModalLink({
         <Icon
           className={cn(
             'h-6 w-6 transition-colors duration-300',
-            active ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
+            active
+              ? 'text-[var(--color-text-primary)]'
+              : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
           )}
         />
       </div>
       <span
         className={cn(
           'text-xs font-medium text-center transition-colors duration-300',
-          active ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
+          active
+            ? 'text-[var(--color-text-secondary)]'
+            : 'text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]'
         )}
       >
         {title}

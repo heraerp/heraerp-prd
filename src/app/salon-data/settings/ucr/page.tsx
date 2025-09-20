@@ -166,7 +166,9 @@ export default function SalonUCRSettings() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Universal Configuration Rules
               </h1>
-              <p className="text-muted-foreground mt-2">Manage salon business logic without code changes</p>
+              <p className="text-muted-foreground mt-2">
+                Manage salon business logic without code changes
+              </p>
             </div>
           </div>
         </div>
@@ -303,7 +305,9 @@ export default function SalonUCRSettings() {
                         <Brain className="h-5 w-5 text-pink-400" />
                         AI Configuration Assistant
                       </h3>
-                      <p className="text-muted-foreground mb-4">Natural language rule creation with AI</p>
+                      <p className="text-muted-foreground mb-4">
+                        Natural language rule creation with AI
+                      </p>
                       <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4 mb-4">
                         <p className="text-purple-300">
                           Describe your business rule in plain language and AI will create the
@@ -610,7 +614,9 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-foreground">Tested "VIP Discount Rules"</h4>
+                            <h4 className="font-medium text-foreground">
+                              Tested "VIP Discount Rules"
+                            </h4>
                             <span className="text-sm text-muted-foreground">5h ago</span>
                           </div>
                           <p className="text-sm text-muted-foreground">
@@ -625,10 +631,14 @@ export default function SalonUCRSettings() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-foreground">Created rule from template</h4>
+                            <h4 className="font-medium text-foreground">
+                              Created rule from template
+                            </h4>
                             <span className="text-sm text-muted-foreground">1d ago</span>
                           </div>
-                          <p className="text-sm text-muted-foreground">Used "Peak Hour Pricing" template</p>
+                          <p className="text-sm text-muted-foreground">
+                            Used "Peak Hour Pricing" template
+                          </p>
                         </div>
                       </div>
                     </div>

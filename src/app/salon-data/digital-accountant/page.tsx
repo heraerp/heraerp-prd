@@ -681,7 +681,9 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <Scissors className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading your salon accounts...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading your salon accounts...
+          </p>
         </div>
       </div>
     )
@@ -752,7 +754,9 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Sales</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Today's Sales
+                  </p>
                   <p className="text-xl font-bold text-green-600">AED 3,850</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-500 opacity-20" />
@@ -764,7 +768,9 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Expenses</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Expenses
+                  </p>
                   <p className="text-xl font-bold text-red-600">AED 450</p>
                 </div>
                 <TrendingDown className="w-8 h-8 text-red-500 opacity-20" />
@@ -776,7 +782,9 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Clients Today</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Clients Today
+                  </p>
                   <p className="text-xl font-bold text-primary">12</p>
                 </div>
                 <Users className="w-8 h-8 text-blue-500 opacity-20" />
@@ -788,7 +796,9 @@ ${result.error || 'Unable to post journal entry. Please contact support.'}`,
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Cash</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Net Cash
+                  </p>
                   <p className="text-xl font-bold text-purple-600">AED 3,400</p>
                 </div>
                 <Banknote className="w-8 h-8 text-purple-500 opacity-20" />

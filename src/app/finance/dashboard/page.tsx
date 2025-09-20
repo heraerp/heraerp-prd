@@ -205,7 +205,9 @@ export default function FinanceDashboard() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Financial Dashboard
           </h1>
-          <p className="text-foreground/60 mt-1">Real-time financial insights and performance metrics</p>
+          <p className="text-foreground/60 mt-1">
+            Real-time financial insights and performance metrics
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
@@ -440,7 +442,9 @@ export default function FinanceDashboard() {
                   <th className="pb-3 text-sm font-medium text-foreground/60">Type</th>
                   <th className="pb-3 text-sm font-medium text-foreground/60">Party</th>
                   <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Amount</th>
-                  <th className="pb-3 text-sm font-medium text-foreground/60 text-center">Status</th>
+                  <th className="pb-3 text-sm font-medium text-foreground/60 text-center">
+                    Status
+                  </th>
                   <th className="pb-3 text-sm font-medium text-foreground/60 text-right">Action</th>
                 </tr>
               </thead>

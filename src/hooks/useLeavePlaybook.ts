@@ -10,7 +10,7 @@ import {
   getBalances,
   upsertBalance,
   listHolidays,
-  calculateWorkingDays,
+  calculateWorkingDays
 } from '@/lib/playbook/hr_leave'
 import type { LeaveRequest, LeavePolicy } from '@/schemas/hr_leave'
 
@@ -52,7 +52,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
   const { organization, isAuthenticated } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   const [requests, setRequests] = useState<any[]>([])
   const [balancesByStaff, setBalancesByStaff] = useState<Record<string, LeaveBalance>>({})
   const [policies, setPolicies] = useState<any[]>([])
@@ -71,9 +71,9 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
         const currentYear = new Date().getFullYear()
         const [policiesRes, holidaysRes] = await Promise.all([
           listPolicies({ organization_id: organizationId }),
-          listHolidays({ organization_id: organizationId, year: currentYear }),
+          listHolidays({ organization_id: organizationId, year: currentYear })
         ])
-        
+
         setPolicies(policiesRes.items || [])
         setHolidays(holidaysRes.items || [])
       } catch (err) {
@@ -93,7 +93,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
         const res = await listStaff({
           organization_id: organizationId,
           branch_id: branchId,
-          q: query,
+          q: query
         })
         setStaff(res.items || [])
       } catch (err) {
@@ -111,7 +111,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     const loadRequests = async () => {
       setLoading(true)
       setError(null)
-      
+
       try {
         const offset = (page - 1) * pageSize
         const res = await listRequests({
@@ -122,9 +122,9 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
           from: range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
           to: range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
           limit: pageSize,
-          offset,
+          offset
         })
-        
+
         setRequests(res.items || [])
       } catch (err) {
         console.error('Failed to load requests:', err)
@@ -146,30 +146,30 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
         const year = new Date().getFullYear()
         const periodStart = format(startOfYear(new Date(year, 0, 1)), 'yyyy-MM-dd')
         const periodEnd = format(endOfYear(new Date(year, 11, 31)), 'yyyy-MM-dd')
-        
+
         const balances = await getBalances({
           organization_id: organizationId,
           staff_ids: staff.map(s => s.id),
           period_start: periodStart,
-          period_end: periodEnd,
+          period_end: periodEnd
         })
-        
+
         // Convert to lookup object and calculate remaining
         const balanceMap: Record<string, LeaveBalance> = {}
         for (const balance of balances) {
-          const remaining = 
+          const remaining =
             balance.entitlement_days +
             balance.carried_over_days +
             balance.accrued_days -
             balance.taken_days -
             balance.scheduled_days
-          
+
           balanceMap[balance.staff_id] = {
             ...balance,
-            remaining,
+            remaining
           }
         }
-        
+
         setBalancesByStaff(balanceMap)
       } catch (err) {
         console.error('Failed to load balances:', err)
@@ -180,134 +180,155 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
   }, [organizationId, staff, isAuthenticated])
 
   // Create leave request
-  const createLeave = useCallback(async (payload: LeaveRequest) => {
-    if (!organizationId) throw new Error('No organization')
-    
-    try {
-      setLoading(true)
-      
-      // Calculate working days
-      const holidayDates = holidays.map(h => new Date(h.metadata.date))
-      const workingDays = calculateWorkingDays(
-        payload.from,
-        payload.to,
-        holidayDates,
-        payload.half_day_start,
-        payload.half_day_end
-      )
-      
-      // Generate lines for each day
-      const days = []
-      const current = new Date(payload.from)
-      while (current <= payload.to) {
-        days.push({
-          date: format(current, 'yyyy-MM-dd'),
-          portion: 1,
-          type: payload.type,
+  const createLeave = useCallback(
+    async (payload: LeaveRequest) => {
+      if (!organizationId) throw new Error('No organization')
+
+      try {
+        setLoading(true)
+
+        // Calculate working days
+        const holidayDates = holidays.map(h => new Date(h.metadata.date))
+        const workingDays = calculateWorkingDays(
+          payload.from,
+          payload.to,
+          holidayDates,
+          payload.half_day_start,
+          payload.half_day_end
+        )
+
+        // Generate lines for each day
+        const days = []
+        const current = new Date(payload.from)
+        while (current <= payload.to) {
+          days.push({
+            date: format(current, 'yyyy-MM-dd'),
+            portion: 1,
+            type: payload.type
+          })
+          current.setDate(current.getDate() + 1)
+        }
+
+        // Adjust for half days
+        if (payload.half_day_start && days.length > 0) {
+          days[0].portion = 0.5
+        }
+        if (payload.half_day_end && days.length > 0) {
+          days[days.length - 1].portion = 0.5
+        }
+
+        const result = await createRequest({
+          organization_id: organizationId,
+          staff_id: payload.staff_id,
+          branch_id: payload.branch_id,
+          from: payload.from,
+          to: payload.to,
+          lines: days,
+          notes: payload.notes
         })
-        current.setDate(current.getDate() + 1)
+
+        // Reload requests and balances
+        window.location.reload() // Simple refresh for now
+
+        return result
+      } catch (err) {
+        console.error('Failed to create request:', err)
+        throw err
+      } finally {
+        setLoading(false)
       }
-      
-      // Adjust for half days
-      if (payload.half_day_start && days.length > 0) {
-        days[0].portion = 0.5
-      }
-      if (payload.half_day_end && days.length > 0) {
-        days[days.length - 1].portion = 0.5
-      }
-      
-      const result = await createRequest({
-        organization_id: organizationId,
-        staff_id: payload.staff_id,
-        branch_id: payload.branch_id,
-        from: payload.from,
-        to: payload.to,
-        lines: days,
-        notes: payload.notes,
-      })
-      
-      // Reload requests and balances
-      window.location.reload() // Simple refresh for now
-      
-      return result
-    } catch (err) {
-      console.error('Failed to create request:', err)
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }, [organizationId, holidays])
+    },
+    [organizationId, holidays]
+  )
 
   // Approve/reject request
-  const approve = useCallback(async (request_id: string, reason?: string) => {
-    if (!organizationId) throw new Error('No organization')
-    
-    await decideRequest({
-      organization_id: organizationId,
-      request_id,
-      approver_id: organization.id, // Using org as approver for now
-      decision: 'APPROVE',
-      reason,
-    })
-    
-    window.location.reload()
-  }, [organizationId, organization])
+  const approve = useCallback(
+    async (request_id: string, reason?: string) => {
+      if (!organizationId) throw new Error('No organization')
 
-  const reject = useCallback(async (request_id: string, reason?: string) => {
-    if (!organizationId || !reason) throw new Error('Reason required for rejection')
-    
-    await decideRequest({
-      organization_id: organizationId,
-      request_id,
-      approver_id: organization.id,
-      decision: 'REJECT',
-      reason,
-    })
-    
-    window.location.reload()
-  }, [organizationId, organization])
+      await decideRequest({
+        organization_id: organizationId,
+        request_id,
+        approver_id: organization.id, // Using org as approver for now
+        decision: 'APPROVE',
+        reason
+      })
+
+      window.location.reload()
+    },
+    [organizationId, organization]
+  )
+
+  const reject = useCallback(
+    async (request_id: string, reason?: string) => {
+      if (!organizationId || !reason) throw new Error('Reason required for rejection')
+
+      await decideRequest({
+        organization_id: organizationId,
+        request_id,
+        approver_id: organization.id,
+        decision: 'REJECT',
+        reason
+      })
+
+      window.location.reload()
+    },
+    [organizationId, organization]
+  )
 
   // Export CSV
-  const exportAnnualReportCSV = useCallback(async ({ year, branchId }: { year: number; branchId?: string }) => {
-    // Generate CSV content
-    const headers = ['Organization', 'Branch', 'Staff Code', 'Staff Name', 'Entitlement', 'Carry-over', 'Accrued', 'Taken', 'Scheduled', 'Remaining', 'Year']
-    const rows = []
-    
-    for (const staffMember of staff) {
-      const balance = balancesByStaff[staffMember.id]
-      if (!balance) continue
-      
-      if (branchId && staffMember.metadata?.branch_id !== branchId) continue
-      
-      rows.push([
-        organization?.name || 'Unknown',
-        staffMember.metadata?.branch_id || 'Main',
-        staffMember.entity_code,
-        staffMember.entity_name,
-        balance.entitlement_days,
-        balance.carried_over_days,
-        balance.accrued_days,
-        balance.taken_days,
-        balance.scheduled_days,
-        balance.remaining || 0,
-        year,
-      ])
-    }
-    
-    const csv = [
-      headers.join(','),
-      ...rows.map(row => row.join(',')),
-    ].join('\n')
-    
-    // Download
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `annual-leave-report-${year}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, [staff, balancesByStaff, organization])
+  const exportAnnualReportCSV = useCallback(
+    async ({ year, branchId }: { year: number; branchId?: string }) => {
+      // Generate CSV content
+      const headers = [
+        'Organization',
+        'Branch',
+        'Staff Code',
+        'Staff Name',
+        'Entitlement',
+        'Carry-over',
+        'Accrued',
+        'Taken',
+        'Scheduled',
+        'Remaining',
+        'Year'
+      ]
+      const rows = []
+
+      for (const staffMember of staff) {
+        const balance = balancesByStaff[staffMember.id]
+        if (!balance) continue
+
+        if (branchId && staffMember.metadata?.branch_id !== branchId) continue
+
+        rows.push([
+          organization?.name || 'Unknown',
+          staffMember.metadata?.branch_id || 'Main',
+          staffMember.entity_code,
+          staffMember.entity_name,
+          balance.entitlement_days,
+          balance.carried_over_days,
+          balance.accrued_days,
+          balance.taken_days,
+          balance.scheduled_days,
+          balance.remaining || 0,
+          year
+        ])
+      }
+
+      const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\n')
+
+      // Download
+      const blob = new Blob([csv], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `annual-leave-report-${year}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    },
+    [staff, balancesByStaff, organization]
+  )
 
   return {
     // Data
@@ -318,11 +339,11 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     staff,
     loading,
     error,
-    
+
     // Actions
     createLeave,
     approve,
     reject,
-    exportAnnualReportCSV,
+    exportAnnualReportCSV
   }
 }

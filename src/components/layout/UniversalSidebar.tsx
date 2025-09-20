@@ -328,7 +328,9 @@ export function UniversalSidebar({
                 >
                   <div className="text-purple-600">{item.icon}</div>
                   <span className="font-medium text-sm">{item.label}</span>
-                  <span className="text-xs text-muted-foreground text-center">{item.description}</span>
+                  <span className="text-xs text-muted-foreground text-center">
+                    {item.description}
+                  </span>
                 </Button>
               ))}
             </div>

@@ -33,20 +33,20 @@ interface HERAAuthContext {
   organization: HERAOrganization | null
   isAuthenticated: boolean
   isLoading: boolean
-  
+
   // Authorization
   scopes: string[]
   hasScope: (scope: string) => boolean
-  
+
   // Session info
   sessionType: 'demo' | 'real' | null
   timeRemaining: number // milliseconds
   isExpired: boolean
-  
+
   // Actions
   initializeDemo: (demoType: DemoUserType) => Promise<boolean>
   logout: () => Promise<void>
-  
+
   // Legacy compatibility helpers
   currentOrganization: HERAOrganization | null
   organizations: HERAOrganization[]
@@ -61,7 +61,7 @@ interface HERAAuthProviderProps {
 
 export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const router = useRouter()
-  
+
   const [state, setState] = useState({
     user: null as HERAUser | null,
     organization: null as HERAOrganization | null,
@@ -99,8 +99,8 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     const intervalTimer = setInterval(() => {
       const currentTime = Date.now()
       const remaining = Math.max(0, expiryTime - currentTime)
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         timeRemaining: remaining,
         isExpired: remaining <= 0
       }))
@@ -118,26 +118,26 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
       // Check for HERA demo session cookie
       const sessionCookie = getCookie('hera-demo-session')
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.log('🍪 HERA Auth: Checking session cookie:', {
           hasSessionCookie: !!sessionCookie,
           timestamp: new Date().toISOString()
         })
       }
-      
+
       if (sessionCookie) {
         // Decode URL-encoded cookie value first
         const decodedCookie = decodeURIComponent(sessionCookie)
         const sessionData = JSON.parse(decodedCookie)
-        
+
         // Check if session is expired
         const expiryTime = new Date(sessionData.expires_at).getTime()
         const now = Date.now()
-        
+
         if (expiryTime > now) {
           console.log('🧬 HERA Auth: Restoring existing demo session')
-          
+
           const user: HERAUser = {
             id: sessionData.user_id || sessionData.user_entity_id,
             entity_id: sessionData.entity_id || sessionData.user_entity_id || sessionData.user_id,
@@ -147,14 +147,14 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             session_type: 'demo',
             expires_at: sessionData.expires_at
           }
-          
+
           const organization: HERAOrganization = {
             id: sessionData.organization_id,
             name: 'Hair Talkz Salon (Demo)',
             type: 'salon',
             industry: 'beauty_services'
           }
-          
+
           setState({
             user,
             organization,
@@ -165,7 +165,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             timeRemaining: expiryTime - now,
             isExpired: false
           })
-          
+
           if (process.env.NODE_ENV === 'development') {
             console.log('✅ HERA Auth: Session restored:', {
               orgId: organization.id,
@@ -174,7 +174,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
               timeRemaining: Math.round((expiryTime - now) / 1000) + 's'
             })
           }
-          
+
           return
         } else {
           // Session expired, clean up
@@ -185,16 +185,15 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
       // TODO: Check for real user session here
       // For now, just set not authenticated
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         isAuthenticated: false,
-        isLoading: false 
+        isLoading: false
       }))
-
     } catch (error) {
       console.error('💥 HERA Auth initialization error:', error)
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         isLoading: false,
         isAuthenticated: false
       }))
@@ -206,7 +205,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       setState(prev => ({ ...prev, isLoading: true }))
 
       const result = await demoAuthService.initializeDemoSession(demoType)
-      
+
       if (!result.success || !result.user) {
         setState(prev => ({ ...prev, isLoading: false }))
         return false
@@ -221,10 +220,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         session_type: 'demo',
         expires_at: result.user.expires_at
       }
-      
+
       const organization: HERAOrganization = {
         id: result.user.organization_id,
-        name: 'Hair Talkz Salon (Demo)', 
+        name: 'Hair Talkz Salon (Demo)',
         type: 'salon',
         industry: 'beauty_services'
       }
@@ -250,7 +249,6 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       })
 
       return true
-
     } catch (error) {
       console.error('💥 Demo initialization error:', error)
       setState(prev => ({ ...prev, isLoading: false }))
@@ -261,7 +259,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const logout = async () => {
     try {
       await demoAuthService.clearDemoSession()
-      
+
       setState({
         user: null,
         organization: null,
@@ -275,7 +273,6 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
       console.log('🧹 HERA Auth: Logged out')
       router.push('/')
-
     } catch (error) {
       console.error('💥 Logout error:', error)
     }
@@ -293,7 +290,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   // Helper function to get cookie value
   const getCookie = (name: string): string | null => {
     if (typeof document === 'undefined') return null
-    
+
     const value = `; ${document.cookie}`
     const parts = value.split(`; ${name}=`)
     if (parts.length === 2) {
@@ -308,31 +305,27 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
     organization: state.organization,
     isAuthenticated: state.isAuthenticated,
     isLoading: state.isLoading,
-    
+
     // Authorization
     scopes: state.scopes,
     hasScope,
-    
+
     // Session info
     sessionType: state.sessionType,
     timeRemaining: state.timeRemaining,
     isExpired: state.isExpired,
-    
+
     // Actions
     initializeDemo,
     logout,
-    
+
     // Legacy compatibility
     currentOrganization: state.organization,
     organizations: state.organization ? [state.organization] : [],
     contextLoading: state.isLoading // Legacy compatibility for existing components
   }
 
-  return (
-    <HERAAuthContext.Provider value={contextValue}>
-      {children}
-    </HERAAuthContext.Provider>
-  )
+  return <HERAAuthContext.Provider value={contextValue}>{children}</HERAAuthContext.Provider>
 }
 
 // Hook to use HERA Auth context

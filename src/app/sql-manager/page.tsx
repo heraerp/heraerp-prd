@@ -417,7 +417,9 @@ export default function SQLManagerPage() {
                               )}
                             />
                           </div>
-                          <h3 className="text-lg font-semibold text-foreground">{category.category}</h3>
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {category.category}
+                          </h3>
                         </div>
 
                         <div className="space-y-3">
@@ -429,7 +431,9 @@ export default function SQLManagerPage() {
                               <div className="flex items-start justify-between mb-2">
                                 <div>
                                   <h4 className="font-mono text-sm text-blue-400">{func.name}</h4>
-                                  <p className="text-xs text-muted-foreground mt-1">{func.description}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {func.description}
+                                  </p>
                                 </div>
                                 <Button
                                   size="sm"

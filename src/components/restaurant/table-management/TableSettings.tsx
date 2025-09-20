@@ -205,7 +205,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="1"
               max="20"
             />
-            <p className="text-xs text-muted-foreground mt-1">Default capacity when creating new tables</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Default capacity when creating new tables
+            </p>
           </div>
 
           <div>
@@ -221,7 +223,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               max="480"
               step="30"
             />
-            <p className="text-xs text-muted-foreground mt-1">How long reservations last by default</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              How long reservations last by default
+            </p>
           </div>
 
           <div>
@@ -261,7 +265,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="autoConfirm">Auto-confirm Reservations</Label>
-              <p className="text-xs text-muted-foreground">Automatically confirm new reservations</p>
+              <p className="text-xs text-muted-foreground">
+                Automatically confirm new reservations
+              </p>
             </div>
             <Switch
               id="autoConfirm"
@@ -275,7 +281,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="requireDeposit">Require Deposit</Label>
-              <p className="text-xs text-muted-foreground">Require deposit for large party reservations</p>
+              <p className="text-xs text-muted-foreground">
+                Require deposit for large party reservations
+              </p>
             </div>
             <Switch
               id="requireDeposit"
@@ -433,7 +441,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="5"
               max="60"
             />
-            <p className="text-xs text-muted-foreground mt-1">Release reservation if party doesn't show</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Release reservation if party doesn't show
+            </p>
           </div>
 
           <div>
@@ -448,7 +458,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="0"
               max="30"
             />
-            <p className="text-xs text-muted-foreground mt-1">Allow overbooking to account for no-shows</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Allow overbooking to account for no-shows
+            </p>
           </div>
 
           <div>
@@ -466,7 +478,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
               min="0"
               max="60"
             />
-            <p className="text-xs text-muted-foreground mt-1">Time needed to clean and reset tables</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Time needed to clean and reset tables
+            </p>
           </div>
         </div>
       </Card>
@@ -481,7 +495,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableSMS">Enable SMS Notifications</Label>
-              <p className="text-xs text-muted-foreground">Send reservation confirmations via SMS</p>
+              <p className="text-xs text-muted-foreground">
+                Send reservation confirmations via SMS
+              </p>
             </div>
             <Switch
               id="enableSMS"
@@ -495,7 +511,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="enableEmail">Enable Email Notifications</Label>
-              <p className="text-xs text-muted-foreground">Send reservation confirmations via email</p>
+              <p className="text-xs text-muted-foreground">
+                Send reservation confirmations via email
+              </p>
             </div>
             <Switch
               id="enableEmail"
@@ -527,7 +545,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="waitlistNotifications">Waitlist Notifications</Label>
-              <p className="text-xs text-muted-foreground">Notify waitlist when tables become available</p>
+              <p className="text-xs text-muted-foreground">
+                Notify waitlist when tables become available
+              </p>
             </div>
             <Switch
               id="waitlistNotifications"
@@ -636,7 +656,9 @@ export function TableSettings({ onSettingsUpdate }: TableSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="thirdParty">Third-party Reservations</Label>
-              <p className="text-xs text-muted-foreground">Accept reservations from OpenTable, etc.</p>
+              <p className="text-xs text-muted-foreground">
+                Accept reservations from OpenTable, etc.
+              </p>
             </div>
             <Switch
               id="thirdParty"

@@ -24,10 +24,10 @@ export function EmptyState({
         <div className="mb-4 p-3 bg-muted rounded-full">
           {icon || <FileText className="h-8 w-8 text-muted-foreground" />}
         </div>
-        
+
         <h3 className="text-lg font-semibold mb-2">{title}</h3>
         <p className="text-muted-foreground mb-6">{description}</p>
-        
+
         {action}
       </div>
     </div>

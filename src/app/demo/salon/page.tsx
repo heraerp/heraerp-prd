@@ -13,17 +13,17 @@ export default function SalonDemoPage() {
 
   useEffect(() => {
     let mounted = true
-    
+
     async function setupDemoSession() {
       // Prevent multiple calls
       if (!mounted) return
-      
+
       try {
         console.log('🚀 Initializing salon demo session...')
-        
+
         // Initialize demo session
         const success = await initializeDemo('salon-receptionist')
-        
+
         if (mounted && success) {
           console.log('✅ Demo session created, redirecting to salon dashboard...')
           // Small delay to ensure session is fully set
@@ -46,7 +46,7 @@ export default function SalonDemoPage() {
     }
 
     setupDemoSession()
-    
+
     return () => {
       mounted = false
     }
@@ -57,7 +57,9 @@ export default function SalonDemoPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Setting up Hair Talkz Salon Demo</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Setting up Hair Talkz Salon Demo
+          </h2>
           <p className="text-gray-600">Creating your demo session...</p>
         </div>
       </div>

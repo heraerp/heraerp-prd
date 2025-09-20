@@ -8,14 +8,14 @@
 
 import React, { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-  Users, 
-  DollarSign, 
-  TrendingUp, 
-  Star, 
-  Search, 
-  Filter, 
-  ChevronDown, 
+import {
+  Users,
+  DollarSign,
+  TrendingUp,
+  Star,
+  Search,
+  Filter,
+  ChevronDown,
   MoreVertical,
   Phone,
   Mail,
@@ -32,7 +32,13 @@ import { useToast } from '@/hooks/use-toast'
 import { MouseGlow } from '@/components/salon/MouseGlow'
 
 // KPI Card Component
-function KpiCard({ icon: Icon, label, value, trend, iconBg }: {
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  trend,
+  iconBg
+}: {
   icon: React.ElementType
   label: string
   value: string | number
@@ -43,15 +49,13 @@ function KpiCard({ icon: Icon, label, value, trend, iconBg }: {
     <div className="glass-card p-6 group hover:scale-[1.02] transition-all">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">
-            {label}
-          </p>
-          <p className="text-3xl font-semibold text-text-100 tabular-nums">
-            {value}
-          </p>
+          <p className="text-xs font-medium text-text-500 uppercase tracking-wider">{label}</p>
+          <p className="text-3xl font-semibold text-text-100 tabular-nums">{value}</p>
           {trend && (
             <p className="text-sm text-text-300 flex items-center gap-1">
-              <TrendingUp className={`w-4 h-4 ${trend.isPositive ? 'text-gold-500' : 'text-red-400'}`} />
+              <TrendingUp
+                className={`w-4 h-4 ${trend.isPositive ? 'text-gold-500' : 'text-red-400'}`}
+              />
               <span className={trend.isPositive ? 'text-gold-500' : 'text-red-400'}>
                 {trend.value}
               </span>
@@ -88,18 +92,20 @@ function CustomerRow({ customer, onClick }: { customer: any; onClick: () => void
     Bronze: 'bg-gradient-to-r from-orange-600 to-orange-500'
   }
 
-  const loyaltyTier = customer.relationships.find(
-    (r: any) => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
-  )?.metadata?.status_name || 'Bronze'
+  const loyaltyTier =
+    customer.relationships.find(
+      (r: any) => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
+    )?.metadata?.status_name || 'Bronze'
 
   const lifetimeValue = customer.transactions.reduce(
-    (sum: number, t: any) => sum + (t.total_amount || 0), 
+    (sum: number, t: any) => sum + (t.total_amount || 0),
     0
   )
 
-  const lastVisit = customer.transactions
-    .sort((a: any, b: any) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime())
-    [0]?.transaction_date
+  const lastVisit = customer.transactions.sort(
+    (a: any, b: any) =>
+      new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+  )[0]?.transaction_date
 
   return (
     <button
@@ -108,10 +114,12 @@ function CustomerRow({ customer, onClick }: { customer: any; onClick: () => void
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className={`w-10 h-10 rounded-full ${loyaltyColors[loyaltyTier] || loyaltyColors.Bronze} flex items-center justify-center text-charcoal-900 font-semibold shadow-lg`}>
+        <div
+          className={`w-10 h-10 rounded-full ${loyaltyColors[loyaltyTier] || loyaltyColors.Bronze} flex items-center justify-center text-charcoal-900 font-semibold shadow-lg`}
+        >
           {customer.entity.entity_name?.substring(0, 2).toUpperCase() || '??'}
         </div>
-        
+
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-4">
@@ -137,16 +145,18 @@ function CustomerRow({ customer, onClick }: { customer: any; onClick: () => void
                 <span className="inline-block px-2 py-0.5 text-xs font-medium bg-gold-500/10 text-gold-400 rounded">
                   {loyaltyTier}
                 </span>
-                <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${
-                  customer.entity.status === 'active' 
-                    ? 'bg-emerald-500/10 text-emerald-400' 
-                    : 'bg-gray-500/10 text-gray-400'
-                }`}>
+                <span
+                  className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${
+                    customer.entity.status === 'active'
+                      ? 'bg-emerald-500/10 text-emerald-400'
+                      : 'bg-gray-500/10 text-gray-400'
+                  }`}
+                >
                   {customer.entity.status}
                 </span>
               </div>
             </div>
-            
+
             {/* Metrics */}
             <div className="text-right">
               <p className="text-lg font-semibold text-text-100 tabular-nums">
@@ -158,13 +168,11 @@ function CustomerRow({ customer, onClick }: { customer: any; onClick: () => void
                   {format(new Date(lastVisit), 'MMM d, yyyy')}
                 </p>
               )}
-              <p className="text-xs text-text-500">
-                {customer.transactions.length} visits
-              </p>
+              <p className="text-xs text-text-500">{customer.transactions.length} visits</p>
             </div>
           </div>
         </div>
-        
+
         {/* Actions */}
         <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-charcoal-600 rounded transition-all">
           <MoreVertical className="w-5 h-5 text-text-500" />
@@ -179,13 +187,13 @@ export default function SalonCustomersV2Page() {
   const { toast } = useToast()
   const { currentOrganization, isLoading: authLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id
-  
+
   // State management
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [loyaltyFilter, setLoyaltyFilter] = useState('all')
   const [sortBy, setSortBy] = useState('name')
-  
+
   // Fetch customers using existing hook
   const { customers, stats, loading, error, refetch } = useCustomers(organizationId)
 
@@ -200,7 +208,7 @@ export default function SalonCustomersV2Page() {
         const email = customer.dynamicFields.email?.toLowerCase() || ''
         const phone = customer.dynamicFields.phone?.toLowerCase() || ''
         const search = searchTerm.toLowerCase()
-        
+
         return name.includes(search) || email.includes(search) || phone.includes(search)
       })
     }
@@ -214,7 +222,8 @@ export default function SalonCustomersV2Page() {
     if (loyaltyFilter !== 'all') {
       filtered = filtered.filter(customer => {
         const loyaltyRel = customer.relationships.find(
-          (r: any) => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
+          (r: any) =>
+            r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
         )
         return loyaltyRel?.metadata?.status_name === loyaltyFilter
       })
@@ -228,8 +237,14 @@ export default function SalonCustomersV2Page() {
         case 'recent':
           return new Date(b.entity.created_at).getTime() - new Date(a.entity.created_at).getTime()
         case 'value':
-          const aValue = a.transactions.reduce((sum: number, t: any) => sum + (t.total_amount || 0), 0)
-          const bValue = b.transactions.reduce((sum: number, t: any) => sum + (t.total_amount || 0), 0)
+          const aValue = a.transactions.reduce(
+            (sum: number, t: any) => sum + (t.total_amount || 0),
+            0
+          )
+          const bValue = b.transactions.reduce(
+            (sum: number, t: any) => sum + (t.total_amount || 0),
+            0
+          )
           return bValue - aValue
         default:
           return 0
@@ -284,10 +299,7 @@ export default function SalonCustomersV2Page() {
               <Download className="w-4 h-4" />
               Export
             </button>
-            <button 
-              className="gold-btn"
-              onClick={() => router.push('/salon/customers/new')}
-            >
+            <button className="gold-btn" onClick={() => router.push('/salon/customers/new')}>
               <Plus className="w-4 h-4" />
               Add Customer
             </button>
@@ -332,24 +344,24 @@ export default function SalonCustomersV2Page() {
                 type="text"
                 placeholder="Search customers..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="glass-input w-full pl-10"
               />
             </div>
-            
-            <select 
+
+            <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={e => setStatusFilter(e.target.value)}
               className="glass-select"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
-            
+
             <select
               value={loyaltyFilter}
-              onChange={(e) => setLoyaltyFilter(e.target.value)}
+              onChange={e => setLoyaltyFilter(e.target.value)}
               className="glass-select"
             >
               <option value="all">All Tiers</option>
@@ -358,19 +370,19 @@ export default function SalonCustomersV2Page() {
               <option value="Silver">Silver</option>
               <option value="Bronze">Bronze</option>
             </select>
-            
+
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={e => setSortBy(e.target.value)}
               className="glass-select"
             >
               <option value="name">Sort by Name</option>
               <option value="recent">Most Recent</option>
               <option value="value">Highest Value</option>
             </select>
-            
+
             {activeFilters.length > 0 && (
-              <button 
+              <button
                 onClick={() => {
                   setStatusFilter('all')
                   setLoyaltyFilter('all')
@@ -382,7 +394,7 @@ export default function SalonCustomersV2Page() {
               </button>
             )}
           </div>
-          
+
           {/* Active filter chips */}
           {activeFilters.length > 0 && (
             <div className="flex gap-2 mt-3">
@@ -416,12 +428,12 @@ export default function SalonCustomersV2Page() {
               <Users className="w-12 h-12 mx-auto mb-4 text-text-500" />
               <p className="text-text-300 text-lg">No customers found</p>
               <p className="text-sm mt-2 text-text-500">
-                {searchTerm || activeFilters.length > 0 
-                  ? 'Try adjusting your filters' 
+                {searchTerm || activeFilters.length > 0
+                  ? 'Try adjusting your filters'
                   : 'Add your first customer to get started'}
               </p>
               {!(searchTerm || activeFilters.length > 0) && (
-                <button 
+                <button
                   onClick={() => router.push('/salon/customers/new')}
                   className="gold-btn mt-4"
                 >
@@ -431,7 +443,7 @@ export default function SalonCustomersV2Page() {
               )}
             </div>
           ) : (
-            filteredCustomers.map((customer) => (
+            filteredCustomers.map(customer => (
               <CustomerRow
                 key={customer.entity.id}
                 customer={customer}

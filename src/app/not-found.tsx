@@ -1,6 +1,8 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+'use client'
+
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function NotFound() {
   return (
@@ -16,14 +18,10 @@ export default function NotFound() {
           <CardContent>
             <div className="text-center py-8">
               <div className="text-6xl font-bold text-gray-300 mb-4">404</div>
-              <p className="text-gray-600 mb-6">
-                We couldn't find what you were looking for.
-              </p>
+              <p className="text-gray-600 mb-6">We couldn't find what you were looking for.</p>
               <div className="flex gap-2 justify-center">
                 <Button asChild>
-                  <Link href="/">
-                    Go home
-                  </Link>
+                  <Link href="/">Go home</Link>
                 </Button>
                 <Button variant="outline" onClick={() => window.history.back()}>
                   Go back
@@ -34,5 +32,5 @@ export default function NotFound() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

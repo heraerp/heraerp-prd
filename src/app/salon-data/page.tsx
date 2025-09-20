@@ -593,7 +593,9 @@ export default function SalonModernDashboard() {
                   <Scissors className="w-5 h-5 text-foreground drop-shadow-md" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold !text-gray-100 dark:!text-foreground">Hair Talkz</h1>
+                  <h1 className="text-xl font-bold !text-gray-100 dark:!text-foreground">
+                    Hair Talkz
+                  </h1>
                   <p className="text-xs !text-muted-foreground dark:!text-gray-300 font-medium">
                     {isHeadOffice
                       ? 'Head Office - All Branches'
@@ -1066,7 +1068,9 @@ export default function SalonModernDashboard() {
                   ) : (
                     <div className="text-center py-8">
                       <CalendarCheck className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                      <p className="!text-muted-foreground dark:!text-muted-foreground">No recent appointments</p>
+                      <p className="!text-muted-foreground dark:!text-muted-foreground">
+                        No recent appointments
+                      </p>
                     </div>
                   )}
                 </CardContent>

@@ -1,18 +1,22 @@
 'use client'
 
 import React from 'react'
-import { Card }
-from '@/components/ui/card'
-import { Badge }
-from '@/components/ui/badge'
-import { Progress }
-from '@/components/ui/progress'
-import { FileText, Search, Target, DollarSign, Trophy, Truck, CheckCircle, XCircle, Clock, AlertCircle
-}
-from 'lucide-react'
-import { cn }
-from '@/lib/utils'
-
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import {
+  FileText,
+  Search,
+  Target,
+  DollarSign,
+  Trophy,
+  Truck,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface WorkflowStage {
   id: string
@@ -84,9 +88,9 @@ const defaultStages: WorkflowStage[] = [
   }
 ]
 
-export default function TenderWorkflowStatus({ 
-  tenderCode, 
-  currentStage, 
+export default function TenderWorkflowStatus({
+  tenderCode,
+  currentStage,
   stages = defaultStages
 }: TenderWorkflowStatusProps) {
   // Calculate progress
@@ -101,9 +105,7 @@ export default function TenderWorkflowStatus({
             <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
               Tender Workflow Status
             </h3>
-            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-              Tender {tenderCode}
-            </p>
+            <p className="text-sm text-[var(--color-text-secondary)] mt-1">Tender {tenderCode}</p>
           </div>
           <div className="bg-[var(--color-body)] text-right">
             <p className="text-sm text-[var(--color-text-secondary)]">Overall Progress</p>
@@ -128,15 +130,20 @@ export default function TenderWorkflowStatus({
               const isFailed = stage.status === 'failed'
 
               return (
-                <div key={stage.id} className="bg-[var(--color-body)] relative flex items-start gap-4">
+                <div
+                  key={stage.id}
+                  className="bg-[var(--color-body)] relative flex items-start gap-4"
+                >
                   {/* Stage icon */}
                   <div
                     className={cn(
                       'relative z-10 w-16 h-16 rounded-xl flex items-center justify-center transition-all',
                       isCompleted && 'bg-green-600/20 border-2 border-green-600',
-                      isActive && 'bg-[var(--color-accent-indigo)]/20 border-2 border-[var(--color-accent-indigo)] animate-pulse',
+                      isActive &&
+                        'bg-[var(--color-accent-indigo)]/20 border-2 border-[var(--color-accent-indigo)] animate-pulse',
                       isFailed && 'bg-red-600/20 border-2 border-red-600',
-                      stage.status === 'pending' && 'bg-muted-foreground/10/50 border-2 border-[var(--color-border)]'
+                      stage.status === 'pending' &&
+                        'bg-muted-foreground/10/50 border-2 border-[var(--color-border)]'
                     )}
                   >
                     <Icon
@@ -157,7 +164,9 @@ export default function TenderWorkflowStatus({
                         <h4
                           className={cn(
                             'font-semibold text-lg',
-                            stage.status === 'pending' ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-primary)]'
+                            stage.status === 'pending'
+                              ? 'text-[var(--color-text-secondary)]'
+                              : 'text-[var(--color-text-primary)]'
                           )}
                         >
                           {stage.name}
@@ -179,10 +188,10 @@ export default function TenderWorkflowStatus({
                           isCompleted
                             ? 'default'
                             : isActive
-                            ? 'secondary'
-                            : isFailed
-                            ? 'destructive'
-                            : 'outline'
+                              ? 'secondary'
+                              : isFailed
+                                ? 'destructive'
+                                : 'outline'
                         }
                       >
                         {stage.status}

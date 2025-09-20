@@ -27,11 +27,7 @@ export default function POSPage() {
     <PageLayout>
       <PageHeader
         title="Point of Sale"
-        breadcrumbs={[
-          { label: 'HERA' },
-          { label: 'SALON OS' },
-          { label: 'POS', isActive: true }
-        ]}
+        breadcrumbs={[{ label: 'HERA' }, { label: 'SALON OS' }, { label: 'POS', isActive: true }]}
       />
       <div className="h-[calc(100vh-200px)]">
         <SalonPOSTerminalGlass

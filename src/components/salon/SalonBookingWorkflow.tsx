@@ -579,7 +579,9 @@ export function SalonBookingWorkflow({
                           <label htmlFor={addon.id} className="font-medium">
                             {addon.name}
                           </label>
-                          <span className="text-sm text-muted-foreground">(+{addon.duration}min)</span>
+                          <span className="text-sm text-muted-foreground">
+                            (+{addon.duration}min)
+                          </span>
                         </div>
                         <div className="font-semibold">+AED {addon.price}</div>
                       </div>
@@ -624,7 +626,9 @@ export function SalonBookingWorkflow({
                               <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
                                 <span className="font-semibold">{stylist.rating}</span>
-                                <span className="text-sm text-muted-foreground">({stylist.reviews})</span>
+                                <span className="text-sm text-muted-foreground">
+                                  ({stylist.reviews})
+                                </span>
                               </div>
                               <div className="text-sm text-muted-foreground mt-1">
                                 AED {stylist.hourlyRate}/hour

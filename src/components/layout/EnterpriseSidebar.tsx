@@ -45,7 +45,7 @@ import {
   Code2,
   Brain,
   ChevronDown,
-  CreditCard,
+  CreditCard
 } from 'lucide-react'
 
 interface SidebarItem {
@@ -64,7 +64,7 @@ const mainSidebarItems: SidebarItem[] = [
   { title: 'Organizations', href: '/organizations', icon: Building2 },
   { title: 'Apps', href: '/apps', icon: Grid3X3, badge: 'NEW', badgeColor: 'bg-emerald-500' },
   { title: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { title: 'Settings', href: '/settings', icon: Settings },
+  { title: 'Settings', href: '/settings', icon: Settings }
 ]
 
 // All available apps for the modal
@@ -74,22 +74,28 @@ const allApps: SidebarItem[] = [
   { title: 'Restaurant POS', href: '/restaurant', icon: Store, requiresApp: 'restaurant' },
   { title: 'Retail Suite', href: '/retail', icon: ShoppingBag, requiresApp: 'retail' },
   { title: 'Manufacturing', href: '/furniture', icon: Factory, requiresApp: 'manufacturing' },
-  { title: 'Healthcare', href: '/healthcare', icon: Stethoscope, requiresApp: 'healthcare', comingSoon: true },
-  
+  {
+    title: 'Healthcare',
+    href: '/healthcare',
+    icon: Stethoscope,
+    requiresApp: 'healthcare',
+    comingSoon: true
+  },
+
   // Finance & Accounting
   { title: 'Finance Hub', href: '/finance', icon: DollarSign, requiresApp: 'finance' },
   { title: 'Accounting', href: '/accounting', icon: FileText, requiresApp: 'accounting' },
   { title: 'Payroll', href: '/payroll', icon: CreditCard, requiresApp: 'payroll' },
-  
+
   // Operations
   { title: 'Inventory', href: '/inventory', icon: Package, requiresApp: 'inventory' },
   { title: 'CRM', href: '/crm', icon: Users, requiresApp: 'crm' },
   { title: 'HR Management', href: '/hr', icon: Briefcase, requiresApp: 'hr' },
-  
+
   // Advanced Features
   { title: 'AI Assistant', href: '/ai', icon: Brain, requiresApp: 'ai' },
   { title: 'Universal API', href: '/api-explorer', icon: Code2, requiresApp: 'api' },
-  { title: 'Automation', href: '/automation', icon: Activity, requiresApp: 'automation' },
+  { title: 'Automation', href: '/automation', icon: Activity, requiresApp: 'automation' }
 ]
 
 // Navigation Link Component
@@ -108,9 +114,7 @@ const NavigationLink: React.FC<{
       onClick={onClick}
       className={cn(
         'flex items-center lg:flex-col lg:items-center justify-center py-3 lg:py-2 px-4 lg:px-0 w-full transition-all duration-300 group relative',
-        active
-          ? 'text-white bg-white/10'
-          : 'text-gray-400 hover:text-white hover:bg-white/5'
+        active ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5'
       )}
     >
       <Icon className="h-5 w-5" />
@@ -118,15 +122,17 @@ const NavigationLink: React.FC<{
         {title}
       </span>
       {badge && (
-        <span className={cn(
-          'absolute top-1 right-1 lg:top-0 lg:right-0 text-[9px] font-bold px-1.5 py-0.5 rounded',
-          badgeColor || 'bg-blue-500',
-          'text-white'
-        )}>
+        <span
+          className={cn(
+            'absolute top-1 right-1 lg:top-0 lg:right-0 text-[9px] font-bold px-1.5 py-0.5 rounded',
+            badgeColor || 'bg-blue-500',
+            'text-white'
+          )}
+        >
           {badge}
         </span>
       )}
-      
+
       {/* Tooltip - desktop only */}
       <div className="hidden lg:block absolute left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-lg">
         <p className="font-medium">{title}</p>
@@ -150,7 +156,7 @@ const AppsModal: React.FC<{
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div className="bg-gray-800/95 backdrop-blur-xl border border-gray-700 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
@@ -158,9 +164,7 @@ const AppsModal: React.FC<{
           <div className="bg-gray-800 flex items-center justify-between p-6 border-b border-gray-700">
             <div>
               <h2 className="text-2xl font-bold text-white">All Applications</h2>
-              <p className="text-sm text-gray-400 mt-1">
-                Access all your business applications
-              </p>
+              <p className="text-sm text-gray-400 mt-1">Access all your business applications</p>
             </div>
             <button
               onClick={onClose}
@@ -169,14 +173,14 @@ const AppsModal: React.FC<{
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           {/* Apps Grid */}
           <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {allApps.map(app => {
                 const Icon = app.icon
                 const installed = !app.requiresApp || isAppInstalled(app.requiresApp)
-                
+
                 return (
                   <Link
                     key={app.href}
@@ -193,12 +197,14 @@ const AppsModal: React.FC<{
                         : 'bg-gray-800/50 opacity-50 cursor-not-allowed'
                     )}
                   >
-                    <div className={cn(
-                      'w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-all duration-200',
-                      installed && !app.comingSoon
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-500 group-hover:to-indigo-500'
-                        : 'bg-gray-700'
-                    )}>
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-all duration-200',
+                        installed && !app.comingSoon
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:from-blue-500 group-hover:to-indigo-500'
+                          : 'bg-gray-700'
+                      )}
+                    >
                       <Icon className="h-6 w-6 text-white" />
                     </div>
                     <span className="text-xs font-medium text-center text-gray-300">
@@ -234,7 +240,8 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { user, logout } = useAuth()
-  const { currentOrganization, organizations, switchOrganization, isAppInstalled } = useOrganization()
+  const { currentOrganization, organizations, switchOrganization, isAppInstalled } =
+    useOrganization()
   const [showAppsModal, setShowAppsModal] = useState(false)
   const [showOrgDropdown, setShowOrgDropdown] = useState(false)
 
@@ -293,15 +300,17 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
               <p className="text-xs text-gray-400 capitalize">{currentOrganization?.role}</p>
             </div>
           </div>
-          <ChevronDown className={cn(
-            "h-4 w-4 text-gray-400 transition-transform",
-            showOrgDropdown && "rotate-180"
-          )} />
+          <ChevronDown
+            className={cn(
+              'h-4 w-4 text-gray-400 transition-transform',
+              showOrgDropdown && 'rotate-180'
+            )}
+          />
         </button>
-        
+
         {showOrgDropdown && (
           <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
-            {organizations.map((org) => (
+            {organizations.map(org => (
               <button
                 key={org.id}
                 onClick={() => {
@@ -309,10 +318,10 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
                   setShowOrgDropdown(false)
                 }}
                 className={cn(
-                  "w-full text-left p-2 rounded transition-colors",
+                  'w-full text-left p-2 rounded transition-colors',
                   currentOrganization?.id === org.id
-                    ? "bg-blue-600/20 text-blue-400"
-                    : "hover:bg-gray-800 text-gray-300"
+                    ? 'bg-blue-600/20 text-blue-400'
+                    : 'hover:bg-gray-800 text-gray-300'
                 )}
               >
                 <p className="text-sm font-medium">{org.name}</p>
@@ -341,7 +350,7 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
               />
             )
           })}
-          
+
           {/* More Apps Button */}
           <button
             onClick={() => setShowAppsModal(true)}

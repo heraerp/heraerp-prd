@@ -309,7 +309,9 @@ export function EntityManager() {
                             {entity.entity_type}
                           </Badge>
                           {entity.entity_code && (
-                            <span className="ml-2 text-xs text-muted-foreground">{entity.entity_code}</span>
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              {entity.entity_code}
+                            </span>
                           )}
                         </CardDescription>
                       </div>

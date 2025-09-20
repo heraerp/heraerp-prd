@@ -150,7 +150,9 @@ export default function FinanceLayout({ children }: { children: React.ReactNode 
                       <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600">
                         <DollarSign className="h-4 w-4 text-foreground" />
                       </div>
-                      <span className="text-sm font-semibold text-foreground">Financial Health</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        Financial Health
+                      </span>
                     </div>
                     <span className="text-xs font-medium text-emerald-400">Good</span>
                   </div>

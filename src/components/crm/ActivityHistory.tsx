@@ -447,7 +447,9 @@ export function ActivityHistory({
                   <Card className="p-8 text-center">
                     <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium text-gray-100 mb-2">No activities found</h3>
-                    <p className="text-muted-foreground">No activities match your current filters</p>
+                    <p className="text-muted-foreground">
+                      No activities match your current filters
+                    </p>
                   </Card>
                 ) : (
                   <>
@@ -542,7 +544,9 @@ export function ActivityHistory({
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-muted-foreground">Total Activities</p>
+                          <p className="text-sm font-medium text-muted-foreground">
+                            Total Activities
+                          </p>
                           <p className="text-2xl font-bold">{summary.total_activities}</p>
                         </div>
                         <Activity className="h-8 w-8 text-primary" />

@@ -35,37 +35,34 @@ export function useMovementsPlaybook({
   const [error, setError] = useState<string | null>(null)
 
   // Fetch movements
-  const fetchMovements = useCallback(
-    async () => {
-      if (!organizationId) return
+  const fetchMovements = useCallback(async () => {
+    if (!organizationId) return
 
-      setLoading(true)
-      setError(null)
+    setLoading(true)
+    setError(null)
 
-      try {
-        const offset = (page - 1) * pageSize
-        const result = await listMovements({
-          organization_id: organizationId,
-          branch_id: branchId,
-          from: range?.from,
-          to: range?.to,
-          types,
-          limit: pageSize,
-          offset
-        })
+    try {
+      const offset = (page - 1) * pageSize
+      const result = await listMovements({
+        organization_id: organizationId,
+        branch_id: branchId,
+        from: range?.from,
+        to: range?.to,
+        types,
+        limit: pageSize,
+        offset
+      })
 
-        setMovements(result.items)
-        setTotal(result.total)
-      } catch (err) {
-        console.error('Failed to fetch movements:', err)
-        setError(err instanceof Error ? err.message : 'Failed to load movements')
-        toast.error('Failed to load inventory movements')
-      } finally {
-        setLoading(false)
-      }
-    },
-    [organizationId, branchId, range, types, page, pageSize]
-  )
+      setMovements(result.items)
+      setTotal(result.total)
+    } catch (err) {
+      console.error('Failed to fetch movements:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load movements')
+      toast.error('Failed to load inventory movements')
+    } finally {
+      setLoading(false)
+    }
+  }, [organizationId, branchId, range, types, page, pageSize])
 
   useEffect(() => {
     fetchMovements()
@@ -94,7 +91,7 @@ export function useMovementsPlaybook({
           // For issues and transfers, calculate based on valuation method
           for (const line of form.lines) {
             const itemConfig = config.item_overrides?.[line.item_id] || config.method
-            
+
             if (itemConfig === 'WAC') {
               // Get average cost from dynamic data
               const avgCostKey = `${line.item_id}:HERA.INVENTORY.COST.AVG.V1`
@@ -122,9 +119,10 @@ export function useMovementsPlaybook({
             impactSummary = `Transfer AED ${totalCost.toFixed(2)} between branches`
             break
           case 'ADJUST':
-            impactSummary = totalCost > 0 
-              ? `Increase inventory by AED ${totalCost.toFixed(2)} (variance income)`
-              : `Decrease inventory by AED ${Math.abs(totalCost).toFixed(2)} (variance expense)`
+            impactSummary =
+              totalCost > 0
+                ? `Increase inventory by AED ${totalCost.toFixed(2)} (variance income)`
+                : `Decrease inventory by AED ${Math.abs(totalCost).toFixed(2)} (variance expense)`
             break
         }
 
@@ -174,7 +172,10 @@ export function useMovementsPlaybook({
           qty: form.type === 'ISSUE' ? -line.qty : line.qty,
           uom: 'unit', // Would get from item
           unit_cost: line.unit_cost || valuation.unitCosts[line.item_id] || 0,
-          amount: line.qty * (line.unit_cost || valuation.unitCosts[line.item_id] || 0) * (form.type === 'ISSUE' ? -1 : 1),
+          amount:
+            line.qty *
+            (line.unit_cost || valuation.unitCosts[line.item_id] || 0) *
+            (form.type === 'ISSUE' ? -1 : 1),
           metadata: {
             item_name: line.item_name,
             note: line.note,
@@ -199,46 +200,36 @@ export function useMovementsPlaybook({
           })
 
           const currentStock = stockLevel[line.item_id]?.on_hand || 0
-          const newStock = form.type === 'ISSUE' 
-            ? currentStock - line.qty 
-            : currentStock + line.qty
+          const newStock = form.type === 'ISSUE' ? currentStock - line.qty : currentStock + line.qty
 
-          await upsertDynamicData(
-            line.item_id,
-            'HERA.INVENTORY.STOCKLEVEL.V1',
-            {
-              item_id: line.item_id,
-              branch_id: form.branch_id,
-              on_hand: newStock,
-              available: newStock, // Simplified - would calculate based on allocations
-              allocated: 0,
-              last_movement: movement.id,
-              last_updated: new Date().toISOString()
-            }
-          )
+          await upsertDynamicData(line.item_id, 'HERA.INVENTORY.STOCKLEVEL.V1', {
+            item_id: line.item_id,
+            branch_id: form.branch_id,
+            on_hand: newStock,
+            available: newStock, // Simplified - would calculate based on allocations
+            allocated: 0,
+            last_movement: movement.id,
+            last_updated: new Date().toISOString()
+          })
 
           // Update WAC if applicable
           if (valuation.method === 'WAC' && form.type === 'RECEIPT') {
             // Simplified WAC calculation
             const avgCost = valuation.unitCosts[line.item_id] || 0
-            await upsertDynamicData(
-              line.item_id,
-              'HERA.INVENTORY.COST.AVG.V1',
-              {
-                qty_on_hand: newStock,
-                total_cost: newStock * avgCost,
-                avg_cost: avgCost,
-                last_updated: new Date().toISOString()
-              }
-            )
+            await upsertDynamicData(line.item_id, 'HERA.INVENTORY.COST.AVG.V1', {
+              qty_on_hand: newStock,
+              total_cost: newStock * avgCost,
+              avg_cost: avgCost,
+              last_updated: new Date().toISOString()
+            })
           }
         }
 
         toast.success(`${form.type} movement posted successfully`)
-        
+
         // Refresh list
         fetchMovements()
-        
+
         return movement
       } catch (err) {
         console.error('Failed to create movement:', err)

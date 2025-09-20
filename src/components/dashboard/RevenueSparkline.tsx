@@ -17,7 +17,7 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
   const today = new Date()
   const sevenDaysAgo = new Date(today)
   sevenDaysAgo.setDate(today.getDate() - 6)
-  
+
   const { data, isLoading } = useUniversalReports({
     organizationId,
     reportType: 'daily_sales',
@@ -30,7 +30,7 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
   // Transform data for chart
   const chartData = React.useMemo(() => {
     if (!data?.daily_breakdown) return []
-    
+
     return data.daily_breakdown.map(day => ({
       date: new Date(day.date).toLocaleDateString('en-AE', { weekday: 'short' }),
       revenue: day.gross_sales || 0
@@ -47,9 +47,8 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
 
   const todayRevenue = chartData[chartData.length - 1]?.revenue || 0
   const yesterdayRevenue = chartData[chartData.length - 2]?.revenue || 0
-  const percentChange = yesterdayRevenue > 0 
-    ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100)
-    : 0
+  const percentChange =
+    yesterdayRevenue > 0 ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100 : 0
 
   if (isLoading) {
     return (
@@ -76,38 +75,33 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
             Revenue Trend
           </CardTitle>
           {percentChange !== 0 && (
-            <span className={`text-sm font-medium ${percentChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {percentChange > 0 ? '+' : ''}{percentChange.toFixed(1)}%
+            <span
+              className={`text-sm font-medium ${percentChange > 0 ? 'text-green-600' : 'text-red-600'}`}
+            >
+              {percentChange > 0 ? '+' : ''}
+              {percentChange.toFixed(1)}%
             </span>
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent className="flex-1">
         <div className="h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
-              data={chartData} 
-              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-            >
-              <XAxis 
-                dataKey="date" 
+            <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+              <XAxis
+                dataKey="date"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 12, fill: '#888' }}
               />
-              <YAxis 
-                hide
-                domain={[0, 'dataMax']}
-              />
+              <YAxis hide domain={[0, 'dataMax']} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload[0]) {
                     return (
                       <div className="bg-background border rounded-lg shadow-lg p-3">
-                        <p className="text-sm font-medium">
-                          {payload[0].payload.date}
-                        </p>
+                        <p className="text-sm font-medium">{payload[0].payload.date}</p>
                         <p className="text-sm text-muted-foreground">
                           {formatCurrency(payload[0].value as number)}
                         </p>
@@ -134,7 +128,7 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        
+
         <div className="mt-4">
           <p className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">
             {formatCurrency(todayRevenue)}
@@ -142,7 +136,7 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
           <p className="text-sm text-muted-foreground">Today's Revenue</p>
         </div>
       </CardContent>
-      
+
       <CardFooter className="pt-3">
         <Link href="/reports/sales/daily" className="w-full">
           <Button variant="ghost" className="w-full">

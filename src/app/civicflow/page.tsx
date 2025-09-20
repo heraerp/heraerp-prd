@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  Building2, 
-  Briefcase, 
-  DollarSign, 
-  FileText, 
+import { useState } from 'react'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Users,
+  Building2,
+  Briefcase,
+  DollarSign,
+  FileText,
   MessageSquare,
   Activity,
   TrendingUp,
   Clock,
   CheckCircle
-} from 'lucide-react';
+} from 'lucide-react'
 
 export default function CivicFlowPage() {
-  const { currentOrgId } = useOrgStore();
-  const [activeTab, setActiveTab] = useState('overview');
+  const { currentOrgId } = useOrgStore()
+  const [activeTab, setActiveTab] = useState('overview')
 
-  const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
-  const isDemoMode = currentOrgId === DEMO_ORG_ID;
+  const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
+  const isDemoMode = currentOrgId === DEMO_ORG_ID
 
   // Demo statistics
   const stats = {
@@ -34,16 +34,14 @@ export default function CivicFlowPage() {
     activeGrants: 20,
     openCases: 6,
     completedCases: 12
-  };
+  }
 
   return (
     <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-text-100">CivicFlow</h1>
-        <p className="text-xl text-text-300">
-          Public Sector CRM for Government Services
-        </p>
+        <p className="text-xl text-text-300">Public Sector CRM for Government Services</p>
       </div>
 
       {/* Statistics Cards */}
@@ -220,8 +218,8 @@ export default function CivicFlowPage() {
                 </div>
                 <div className="border-t border-border pt-4">
                   <p className="text-sm text-text-500">
-                    Demo includes diverse constituent profiles with various eligibility flags
-                    for programs including Medicaid, SNAP, Housing Assistance, and Veterans Benefits.
+                    Demo includes diverse constituent profiles with various eligibility flags for
+                    programs including Medicaid, SNAP, Housing Assistance, and Veterans Benefits.
                   </p>
                 </div>
               </div>
@@ -237,13 +235,22 @@ export default function CivicFlowPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {['Healthcare Access Program', 'Housing First Initiative', 'Community Development Grants'].map((program, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 border border-border rounded bg-panel-alt">
+                {[
+                  'Healthcare Access Program',
+                  'Housing First Initiative',
+                  'Community Development Grants'
+                ].map((program, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 border border-border rounded bg-panel-alt"
+                  >
                     <div>
                       <p className="font-medium text-text-100">{program}</p>
                       <p className="text-sm text-text-500">Active grant rounds: 2</p>
                     </div>
-                    <Badge variant="outline" className="border-accent text-accent">Active</Badge>
+                    <Badge variant="outline" className="border-accent text-accent">
+                      Active
+                    </Badge>
                   </div>
                 ))}
               </div>
@@ -294,12 +301,21 @@ export default function CivicFlowPage() {
                   { name: 'Case Lifecycle Management', steps: 6, runs: 18 },
                   { name: 'Outreach Notification Campaign', steps: 5, runs: 12 }
                 ].map((playbook, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-4 border border-border rounded hover:bg-panel-alt bg-panel">
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-4 border border-border rounded hover:bg-panel-alt bg-panel"
+                  >
                     <div>
                       <p className="font-medium text-text-100">{playbook.name}</p>
-                      <p className="text-sm text-text-500">{playbook.steps} steps • {playbook.runs} total runs</p>
+                      <p className="text-sm text-text-500">
+                        {playbook.steps} steps • {playbook.runs} total runs
+                      </p>
                     </div>
-                    <Button variant="outline" size="sm" className="border-border hover:bg-accent-soft hover:text-accent">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-border hover:bg-accent-soft hover:text-accent"
+                    >
                       View Details
                     </Button>
                   </div>
@@ -319,7 +335,8 @@ export default function CivicFlowPage() {
               <div>
                 <p className="font-medium text-text-100">Demo Mode Active</p>
                 <p className="text-sm text-text-300">
-                  This is a demonstration environment with sample data. External communications are disabled.
+                  This is a demonstration environment with sample data. External communications are
+                  disabled.
                 </p>
               </div>
             </div>
@@ -327,5 +344,5 @@ export default function CivicFlowPage() {
         </Card>
       )}
     </div>
-  );
+  )
 }

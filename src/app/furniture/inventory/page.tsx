@@ -39,10 +39,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import {
-  useFurnitureOrg,
-  FurnitureOrgLoading
-} from '@/components/furniture/FurnitureOrgContext'
+import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { useInventoryData } from '@/lib/furniture/use-inventory-data'
 import { cn } from '@/lib/utils'

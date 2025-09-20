@@ -1,11 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
-import { 
-  Printer, 
-  Download, 
-  Mail, 
-  X, 
+import {
+  Printer,
+  Download,
+  Mail,
+  X,
   Receipt as ReceiptIcon,
   Calendar,
   Clock,
@@ -16,12 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { format } from 'date-fns'
 
 interface ReceiptProps {
@@ -91,7 +86,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
     if (!printWindow) return
 
     const receiptContent = receiptRef.current?.innerHTML || ''
-    
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -133,7 +128,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
         </body>
       </html>
     `)
-    
+
     printWindow.document.close()
     printWindow.print()
   }
@@ -164,49 +159,56 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
     if (saleData.customer_name) lines.push(`Customer: ${saleData.customer_name}`)
     lines.push('-'.repeat(40))
     lines.push('ITEMS:')
-    
+
     saleData.lineItems.forEach(item => {
       lines.push(`${item.entity_name}`)
       if (item.stylist_name) lines.push(`  Stylist: ${item.stylist_name}`)
       if (item.notes) lines.push(`  Note: ${item.notes}`)
-      lines.push(`  ${item.quantity} x $${item.unit_price.toFixed(2)} = $${item.line_amount.toFixed(2)}`)
+      lines.push(
+        `  ${item.quantity} x $${item.unit_price.toFixed(2)} = $${item.line_amount.toFixed(2)}`
+      )
       lines.push('')
     })
-    
+
     if (saleData.discounts.length > 0) {
       lines.push('DISCOUNTS:')
       saleData.discounts.forEach(discount => {
-        lines.push(`${discount.description}: -${discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}`)
+        lines.push(
+          `${discount.description}: -${discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}`
+        )
       })
       lines.push('')
     }
-    
+
     if (saleData.tips.length > 0) {
       lines.push('TIPS:')
       saleData.tips.forEach(tip => {
-        lines.push(`${tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (${tip.method}): +$${tip.amount.toFixed(2)}`)
+        lines.push(
+          `${tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (${tip.method}): +$${tip.amount.toFixed(2)}`
+        )
       })
       lines.push('')
     }
-    
+
     lines.push('-'.repeat(40))
     lines.push(`Subtotal: $${saleData.totals.subtotal.toFixed(2)}`)
-    if (saleData.totals.discountAmount > 0) lines.push(`Discounts: -$${saleData.totals.discountAmount.toFixed(2)}`)
+    if (saleData.totals.discountAmount > 0)
+      lines.push(`Discounts: -$${saleData.totals.discountAmount.toFixed(2)}`)
     if (saleData.totals.tipAmount > 0) lines.push(`Tips: +$${saleData.totals.tipAmount.toFixed(2)}`)
     if (saleData.totals.taxAmount > 0) lines.push(`Tax: $${saleData.totals.taxAmount.toFixed(2)}`)
     lines.push(`TOTAL: $${saleData.totals.total.toFixed(2)}`)
     lines.push('')
-    
+
     lines.push('PAYMENT:')
     saleData.payments.forEach(payment => {
       lines.push(`${getPaymentMethodDisplay(payment)}: $${payment.amount.toFixed(2)}`)
     })
     if (saleData.changeAmount > 0) lines.push(`CHANGE: $${saleData.changeAmount.toFixed(2)}`)
-    
+
     lines.push('='.repeat(40))
     lines.push('Thank you for your business!')
     lines.push(`Transaction ID: ${saleData.transaction_id}`)
-    
+
     return lines.join('\n')
   }
 
@@ -306,12 +308,17 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
                       </div>
                     )}
                   </div>
-                  <Badge variant={item.entity_type === 'service' ? 'default' : 'secondary'} className="text-xs ml-2">
+                  <Badge
+                    variant={item.entity_type === 'service' ? 'default' : 'secondary'}
+                    className="text-xs ml-2"
+                  >
                     {item.entity_type}
                   </Badge>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>{item.quantity} × ${item.unit_price.toFixed(2)}</span>
+                  <span>
+                    {item.quantity} × ${item.unit_price.toFixed(2)}
+                  </span>
                   <span className="font-bold">${item.line_amount.toFixed(2)}</span>
                 </div>
               </div>
@@ -324,10 +331,18 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
               <Separator />
               <div className="space-y-2">
                 <h3 className="font-bold text-sm">DISCOUNTS</h3>
-                {saleData.discounts.map((discount) => (
-                  <div key={discount.id} className="flex justify-between text-sm text-green-600 discount-info">
+                {saleData.discounts.map(discount => (
+                  <div
+                    key={discount.id}
+                    className="flex justify-between text-sm text-green-600 discount-info"
+                  >
                     <span>🏷️ {discount.description}</span>
-                    <span>-{discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}</span>
+                    <span>
+                      -
+                      {discount.type === 'percentage'
+                        ? `${discount.value}%`
+                        : `$${discount.value.toFixed(2)}`}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -340,10 +355,11 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
               <Separator />
               <div className="space-y-2">
                 <h3 className="font-bold text-sm">TIPS</h3>
-                {saleData.tips.map((tip) => (
+                {saleData.tips.map(tip => (
                   <div key={tip.id} className="flex justify-between text-sm text-blue-600 tip-info">
                     <span>
-                      💰 {tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} ({tip.method})
+                      💰 {tip.stylist_name ? `Tip for ${tip.stylist_name}` : 'General Tip'} (
+                      {tip.method})
                     </span>
                     <span>+${tip.amount.toFixed(2)}</span>
                   </div>
@@ -360,7 +376,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
               <span>Subtotal:</span>
               <span>${saleData.totals.subtotal.toFixed(2)}</span>
             </div>
-            
+
             {saleData.totals.discountAmount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Total Discounts:</span>
@@ -383,7 +399,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
             )}
 
             <Separator />
-            
+
             <div className="flex justify-between font-bold text-lg">
               <span>TOTAL:</span>
               <span>${saleData.totals.total.toFixed(2)}</span>
@@ -395,13 +411,13 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           {/* Payment Methods */}
           <div className="space-y-2">
             <h3 className="font-bold text-sm">PAYMENT</h3>
-            {saleData.payments.map((payment) => (
+            {saleData.payments.map(payment => (
               <div key={payment.id} className="flex justify-between text-sm">
                 <span>{getPaymentMethodDisplay(payment)}</span>
                 <span>${payment.amount.toFixed(2)}</span>
               </div>
             ))}
-            
+
             {saleData.changeAmount > 0 && (
               <div className="flex justify-between font-bold text-sm">
                 <span>CHANGE DUE:</span>
@@ -414,39 +430,44 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           {(() => {
             const stylistSummary = saleData.lineItems
               .filter(item => item.stylist_name && item.entity_type === 'service')
-              .reduce((acc, item) => {
-                const stylist = acc.find(s => s.name === item.stylist_name)
-                if (stylist) {
-                  stylist.services.push(item.entity_name)
-                  stylist.total += item.line_amount
-                } else {
-                  acc.push({
-                    name: item.stylist_name!,
-                    services: [item.entity_name],
-                    total: item.line_amount
-                  })
-                }
-                return acc
-              }, [] as Array<{name: string, services: string[], total: number}>)
-            
-            return stylistSummary.length > 0 && (
-              <>
-                <Separator />
-                <div className="space-y-2">
-                  <h3 className="font-bold text-sm">STYLIST SUMMARY</h3>
-                  {stylistSummary.map((stylist, index) => (
-                    <div key={index} className="space-y-1 text-xs commission-info">
-                      <div className="flex justify-between font-medium">
-                        <span>👤 {stylist.name}</span>
-                        <span>${stylist.total.toFixed(2)}</span>
+              .reduce(
+                (acc, item) => {
+                  const stylist = acc.find(s => s.name === item.stylist_name)
+                  if (stylist) {
+                    stylist.services.push(item.entity_name)
+                    stylist.total += item.line_amount
+                  } else {
+                    acc.push({
+                      name: item.stylist_name!,
+                      services: [item.entity_name],
+                      total: item.line_amount
+                    })
+                  }
+                  return acc
+                },
+                [] as Array<{ name: string; services: string[]; total: number }>
+              )
+
+            return (
+              stylistSummary.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-sm">STYLIST SUMMARY</h3>
+                    {stylistSummary.map((stylist, index) => (
+                      <div key={index} className="space-y-1 text-xs commission-info">
+                        <div className="flex justify-between font-medium">
+                          <span>👤 {stylist.name}</span>
+                          <span>${stylist.total.toFixed(2)}</span>
+                        </div>
+                        <div className="text-muted-foreground">
+                          Services: {stylist.services.join(', ')}
+                        </div>
                       </div>
-                      <div className="text-muted-foreground">
-                        Services: {stylist.services.join(', ')}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
+                    ))}
+                  </div>
+                </>
+              )
             )
           })()}
 
@@ -456,7 +477,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
               <Separator />
               <div className="space-y-2">
                 <h3 className="font-bold text-sm">STYLIST COMMISSIONS</h3>
-                {saleData.commission_lines.map((commission) => (
+                {saleData.commission_lines.map(commission => (
                   <div key={commission.stylist_id} className="space-y-1 text-xs commission-info">
                     <div className="flex justify-between font-medium">
                       <span>💰 {commission.stylist_name}</span>
@@ -478,9 +499,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           <div className="text-center text-xs text-slate-600 dark:text-slate-300 space-y-1">
             <div>Thank you for your business!</div>
             <div>Please visit us again soon.</div>
-            <div className="mt-3">
-              Transaction ID: {saleData.transaction_id}
-            </div>
+            <div className="mt-3">Transaction ID: {saleData.transaction_id}</div>
           </div>
         </div>
 

@@ -5,11 +5,7 @@
  * integrated with UCR (Universal Configuration Rules)
  */
 
-export { SalesOrderForm }
-from './SalesOrderForm'
-export { PurchaseOrderForm }
-from './PurchaseOrderForm'
-export { ManufacturingOrderDashboard }
-from './ManufacturingOrderDashboard'
-export { InventoryMovementTracker }
-from './InventoryMovementTracker'
+export { SalesOrderForm } from './SalesOrderForm'
+export { PurchaseOrderForm } from './PurchaseOrderForm'
+export { ManufacturingOrderDashboard } from './ManufacturingOrderDashboard'
+export { InventoryMovementTracker } from './InventoryMovementTracker'

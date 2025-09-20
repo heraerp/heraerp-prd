@@ -9,8 +9,8 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Edit, 
+import {
+  Edit,
   Trash2,
   Mail,
   Clock,
@@ -57,15 +57,21 @@ const ROLE_CONFIG = {
   }
 }
 
-export function RoleTable({ grants, onEdit, onRevoke, isRevoking, showInactive = false }: RoleTableProps) {
+export function RoleTable({
+  grants,
+  onEdit,
+  onRevoke,
+  isRevoking,
+  showInactive = false
+}: RoleTableProps) {
   const getRoleBadge = (role: UserRole) => {
     const config = ROLE_CONFIG[role]
     if (!config) return null
 
     return (
-      <Badge 
+      <Badge
         key={role}
-        variant="outline" 
+        variant="outline"
         className={`${config.color} text-xs font-medium`}
         title={config.description}
       >
@@ -123,9 +129,9 @@ export function RoleTable({ grants, onEdit, onRevoke, isRevoking, showInactive =
             const isEven = index % 2 === 0
             const highestRole = getHighestRole(grant.roles)
             const roleConfig = ROLE_CONFIG[highestRole]
-            
+
             return (
-              <tr 
+              <tr
                 key={grant.user_email}
                 className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
                   isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
@@ -134,7 +140,9 @@ export function RoleTable({ grants, onEdit, onRevoke, isRevoking, showInactive =
                 {/* User Column */}
                 <td className="py-4 px-4">
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color || 'bg-gray-100'}`}>
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color || 'bg-gray-100'}`}
+                    >
                       {roleConfig ? (
                         <roleConfig.icon className="h-4 w-4" />
                       ) : (
@@ -169,12 +177,18 @@ export function RoleTable({ grants, onEdit, onRevoke, isRevoking, showInactive =
                 {/* Status Column */}
                 <td className="py-4 px-4">
                   {grant.is_active ? (
-                    <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50 dark:bg-green-950/30">
+                    <Badge
+                      variant="outline"
+                      className="text-green-700 border-green-300 bg-green-50 dark:bg-green-950/30"
+                    >
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Active
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50 dark:bg-red-950/30">
+                    <Badge
+                      variant="outline"
+                      className="text-red-700 border-red-300 bg-red-50 dark:bg-red-950/30"
+                    >
                       <XCircle className="h-3 w-3 mr-1" />
                       Revoked
                     </Badge>
@@ -207,7 +221,7 @@ export function RoleTable({ grants, onEdit, onRevoke, isRevoking, showInactive =
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
-                    
+
                     {grant.is_active && (
                       <Button
                         variant="outline"

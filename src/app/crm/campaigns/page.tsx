@@ -329,7 +329,9 @@ export default function CampaignsPage() {
                       <TypeIcon className="h-6 w-6 text-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground">{campaign.entity_name}</h3>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        {campaign.entity_name}
+                      </h3>
                       <p className="text-sm text-foreground/60 mt-1">
                         {campaign.metadata?.type} Campaign
                       </p>

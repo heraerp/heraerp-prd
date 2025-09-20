@@ -789,7 +789,9 @@ export function SalonProductionSidebar() {
               >
                 <div className="text-purple-600">{item.icon}</div>
                 <span className="font-medium text-sm text-gray-100">{item.label}</span>
-                <span className="text-xs text-muted-foreground text-center">{item.description}</span>
+                <span className="text-xs text-muted-foreground text-center">
+                  {item.description}
+                </span>
               </Button>
             ))}
           </div>

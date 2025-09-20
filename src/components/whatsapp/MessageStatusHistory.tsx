@@ -98,7 +98,9 @@ export function MessageStatusHistory({
                 {currentStatus || 'pending'}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Message ID: {messageId.slice(0, 20)}...</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Message ID: {messageId.slice(0, 20)}...
+            </p>
           </div>
 
           {/* Status Timeline */}

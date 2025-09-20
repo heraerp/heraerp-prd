@@ -34,19 +34,19 @@ interface CustomerSearchModalProps {
   onAppointmentSelect?: (appointment: any) => void
 }
 
-export function CustomerSearchModal({ 
-  open, 
-  onClose, 
-  organizationId, 
+export function CustomerSearchModal({
+  open,
+  onClose,
+  organizationId,
   onCustomerSelect,
-  onAppointmentSelect 
+  onAppointmentSelect
 }: CustomerSearchModalProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState<'customers' | 'appointments'>('customers')
-  
+
   const { searchCustomers, loading: customersLoading } = useCustomerLookup(organizationId)
   const { searchAppointments, loading: appointmentsLoading } = useAppointmentLookup(organizationId)
-  
+
   const [customers, setCustomers] = useState<any[]>([])
   const [appointments, setAppointments] = useState<any[]>([])
 
@@ -70,19 +70,21 @@ export function CustomerSearchModal({
 
   // Filter results based on search query
   const filteredCustomers = useMemo(() => {
-    return customers.filter(customer => 
-      searchQuery === '' || 
-      customer.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (customer.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (customer.phone || '').toLowerCase().includes(searchQuery.toLowerCase())
+    return customers.filter(
+      customer =>
+        searchQuery === '' ||
+        customer.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (customer.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (customer.phone || '').toLowerCase().includes(searchQuery.toLowerCase())
     )
   }, [customers, searchQuery])
 
   const filteredAppointments = useMemo(() => {
-    return appointments.filter(appointment => 
-      searchQuery === '' || 
-      appointment.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (appointment.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase())
+    return appointments.filter(
+      appointment =>
+        searchQuery === '' ||
+        appointment.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (appointment.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase())
     )
   }, [appointments, searchQuery])
 
@@ -115,8 +117,8 @@ export function CustomerSearchModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
+    <Dialog open={open} onOpenChange={open => !open && onClose()}>
+      <DialogContent
         className="max-w-4xl h-[700px] p-0 gap-0"
         style={{
           backgroundColor: COLORS.charcoal,
@@ -124,19 +126,23 @@ export function CustomerSearchModal({
         }}
       >
         <DialogHeader className="p-6 border-b" style={{ borderColor: COLORS.bronze + '20' }}>
-          <DialogTitle style={{ color: COLORS.champagne }}>Search Customers & Appointments</DialogTitle>
+          <DialogTitle style={{ color: COLORS.champagne }}>
+            Search Customers & Appointments
+          </DialogTitle>
         </DialogHeader>
 
         {/* Search and Tabs */}
         <div className="p-6 border-b" style={{ borderColor: COLORS.bronze + '20' }}>
           {/* Search */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" 
-                    style={{ color: COLORS.bronze }} />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
+              style={{ color: COLORS.bronze }}
+            />
             <input
               placeholder="Search customers, appointments, phone numbers..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-3 rounded-lg border text-sm w-full"
               style={{
                 borderColor: COLORS.bronze + '33',
@@ -149,42 +155,64 @@ export function CustomerSearchModal({
           </div>
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className="grid w-full grid-cols-2 p-0 border-b w-full justify-start h-auto rounded-none"
-                      style={{ 
-                        borderColor: COLORS.bronze + '33',
-                        backgroundColor: COLORS.charcoalLight,
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-                      }}>
-              <TabsTrigger value="customers" 
-                           className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
-                           style={{
-                             backgroundColor: activeTab === 'customers' ? COLORS.charcoal : 'transparent'
-                           }}>
-                <User className="w-4 h-4" 
-                     style={{ color: activeTab === 'customers' ? COLORS.gold : COLORS.champagne }} />
-                <span style={{ color: activeTab === 'customers' ? COLORS.champagne : COLORS.lightText }}>
+          <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+            <TabsList
+              className="grid w-full grid-cols-2 p-0 border-b w-full justify-start h-auto rounded-none"
+              style={{
+                borderColor: COLORS.bronze + '33',
+                backgroundColor: COLORS.charcoalLight,
+                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <TabsTrigger
+                value="customers"
+                className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+                style={{
+                  backgroundColor: activeTab === 'customers' ? COLORS.charcoal : 'transparent'
+                }}
+              >
+                <User
+                  className="w-4 h-4"
+                  style={{ color: activeTab === 'customers' ? COLORS.gold : COLORS.champagne }}
+                />
+                <span
+                  style={{ color: activeTab === 'customers' ? COLORS.champagne : COLORS.lightText }}
+                >
                   Customers ({filteredCustomers.length})
                 </span>
-                <div className={cn(
-                  "absolute bottom-0 left-0 right-0 h-0.5 transition-all",
-                  activeTab === 'customers' ? 'opacity-100' : 'opacity-0'
-                )} style={{ backgroundColor: COLORS.gold }} />
+                <div
+                  className={cn(
+                    'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
+                    activeTab === 'customers' ? 'opacity-100' : 'opacity-0'
+                  )}
+                  style={{ backgroundColor: COLORS.gold }}
+                />
               </TabsTrigger>
-              <TabsTrigger value="appointments" 
-                           className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
-                           style={{
-                             backgroundColor: activeTab === 'appointments' ? COLORS.charcoal : 'transparent'
-                           }}>
-                <Calendar className="w-4 h-4" 
-                         style={{ color: activeTab === 'appointments' ? COLORS.gold : COLORS.champagne }} />
-                <span style={{ color: activeTab === 'appointments' ? COLORS.champagne : COLORS.lightText }}>
+              <TabsTrigger
+                value="appointments"
+                className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+                style={{
+                  backgroundColor: activeTab === 'appointments' ? COLORS.charcoal : 'transparent'
+                }}
+              >
+                <Calendar
+                  className="w-4 h-4"
+                  style={{ color: activeTab === 'appointments' ? COLORS.gold : COLORS.champagne }}
+                />
+                <span
+                  style={{
+                    color: activeTab === 'appointments' ? COLORS.champagne : COLORS.lightText
+                  }}
+                >
                   Appointments ({filteredAppointments.length})
                 </span>
-                <div className={cn(
-                  "absolute bottom-0 left-0 right-0 h-0.5 transition-all",
-                  activeTab === 'appointments' ? 'opacity-100' : 'opacity-0'
-                )} style={{ backgroundColor: COLORS.gold }} />
+                <div
+                  className={cn(
+                    'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
+                    activeTab === 'appointments' ? 'opacity-100' : 'opacity-0'
+                  )}
+                  style={{ backgroundColor: COLORS.gold }}
+                />
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -197,8 +225,10 @@ export function CustomerSearchModal({
             <TabsContent value="customers" className="mt-0">
               {customersLoading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2" 
-                       style={{ borderColor: COLORS.gold }} />
+                  <div
+                    className="animate-spin rounded-full h-8 w-8 border-b-2"
+                    style={{ borderColor: COLORS.gold }}
+                  />
                 </div>
               ) : filteredCustomers.length === 0 ? (
                 <div className="text-center py-12">
@@ -209,7 +239,7 @@ export function CustomerSearchModal({
                   <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
                     Search by name, email, or phone number
                   </p>
-                  <Button 
+                  <Button
                     className="mt-4"
                     style={{
                       background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
@@ -241,24 +271,32 @@ export function CustomerSearchModal({
                                 {customer.entity_name}
                               </h3>
                               {customer.vip && (
-                                <Badge style={{ 
-                                  backgroundColor: COLORS.gold + '20',
-                                  color: COLORS.gold,
-                                  borderColor: COLORS.gold + '50'
-                                }}>
+                                <Badge
+                                  style={{
+                                    backgroundColor: COLORS.gold + '20',
+                                    color: COLORS.gold,
+                                    borderColor: COLORS.gold + '50'
+                                  }}
+                                >
                                   VIP
                                 </Badge>
                               )}
                             </div>
                             <div className="space-y-1">
                               {customer.email && (
-                                <div className="flex items-center gap-2 text-sm" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-sm"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <Mail className="w-3 h-3" />
                                   {customer.email}
                                 </div>
                               )}
                               {customer.phone && (
-                                <div className="flex items-center gap-2 text-sm" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-sm"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <Phone className="w-3 h-3" />
                                   {customer.phone}
                                 </div>
@@ -266,8 +304,13 @@ export function CustomerSearchModal({
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
-                              {customer.last_visit ? `Last visit: ${formatDate(customer.last_visit)}` : 'New customer'}
+                            <div
+                              className="text-sm"
+                              style={{ color: COLORS.lightText, opacity: 0.7 }}
+                            >
+                              {customer.last_visit
+                                ? `Last visit: ${formatDate(customer.last_visit)}`
+                                : 'New customer'}
                             </div>
                           </div>
                         </div>
@@ -282,8 +325,10 @@ export function CustomerSearchModal({
             <TabsContent value="appointments" className="mt-0">
               {appointmentsLoading ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2" 
-                       style={{ borderColor: COLORS.gold }} />
+                  <div
+                    className="animate-spin rounded-full h-8 w-8 border-b-2"
+                    style={{ borderColor: COLORS.gold }}
+                  />
                 </div>
               ) : filteredAppointments.length === 0 ? (
                 <div className="text-center py-12">
@@ -315,11 +360,20 @@ export function CustomerSearchModal({
                               <h3 className="font-medium" style={{ color: COLORS.champagne }}>
                                 {appointment.entity_name}
                               </h3>
-                              <Badge 
-                                style={{ 
-                                  backgroundColor: appointment.status === 'confirmed' ? COLORS.emerald + '20' : COLORS.bronze + '20',
-                                  color: appointment.status === 'confirmed' ? COLORS.emerald : COLORS.bronze,
-                                  borderColor: appointment.status === 'confirmed' ? COLORS.emerald + '50' : COLORS.bronze + '50'
+                              <Badge
+                                style={{
+                                  backgroundColor:
+                                    appointment.status === 'confirmed'
+                                      ? COLORS.emerald + '20'
+                                      : COLORS.bronze + '20',
+                                  color:
+                                    appointment.status === 'confirmed'
+                                      ? COLORS.emerald
+                                      : COLORS.bronze,
+                                  borderColor:
+                                    appointment.status === 'confirmed'
+                                      ? COLORS.emerald + '50'
+                                      : COLORS.bronze + '50'
                                 }}
                               >
                                 {appointment.status || 'scheduled'}
@@ -327,15 +381,22 @@ export function CustomerSearchModal({
                             </div>
                             <div className="space-y-1">
                               {appointment.customer_name && (
-                                <div className="flex items-center gap-2 text-sm" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-sm"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <User className="w-3 h-3" />
                                   {appointment.customer_name}
                                 </div>
                               )}
                               {appointment.start_time && (
-                                <div className="flex items-center gap-2 text-sm" style={{ color: COLORS.bronze }}>
+                                <div
+                                  className="flex items-center gap-2 text-sm"
+                                  style={{ color: COLORS.bronze }}
+                                >
                                   <Clock className="w-3 h-3" />
-                                  {formatDate(appointment.start_time)} at {formatTime(appointment.start_time)}
+                                  {formatDate(appointment.start_time)} at{' '}
+                                  {formatTime(appointment.start_time)}
                                 </div>
                               )}
                             </div>
@@ -345,9 +406,13 @@ export function CustomerSearchModal({
                               {appointment.price ? `$${appointment.price.toFixed(2)}` : ''}
                             </div>
                             {appointment.service_names && appointment.service_names.length > 0 && (
-                              <div className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                              <div
+                                className="text-xs"
+                                style={{ color: COLORS.lightText, opacity: 0.7 }}
+                              >
                                 {appointment.service_names.slice(0, 2).join(', ')}
-                                {appointment.service_names.length > 2 && ` +${appointment.service_names.length - 2} more`}
+                                {appointment.service_names.length > 2 &&
+                                  ` +${appointment.service_names.length - 2} more`}
                               </div>
                             )}
                           </div>
@@ -364,8 +429,8 @@ export function CustomerSearchModal({
         {/* Footer */}
         <div className="p-6 border-t" style={{ borderColor: COLORS.bronze + '20' }}>
           <div className="flex justify-end gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={onClose}
               style={{
                 borderColor: COLORS.bronze,

@@ -161,7 +161,9 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
                 </SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-sm text-muted-foreground mt-2">{getMethodDescription(allocationMethod)}</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              {getMethodDescription(allocationMethod)}
+            </p>
           </div>
 
           <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">

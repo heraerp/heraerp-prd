@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,17 +23,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Shield, 
-  Save, 
-  Mail,
-  User,
-  Clock,
-  AlertCircle,
-  Users,
-  X,
-  Plus
-} from 'lucide-react'
+import { Shield, Save, Mail, User, Clock, AlertCircle, Users, X, Plus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { RoleGrant, UserRole, DEFAULT_ROLE_PERMISSIONS } from '@/lib/schemas/settings'
@@ -42,7 +32,9 @@ import { z } from 'zod'
 const RoleGrantFormSchema = z.object({
   user_email: z.string().email('Invalid email address'),
   user_name: z.string().min(1, 'User name is required'),
-  roles: z.array(z.enum(['owner', 'manager', 'stylist', 'receptionist'])).min(1, 'At least one role must be selected'),
+  roles: z
+    .array(z.enum(['owner', 'manager', 'stylist', 'receptionist']))
+    .min(1, 'At least one role must be selected'),
   is_active: z.boolean().default(true),
   notes: z.string().optional()
 })
@@ -58,7 +50,13 @@ interface RoleGrantFormProps {
   isSubmitting: boolean
 }
 
-const ROLE_OPTIONS: { value: UserRole; label: string; description: string; color: string; icon: React.ElementType }[] = [
+const ROLE_OPTIONS: {
+  value: UserRole
+  label: string
+  description: string
+  color: string
+  icon: React.ElementType
+}[] = [
   {
     value: 'owner',
     label: 'Owner',
@@ -89,22 +87,31 @@ const ROLE_OPTIONS: { value: UserRole; label: string; description: string; color
   }
 ]
 
-export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSubmit, isSubmitting }: RoleGrantFormProps) {
+export function RoleGrantForm({
+  open,
+  onOpenChange,
+  grant,
+  organizationId,
+  onSubmit,
+  isSubmitting
+}: RoleGrantFormProps) {
   const form = useForm<RoleGrantFormData>({
     resolver: zodResolver(RoleGrantFormSchema),
-    defaultValues: grant ? {
-      user_email: grant.user_email,
-      user_name: grant.user_name || '',
-      roles: grant.roles,
-      is_active: grant.is_active ?? true,
-      notes: grant.notes || ''
-    } : {
-      user_email: '',
-      user_name: '',
-      roles: [],
-      is_active: true,
-      notes: ''
-    }
+    defaultValues: grant
+      ? {
+          user_email: grant.user_email,
+          user_name: grant.user_name || '',
+          roles: grant.roles,
+          is_active: grant.is_active ?? true,
+          notes: grant.notes || ''
+        }
+      : {
+          user_email: '',
+          user_name: '',
+          roles: [],
+          is_active: true,
+          notes: ''
+        }
   })
 
   const isEditMode = Boolean(grant)
@@ -136,7 +143,10 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
   const handleRoleToggle = (role: UserRole) => {
     const currentRoles = form.getValues('roles')
     if (currentRoles.includes(role)) {
-      form.setValue('roles', currentRoles.filter(r => r !== role))
+      form.setValue(
+        'roles',
+        currentRoles.filter(r => r !== role)
+      )
     } else {
       form.setValue('roles', [...currentRoles, role])
     }
@@ -144,10 +154,10 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
 
   const getPermissionSummary = () => {
     if (selectedRoles.length === 0) return []
-    
+
     // Merge permissions from all selected roles
     let mergedPermissions = { ...DEFAULT_ROLE_PERMISSIONS.stylist }
-    
+
     for (const role of selectedRoles) {
       const rolePermissions = DEFAULT_ROLE_PERMISSIONS[role]
       Object.keys(rolePermissions).forEach(permission => {
@@ -159,15 +169,15 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
 
     // Convert to readable format
     const permissionLabels: Record<string, string> = {
-      'manage_appointments': 'Manage Appointments',
-      'manage_customers': 'Manage Customers',
-      'manage_inventory': 'Manage Inventory',
-      'manage_staff': 'Manage Staff',
-      'view_reports': 'View Reports',
-      'manage_settings': 'Manage Settings',
-      'manage_finances': 'Manage Finances',
-      'manage_users': 'Manage Users',
-      'full_access': 'Full System Access'
+      manage_appointments: 'Manage Appointments',
+      manage_customers: 'Manage Customers',
+      manage_inventory: 'Manage Inventory',
+      manage_staff: 'Manage Staff',
+      view_reports: 'View Reports',
+      manage_settings: 'Manage Settings',
+      manage_finances: 'Manage Finances',
+      manage_users: 'Manage Users',
+      full_access: 'Full System Access'
     }
 
     return Object.entries(mergedPermissions)
@@ -186,7 +196,7 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
         granted_at: grant?.granted_at || new Date().toISOString(),
         granted_by: grant?.granted_by || 'current_user' // TODO: Get from auth context
       }
-      
+
       await onSubmit(grantData)
     } catch (error) {
       // Error handled by parent component
@@ -210,22 +220,19 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
             {isEditMode ? 'Edit User Roles' : 'Grant User Roles'}
           </DialogTitle>
           <DialogDescription>
-            {isEditMode 
+            {isEditMode
               ? `Modify roles for "${grant?.user_email}"`
-              : 'Grant roles and permissions to a new user'
-            }
+              : 'Grant roles and permissions to a new user'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          
           {/* User Information */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">User Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="user_email">Email Address *</Label>
@@ -237,7 +244,7 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
                     disabled={isEditMode}
                   />
                   <p className="text-sm text-gray-500">
-                    {isEditMode ? 'Email address cannot be changed' : 'User\'s login email address'}
+                    {isEditMode ? 'Email address cannot be changed' : "User's login email address"}
                   </p>
                   {form.formState.errors.user_email && (
                     <p className="text-sm text-red-600">
@@ -248,11 +255,7 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
 
                 <div className="space-y-2">
                   <Label htmlFor="user_name">Full Name *</Label>
-                  <Input
-                    id="user_name"
-                    {...form.register('user_name')}
-                    placeholder="John Smith"
-                  />
+                  <Input id="user_name" {...form.register('user_name')} placeholder="John Smith" />
                   {form.formState.errors.user_name && (
                     <p className="text-sm text-red-600">
                       {form.formState.errors.user_name.message}
@@ -269,7 +272,6 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
                   placeholder="Additional notes about this user..."
                 />
               </div>
-
             </CardContent>
           </Card>
 
@@ -282,36 +284,39 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid gap-3">
-                {ROLE_OPTIONS.map((role) => {
+                {ROLE_OPTIONS.map(role => {
                   const isSelected = selectedRoles.includes(role.value)
                   return (
                     <div
                       key={role.value}
                       className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-colors ${
-                        isSelected 
-                          ? `${role.color} border-2` 
+                        isSelected
+                          ? `${role.color} border-2`
                           : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                       }`}
                       onClick={() => handleRoleToggle(role.value)}
                     >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        isSelected ? role.color : 'bg-gray-100 dark:bg-gray-800'
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          isSelected ? role.color : 'bg-gray-100 dark:bg-gray-800'
+                        }`}
+                      >
                         <role.icon className="h-4 w-4" />
                       </div>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div className="font-medium text-gray-900 dark:text-gray-100">
                             {role.label}
                           </div>
-                          <div className={`w-5 h-5 rounded border-2 ${
-                            isSelected 
-                              ? 'bg-current border-current' 
-                              : 'border-gray-300 dark:border-gray-600'
-                          }`}>
+                          <div
+                            className={`w-5 h-5 rounded border-2 ${
+                              isSelected
+                                ? 'bg-current border-current'
+                                : 'border-gray-300 dark:border-gray-600'
+                            }`}
+                          >
                             {isSelected && (
                               <div className="w-full h-full flex items-center justify-center">
                                 <div className="w-2 h-2 bg-white rounded-full" />
@@ -336,7 +341,6 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
                   </AlertDescription>
                 </Alert>
               )}
-
             </CardContent>
           </Card>
 
@@ -351,10 +355,10 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {permissionSummary.map((permission) => (
-                    <Badge 
+                  {permissionSummary.map(permission => (
+                    <Badge
                       key={permission}
-                      variant="outline" 
+                      variant="outline"
                       className="text-emerald-700 border-emerald-300 bg-emerald-50 dark:bg-emerald-950/30"
                     >
                       {permission}
@@ -372,12 +376,14 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
                 <div className="space-y-1">
                   <Label>Grant Status</Label>
                   <p className="text-sm text-gray-500">
-                    {form.watch('is_active') ? 'User will have active access' : 'User access will be revoked'}
+                    {form.watch('is_active')
+                      ? 'User will have active access'
+                      : 'User access will be revoked'}
                   </p>
                 </div>
                 <Switch
                   checked={form.watch('is_active')}
-                  onCheckedChange={(checked) => form.setValue('is_active', checked)}
+                  onCheckedChange={checked => form.setValue('is_active', checked)}
                 />
               </div>
             </CardContent>
@@ -397,18 +403,12 @@ export function RoleGrantForm({ open, onOpenChange, grant, organizationId, onSub
               </div>
             </AlertDescription>
           </Alert>
-
         </form>
 
         <Separator />
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button

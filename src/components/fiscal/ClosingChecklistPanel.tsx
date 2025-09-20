@@ -71,7 +71,11 @@ export function ClosingChecklistPanel({
     checklist.forEach(item => {
       if (item.key.startsWith('pos_') || item.key.startsWith('sales_')) {
         groups.operations.push(item)
-      } else if (item.key.startsWith('ap_') || item.key.startsWith('ar_') || item.key.includes('accrual')) {
+      } else if (
+        item.key.startsWith('ap_') ||
+        item.key.startsWith('ar_') ||
+        item.key.includes('accrual')
+      ) {
         groups.financial.push(item)
       } else if (item.key.includes('compliance') || item.key.includes('audit')) {
         groups.compliance.push(item)
@@ -197,7 +201,7 @@ export function ClosingChecklistPanel({
                   <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     {group.charAt(0).toUpperCase() + group.slice(1)}
                   </div>
-                  {items.map((item) => (
+                  {items.map(item => (
                     <div
                       key={item.key}
                       className={cn(
@@ -214,7 +218,7 @@ export function ClosingChecklistPanel({
                         <Checkbox
                           id={`checklist-${item.key}`}
                           checked={item.completed}
-                          onCheckedChange={(checked) => {
+                          onCheckedChange={checked => {
                             if (onItemToggle && !isUpdating) {
                               onItemToggle(item.key, checked as boolean)
                             }
@@ -222,11 +226,12 @@ export function ClosingChecklistPanel({
                           disabled={isUpdating || !onItemToggle}
                           className={cn(
                             'mt-0.5',
-                            item.completed && 'data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600'
+                            item.completed &&
+                              'data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600'
                           )}
                           aria-label={`Toggle ${item.label}`}
                         />
-                        
+
                         <div className="flex-1 space-y-1">
                           <label
                             htmlFor={`checklist-${item.key}`}
@@ -239,13 +244,13 @@ export function ClosingChecklistPanel({
                           >
                             {item.label}
                           </label>
-                          
+
                           {item.description && (
                             <p className="text-xs text-gray-600 dark:text-gray-400">
                               {item.description}
                             </p>
                           )}
-                          
+
                           {item.completed && item.completed_at && (
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <CheckCircle className="h-3 w-3" />
@@ -255,7 +260,7 @@ export function ClosingChecklistPanel({
                               )}
                             </div>
                           )}
-                          
+
                           {item.notes && hoveredItem === item.key && (
                             <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-950/30 rounded text-xs text-blue-700 dark:text-blue-300">
                               {item.notes}
@@ -283,7 +288,8 @@ export function ClosingChecklistPanel({
                   Smart Code: HERA.FIN.FISCAL.CLOSE.CHECKLIST.V1
                 </div>
                 <div className="text-blue-700 dark:text-blue-300 mt-1">
-                  Checklist items are stored in core_dynamic_data and tracked via universal_transactions
+                  Checklist items are stored in core_dynamic_data and tracked via
+                  universal_transactions
                 </div>
               </AlertDescription>
             </Alert>

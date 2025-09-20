@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Calendar as CalendarIcon, AlertCircle, Info } from 'lucide-react'
@@ -21,7 +34,7 @@ const COLORS = {
   bronze: '#8C7853',
   emerald: '#0F6F5C',
   rose: '#E8B4B8',
-  lightText: '#E0E0E0',
+  lightText: '#E0E0E0'
 }
 
 interface LeaveRequestModalProps {
@@ -33,7 +46,14 @@ interface LeaveRequestModalProps {
   holidays: any[]
 }
 
-export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, holidays }: LeaveRequestModalProps) {
+export function LeaveRequestModal({
+  open,
+  onClose,
+  onSubmit,
+  staff,
+  policies,
+  holidays
+}: LeaveRequestModalProps) {
   const [loading, setLoading] = useState(false)
   const [staffId, setStaffId] = useState('')
   const [type, setType] = useState<'ANNUAL' | 'SICK' | 'UNPAID'>('ANNUAL')
@@ -51,7 +71,7 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
       const holidayDates = holidays.map(h => new Date(h.metadata.date))
       const days = calculateWorkingDays(from, to, holidayDates, halfDayStart, halfDayEnd)
       setWorkingDays(days)
-      
+
       // Check min notice days
       const policy = policies[0] // TODO: Get policy for staff
       const minNoticeDays = policy?.metadata?.min_notice_days || 7
@@ -80,9 +100,9 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
         to,
         half_day_start: halfDayStart,
         half_day_end: halfDayEnd,
-        notes,
+        notes
       })
-      
+
       onClose()
       // Reset form
       setStaffId('')
@@ -113,9 +133,13 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent 
-        className="sm:max-w-2xl max-h-[90vh] flex flex-col" 
-        style={{ backgroundColor: COLORS.charcoal, color: COLORS.champagne, border: `1px solid ${COLORS.black}` }}
+      <DialogContent
+        className="sm:max-w-2xl max-h-[90vh] flex flex-col"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          color: COLORS.champagne,
+          border: `1px solid ${COLORS.black}`
+        }}
       >
         <DialogHeader className="flex-shrink-0">
           <DialogTitle style={{ color: COLORS.champagne }}>New Leave Request</DialogTitle>
@@ -127,9 +151,14 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
         <div className="space-y-6 py-4 overflow-y-auto flex-1 min-h-0">
           {/* Staff Selection */}
           <div className="space-y-2">
-            <Label htmlFor="staff" style={{ color: COLORS.champagne }}>Staff Member</Label>
+            <Label htmlFor="staff" style={{ color: COLORS.champagne }}>
+              Staff Member
+            </Label>
             <Select value={staffId} onValueChange={setStaffId}>
-              <SelectTrigger className="bg-transparent border" style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}>
+              <SelectTrigger
+                className="bg-transparent border"
+                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+              >
                 <SelectValue placeholder="Select staff member" />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
@@ -144,15 +173,26 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
 
           {/* Leave Type */}
           <div className="space-y-2">
-            <Label htmlFor="type" style={{ color: COLORS.champagne }}>Leave Type</Label>
-            <Select value={type} onValueChange={(v) => setType(v as any)}>
-              <SelectTrigger className="bg-transparent border" style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}>
+            <Label htmlFor="type" style={{ color: COLORS.champagne }}>
+              Leave Type
+            </Label>
+            <Select value={type} onValueChange={v => setType(v as any)}>
+              <SelectTrigger
+                className="bg-transparent border"
+                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
-                <SelectItem value="ANNUAL" className="hera-select-item">Annual Leave</SelectItem>
-                <SelectItem value="SICK" className="hera-select-item">Sick Leave</SelectItem>
-                <SelectItem value="UNPAID" className="hera-select-item">Unpaid Leave</SelectItem>
+                <SelectItem value="ANNUAL" className="hera-select-item">
+                  Annual Leave
+                </SelectItem>
+                <SelectItem value="SICK" className="hera-select-item">
+                  Sick Leave
+                </SelectItem>
+                <SelectItem value="UNPAID" className="hera-select-item">
+                  Unpaid Leave
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -160,7 +200,9 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
           {/* Date Range */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="from" style={{ color: COLORS.champagne }}>From Date</Label>
+              <Label htmlFor="from" style={{ color: COLORS.champagne }}>
+                From Date
+              </Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -172,8 +214,8 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
                     {from ? format(from, 'PPP') : 'Select date'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent 
-                  className="w-auto p-0 z-50" 
+                <PopoverContent
+                  className="w-auto p-0 z-50"
                   style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}` }}
                   side="bottom"
                   align="start"
@@ -182,7 +224,7 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
                     mode="single"
                     selected={from}
                     onSelect={setFrom}
-                    disabled={(date) => date < new Date()}
+                    disabled={date => date < new Date()}
                     initialFocus
                   />
                 </PopoverContent>
@@ -190,7 +232,9 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="to" style={{ color: COLORS.champagne }}>To Date</Label>
+              <Label htmlFor="to" style={{ color: COLORS.champagne }}>
+                To Date
+              </Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -202,8 +246,8 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
                     {to ? format(to, 'PPP') : 'Select date'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent 
-                  className="w-auto p-0 z-50" 
+                <PopoverContent
+                  className="w-auto p-0 z-50"
                   style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}` }}
                   side="bottom"
                   align="start"
@@ -212,7 +256,7 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
                     mode="single"
                     selected={to}
                     onSelect={setTo}
-                    disabled={(date) => from ? date < from : date < new Date()}
+                    disabled={date => (from ? date < from : date < new Date())}
                     initialFocus
                   />
                 </PopoverContent>
@@ -224,38 +268,42 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
           {from && to && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label htmlFor="half-start" style={{ color: COLORS.champagne }}>Half day on start date</Label>
-                <Switch
-                  id="half-start"
-                  checked={halfDayStart}
-                  onCheckedChange={setHalfDayStart}
-                />
+                <Label htmlFor="half-start" style={{ color: COLORS.champagne }}>
+                  Half day on start date
+                </Label>
+                <Switch id="half-start" checked={halfDayStart} onCheckedChange={setHalfDayStart} />
               </div>
               <div className="flex items-center justify-between">
-                <Label htmlFor="half-end" style={{ color: COLORS.champagne }}>Half day on end date</Label>
-                <Switch
-                  id="half-end"
-                  checked={halfDayEnd}
-                  onCheckedChange={setHalfDayEnd}
-                />
+                <Label htmlFor="half-end" style={{ color: COLORS.champagne }}>
+                  Half day on end date
+                </Label>
+                <Switch id="half-end" checked={halfDayEnd} onCheckedChange={setHalfDayEnd} />
               </div>
             </div>
           )}
 
           {/* Working Days Preview */}
           {from && to && (
-            <div className="p-4 rounded-lg" style={{ backgroundColor: '#141414', border: `1px solid ${COLORS.black}` }}>
+            <div
+              className="p-4 rounded-lg"
+              style={{ backgroundColor: '#141414', border: `1px solid ${COLORS.black}` }}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Info size={16} color={COLORS.bronze} />
-                  <span className="text-sm" style={{ color: COLORS.champagne }}>Working days</span>
+                  <span className="text-sm" style={{ color: COLORS.champagne }}>
+                    Working days
+                  </span>
                 </div>
                 <span className="text-2xl font-semibold" style={{ color: COLORS.gold }}>
                   {workingDays}
                 </span>
               </div>
               {noticeWarning && (
-                <div className="flex items-center gap-2 mt-3 text-sm" style={{ color: COLORS.rose }}>
+                <div
+                  className="flex items-center gap-2 mt-3 text-sm"
+                  style={{ color: COLORS.rose }}
+                >
                   <AlertCircle size={16} />
                   Short notice: Less than required notice period
                 </div>
@@ -265,11 +313,13 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
 
           {/* Notes */}
           <div className="space-y-2">
-            <Label htmlFor="notes" style={{ color: COLORS.champagne }}>Notes (Optional)</Label>
+            <Label htmlFor="notes" style={{ color: COLORS.champagne }}>
+              Notes (Optional)
+            </Label>
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Additional information..."
               className="bg-transparent border resize-none"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
@@ -295,15 +345,13 @@ export function LeaveRequestModal({ open, onClose, onSubmit, staff, policies, ho
                 className="border-0"
                 style={{
                   backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
+                  color: COLORS.black
                 }}
               >
                 {loading ? 'Submitting...' : 'Submit Request'}
               </Button>
             </div>
-            <p className="text-xs opacity-50 text-center">
-              Press ⌘+Enter to submit
-            </p>
+            <p className="text-xs opacity-50 text-center">Press ⌘+Enter to submit</p>
           </div>
         </DialogFooter>
       </DialogContent>

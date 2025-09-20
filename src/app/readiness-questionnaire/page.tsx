@@ -346,7 +346,9 @@ export default function ReadinessQuestionnairePage() {
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md">
                       <Clock className="w-6 h-6 text-foreground" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-100 dark:text-foreground">15 mins</div>
+                    <div className="text-2xl font-bold text-gray-100 dark:text-foreground">
+                      15 mins
+                    </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                       Assessment Time
                     </div>

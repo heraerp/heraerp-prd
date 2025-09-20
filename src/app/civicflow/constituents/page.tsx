@@ -1,24 +1,14 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Users, 
-  Search, 
-  Plus, 
-  Filter,
-  Download,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar
-} from 'lucide-react';
+import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Users, Search, Plus, Filter, Download, Mail, Phone, MapPin, Calendar } from 'lucide-react'
 
 export default function ConstituentsPage() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Demo constituent data
   const constituents = [
@@ -55,7 +45,7 @@ export default function ConstituentsPage() {
       lastContact: '2024-01-20',
       status: 'pending'
     }
-  ];
+  ]
 
   const eligibilityColors: Record<string, string> = {
     medicaid: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -64,16 +54,14 @@ export default function ConstituentsPage() {
     veteran: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
     disability: 'bg-red-500/10 text-red-400 border-red-500/20',
     childcare: 'bg-pink-500/10 text-pink-400 border-pink-500/20'
-  };
+  }
 
   return (
     <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2 text-text-100">Constituents</h1>
-        <p className="text-xl text-text-300">
-          Manage citizen profiles and service eligibility
-        </p>
+        <p className="text-xl text-text-300">Manage citizen profiles and service eligibility</p>
       </div>
 
       {/* Actions Bar */}
@@ -84,16 +72,22 @@ export default function ConstituentsPage() {
             type="text"
             placeholder="Search constituents..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10 bg-panel border-border text-text-100 placeholder:text-text-500"
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="border-border text-text-300 hover:text-text-100 hover:bg-panel">
+          <Button
+            variant="outline"
+            className="border-border text-text-300 hover:text-text-100 hover:bg-panel"
+          >
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
-          <Button variant="outline" className="border-border text-text-300 hover:text-text-100 hover:bg-panel">
+          <Button
+            variant="outline"
+            className="border-border text-text-300 hover:text-text-100 hover:bg-panel"
+          >
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -169,7 +163,7 @@ export default function ConstituentsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {constituents.map((constituent) => (
+            {constituents.map(constituent => (
               <div
                 key={constituent.id}
                 className="p-4 rounded-lg border border-border bg-bg hover:bg-panel-alt transition-colors"
@@ -181,11 +175,12 @@ export default function ConstituentsPage() {
                         <h3 className="font-semibold text-text-100">{constituent.name}</h3>
                         <p className="text-sm text-text-500">ID: {constituent.nationalId}</p>
                       </div>
-                      <Badge 
-                        variant="outline" 
-                        className={constituent.status === 'active' 
-                          ? 'border-green-500/50 text-green-400' 
-                          : 'border-yellow-500/50 text-yellow-400'
+                      <Badge
+                        variant="outline"
+                        className={
+                          constituent.status === 'active'
+                            ? 'border-green-500/50 text-green-400'
+                            : 'border-yellow-500/50 text-yellow-400'
                         }
                       >
                         {constituent.status}
@@ -210,7 +205,7 @@ export default function ConstituentsPage() {
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-text-500">Eligible for:</span>
                       <div className="flex flex-wrap gap-2">
-                        {constituent.eligibility.map((program) => (
+                        {constituent.eligibility.map(program => (
                           <Badge
                             key={program}
                             variant="outline"
@@ -229,10 +224,18 @@ export default function ConstituentsPage() {
                     Last contact: {new Date(constituent.lastContact).toLocaleDateString()}
                   </p>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="border-border text-text-300 hover:text-text-100 hover:bg-panel">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-border text-text-300 hover:text-text-100 hover:bg-panel"
+                    >
                       View Profile
                     </Button>
-                    <Button size="sm" variant="outline" className="border-border text-text-300 hover:text-text-100 hover:bg-panel">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-border text-text-300 hover:text-text-100 hover:bg-panel"
+                    >
                       New Case
                     </Button>
                   </div>
@@ -243,5 +246,5 @@ export default function ConstituentsPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

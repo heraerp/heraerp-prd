@@ -301,7 +301,10 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
               <h4 className="font-semibold text-gray-100 mb-3">Active Orders</h4>
               <div className="space-y-2">
                 {['ORD-001', 'ORD-002'].map(order => (
-                  <div key={order} className="bg-background p-3 rounded border-l-4 border-l-orange-500">
+                  <div
+                    key={order}
+                    className="bg-background p-3 rounded border-l-4 border-l-orange-500"
+                  >
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="font-medium">{order}</div>

@@ -18,10 +18,10 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   Lock,
   CheckCircle,
   Calendar,
@@ -67,8 +67,9 @@ export function CloseActionsBar({
   })
 
   const currentYear = new Date().getFullYear().toString()
-  const canClosePeriod = currentPeriod && 
-    (currentPeriod.status === 'open' || currentPeriod.status === 'locked') && 
+  const canClosePeriod =
+    currentPeriod &&
+    (currentPeriod.status === 'open' || currentPeriod.status === 'locked') &&
     isChecklistComplete
 
   const canCloseCurrentYear = canCloseYear(currentYear)
@@ -79,15 +80,15 @@ export function CloseActionsBar({
     try {
       await onClosePeriod(currentPeriod.code)
       toast({
-        title: "Period Closed",
+        title: 'Period Closed',
         description: `Period ${currentPeriod.code} has been closed successfully. Journal entries posted.`,
-        variant: "default"
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Close Failed",
-        description: error instanceof Error ? error.message : "Failed to close period",
-        variant: "destructive"
+        title: 'Close Failed',
+        description: error instanceof Error ? error.message : 'Failed to close period',
+        variant: 'destructive'
       })
     }
   }
@@ -95,9 +96,9 @@ export function CloseActionsBar({
   const handleCloseYear = async () => {
     if (!yearCloseForm.confirm_all_periods_closed) {
       toast({
-        title: "Confirmation Required",
-        description: "Please confirm all periods are closed",
-        variant: "destructive"
+        title: 'Confirmation Required',
+        description: 'Please confirm all periods are closed',
+        variant: 'destructive'
       })
       return
     }
@@ -109,19 +110,19 @@ export function CloseActionsBar({
         confirm_all_periods_closed: yearCloseForm.confirm_all_periods_closed,
         notes: yearCloseForm.notes
       })
-      
+
       toast({
-        title: "Year Closed",
+        title: 'Year Closed',
         description: `Fiscal year ${yearCloseForm.fiscal_year} closed. Retained earnings posted to account ${yearCloseForm.retained_earnings_account}.`,
-        variant: "default"
+        variant: 'default'
       })
-      
+
       setShowYearCloseDialog(false)
     } catch (error) {
       toast({
-        title: "Year Close Failed",
-        description: error instanceof Error ? error.message : "Failed to close fiscal year",
-        variant: "destructive"
+        title: 'Year Close Failed',
+        description: error instanceof Error ? error.message : 'Failed to close fiscal year',
+        variant: 'destructive'
       })
     }
   }
@@ -131,7 +132,6 @@ export function CloseActionsBar({
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between gap-6">
-            
             {/* Current Period Info */}
             <div className="flex-1">
               <div className="flex items-center gap-4">
@@ -236,7 +236,6 @@ export function CloseActionsBar({
                 )}
               </Button>
             </div>
-
           </div>
 
           {/* Help Text */}
@@ -279,10 +278,12 @@ export function CloseActionsBar({
               <Input
                 id="fiscal_year"
                 value={yearCloseForm.fiscal_year}
-                onChange={(e) => setYearCloseForm({
-                  ...yearCloseForm,
-                  fiscal_year: e.target.value
-                })}
+                onChange={e =>
+                  setYearCloseForm({
+                    ...yearCloseForm,
+                    fiscal_year: e.target.value
+                  })
+                }
                 placeholder="2025"
                 className="font-mono"
               />
@@ -293,17 +294,17 @@ export function CloseActionsBar({
               <Input
                 id="retained_earnings"
                 value={yearCloseForm.retained_earnings_account}
-                onChange={(e) => setYearCloseForm({
-                  ...yearCloseForm,
-                  retained_earnings_account: e.target.value
-                })}
+                onChange={e =>
+                  setYearCloseForm({
+                    ...yearCloseForm,
+                    retained_earnings_account: e.target.value
+                  })
+                }
                 placeholder="3200"
                 className="font-mono"
                 required
               />
-              <p className="text-sm text-gray-500">
-                P&L balances will be posted to this account
-              </p>
+              <p className="text-sm text-gray-500">P&L balances will be posted to this account</p>
             </div>
 
             <div className="space-y-2">
@@ -311,10 +312,12 @@ export function CloseActionsBar({
               <Input
                 id="notes"
                 value={yearCloseForm.notes}
-                onChange={(e) => setYearCloseForm({
-                  ...yearCloseForm,
-                  notes: e.target.value
-                })}
+                onChange={e =>
+                  setYearCloseForm({
+                    ...yearCloseForm,
+                    notes: e.target.value
+                  })
+                }
                 placeholder="Year-end closing notes..."
               />
             </div>
@@ -325,22 +328,26 @@ export function CloseActionsBar({
                 id="confirm_close"
                 className="mt-1"
                 checked={yearCloseForm.confirm_all_periods_closed}
-                onChange={(e) => setYearCloseForm({
-                  ...yearCloseForm,
-                  confirm_all_periods_closed: e.target.checked
-                })}
+                onChange={e =>
+                  setYearCloseForm({
+                    ...yearCloseForm,
+                    confirm_all_periods_closed: e.target.checked
+                  })
+                }
               />
-              <label htmlFor="confirm_close" className="text-sm text-orange-800 dark:text-orange-200">
-                I confirm all periods are closed and reviewed. I understand this action will post all P&L balances to retained earnings and cannot be reversed.
+              <label
+                htmlFor="confirm_close"
+                className="text-sm text-orange-800 dark:text-orange-200"
+              >
+                I confirm all periods are closed and reviewed. I understand this action will post
+                all P&L balances to retained earnings and cannot be reversed.
               </label>
             </div>
 
             <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs">
-                <div className="font-medium text-blue-800 dark:text-blue-200">
-                  Audit Trail
-                </div>
+                <div className="font-medium text-blue-800 dark:text-blue-200">Audit Trail</div>
                 <div className="text-blue-700 dark:text-blue-300 mt-1">
                   Smart Code: HERA.FIN.FISCAL.YEAR.CLOSE.V1
                 </div>
@@ -349,16 +356,13 @@ export function CloseActionsBar({
           </div>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowYearCloseDialog(false)}
-            >
+            <Button variant="outline" onClick={() => setShowYearCloseDialog(false)}>
               Cancel
             </Button>
             <Button
               onClick={handleCloseYear}
               disabled={
-                !yearCloseForm.fiscal_year || 
+                !yearCloseForm.fiscal_year ||
                 !yearCloseForm.retained_earnings_account ||
                 !yearCloseForm.confirm_all_periods_closed ||
                 isClosingYear

@@ -31,7 +31,7 @@ export default function NewTenderPage() {
   const { organizationId, orgLoading } = useFurnitureOrg()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  
+
   const [formData, setFormData] = useState({
     code: '',
     title: '',
@@ -48,7 +48,7 @@ export default function NewTenderPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!organizationId) {
       toast({
         title: 'Error',
@@ -60,7 +60,7 @@ export default function NewTenderPage() {
 
     try {
       setLoading(true)
-      
+
       const tenderId = await tenderService.createTender({
         code: formData.code,
         title: formData.title,
@@ -76,13 +76,13 @@ export default function NewTenderPage() {
         title: 'Success',
         description: 'Tender created successfully'
       })
-      
+
       router.push(`/furniture/tender/${tenderId}`)
     } catch (error: any) {
       console.error('Error creating tender:', error)
-      
+
       const errorMessage = error?.message || 'Unknown error'
-      
+
       if (errorMessage.includes('Failed to fetch') || errorMessage.includes('net::ERR_FAILED')) {
         // Service worker interference
         toast({
@@ -162,7 +162,7 @@ export default function NewTenderPage() {
             <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
               Tender Information
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="code">Tender Code *</Label>
@@ -232,7 +232,9 @@ export default function NewTenderPage() {
                     <Calendar
                       mode="single"
                       selected={formData.closingDate}
-                      onSelect={date => date && setFormData(prev => ({ ...prev, closingDate: date }))}
+                      onSelect={date =>
+                        date && setFormData(prev => ({ ...prev, closingDate: date }))
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -280,7 +282,7 @@ export default function NewTenderPage() {
             <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
               Financial Details
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="estimatedValue">Estimated Value (₹) *</Label>
@@ -307,7 +309,9 @@ export default function NewTenderPage() {
                   required
                   className="bg-muted-foreground/10/50 border-[var(--color-border)]"
                 />
-                <p className="text-xs text-[var(--color-text-secondary)]">Usually 2% of estimated value</p>
+                <p className="text-xs text-[var(--color-text-secondary)]">
+                  Usually 2% of estimated value
+                </p>
               </div>
 
               <div className="space-y-2">

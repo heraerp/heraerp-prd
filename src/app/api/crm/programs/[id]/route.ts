@@ -1,19 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import type { ProgramDetail } from '@/types/crm-programs';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import type { ProgramDetail } from '@/types/crm-programs'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const supabase = createClient();
-  const orgId = request.headers.get('X-Organization-Id');
-  
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const orgId = request.headers.get('X-Organization-Id')
+
   if (!orgId) {
-    return NextResponse.json(
-      { error: 'Organization ID required' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
   }
 
   try {
@@ -24,13 +18,10 @@ export async function GET(
       .eq('id', params.id)
       .eq('organization_id', orgId)
       .eq('entity_type', 'program')
-      .single();
+      .single()
 
     if (programError || !program) {
-      return NextResponse.json(
-        { error: 'Program not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Program not found' }, { status: 404 })
     }
 
     // Get dynamic data
@@ -38,28 +29,29 @@ export async function GET(
       .from('core_dynamic_data')
       .select('*')
       .eq('entity_id', program.id)
-      .eq('organization_id', orgId);
+      .eq('organization_id', orgId)
 
-    const fields: Record<string, any> = {};
+    const fields: Record<string, any> = {}
     dynamicData?.forEach(field => {
-      fields[field.field_name] = field.field_value_text || 
-                                field.field_value_number || 
-                                field.field_value_boolean ||
-                                field.field_value_date ||
-                                field.field_value_json;
-    });
+      fields[field.field_name] =
+        field.field_value_text ||
+        field.field_value_number ||
+        field.field_value_boolean ||
+        field.field_value_date ||
+        field.field_value_json
+    })
 
     // Get sponsor organization if exists
-    let sponsorOrgName = undefined;
+    let sponsorOrgName = undefined
     if (fields.sponsor_org_id) {
       const { data: sponsor } = await supabase
         .from('core_entities')
         .select('entity_name')
         .eq('id', fields.sponsor_org_id)
         .eq('organization_id', orgId)
-        .single();
-      
-      sponsorOrgName = sponsor?.entity_name;
+        .single()
+
+      sponsorOrgName = sponsor?.entity_name
     }
 
     // Get grant rounds
@@ -69,33 +61,36 @@ export async function GET(
       .eq('organization_id', orgId)
       .eq('entity_type', 'grant_round')
       .eq('metadata->program_id', program.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
 
-    const grantRounds = await Promise.all((rounds || []).map(async (round) => {
-      // Get round's dynamic data
-      const { data: roundDynamic } = await supabase
-        .from('core_dynamic_data')
-        .select('*')
-        .eq('entity_id', round.id)
-        .eq('organization_id', orgId);
+    const grantRounds = await Promise.all(
+      (rounds || []).map(async round => {
+        // Get round's dynamic data
+        const { data: roundDynamic } = await supabase
+          .from('core_dynamic_data')
+          .select('*')
+          .eq('entity_id', round.id)
+          .eq('organization_id', orgId)
 
-      const roundFields: Record<string, any> = {};
-      roundDynamic?.forEach(field => {
-        roundFields[field.field_name] = field.field_value_text || 
-                                       field.field_value_number || 
-                                       field.field_value_date ||
-                                       field.field_value_json;
-      });
+        const roundFields: Record<string, any> = {}
+        roundDynamic?.forEach(field => {
+          roundFields[field.field_name] =
+            field.field_value_text ||
+            field.field_value_number ||
+            field.field_value_date ||
+            field.field_value_json
+        })
 
-      return {
-        id: round.id,
-        round_code: round.entity_code,
-        window_open: roundFields.window_open || round.metadata?.window_open,
-        window_close: roundFields.window_close || round.metadata?.window_close,
-        budget: roundFields.budget,
-        kpis: roundFields.kpis || {},
-      };
-    }));
+        return {
+          id: round.id,
+          round_code: round.entity_code,
+          window_open: roundFields.window_open || round.metadata?.window_open,
+          window_close: roundFields.window_close || round.metadata?.window_close,
+          budget: roundFields.budget,
+          kpis: roundFields.kpis || {}
+        }
+      })
+    )
 
     const response: ProgramDetail = {
       id: program.id,
@@ -111,28 +106,23 @@ export async function GET(
       created_at: program.created_at,
       description: fields.description,
       eligibility_rules: fields.eligibility_rules || {},
-      grant_rounds: grantRounds,
-    };
+      grant_rounds: grantRounds
+    }
 
     // Find next upcoming window
-    const now = new Date();
-    const nextRound = grantRounds.find(round => 
-      new Date(round.window_open) > now
-    );
-    
+    const now = new Date()
+    const nextRound = grantRounds.find(round => new Date(round.window_open) > now)
+
     if (nextRound) {
       response.next_window = {
         open: nextRound.window_open,
-        close: nextRound.window_close,
-      };
+        close: nextRound.window_close
+      }
     }
 
-    return NextResponse.json(response);
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Error fetching program:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Error fetching program:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

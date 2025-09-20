@@ -61,7 +61,9 @@ import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
 // Dynamically import components to avoid build issues
 const BookingAutomationPanel = dynamicImport(
   () =>
-    import('@/components/whatsapp/BookingAutomationPanel').then(mod => mod.default || mod.BookingAutomationPanel),
+    import('@/components/whatsapp/BookingAutomationPanel').then(
+      mod => mod.default || mod.BookingAutomationPanel
+    ),
   {
     loading: () => (
       <div className="p-4 bg-muted/50 border border-border rounded-lg animate-pulse">

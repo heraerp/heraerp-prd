@@ -393,7 +393,8 @@ export function YearEndClosingWizard({
                               <span
                                 className={cn(
                                   'text-sm',
-                                  item.status === 'completed' && 'line-through text-muted-foreground'
+                                  item.status === 'completed' &&
+                                    'line-through text-muted-foreground'
                                 )}
                               >
                                 {item.name}

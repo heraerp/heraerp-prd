@@ -256,7 +256,9 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Total Tenants</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Total Tenants
+                  </p>
                   <p className="text-2xl font-bold">{mockTenants.length}</p>
                 </div>
                 <Building2 className="w-8 h-8 text-blue-500 opacity-20" />
@@ -296,7 +298,9 @@ export default function ProvisioningDashboard() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Revenue/Month</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Revenue/Month
+                  </p>
                   <p className="text-2xl font-bold text-purple-600">$45,230</p>
                 </div>
                 <CreditCard className="w-8 h-8 text-purple-500 opacity-20" />

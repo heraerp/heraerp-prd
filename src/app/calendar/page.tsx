@@ -138,7 +138,10 @@ function SimpleCalendar() {
               {/* Days of week header */}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {daysOfWeek.map(day => (
-                  <div key={day} className="p-2 text-center text-sm font-semibold text-muted-foreground">
+                  <div
+                    key={day}
+                    className="p-2 text-center text-sm font-semibold text-muted-foreground"
+                  >
                     {day}
                   </div>
                 ))}
@@ -198,7 +201,9 @@ function SimpleCalendar() {
                             </div>
                           ))}
                           {events.length > 2 && (
-                            <div className="text-xs text-muted-foreground">+{events.length - 2} more</div>
+                            <div className="text-xs text-muted-foreground">
+                              +{events.length - 2} more
+                            </div>
                           )}
                         </div>
                       </div>
@@ -219,7 +224,9 @@ function SimpleCalendar() {
             </CardHeader>
             <CardContent>
               {SAMPLE_EVENTS.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">No events scheduled for today</p>
+                <p className="text-muted-foreground text-center py-4">
+                  No events scheduled for today
+                </p>
               ) : (
                 <div className="space-y-3">
                   {SAMPLE_EVENTS.map(event => (

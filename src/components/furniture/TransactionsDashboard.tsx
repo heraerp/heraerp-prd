@@ -3,7 +3,16 @@
 import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ShoppingCart, Package, Factory, TruckIcon, BarChart, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react'
+import {
+  ShoppingCart,
+  Package,
+  Factory,
+  TruckIcon,
+  BarChart,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle
+} from 'lucide-react'
 import { SalesOrderForm } from './transactions/SalesOrderForm'
 import { PurchaseOrderForm } from './transactions/PurchaseOrderForm'
 
@@ -70,7 +79,7 @@ export function TransactionsDashboard() {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {metrics.map((metric) => {
+        {metrics.map(metric => {
           const Icon = metric.icon
           return (
             <Card key={metric.title}>
@@ -79,9 +88,11 @@ export function TransactionsDashboard() {
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">{metric.title}</p>
                     <p className="text-2xl font-bold text-foreground">{metric.value}</p>
-                    <p className={`text-sm ${
-                      metric.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <p
+                      className={`text-sm ${
+                        metric.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
+                      }`}
+                    >
                       {metric.change} from last month
                     </p>
                   </div>
@@ -163,9 +174,7 @@ export function TransactionsDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Create Sales Order</CardTitle>
-              <CardDescription>
-                Create a new sales order for customers
-              </CardDescription>
+              <CardDescription>Create a new sales order for customers</CardDescription>
             </CardHeader>
             <CardContent>
               <SalesOrderForm onSubmit={handleSalesOrderSubmit} />
@@ -177,9 +186,7 @@ export function TransactionsDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Create Purchase Order</CardTitle>
-              <CardDescription>
-                Create a new purchase order for suppliers
-              </CardDescription>
+              <CardDescription>Create a new purchase order for suppliers</CardDescription>
             </CardHeader>
             <CardContent>
               <PurchaseOrderForm onSubmit={handlePurchaseOrderSubmit} />
@@ -191,9 +198,7 @@ export function TransactionsDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Production Orders</CardTitle>
-              <CardDescription>
-                Manage production scheduling and orders
-              </CardDescription>
+              <CardDescription>Manage production scheduling and orders</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">Production order interface would go here</p>

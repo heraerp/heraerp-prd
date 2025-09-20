@@ -405,7 +405,10 @@ function ResetPasswordForm() {
             </form>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-gray-200">
+              <Link
+                href="/auth/login"
+                className="text-sm text-muted-foreground hover:text-gray-200"
+              >
                 Back to Login
               </Link>
             </div>

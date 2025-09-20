@@ -261,35 +261,47 @@ export default function MethodologyPage() {
                   <h4 className="font-semibold text-primary dark:text-blue-400 mb-2">
                     Organizations
                   </h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">Multi-tenant isolation</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    Multi-tenant isolation
+                  </p>
                 </div>
                 <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                   <h4 className="font-semibold text-cyan-600 dark:text-cyan-400 mb-2">Entities</h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">All business objects</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    All business objects
+                  </p>
                 </div>
                 <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                   <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">
                     Dynamic Data
                   </h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">Flexible custom fields</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    Flexible custom fields
+                  </p>
                 </div>
                 <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                   <h4 className="font-semibold text-yellow-600 dark:text-yellow-400 mb-2">
                     Relationships
                   </h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">Entity connections</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    Entity connections
+                  </p>
                 </div>
                 <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                   <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">
                     Transactions
                   </h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">All business events</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    All business events
+                  </p>
                 </div>
                 <div className="p-4 bg-muted dark:bg-muted rounded-lg">
                   <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2">
                     Transaction Details
                   </h4>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300">Line item information</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300">
+                    Line item information
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -311,7 +323,9 @@ export default function MethodologyPage() {
             <CardContent>
               <div className="bg-background dark:bg-gray-950 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
                 <div className="mb-4">
-                  <span className="text-muted-foreground">// Intelligent Classification Pattern</span>
+                  <span className="text-muted-foreground">
+                    // Intelligent Classification Pattern
+                  </span>
                   <br />
                   Industry-specific • Module-aware • Type-driven • Version-controlled
                 </div>

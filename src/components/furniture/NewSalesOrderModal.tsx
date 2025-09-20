@@ -1,46 +1,52 @@
 'use client'
 
-import React, { useState, useEffect }
-from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle,
+import React, { useState, useEffect } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger
-}
-from '@/components/ui/dialog'
-import { Button }
-from '@/components/ui/button'
-import { Input }
-from '@/components/ui/input'
-import { Label }
-from '@/components/ui/label'
-import { Textarea }
-from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
   SelectValue
-}
-from '@/components/ui/select'
-import { Card }
-from '@/components/ui/card'
-import { Badge }
-from '@/components/ui/badge'
-import { Separator }
-from '@/components/ui/separator'
-import { Plus, Minus, ShoppingCart, User, Package, Calendar, CreditCard, Truck, FileText, Search, X, Maximize2,
+} from '@/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import {
+  Plus,
+  Minus,
+  ShoppingCart,
+  User,
+  Package,
+  Calendar,
+  CreditCard,
+  Truck,
+  FileText,
+  Search,
+  X,
+  Maximize2,
   Minimize2
-}
-from 'lucide-react'
-import { universalApi }
-from '@/lib/universal-api'
-import { useDemoOrganization }
-from '@/lib/dna/patterns/demo-org-pattern'
-import { cn }
-from '@/lib/utils'
-import { useToast }
-from '@/hooks/use-toast'
-import { generateHeraDocumentNumber, useHeraDocumentNumbering, HERA_DNA_DOCUMENT_TYPES,
+} from 'lucide-react'
+import { universalApi } from '@/lib/universal-api'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { cn } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
+import {
+  generateHeraDocumentNumber,
+  useHeraDocumentNumbering,
+  HERA_DNA_DOCUMENT_TYPES,
   HeraDocumentNumberDisplay
-}
-from '@/lib/dna/components/document-numbering-dna'
-
+} from '@/lib/dna/components/document-numbering-dna'
 
 interface Customer {
   id: string
@@ -76,39 +82,49 @@ interface NewSalesOrderModalProps {
   organizationName?: string
 }
 
-export default function NewSalesOrderModal({ trigger, onOrderCreated, organizationId: propOrgId, organizationName
+export default function NewSalesOrderModal({
+  trigger,
+  onOrderCreated,
+  organizationId: propOrgId,
+  organizationName
 }: NewSalesOrderModalProps) {
   const { organizationId: hookOrgId, orgLoading, hasOrganization } = useDemoOrganization()
-  
+
   const { toast } = useToast()
-  
+
   // Use prop organizationId if provided, otherwise use hook
   const organizationId = propOrgId || hookOrgId
   const hasValidOrganization = !!organizationId
-  
+
   // 🧬 HERA DNA: Document Numbering Hook - only initialize if we have an organization
-  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } = useHeraDocumentNumbering(hasValidOrganization ? organizationId : null, 'furniture')
+  const { generateNumber: generateDocNumber, isGenerating: isGeneratingDoc } =
+    useHeraDocumentNumbering(hasValidOrganization ? organizationId : null, 'furniture')
 
-const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
-// Form state
+  // Form state
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
 
-const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
 
-const [newCustomerMode, setNewCustomerMode] = useState(false)
+  const [newCustomerMode, setNewCustomerMode] = useState(false)
 
-const [customerFormData, setCustomerFormData] = useState({ name: '', phone: '', email: '', address: '' })
+  const [customerFormData, setCustomerFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: ''
+  })
 
-const [productSearchTerm, setProductSearchTerm] = useState('')
+  const [productSearchTerm, setProductSearchTerm] = useState('')
 
-const [lineItems, setLineItems] = useState<OrderLineItem[]>([])
+  const [lineItems, setLineItems] = useState<OrderLineItem[]>([])
 
-const [orderDetails, setOrderDetails] = useState({
+  const [orderDetails, setOrderDetails] = useState({
     order_date: new Date().toISOString().split('T')[0],
     delivery_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     payment_terms: 'NET30',
@@ -121,22 +137,23 @@ const [orderDetails, setOrderDetails] = useState({
   // Data loading
   const [customers, setCustomers] = useState<Customer[]>([])
 
-const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<Product[]>([])
 
-const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
 
-const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
-useEffect(() => {
-  if (isOpen && hasValidOrganization && organizationId) {
-    loadData()
+  useEffect(() => {
+    if (isOpen && hasValidOrganization && organizationId) {
+      loadData()
     }
   }, [isOpen, organizationId, hasValidOrganization])
 
   useEffect(() => {
     if (customerSearchTerm) {
       const filtered = customers.filter(
-        customer => customer.entity_name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
+        customer =>
+          customer.entity_name.toLowerCase().includes(customerSearchTerm.toLowerCase()) ||
           customer.entity_code?.toLowerCase().includes(customerSearchTerm.toLowerCase())
       )
       setFilteredCustomers(filtered)
@@ -148,7 +165,8 @@ useEffect(() => {
   useEffect(() => {
     if (productSearchTerm) {
       const filtered = products.filter(
-        product => product.entity_name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+        product =>
+          product.entity_name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
           product.entity_code?.toLowerCase().includes(productSearchTerm.toLowerCase())
       )
       setFilteredProducts(filtered)
@@ -157,33 +175,39 @@ useEffect(() => {
     }
   }, [productSearchTerm, products])
 
-const loadData = async () => {
+  const loadData = async () => {
     try {
       if (!organizationId || !hasValidOrganization) {
-  console.error('No organization ID available')
+        console.error('No organization ID available')
         return
       }
 
       universalApi.setOrganizationId(organizationId)
-      
+
       // Load customers
-  const customersResponse = await universalApi.read('core_entities', undefined, organizationId)
+      const customersResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (customersResponse.success) {
-        const customerEntities = customersResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
-        
+        const customerEntities =
+          customersResponse.data?.filter((e: any) => e.entity_type === 'customer') || []
+
         // Load dynamic data for customers
-  const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+        const dynamicDataResponse = await universalApi.read(
+          'core_dynamic_data',
+          undefined,
+          organizationId
+        )
         const dynamicData = dynamicDataResponse.data || []
-        
+
         const customersWithDetails = customerEntities.map((customer: any) => {
-        
-        const customerData = dynamicData.filter((d: any) => d.entity_id === customer.id)
-          
+          const customerData = dynamicData.filter((d: any) => d.entity_id === customer.id)
+
           const phone = customerData.find((d: any) => d.field_name === 'phone')?.field_value_text
-          
+
           const email = customerData.find((d: any) => d.field_name === 'email')?.field_value_text
-          const address = customerData.find((d: any) => d.field_name === 'address')?.field_value_text
-          
+          const address = customerData.find(
+            (d: any) => d.field_name === 'address'
+          )?.field_value_text
+
           return {
             id: customer.id,
             entity_name: customer.entity_name,
@@ -193,30 +217,40 @@ const loadData = async () => {
             address
           }
         })
-        
+
         setCustomers(customersWithDetails)
         setFilteredCustomers(customersWithDetails.slice(0, 10))
       }
 
-// Load products
-  const productsResponse = await universalApi.read('core_entities', undefined, organizationId)
+      // Load products
+      const productsResponse = await universalApi.read('core_entities', undefined, organizationId)
       if (productsResponse.success) {
-        const productEntities = productsResponse.data?.filter((e: any) => e.entity_type === 'product') || []
-        
+        const productEntities =
+          productsResponse.data?.filter((e: any) => e.entity_type === 'product') || []
+
         // Load dynamic data for products
-  const dynamicDataResponse = await universalApi.read('core_dynamic_data', undefined, organizationId)
+        const dynamicDataResponse = await universalApi.read(
+          'core_dynamic_data',
+          undefined,
+          organizationId
+        )
         const dynamicData = dynamicDataResponse.data || []
-        
+
         const productsWithDetails = productEntities.map((product: any) => {
-        
-        const productData = dynamicData.filter((d: any) => d.entity_id === product.id)
-          
+          const productData = dynamicData.filter((d: any) => d.entity_id === product.id)
+
           const price = productData.find((d: any) => d.field_name === 'price')?.field_value_number
-          
-          const stock_quantity = productData.find((d: any) => d.field_name === 'stock_quantity')?.field_value_number
-          const category = productData.find((d: any) => d.field_name === 'category')?.field_value_text
-          const description = productData.find((d: any) => d.field_name === 'description')?.field_value_text
-          
+
+          const stock_quantity = productData.find(
+            (d: any) => d.field_name === 'stock_quantity'
+          )?.field_value_number
+          const category = productData.find(
+            (d: any) => d.field_name === 'category'
+          )?.field_value_text
+          const description = productData.find(
+            (d: any) => d.field_name === 'description'
+          )?.field_value_text
+
           return {
             id: product.id,
             entity_name: product.entity_name,
@@ -227,7 +261,7 @@ const loadData = async () => {
             description
           }
         })
-        
+
         setProducts(productsWithDetails)
         setFilteredProducts(productsWithDetails.slice(0, 10))
       }
@@ -237,19 +271,18 @@ const loadData = async () => {
   }
 
   const addLineItem = (product: Product) => {
+    const existingItemIndex = lineItems.findIndex(item => item.product.id === product.id)
 
-  const existingItemIndex = lineItems.findIndex(item => item.product.id === product.id)
-    
     if (existingItemIndex >= 0) {
       // Increase quantity if product already exists
-  const updatedItems = [...lineItems]
+      const updatedItems = [...lineItems]
       updatedItems[existingItemIndex].quantity += 1
-      updatedItems[existingItemIndex].line_amount = 
+      updatedItems[existingItemIndex].line_amount =
         updatedItems[existingItemIndex].quantity * updatedItems[existingItemIndex].unit_price
       setLineItems(updatedItems)
     } else {
       // Add new line item
-  const newItem: OrderLineItem = {
+      const newItem: OrderLineItem = {
         product,
         quantity: 1,
         unit_price: product.price || 0,
@@ -257,21 +290,21 @@ const loadData = async () => {
       }
       setLineItems([...lineItems, newItem])
     }
-    
+
     setProductSearchTerm('')
   }
 
   const updateLineItem = (index: number, field: keyof OrderLineItem, value: any) => {
+    const updatedItems = [...lineItems]
 
-  const updatedItems = [...lineItems]
-    
     if (field === 'quantity' || field === 'unit_price') {
       updatedItems[index][field] = parseFloat(value) || 0
-      updatedItems[index].line_amount = updatedItems[index].quantity * updatedItems[index].unit_price
+      updatedItems[index].line_amount =
+        updatedItems[index].quantity * updatedItems[index].unit_price
     } else {
       updatedItems[index][field] = value
     }
-    
+
     setLineItems(updatedItems)
   }
 
@@ -280,14 +313,12 @@ const loadData = async () => {
   }
 
   const calculateTotals = () => {
-
-  const subtotal = lineItems.reduce((sum, item) => sum + item.line_amount, 0)
+    const subtotal = lineItems.reduce((sum, item) => sum + item.line_amount, 0)
     const discountAmount = subtotal * (orderDetails.discount_percent / 100)
     const taxableAmount = subtotal - discountAmount
     const taxAmount = taxableAmount * (orderDetails.tax_percent / 100)
     const total = taxableAmount + taxAmount
-    
-    
+
     return {
       subtotal,
       discountAmount,
@@ -299,45 +330,49 @@ const loadData = async () => {
 
   const handleCreateCustomer = async () => {
     if (!customerFormData.name.trim()) return
-    
+
     // Check if we have a valid organization ID
     if (!hasValidOrganization || !organizationId) {
       toast({
         title: 'Error',
-        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
+        description:
+          "No organization context found. Please ensure you're logged in or in a demo mode.",
         variant: 'destructive'
       })
       return
     }
-    
+
     try {
       setIsSubmitting(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Create customer entity
-  const customerResponse = await universalApi.createEntity({
+      const customerResponse = await universalApi.createEntity({
         entity_type: 'customer',
         entity_name: customerFormData.name,
         entity_code: `CUST-${Date.now()}`,
         smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.V1',
         organization_id: organizationId
       })
-      
+
       if (customerResponse.success) {
         const customerId = customerResponse.data.id
-        
+
         // Add dynamic data
-  const dynamicFields = []
-        if (customerFormData.phone) dynamicFields.push({ field_name: 'phone', field_value_text: customerFormData.phone })
-        if (customerFormData.email) dynamicFields.push({ field_name: 'email', field_value_text: customerFormData.email })
-        if (customerFormData.address) dynamicFields.push({ field_name: 'address', field_value_text: customerFormData.address })
-        
+        const dynamicFields = []
+        if (customerFormData.phone)
+          dynamicFields.push({ field_name: 'phone', field_value_text: customerFormData.phone })
+        if (customerFormData.email)
+          dynamicFields.push({ field_name: 'email', field_value_text: customerFormData.email })
+        if (customerFormData.address)
+          dynamicFields.push({ field_name: 'address', field_value_text: customerFormData.address })
+
         for (const field of dynamicFields) {
           await universalApi.setDynamicField(customerId, field.field_name, field.field_value_text, {
             smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.V1'
           })
         }
-        
+
         const newCustomer: Customer = {
           id: customerId,
           entity_name: customerFormData.name,
@@ -346,7 +381,7 @@ const loadData = async () => {
           email: customerFormData.email,
           address: customerFormData.address
         }
-        
+
         setSelectedCustomer(newCustomer)
         setCustomers([newCustomer, ...customers])
         setNewCustomerMode(false)
@@ -361,29 +396,30 @@ const loadData = async () => {
 
   const handleSubmitOrder = async () => {
     if (!selectedCustomer || lineItems.length === 0) return
-    
+
     // Check if we have a valid organization ID
     if (!hasValidOrganization || !organizationId) {
       toast({
         title: 'Error',
-        description: "No organization context found. Please ensure you're logged in or in a demo mode.",
+        description:
+          "No organization context found. Please ensure you're logged in or in a demo mode.",
         variant: 'destructive'
       })
       return
     }
-    
+
     try {
       setIsSubmitting(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       const totals = calculateTotals()
-      
+
       // 🧬 HERA DNA: Generate professional document number
-  const documentNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.SALES_ORDER)
+      const documentNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.SALES_ORDER)
       console.log('🧬 HERA DNA Generated document number:', documentNumber)
-      
+
       // Create sales order transaction
-  const orderResponse = await universalApi.createTransaction({
+      const orderResponse = await universalApi.createTransaction({
         transaction_type: 'sales_order',
         transaction_code: documentNumber,
         transaction_date: orderDetails.order_date,
@@ -405,10 +441,10 @@ const loadData = async () => {
         },
         organization_id: organizationId
       })
-      
+
       if (orderResponse.success) {
         const orderId = orderResponse.data.id
-        
+
         // Create order line items
         for (let i = 0; i < lineItems.length; i++) {
           const item = lineItems[i]
@@ -427,17 +463,17 @@ const loadData = async () => {
             },
             organization_id: organizationId
           })
-          }
+        }
 
-// Create status relationship (pending approval)
-  const statusResponse = await universalApi.createEntity({
+        // Create status relationship (pending approval)
+        const statusResponse = await universalApi.createEntity({
           entity_type: 'workflow_status',
           entity_name: 'Pending Approval',
           entity_code: 'STATUS-PENDING-APPROVAL',
           smart_code: 'HERA.FURNITURE.STATUS.PENDING.v1',
           organization_id: organizationId
         })
-        
+
         if (statusResponse.success) {
           await universalApi.createRelationship({
             from_entity_id: orderId,
@@ -451,13 +487,13 @@ const loadData = async () => {
             },
             organization_id: organizationId
           })
-          }
+        }
 
-// 🧬 UNIVERSAL EVENT CONTRACT & FINANCE DNA INTEGRATION
+        // 🧬 UNIVERSAL EVENT CONTRACT & FINANCE DNA INTEGRATION
         // Automatic GL Posting for Furniture Sales Order
         try {
           // 🧬 HERA DNA: Generate professional journal entry number
-  const journalNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.JOURNAL_ENTRY)
+          const journalNumber = await generateDocNumber(HERA_DNA_DOCUMENT_TYPES.JOURNAL_ENTRY)
           const financeEvent = await universalApi.createTransaction({
             transaction_type: 'journal_entry',
             transaction_code: journalNumber,
@@ -475,12 +511,12 @@ const loadData = async () => {
             },
             organization_id: organizationId
           })
-          
+
           if (financeEvent.success) {
             const journalId = financeEvent.data.id
-            
+
             // Create journal entry lines following Universal Event Contract
-  const journalLines = [
+            const journalLines = [
               {
                 // DR: Accounts Receivable (Customer owes us money)
                 entity_id: selectedCustomer.id,
@@ -489,7 +525,7 @@ const loadData = async () => {
                 unit_price: totals.total,
                 line_amount: totals.total,
                 smart_code: 'HERA.FURNITURE.GL.ACCOUNTS_RECEIVABLE.v1',
-metadata: {
+                metadata: {
                   account_code: '120000',
                   account_name: 'Accounts Receivable - Trade',
                   debit_credit: 'debit',
@@ -503,7 +539,7 @@ metadata: {
                 unit_price: totals.subtotal,
                 line_amount: totals.subtotal,
                 smart_code: 'HERA.FURNITURE.GL.SALES_REVENUE.v1',
-metadata: {
+                metadata: {
                   account_code: '410000',
                   account_name: 'Furniture Sales Revenue',
                   debit_credit: 'credit',
@@ -517,7 +553,7 @@ metadata: {
                 unit_price: totals.taxAmount,
                 line_amount: totals.taxAmount,
                 smart_code: 'HERA.FURNITURE.GL.SALES_TAX.v1',
-metadata: {
+                metadata: {
                   account_code: '220000',
                   account_name: 'GST/VAT Payable',
                   debit_credit: 'credit',
@@ -525,10 +561,11 @@ metadata: {
                 }
               }
             ]
-            
+
             // Create journal lines
             for (const line of journalLines) {
-              if (line.line_amount > 0) { // Only create lines with amounts
+              if (line.line_amount > 0) {
+                // Only create lines with amounts
                 await universalApi.createTransactionLine({
                   transaction_id: journalId,
                   ...line,
@@ -536,7 +573,7 @@ metadata: {
                 })
               }
             }
-            
+
             toast({
               title: '🚀 Finance DNA Integration Success!',
               description: `Sales order created and automatically posted to GL. Journal Entry: ${journalNumber}`,
@@ -551,9 +588,9 @@ metadata: {
             variant: 'destructive',
             duration: 3000
           })
-          }
+        }
 
-// Reset form
+        // Reset form
         setSelectedCustomer(null)
         setLineItems([])
         setOrderDetails({
@@ -565,15 +602,15 @@ metadata: {
           discount_percent: 0,
           tax_percent: 5
         })
-        
+
         setIsOpen(false)
-        
+
         toast({
           title: '✅ Sales Order Created',
           description: `Order ${documentNumber} created successfully with automatic finance integration.`,
           duration: 4000
         })
-        
+
         // Callback
         if (onOrderCreated) {
           onOrderCreated(orderId)
@@ -587,7 +624,7 @@ metadata: {
   }
 
   const totals = calculateTotals()
-  
+
   // Debug logging
   console.log('NewSalesOrderModal render state:', {
     organizationId,
@@ -596,7 +633,7 @@ metadata: {
     isOpen,
     propOrgId
   })
-  
+
   const handleOpenChange = (open: boolean) => {
     console.log('NewSalesOrderModal handleOpenChange:', {
       open,
@@ -604,7 +641,7 @@ metadata: {
       organizationId,
       orgLoading
     })
-    
+
     if (open && (!hasValidOrganization || !organizationId)) {
       toast({
         title: 'No Organization Context',
@@ -613,10 +650,10 @@ metadata: {
       })
       return
     }
-    
+
     setIsOpen(open)
   }
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -693,7 +730,7 @@ metadata: {
             </div>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Customer & Order Details */}
@@ -702,7 +739,9 @@ metadata: {
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <User className="h-5 w-5 text-[var(--color-icon-secondary)]" />
-                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Customer Information</h3>
+                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
+                    Customer Information
+                  </h3>
                 </div>
                 {!selectedCustomer && !newCustomerMode ? (
                   <div className="space-y-3">
@@ -724,15 +763,23 @@ metadata: {
                         >
                           <div className="flex justify-between">
                             <div>
-                              <p className="font-medium text-[var(--color-text-primary)]">{customer.entity_name}</p>
-                              <p className="text-sm text-[var(--color-text-secondary)]">{customer.entity_code}</p>
+                              <p className="font-medium text-[var(--color-text-primary)]">
+                                {customer.entity_name}
+                              </p>
+                              <p className="text-sm text-[var(--color-text-secondary)]">
+                                {customer.entity_code}
+                              </p>
                             </div>
                             <div className="text-right">
                               {customer.phone && (
-                                <p className="text-sm text-[var(--color-text-secondary)]">{customer.phone}</p>
+                                <p className="text-sm text-[var(--color-text-secondary)]">
+                                  {customer.phone}
+                                </p>
                               )}
                               {customer.email && (
-                                <p className="text-xs text-[var(--color-text-secondary)]">{customer.email}</p>
+                                <p className="text-xs text-[var(--color-text-secondary)]">
+                                  {customer.email}
+                                </p>
                               )}
                             </div>
                           </div>
@@ -752,7 +799,9 @@ metadata: {
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <Label className="text-[var(--color-text-secondary)]">Customer Name *</Label>
+                        <Label className="text-[var(--color-text-secondary)]">
+                          Customer Name *
+                        </Label>
                         <Input
                           value={customerFormData.name}
                           onChange={e =>
@@ -832,10 +881,16 @@ metadata: {
                 ) : (
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-[var(--color-text-primary)]">{selectedCustomer.entity_name}</p>
-                      <p className="text-sm text-[var(--color-text-secondary)]">{selectedCustomer.entity_code}</p>
+                      <p className="font-medium text-[var(--color-text-primary)]">
+                        {selectedCustomer.entity_name}
+                      </p>
+                      <p className="text-sm text-[var(--color-text-secondary)]">
+                        {selectedCustomer.entity_code}
+                      </p>
                       {selectedCustomer.phone && (
-                        <p className="text-sm text-[var(--color-text-secondary)]">{selectedCustomer.phone}</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          {selectedCustomer.phone}
+                        </p>
                       )}
                     </div>
                     <Button variant="outline" size="sm" onClick={() => setSelectedCustomer(null)}>
@@ -849,7 +904,9 @@ metadata: {
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <Package className="h-5 w-5 text-[var(--color-icon-secondary)]" />
-                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Add Products</h3>
+                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
+                    Add Products
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="relative">
@@ -871,10 +928,17 @@ metadata: {
                         >
                           <div className="bg-[var(--color-body)] flex justify-between">
                             <div>
-                              <p className="font-medium text-[var(--color-text-primary)]">{product.entity_name}</p>
-                              <p className="text-sm text-[var(--color-text-secondary)]">{product.entity_code}</p>
+                              <p className="font-medium text-[var(--color-text-primary)]">
+                                {product.entity_name}
+                              </p>
+                              <p className="text-sm text-[var(--color-text-secondary)]">
+                                {product.entity_code}
+                              </p>
                               {product.category && (
-                                <Badge variant="outline" className="bg-[var(--color-body)] mt-1 text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="bg-[var(--color-body)] mt-1 text-xs"
+                                >
                                   {product.category}
                                 </Badge>
                               )}
@@ -898,14 +962,20 @@ metadata: {
               {/* Line Items */}
               {lineItems.length > 0 && (
                 <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
-                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">Order Items</h3>
+                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                    Order Items
+                  </h3>
                   <div className="space-y-3">
                     {lineItems.map((item, index) => (
                       <div key={index} className="p-3 bg-[var(--color-body)]/50 rounded-lg">
                         <div className="bg-[var(--color-body)] flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-medium text-[var(--color-text-primary)]">{item.product.entity_name}</p>
-                            <p className="text-sm text-[var(--color-text-secondary)]">{item.product.entity_code}</p>
+                            <p className="font-medium text-[var(--color-text-primary)]">
+                              {item.product.entity_name}
+                            </p>
+                            <p className="text-sm text-[var(--color-text-secondary)]">
+                              {item.product.entity_code}
+                            </p>
                           </div>
                           <Button
                             variant="ghost"
@@ -918,7 +988,9 @@ metadata: {
                         </div>
                         <div className="bg-[var(--color-body)] grid grid-cols-3 gap-2">
                           <div>
-                            <Label className="text-xs text-[var(--color-text-secondary)]">Quantity</Label>
+                            <Label className="text-xs text-[var(--color-text-secondary)]">
+                              Quantity
+                            </Label>
                             <Input
                               type="number"
                               value={item.quantity}
@@ -928,7 +1000,9 @@ metadata: {
                             />
                           </div>
                           <div>
-                            <Label className="text-xs text-[var(--color-text-secondary)]">Unit Price</Label>
+                            <Label className="text-xs text-[var(--color-text-secondary)]">
+                              Unit Price
+                            </Label>
                             <Input
                               type="number"
                               value={item.unit_price}
@@ -939,7 +1013,9 @@ metadata: {
                             />
                           </div>
                           <div>
-                            <Label className="text-xs text-[var(--color-text-secondary)]">Amount</Label>
+                            <Label className="text-xs text-[var(--color-text-secondary)]">
+                              Amount
+                            </Label>
                             <Input
                               value={`₹${item.line_amount.toLocaleString('en-IN')}`}
                               disabled
@@ -948,7 +1024,9 @@ metadata: {
                           </div>
                         </div>
                         <div className="bg-[var(--color-body)] mt-2">
-                          <Label className="text-xs text-[var(--color-text-secondary)]">Notes</Label>
+                          <Label className="text-xs text-[var(--color-text-secondary)]">
+                            Notes
+                          </Label>
                           <Input
                             value={item.notes || ''}
                             onChange={e => updateLineItem(index, 'notes', e.target.value)}
@@ -967,26 +1045,40 @@ metadata: {
             <div className="space-y-6">
               {/* Order Summary */}
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
-                <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">Order Summary</h3>
+                <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                  Order Summary
+                </h3>
                 <div className="space-y-3">
                   <div className="bg-[var(--color-body)] flex justify-between text-sm">
-                    <span className="text-[var(--color-text-secondary)]">Items ({totals.itemCount})</span>
-                    <span className="text-[var(--color-text-primary)]">₹{totals.subtotal.toLocaleString('en-IN')}</span>
+                    <span className="text-[var(--color-text-secondary)]">
+                      Items ({totals.itemCount})
+                    </span>
+                    <span className="text-[var(--color-text-primary)]">
+                      ₹{totals.subtotal.toLocaleString('en-IN')}
+                    </span>
                   </div>
                   <div className="bg-[var(--color-body)] flex justify-between text-sm">
-                    <span className="text-[var(--color-text-secondary)]">Discount ({orderDetails.discount_percent}%)</span>
+                    <span className="text-[var(--color-text-secondary)]">
+                      Discount ({orderDetails.discount_percent}%)
+                    </span>
                     <span className="text-[var(--color-text-primary)]">
                       -₹{totals.discountAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
                   <div className="bg-[var(--color-body)] flex justify-between text-sm">
-                    <span className="text-[var(--color-text-secondary)]">GST ({orderDetails.tax_percent}%)</span>
-                    <span className="text-[var(--color-text-primary)]">₹{totals.taxAmount.toLocaleString('en-IN')}</span>
+                    <span className="text-[var(--color-text-secondary)]">
+                      GST ({orderDetails.tax_percent}%)
+                    </span>
+                    <span className="text-[var(--color-text-primary)]">
+                      ₹{totals.taxAmount.toLocaleString('en-IN')}
+                    </span>
                   </div>
                   <Separator className="bg-[var(--color-body)]" />
                   <div className="bg-[var(--color-body)] flex justify-between font-semibold">
                     <span className="text-[var(--color-text-primary)]">Total</span>
-                    <span className="text-[var(--color-text-primary)]">₹{totals.total.toLocaleString('en-IN')}</span>
+                    <span className="text-[var(--color-text-primary)]">
+                      ₹{totals.total.toLocaleString('en-IN')}
+                    </span>
                   </div>
                 </div>
               </Card>
@@ -995,7 +1087,9 @@ metadata: {
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <Calendar className="h-5 w-5 text-green-400" />
-                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Order Details</h3>
+                  <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
+                    Order Details
+                  </h3>
                 </div>
                 <div className="bg-[var(--color-body)] space-y-3">
                   <div className="bg-[var(--color-body)] grid grid-cols-1 gap-3">
@@ -1111,9 +1205,7 @@ metadata: {
                     <Label className="text-[var(--color-text-secondary)]">Notes</Label>
                     <Textarea
                       value={orderDetails.notes}
-                      onChange={e =>
-                        setOrderDetails({ ...orderDetails, notes: e.target.value })
-                      }
+                      onChange={e => setOrderDetails({ ...orderDetails, notes: e.target.value })}
                       className="bg-[var(--color-body)]/50 border-[var(--color-border)]/50 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:border-[#6b6975] focus:ring-[var(--color-accent-teal)]/20 backdrop-blur-sm"
                       placeholder="Special instructions..."
                       rows={3}

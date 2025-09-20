@@ -10,10 +10,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
-
 export default function UCRSettingsPage() {
   const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
-  
+
   // Three-layer authorization pattern
   if (!isAuthenticated) {
     return (
@@ -25,7 +24,7 @@ export default function UCRSettingsPage() {
       </div>
     )
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] p-6">
@@ -42,7 +41,7 @@ export default function UCRSettingsPage() {
       </div>
     )
   }
-  
+
   if (!currentOrganization?.id) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -61,6 +60,6 @@ export default function UCRSettingsPage() {
       <div className="max-w-7xl mx-auto">
         <UCRRuleManager organizationId={currentOrganization.id} />
       </div>
-      </div>
-    )
+    </div>
+  )
 }

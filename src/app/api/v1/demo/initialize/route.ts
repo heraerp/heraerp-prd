@@ -26,16 +26,19 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const { demoType } = await request.json()
-    
+
     if (!demoType || !DEMO_USERS[demoType as DemoUserType]) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid demo type'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid demo type'
+        },
+        { status: 400 }
+      )
     }
 
     const demoConfig = DEMO_USERS[demoType as DemoUserType]
-    
+
     // Create Supabase client with service role for RLS bypass
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,15 +59,18 @@ export async function POST(request: NextRequest) {
     const userEntity = userEntities?.[0]
 
     if (userError || !userEntity) {
-      console.error('❌ Demo user entity not found:', { 
-        demoType, 
+      console.error('❌ Demo user entity not found:', {
+        demoType,
         supabase_user_id: demoConfig.supabase_user_id,
-        error: userError 
+        error: userError
       })
-      return NextResponse.json({
-        success: false,
-        error: 'Demo user not found. Please run: node hera-auth-dna-generator.js generate salon'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Demo user not found. Please run: node hera-auth-dna-generator.js generate salon'
+        },
+        { status: 404 }
+      )
     }
 
     // Find the organization anchor and membership
@@ -78,16 +84,20 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (membershipError || !membership) {
-      console.error('❌ Demo membership not found:', { 
+      console.error('❌ Demo membership not found:', {
         demoType,
         user_entity_id: userEntity.id,
         organization_id: demoConfig.organization_id,
-        error: membershipError 
+        error: membershipError
       })
-      return NextResponse.json({
-        success: false,
-        error: 'Demo membership not found. Please run: node hera-auth-dna-generator.js generate salon'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Demo membership not found. Please run: node hera-auth-dna-generator.js generate salon'
+        },
+        { status: 404 }
+      )
     }
 
     // Get organization details
@@ -98,20 +108,23 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (orgError || !organization) {
-      return NextResponse.json({
-        success: false,
-        error: 'Demo organization not found'
-      }, { status: 404 })
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Demo organization not found'
+        },
+        { status: 404 }
+      )
     }
 
     // Check if membership is still valid (not expired)
     const now = new Date()
     const expiryTime = membership.expiration_date ? new Date(membership.expiration_date) : null
-    
+
     if (expiryTime && expiryTime <= now) {
       // Extend the membership expiry for a new demo session
       console.log('⏰ Demo membership expired, extending for new session...')
-      
+
       const newExpiryDate = new Date(Date.now() + demoConfig.session_duration)
       const { error: updateError } = await supabase
         .from('core_relationships')
@@ -119,15 +132,18 @@ export async function POST(request: NextRequest) {
           expiration_date: newExpiryDate.toISOString()
         })
         .eq('id', membership.id)
-      
+
       if (updateError) {
         console.error('❌ Failed to extend membership:', updateError)
-        return NextResponse.json({
-          success: false,
-          error: 'Failed to extend demo session'
-        }, { status: 500 })
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Failed to extend demo session'
+          },
+          { status: 500 }
+        )
       }
-      
+
       // Update the membership object with new expiry
       membership.expiration_date = newExpiryDate.toISOString()
       console.log('✅ Demo membership extended until:', newExpiryDate.toISOString())
@@ -164,7 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cookieResponse = NextResponse.json(response)
-    
+
     // Set secure session cookie
     cookieResponse.cookies.set('hera-demo-session', JSON.stringify(sessionCookie), {
       httpOnly: false, // Allow client-side access for demo
@@ -182,12 +198,14 @@ export async function POST(request: NextRequest) {
     })
 
     return cookieResponse
-
   } catch (error) {
     console.error('💥 Demo initialization error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error'
+      },
+      { status: 500 }
+    )
   }
 }

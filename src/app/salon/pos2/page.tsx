@@ -13,10 +13,10 @@ import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  ChevronRight, 
-  Search, 
-  ShoppingCart, 
+import {
+  ChevronRight,
+  Search,
+  ShoppingCart,
   CreditCard,
   Receipt as ReceiptIcon,
   Settings,
@@ -35,10 +35,10 @@ const COLORS = {
   champagne: '#F5E6C8',
   bronze: '#8C7853',
   lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',  // Darker shade for depth
-  charcoalLight: '#232323',  // Lighter shade for elements
-  plum: '#5A2A40',  // Added for gradient accent
-  emerald: '#0F6F5C'  // Added for accent
+  charcoalDark: '#0F0F0F', // Darker shade for depth
+  charcoalLight: '#232323', // Lighter shade for elements
+  plum: '#5A2A40', // Added for gradient accent
+  emerald: '#0F6F5C' // Added for accent
 }
 
 export default function SalonPOS2Page() {
@@ -107,13 +107,14 @@ export default function SalonPOS2Page() {
         appointment_id: fullAppointment.id,
         customer_id: fullAppointment.customer_id,
         customer_name: fullAppointment.customer_name || 'Walk-in',
-        services: fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
-          id: serviceId,
-          name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
-          price: 0, // Will be loaded from pricing
-          stylist_id: fullAppointment.stylist_id,
-          stylist_name: fullAppointment.stylist_name
-        })) || []
+        services:
+          fullAppointment.service_ids?.map((serviceId: string, index: number) => ({
+            id: serviceId,
+            name: fullAppointment.service_names?.[index] || `Service ${index + 1}`,
+            price: 0, // Will be loaded from pricing
+            stylist_id: fullAppointment.stylist_id,
+            stylist_name: fullAppointment.stylist_name
+          })) || []
       })
     }
   }
@@ -134,12 +135,17 @@ export default function SalonPOS2Page() {
 
   if (!user || !organizationId) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--hera-black)' }}>
-        <div className="text-center p-8 rounded-xl" 
-             style={{ 
-               backgroundColor: COLORS.charcoal,
-               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
-             }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: 'var(--hera-black)' }}
+      >
+        <div
+          className="text-center p-8 rounded-xl"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          }}
+        >
           <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
             Authentication Required
           </h2>
@@ -156,28 +162,33 @@ export default function SalonPOS2Page() {
       {/* Main content wrapper with charcoal background for depth */}
       <div className="relative" style={{ minHeight: '100vh' }}>
         {/* Subtle gradient overlay for depth */}
-        <div className="absolute inset-0 pointer-events-none"
-             style={{
-               background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
                            radial-gradient(circle at 80% 20%, ${COLORS.bronze}05 0%, transparent 50%),
-                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`,
-             }} />
-        
+                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`
+          }}
+        />
+
         {/* Content container */}
-        <div className="relative" 
-             style={{ 
-               backgroundColor: COLORS.charcoal,
-               minHeight: '100vh',
-               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
-             }}>
-          
+        <div
+          className="relative"
+          style={{
+            backgroundColor: COLORS.charcoal,
+            minHeight: '100vh',
+            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
+          }}
+        >
           {/* Header */}
-          <div className="p-6 border-b" 
-               style={{ 
-                 backgroundColor: COLORS.charcoalLight,
-                 borderColor: COLORS.bronze + '20',
-                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-               }}>
+          <div
+            className="p-6 border-b"
+            style={{
+              backgroundColor: COLORS.charcoalLight,
+              borderColor: COLORS.bronze + '20',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+            }}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 {/* Breadcrumb */}
@@ -188,57 +199,70 @@ export default function SalonPOS2Page() {
                   <ChevronRight className="w-4 h-4" style={{ color: COLORS.bronze }} />
                   <span style={{ color: COLORS.champagne }}>POS 2.0</span>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
                   <Monitor className="w-6 h-6" style={{ color: COLORS.gold }} />
                   <h1 className="text-2xl font-bold" style={{ color: COLORS.champagne }}>
                     Salon POS 2.0
                   </h1>
                 </div>
-                <Badge className="ml-2"
-                       style={{ 
-                         backgroundColor: COLORS.emerald + '20',
-                         color: COLORS.emerald,
-                         borderColor: COLORS.emerald + '50'
-                       }}>
+                <Badge
+                  className="ml-2"
+                  style={{
+                    backgroundColor: COLORS.emerald + '20',
+                    color: COLORS.emerald,
+                    borderColor: COLORS.emerald + '50'
+                  }}
+                >
                   Live
                 </Badge>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 {/* Branch Selector */}
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm" style={{ color: COLORS.bronze }}>Branch:</span>
-                  <div className="px-3 py-1 rounded-lg border text-sm"
-                       style={{ 
-                         borderColor: COLORS.bronze + '33',
-                         backgroundColor: COLORS.charcoalDark,
-                         color: COLORS.lightText,
-                         boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-                       }}>
+                  <span className="text-sm" style={{ color: COLORS.bronze }}>
+                    Branch:
+                  </span>
+                  <div
+                    className="px-3 py-1 rounded-lg border text-sm"
+                    style={{
+                      borderColor: COLORS.bronze + '33',
+                      backgroundColor: COLORS.charcoalDark,
+                      color: COLORS.lightText,
+                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
+                    }}
+                  >
                     Main Salon
                   </div>
                 </div>
-                
+
                 {/* User Info */}
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm" style={{ color: COLORS.bronze }}>Cashier:</span>
-                  <div className="px-3 py-1 rounded-lg border text-sm"
-                       style={{ 
-                         borderColor: COLORS.bronze + '33',
-                         backgroundColor: COLORS.charcoalDark,
-                         color: COLORS.lightText,
-                         boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
-                       }}>
+                  <span className="text-sm" style={{ color: COLORS.bronze }}>
+                    Cashier:
+                  </span>
+                  <div
+                    className="px-3 py-1 rounded-lg border text-sm"
+                    style={{
+                      borderColor: COLORS.bronze + '33',
+                      backgroundColor: COLORS.charcoalDark,
+                      color: COLORS.lightText,
+                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
+                    }}
+                  >
                     {user.email}
                   </div>
                 </div>
-                
-                <Button variant="outline" size="sm"
-                        style={{
-                          borderColor: COLORS.bronze,
-                          color: COLORS.champagne
-                        }}>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  style={{
+                    borderColor: COLORS.bronze,
+                    color: COLORS.champagne
+                  }}
+                >
                   <Settings className="w-4 h-4" />
                 </Button>
               </div>
@@ -248,9 +272,8 @@ export default function SalonPOS2Page() {
           {/* Main Content - Two Pane Layout */}
           <div className="flex h-[calc(100vh-140px)]">
             {/* Left Pane - Catalog */}
-            <div className="flex-1 min-w-0 border-r" 
-                 style={{ borderColor: COLORS.bronze + '20' }}>
-              <CatalogPane 
+            <div className="flex-1 min-w-0 border-r" style={{ borderColor: COLORS.bronze + '20' }}>
+              <CatalogPane
                 organizationId={organizationId}
                 onAddItem={addLineItem}
                 currentCustomerId={ticket.customer_id}
@@ -261,14 +284,16 @@ export default function SalonPOS2Page() {
             {/* Right Pane - Cart with Action Buttons */}
             <div className="w-96 shrink-0 flex flex-col">
               {/* Action Buttons Bar */}
-              <div className="p-4 border-b" 
-                   style={{ 
-                     borderColor: COLORS.bronze + '20',
-                     backgroundColor: COLORS.charcoalLight,
-                     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-                   }}>
+              <div
+                className="p-4 border-b"
+                style={{
+                  borderColor: COLORS.bronze + '20',
+                  backgroundColor: COLORS.charcoalLight,
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                }}
+              >
                 <div className="grid grid-cols-2 gap-2">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => setIsCustomerSearchOpen(true)}
                     className="flex items-center gap-2"
@@ -280,7 +305,7 @@ export default function SalonPOS2Page() {
                     <Search className="w-4 h-4" />
                     Find Customer
                   </Button>
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => setIsTicketDetailsOpen(true)}
                     disabled={ticket.lineItems.length === 0}
@@ -294,11 +319,13 @@ export default function SalonPOS2Page() {
                     Ticket Details
                   </Button>
                 </div>
-                
+
                 {/* Customer Info */}
                 {ticket.customer_name && (
-                  <div className="mt-3 p-3 rounded-lg" 
-                       style={{ backgroundColor: COLORS.charcoalDark }}>
+                  <div
+                    className="mt-3 p-3 rounded-lg"
+                    style={{ backgroundColor: COLORS.charcoalDark }}
+                  >
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4" style={{ color: COLORS.gold }} />
                       <div>
@@ -312,7 +339,7 @@ export default function SalonPOS2Page() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Quick Stats */}
                 <div className="mt-3 flex items-center justify-between text-sm">
                   <span style={{ color: COLORS.bronze }}>
@@ -336,15 +363,17 @@ export default function SalonPOS2Page() {
               </div>
 
               {/* Bottom Action Bar */}
-              <div className="p-4 border-t" 
-                   style={{ 
-                     borderColor: COLORS.bronze + '20',
-                     backgroundColor: COLORS.charcoalLight,
-                     boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.2)'
-                   }}>
+              <div
+                className="p-4 border-t"
+                style={{
+                  borderColor: COLORS.bronze + '20',
+                  backgroundColor: COLORS.charcoalLight,
+                  boxShadow: '0 -2px 4px rgba(0, 0, 0, 0.2)'
+                }}
+              >
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={clearTicket}
                     disabled={ticket.lineItems.length === 0}
                     style={{
@@ -354,7 +383,7 @@ export default function SalonPOS2Page() {
                   >
                     Clear
                   </Button>
-                  <Button 
+                  <Button
                     onClick={handlePayment}
                     disabled={ticket.lineItems.length === 0}
                     className="flex-1"
@@ -371,43 +400,43 @@ export default function SalonPOS2Page() {
             </div>
           </div>
 
-      {/* Customer Search Modal */}
-      <CustomerSearchModal
-        open={isCustomerSearchOpen}
-        onClose={() => setIsCustomerSearchOpen(false)}
-        organizationId={organizationId || ''}
-        onCustomerSelect={handleCustomerSelect}
-        onAppointmentSelect={handleAppointmentSelect}
-      />
+          {/* Customer Search Modal */}
+          <CustomerSearchModal
+            open={isCustomerSearchOpen}
+            onClose={() => setIsCustomerSearchOpen(false)}
+            organizationId={organizationId || ''}
+            onCustomerSelect={handleCustomerSelect}
+            onAppointmentSelect={handleAppointmentSelect}
+          />
 
-      {/* Ticket Details Modal */}
-      <TicketDetailsModal
-        open={isTicketDetailsOpen}
-        onClose={() => setIsTicketDetailsOpen(false)}
-        ticket={ticket}
-        totals={totals}
-        onUpdateItem={updateLineItem}
-        onRemoveItem={removeLineItem}
-        onAddDiscount={addDiscount}
-        onAddTip={addTip}
-      />
+          {/* Ticket Details Modal */}
+          <TicketDetailsModal
+            open={isTicketDetailsOpen}
+            onClose={() => setIsTicketDetailsOpen(false)}
+            ticket={ticket}
+            totals={totals}
+            onUpdateItem={updateLineItem}
+            onRemoveItem={removeLineItem}
+            onAddDiscount={addDiscount}
+            onAddTip={addTip}
+          />
 
-      {/* Payment Dialog */}
-      <PaymentDialog
-        open={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
-        ticket={ticket}
-        totals={totals}
-        organizationId={organizationId}
-        onComplete={handlePaymentComplete}
-      />
+          {/* Payment Dialog */}
+          <PaymentDialog
+            open={isPaymentOpen}
+            onClose={() => setIsPaymentOpen(false)}
+            ticket={ticket}
+            totals={totals}
+            organizationId={organizationId}
+            onComplete={handlePaymentComplete}
+          />
 
-      {/* Receipt Dialog */}
-      <Receipt
-        open={isReceiptOpen}
-        onClose={() => setIsReceiptOpen(false)}
-        saleData={completedSale}
-      />
+          {/* Receipt Dialog */}
+          <Receipt
+            open={isReceiptOpen}
+            onClose={() => setIsReceiptOpen(false)}
+            saleData={completedSale}
+          />
 
           {/* Mobile Cart Drawer - Only show on mobile */}
           <div className="lg:hidden fixed bottom-4 right-4 z-50">

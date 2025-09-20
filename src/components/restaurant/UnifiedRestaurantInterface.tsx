@@ -235,7 +235,9 @@ export function UnifiedRestaurantInterface() {
                 >
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
-                <p className={`text-xs ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                <p
+                  className={`text-xs ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+                >
                   {isClient ? formatDate(currentTime, 'EEEE, MMM d · h:mm a') : 'Loading...'}
                 </p>
               </div>
@@ -442,7 +444,9 @@ export function UnifiedRestaurantInterface() {
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <StatusIndicator status="success" size="sm" animated={true} />
-                <span className={darkMode ? 'text-gray-300' : 'text-muted-foreground'}>Connected</span>
+                <span className={darkMode ? 'text-gray-300' : 'text-muted-foreground'}>
+                  Connected
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-blue-500" />

@@ -10,11 +10,7 @@ import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Copy, ChevronRight, ChevronDown, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -52,11 +48,7 @@ export function JsonView({
     }
 
     if (typeof value === 'boolean') {
-      return (
-        <span className="text-purple-600 dark:text-purple-400">
-          {value.toString()}
-        </span>
-      )
+      return <span className="text-purple-600 dark:text-purple-400">{value.toString()}</span>
     }
 
     if (typeof value === 'number') {
@@ -72,11 +64,7 @@ export function JsonView({
           </Badge>
         )
       }
-      return (
-        <span className="text-green-600 dark:text-green-400">
-          "{value}"
-        </span>
-      )
+      return <span className="text-green-600 dark:text-green-400">"{value}"</span>
     }
 
     if (Array.isArray(value)) {
@@ -84,13 +72,7 @@ export function JsonView({
         return <span className="text-gray-500">[]</span>
       }
 
-      return (
-        <CollapsibleArray
-          items={value}
-          depth={depth}
-          renderValue={renderValue}
-        />
-      )
+      return <CollapsibleArray items={value} depth={depth} renderValue={renderValue} />
     }
 
     if (typeof value === 'object') {
@@ -99,13 +81,7 @@ export function JsonView({
         return <span className="text-gray-500">{'{}'}</span>
       }
 
-      return (
-        <CollapsibleObject
-          entries={entries}
-          depth={depth}
-          renderValue={renderValue}
-        />
-      )
+      return <CollapsibleObject entries={entries} depth={depth} renderValue={renderValue} />
     }
 
     return <span className="text-gray-700 dark:text-gray-300">{String(value)}</span>
@@ -116,15 +92,8 @@ export function JsonView({
       <CardContent className="p-4">
         {title && (
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {title}
-            </h3>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={copyToClipboard}
-              className="h-8 px-2"
-            >
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{title}</h3>
+            <Button size="sm" variant="ghost" onClick={copyToClipboard} className="h-8 px-2">
               {copied ? (
                 <>
                   <Check className="h-3 w-3 mr-1" />
@@ -142,11 +111,7 @@ export function JsonView({
 
         <Collapsible open={expanded} onOpenChange={setExpanded}>
           <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium mb-2 hover:text-violet-600 transition-colors">
-            {expanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             {expanded ? 'Collapse' : 'Expand'} JSON
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -154,9 +119,7 @@ export function JsonView({
               className="font-mono text-sm overflow-auto bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg"
               style={{ maxHeight: `${maxHeight}px` }}
             >
-              <pre className="whitespace-pre-wrap break-words">
-                {renderValue(data)}
-              </pre>
+              <pre className="whitespace-pre-wrap break-words">{renderValue(data)}</pre>
             </div>
           </CollapsibleContent>
         </Collapsible>

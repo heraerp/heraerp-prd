@@ -112,44 +112,63 @@ export default function CompleteGuidePage() {
           </div>
 
           {/* Key Metrics */}
-          <h2 id="key-metrics" className="text-2xl font-semibold text-gray-100 dark:text-foreground">
+          <h2
+            id="key-metrics"
+            className="text-2xl font-semibold text-gray-100 dark:text-foreground"
+          >
             Key Implementation Metrics
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
             <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <Clock className="h-5 w-5 text-primary dark:text-blue-400" />
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Time to Deploy</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Time to Deploy
+                </span>
               </div>
               <div className="text-3xl font-bold text-gray-100 dark:text-foreground">21 Days</div>
-              <div className="text-sm text-muted-foreground dark:text-muted-foreground">vs 6-18 months</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                vs 6-18 months
+              </div>
             </div>
 
             <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <TrendingDown className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Cost Reduction</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Cost Reduction
+                </span>
               </div>
               <div className="text-3xl font-bold text-green-600 dark:text-green-400">90%</div>
-              <div className="text-sm text-muted-foreground dark:text-muted-foreground">$50-100K total</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                $50-100K total
+              </div>
             </div>
 
             <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Success Rate</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Success Rate
+                </span>
               </div>
               <div className="text-3xl font-bold text-gray-100 dark:text-foreground">95%+</div>
-              <div className="text-sm text-muted-foreground dark:text-muted-foreground">vs 60% average</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                vs 60% average
+              </div>
             </div>
 
             <div className="border border-border dark:border-border rounded-lg p-6 bg-background dark:bg-muted">
               <div className="flex items-center gap-3 mb-2">
                 <Package className="h-5 w-5 text-primary dark:text-blue-400" />
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Module Reuse</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Module Reuse
+                </span>
               </div>
               <div className="text-3xl font-bold text-gray-100 dark:text-foreground">100%</div>
-              <div className="text-sm text-muted-foreground dark:text-muted-foreground">Zero custom dev</div>
+              <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                Zero custom dev
+              </div>
             </div>
           </div>
 
@@ -311,7 +330,9 @@ export default function CompleteGuidePage() {
                         Days {item.days}
                       </span>
                     </div>
-                    <p className="text-muted-foreground dark:text-gray-300 ml-12">{item.description}</p>
+                    <p className="text-muted-foreground dark:text-gray-300 ml-12">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -345,7 +366,9 @@ export default function CompleteGuidePage() {
                   <code className="text-sm font-mono text-primary dark:text-blue-400">
                     {table.name}
                   </code>
-                  <p className="text-sm text-muted-foreground dark:text-gray-300 mt-1">{table.desc}</p>
+                  <p className="text-sm text-muted-foreground dark:text-gray-300 mt-1">
+                    {table.desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -447,7 +470,9 @@ export default function CompleteGuidePage() {
                 </h3>
                 <dl className="space-y-2">
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Implementation:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Implementation:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$2,000,000</dd>
                   </div>
                   <div className="flex justify-between">
@@ -455,15 +480,21 @@ export default function CompleteGuidePage() {
                     <dd className="font-mono text-gray-100 dark:text-foreground">12 months</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Customization:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Customization:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$500,000</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Annual Maintenance:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Annual Maintenance:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$400,000</dd>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-border dark:border-border">
-                    <dt className="font-semibold text-gray-100 dark:text-foreground">5-Year TCO:</dt>
+                    <dt className="font-semibold text-gray-100 dark:text-foreground">
+                      5-Year TCO:
+                    </dt>
                     <dd className="font-mono font-semibold text-gray-100 dark:text-foreground">
                       $4,500,000
                     </dd>
@@ -477,7 +508,9 @@ export default function CompleteGuidePage() {
                 </h3>
                 <dl className="space-y-2">
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Implementation:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Implementation:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$75,000</dd>
                   </div>
                   <div className="flex justify-between">
@@ -485,15 +518,21 @@ export default function CompleteGuidePage() {
                     <dd className="font-mono text-gray-100 dark:text-foreground">21 days</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Customization:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Customization:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$0</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-muted-foreground dark:text-muted-foreground">Annual Maintenance:</dt>
+                    <dt className="text-muted-foreground dark:text-muted-foreground">
+                      Annual Maintenance:
+                    </dt>
                     <dd className="font-mono text-gray-100 dark:text-foreground">$60,000</dd>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-border dark:border-border">
-                    <dt className="font-semibold text-gray-100 dark:text-foreground">5-Year TCO:</dt>
+                    <dt className="font-semibold text-gray-100 dark:text-foreground">
+                      5-Year TCO:
+                    </dt>
                     <dd className="font-mono font-semibold text-gray-100 dark:text-foreground">
                       $375,000
                     </dd>
@@ -508,7 +547,9 @@ export default function CompleteGuidePage() {
                   <div className="font-semibold text-green-700 dark:text-green-300">
                     Total Savings
                   </div>
-                  <div className="text-2xl font-bold text-gray-100 dark:text-foreground">$4,125,000</div>
+                  <div className="text-2xl font-bold text-gray-100 dark:text-foreground">
+                    $4,125,000
+                  </div>
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-green-700 dark:text-green-300">
@@ -518,7 +559,9 @@ export default function CompleteGuidePage() {
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-green-700 dark:text-green-300">ROI Period</div>
-                  <div className="text-2xl font-bold text-gray-100 dark:text-foreground">2 months</div>
+                  <div className="text-2xl font-bold text-gray-100 dark:text-foreground">
+                    2 months
+                  </div>
                 </div>
               </div>
             </div>

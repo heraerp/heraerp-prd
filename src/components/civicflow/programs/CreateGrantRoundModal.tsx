@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Calendar, DollarSign } from 'lucide-react';
+import { useState } from 'react'
+import { Calendar, DollarSign } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useCreateGrantRound } from '@/hooks/use-programs';
-import type { CreateGrantRoundRequest, ProgramListItem } from '@/types/crm-programs';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useCreateGrantRound } from '@/hooks/use-programs'
+import type { CreateGrantRoundRequest, ProgramListItem } from '@/types/crm-programs'
 
 interface CreateGrantRoundModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  program: ProgramListItem | null;
+  isOpen: boolean
+  onClose: () => void
+  program: ProgramListItem | null
 }
 
 export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantRoundModalProps) {
@@ -27,53 +27,53 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
     window_open: '',
     window_close: '',
     budget: undefined,
-    kpis: {},
-  });
+    kpis: {}
+  })
 
-  const createGrantRound = useCreateGrantRound(program?.id || '');
+  const createGrantRound = useCreateGrantRound(program?.id || '')
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!program) return;
+    e.preventDefault()
+    if (!program) return
 
-    await createGrantRound.mutateAsync(formData);
-    
-    onClose();
+    await createGrantRound.mutateAsync(formData)
+
+    onClose()
     // Reset form
     setFormData({
       round_code: '',
       window_open: '',
       window_close: '',
       budget: undefined,
-      kpis: {},
-    });
-  };
+      kpis: {}
+    })
+  }
 
   const generateRoundCode = () => {
-    if (!program) return;
-    const year = new Date().getFullYear();
-    const month = String(new Date().getMonth() + 1).padStart(2, '0');
-    const random = Math.random().toString(36).substring(2, 4).toUpperCase();
-    setFormData(prev => ({ 
-      ...prev, 
-      round_code: `${program.code}-R${year}${month}-${random}` 
-    }));
-  };
+    if (!program) return
+    const year = new Date().getFullYear()
+    const month = String(new Date().getMonth() + 1).padStart(2, '0')
+    const random = Math.random().toString(36).substring(2, 4).toUpperCase()
+    setFormData(prev => ({
+      ...prev,
+      round_code: `${program.code}-R${year}${month}-${random}`
+    }))
+  }
 
   // Set default dates (open tomorrow, close in 30 days)
   const setDefaultDates = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    const closeDate = new Date(tomorrow);
-    closeDate.setDate(closeDate.getDate() + 30);
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    const closeDate = new Date(tomorrow)
+    closeDate.setDate(closeDate.getDate() + 30)
 
     setFormData(prev => ({
       ...prev,
       window_open: tomorrow.toISOString().split('T')[0],
-      window_close: closeDate.toISOString().split('T')[0],
-    }));
-  };
+      window_close: closeDate.toISOString().split('T')[0]
+    }))
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -96,7 +96,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 <Input
                   id="round_code"
                   value={formData.round_code}
-                  onChange={(e) => setFormData(prev => ({ ...prev, round_code: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, round_code: e.target.value }))}
                   placeholder={`${program.code}-R202401`}
                   required
                   className="bg-panel-alt border-border"
@@ -118,7 +118,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 <Calendar className="h-4 w-4" />
                 <span>Application Window</span>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="window_open">Opens</Label>
@@ -126,26 +126,26 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                     id="window_open"
                     type="date"
                     value={formData.window_open}
-                    onChange={(e) => setFormData(prev => ({ ...prev, window_open: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, window_open: e.target.value }))}
                     required
                     className="bg-panel-alt border-border"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="window_close">Closes</Label>
                   <Input
                     id="window_close"
                     type="date"
                     value={formData.window_close}
-                    onChange={(e) => setFormData(prev => ({ ...prev, window_close: e.target.value }))}
+                    onChange={e => setFormData(prev => ({ ...prev, window_close: e.target.value }))}
                     min={formData.window_open}
                     required
                     className="bg-panel-alt border-border"
                   />
                 </div>
               </div>
-              
+
               <Button
                 type="button"
                 variant="ghost"
@@ -169,10 +169,12 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 id="budget"
                 type="number"
                 value={formData.budget || ''}
-                onChange={(e) => setFormData(prev => ({ 
-                  ...prev, 
-                  budget: e.target.value ? parseFloat(e.target.value) : undefined 
-                }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    budget: e.target.value ? parseFloat(e.target.value) : undefined
+                  }))
+                }
                 placeholder={program.budget ? `Max: ${program.budget}` : '0'}
                 min="0"
                 max={program.budget}
@@ -188,17 +190,17 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                className="border-border"
-              >
+              <Button type="button" variant="outline" onClick={onClose} className="border-border">
                 Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={createGrantRound.isPending || !formData.round_code || !formData.window_open || !formData.window_close}
+                disabled={
+                  createGrantRound.isPending ||
+                  !formData.round_code ||
+                  !formData.window_open ||
+                  !formData.window_close
+                }
                 className="bg-primary text-white hover:bg-primary-hover"
               >
                 {createGrantRound.isPending ? 'Creating...' : 'Create Round'}
@@ -208,5 +210,5 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

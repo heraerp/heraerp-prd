@@ -19,18 +19,18 @@ const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 export default function SalonDemoDashboard() {
   const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
   const [demoOrganizationId, setDemoOrganizationId] = useState<string | null>(null)
-  
+
   // Check if this is a demo session
   useEffect(() => {
     const isDemoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
     const demoModule = sessionStorage.getItem('demoModule')
-    
+
     if (isDemoLogin && demoModule === 'salon') {
       // Use the default salon demo org ID
       setDemoOrganizationId(DEFAULT_SALON_ORG_ID)
     }
   }, [])
-  
+
   // Use demo org ID if available, otherwise use authenticated org
   const organizationId = demoOrganizationId || currentOrganization?.id
 
@@ -46,7 +46,7 @@ export default function SalonDemoDashboard() {
       </div>
     )
   }
-  
+
   if (!organizationId && !demoOrganizationId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -71,11 +71,11 @@ export default function SalonDemoDashboard() {
             Salon Dashboard
           </h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {new Date().toLocaleDateString('en-AE', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {new Date().toLocaleDateString('en-AE', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
             })}
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function SalonDemoDashboard() {
             <section aria-label="Revenue Trends">
               <RevenueSparkline organizationId={organizationId} />
             </section>
-            
+
             <section aria-label="Upcoming Appointments">
               <UpcomingAppointments organizationId={organizationId} />
             </section>
@@ -106,11 +106,11 @@ export default function SalonDemoDashboard() {
             <section aria-label="Low Stock Items">
               <LowStockList organizationId={organizationId} />
             </section>
-            
+
             <section aria-label="Staff Utilization">
               <StaffUtilization organizationId={organizationId} />
             </section>
-            
+
             <section aria-label="Quick Actions">
               <QuickActions organizationId={organizationId} />
             </section>

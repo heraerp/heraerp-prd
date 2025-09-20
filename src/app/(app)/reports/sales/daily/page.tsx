@@ -28,9 +28,11 @@ export default function DailySalesReportPage() {
     row?: SalesRow
     isOpen: boolean
   }>({ type: 'service', isOpen: false })
-  
+
   const [drillDownData, setDrillDownData] = React.useState<DrillDownResponse | null>(null)
-  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(null)
+  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(
+    null
+  )
   const [isDrillDownLoading, setIsDrillDownLoading] = React.useState(false)
   const [isTransactionLoading, setIsTransactionLoading] = React.useState(false)
 
@@ -45,15 +47,9 @@ export default function DailySalesReportPage() {
   }
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
-  
+
   // Main report data using useUniversalReports hook
-  const { 
-    isLoading, 
-    error, 
-    data: reportData,
-    getTodayMetrics,
-    clearError 
-  } = useUniversalReports()
+  const { isLoading, error, data: reportData, getTodayMetrics, clearError } = useUniversalReports()
 
   // Load daily sales data
   React.useEffect(() => {
@@ -82,11 +78,56 @@ export default function DailySalesReportPage() {
     }
 
     const mockHourlyData: SalesRow[] = [
-      { hour: '09:00', service_net: 450, product_net: 75, tips: 45, vat: 26.25, gross: 551.25, txn_count: 3, avg_ticket: 183.75 },
-      { hour: '10:00', service_net: 600, product_net: 100, tips: 60, vat: 35, gross: 735, txn_count: 4, avg_ticket: 183.75 },
-      { hour: '11:00', service_net: 750, product_net: 125, tips: 75, vat: 43.75, gross: 918.75, txn_count: 5, avg_ticket: 183.75 },
-      { hour: '14:00', service_net: 900, product_net: 150, tips: 90, vat: 52.5, gross: 1102.5, txn_count: 6, avg_ticket: 183.75 },
-      { hour: '15:00', service_net: 675, product_net: 125, tips: 70, vat: 40, gross: 840, txn_count: 4, avg_ticket: 210 }
+      {
+        hour: '09:00',
+        service_net: 450,
+        product_net: 75,
+        tips: 45,
+        vat: 26.25,
+        gross: 551.25,
+        txn_count: 3,
+        avg_ticket: 183.75
+      },
+      {
+        hour: '10:00',
+        service_net: 600,
+        product_net: 100,
+        tips: 60,
+        vat: 35,
+        gross: 735,
+        txn_count: 4,
+        avg_ticket: 183.75
+      },
+      {
+        hour: '11:00',
+        service_net: 750,
+        product_net: 125,
+        tips: 75,
+        vat: 43.75,
+        gross: 918.75,
+        txn_count: 5,
+        avg_ticket: 183.75
+      },
+      {
+        hour: '14:00',
+        service_net: 900,
+        product_net: 150,
+        tips: 90,
+        vat: 52.5,
+        gross: 1102.5,
+        txn_count: 6,
+        avg_ticket: 183.75
+      },
+      {
+        hour: '15:00',
+        service_net: 675,
+        product_net: 125,
+        tips: 70,
+        vat: 40,
+        gross: 840,
+        txn_count: 4,
+        avg_ticket: 210
+      }
     ]
 
     return {
@@ -97,7 +138,10 @@ export default function DailySalesReportPage() {
   }, [reportData, filters.currency])
 
   // Handle drill-down clicks
-  const handleDrillDown = async (type: 'service' | 'product' | 'vat' | 'tips' | 'total', row?: SalesRow) => {
+  const handleDrillDown = async (
+    type: 'service' | 'product' | 'vat' | 'tips' | 'total',
+    row?: SalesRow
+  ) => {
     setSelectedDrillDown({ type, row, isOpen: true })
     setIsDrillDownLoading(true)
     setDrillDownData(null)
@@ -107,7 +151,7 @@ export default function DailySalesReportPage() {
       // In production, this would call your drill-down API
       // For now, we'll use mock data
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      
+
       const mockTransactions = [
         {
           transaction_id: '123e4567-e89b-12d3-a456-426614174000',
@@ -117,19 +161,19 @@ export default function DailySalesReportPage() {
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Sarah Johnson',
           staff_name: 'Maria Rodriguez',
-          total_amount: 275.00,
+          total_amount: 275.0,
           description: 'Hair Cut & Color Service',
           line_count: 3
         },
         {
           transaction_id: '456e7890-e89b-12d3-a456-426614174001',
           transaction_date: filters.date || new Date().toISOString().split('T')[0],
-          transaction_code: 'POS-2024-002', 
+          transaction_code: 'POS-2024-002',
           transaction_type: 'pos_sale',
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Emily Chen',
           staff_name: 'Lisa Thompson',
-          total_amount: 185.00,
+          total_amount: 185.0,
           description: 'Deep Conditioning Treatment',
           line_count: 2
         }
@@ -167,7 +211,7 @@ export default function DailySalesReportPage() {
     try {
       // In production, fetch transaction details
       await new Promise(resolve => setTimeout(resolve, 800))
-      
+
       const mockTransactionDetail: TransactionDetail = {
         transaction: {
           id: transactionId,
@@ -176,7 +220,7 @@ export default function DailySalesReportPage() {
           transaction_code: 'POS-2024-001',
           transaction_type: 'pos_sale',
           smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
-          total_amount: 275.00,
+          total_amount: 275.0,
           source_entity_id: 'customer-123',
           target_entity_id: 'salon-location-1',
           reference_number: 'APT-2024-045',
@@ -194,19 +238,19 @@ export default function DailySalesReportPage() {
             entity_name: 'Premium Hair Cut',
             description: 'Hair Cut & Styling - Premium',
             quantity: 1,
-            unit_amount: 150.00,
-            line_amount: 150.00,
+            unit_amount: 150.0,
+            line_amount: 150.0,
             smart_code: 'HERA.SALON.SERVICE.HAIRCUT.v1'
           },
           {
             line_number: 2,
-            line_type: 'service', 
+            line_type: 'service',
             entity_id: 'service-color',
             entity_name: 'Hair Coloring',
             description: 'Full Hair Color Treatment',
             quantity: 1,
-            unit_amount: 100.00,
-            line_amount: 100.00,
+            unit_amount: 100.0,
+            line_amount: 100.0,
             smart_code: 'HERA.SALON.SERVICE.COLOR.v1'
           },
           {
@@ -216,22 +260,62 @@ export default function DailySalesReportPage() {
             entity_name: 'VAT 5%',
             description: 'VAT on Services (5%)',
             quantity: 1,
-            unit_amount: 12.50,
-            line_amount: 12.50,
+            unit_amount: 12.5,
+            line_amount: 12.5,
             smart_code: 'HERA.SALON.TAX.VAT.v1'
           }
         ],
         related_entities: [
-          { entity_id: 'customer-123', entity_type: 'customer', entity_name: 'Sarah Johnson', role: 'customer' },
-          { entity_id: 'staff-456', entity_type: 'employee', entity_name: 'Maria Rodriguez', role: 'stylist' },
-          { entity_id: 'salon-location-1', entity_type: 'location', entity_name: 'Main Salon', role: 'location' }
+          {
+            entity_id: 'customer-123',
+            entity_type: 'customer',
+            entity_name: 'Sarah Johnson',
+            role: 'customer'
+          },
+          {
+            entity_id: 'staff-456',
+            entity_type: 'employee',
+            entity_name: 'Maria Rodriguez',
+            role: 'stylist'
+          },
+          {
+            entity_id: 'salon-location-1',
+            entity_type: 'location',
+            entity_name: 'Main Salon',
+            role: 'location'
+          }
         ],
         auto_journal_entries: [
-          { account_code: '1100', account_name: 'Cash in Hand', debit_amount: 275.00, smart_code: 'HERA.FIN.GL.CASH.RECEIPT.V1' },
-          { account_code: '4100', account_name: 'Service Revenue', credit_amount: 250.00, smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.V1' },
-          { account_code: '2100', account_name: 'VAT Payable', credit_amount: 12.50, smart_code: 'HERA.FIN.GL.VAT.PAYABLE.V1' },
-          { account_code: '6500', account_name: 'Staff Commission', debit_amount: 100.00, smart_code: 'HERA.FIN.GL.COMMISSION.v1' },
-          { account_code: '2200', account_name: 'Commission Payable', credit_amount: 100.00, smart_code: 'HERA.FIN.GL.COMMISSION.PAYABLE.V1' }
+          {
+            account_code: '1100',
+            account_name: 'Cash in Hand',
+            debit_amount: 275.0,
+            smart_code: 'HERA.FIN.GL.CASH.RECEIPT.V1'
+          },
+          {
+            account_code: '4100',
+            account_name: 'Service Revenue',
+            credit_amount: 250.0,
+            smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.V1'
+          },
+          {
+            account_code: '2100',
+            account_name: 'VAT Payable',
+            credit_amount: 12.5,
+            smart_code: 'HERA.FIN.GL.VAT.PAYABLE.V1'
+          },
+          {
+            account_code: '6500',
+            account_name: 'Staff Commission',
+            debit_amount: 100.0,
+            smart_code: 'HERA.FIN.GL.COMMISSION.v1'
+          },
+          {
+            account_code: '2200',
+            account_name: 'Commission Payable',
+            credit_amount: 100.0,
+            smart_code: 'HERA.FIN.GL.COMMISSION.PAYABLE.V1'
+          }
         ]
       }
 
@@ -257,10 +341,7 @@ export default function DailySalesReportPage() {
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
             Failed to load daily sales report: {error}
-            <button 
-              onClick={clearError}
-              className="ml-2 underline hover:no-underline"
-            >
+            <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>
           </AlertDescription>
@@ -274,25 +355,24 @@ export default function DailySalesReportPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to view reports.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to view reports.</AlertDescription>
         </Alert>
       </div>
     )
   }
 
-  const reportTitle = "Daily Sales Report"
-  const reportPeriod = filters.date ? new Date(filters.date + 'T00:00:00').toLocaleDateString('en-AE', {
-    weekday: 'long',
-    year: 'numeric', 
-    month: 'long',
-    day: 'numeric'
-  }) : 'Today'
+  const reportTitle = 'Daily Sales Report'
+  const reportPeriod = filters.date
+    ? new Date(filters.date + 'T00:00:00').toLocaleDateString('en-AE', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : 'Today'
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -304,12 +384,12 @@ export default function DailySalesReportPage() {
             Hourly revenue analysis for {reportPeriod}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="text-violet-700 border-violet-300">
             {currentOrganization.name}
           </Badge>
-          
+
           {transformedData && (
             <ExportButtons
               reportType="daily_sales"
@@ -339,7 +419,7 @@ export default function DailySalesReportPage() {
         <SalesSummaryCards
           summary={transformedData.summary}
           currency={transformedData.currency}
-          onDrillDown={(type) => handleDrillDown(type)}
+          onDrillDown={type => handleDrillDown(type)}
         />
       )}
 

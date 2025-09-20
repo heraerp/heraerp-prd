@@ -13,21 +13,27 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { 
-  MessageCircle, 
-  Send, 
-  AlertCircle, 
-  CheckCircle, 
+import {
+  MessageCircle,
+  Send,
+  AlertCircle,
+  CheckCircle,
   Phone,
   User,
   Clock,
@@ -45,7 +51,10 @@ import { useToast } from '@/components/ui/use-toast'
 const SendMessageSchema = z.object({
   customer_code: z.string().min(1, 'Customer code is required'),
   customer_name: z.string().min(1, 'Customer name is required'),
-  phone_number: z.string().min(10, 'Valid phone number is required').regex(/^\\+?[1-9]\\d{1,14}$/, 'Invalid phone number format'),
+  phone_number: z
+    .string()
+    .min(10, 'Valid phone number is required')
+    .regex(/^\\+?[1-9]\\d{1,14}$/, 'Invalid phone number format'),
   template_name: z.string().min(1, 'Please select a template'),
   variables: z.record(z.string()).default({})
 })
@@ -59,17 +68,22 @@ interface SendMessageDialogProps {
   templates: WaTemplate[]
 }
 
-export function SendMessageDialog({ open, onOpenChange, organizationId, templates }: SendMessageDialogProps) {
+export function SendMessageDialog({
+  open,
+  onOpenChange,
+  organizationId,
+  templates
+}: SendMessageDialogProps) {
   const { toast } = useToast()
   const [previewVisible, setPreviewVisible] = React.useState(false)
-  const [sendStatus, setSendStatus] = React.useState<'idle' | 'checking' | 'sending' | 'sent' | 'failed'>('idle')
-  const [consentStatus, setConsentStatus] = React.useState<'unknown' | 'checking' | 'granted' | 'denied' | 'required'>('unknown')
+  const [sendStatus, setSendStatus] = React.useState<
+    'idle' | 'checking' | 'sending' | 'sent' | 'failed'
+  >('idle')
+  const [consentStatus, setConsentStatus] = React.useState<
+    'unknown' | 'checking' | 'granted' | 'denied' | 'required'
+  >('unknown')
 
-  const {
-    sendMessage,
-    getCustomerPrefs,
-    setCustomerPrefs
-  } = useWhatsappApi(organizationId)
+  const { sendMessage, getCustomerPrefs, setCustomerPrefs } = useWhatsappApi(organizationId)
 
   const form = useForm<SendMessageFormData>({
     resolver: zodResolver(SendMessageSchema),
@@ -89,13 +103,13 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
 
   const previewText = React.useMemo(() => {
     if (!selectedTemplate) return ''
-    
+
     const variables = form.watch('variables')
     const substitutions = {
       customer_name: form.watch('customer_name'),
       ...variables
     }
-    
+
     return renderTemplate(selectedTemplate, substitutions)
   }, [selectedTemplate, form.watch('variables'), form.watch('customer_name')])
 
@@ -114,11 +128,12 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
     if (selectedTemplate) {
       const currentVariables = form.getValues('variables')
       const newVariables: Record<string, string> = {}
-      
+
       selectedTemplate.variables.forEach(varName => {
-        newVariables[varName] = currentVariables[varName] || selectedTemplate.sample?.[varName] || ''
+        newVariables[varName] =
+          currentVariables[varName] || selectedTemplate.sample?.[varName] || ''
       })
-      
+
       form.setValue('variables', newVariables)
       setPreviewVisible(true)
     } else {
@@ -130,7 +145,7 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
     try {
       setConsentStatus('checking')
       const prefs = await getCustomerPrefs(customerCode)
-      
+
       if (prefs?.opted_in) {
         setConsentStatus('granted')
       } else {
@@ -145,12 +160,12 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
   const handleGrantConsent = async () => {
     const customerCode = form.watch('customer_code')
     const phoneNumber = form.watch('phone_number')
-    
+
     if (!customerCode || !phoneNumber) {
       toast({
-        title: "Missing Information",
-        description: "Customer code and phone number are required to grant consent.",
-        variant: "destructive"
+        title: 'Missing Information',
+        description: 'Customer code and phone number are required to grant consent.',
+        variant: 'destructive'
       })
       return
     }
@@ -166,18 +181,18 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
           consent_method: 'explicit'
         }
       })
-      
+
       setConsentStatus('granted')
       toast({
-        title: "Consent Granted",
-        description: "Customer has been opted in for WhatsApp messages.",
-        variant: "default"
+        title: 'Consent Granted',
+        description: 'Customer has been opted in for WhatsApp messages.',
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Consent Failed",
-        description: error instanceof Error ? error.message : "Failed to grant consent",
-        variant: "destructive"
+        title: 'Consent Failed',
+        description: error instanceof Error ? error.message : 'Failed to grant consent',
+        variant: 'destructive'
       })
     }
   }
@@ -185,24 +200,24 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
   const onSubmit = async (data: SendMessageFormData) => {
     if (!selectedTemplate) {
       toast({
-        title: "No Template Selected",
-        description: "Please select a template before sending.",
-        variant: "destructive"
+        title: 'No Template Selected',
+        description: 'Please select a template before sending.',
+        variant: 'destructive'
       })
       return
     }
 
     if (consentStatus !== 'granted') {
       toast({
-        title: "Consent Required",
-        description: "Customer must provide consent before receiving WhatsApp messages.",
-        variant: "destructive"
+        title: 'Consent Required',
+        description: 'Customer must provide consent before receiving WhatsApp messages.',
+        variant: 'destructive'
       })
       return
     }
 
     setSendStatus('sending')
-    
+
     try {
       await sendMessage.mutateAsync({
         organization_id: organizationId,
@@ -221,9 +236,9 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
 
       setSendStatus('sent')
       toast({
-        title: "Message Queued",
+        title: 'Message Queued',
         description: `WhatsApp message has been queued for delivery to ${data.customer_name}`,
-        variant: "default"
+        variant: 'default'
       })
 
       // Close dialog after success
@@ -233,13 +248,12 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
         setConsentStatus('unknown')
         form.reset()
       }, 2000)
-
     } catch (error) {
       setSendStatus('failed')
       toast({
-        title: "Message Failed",
-        description: error instanceof Error ? error.message : "Failed to send message",
-        variant: "destructive"
+        title: 'Message Failed',
+        description: error instanceof Error ? error.message : 'Failed to send message',
+        variant: 'destructive'
       })
     }
   }
@@ -254,36 +268,47 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
   const getConsentBadge = () => {
     switch (consentStatus) {
       case 'checking':
-        return <Badge variant="outline" className="text-blue-700 border-blue-300 bg-blue-50">
-          <Clock className="h-3 w-3 mr-1 animate-spin" />
-          Checking...
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-blue-700 border-blue-300 bg-blue-50">
+            <Clock className="h-3 w-3 mr-1 animate-spin" />
+            Checking...
+          </Badge>
+        )
       case 'granted':
-        return <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
-          <UserCheck className="h-3 w-3 mr-1" />
-          Consent Granted
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
+            <UserCheck className="h-3 w-3 mr-1" />
+            Consent Granted
+          </Badge>
+        )
       case 'denied':
-        return <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
-          <AlertCircle className="h-3 w-3 mr-1" />
-          Opted Out
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Opted Out
+          </Badge>
+        )
       case 'required':
-        return <Badge variant="outline" className="text-orange-700 border-orange-300 bg-orange-50">
-          <Shield className="h-3 w-3 mr-1" />
-          Consent Required
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-orange-700 border-orange-300 bg-orange-50">
+            <Shield className="h-3 w-3 mr-1" />
+            Consent Required
+          </Badge>
+        )
       default:
-        return <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
-          <User className="h-3 w-3 mr-1" />
-          Unknown
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+            <User className="h-3 w-3 mr-1" />
+            Unknown
+          </Badge>
+        )
     }
   }
 
-  const isReadyToSend = consentStatus === 'granted' && 
-    selectedTemplate && 
-    form.watch('phone_number') && 
+  const isReadyToSend =
+    consentStatus === 'granted' &&
+    selectedTemplate &&
+    form.watch('phone_number') &&
     form.watch('template_name') &&
     sendStatus !== 'sending' &&
     sendStatus !== 'sent'
@@ -302,7 +327,6 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          
           {/* Recipient Information */}
           <Card>
             <CardHeader className="pb-3">
@@ -315,7 +339,6 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="customer_code">Customer Code *</Label>
@@ -394,7 +417,6 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
                   </AlertDescription>
                 </Alert>
               )}
-
             </CardContent>
           </Card>
 
@@ -404,23 +426,24 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
               <CardTitle className="text-lg">Message Template</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="space-y-2">
                 <Label htmlFor="template_name">Select Template *</Label>
                 <Select
                   value={form.watch('template_name')}
-                  onValueChange={(value) => form.setValue('template_name', value)}
+                  onValueChange={value => form.setValue('template_name', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a message template" />
                   </SelectTrigger>
                   <SelectContent>
                     {templates.length === 0 ? (
-                      <SelectItem value="" disabled>No templates available</SelectItem>
+                      <SelectItem value="" disabled>
+                        No templates available
+                      </SelectItem>
                     ) : (
                       templates
                         .filter(t => t.status === 'approved') // Only show approved templates
-                        .map((template) => (
+                        .map(template => (
                           <SelectItem key={template.name} value={template.name}>
                             <div className="flex items-center justify-between w-full">
                               <span>{template.name}</span>
@@ -444,7 +467,7 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
               {selectedTemplate && selectedTemplate.variables.length > 0 && (
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Template Variables</Label>
-                  {selectedTemplate.variables.map((varName) => (
+                  {selectedTemplate.variables.map(varName => (
                     <div key={varName} className="space-y-1">
                       <Label htmlFor={`var_${varName}`} className="text-sm">
                         {varName}
@@ -452,7 +475,7 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
                       <Input
                         id={`var_${varName}`}
                         value={form.watch('variables')[varName] || ''}
-                        onChange={(e) => {
+                        onChange={e => {
                           const variables = form.getValues('variables')
                           variables[varName] = e.target.value
                           form.setValue('variables', variables)
@@ -463,7 +486,6 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
                   ))}
                 </div>
               )}
-
             </CardContent>
           </Card>
 
@@ -496,9 +518,7 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
           {sendStatus === 'sending' && (
             <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
               <Clock className="h-4 w-4 animate-spin" />
-              <AlertDescription>
-                Sending message through HERA MSP API...
-              </AlertDescription>
+              <AlertDescription>Sending message through HERA MSP API...</AlertDescription>
             </Alert>
           )}
 
@@ -519,7 +539,6 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
               </AlertDescription>
             </Alert>
           )}
-
         </form>
 
         <Separator />
@@ -533,10 +552,7 @@ export function SendMessageDialog({ open, onOpenChange, organizationId, template
           >
             Cancel
           </Button>
-          <Button
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={!isReadyToSend}
-          >
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={!isReadyToSend}>
             {sendStatus === 'sending' ? (
               <>
                 <Clock className="h-4 w-4 mr-2 animate-spin" />

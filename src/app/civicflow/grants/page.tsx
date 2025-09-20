@@ -1,75 +1,80 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 
-import { Plus, Download } from 'lucide-react';
+import { Plus, Download } from 'lucide-react'
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
-import { FilterBar } from '@/components/civicflow/grants/FilterBar';
-import { ApplicationCard } from '@/components/civicflow/grants/ApplicationCard';
-import { CreateGrantModal } from '@/components/civicflow/grants/CreateGrantModal';
-import { ReviewGrantModal } from '@/components/civicflow/grants/ReviewGrantModal';
+import { FilterBar } from '@/components/civicflow/grants/FilterBar'
+import { ApplicationCard } from '@/components/civicflow/grants/ApplicationCard'
+import { CreateGrantModal } from '@/components/civicflow/grants/CreateGrantModal'
+import { ReviewGrantModal } from '@/components/civicflow/grants/ReviewGrantModal'
 
-import type { CreateGrantModalProps, ReviewGrantModalProps } from '@/components/civicflow/grants/props';
-import type { GrantFilters } from '@/contracts/crm-grants';
-import { exact } from '@/utils/exact';
-import { useGrantKpis, useGrantList, useExportGrants } from '@/hooks/use-grants';
+import type {
+  CreateGrantModalProps,
+  ReviewGrantModalProps
+} from '@/components/civicflow/grants/props'
+import type { GrantFilters } from '@/contracts/crm-grants'
+import { exact } from '@/utils/exact'
+import { useGrantKpis, useGrantList, useExportGrants } from '@/hooks/use-grants'
 
 export default function GrantsPage() {
   const [filters, setFilters] = useState<GrantFilters>({
     page: 1,
-    page_size: 20,
-  });
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    page_size: 20
+  })
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null)
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 
-  const { data: kpis, isLoading: kpisLoading } = useGrantKpis();
-  const { data: grantsData, isLoading: grantsLoading } = useGrantList(filters);
-  const exportGrants = useExportGrants();
+  const { data: kpis, isLoading: kpisLoading } = useGrantKpis()
+  const { data: grantsData, isLoading: grantsLoading } = useGrantList(filters)
+  const exportGrants = useExportGrants()
 
   const handleExport = (format: 'csv' | 'json') => {
-    exportGrants.mutate({ filters, format });
-  };
+    exportGrants.mutate({ filters, format })
+  }
 
   const handleReviewApplication = (applicationId: string) => {
-    setSelectedApplicationId(applicationId);
-    setIsReviewModalOpen(true);
-  };
+    setSelectedApplicationId(applicationId)
+    setIsReviewModalOpen(true)
+  }
 
   const kpiCards = [
     {
       title: 'Open Rounds',
       value: kpis?.open_rounds || 0,
-      color: 'text-primary',
+      color: 'text-primary'
     },
     {
       title: 'In Review',
       value: kpis?.in_review || 0,
-      color: 'text-secondary',
+      color: 'text-secondary'
     },
     {
       title: 'Approval Rate',
       value: kpis?.approval_rate ? `${Math.round(kpis.approval_rate * 100)}%` : '0%',
-      color: 'text-accent',
+      color: 'text-accent'
     },
     {
       title: 'Average Award',
-      value: kpis?.avg_award ? new Intl.NumberFormat('en-US', { 
-        style: 'currency', 
-        currency: 'USD', 
-        minimumFractionDigits: 0 
-      }).format(kpis.avg_award) : new Intl.NumberFormat('en-US', { 
-        style: 'currency', 
-        currency: 'USD', 
-        minimumFractionDigits: 0 
-      }).format(0),
-      color: 'text-accent2',
-    },
-  ];
+      value: kpis?.avg_award
+        ? new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+          }).format(kpis.avg_award)
+        : new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+          }).format(0),
+      color: 'text-accent2'
+    }
+  ]
 
   return (
     <div className="p-6 lg:p-8 space-y-6">
@@ -104,9 +109,7 @@ export default function GrantsPage() {
         {kpiCards.map((kpi, index) => (
           <Card key={index} className="bg-panel border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-text-300">
-                {kpi.title}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-text-300">{kpi.title}</CardTitle>
             </CardHeader>
             <CardContent>
               {kpisLoading ? (
@@ -122,7 +125,7 @@ export default function GrantsPage() {
       {/* Filters */}
       <FilterBar
         filters={filters}
-        onFiltersChange={(newFilters) => setFilters({ ...newFilters, page: 1 })}
+        onFiltersChange={newFilters => setFilters({ ...newFilters, page: 1 })}
       />
 
       {/* Applications Grid */}
@@ -150,7 +153,7 @@ export default function GrantsPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {grantsData?.items.map((application) => (
+            {grantsData?.items.map(application => (
               <ApplicationCard
                 key={application.id}
                 application={application}
@@ -164,7 +167,7 @@ export default function GrantsPage() {
             <div className="flex justify-center gap-2 mt-6">
               <Button
                 variant="outline"
-                onClick={() => setFilters((f) => ({ ...f, page: Math.max(1, f.page! - 1) }))}
+                onClick={() => setFilters(f => ({ ...f, page: Math.max(1, f.page! - 1) }))}
                 disabled={filters.page === 1}
               >
                 Previous
@@ -174,7 +177,7 @@ export default function GrantsPage() {
               </span>
               <Button
                 variant="outline"
-                onClick={() => setFilters((f) => ({ ...f, page: f.page! + 1 }))}
+                onClick={() => setFilters(f => ({ ...f, page: f.page! + 1 }))}
                 disabled={filters.page === grantsData.total_pages}
               >
                 Next
@@ -188,7 +191,7 @@ export default function GrantsPage() {
       <CreateGrantModal
         {...exact<CreateGrantModalProps>()({
           isOpen: isCreateModalOpen,
-          onClose: () => setIsCreateModalOpen(false),
+          onClose: () => setIsCreateModalOpen(false)
         })}
       />
 
@@ -197,10 +200,10 @@ export default function GrantsPage() {
           {...exact<ReviewGrantModalProps>()({
             isOpen: isReviewModalOpen,
             onClose: () => setIsReviewModalOpen(false),
-            applicationId: selectedApplicationId,
+            applicationId: selectedApplicationId
           })}
         />
       )}
     </div>
-  );
+  )
 }

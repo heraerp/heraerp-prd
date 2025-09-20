@@ -263,7 +263,9 @@ export function CalendarAnalytics({
             <div className="text-sm text-muted-foreground">Average Utilization</div>
             <div className="flex items-center justify-center mt-1">
               {getPerformanceIndicator(computedMetrics.averageUtilization, benchmark.utilization)}
-              <span className="text-xs text-muted-foreground ml-1">vs {benchmark.utilization}% target</span>
+              <span className="text-xs text-muted-foreground ml-1">
+                vs {benchmark.utilization}% target
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -314,7 +316,9 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.averageUtilization)}%</div>
-                <div className="text-sm text-muted-foreground">Target: {benchmark.utilization}%</div>
+                <div className="text-sm text-muted-foreground">
+                  Target: {benchmark.utilization}%
+                </div>
               </div>
             </div>
             <Progress value={computedMetrics.averageUtilization} className="h-2" />
@@ -328,7 +332,9 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.noShowRate)}%</div>
-                <div className="text-sm text-muted-foreground">Target: ≤{benchmark.noShowRate}%</div>
+                <div className="text-sm text-muted-foreground">
+                  Target: ≤{benchmark.noShowRate}%
+                </div>
               </div>
             </div>
             <Progress value={Math.min(computedMetrics.noShowRate, 50)} className="h-2" />
@@ -342,7 +348,9 @@ export function CalendarAnalytics({
               </div>
               <div className="text-right">
                 <div className="font-medium">{Math.round(computedMetrics.completionRate)}%</div>
-                <div className="text-sm text-muted-foreground">Target: {benchmark.completionRate}%</div>
+                <div className="text-sm text-muted-foreground">
+                  Target: {benchmark.completionRate}%
+                </div>
               </div>
             </div>
             <Progress value={computedMetrics.completionRate} className="h-2" />

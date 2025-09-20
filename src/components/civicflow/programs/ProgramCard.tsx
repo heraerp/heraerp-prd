@@ -1,44 +1,44 @@
-'use client';
+'use client'
 
-import { Calendar, DollarSign, Building2, Plus } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import type { ProgramListItem } from '@/types/crm-programs';
+import { Calendar, DollarSign, Building2, Plus } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import type { ProgramListItem } from '@/types/crm-programs'
 
 interface ProgramCardProps {
-  program: ProgramListItem;
-  onCreateGrantRound: () => void;
+  program: ProgramListItem
+  onCreateGrantRound: () => void
 }
 
 const statusStyles = {
   active: 'bg-green-100 text-green-800 border-green-200',
   paused: 'bg-amber-100 text-amber-800 border-amber-200',
-  archived: 'bg-gray-100 text-gray-800 border-gray-200',
-};
+  archived: 'bg-gray-100 text-gray-800 border-gray-200'
+}
 
 export function ProgramCard({ program, onCreateGrantRound }: ProgramCardProps) {
   const formatCurrency = (amount?: number) => {
-    if (!amount) return 'N/A';
+    if (!amount) return 'N/A'
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
 
   const formatDateRange = (start: string, end: string) => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+    const startDate = new Date(start)
+    const endDate = new Date(end)
     const formatter = new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric',
-    });
-    return `${formatter.format(startDate)} - ${formatter.format(endDate)}`;
-  };
+      year: 'numeric'
+    })
+    return `${formatter.format(startDate)} - ${formatter.format(endDate)}`
+  }
 
   return (
     <Card className="bg-panel border-border hover:bg-panel-alt transition-colors">
@@ -66,7 +66,7 @@ export function ProgramCard({ program, onCreateGrantRound }: ProgramCardProps) {
         {/* Tags */}
         {program.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {program.tags.map((tag) => (
+            {program.tags.map(tag => (
               <Badge
                 key={tag}
                 variant="secondary"
@@ -122,5 +122,5 @@ export function ProgramCard({ program, onCreateGrantRound }: ProgramCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

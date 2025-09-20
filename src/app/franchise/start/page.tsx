@@ -138,8 +138,12 @@ export default function StartPage() {
                 className="bg-background dark:bg-background rounded-xl p-6 border-2 border-red-200 dark:border-red-800 shadow-lg"
               >
                 <factor.icon className={`h-8 w-8 ${factor.color} mb-3`} />
-                <h3 className="font-bold text-foreground dark:text-foreground mb-2">{factor.title}</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{factor.description}</p>
+                <h3 className="font-bold text-foreground dark:text-foreground mb-2">
+                  {factor.title}
+                </h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {factor.description}
+                </p>
               </div>
             ))}
           </div>
@@ -252,8 +256,12 @@ export default function StartPage() {
                 className="bg-background dark:bg-background rounded-xl p-8 border border-border dark:border-border shadow-sm text-center"
               >
                 <div className="text-4xl font-bold text-primary mb-2">{stat.stat}</div>
-                <h3 className="font-semibold text-foreground dark:text-foreground mb-1">{stat.label}</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{stat.sublabel}</p>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-1">
+                  {stat.label}
+                </h3>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {stat.sublabel}
+                </p>
               </div>
             ))}
           </div>

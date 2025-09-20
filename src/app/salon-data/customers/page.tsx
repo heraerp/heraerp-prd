@@ -579,25 +579,33 @@ const CustomerDetailModal = ({
             {/* Quick Stats */}
             <div className="grid grid-cols-4 gap-4 mt-6">
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Lifetime Value</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Lifetime Value
+                </p>
                 <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(customer.lifetime_value || 0)}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Total Visits</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Total Visits
+                </p>
                 <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {customer.visit_count || 0}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Avg. Ticket</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Avg. Ticket
+                </p>
                 <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(customer.average_ticket || 0)}
                 </p>
               </div>
               <div className="bg-background dark:bg-muted-foreground/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Loyalty Points</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Loyalty Points
+                </p>
                 <p className="text-lg font-semibold text-gray-100 dark:text-foreground">
                   {customer.loyalty_balance || 0}
                 </p>
@@ -643,28 +651,36 @@ const CustomerDetailModal = ({
                       <div className="flex items-center gap-3">
                         <Mail className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Email</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Email
+                          </p>
                           <p className="font-medium">{customer.email || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Phone className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Phone</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Phone
+                          </p>
                           <p className="font-medium">{formatPhone(customer.phone)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <MessageCircle className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">WhatsApp</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            WhatsApp
+                          </p>
                           <p className="font-medium">{formatPhone(customer.whatsapp) || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Home className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Address</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Address
+                          </p>
                           <p className="font-medium">{customer.address || '-'}</p>
                         </div>
                       </div>
@@ -680,7 +696,9 @@ const CustomerDetailModal = ({
                       <div className="flex items-center gap-3">
                         <Cake className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Date of Birth</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Date of Birth
+                          </p>
                           <p className="font-medium">
                             {customer.dob ? formatDate(customer.dob) : '-'}
                           </p>
@@ -689,14 +707,18 @@ const CustomerDetailModal = ({
                       <div className="flex items-center gap-3">
                         <User className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Gender</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Gender
+                          </p>
                           <p className="font-medium">{customer.gender || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Last Visit</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Last Visit
+                          </p>
                           <p className="font-medium">
                             {customer.last_visit
                               ? `${formatDate(customer.last_visit)} (${daysSinceVisit} days ago)`
@@ -729,21 +751,27 @@ const CustomerDetailModal = ({
                       <div className="flex items-center gap-3">
                         <Sparkles className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Hair Type</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Hair Type
+                          </p>
                           <p className="font-medium">{customer.hair_type || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Palette className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Color Formula</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Color Formula
+                          </p>
                           <p className="font-medium">{customer.color_formula || '-'}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         <Gem className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">Skin Type</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                            Skin Type
+                          </p>
                           <p className="font-medium">{customer.skin_type || '-'}</p>
                         </div>
                       </div>
@@ -825,7 +853,9 @@ const CustomerDetailModal = ({
                       </div>
 
                       <div>
-                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">Tags</p>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">
+                          Tags
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {customer.tags?.map((tag, index) => (
                             <Badge key={index} variant="secondary">
@@ -876,7 +906,9 @@ const CustomerDetailModal = ({
                 {activities.length === 0 ? (
                   <div className="text-center py-12">
                     <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-muted-foreground dark:text-muted-foreground mb-2">No activity yet</p>
+                    <p className="text-muted-foreground dark:text-muted-foreground mb-2">
+                      No activity yet
+                    </p>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       Customer activities will appear here once they start booking appointments.
                     </p>
@@ -1004,29 +1036,39 @@ const CustomerDetailModal = ({
                     <CardContent>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Plan</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Plan
+                          </span>
                           <span className="font-medium">{currentMembership.plan_name}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Monthly Fee</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Monthly Fee
+                          </span>
                           <span className="font-medium">
                             {formatCurrency(currentMembership.monthly_fee || 0)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Next Billing</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Next Billing
+                          </span>
                           <span className="font-medium">
                             {formatDate(currentMembership.next_billing_date)}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground dark:text-muted-foreground">Member Since</span>
+                          <span className="text-muted-foreground dark:text-muted-foreground">
+                            Member Since
+                          </span>
                           <span className="font-medium">
                             {formatDate(currentMembership.start_date)}
                           </span>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">Benefits</p>
+                          <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-2">
+                            Benefits
+                          </p>
                           <ul className="space-y-1">
                             {currentMembership.benefits?.map((benefit, index) => (
                               <li key={index} className="flex items-center gap-2 text-sm">
@@ -1043,7 +1085,9 @@ const CustomerDetailModal = ({
                   <Card>
                     <CardContent className="p-8 text-center">
                       <Crown className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-muted-foreground dark:text-muted-foreground mb-4">No active membership</p>
+                      <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+                        No active membership
+                      </p>
                       <Button>
                         <UserPlus className="w-4 h-4 mr-2" />
                         Enroll in Membership
@@ -1089,7 +1133,9 @@ const CustomerDetailModal = ({
                         <p className="text-3xl font-bold text-green-600">
                           {formatCurrency(customer.deposit_balance || 0)}
                         </p>
-                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">On Account</p>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
+                          On Account
+                        </p>
                         <Button size="sm" className="mt-4">
                           <Plus className="w-4 h-4 mr-1" />
                           Collect Deposit
@@ -1104,7 +1150,9 @@ const CustomerDetailModal = ({
               <TabsContent value="files" className="p-6">
                 <div className="text-center py-12">
                   <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">No files uploaded yet</p>
+                  <p className="text-muted-foreground dark:text-muted-foreground mb-4">
+                    No files uploaded yet
+                  </p>
                   <Button>
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Files
@@ -1876,7 +1924,9 @@ export default function SalonCustomersPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading customer data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading customer data...
+          </p>
         </div>
       </div>
     )
@@ -1964,7 +2014,9 @@ export default function SalonCustomersPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground">VIPs</p>
-                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">{vipCustomers}</p>
+                  <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
+                    {vipCustomers}
+                  </p>
                 </div>
                 <Crown className="w-8 h-8 text-purple-500 opacity-20" />
               </div>
@@ -1975,7 +2027,9 @@ export default function SalonCustomersPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">At Risk</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    At Risk
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {atRiskCustomers}
                   </p>
@@ -1989,7 +2043,9 @@ export default function SalonCustomersPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Avg LTV</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Avg LTV
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(avgLTV).split(' ')[1]}
                   </p>

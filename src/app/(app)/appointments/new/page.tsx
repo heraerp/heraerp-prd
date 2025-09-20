@@ -52,14 +52,10 @@ export default function NewAppointmentPage() {
         >
           Back to Calendar
         </ButtonPrimary>
-        
+
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Book New Appointment
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Schedule a new appointment for a customer
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Book New Appointment</h1>
+          <p className="text-sm text-gray-600 mt-1">Schedule a new appointment for a customer</p>
         </div>
       </div>
 

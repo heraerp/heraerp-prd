@@ -296,7 +296,9 @@ export function HERADevelopmentDashboard() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-100">HERA Development Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Meta-system tracking HERA's own development</p>
+            <p className="text-muted-foreground mt-1">
+              Meta-system tracking HERA's own development
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -458,7 +460,9 @@ export function HERADevelopmentDashboard() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    <span className="line-through text-muted-foreground">Complete Smart Code System</span>
+                    <span className="line-through text-muted-foreground">
+                      Complete Smart Code System
+                    </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Circle className="w-5 h-5 text-blue-500" />
@@ -486,10 +490,7 @@ export function HERADevelopmentDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {gitActivity.map(activity => (
-                  <div
-                    key={activity.id}
-                    className="flex items-start gap-4 p-4 bg-muted rounded-lg"
-                  >
+                  <div key={activity.id} className="flex items-start gap-4 p-4 bg-muted rounded-lg">
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         activity.type === 'commit'
@@ -514,7 +515,9 @@ export function HERADevelopmentDashboard() {
                         <div className="flex items-center gap-4 text-sm mt-2">
                           <span className="text-green-600">+{activity.stats.additions}</span>
                           <span className="text-red-600">-{activity.stats.deletions}</span>
-                          <span className="text-muted-foreground">{activity.stats.files} files</span>
+                          <span className="text-muted-foreground">
+                            {activity.stats.files} files
+                          </span>
                         </div>
                       )}
                     </div>

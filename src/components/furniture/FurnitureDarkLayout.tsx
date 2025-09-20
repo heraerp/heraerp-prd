@@ -1,17 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, useCallback }
-from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import FurnitureDarkSidebar from './FurnitureDarkSidebar'
-import { cn }
-from '@/lib/utils'
-import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 }
-from 'lucide-react'
-import { Button }
-from '@/components/ui/button'
-import { NavigationLoadingProvider }
-from '@/components/navigation/NavigationLoadingProvider'
-
+import { cn } from '@/lib/utils'
+import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
 
 interface FurnitureDarkLayoutProps {
   children: React.ReactNode
@@ -20,7 +14,7 @@ interface FurnitureDarkLayoutProps {
 function FurnitureDarkLayout({ children }: FurnitureDarkLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-const [isMobile, setIsMobile] = useState(true)
+  const [isMobile, setIsMobile] = useState(true)
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -32,14 +26,14 @@ const [isMobile, setIsMobile] = useState(true)
 
     checkScreenSize()
     window.addEventListener('resize', checkScreenSize)
-    
+
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
   // Close sidebar when clicking on a link on mobile
   const handleSidebarClose = useCallback(() => {
     if (isMobile) {
-  setSidebarOpen(false)
+      setSidebarOpen(false)
     }
   }, [isMobile])
 

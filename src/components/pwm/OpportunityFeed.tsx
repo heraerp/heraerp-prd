@@ -169,7 +169,9 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                   </Badge>
                 </div>
                 <h4 className="font-semibold text-foreground text-lg mb-1">{opportunity.title}</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">{opportunity.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {opportunity.description}
+                </p>
               </div>
             </div>
 
@@ -210,7 +212,11 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                 Explore Opportunity
                 <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
-              <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-foreground">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 <Clock className="h-4 w-4" />
               </Button>
             </div>

@@ -2040,7 +2040,9 @@ export default function CALearningPlatform() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">Challenge a friend to a quick knowledge duel</p>
+                  <p className="text-muted-foreground">
+                    Challenge a friend to a quick knowledge duel
+                  </p>
                   <Button className="w-full">Find Opponent</Button>
                 </CardContent>
               </Card>
@@ -2201,7 +2203,9 @@ export default function CALearningPlatform() {
                           </span>
                           <Badge className="bg-blue-600 text-foreground">60%</Badge>
                         </div>
-                        <div className="text-sm text-muted-foreground">60 marks • High priority</div>
+                        <div className="text-sm text-muted-foreground">
+                          60 marks • High priority
+                        </div>
                       </div>
 
                       <div className="p-3 bg-green-50 rounded-lg">
@@ -2209,7 +2213,9 @@ export default function CALearningPlatform() {
                           <span className="font-medium text-green-700">Customs Law</span>
                           <Badge className="bg-green-600 text-foreground">25%</Badge>
                         </div>
-                        <div className="text-sm text-muted-foreground">25 marks • Calculation heavy</div>
+                        <div className="text-sm text-muted-foreground">
+                          25 marks • Calculation heavy
+                        </div>
                       </div>
 
                       <div className="p-3 bg-purple-50 rounded-lg">

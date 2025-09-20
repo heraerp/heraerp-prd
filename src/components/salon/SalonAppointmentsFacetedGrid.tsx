@@ -485,7 +485,9 @@ export default function SalonAppointmentsFacetedGrid() {
           <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
             {icon}
           </div>
-          <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">{title}</span>
+          <span className="font-semibold !text-gray-100 dark:!text-foreground text-sm">
+            {title}
+          </span>
           {facetFilters[facet].length > 0 && (
             <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-foreground text-xs px-2 py-0.5 rounded-full shadow-sm">
               {facetFilters[facet].length}

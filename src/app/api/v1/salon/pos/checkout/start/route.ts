@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for checkout operations',
           details: 'Ensure middleware is properly configured'
@@ -71,7 +71,6 @@ export async function POST(request: NextRequest) {
         procedure_duration_ms: result.duration_ms
       }
     })
-
   } catch (error) {
     console.error('Checkout start error:', error)
 
@@ -114,15 +113,15 @@ export async function POST(request: NextRequest) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'CART_NOT_FOUND': 404,
-    'CART_ALREADY_IN_CHECKOUT': 409,
-    'CART_EMPTY': 400,
-    'CART_NOT_READY': 400,
-    'CHECKOUT_ALREADY_EXISTS': 409,
-    'CHECKOUT_CREATION_FAILED': 500,
-    'CART_LOCK_FAILED': 500,
-    'INVENTORY_VALIDATION_FAILED': 400,
-    'PRICING_VALIDATION_FAILED': 400
+    CART_NOT_FOUND: 404,
+    CART_ALREADY_IN_CHECKOUT: 409,
+    CART_EMPTY: 400,
+    CART_NOT_READY: 400,
+    CHECKOUT_ALREADY_EXISTS: 409,
+    CHECKOUT_CREATION_FAILED: 500,
+    CART_LOCK_FAILED: 500,
+    INVENTORY_VALIDATION_FAILED: 400,
+    PRICING_VALIDATION_FAILED: 400
   }
 
   return errorMap[errorCode] || 500

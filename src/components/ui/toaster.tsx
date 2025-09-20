@@ -1,56 +1,46 @@
-'use client';
+'use client'
 
-import { createPortal } from 'react-dom';
-import { useEffect, useState } from 'react';
-import { useToast } from './useToast';
-import { cn } from '@/lib/utils';
+import { createPortal } from 'react-dom'
+import { useEffect, useState } from 'react'
+import { useToast } from './useToast'
+import { cn } from '@/lib/utils'
 
 export function Toaster() {
-  const { toasts, removeToast } = useToast();
-  const [mounted, setMounted] = useState(false);
+  const { toasts, removeToast } = useToast()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   if (!mounted || typeof window === 'undefined') {
-    return null;
+    return null
   }
 
   return createPortal(
     <div className="fixed top-4 right-4 z-50 space-y-2">
-      {toasts.map((toast) => (
-        <ToastCard
-          key={toast.id}
-          toast={toast}
-          onClose={() => removeToast(toast.id)}
-        />
+      {toasts.map(toast => (
+        <ToastCard key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
       ))}
     </div>,
     document.body
-  );
+  )
 }
 
-function ToastCard({
-  toast,
-  onClose,
-}: {
-  toast: any;
-  onClose: () => void;
-}) {
+function ToastCard({ toast, onClose }: { toast: any; onClose: () => void }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
-    }, toast.duration || 5000);
+      onClose()
+    }, toast.duration || 5000)
 
-    return () => clearTimeout(timer);
-  }, [toast.duration, onClose]);
+    return () => clearTimeout(timer)
+  }, [toast.duration, onClose])
 
   const variants = {
     success: 'bg-green-50 border-green-200 text-green-800',
     error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
-  };
+    info: 'bg-blue-50 border-blue-200 text-blue-800'
+  }
 
   return (
     <div
@@ -64,17 +54,13 @@ function ToastCard({
     >
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          {toast.title && (
-            <div className="font-medium mb-1">{toast.title}</div>
-          )}
-          {toast.description && (
-            <div className="text-sm opacity-90">{toast.description}</div>
-          )}
+          {toast.title && <div className="font-medium mb-1">{toast.title}</div>}
+          {toast.description && <div className="text-sm opacity-90">{toast.description}</div>}
         </div>
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
+          onClick={e => {
+            e.stopPropagation()
+            onClose()
           }}
           className="ml-2 text-lg opacity-50 hover:opacity-100"
         >
@@ -82,5 +68,5 @@ function ToastCard({
         </button>
       </div>
     </div>
-  );
+  )
 }

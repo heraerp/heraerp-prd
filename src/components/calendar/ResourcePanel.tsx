@@ -461,7 +461,9 @@ export function ResourcePanel({
               </Card>
               <Card>
                 <CardContent className="p-3 text-center">
-                  <div className="text-lg font-bold text-muted-foreground">{resourceStats.inactive}</div>
+                  <div className="text-lg font-bold text-muted-foreground">
+                    {resourceStats.inactive}
+                  </div>
                   <div className="text-xs text-muted-foreground">Inactive</div>
                 </CardContent>
               </Card>

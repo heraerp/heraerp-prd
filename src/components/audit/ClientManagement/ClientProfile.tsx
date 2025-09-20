@@ -565,7 +565,9 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                 <div className="text-center py-8">
                   <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">No audit history recorded</p>
-                  <p className="text-sm text-muted-foreground mt-1">Add previous audit information</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Add previous audit information
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-3">{/* Audit history items would go here */}</div>

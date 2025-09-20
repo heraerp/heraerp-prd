@@ -232,7 +232,9 @@ export default function IncomePage() {
                             {row.level}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-foreground dark:text-foreground">{row.clients}</td>
+                        <td className="py-4 px-4 text-foreground dark:text-foreground">
+                          {row.clients}
+                        </td>
                         <td className="py-4 px-4 text-foreground dark:text-foreground">
                           ${row.avgDeal.toLocaleString()}
                         </td>
@@ -328,7 +330,9 @@ export default function IncomePage() {
                     <span className="text-foreground font-semibold">{example.name.charAt(0)}</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground dark:text-foreground">{example.name}</h3>
+                    <h3 className="font-semibold text-foreground dark:text-foreground">
+                      {example.name}
+                    </h3>
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                       {example.territory}
                     </p>
@@ -337,13 +341,17 @@ export default function IncomePage() {
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">Timeframe</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                      Timeframe
+                    </p>
                     <p className="font-semibold text-foreground dark:text-foreground">
                       {example.timeframe}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">Clients</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                      Clients
+                    </p>
                     <p className="font-semibold text-foreground dark:text-foreground">
                       {example.clients}
                     </p>
@@ -351,7 +359,9 @@ export default function IncomePage() {
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Annual Income</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Annual Income
+                  </p>
                   <p className="text-3xl font-bold text-green-600">{example.income}</p>
                 </div>
 

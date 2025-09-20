@@ -14,7 +14,9 @@ const SalonDataPage = dynamic(() => import('@/app/salon-data/page'), {
         <div className="relative">
           <div className="w-20 h-20 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 animate-pulse shadow-lg" />
         </div>
-        <p className="text-muted-foreground dark:text-muted-foreground mt-4 font-medium">Loading your salon...</p>
+        <p className="text-muted-foreground dark:text-muted-foreground mt-4 font-medium">
+          Loading your salon...
+        </p>
       </div>
     </div>
   )

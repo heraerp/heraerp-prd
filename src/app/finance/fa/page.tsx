@@ -218,7 +218,9 @@ export default function FixedAssetsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Fixed Assets
           </h1>
-          <p className="text-foreground/60 mt-1">Manage and track company assets and depreciation</p>
+          <p className="text-foreground/60 mt-1">
+            Manage and track company assets and depreciation
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
@@ -457,7 +459,9 @@ export default function FixedAssetsPage() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <Icon className="h-5 w-5 text-purple-400" />
-                          <h3 className="text-lg font-semibold text-foreground">{asset.assetName}</h3>
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {asset.assetName}
+                          </h3>
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-background/10 text-foreground/60">
                             {asset.assetCode}
                           </span>
@@ -559,7 +563,9 @@ export default function FixedAssetsPage() {
                   <span className="text-xs text-yellow-400 font-medium">Monthly</span>
                 </div>
                 <h3 className="text-foreground/60 text-sm font-medium mb-1">Avg Monthly Rate</h3>
-                <p className="text-2xl font-bold text-foreground">₹{(2833333 / 100000).toFixed(1)} L</p>
+                <p className="text-2xl font-bold text-foreground">
+                  ₹{(2833333 / 100000).toFixed(1)} L
+                </p>
               </div>
             </div>
 

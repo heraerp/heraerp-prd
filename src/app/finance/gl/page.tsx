@@ -559,7 +559,9 @@ export default function GeneralLedgerPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             General Ledger
           </h1>
-          <p className="text-foreground/60 mt-1">Chart of accounts and journal entries management</p>
+          <p className="text-foreground/60 mt-1">
+            Chart of accounts and journal entries management
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
@@ -648,8 +650,12 @@ export default function GeneralLedgerPage() {
                       Account Name
                     </th>
                     <th className="text-left py-4 text-sm font-medium text-foreground/60">Type</th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Balance</th>
-                    <th className="text-center py-4 text-sm font-medium text-foreground/60">Status</th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Balance
+                    </th>
+                    <th className="text-center py-4 text-sm font-medium text-foreground/60">
+                      Status
+                    </th>
                     <th className="text-right py-4 pr-4 text-sm font-medium text-foreground/60">
                       Actions
                     </th>
@@ -699,7 +705,9 @@ export default function GeneralLedgerPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-foreground">{entry.entryNumber}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {entry.entryNumber}
+                        </h3>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             entry.status === 'posted'

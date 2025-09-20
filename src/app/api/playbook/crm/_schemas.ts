@@ -5,13 +5,11 @@ export const CRMQuerySchema = z.object({
   from: z.string().optional(),
   to: z.string().optional(),
   // Accept stage as single or multiple and normalize to array
-  stage: z
-    .preprocess((v) => (Array.isArray(v) ? v : v ? [v] : []), z.array(z.string()).optional()),
-  owner: z
-    .preprocess((v) => (Array.isArray(v) ? v : v ? [v] : []), z.array(z.string()).optional()),
+  stage: z.preprocess(v => (Array.isArray(v) ? v : v ? [v] : []), z.array(z.string()).optional()),
+  owner: z.preprocess(v => (Array.isArray(v) ? v : v ? [v] : []), z.array(z.string()).optional()),
   q: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(10),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10)
 })
 
 export const OrgIdQuerySchema = z.object({ orgId: z.string().uuid().or(z.string().min(8)) })
@@ -77,7 +75,7 @@ export const OpportunitySchema = z.object({
   owner_id: z.string().optional(),
   account_id: z.string().optional(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 export const LeadSchema = z.object({
@@ -88,7 +86,7 @@ export const LeadSchema = z.object({
   source: z.string().optional(),
   amount: z.number().optional(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 export const ActivitySchema = z.object({
@@ -100,21 +98,32 @@ export const ActivitySchema = z.object({
   status: z.enum(['completed', 'pending', 'overdue']),
   account_id: z.string().optional(),
   contact_id: z.string().optional(),
-  created_at: z.string(),
+  created_at: z.string()
 })
 
 export const PageResult = <T extends z.ZodTypeAny>(item: T) =>
   z.object({ items: z.array(item), page: z.number(), pageSize: z.number(), total: z.number() })
 
 // Pipeline / Funnel response schemas
-export const PipelineStageSchema = z.object({ stage: z.string(), count: z.number(), amount: z.number() })
+export const PipelineStageSchema = z.object({
+  stage: z.string(),
+  count: z.number(),
+  amount: z.number()
+})
 export const PipelineSummarySchema = z.object({
   byStage: z.array(PipelineStageSchema),
   totals: z.object({ count: z.number(), amount: z.number() })
 })
 
-export const FunnelStageSchema = z.object({ name: z.string(), count: z.number(), rate: z.number().optional() })
-export const FunnelSchema = z.object({ stages: z.array(FunnelStageSchema), conversionRate: z.number() })
+export const FunnelStageSchema = z.object({
+  name: z.string(),
+  count: z.number(),
+  rate: z.number().optional()
+})
+export const FunnelSchema = z.object({
+  stages: z.array(FunnelStageSchema),
+  conversionRate: z.number()
+})
 
 // Accounts
 export const AccountSchema = z.object({
@@ -127,7 +136,7 @@ export const AccountSchema = z.object({
   employees: z.number().optional(),
   status: z.string().optional(),
   created_at: z.string(),
-  updated_at: z.string(),
+  updated_at: z.string()
 })
 
 export const AccountCreateSchema = BaseWriteSchema.extend({
@@ -137,7 +146,7 @@ export const AccountCreateSchema = BaseWriteSchema.extend({
   website: z.string().optional(),
   revenue: z.number().optional(),
   employees: z.number().optional(),
-  status: z.string().optional(),
+  status: z.string().optional()
 })
 
 export const AccountUpdateSchema = BaseWriteSchema.extend({
@@ -148,5 +157,5 @@ export const AccountUpdateSchema = BaseWriteSchema.extend({
   website: z.string().optional(),
   revenue: z.number().optional(),
   employees: z.number().optional(),
-  status: z.string().optional(),
+  status: z.string().optional()
 })

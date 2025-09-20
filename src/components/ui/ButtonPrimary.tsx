@@ -18,30 +18,33 @@ export interface ButtonPrimaryProps extends React.ButtonHTMLAttributes<HTMLButto
 }
 
 const ButtonPrimary = React.forwardRef<HTMLButtonElement, ButtonPrimaryProps>(
-  ({
-    className,
-    children,
-    loading = false,
-    loadingText,
-    size = 'md',
-    variant = 'primary',
-    icon,
-    iconPosition = 'left',
-    disabled,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      children,
+      loading = false,
+      loadingText,
+      size = 'md',
+      variant = 'primary',
+      icon,
+      iconPosition = 'left',
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
     const isDisabled = disabled || loading
 
     const sizeClasses = {
       sm: 'h-8 px-3 text-xs',
       md: 'h-10 px-4 text-sm',
-      lg: 'h-12 px-6 text-base',
+      lg: 'h-12 px-6 text-base'
     }
 
     const variantClasses = {
       primary: 'btn-primary',
       secondary: 'btn-secondary',
-      outline: 'btn-outline',
+      outline: 'btn-outline'
     }
 
     return (
@@ -59,29 +62,35 @@ const ButtonPrimary = React.forwardRef<HTMLButtonElement, ButtonPrimaryProps>(
         {...props}
       >
         {loading && (
-          <Loader2 className={cn(
-            'animate-spin',
-            size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
-            children || loadingText ? 'mr-2' : ''
-          )} />
+          <Loader2
+            className={cn(
+              'animate-spin',
+              size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
+              children || loadingText ? 'mr-2' : ''
+            )}
+          />
         )}
-        
+
         {!loading && icon && iconPosition === 'left' && (
-          <span className={cn(
-            size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
-            children ? 'mr-2' : ''
-          )}>
+          <span
+            className={cn(
+              size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
+              children ? 'mr-2' : ''
+            )}
+          >
             {icon}
           </span>
         )}
-        
-        {loading ? (loadingText || children) : children}
-        
+
+        {loading ? loadingText || children : children}
+
         {!loading && icon && iconPosition === 'right' && (
-          <span className={cn(
-            size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
-            children ? 'ml-2' : ''
-          )}>
+          <span
+            className={cn(
+              size === 'sm' ? 'w-3 h-3' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4',
+              children ? 'ml-2' : ''
+            )}
+          >
             {icon}
           </span>
         )}

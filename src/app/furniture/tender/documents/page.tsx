@@ -83,9 +83,12 @@ const documentCategories = [
 
 const getFileIcon = (fileType: string) => {
   if (fileType.includes('pdf')) return <FileText className="h-5 w-5 text-red-500" />
-  if (fileType.includes('sheet') || fileType.includes('excel')) return <FileSpreadsheet className="h-5 w-5 text-green-500" />
-  if (fileType.includes('image')) return <FileImage className="h-5 w-5 text-[var(--color-icon-secondary)]" />
-  if (fileType.includes('word') || fileType.includes('doc')) return <FileText className="h-5 w-5 text-primary" />
+  if (fileType.includes('sheet') || fileType.includes('excel'))
+    return <FileSpreadsheet className="h-5 w-5 text-green-500" />
+  if (fileType.includes('image'))
+    return <FileImage className="h-5 w-5 text-[var(--color-icon-secondary)]" />
+  if (fileType.includes('word') || fileType.includes('doc'))
+    return <FileText className="h-5 w-5 text-primary" />
   return <File className="h-5 w-5 text-[var(--color-icon-secondary)]" />
 }
 
@@ -195,16 +198,18 @@ export default function DocumentsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      doc.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.metadata.file_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.metadata.description?.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesTab = activeTab === 'all' ||
+    const matchesTab =
+      activeTab === 'all' ||
       (activeTab === 'templates' && doc.metadata.is_template) ||
       (activeTab === 'documents' && !doc.metadata.is_template)
 
     const matchesCategory = selectedCategory === 'all' || doc.metadata.category === selectedCategory
-    
+
     return matchesSearch && matchesTab && matchesCategory
   })
 
@@ -291,10 +296,7 @@ export default function DocumentsPage() {
                 className="bg-[var(--color-body)] pl-10"
               />
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setSelectedCategory('all')}
-            >
+            <Button variant="outline" onClick={() => setSelectedCategory('all')}>
               <Filter className="h-4 w-4 mr-2" />
               Clear Filters
             </Button>
@@ -353,7 +355,10 @@ export default function DocumentsPage() {
                             )}
                             <div className="flex gap-2 mt-2">
                               {doc.metadata.is_template && (
-                                <Badge variant="secondary" className="bg-[var(--color-body)] text-xs">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-[var(--color-body)] text-xs"
+                                >
                                   Template
                                 </Badge>
                               )}
@@ -363,7 +368,11 @@ export default function DocumentsPage() {
                                 </Badge>
                               )}
                               {doc.metadata.tags?.map(tag => (
-                                <Badge key={tag} variant="outline" className="bg-[var(--color-body)] text-xs">
+                                <Badge
+                                  key={tag}
+                                  variant="outline"
+                                  className="bg-[var(--color-body)] text-xs"
+                                >
                                   {tag}
                                 </Badge>
                               ))}
@@ -373,7 +382,10 @@ export default function DocumentsPage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {documentCategories.find(cat => cat.value === doc.metadata.category)?.label}
+                          {
+                            documentCategories.find(cat => cat.value === doc.metadata.category)
+                              ?.label
+                          }
                         </Badge>
                       </TableCell>
                       <TableCell>{formatFileSize(doc.metadata.file_size)}</TableCell>

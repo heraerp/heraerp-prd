@@ -10,7 +10,11 @@ interface DataDebuggerProps {
 
 export function DataDebugger({ organizationId }: DataDebuggerProps) {
   // Test Supabase connection first
-  const { data: connection, isLoading: connectionLoading, error: connectionError } = useQuery({
+  const {
+    data: connection,
+    isLoading: connectionLoading,
+    error: connectionError
+  } = useQuery({
     queryKey: ['debug', 'connection'],
     queryFn: async () => {
       console.log('🔍 Testing Supabase connection...')
@@ -26,15 +30,19 @@ export function DataDebugger({ organizationId }: DataDebuggerProps) {
   })
 
   // Test fetching entities
-  const { data: entities, isLoading: entitiesLoading, error: entitiesError } = useQuery({
+  const {
+    data: entities,
+    isLoading: entitiesLoading,
+    error: entitiesError
+  } = useQuery({
     queryKey: ['debug', 'entities', organizationId],
     queryFn: async () => {
       if (!organizationId) return null
       console.log('🔍 Fetching entities for org:', organizationId)
-      
+
       // Set organization ID in Universal API first
       universalApi.setOrganizationId(organizationId)
-      
+
       const result = await universalApi.getEntities({
         organizationId: organizationId,
         pageSize: 10 // Limit for debug
@@ -46,15 +54,19 @@ export function DataDebugger({ organizationId }: DataDebuggerProps) {
   })
 
   // Test fetching transactions
-  const { data: transactions, isLoading: transactionsLoading, error: transactionsError } = useQuery({
+  const {
+    data: transactions,
+    isLoading: transactionsLoading,
+    error: transactionsError
+  } = useQuery({
     queryKey: ['debug', 'transactions', organizationId],
     queryFn: async () => {
       if (!organizationId) return null
       console.log('🔍 Fetching transactions for org:', organizationId)
-      
+
       // Set organization ID in Universal API first
       universalApi.setOrganizationId(organizationId)
-      
+
       const result = await universalApi.getTransactions({
         organizationId: organizationId,
         pageSize: 10 // Limit for debug
@@ -76,24 +88,38 @@ export function DataDebugger({ organizationId }: DataDebuggerProps) {
         <div>
           <strong>Org ID:</strong> {organizationId || 'None'}
         </div>
-        
+
         <div>
-          <strong>Connection:</strong> 
+          <strong>Connection:</strong>
           {connectionLoading ? ' Testing...' : connectionError ? ' Failed' : ' OK'}
-          {connectionError && <div className="text-red-400 text-xs">Error: {String(connectionError)}</div>}
+          {connectionError && (
+            <div className="text-red-400 text-xs">Error: {String(connectionError)}</div>
+          )}
           {connection?.success && <div className="text-green-400 text-xs">Connected ✓</div>}
         </div>
-        
+
         <div>
-          <strong>Entities:</strong> 
-          {entitiesLoading ? ' Loading...' : entitiesError ? ' Error' : ` ${entities?.data?.length || 0} items`}
-          {entitiesError && <div className="text-red-400 text-xs">Error: {String(entitiesError)}</div>}
+          <strong>Entities:</strong>
+          {entitiesLoading
+            ? ' Loading...'
+            : entitiesError
+              ? ' Error'
+              : ` ${entities?.data?.length || 0} items`}
+          {entitiesError && (
+            <div className="text-red-400 text-xs">Error: {String(entitiesError)}</div>
+          )}
         </div>
-        
+
         <div>
-          <strong>Transactions:</strong> 
-          {transactionsLoading ? ' Loading...' : transactionsError ? ' Error' : ` ${transactions?.data?.length || 0} items`}
-          {transactionsError && <div className="text-red-400 text-xs">Error: {String(transactionsError)}</div>}
+          <strong>Transactions:</strong>
+          {transactionsLoading
+            ? ' Loading...'
+            : transactionsError
+              ? ' Error'
+              : ` ${transactions?.data?.length || 0} items`}
+          {transactionsError && (
+            <div className="text-red-400 text-xs">Error: {String(transactionsError)}</div>
+          )}
         </div>
 
         {connection?.data && (

@@ -4,14 +4,18 @@ import { executeHeraPlaybook } from '@/lib/hera/execute-playbook'
 
 // Validation schema for return request
 const ReturnRequestSchema = z.object({
-  lines: z.array(z.object({
-    sale_line_id: z.string().uuid('Sale line ID must be a valid UUID'),
-    qty: z.number().positive('Return quantity must be positive'),
-    condition: z.enum(['good', 'damaged'], {
-      errorMap: () => ({ message: 'Condition must be good or damaged' })
-    }),
-    reason: z.string().min(1, 'Return reason is required')
-  })).min(1, 'At least one line item is required for return'),
+  lines: z
+    .array(
+      z.object({
+        sale_line_id: z.string().uuid('Sale line ID must be a valid UUID'),
+        qty: z.number().positive('Return quantity must be positive'),
+        condition: z.enum(['good', 'damaged'], {
+          errorMap: () => ({ message: 'Condition must be good or damaged' })
+        }),
+        reason: z.string().min(1, 'Return reason is required')
+      })
+    )
+    .min(1, 'At least one line item is required for return'),
   refund: z.object({
     method: z.enum(['card', 'cash', 'giftcard'], {
       errorMap: () => ({ message: 'Refund method must be card, cash, or giftcard' })
@@ -51,7 +55,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for return operations',
           details: 'Ensure middleware is properly configured'
@@ -130,7 +134,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         procedure_count: result.data.procedure_count || 5
       }
     })
-
   } catch (error) {
     console.error('Return processing error:', error)
 
@@ -173,24 +176,24 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'SALE_NOT_FOUND': 404,
-    'SALE_NOT_COMMITTED': 400,
-    'SALE_LINE_NOT_FOUND': 404,
-    'RETURN_QUANTITY_EXCEEDED': 400,
-    'RETURN_WINDOW_EXCEEDED': 400,
-    'NON_RETAIL_RETURN_ATTEMPTED': 400,
-    'DUPLICATE_RETURN': 409,
-    'RETURN_CREATION_FAILED': 500,
-    'PRODUCT_NOT_RESTOCKABLE': 400,
-    'LOCATION_NOT_FOUND': 404,
-    'RESTOCK_FAILED': 500,
-    'WRITE_OFF_FAILED': 500,
-    'TAX_CALCULATION_ERROR': 500,
-    'PAYMENT_NOT_FOUND': 404,
-    'REFUND_AMOUNT_EXCEEDED': 400,
-    'GATEWAY_REFUND_FAILED': 502,
-    'REFUND_WINDOW_EXCEEDED': 400,
-    'GL_POSTING_FAILED': 500
+    SALE_NOT_FOUND: 404,
+    SALE_NOT_COMMITTED: 400,
+    SALE_LINE_NOT_FOUND: 404,
+    RETURN_QUANTITY_EXCEEDED: 400,
+    RETURN_WINDOW_EXCEEDED: 400,
+    NON_RETAIL_RETURN_ATTEMPTED: 400,
+    DUPLICATE_RETURN: 409,
+    RETURN_CREATION_FAILED: 500,
+    PRODUCT_NOT_RESTOCKABLE: 400,
+    LOCATION_NOT_FOUND: 404,
+    RESTOCK_FAILED: 500,
+    WRITE_OFF_FAILED: 500,
+    TAX_CALCULATION_ERROR: 500,
+    PAYMENT_NOT_FOUND: 404,
+    REFUND_AMOUNT_EXCEEDED: 400,
+    GATEWAY_REFUND_FAILED: 502,
+    REFUND_WINDOW_EXCEEDED: 400,
+    GL_POSTING_FAILED: 500
   }
 
   return errorMap[errorCode] || 500

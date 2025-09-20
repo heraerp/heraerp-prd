@@ -28,8 +28,11 @@ export default function TestSupabasePage() {
         }
 
         // Check if we can get the session
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
+
         setStatus({
           connected: true,
           url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'Not configured',
@@ -50,7 +53,7 @@ export default function TestSupabasePage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <h1 className="text-2xl font-bold mb-8">Supabase Connection Test</h1>
-      
+
       <div className="space-y-4">
         <div>
           <strong>Status:</strong>{' '}
@@ -58,27 +61,26 @@ export default function TestSupabasePage() {
             {status.connected ? 'Connected' : 'Disconnected'}
           </span>
         </div>
-        
+
         <div>
           <strong>Supabase URL:</strong>{' '}
           <code className="bg-gray-800 px-2 py-1 rounded">{status.url}</code>
         </div>
-        
+
         <div>
           <strong>Mock Mode:</strong>{' '}
           <code className="bg-gray-800 px-2 py-1 rounded">
             {process.env.NEXT_PUBLIC_USE_MOCK === 'true' ? 'Enabled' : 'Disabled'}
           </code>
         </div>
-        
+
         {status.error && (
           <div>
-            <strong>Error:</strong>{' '}
-            <span className="text-red-400">{status.error}</span>
+            <strong>Error:</strong> <span className="text-red-400">{status.error}</span>
           </div>
         )}
       </div>
-      
+
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Environment Variables</h2>
         <div className="space-y-2 text-sm">

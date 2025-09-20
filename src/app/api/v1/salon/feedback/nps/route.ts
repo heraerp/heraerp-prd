@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
+
     const searchParams = request.nextUrl.searchParams
     const organizationId = searchParams.get('organization_id')
 
@@ -21,12 +21,14 @@ export async function GET(request: NextRequest) {
 
     const { data: feedbackEntries, error } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_name,
         created_at,
         metadata
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'feedback')
       .gte('created_at', thirtyDaysAgo.toISOString())
@@ -60,11 +62,17 @@ export async function GET(request: NextRequest) {
 
     if (feedbackEntries && feedbackEntries.length > 0) {
       await Promise.all(
-        feedbackEntries.map(async (feedback) => {
+        feedbackEntries.map(async feedback => {
           // Extract feedback details from dynamic data
-          const rating = dynamicData.find(d => d.entity_id === feedback.id && d.field_name === 'rating')?.field_value_number || (Math.floor(Math.random() * 11)) // 0-10 scale
-          const comment = dynamicData.find(d => d.entity_id === feedback.id && d.field_name === 'comment')?.field_value_text || 'Great service!'
-          const customerId = dynamicData.find(d => d.entity_id === feedback.id && d.field_name === 'customer_id')?.reference_entity_id
+          const rating =
+            dynamicData.find(d => d.entity_id === feedback.id && d.field_name === 'rating')
+              ?.field_value_number || Math.floor(Math.random() * 11) // 0-10 scale
+          const comment =
+            dynamicData.find(d => d.entity_id === feedback.id && d.field_name === 'comment')
+              ?.field_value_text || 'Great service!'
+          const customerId = dynamicData.find(
+            d => d.entity_id === feedback.id && d.field_name === 'customer_id'
+          )?.reference_entity_id
 
           // Categorize based on NPS methodology (0-10 scale)
           if (rating >= 9) {
@@ -83,7 +91,7 @@ export async function GET(request: NextRequest) {
               .select('entity_name')
               .eq('id', customerId)
               .single()
-            
+
             if (customerError) {
               console.error('Error fetching customer:', customerError)
             }
@@ -103,16 +111,36 @@ export async function GET(request: NextRequest) {
     } else {
       // Generate sample NPS data if no feedback exists
       const sampleFeedback = [
-        { rating: 10, comment: 'Absolutely amazing service! Will definitely come back.', customerName: 'Sarah Johnson' },
-        { rating: 9, comment: 'Great experience, very professional staff.', customerName: 'Mike Chen' },
-        { rating: 8, comment: 'Good service, happy with the results.', customerName: 'Emily Davis' },
-        { rating: 9, comment: 'Loved my new haircut, exactly what I wanted!', customerName: 'Jessica Wilson' },
+        {
+          rating: 10,
+          comment: 'Absolutely amazing service! Will definitely come back.',
+          customerName: 'Sarah Johnson'
+        },
+        {
+          rating: 9,
+          comment: 'Great experience, very professional staff.',
+          customerName: 'Mike Chen'
+        },
+        {
+          rating: 8,
+          comment: 'Good service, happy with the results.',
+          customerName: 'Emily Davis'
+        },
+        {
+          rating: 9,
+          comment: 'Loved my new haircut, exactly what I wanted!',
+          customerName: 'Jessica Wilson'
+        },
         { rating: 7, comment: 'Decent service, could be better.', customerName: 'Alex Rodriguez' },
         { rating: 10, comment: 'Outstanding! Best salon in town.', customerName: 'Rachel Green' },
         { rating: 6, comment: 'Average experience, nothing special.', customerName: 'Tom Brown' },
         { rating: 9, comment: 'Very satisfied with the service.', customerName: 'Lisa Anderson' },
         { rating: 8, comment: 'Good value for money.', customerName: 'David Miller' },
-        { rating: 5, comment: 'Had to wait too long, service was okay.', customerName: 'Jennifer Taylor' }
+        {
+          rating: 5,
+          comment: 'Had to wait too long, service was okay.',
+          customerName: 'Jennifer Taylor'
+        }
       ]
 
       sampleFeedback.forEach((sample, index) => {
@@ -138,9 +166,8 @@ export async function GET(request: NextRequest) {
 
     // Calculate NPS score
     const totalResponses = promoters + passives + detractors
-    const npsScore = totalResponses > 0 
-      ? Math.round(((promoters - detractors) / totalResponses) * 100)
-      : 0
+    const npsScore =
+      totalResponses > 0 ? Math.round(((promoters - detractors) / totalResponses) * 100) : 0
 
     // Calculate trend (mock data for now - would need historical data)
     const trend = npsScore > 50 ? 'up' : npsScore > 30 ? 'stable' : 'down'
@@ -159,17 +186,20 @@ export async function GET(request: NextRequest) {
           total: totalResponses
         },
         recentFeedback: recentFeedback.slice(0, 10), // Return last 10 feedback entries
-        averageRating: totalResponses > 0 
-          ? Number((recentFeedback.reduce((sum, f) => sum + f.rating, 0) / totalResponses).toFixed(1))
-          : 0
+        averageRating:
+          totalResponses > 0
+            ? Number(
+                (recentFeedback.reduce((sum, f) => sum + f.rating, 0) / totalResponses).toFixed(1)
+              )
+            : 0
       }
     })
   } catch (error) {
     console.error('NPS API error:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch NPS data', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Failed to fetch NPS data',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )

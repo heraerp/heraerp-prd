@@ -388,7 +388,9 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                       <Badge variant="outline" className="text-xs">
                         {key.replace(/_/g, ' ')}
                       </Badge>
-                      <span className="text-muted-foreground dark:text-muted-foreground">{String(value)}</span>
+                      <span className="text-muted-foreground dark:text-muted-foreground">
+                        {String(value)}
+                      </span>
                     </div>
                   ))}
               </div>
@@ -658,7 +660,9 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Pass Rate</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Pass Rate
+                </p>
                 <p className="text-2xl font-bold">{passRate.toFixed(0)}%</p>
               </div>
               <TrendingUp

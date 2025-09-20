@@ -295,7 +295,9 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Optimal Stock</span>
-                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.optimal}%</span>
+                    <span className="text-sm text-muted-foreground">
+                      {metrics.stockHealth.optimal}%
+                    </span>
                   </div>
                   <Progress value={metrics.stockHealth.optimal} className="h-2 bg-green-100" />
                 </div>
@@ -303,7 +305,9 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Warning Level</span>
-                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.warning}%</span>
+                    <span className="text-sm text-muted-foreground">
+                      {metrics.stockHealth.warning}%
+                    </span>
                   </div>
                   <Progress value={metrics.stockHealth.warning} className="h-2 bg-yellow-100" />
                 </div>
@@ -311,7 +315,9 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Critical Level</span>
-                    <span className="text-sm text-muted-foreground">{metrics.stockHealth.critical}%</span>
+                    <span className="text-sm text-muted-foreground">
+                      {metrics.stockHealth.critical}%
+                    </span>
                   </div>
                   <Progress value={metrics.stockHealth.critical} className="h-2 bg-red-100" />
                 </div>
@@ -335,10 +341,14 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
                     className="flex items-start justify-between p-4 rounded-lg bg-muted hover:bg-muted transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-background">{getAlertIcon(alert.alertType)}</div>
+                      <div className="p-2 rounded-lg bg-background">
+                        {getAlertIcon(alert.alertType)}
+                      </div>
                       <div>
                         <h4 className="font-medium text-gray-100">{alert.itemName}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">{alert.aiRecommendation}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {alert.aiRecommendation}
+                        </p>
                         <div className="flex items-center gap-2 mt-2">
                           <Badge className={getUrgencyColor(alert.urgency)}>{alert.urgency}</Badge>
                           <span className="text-xs text-muted-foreground">{alert.smartCode}</span>

@@ -15,4 +15,3 @@ export function assertOrgSmart(body: any) {
     throw new Error('Invalid smart_code (expected HERA.CRM.*.v#)')
   }
 }
-

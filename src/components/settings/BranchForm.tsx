@@ -13,26 +13,23 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Building, 
-  Save, 
-  MapPin,
-  Phone,
-  Mail,
-  User,
-  Clock,
-  AlertCircle
-} from 'lucide-react'
+import { Building, Save, MapPin, Phone, Mail, User, Clock, AlertCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Branch, SETTINGS_SMART_CODES } from '@/lib/schemas/settings'
@@ -55,7 +52,7 @@ const BUSINESS_TYPES = [
 ]
 
 const OPERATING_HOURS_PRESETS = {
-  'business_hours': {
+  business_hours: {
     monday: '09:00-17:00',
     tuesday: '09:00-17:00',
     wednesday: '09:00-17:00',
@@ -64,7 +61,7 @@ const OPERATING_HOURS_PRESETS = {
     saturday: 'Closed',
     sunday: 'Closed'
   },
-  'salon_hours': {
+  salon_hours: {
     monday: '10:00-20:00',
     tuesday: '10:00-20:00',
     wednesday: '10:00-20:00',
@@ -73,7 +70,7 @@ const OPERATING_HOURS_PRESETS = {
     saturday: '09:00-18:00',
     sunday: '10:00-16:00'
   },
-  'restaurant_hours': {
+  restaurant_hours: {
     monday: '11:00-22:00',
     tuesday: '11:00-22:00',
     wednesday: '11:00-22:00',
@@ -84,7 +81,14 @@ const OPERATING_HOURS_PRESETS = {
   }
 }
 
-export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmit, isSubmitting }: BranchFormProps) {
+export function BranchForm({
+  open,
+  onOpenChange,
+  branch,
+  organizationId,
+  onSubmit,
+  isSubmitting
+}: BranchFormProps) {
   const [selectedBusinessType, setSelectedBusinessType] = React.useState('')
 
   const form = useForm<Branch>({
@@ -160,10 +164,10 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
   const handleBusinessTypeChange = (businessType: string) => {
     setSelectedBusinessType(businessType)
     const businessTypeConfig = BUSINESS_TYPES.find(bt => bt.value === businessType)
-    
+
     if (businessTypeConfig) {
       form.setValue('smart_code', businessTypeConfig.smartCode)
-      
+
       // Set appropriate operating hours based on business type
       if (businessType === 'salon') {
         form.setValue('operating_hours', OPERATING_HOURS_PRESETS.salon_hours)
@@ -178,7 +182,8 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
   const generateBranchCode = () => {
     const name = form.watch('entity_name')
     if (name && !isEditMode) {
-      const code = name.toUpperCase()
+      const code = name
+        .toUpperCase()
         .replace(/[^A-Z0-9\s]/g, '')
         .replace(/\s+/g, '_')
         .substring(0, 15)
@@ -194,7 +199,7 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
         entity_type: 'branch' as const,
         updated_at: new Date().toISOString()
       }
-      
+
       await onSubmit(branchData)
     } catch (error) {
       // Error handled by parent component
@@ -216,22 +221,19 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
             {isEditMode ? 'Edit Branch' : 'Create Branch'}
           </DialogTitle>
           <DialogDescription>
-            {isEditMode 
+            {isEditMode
               ? `Edit the branch details for "${branch?.entity_name}"`
-              : 'Create a new branch location for your organization'
-            }
+              : 'Create a new branch location for your organization'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          
           {/* Basic Information */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="entity_name">Branch Name *</Label>
@@ -258,7 +260,9 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                     disabled={isEditMode}
                   />
                   <p className="text-sm text-gray-500">
-                    {isEditMode ? 'Branch code cannot be changed' : 'Uppercase letters, numbers, and underscores only'}
+                    {isEditMode
+                      ? 'Branch code cannot be changed'
+                      : 'Uppercase letters, numbers, and underscores only'}
                   </p>
                   {form.formState.errors.entity_code && (
                     <p className="text-sm text-red-600">
@@ -271,15 +275,12 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
               {!isEditMode && (
                 <div className="space-y-2">
                   <Label htmlFor="business_type">Business Type</Label>
-                  <Select
-                    value={selectedBusinessType}
-                    onValueChange={handleBusinessTypeChange}
-                  >
+                  <Select value={selectedBusinessType} onValueChange={handleBusinessTypeChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select business type for optimal configuration" />
                     </SelectTrigger>
                     <SelectContent>
-                      {BUSINESS_TYPES.map((type) => (
+                      {BUSINESS_TYPES.map(type => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -291,7 +292,6 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   </p>
                 </div>
               )}
-
             </CardContent>
           </Card>
 
@@ -304,13 +304,12 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="space-y-2">
                 <Label htmlFor="address">Address</Label>
                 <Input
                   id="address"
                   value={form.watch('location.address') || ''}
-                  onChange={(e) => form.setValue('location.address', e.target.value)}
+                  onChange={e => form.setValue('location.address', e.target.value)}
                   placeholder="123 Business Street"
                 />
               </div>
@@ -321,7 +320,7 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   <Input
                     id="city"
                     value={form.watch('location.city') || ''}
-                    onChange={(e) => form.setValue('location.city', e.target.value)}
+                    onChange={e => form.setValue('location.city', e.target.value)}
                     placeholder="Dubai"
                   />
                 </div>
@@ -330,7 +329,7 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   <Label htmlFor="country">Country</Label>
                   <Select
                     value={form.watch('location.country') || 'UAE'}
-                    onValueChange={(value) => form.setValue('location.country', value)}
+                    onValueChange={value => form.setValue('location.country', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -354,12 +353,11 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   <Input
                     id="postal_code"
                     value={form.watch('location.postal_code') || ''}
-                    onChange={(e) => form.setValue('location.postal_code', e.target.value)}
+                    onChange={e => form.setValue('location.postal_code', e.target.value)}
                     placeholder="00000"
                   />
                 </div>
               </div>
-
             </CardContent>
           </Card>
 
@@ -372,7 +370,6 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="flex items-center gap-1">
@@ -382,7 +379,7 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   <Input
                     id="phone"
                     value={form.watch('contact.phone') || ''}
-                    onChange={(e) => form.setValue('contact.phone', e.target.value)}
+                    onChange={e => form.setValue('contact.phone', e.target.value)}
                     placeholder="+971-50-123-4567"
                   />
                 </div>
@@ -396,7 +393,7 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                     id="email"
                     type="email"
                     value={form.watch('contact.email') || ''}
-                    onChange={(e) => form.setValue('contact.email', e.target.value)}
+                    onChange={e => form.setValue('contact.email', e.target.value)}
                     placeholder="marina@company.com"
                   />
                 </div>
@@ -409,12 +406,11 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
                   <Input
                     id="manager"
                     value={form.watch('contact.manager') || ''}
-                    onChange={(e) => form.setValue('contact.manager', e.target.value)}
+                    onChange={e => form.setValue('contact.manager', e.target.value)}
                     placeholder="John Smith"
                   />
                 </div>
               </div>
-
             </CardContent>
           </Card>
 
@@ -427,23 +423,23 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="grid gap-3">
-                {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
-                  <div key={day} className="flex items-center gap-4">
-                    <div className="w-24 text-sm font-medium capitalize">
-                      {day}
+                {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(
+                  day => (
+                    <div key={day} className="flex items-center gap-4">
+                      <div className="w-24 text-sm font-medium capitalize">{day}</div>
+                      <Input
+                        value={form.watch(`operating_hours.${day}` as any) || ''}
+                        onChange={e =>
+                          form.setValue(`operating_hours.${day}` as any, e.target.value)
+                        }
+                        placeholder="09:00-17:00 or Closed"
+                        className="flex-1"
+                      />
                     </div>
-                    <Input
-                      value={form.watch(`operating_hours.${day}` as any) || ''}
-                      onChange={(e) => form.setValue(`operating_hours.${day}` as any, e.target.value)}
-                      placeholder="09:00-17:00 or Closed"
-                      className="flex-1"
-                    />
-                  </div>
-                ))}
+                  )
+                )}
               </div>
-
             </CardContent>
           </Card>
 
@@ -461,18 +457,12 @@ export function BranchForm({ open, onOpenChange, branch, organizationId, onSubmi
               </div>
             </AlertDescription>
           </Alert>
-
         </form>
 
         <Separator />
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button

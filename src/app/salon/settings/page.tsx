@@ -123,7 +123,9 @@ export default function SalonSettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true)
-      const r = await fetch(`/api/v1/salon/settings?organization_id=${ORG_ID}`, { cache: 'no-store' })
+      const r = await fetch(`/api/v1/salon/settings?organization_id=${ORG_ID}`, {
+        cache: 'no-store'
+      })
       const result = await r.json()
       if (result.settings) {
         setSettings(result.settings)
@@ -247,7 +249,9 @@ export default function SalonSettingsPage() {
                         : 'text-white/80 hover:text-white hover:bg-white/10'
                     }`}
                   >
-                    <Icon className={`h-5 w-5 ${isActive ? 'text-emerald-400' : 'text-white/70'}`} />
+                    <Icon
+                      className={`h-5 w-5 ${isActive ? 'text-emerald-400' : 'text-white/70'}`}
+                    />
                     <span>{section.title}</span>
                     {isActive && <ChevronRight className="h-4 w-4 ml-auto text-emerald-400" />}
                   </button>
@@ -263,7 +267,9 @@ export default function SalonSettingsPage() {
             {currentSection && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-white mb-4">{currentSection.display_name}</h2>
+                  <h2 className="text-xl font-semibold text-white mb-4">
+                    {currentSection.display_name}
+                  </h2>
                   <p className="text-white/70 mb-6">
                     {sections.find(s => s.id === activeSection)?.description}
                   </p>
@@ -317,9 +323,7 @@ export default function SalonSettingsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-white/80 mb-2">
-                        Locale
-                      </label>
+                      <label className="block text-sm font-medium text-white/80 mb-2">Locale</label>
                       <select
                         value={currentSection.keys.locale || ''}
                         onChange={e => handleSectionChange('general', 'locale', e.target.value)}
@@ -364,7 +368,13 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.discount_cap_percent || ''}
-                          onChange={e => handleSectionChange('pos', 'discount_cap_percent', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'pos',
+                              'discount_cap_percent',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
@@ -376,7 +386,13 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.auto_reprice_debounce_ms || ''}
-                          onChange={e => handleSectionChange('pos', 'auto_reprice_debounce_ms', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'pos',
+                              'auto_reprice_debounce_ms',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                         <p className="text-xs text-foreground/40 mt-1">
@@ -390,7 +406,9 @@ export default function SalonSettingsPage() {
                         </label>
                         <select
                           value={currentSection.keys.rounding_mode || ''}
-                          onChange={e => handleSectionChange('pos', 'rounding_mode', e.target.value)}
+                          onChange={e =>
+                            handleSectionChange('pos', 'rounding_mode', e.target.value)
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-emerald-500 transition-colors"
                         >
                           <option value="BANKERS_2DP">Bankers Rounding (2DP)</option>
@@ -409,8 +427,8 @@ export default function SalonSettingsPage() {
                             Display prices with tax included
                           </p>
                         </div>
-                        <button 
-                          onClick={() => handleToggle('pos', 'price_includes_tax')} 
+                        <button
+                          onClick={() => handleToggle('pos', 'price_includes_tax')}
                           className="relative"
                         >
                           {currentSection.keys.price_includes_tax ? (
@@ -428,8 +446,8 @@ export default function SalonSettingsPage() {
                             Allow customers to add tips during checkout
                           </p>
                         </div>
-                        <button 
-                          onClick={() => handleToggle('pos', 'tip_enabled')} 
+                        <button
+                          onClick={() => handleToggle('pos', 'tip_enabled')}
                           className="relative"
                         >
                           {currentSection.keys.tip_enabled ? (
@@ -450,30 +468,37 @@ export default function SalonSettingsPage() {
                       <div className="flex items-start space-x-3">
                         <Info className="h-5 w-5 text-blue-400 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-blue-400">Playbook Mode Controls</p>
+                          <p className="text-sm font-medium text-blue-400">
+                            Playbook Mode Controls
+                          </p>
                           <p className="text-sm text-foreground/60 mt-1">
-                            These flags control which features use the new Playbook engine. Changes affect system behavior.
+                            These flags control which features use the new Playbook engine. Changes
+                            affect system behavior.
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    {currentSection.keys.playbook_mode && typeof currentSection.keys.playbook_mode === 'object' && 
+                    {currentSection.keys.playbook_mode &&
+                      typeof currentSection.keys.playbook_mode === 'object' &&
                       Object.entries(currentSection.keys.playbook_mode).map(([flag, enabled]) => (
-                        <div key={flag} className="flex items-center justify-between p-4 bg-background/5 rounded-lg">
+                        <div
+                          key={flag}
+                          className="flex items-center justify-between p-4 bg-background/5 rounded-lg"
+                        >
                           <div>
                             <p className="font-medium text-foreground">
                               {flag.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                             </p>
-                            <p className="text-sm text-foreground/60">
-                              playbook_mode.{flag}
-                            </p>
+                            <p className="text-sm text-foreground/60">playbook_mode.{flag}</p>
                           </div>
-                          <button 
-                            onClick={() => handleSectionChange('feature_flags', 'playbook_mode', {
-                              ...currentSection.keys.playbook_mode,
-                              [flag]: !enabled
-                            })} 
+                          <button
+                            onClick={() =>
+                              handleSectionChange('feature_flags', 'playbook_mode', {
+                                ...currentSection.keys.playbook_mode,
+                                [flag]: !enabled
+                              })
+                            }
                             className="relative"
                           >
                             {enabled ? (
@@ -483,8 +508,7 @@ export default function SalonSettingsPage() {
                             )}
                           </button>
                         </div>
-                      ))
-                    }
+                      ))}
                   </div>
                 )}
 
@@ -499,7 +523,13 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.default_duration_min || ''}
-                          onChange={e => handleSectionChange('appointment', 'default_duration_min', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'appointment',
+                              'default_duration_min',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
@@ -511,7 +541,13 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.buffer_min || ''}
-                          onChange={e => handleSectionChange('appointment', 'buffer_min', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'appointment',
+                              'buffer_min',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
@@ -524,7 +560,13 @@ export default function SalonSettingsPage() {
                           type="number"
                           step="0.01"
                           value={currentSection.keys.no_show_fee_amount || ''}
-                          onChange={e => handleSectionChange('appointment', 'no_show_fee_amount', parseFloat(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'appointment',
+                              'no_show_fee_amount',
+                              parseFloat(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
@@ -535,7 +577,13 @@ export default function SalonSettingsPage() {
                         </label>
                         <select
                           value={currentSection.keys.auto_status_on_checkin || ''}
-                          onChange={e => handleSectionChange('appointment', 'auto_status_on_checkin', e.target.value)}
+                          onChange={e =>
+                            handleSectionChange(
+                              'appointment',
+                              'auto_status_on_checkin',
+                              e.target.value
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-emerald-500 transition-colors"
                         >
                           <option value="IN_PROGRESS">In Progress</option>
@@ -556,8 +604,8 @@ export default function SalonSettingsPage() {
                           Permit bookings beyond staff capacity
                         </p>
                       </div>
-                      <button 
-                        onClick={() => handleToggle('appointment', 'allow_overbook')} 
+                      <button
+                        onClick={() => handleToggle('appointment', 'allow_overbook')}
                         className="relative"
                       >
                         {currentSection.keys.allow_overbook ? (
@@ -583,7 +631,9 @@ export default function SalonSettingsPage() {
                           onChange={e => handleSectionChange('commission', 'base', e.target.value)}
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground focus:outline-none focus:border-emerald-500 transition-colors"
                         >
-                          <option value="AFTER_DISCOUNTS_BEFORE_TAX">After Discounts, Before Tax</option>
+                          <option value="AFTER_DISCOUNTS_BEFORE_TAX">
+                            After Discounts, Before Tax
+                          </option>
                           <option value="BEFORE_DISCOUNTS">Before Discounts</option>
                           <option value="AFTER_TAX">After Tax</option>
                           <option value="GROSS_AMOUNT">Gross Amount</option>
@@ -600,36 +650,52 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.default_rate_percent || ''}
-                          onChange={e => handleSectionChange('commission', 'default_rate_percent', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'commission',
+                              'default_rate_percent',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-medium text-foreground/80 mb-4">Role Overrides</h3>
+                      <h3 className="text-sm font-medium text-foreground/80 mb-4">
+                        Role Overrides
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm text-foreground/60 mb-1">Stylist Rate (%)</label>
+                          <label className="block text-sm text-foreground/60 mb-1">
+                            Stylist Rate (%)
+                          </label>
                           <input
                             type="number"
                             value={currentSection.keys.role_overrides?.stylist || ''}
-                            onChange={e => handleSectionChange('commission', 'role_overrides', {
-                              ...currentSection.keys.role_overrides,
-                              stylist: parseInt(e.target.value)
-                            })}
+                            onChange={e =>
+                              handleSectionChange('commission', 'role_overrides', {
+                                ...currentSection.keys.role_overrides,
+                                stylist: parseInt(e.target.value)
+                              })
+                            }
                             className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm text-foreground/60 mb-1">Colorist Rate (%)</label>
+                          <label className="block text-sm text-foreground/60 mb-1">
+                            Colorist Rate (%)
+                          </label>
                           <input
                             type="number"
                             value={currentSection.keys.role_overrides?.colorist || ''}
-                            onChange={e => handleSectionChange('commission', 'role_overrides', {
-                              ...currentSection.keys.role_overrides,
-                              colorist: parseInt(e.target.value)
-                            })}
+                            onChange={e =>
+                              handleSectionChange('commission', 'role_overrides', {
+                                ...currentSection.keys.role_overrides,
+                                colorist: parseInt(e.target.value)
+                              })
+                            }
                             className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                           />
                         </div>
@@ -649,7 +715,9 @@ export default function SalonSettingsPage() {
                         <input
                           type="text"
                           value={currentSection.keys.sender_id || ''}
-                          onChange={e => handleSectionChange('whatsapp', 'sender_id', e.target.value)}
+                          onChange={e =>
+                            handleSectionChange('whatsapp', 'sender_id', e.target.value)
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                         <p className="text-xs text-foreground/40 mt-1">
@@ -664,14 +732,22 @@ export default function SalonSettingsPage() {
                         <input
                           type="number"
                           value={currentSection.keys.daily_send_cap || ''}
-                          onChange={e => handleSectionChange('whatsapp', 'daily_send_cap', parseInt(e.target.value))}
+                          onChange={e =>
+                            handleSectionChange(
+                              'whatsapp',
+                              'daily_send_cap',
+                              parseInt(e.target.value)
+                            )
+                          }
                           className="w-full px-4 py-2 bg-background/5 border border-border/10 rounded-lg text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-emerald-500 transition-colors"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-medium text-foreground/80 mb-4">Template Defaults</h3>
+                      <h3 className="text-sm font-medium text-foreground/80 mb-4">
+                        Template Defaults
+                      </h3>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between p-4 bg-background/5 rounded-lg">
                           <div>
@@ -680,14 +756,17 @@ export default function SalonSettingsPage() {
                               Send follow-up messages after appointments
                             </p>
                           </div>
-                          <button 
-                            onClick={() => handleSectionChange('whatsapp', 'template_defaults', {
-                              ...currentSection.keys.template_defaults,
-                              APPT_FOLLOWUP: { 
-                                ...currentSection.keys.template_defaults?.APPT_FOLLOWUP,
-                                enabled: !currentSection.keys.template_defaults?.APPT_FOLLOWUP?.enabled 
-                              }
-                            })} 
+                          <button
+                            onClick={() =>
+                              handleSectionChange('whatsapp', 'template_defaults', {
+                                ...currentSection.keys.template_defaults,
+                                APPT_FOLLOWUP: {
+                                  ...currentSection.keys.template_defaults?.APPT_FOLLOWUP,
+                                  enabled:
+                                    !currentSection.keys.template_defaults?.APPT_FOLLOWUP?.enabled
+                                }
+                              })
+                            }
                             className="relative"
                           >
                             {currentSection.keys.template_defaults?.APPT_FOLLOWUP?.enabled ? (
@@ -705,14 +784,17 @@ export default function SalonSettingsPage() {
                               Send promotional messages with images
                             </p>
                           </div>
-                          <button 
-                            onClick={() => handleSectionChange('whatsapp', 'template_defaults', {
-                              ...currentSection.keys.template_defaults,
-                              PROMO_MEDIA: { 
-                                ...currentSection.keys.template_defaults?.PROMO_MEDIA,
-                                enabled: !currentSection.keys.template_defaults?.PROMO_MEDIA?.enabled 
-                              }
-                            })} 
+                          <button
+                            onClick={() =>
+                              handleSectionChange('whatsapp', 'template_defaults', {
+                                ...currentSection.keys.template_defaults,
+                                PROMO_MEDIA: {
+                                  ...currentSection.keys.template_defaults?.PROMO_MEDIA,
+                                  enabled:
+                                    !currentSection.keys.template_defaults?.PROMO_MEDIA?.enabled
+                                }
+                              })
+                            }
                             className="relative"
                           >
                             {currentSection.keys.template_defaults?.PROMO_MEDIA?.enabled ? (
@@ -737,8 +819,8 @@ export default function SalonSettingsPage() {
                           Send automated follow-ups after completed sales
                         </p>
                       </div>
-                      <button 
-                        onClick={() => handleToggle('workflows', 'enable_followup_after_sale')} 
+                      <button
+                        onClick={() => handleToggle('workflows', 'enable_followup_after_sale')}
                         className="relative"
                       >
                         {currentSection.keys.enable_followup_after_sale ? (
@@ -756,8 +838,8 @@ export default function SalonSettingsPage() {
                           Staff leave requests require manager approval
                         </p>
                       </div>
-                      <button 
-                        onClick={() => handleToggle('workflows', 'enable_leave_approval')} 
+                      <button
+                        onClick={() => handleToggle('workflows', 'enable_leave_approval')}
                         className="relative"
                       >
                         {currentSection.keys.enable_leave_approval ? (
@@ -775,8 +857,8 @@ export default function SalonSettingsPage() {
                           Automatically renew customer memberships
                         </p>
                       </div>
-                      <button 
-                        onClick={() => handleToggle('workflows', 'enable_membership_renewal')} 
+                      <button
+                        onClick={() => handleToggle('workflows', 'enable_membership_renewal')}
                         className="relative"
                       >
                         {currentSection.keys.enable_membership_renewal ? (
@@ -790,7 +872,15 @@ export default function SalonSettingsPage() {
                 )}
 
                 {/* Add sections for remaining categories as needed */}
-                {!['general', 'pos', 'feature_flags', 'appointment', 'commission', 'whatsapp', 'workflows'].includes(activeSection) && (
+                {![
+                  'general',
+                  'pos',
+                  'feature_flags',
+                  'appointment',
+                  'commission',
+                  'whatsapp',
+                  'workflows'
+                ].includes(activeSection) && (
                   <div className="text-center py-8">
                     <div className="inline-flex items-center space-x-2 px-4 py-2 bg-amber-500/20 border border-amber-500/30 rounded-lg">
                       <AlertCircle className="h-5 w-5 text-amber-400" />

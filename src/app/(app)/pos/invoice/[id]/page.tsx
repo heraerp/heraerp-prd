@@ -20,7 +20,7 @@ export default function InvoiceGenerationPage() {
   const invoiceId = params.id as string
   const { user } = useSession()
   const navigation = usePosNavigation()
-  
+
   // Load invoice
   const { data: invoice, isLoading, error } = useInvoice(invoiceId, posApi)
 
@@ -43,9 +43,7 @@ export default function InvoiceGenerationPage() {
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Invoice Not Found</h2>
           <p className="text-gray-600 mb-6">The invoice you're looking for doesn't exist.</p>
-          <Button onClick={() => navigation.goToSale()}>
-            Back to POS
-          </Button>
+          <Button onClick={() => navigation.goToSale()}>Back to POS</Button>
         </div>
       </div>
     )

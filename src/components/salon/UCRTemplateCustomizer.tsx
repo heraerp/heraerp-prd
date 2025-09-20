@@ -426,7 +426,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
                 {definitions.max_discount_pct || 30}%
               </span>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">Maximum discount allowed without approval</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Maximum discount allowed without approval
+            </p>
           </div>
 
           <div>
@@ -440,7 +442,9 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
               min={0}
               step={50}
             />
-            <p className="text-sm text-muted-foreground mt-1">Absolute maximum discount in currency</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Absolute maximum discount in currency
+            </p>
           </div>
 
           <div>

@@ -165,7 +165,9 @@ export default function FinanceSettingsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Finance Settings
           </h1>
-          <p className="text-foreground/60 mt-1">Configure financial system preferences and policies</p>
+          <p className="text-foreground/60 mt-1">
+            Configure financial system preferences and policies
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           {showSaveSuccess && (
@@ -226,7 +228,9 @@ export default function FinanceSettingsPage() {
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl font-semibold text-foreground mb-4">General Settings</h2>
-                  <p className="text-foreground/60 mb-6">Configure basic financial system preferences</p>
+                  <p className="text-foreground/60 mb-6">
+                    Configure basic financial system preferences
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -311,8 +315,12 @@ export default function FinanceSettingsPage() {
             {activeSection === 'accounting' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">Accounting Settings</h2>
-                  <p className="text-foreground/60 mb-6">Configure accounting methods and policies</p>
+                  <h2 className="text-xl font-semibold text-foreground mb-4">
+                    Accounting Settings
+                  </h2>
+                  <p className="text-foreground/60 mb-6">
+                    Configure accounting methods and policies
+                  </p>
                 </div>
 
                 <div className="space-y-6">
@@ -552,7 +560,9 @@ export default function FinanceSettingsPage() {
             {activeSection === 'security' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">Security & Compliance</h2>
+                  <h2 className="text-xl font-semibold text-foreground mb-4">
+                    Security & Compliance
+                  </h2>
                   <p className="text-foreground/60 mb-6">
                     Configure access controls and audit requirements
                   </p>
@@ -661,7 +671,9 @@ export default function FinanceSettingsPage() {
             {activeSection === 'notifications' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">Notification Settings</h2>
+                  <h2 className="text-xl font-semibold text-foreground mb-4">
+                    Notification Settings
+                  </h2>
                   <p className="text-foreground/60 mb-6">
                     Configure email alerts and automated reminders
                   </p>
@@ -765,7 +777,9 @@ export default function FinanceSettingsPage() {
             {activeSection === 'integration' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground mb-4">Integration Settings</h2>
+                  <h2 className="text-xl font-semibold text-foreground mb-4">
+                    Integration Settings
+                  </h2>
                   <p className="text-foreground/60 mb-6">
                     Configure third-party connections and data exchange
                   </p>

@@ -48,7 +48,7 @@ export default function POSTestPage() {
         price: parseFloat(newServicePrice),
         duration: 60,
         tax_code: 'VAT5',
-        category: 'Test Services',
+        category: 'Test Services'
       })
       toast.success(`Created service: ${service.entity_name}`)
       setNewServiceName('')
@@ -129,13 +129,13 @@ export default function POSTestPage() {
             <Input
               placeholder="Service name"
               value={newServiceName}
-              onChange={(e) => setNewServiceName(e.target.value)}
+              onChange={e => setNewServiceName(e.target.value)}
             />
             <Input
               placeholder="Price (AED)"
               type="number"
               value={newServicePrice}
-              onChange={(e) => setNewServicePrice(e.target.value)}
+              onChange={e => setNewServicePrice(e.target.value)}
             />
             <Button onClick={handleCreate} disabled={loading}>
               Create
@@ -154,8 +154,8 @@ export default function POSTestPage() {
             <Input
               placeholder="Search by name..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onChange={e => setSearchQuery(e.target.value)}
+              onKeyPress={e => e.key === 'Enter' && handleSearch()}
             />
             <Button onClick={handleSearch} disabled={loading}>
               Search
@@ -179,7 +179,7 @@ export default function POSTestPage() {
             <div className="text-muted-foreground">No services found</div>
           ) : (
             <div className="space-y-2">
-              {services.map((service) => (
+              {services.map(service => (
                 <div
                   key={service.id}
                   className="flex items-center justify-between p-3 border rounded"
@@ -225,12 +225,10 @@ export default function POSTestPage() {
         </CardHeader>
         <CardContent className="font-mono text-sm space-y-2">
           <div># Run the test script:</div>
-          <div className="bg-muted p-2 rounded">
-            ./scripts/test-salon-pos-crud.sh
-          </div>
+          <div className="bg-muted p-2 rounded">./scripts/test-salon-pos-crud.sh</div>
           <div># Or use curl directly:</div>
           <div className="bg-muted p-2 rounded whitespace-pre">
-{`curl -X POST http://localhost:3000/api/playbook/salon/pos/service/create \\
+            {`curl -X POST http://localhost:3000/api/playbook/salon/pos/service/create \\
   -H "Content-Type: application/json" \\
   -d '{
     "orgId": "${organization.id}",

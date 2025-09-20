@@ -236,7 +236,9 @@ export function TemplateMessageDialog({
             <div key={idx}>
               {component.type === 'HEADER' && <p className="font-semibold">{text}</p>}
               {component.type === 'BODY' && <p className="text-sm">{text}</p>}
-              {component.type === 'FOOTER' && <p className="text-xs text-muted-foreground">{text}</p>}
+              {component.type === 'FOOTER' && (
+                <p className="text-xs text-muted-foreground">{text}</p>
+              )}
             </div>
           )
         })}

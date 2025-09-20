@@ -48,10 +48,22 @@ interface SidebarItem {
 // Main sidebar items (compact view)
 const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-  { title: 'Appointments', href: '/salon/appointments', icon: Calendar, badge: '12', badgeColor: 'bg-violet-500' },
+  {
+    title: 'Appointments',
+    href: '/salon/appointments',
+    icon: Calendar,
+    badge: '12',
+    badgeColor: 'bg-violet-500'
+  },
   { title: 'POS', href: '/salon/pos', icon: CreditCard },
   { title: 'Customers', href: '/salon/customers', icon: Users },
-  { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageSquare, badge: '3', badgeColor: 'bg-emerald-500' },
+  {
+    title: 'WhatsApp',
+    href: '/salon/whatsapp',
+    icon: MessageSquare,
+    badge: '3',
+    badgeColor: 'bg-emerald-500'
+  },
   { title: 'Settings', href: '/salon/settings', icon: Settings }
 ]
 
@@ -62,40 +74,40 @@ const allApps: SidebarItem[] = [
   { title: 'Appointments', href: '/appointments', icon: Calendar },
   { title: 'POS Terminal', href: '/salon/pos', icon: CreditCard },
   { title: 'Customer Management', href: '/salon/customers', icon: Users },
-  
+
   // Communication
   { title: 'WhatsApp Hub', href: '/salon/whatsapp', icon: MessageSquare },
   { title: 'SMS Campaigns', href: '/marketing/sms', icon: Smartphone },
   { title: 'Email Marketing', href: '/marketing/email', icon: FileText },
-  
+
   // Inventory & Services
   { title: 'Services', href: '/services', icon: Scissors },
   { title: 'Products', href: '/inventory/products', icon: Package },
   { title: 'Inventory', href: '/inventory', icon: Box },
   { title: 'Suppliers', href: '/inventory/suppliers', icon: Smartphone },
-  
+
   // Staff Management
   { title: 'Staff', href: '/staff', icon: UserCheck },
   { title: 'Schedule', href: '/staff/schedule', icon: Clock },
   { title: 'Payroll', href: '/payroll', icon: DollarSign },
   { title: 'Commissions', href: '/payroll/commissions', icon: Calculator },
-  
+
   // Financial
   { title: 'Sales Reports', href: '/reports/sales', icon: BarChart3 },
   { title: 'Finance Dashboard', href: '/finance', icon: DollarSign },
   { title: 'Expenses', href: '/finance/expenses', icon: FileText },
   { title: 'Cash Management', href: '/finance/cash', icon: Shield },
-  
+
   // Analytics & AI
   { title: 'Analytics', href: '/analytics', icon: TrendingUp },
   { title: 'AI Insights', href: '/ai-insights', icon: Brain },
   { title: 'Digital Accountant', href: '/digital-accountant', icon: Calculator },
-  
+
   // Loyalty & Marketing
   { title: 'Loyalty Program', href: '/loyalty', icon: Gift },
   { title: 'Promotions', href: '/promotions', icon: ClipboardList },
   { title: 'Reviews', href: '/reviews', icon: Users },
-  
+
   // System
   { title: 'Settings', href: '/salon/settings', icon: Settings },
   { title: 'Branch Settings', href: '/salon/settings/branch', icon: Grid3x3 },
@@ -139,7 +151,7 @@ const AppsModal = React.memo(function AppsModal({
         )}
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div
         className={cn(
@@ -157,20 +169,17 @@ const AppsModal = React.memo(function AppsModal({
           <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-200 to-pink-200 bg-clip-text text-transparent">
             All Apps
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-          >
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
             <X className="h-5 w-5 text-violet-200" />
           </button>
         </div>
 
         {/* Apps Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 overflow-y-auto max-h-[60vh] pr-2">
-          {allApps.map((item) => {
+          {allApps.map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
+
             return (
               <Link
                 key={item.href}
@@ -187,14 +196,18 @@ const AppsModal = React.memo(function AppsModal({
                     : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
                 )}
               >
-                <Icon className={cn(
-                  'h-8 w-8 mb-2 transition-colors',
-                  active ? 'text-violet-300' : 'text-violet-200 group-hover:text-violet-100'
-                )} />
-                <span className={cn(
-                  'text-xs text-center transition-colors',
-                  active ? 'text-violet-100' : 'text-violet-200 group-hover:text-violet-100'
-                )}>
+                <Icon
+                  className={cn(
+                    'h-8 w-8 mb-2 transition-colors',
+                    active ? 'text-violet-300' : 'text-violet-200 group-hover:text-violet-100'
+                  )}
+                />
+                <span
+                  className={cn(
+                    'text-xs text-center transition-colors',
+                    active ? 'text-violet-100' : 'text-violet-200 group-hover:text-violet-100'
+                  )}
+                >
                   {item.title}
                 </span>
               </Link>
@@ -213,7 +226,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
   const { toast } = useToast()
   const [appsModalOpen, setAppsModalOpen] = useState(false)
   const [isDemoMode, setIsDemoMode] = useState(false)
-  
+
   // Check if this is a demo session
   useEffect(() => {
     const demoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
@@ -222,11 +235,14 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
   }, [])
 
   // Memoize isActive function
-  const isActive = useCallback((href: string) => {
-    if (href === '/salon/dashboard' && pathname === '/salon/dashboard') return true
-    if (href !== '/salon/dashboard' && pathname?.startsWith(href)) return true
-    return false
-  }, [pathname])
+  const isActive = useCallback(
+    (href: string) => {
+      if (href === '/salon/dashboard' && pathname === '/salon/dashboard') return true
+      if (href !== '/salon/dashboard' && pathname?.startsWith(href)) return true
+      return false
+    },
+    [pathname]
+  )
 
   const handleExitDemo = () => {
     // Clear demo session data
@@ -249,7 +265,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
   const NavigationLink = ({ item }: { item: SidebarItem }) => {
     const Icon = item.icon
     const active = isActive(item.href)
-    
+
     return (
       <Link
         href={item.href}
@@ -264,10 +280,12 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
         <Icon className="h-5 w-5 flex-shrink-0" />
         <span className="text-sm font-medium">{item.title}</span>
         {item.badge && (
-          <span className={cn(
-            'ml-auto px-2 py-0.5 text-xs font-medium rounded-full',
-            item.badgeColor || 'bg-violet-500/20 text-violet-200'
-          )}>
+          <span
+            className={cn(
+              'ml-auto px-2 py-0.5 text-xs font-medium rounded-full',
+              item.badgeColor || 'bg-violet-500/20 text-violet-200'
+            )}
+          >
             {item.badge}
           </span>
         )}
@@ -294,7 +312,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
         {/* Main Navigation */}
         <nav className="flex-1 px-4 py-4 overflow-y-auto">
           <div className="space-y-1">
-            {sidebarItems.map((item) => (
+            {sidebarItems.map(item => (
               <NavigationLink key={item.href} item={item} />
             ))}
           </div>
@@ -313,12 +331,12 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
         <div className="p-4 border-t border-violet-800/30">
           {bottomItems.length > 0 && (
             <div className="mb-4 space-y-1">
-              {bottomItems.map((item) => (
+              {bottomItems.map(item => (
                 <NavigationLink key={item.href} item={item} />
               ))}
             </div>
           )}
-          
+
           {/* Exit Demo Button - Only show in demo mode */}
           {isDemoMode && (
             <button
@@ -335,10 +353,10 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
       {/* Mobile Bottom Navigation */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-gradient-to-r from-violet-950 via-purple-900 to-pink-900 border-t border-violet-800/30 px-2 py-2 z-20">
         <div className="flex justify-around items-center">
-          {sidebarItems.slice(0, 5).map((item) => {
+          {sidebarItems.slice(0, 5).map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
+
             return (
               <Link
                 key={item.href}
@@ -346,9 +364,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
                 onClick={onNavigate}
                 className={cn(
                   'flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors relative',
-                  active
-                    ? 'text-violet-100'
-                    : 'text-violet-300 hover:text-violet-100'
+                  active ? 'text-violet-100' : 'text-violet-300 hover:text-violet-100'
                 )}
               >
                 <Icon className="h-5 w-5" />

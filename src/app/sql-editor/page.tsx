@@ -356,7 +356,9 @@ export default function SQLEditorPage() {
                           <Icon
                             className={cn(
                               'h-4 w-4',
-                              selectedTable === table.name ? 'text-primary' : 'text-muted-foreground'
+                              selectedTable === table.name
+                                ? 'text-primary'
+                                : 'text-muted-foreground'
                             )}
                           />
                         </div>

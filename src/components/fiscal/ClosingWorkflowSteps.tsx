@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   CheckCircle,
   Clock,
   AlertCircle,
@@ -155,7 +155,7 @@ export function ClosingWorkflowSteps({
           {steps.map((step, index) => {
             const Icon = getStepIcon(step.id)
             const isClickable = step.journal_entry_id && onStepClick
-            
+
             return (
               <div key={step.id}>
                 <div
@@ -165,7 +165,7 @@ export function ClosingWorkflowSteps({
                   onClick={() => isClickable && onStepClick(step)}
                   role={isClickable ? 'button' : undefined}
                   tabIndex={isClickable ? 0 : undefined}
-                  onKeyPress={(e) => {
+                  onKeyPress={e => {
                     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
                       onStepClick(step)
                     }
@@ -176,12 +176,17 @@ export function ClosingWorkflowSteps({
                     {/* Step Number and Status */}
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${
-                          step.status === 'done' ? 'bg-green-600 text-white' :
-                          step.status === 'in_progress' ? 'bg-blue-600 text-white' :
-                          step.status === 'error' ? 'bg-red-600 text-white' :
-                          'bg-gray-300 text-gray-600'
-                        }`}>
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${
+                            step.status === 'done'
+                              ? 'bg-green-600 text-white'
+                              : step.status === 'in_progress'
+                                ? 'bg-blue-600 text-white'
+                                : step.status === 'error'
+                                  ? 'bg-red-600 text-white'
+                                  : 'bg-gray-300 text-gray-600'
+                          }`}
+                        >
                           {index + 1}
                         </div>
                         <div className="absolute -bottom-1 -right-1">
@@ -203,7 +208,7 @@ export function ClosingWorkflowSteps({
                           <p className="text-sm text-gray-600 dark:text-gray-400">
                             {step.description}
                           </p>
-                          
+
                           {/* Timestamps */}
                           <div className="flex items-center gap-4 text-xs text-gray-500">
                             {step.started_at && (
@@ -236,7 +241,7 @@ export function ClosingWorkflowSteps({
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.stopPropagation()
                                 onStepClick?.(step)
                               }}
@@ -280,7 +285,8 @@ export function ClosingWorkflowSteps({
                 Year-End Closing Complete
               </div>
               <div className="text-sm text-green-700 dark:text-green-300 mt-1">
-                All steps have been successfully processed. Journal entries have been posted and the fiscal year is closed.
+                All steps have been successfully processed. Journal entries have been posted and the
+                fiscal year is closed.
               </div>
             </AlertDescription>
           </Alert>
@@ -295,7 +301,8 @@ export function ClosingWorkflowSteps({
                 Closing Process Failed
               </div>
               <div className="text-sm text-red-700 dark:text-red-300 mt-1">
-                An error occurred during the closing process. Please review the failed step and contact support if needed.
+                An error occurred during the closing process. Please review the failed step and
+                contact support if needed.
               </div>
             </AlertDescription>
           </Alert>

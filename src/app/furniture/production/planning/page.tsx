@@ -44,7 +44,7 @@ export default function ProductionPlanningPage() {
     )
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -107,8 +107,7 @@ export default function ProductionPlanningPage() {
     }
   ]
 
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
@@ -124,30 +123,37 @@ export default function ProductionPlanningPage() {
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
-              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+              <Button
+                size="sm"
+                className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+              >
                 <Plus className="h-4 w-4" />
                 New Schedule
               </Button>
             </>
           }
         />
-        
+
         {/* Planning Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {planningMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
-                  <metric.icon className={cn(
-            'h-4 w-4',
-            metric.color
-          )} />
+                  <metric.icon className={cn('h-4 w-4', metric.color)} />
                 </div>
-                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  {metric.value}
+                </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">
+                    Change: {metric.change}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -155,7 +161,9 @@ export default function ProductionPlanningPage() {
         </div>
 
         <div className="text-center p-8">
-          <p className="text-[var(--color-text-secondary)]">Production planning interface is being loaded...</p>
+          <p className="text-[var(--color-text-secondary)]">
+            Production planning interface is being loaded...
+          </p>
         </div>
       </div>
     </div>

@@ -7,17 +7,24 @@
 'use client'
 
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Eye, 
-  MessageSquare, 
-  CheckCircle, 
-  AlertCircle, 
-  Clock, 
+import {
+  Eye,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  Clock,
   Send,
   Phone,
   User,
@@ -46,7 +53,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
       filtered = filtered.filter(msg => msg.template_name === filters.template_name)
     }
     if (filters.customer_code) {
-      filtered = filtered.filter(msg => 
+      filtered = filtered.filter(msg =>
         msg.to_customer_code?.toLowerCase().includes(filters.customer_code!.toLowerCase())
       )
     }
@@ -60,9 +67,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
     }
 
     // Sort by most recent first
-    filtered.sort((a, b) => 
-      new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
-    )
+    filtered.sort((a, b) => new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime())
 
     return filtered
   }, [messages, filters])
@@ -92,34 +97,46 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'queued':
-        return <Badge variant="outline" className="text-purple-700 border-purple-300 bg-purple-50">
-          <Clock className="h-3 w-3 mr-1" />
-          Queued
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-purple-700 border-purple-300 bg-purple-50">
+            <Clock className="h-3 w-3 mr-1" />
+            Queued
+          </Badge>
+        )
       case 'sent':
-        return <Badge variant="outline" className="text-violet-700 border-violet-300 bg-violet-50">
-          <Send className="h-3 w-3 mr-1" />
-          Sent
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-violet-700 border-violet-300 bg-violet-50">
+            <Send className="h-3 w-3 mr-1" />
+            Sent
+          </Badge>
+        )
       case 'delivered':
-        return <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Delivered
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Delivered
+          </Badge>
+        )
       case 'read':
-        return <Badge variant="outline" className="text-blue-700 border-blue-300 bg-blue-50">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Read
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-blue-700 border-blue-300 bg-blue-50">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Read
+          </Badge>
+        )
       case 'failed':
-        return <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
-          <AlertCircle className="h-3 w-3 mr-1" />
-          Failed
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
+            <AlertCircle className="h-3 w-3 mr-1" />
+            Failed
+          </Badge>
+        )
       default:
-        return <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
-          Unknown
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+            Unknown
+          </Badge>
+        )
     }
   }
 
@@ -154,10 +171,9 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
               No messages found
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              {filteredMessages.length === 0 && messages.length > 0 
+              {filteredMessages.length === 0 && messages.length > 0
                 ? 'No messages match your current filters. Try adjusting your search criteria.'
-                : 'No WhatsApp messages have been sent yet.'
-              }
+                : 'No WhatsApp messages have been sent yet.'}
             </p>
           </div>
         </CardContent>
@@ -168,36 +184,24 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
   return (
     <Card>
       <CardContent className="p-0">
-        
         {/* Results Summary */}
         <div className="p-4 border-b bg-gray-50 dark:bg-gray-800/50">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              Showing {startIndex + 1}-{Math.min(endIndex, totalMessages)} of {totalMessages} messages
+              Showing {startIndex + 1}-{Math.min(endIndex, totalMessages)} of {totalMessages}{' '}
+              messages
               {filteredMessages.length !== messages.length && (
-                <span className="ml-2 text-blue-600">
-                  (filtered from {messages.length} total)
-                </span>
+                <span className="ml-2 text-blue-600">(filtered from {messages.length} total)</span>
               )}
             </div>
-            
+
             {/* Pagination */}
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handlePrevPage}
-                disabled={!hasPrevPage}
-              >
+              <Button variant="outline" size="sm" onClick={handlePrevPage} disabled={!hasPrevPage}>
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 Previous
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleNextPage}
-                disabled={!hasNextPage}
-              >
+              <Button variant="outline" size="sm" onClick={handleNextPage} disabled={!hasNextPage}>
                 Next
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -219,14 +223,14 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedMessages.map((message) => (
-                <TableRow key={message.entity_id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  
+              {paginatedMessages.map(message => (
+                <TableRow
+                  key={message.entity_id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                >
                   {/* Status */}
-                  <TableCell>
-                    {getStatusBadge(message.status)}
-                  </TableCell>
-                  
+                  <TableCell>{getStatusBadge(message.status)}</TableCell>
+
                   {/* Recipient */}
                   <TableCell>
                     <div className="space-y-1">
@@ -238,19 +242,15 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                       </div>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Phone className="h-3 w-3" />
-                        <span className="font-mono">
-                          {formatPhoneNumber(message.to_phone)}
-                        </span>
+                        <span className="font-mono">{formatPhoneNumber(message.to_phone)}</span>
                       </div>
                     </div>
                   </TableCell>
-                  
+
                   {/* Template */}
                   <TableCell>
                     <div className="space-y-1">
-                      <div className="font-mono text-sm">
-                        {message.template_name}
-                      </div>
+                      <div className="font-mono text-sm">{message.template_name}</div>
                       {message.hera_template_id && (
                         <div className="text-xs text-gray-500">
                           MSP ID: {message.hera_template_id}
@@ -258,7 +258,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                       )}
                     </div>
                   </TableCell>
-                  
+
                   {/* Message Preview */}
                   <TableCell>
                     <div className="max-w-xs">
@@ -268,21 +268,17 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                           {message.message_body.length > 60 && '...'}
                         </div>
                       ) : (
-                        <div className="text-xs text-gray-500 italic">
-                          Template message
-                        </div>
+                        <div className="text-xs text-gray-500 italic">Template message</div>
                       )}
                     </div>
                   </TableCell>
-                  
+
                   {/* Sent At */}
                   <TableCell>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                       {message.created_at ? (
                         <>
-                          <div>
-                            {new Date(message.created_at).toLocaleDateString('en-AE')}
-                          </div>
+                          <div>{new Date(message.created_at).toLocaleDateString('en-AE')}</div>
                           <div className="text-xs text-gray-500">
                             {new Date(message.created_at).toLocaleTimeString('en-AE', {
                               hour: '2-digit',
@@ -295,7 +291,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                       )}
                     </div>
                   </TableCell>
-                  
+
                   {/* Actions */}
                   <TableCell>
                     <Button
@@ -309,7 +305,6 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                       <Eye className="h-3 w-3" />
                     </Button>
                   </TableCell>
-                  
                 </TableRow>
               ))}
             </TableBody>
@@ -321,7 +316,8 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
           <div className="p-4 border-t bg-gray-50 dark:bg-gray-800/50">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Page {Math.floor(startIndex / (filters.limit || 50)) + 1} of {Math.ceil(totalMessages / (filters.limit || 50))}
+                Page {Math.floor(startIndex / (filters.limit || 50)) + 1} of{' '}
+                {Math.ceil(totalMessages / (filters.limit || 50))}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -346,7 +342,6 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
             </div>
           </div>
         )}
-
       </CardContent>
     </Card>
   )

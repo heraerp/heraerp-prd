@@ -28,7 +28,9 @@ export function DemoAuthHandler({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center bg-muted dark:bg-background">
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary dark:text-blue-400 mx-auto" />
-          <p className="text-sm text-muted-foreground dark:text-muted-foreground">{message || 'Loading demo...'}</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+            {message || 'Loading demo...'}
+          </p>
         </div>
       </div>
     )

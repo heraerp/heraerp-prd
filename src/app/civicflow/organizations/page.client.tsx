@@ -1,45 +1,63 @@
-'use client';
-import { useState } from 'react';
-import { useOrganizationList, useCreateOrganization } from '@/hooks/use-organizations';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { EngagementStageBadge } from '@/components/civicflow/EngagementStageBadge';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Building2, Plus, Search, Filter, Mail, Phone, Calendar, User } from 'lucide-react';
-import Link from 'next/link';
-import type { EngagementStage, OrgType } from '@/types/organizations';
+'use client'
+import { useState } from 'react'
+import { useOrganizationList, useCreateOrganization } from '@/hooks/use-organizations'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { EngagementStageBadge } from '@/components/civicflow/EngagementStageBadge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Building2, Plus, Search, Filter, Mail, Phone, Calendar, User } from 'lucide-react'
+import Link from 'next/link'
+import type { EngagementStage, OrgType } from '@/types/organizations'
 
 export default function Client() {
-  const { currentOrgId } = useOrgStore();
-  const [q, setQ] = useState('');
-  const [type, setType] = useState<string>('all');
-  const [stage, setStage] = useState<string>('all');
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  
+  const { currentOrgId } = useOrgStore()
+  const [q, setQ] = useState('')
+  const [type, setType] = useState<string>('all')
+  const [stage, setStage] = useState<string>('all')
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+
   // Form state for new org
-  const [newOrgName, setNewOrgName] = useState('');
-  const [newOrgType, setNewOrgType] = useState<OrgType>('Partner');
-  const [newOrgStage, setNewOrgStage] = useState<EngagementStage>('Exploration');
-  
-  const { data: organizations, isLoading, error } = useOrganizationList({ 
-    q, 
-    type: type === 'all' ? undefined : type, 
-    stage: stage === 'all' ? undefined : stage, 
+  const [newOrgName, setNewOrgName] = useState('')
+  const [newOrgType, setNewOrgType] = useState<OrgType>('Partner')
+  const [newOrgStage, setNewOrgStage] = useState<EngagementStage>('Exploration')
+
+  const {
+    data: organizations,
+    isLoading,
+    error
+  } = useOrganizationList({
+    q,
+    type: type === 'all' ? undefined : type,
+    stage: stage === 'all' ? undefined : stage,
     limit: 50,
     orgId: currentOrgId || undefined
-  });
-  
-  const createOrg = useCreateOrganization();
+  })
+
+  const createOrg = useCreateOrganization()
 
   const handleCreateOrg = async () => {
-    if (!newOrgName || !currentOrgId) return;
-    
+    if (!newOrgName || !currentOrgId) return
+
     await createOrg.mutateAsync({
       entity_type: 'organization',
       entity_name: newOrgName,
@@ -47,15 +65,15 @@ export default function Client() {
       smart_code: 'HERA.CRM.ORGS.ENTITY.ORGANIZATION.v1',
       metadata: {
         type: newOrgType,
-        engagement_stage: newOrgStage,
+        engagement_stage: newOrgStage
       }
-    });
-    
-    setIsCreateOpen(false);
-    setNewOrgName('');
-    setNewOrgType('Partner');
-    setNewOrgStage('Exploration');
-  };
+    })
+
+    setIsCreateOpen(false)
+    setNewOrgName('')
+    setNewOrgType('Partner')
+    setNewOrgStage('Exploration')
+  }
 
   if (isLoading) {
     return (
@@ -67,7 +85,7 @@ export default function Client() {
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -79,7 +97,7 @@ export default function Client() {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -88,7 +106,9 @@ export default function Client() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-text-100">Organizations</h1>
-          <p className="text-text-300 mt-1">Manage partners, funders, investees, and government entities</p>
+          <p className="text-text-300 mt-1">
+            Manage partners, funders, investees, and government entities
+          </p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
@@ -110,13 +130,13 @@ export default function Client() {
                 <Input
                   id="org-name"
                   value={newOrgName}
-                  onChange={(e) => setNewOrgName(e.target.value)}
+                  onChange={e => setNewOrgName(e.target.value)}
                   placeholder="Enter organization name"
                 />
               </div>
               <div>
                 <Label htmlFor="org-type">Type</Label>
-                <Select value={newOrgType} onValueChange={(v) => setNewOrgType(v as OrgType)}>
+                <Select value={newOrgType} onValueChange={v => setNewOrgType(v as OrgType)}>
                   <SelectTrigger id="org-type">
                     <SelectValue />
                   </SelectTrigger>
@@ -130,7 +150,10 @@ export default function Client() {
               </div>
               <div>
                 <Label htmlFor="org-stage">Engagement Stage</Label>
-                <Select value={newOrgStage} onValueChange={(v) => setNewOrgStage(v as EngagementStage)}>
+                <Select
+                  value={newOrgStage}
+                  onValueChange={v => setNewOrgStage(v as EngagementStage)}
+                >
                   <SelectTrigger id="org-stage">
                     <SelectValue />
                   </SelectTrigger>
@@ -145,7 +168,9 @@ export default function Client() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                Cancel
+              </Button>
               <Button onClick={handleCreateOrg} disabled={!newOrgName || createOrg.isPending}>
                 {createOrg.isPending ? 'Creating...' : 'Create Organization'}
               </Button>
@@ -165,7 +190,7 @@ export default function Client() {
                   className="pl-9 bg-panel-alt border-border"
                   placeholder="Search organizations..."
                   value={q}
-                  onChange={(e) => setQ(e.target.value)}
+                  onChange={e => setQ(e.target.value)}
                 />
               </div>
             </div>
@@ -202,8 +227,11 @@ export default function Client() {
       {/* Organizations List */}
       {organizations && organizations.length > 0 ? (
         <div className="grid gap-4">
-          {organizations.map((org) => (
-            <Card key={org.id} className="bg-panel border-border hover:bg-panel-alt transition-colors">
+          {organizations.map(org => (
+            <Card
+              key={org.id}
+              className="bg-panel border-border hover:bg-panel-alt transition-colors"
+            >
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="space-y-3 flex-1">
@@ -212,7 +240,7 @@ export default function Client() {
                         <Building2 className="h-5 w-5 text-accent" />
                       </div>
                       <div>
-                        <Link 
+                        <Link
                           href={`/civicflow/organizations/${org.id}`}
                           className="text-lg font-semibold text-text-100 hover:text-accent transition-colors"
                         >
@@ -230,7 +258,7 @@ export default function Client() {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Organization Details */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div className="flex items-center gap-2 text-text-500">
@@ -251,12 +279,10 @@ export default function Client() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/civicflow/organizations/${org.id}`}>
-                        View Details
-                      </Link>
+                      <Link href={`/civicflow/organizations/${org.id}`}>View Details</Link>
                     </Button>
                   </div>
                 </div>
@@ -270,8 +296,8 @@ export default function Client() {
             <Building2 className="h-12 w-12 text-text-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-text-100 mb-2">No organizations found</h3>
             <p className="text-text-300 mb-6">
-              {q || type || stage 
-                ? 'Try adjusting your filters to see more results.' 
+              {q || type || stage
+                ? 'Try adjusting your filters to see more results.'
                 : 'Get started by creating your first organization.'}
             </p>
             <Button onClick={() => setIsCreateOpen(true)}>
@@ -282,5 +308,5 @@ export default function Client() {
         </Card>
       )}
     </div>
-  );
+  )
 }

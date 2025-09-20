@@ -64,7 +64,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
 
       // Check if it's an appointment ID (starts with APPT- or is numeric)
       const isAppointmentId = /^(APPT-|#)?[\d]+$/.test(searchQuery.replace(/\s/g, ''))
-      
+
       if (isAppointmentId) {
         // Search appointments by ID
         const appointmentCode = searchQuery.replace(/^(APPT-|#)/, '').trim()
@@ -91,10 +91,11 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
             const dynamicData = dynamicResponse?.data || []
             const dynamicFields: any = {}
             dynamicData.forEach(field => {
-              dynamicFields[field.field_name] = field.field_value_text || 
-                                                field.field_value_number || 
-                                                field.field_value_date ||
-                                                field.field_value_boolean
+              dynamicFields[field.field_name] =
+                field.field_value_text ||
+                field.field_value_number ||
+                field.field_value_date ||
+                field.field_value_boolean
             })
 
             searchResults.push({
@@ -127,7 +128,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
           // Load dynamic data for customers
           const customerIds = customersResponse.data.map(c => c.id)
           let customerDynamicData: any[] = []
-          
+
           if (customerIds.length > 0) {
             const dynamicResponse = await universalApi.read({
               table: 'core_dynamic_data',
@@ -143,15 +144,18 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
             const customerFields = customerDynamicData.filter(d => d.entity_id === customer.id)
             const dynamicFields: any = {}
             customerFields.forEach(field => {
-              dynamicFields[field.field_name] = field.field_value_text || 
-                                                field.field_value_number || 
-                                                field.field_value_date ||
-                                                field.field_value_boolean
+              dynamicFields[field.field_name] =
+                field.field_value_text ||
+                field.field_value_number ||
+                field.field_value_date ||
+                field.field_value_boolean
             })
 
             // Check if phone or email matches
             const phoneMatch = dynamicFields.phone && dynamicFields.phone.includes(searchQuery)
-            const emailMatch = dynamicFields.email && dynamicFields.email.toLowerCase().includes(searchQuery.toLowerCase())
+            const emailMatch =
+              dynamicFields.email &&
+              dynamicFields.email.toLowerCase().includes(searchQuery.toLowerCase())
             const nameMatch = customer.entity_name.toLowerCase().includes(searchQuery.toLowerCase())
 
             if (nameMatch || phoneMatch || emailMatch) {
@@ -180,7 +184,8 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
 
         if (appointmentsResponse?.data) {
           // This is a simplified search - in production you'd want to join with customer data
-          for (const appt of appointmentsResponse.data.slice(0, 5)) { // Limit to prevent too many results
+          for (const appt of appointmentsResponse.data.slice(0, 5)) {
+            // Limit to prevent too many results
             if (appt.entity_name.toLowerCase().includes(searchQuery.toLowerCase())) {
               const dynamicResponse = await universalApi.read({
                 table: 'core_dynamic_data',
@@ -193,10 +198,11 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
               const dynamicData = dynamicResponse?.data || []
               const dynamicFields: any = {}
               dynamicData.forEach(field => {
-                dynamicFields[field.field_name] = field.field_value_text || 
-                                                  field.field_value_number || 
-                                                  field.field_value_date ||
-                                                  field.field_value_boolean
+                dynamicFields[field.field_name] =
+                  field.field_value_text ||
+                  field.field_value_number ||
+                  field.field_value_date ||
+                  field.field_value_boolean
               })
 
               searchResults.push({
@@ -220,7 +226,6 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
       setResults(searchResults.slice(0, 10)) // Limit to 10 results
       setShowResults(searchResults.length > 0)
       setSelectedIndex(-1)
-
     } catch (error) {
       console.error('Search error:', error)
       setResults([])
@@ -291,11 +296,16 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
 
   const getStatusColor = (status?: string) => {
     switch (status?.toLowerCase()) {
-      case 'confirmed': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-      case 'cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'completed': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'confirmed':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'cancelled':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'completed':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
@@ -308,7 +318,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
           id="pos-search-input"
           placeholder="Search customers, appointments, or enter appointment ID..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => {
             if (results.length > 0) setShowResults(true)
@@ -330,9 +340,9 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
               <div
                 key={`${result.type}-${result.id}`}
                 className={cn(
-                  "p-4 border-b border-slate-100 dark:border-slate-800 last:border-b-0 cursor-pointer transition-colors",
-                  index === selectedIndex && "bg-blue-50 dark:bg-blue-950",
-                  "hover:bg-slate-50 dark:hover:bg-slate-800"
+                  'p-4 border-b border-slate-100 dark:border-slate-800 last:border-b-0 cursor-pointer transition-colors',
+                  index === selectedIndex && 'bg-blue-50 dark:bg-blue-950',
+                  'hover:bg-slate-50 dark:hover:bg-slate-800'
                 )}
                 onClick={() => handleSelect(result)}
               >
@@ -344,7 +354,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
                         <span className="font-medium">
                           {result.entity_code || `#${result.id.slice(-6)}`}
                         </span>
-                        <Badge className={cn("text-xs", getStatusColor(result.status))}>
+                        <Badge className={cn('text-xs', getStatusColor(result.status))}>
                           {result.status}
                         </Badge>
                       </div>
@@ -352,7 +362,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
                         {formatDate(result.start_time)}
                       </div>
                     </div>
-                    
+
                     <div className="text-sm text-muted-foreground">
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
@@ -373,11 +383,9 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
                         )}
                       </div>
                     </div>
-                    
-                    <div className="text-lg font-medium">
-                      {result.entity_name}
-                    </div>
-                    
+
+                    <div className="text-lg font-medium">{result.entity_name}</div>
+
                     {result.service_names && result.service_names.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {result.service_names.map((service, idx) => (
@@ -394,7 +402,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
                       <User className="w-4 h-4 text-green-600" />
                       <span className="text-lg font-medium">{result.entity_name}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       {result.phone && (
                         <div className="flex items-center gap-1">

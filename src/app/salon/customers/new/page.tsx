@@ -135,8 +135,8 @@ export default function NewCustomerPage() {
         backUrl="/salon/customers"
         actions={
           <div className="flex gap-3">
-            <SecondaryButtonDNA 
-              icon={ArrowLeft} 
+            <SecondaryButtonDNA
+              icon={ArrowLeft}
               onClick={() => router.push('/salon/customers')}
               disabled={loading}
             >
@@ -165,7 +165,7 @@ export default function NewCustomerPage() {
                     type="text"
                     label="Full Name"
                     value={formData.name}
-                    onChange={(value) => setFormData({ ...formData, name: value })}
+                    onChange={value => setFormData({ ...formData, name: value })}
                     placeholder="Enter customer's full name"
                     icon={User}
                     error={errors.name}
@@ -178,7 +178,7 @@ export default function NewCustomerPage() {
                   type="email"
                   label="Email Address"
                   value={formData.email}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
+                  onChange={value => setFormData({ ...formData, email: value })}
                   placeholder="customer@example.com"
                   icon={Mail}
                   error={errors.email}
@@ -188,7 +188,7 @@ export default function NewCustomerPage() {
                   type="tel"
                   label="Phone Number"
                   value={formData.phone}
-                  onChange={(value) => setFormData({ ...formData, phone: value })}
+                  onChange={value => setFormData({ ...formData, phone: value })}
                   placeholder="+971 50 123 4567"
                   icon={Phone}
                   error={errors.phone}
@@ -199,7 +199,7 @@ export default function NewCustomerPage() {
                     type="textarea"
                     label="Address"
                     value={formData.address}
-                    onChange={(value) => setFormData({ ...formData, address: value })}
+                    onChange={value => setFormData({ ...formData, address: value })}
                     placeholder="Street address, apartment, suite, etc."
                     icon={MapPin}
                     rows={2}
@@ -210,7 +210,7 @@ export default function NewCustomerPage() {
                   type="date"
                   label="Date of Birth"
                   value={formData.dateOfBirth}
-                  onChange={(value) => setFormData({ ...formData, dateOfBirth: value })}
+                  onChange={value => setFormData({ ...formData, dateOfBirth: value })}
                   icon={Calendar}
                   helper="We'll send birthday wishes and special offers"
                 />
@@ -219,7 +219,7 @@ export default function NewCustomerPage() {
                   type="select"
                   label="Initial Loyalty Tier"
                   value={formData.loyaltyTier}
-                  onChange={(value) => setFormData({ ...formData, loyaltyTier: value })}
+                  onChange={value => setFormData({ ...formData, loyaltyTier: value })}
                   icon={Star}
                   options={[
                     { value: 'Bronze', label: 'Bronze (New Customer)' },
@@ -237,7 +237,7 @@ export default function NewCustomerPage() {
                   type="textarea"
                   label="Service Preferences"
                   value={formData.preferences}
-                  onChange={(value) => setFormData({ ...formData, preferences: value })}
+                  onChange={value => setFormData({ ...formData, preferences: value })}
                   placeholder="Preferred services, styling preferences, allergies, etc."
                   icon={Heart}
                   rows={3}
@@ -248,7 +248,7 @@ export default function NewCustomerPage() {
                   type="textarea"
                   label="Internal Notes"
                   value={formData.notes}
-                  onChange={(value) => setFormData({ ...formData, notes: value })}
+                  onChange={value => setFormData({ ...formData, notes: value })}
                   placeholder="Any additional notes about the customer..."
                   icon={FileText}
                   rows={3}
@@ -263,7 +263,7 @@ export default function NewCustomerPage() {
                   <input
                     type="checkbox"
                     checked={formData.marketingConsent}
-                    onChange={(e) => setFormData({ ...formData, marketingConsent: e.target.checked })}
+                    onChange={e => setFormData({ ...formData, marketingConsent: e.target.checked })}
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
                   />
                   <div className="space-y-1">
@@ -271,8 +271,8 @@ export default function NewCustomerPage() {
                       Marketing Communications
                     </span>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Customer agrees to receive promotional emails, SMS messages about special offers, 
-                      new services, and salon updates. They can unsubscribe at any time.
+                      Customer agrees to receive promotional emails, SMS messages about special
+                      offers, new services, and salon updates. They can unsubscribe at any time.
                     </p>
                   </div>
                 </label>
@@ -289,8 +289,8 @@ export default function NewCustomerPage() {
                     Complete Profile
                   </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    The more information you provide, the better service we can offer. 
-                    Email and phone help with appointment reminders.
+                    The more information you provide, the better service we can offer. Email and
+                    phone help with appointment reminders.
                   </p>
                 </div>
 
@@ -299,10 +299,18 @@ export default function NewCustomerPage() {
                     Loyalty Benefits
                   </h4>
                   <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                    <li>• <span className="font-medium">Bronze:</span> Welcome discount</li>
-                    <li>• <span className="font-medium">Silver:</span> 5% off all services</li>
-                    <li>• <span className="font-medium">Gold:</span> 10% off + priority booking</li>
-                    <li>• <span className="font-medium">Platinum:</span> 15% off + exclusive perks</li>
+                    <li>
+                      • <span className="font-medium">Bronze:</span> Welcome discount
+                    </li>
+                    <li>
+                      • <span className="font-medium">Silver:</span> 5% off all services
+                    </li>
+                    <li>
+                      • <span className="font-medium">Gold:</span> 10% off + priority booking
+                    </li>
+                    <li>
+                      • <span className="font-medium">Platinum:</span> 15% off + exclusive perks
+                    </li>
                   </ul>
                 </div>
 
@@ -311,8 +319,8 @@ export default function NewCustomerPage() {
                     Birthday Rewards
                   </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Customers with birth dates receive special birthday discounts 
-                    and complimentary services during their birthday month.
+                    Customers with birth dates receive special birthday discounts and complimentary
+                    services during their birthday month.
                   </p>
                 </div>
               </div>
@@ -323,12 +331,10 @@ export default function NewCustomerPage() {
                 <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
                   <User className="w-8 h-8 text-white" />
                 </div>
-                <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                  Customer First
-                </h4>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">Customer First</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Building lasting relationships starts with understanding 
-                  our customers' needs and preferences.
+                  Building lasting relationships starts with understanding our customers' needs and
+                  preferences.
                 </p>
               </div>
             </CardDNA>

@@ -37,10 +37,7 @@ import {
   Plus
 } from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import {
-  useFurnitureOrg,
-  FurnitureOrgLoading
-} from '@/components/furniture/FurnitureOrgContext'
+import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { useFinanceData } from '@/lib/furniture/use-finance-data'
 import { cn } from '@/lib/utils'

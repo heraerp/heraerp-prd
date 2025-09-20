@@ -66,20 +66,20 @@ export default function SmartCodePickerDemoPage() {
     required: false,
     disabled: false
   })
-  
+
   const { toast } = useToast()
-  
+
   const handleCodeChange = (code: string, smartCode: SmartCode) => {
     setSelectedCode(code)
     setSelectedSmartCode(smartCode)
-    
+
     toast({
       title: 'Smart Code Selected',
       description: `${smartCode.name} (${code})`,
       variant: 'default'
     })
   }
-  
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
     toast({
@@ -88,7 +88,7 @@ export default function SmartCodePickerDemoPage() {
       variant: 'default'
     })
   }
-  
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       {/* Header */}
@@ -103,11 +103,11 @@ export default function SmartCodePickerDemoPage() {
           </h1>
         </motion.div>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Intelligent business classification code selector with hierarchical navigation.
-          Select HERA Smart Codes to provide context and meaning to your business data.
+          Intelligent business classification code selector with hierarchical navigation. Select
+          HERA Smart Codes to provide context and meaning to your business data.
         </p>
       </div>
-      
+
       {/* Configuration */}
       <Card>
         <CardHeader>
@@ -122,7 +122,7 @@ export default function SmartCodePickerDemoPage() {
               <Label>Industry Filter</Label>
               <select
                 value={config.industry}
-                onChange={(e) => setConfig(prev => ({ ...prev, industry: e.target.value }))}
+                onChange={e => setConfig(prev => ({ ...prev, industry: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="">All Industries</option>
@@ -133,12 +133,12 @@ export default function SmartCodePickerDemoPage() {
                 ))}
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Module Filter</Label>
               <select
                 value={config.module}
-                onChange={(e) => setConfig(prev => ({ ...prev, module: e.target.value }))}
+                onChange={e => setConfig(prev => ({ ...prev, module: e.target.value }))}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="">All Modules</option>
@@ -149,19 +149,19 @@ export default function SmartCodePickerDemoPage() {
                 ))}
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Display Mode</Label>
               <select
                 value={config.mode}
-                onChange={(e) => setConfig(prev => ({ ...prev, mode: e.target.value as any }))}
+                onChange={e => setConfig(prev => ({ ...prev, mode: e.target.value as any }))}
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="dialog">Dialog</option>
                 <option value="inline">Inline</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="allow-custom" className="flex items-center gap-2">
                 Allow Custom Codes
@@ -169,12 +169,10 @@ export default function SmartCodePickerDemoPage() {
               <Switch
                 id="allow-custom"
                 checked={config.allowCustom}
-                onCheckedChange={(checked) => 
-                  setConfig(prev => ({ ...prev, allowCustom: checked }))
-                }
+                onCheckedChange={checked => setConfig(prev => ({ ...prev, allowCustom: checked }))}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="show-description" className="flex items-center gap-2">
                 Show Descriptions
@@ -182,12 +180,12 @@ export default function SmartCodePickerDemoPage() {
               <Switch
                 id="show-description"
                 checked={config.showDescription}
-                onCheckedChange={(checked) => 
+                onCheckedChange={checked =>
                   setConfig(prev => ({ ...prev, showDescription: checked }))
                 }
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="show-recent" className="flex items-center gap-2">
                 Show Recent Codes
@@ -195,12 +193,10 @@ export default function SmartCodePickerDemoPage() {
               <Switch
                 id="show-recent"
                 checked={config.showRecent}
-                onCheckedChange={(checked) => 
-                  setConfig(prev => ({ ...prev, showRecent: checked }))
-                }
+                onCheckedChange={checked => setConfig(prev => ({ ...prev, showRecent: checked }))}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="required" className="flex items-center gap-2">
                 Required Field
@@ -208,12 +204,10 @@ export default function SmartCodePickerDemoPage() {
               <Switch
                 id="required"
                 checked={config.required}
-                onCheckedChange={(checked) => 
-                  setConfig(prev => ({ ...prev, required: checked }))
-                }
+                onCheckedChange={checked => setConfig(prev => ({ ...prev, required: checked }))}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="disabled" className="flex items-center gap-2">
                 Disabled State
@@ -221,15 +215,13 @@ export default function SmartCodePickerDemoPage() {
               <Switch
                 id="disabled"
                 checked={config.disabled}
-                onCheckedChange={(checked) => 
-                  setConfig(prev => ({ ...prev, disabled: checked }))
-                }
+                onCheckedChange={checked => setConfig(prev => ({ ...prev, disabled: checked }))}
               />
             </div>
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Demo */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Smart Code Picker */}
@@ -259,12 +251,12 @@ export default function SmartCodePickerDemoPage() {
                 placeholder="Select a smart code..."
                 className="w-full"
               />
-              
+
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
                   Try different industry and module filters to see how the available codes change.
                 </p>
-                
+
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Quick Examples:</p>
                   <div className="flex flex-wrap gap-2">
@@ -284,7 +276,13 @@ export default function SmartCodePickerDemoPage() {
                             code: example.code,
                             name: example.label,
                             description: `Example ${example.label} smart code`,
-                            category: { id: 'entity', name: 'Entity', icon: Database, description: '', color: 'blue' },
+                            category: {
+                              id: 'entity',
+                              name: 'Entity',
+                              icon: Database,
+                              description: '',
+                              color: 'blue'
+                            },
                             version: 1
                           })
                         }}
@@ -298,7 +296,7 @@ export default function SmartCodePickerDemoPage() {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Selected Code Details */}
         <div>
           <Tabs defaultValue="details" className="h-full">
@@ -306,7 +304,7 @@ export default function SmartCodePickerDemoPage() {
               <TabsTrigger value="details">Selection Details</TabsTrigger>
               <TabsTrigger value="implementation">Implementation</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="details" className="mt-4">
               <Card>
                 <CardHeader>
@@ -319,7 +317,7 @@ export default function SmartCodePickerDemoPage() {
                         <CheckCircle className="w-5 h-5" />
                         <span className="font-medium">Code Selected</span>
                       </div>
-                      
+
                       <div className="space-y-4 p-4 bg-muted rounded-lg">
                         <div>
                           <div className="flex items-center justify-between">
@@ -336,17 +334,17 @@ export default function SmartCodePickerDemoPage() {
                             {selectedCode}
                           </code>
                         </div>
-                        
+
                         <div>
                           <p className="text-sm font-medium text-muted-foreground">Name</p>
                           <p className="font-medium">{selectedSmartCode.name}</p>
                         </div>
-                        
+
                         <div>
                           <p className="text-sm font-medium text-muted-foreground">Description</p>
                           <p>{selectedSmartCode.description}</p>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">{selectedSmartCode.category.name}</Badge>
                           {selectedSmartCode.industry && (
@@ -360,29 +358,28 @@ export default function SmartCodePickerDemoPage() {
                             <Badge variant="destructive">Deprecated</Badge>
                           )}
                         </div>
-                        
-                        {selectedSmartCode.metadata && Object.keys(selectedSmartCode.metadata).length > 0 && (
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">Metadata</p>
-                            <pre className="text-xs bg-background p-2 rounded overflow-auto">
-                              {JSON.stringify(selectedSmartCode.metadata, null, 2)}
-                            </pre>
-                          </div>
-                        )}
+
+                        {selectedSmartCode.metadata &&
+                          Object.keys(selectedSmartCode.metadata).length > 0 && (
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">Metadata</p>
+                              <pre className="text-xs bg-background p-2 rounded overflow-auto">
+                                {JSON.stringify(selectedSmartCode.metadata, null, 2)}
+                              </pre>
+                            </div>
+                          )}
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-8">
                       <Code className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">
-                        Select a smart code to see details
-                      </p>
+                      <p className="text-muted-foreground">Select a smart code to see details</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="implementation" className="mt-4">
               <Card>
                 <CardHeader>
@@ -393,7 +390,7 @@ export default function SmartCodePickerDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { SmartCodePicker } from '@/lib/dna/components/smart-code'
+                    {`import { SmartCodePicker } from '@/lib/dna/components/smart-code'
 
 // Basic usage
 <SmartCodePicker
@@ -458,7 +455,7 @@ const MyForm = () => {
           </Tabs>
         </div>
       </div>
-      
+
       {/* Smart Code Categories */}
       <Card>
         <CardHeader>
@@ -479,7 +476,7 @@ const MyForm = () => {
                 <code className="text-xs block">HERA.INV.PROD.ENT.STD.V1</code>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <CreditCard className="w-4 h-4" />
@@ -493,7 +490,7 @@ const MyForm = () => {
                 <code className="text-xs block">HERA.REST.SALE.TXN.ORDER.V1</code>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
                 <FileText className="w-4 h-4" />
@@ -510,7 +507,7 @@ const MyForm = () => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Industry Examples */}
       <Card>
         <CardHeader>
@@ -531,7 +528,9 @@ const MyForm = () => {
                       <>
                         <div>
                           <code className="text-xs">HERA.REST.SALE.TXN.ORDER.V1</code>
-                          <p className="text-xs text-muted-foreground">Restaurant order transaction</p>
+                          <p className="text-xs text-muted-foreground">
+                            Restaurant order transaction
+                          </p>
                         </div>
                         <div>
                           <code className="text-xs">HERA.REST.INV.ENT.INGR.V1</code>
@@ -563,14 +562,20 @@ const MyForm = () => {
                         </div>
                       </>
                     )}
-                    {(industry.id === 'retail' || industry.id === 'manufacturing' || industry.id === 'professional') && (
+                    {(industry.id === 'retail' ||
+                      industry.id === 'manufacturing' ||
+                      industry.id === 'professional') && (
                       <>
                         <div>
-                          <code className="text-xs">HERA.{industry.id.toUpperCase()}.SALE.TXN.ORDER.v1</code>
+                          <code className="text-xs">
+                            HERA.{industry.id.toUpperCase()}.SALE.TXN.ORDER.v1
+                          </code>
                           <p className="text-xs text-muted-foreground">Sales order transaction</p>
                         </div>
                         <div>
-                          <code className="text-xs">HERA.{industry.id.toUpperCase()}.INV.ENT.PROD.v1</code>
+                          <code className="text-xs">
+                            HERA.{industry.id.toUpperCase()}.INV.ENT.PROD.v1
+                          </code>
                           <p className="text-xs text-muted-foreground">Product entity</p>
                         </div>
                       </>

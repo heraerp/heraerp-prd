@@ -566,7 +566,9 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             <div className="flex items-center">
               <Star className="h-8 w-8 text-yellow-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">VIP Clients</p>
+                <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+                  VIP Clients
+                </p>
                 <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                   {clients.filter(c => c.vipLevel && c.vipLevel !== 'regular').length}
                 </p>
@@ -613,11 +615,15 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
             {stylists.map(stylist => (
               <div key={stylist.id} className="flex items-center space-x-3 p-3 border rounded-lg">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                  <span className="text-foreground font-bold text-sm">{stylist.name.charAt(0)}</span>
+                  <span className="text-foreground font-bold text-sm">
+                    {stylist.name.charAt(0)}
+                  </span>
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-gray-100 dark:text-foreground">{stylist.name}</p>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">{stylist.title}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    {stylist.title}
+                  </p>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge
                       variant="outline"
@@ -628,7 +634,9 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                     >
                       {stylist.level.toUpperCase()}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">AED {stylist.hourlyRate}/hr</span>
+                    <span className="text-xs text-muted-foreground">
+                      AED {stylist.hourlyRate}/hr
+                    </span>
                   </div>
                 </div>
               </div>
@@ -656,7 +664,9 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-gray-100 dark:text-foreground">AED {service.price}</p>
+                  <p className="font-bold text-gray-100 dark:text-foreground">
+                    AED {service.price}
+                  </p>
                   <Badge variant="outline" className="text-xs">
                     {service.category.toUpperCase()}
                   </Badge>

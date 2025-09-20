@@ -58,7 +58,7 @@ export default function CustomerDetailPage() {
   const { toast } = useToast()
   const { currentOrganization } = useHERAAuth()
   const organizationId = currentOrganization?.id
-  
+
   const [customer, setCustomer] = useState<CustomerDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'notes'>('overview')
@@ -70,7 +70,7 @@ export default function CustomerDetailPage() {
 
       try {
         setLoading(true)
-        
+
         // Set organization ID for API calls
         universalApi.setOrganizationId(organizationId)
 
@@ -92,12 +92,15 @@ export default function CustomerDetailPage() {
           organizationId
         })
         const fieldsMap: Record<string, any> = {}
-        
+
         if (dynamicRes.success && dynamicRes.data) {
           dynamicRes.data.forEach((field: any) => {
-            const value = field.field_value || field.field_value_text || 
-                         field.field_value_number || field.field_value_date || 
-                         field.field_value_boolean
+            const value =
+              field.field_value ||
+              field.field_value_text ||
+              field.field_value_number ||
+              field.field_value_date ||
+              field.field_value_boolean
             fieldsMap[field.field_name] = value
           })
         }
@@ -106,11 +109,13 @@ export default function CustomerDetailPage() {
         const transRes = await universalApi.getTransactions({
           organizationId
         })
-        const customerTransactions = transRes.data?.filter((t: any) => 
-          t.source_entity_id === params.id || 
-          t.target_entity_id === params.id ||
-          (t.metadata as any)?.customer_id === params.id
-        ) || []
+        const customerTransactions =
+          transRes.data?.filter(
+            (t: any) =>
+              t.source_entity_id === params.id ||
+              t.target_entity_id === params.id ||
+              (t.metadata as any)?.customer_id === params.id
+          ) || []
 
         // 4. Get relationships
         const relRes = await universalApi.getRelationships({
@@ -121,8 +126,8 @@ export default function CustomerDetailPage() {
         })
 
         // 5. Get appointments (transactions of type 'APPOINTMENT' - uppercase)
-        const appointments = customerTransactions.filter((t: any) => 
-          t.transaction_type === 'APPOINTMENT'
+        const appointments = customerTransactions.filter(
+          (t: any) => t.transaction_type === 'APPOINTMENT'
         )
 
         setCustomer({
@@ -163,7 +168,7 @@ export default function CustomerDetailPage() {
   const totalSpent = customer.transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
   const visitCount = customer.appointments.length
   const lastVisit = customer.appointments[0]?.transaction_date
-  
+
   // Get loyalty tier
   const loyaltyRel = customer.relationships.find(
     r => r.relationship_type === 'has_status' && r.metadata?.status_type === 'loyalty_tier'
@@ -179,7 +184,7 @@ export default function CustomerDetailPage() {
         backUrl="/salon/customers"
         actions={
           <div className="flex gap-3">
-            <SecondaryButtonDNA 
+            <SecondaryButtonDNA
               icon={Calendar}
               onClick={() => router.push(`/salon/appointments/new?customerId=${params.id}`)}
             >
@@ -205,9 +210,7 @@ export default function CustomerDetailPage() {
                 <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   AED {totalSpent.toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Lifetime value
-                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Lifetime value</p>
               </div>
               <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                 <DollarSign className="w-8 h-8 text-blue-600 dark:text-blue-400" />
@@ -219,12 +222,8 @@ export default function CustomerDetailPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Visit Count</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {visitCount}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Total appointments
-                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{visitCount}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Total appointments</p>
               </div>
               <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
                 <UserCheck className="w-8 h-8 text-green-600 dark:text-green-400" />
@@ -235,13 +234,13 @@ export default function CustomerDetailPage() {
           <CardDNA>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Average Spend</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Average Spend
+                </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   AED {visitCount > 0 ? Math.round(totalSpent / visitCount) : 0}
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Per visit
-                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Per visit</p>
               </div>
               <div className="p-3 bg-violet-100 dark:bg-violet-900/30 rounded-lg">
                 <TrendingUp className="w-8 h-8 text-violet-600 dark:text-violet-400" />
@@ -252,13 +251,11 @@ export default function CustomerDetailPage() {
           <CardDNA>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Loyalty Status</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {loyaltyTier}
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Loyalty Status
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Member tier
-                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{loyaltyTier}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Member tier</p>
               </div>
               <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                 <Star className="w-8 h-8 text-purple-600 dark:text-purple-400" />
@@ -287,9 +284,12 @@ export default function CustomerDetailPage() {
                             {appointment.metadata?.service_name || 'Appointment'}
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {appointment.metadata?.start_time ? 
-                              format(new Date(appointment.metadata.start_time), 'EEEE, MMM d, h:mm a') : 
-                              format(new Date(appointment.transaction_date), 'EEEE, MMM d')}
+                            {appointment.metadata?.start_time
+                              ? format(
+                                  new Date(appointment.metadata.start_time),
+                                  'EEEE, MMM d, h:mm a'
+                                )
+                              : format(new Date(appointment.transaction_date), 'EEEE, MMM d')}
                           </p>
                         </div>
                         <SecondaryButtonDNA
@@ -299,9 +299,10 @@ export default function CustomerDetailPage() {
                           View
                         </SecondaryButtonDNA>
                       </div>
-                    ))
-                  }
-                  {customer.appointments.filter((apt: any) => new Date(apt.transaction_date) >= new Date()).length === 0 && (
+                    ))}
+                  {customer.appointments.filter(
+                    (apt: any) => new Date(apt.transaction_date) >= new Date()
+                  ).length === 0 && (
                     <p className="text-center py-4 text-gray-500 dark:text-gray-400">
                       No upcoming appointments
                     </p>
@@ -309,7 +310,7 @@ export default function CustomerDetailPage() {
                 </div>
               </CardDNA>
             )}
-            
+
             {/* Tabs */}
             <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
               <button
@@ -359,7 +360,7 @@ export default function CustomerDetailPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     {customer.dynamicFields.phone && (
                       <div className="flex items-start gap-3">
                         <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
@@ -409,7 +410,7 @@ export default function CustomerDetailPage() {
                         No visit history yet
                       </p>
                     ) : (
-                      customer.appointments.map((appointment) => (
+                      customer.appointments.map(appointment => (
                         <div
                           key={appointment.id}
                           className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 transition-colors cursor-pointer"
@@ -426,9 +427,12 @@ export default function CustomerDetailPage() {
                                 </span>
                               </div>
                               <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {appointment.metadata?.start_time ? 
-                                  format(new Date(appointment.metadata.start_time), 'MMM d, yyyy, h:mm a') : 
-                                  format(new Date(appointment.transaction_date), 'MMM d, yyyy')}
+                                {appointment.metadata?.start_time
+                                  ? format(
+                                      new Date(appointment.metadata.start_time),
+                                      'MMM d, yyyy, h:mm a'
+                                    )
+                                  : format(new Date(appointment.transaction_date), 'MMM d, yyyy')}
                               </p>
                               {appointment.metadata?.duration_minutes && (
                                 <p className="text-sm text-gray-500 dark:text-gray-500">
@@ -440,12 +444,17 @@ export default function CustomerDetailPage() {
                               <p className="font-medium text-gray-900 dark:text-gray-100">
                                 AED {appointment.total_amount}
                               </p>
-                              <BadgeDNA variant={
-                                appointment.metadata?.status === 'COMPLETED' ? 'success' :
-                                appointment.metadata?.status === 'CONFIRMED' ? 'info' :
-                                appointment.metadata?.status === 'DRAFT' ? 'warning' :
-                                'secondary'
-                              }>
+                              <BadgeDNA
+                                variant={
+                                  appointment.metadata?.status === 'COMPLETED'
+                                    ? 'success'
+                                    : appointment.metadata?.status === 'CONFIRMED'
+                                      ? 'info'
+                                      : appointment.metadata?.status === 'DRAFT'
+                                        ? 'warning'
+                                        : 'secondary'
+                                }
+                              >
                                 {appointment.metadata?.status?.toLowerCase() || 'scheduled'}
                               </BadgeDNA>
                             </div>
@@ -519,12 +528,17 @@ export default function CustomerDetailPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Current Tier</span>
-                  <BadgeDNA variant={
-                    loyaltyTier === 'Platinum' ? 'info' :
-                    loyaltyTier === 'Gold' ? 'warning' :
-                    loyaltyTier === 'Silver' ? 'secondary' :
-                    'default'
-                  }>
+                  <BadgeDNA
+                    variant={
+                      loyaltyTier === 'Platinum'
+                        ? 'info'
+                        : loyaltyTier === 'Gold'
+                          ? 'warning'
+                          : loyaltyTier === 'Silver'
+                            ? 'secondary'
+                            : 'default'
+                    }
+                  >
                     <Star className="w-3 h-3" />
                     {loyaltyTier}
                   </BadgeDNA>
@@ -549,7 +563,10 @@ export default function CustomerDetailPage() {
                     {format(new Date(lastVisit), 'MMM d, yyyy')}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-500">
-                    {Math.floor((Date.now() - new Date(lastVisit).getTime()) / (1000 * 60 * 60 * 24))} days ago
+                    {Math.floor(
+                      (Date.now() - new Date(lastVisit).getTime()) / (1000 * 60 * 60 * 24)
+                    )}{' '}
+                    days ago
                   </p>
                 </div>
               </CardDNA>

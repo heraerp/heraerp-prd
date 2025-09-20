@@ -303,7 +303,9 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
               <div className="text-2xl font-bold !text-primary dark:!text-blue-400">
                 #{rule.priority}
               </div>
-              <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Priority</div>
+              <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                Priority
+              </div>
             </div>
           </div>
         </CardContent>
@@ -424,25 +426,33 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   <div className="text-lg font-semibold !text-gray-100 dark:!text-gray-100">
                     {rule.configuration.timeout_ms || 5000}ms
                   </div>
-                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Timeout</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                    Timeout
+                  </div>
                 </div>
                 <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-lg font-semibold !text-gray-100 dark:!text-gray-100">
                     {rule.configuration.retry_count || 3}
                   </div>
-                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Retries</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                    Retries
+                  </div>
                 </div>
                 <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-sm font-semibold !text-gray-100 dark:!text-gray-100 capitalize">
                     {rule.configuration.failure_action || 'stop'}
                   </div>
-                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">On Failure</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                    On Failure
+                  </div>
                 </div>
                 <div className="text-center p-3 bg-background/30 dark:bg-muted/30 rounded-lg">
                   <div className="text-sm font-semibold !text-gray-100 dark:!text-gray-100 capitalize">
                     {rule.configuration.logging_level || 'basic'}
                   </div>
-                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">Logging</div>
+                  <div className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                    Logging
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -519,7 +529,9 @@ export function RulePreview({ rule, className, onClose }: RulePreviewProps) {
                   <div className="flex items-center justify-center p-8">
                     <div className="text-center">
                       <div className="w-12 h-12 mx-auto mb-4 animate-spin border-4 border-blue-600 border-t-transparent rounded-full"></div>
-                      <p className="!text-muted-foreground dark:!text-muted-foreground">Running rule test...</p>
+                      <p className="!text-muted-foreground dark:!text-muted-foreground">
+                        Running rule test...
+                      </p>
                     </div>
                   </div>
                 )}

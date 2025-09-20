@@ -167,9 +167,7 @@ export function ItemList({
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
-              <TableCell style={{ color: COLORS.lightText }}>
-                {item.uom || 'unit'}
-              </TableCell>
+              <TableCell style={{ color: COLORS.lightText }}>{item.uom || 'unit'}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
                   {item.low_stock && (

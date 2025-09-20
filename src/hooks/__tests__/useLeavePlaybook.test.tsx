@@ -141,9 +141,11 @@ describe('useLeavePlaybook', () => {
   })
 
   it('filters requests by branch', async () => {
-    const { result } = renderHook(() => useLeavePlaybook({
-      branchId: 'branch-1'
-    }))
+    const { result } = renderHook(() =>
+      useLeavePlaybook({
+        branchId: 'branch-1'
+      })
+    )
 
     await waitFor(() => {
       expect(hrLeaveApi.listRequests).toHaveBeenCalledWith(
@@ -155,9 +157,11 @@ describe('useLeavePlaybook', () => {
   })
 
   it('filters requests by status', async () => {
-    const { result } = renderHook(() => useLeavePlaybook({
-      status: 'pending'
-    }))
+    const { result } = renderHook(() =>
+      useLeavePlaybook({
+        status: 'pending'
+      })
+    )
 
     await waitFor(() => {
       expect(hrLeaveApi.listRequests).toHaveBeenCalledWith(
@@ -275,10 +279,12 @@ describe('useLeavePlaybook', () => {
   })
 
   it('supports pagination', async () => {
-    const { result } = renderHook(() => useLeavePlaybook({
-      page: 2,
-      pageSize: 10
-    }))
+    const { result } = renderHook(() =>
+      useLeavePlaybook({
+        page: 2,
+        pageSize: 10
+      })
+    )
 
     await waitFor(() => {
       expect(hrLeaveApi.listRequests).toHaveBeenCalledWith(

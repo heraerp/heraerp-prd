@@ -26,7 +26,7 @@ jest.spyOn(PlaybookEntities, 'searchAppointments')
 describe('useAppointmentsPlaybook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    
+
     // Mock successful API response
     ;(PlaybookEntities.searchAppointments as jest.Mock).mockResolvedValue({
       rows: [
@@ -49,15 +49,15 @@ describe('useAppointmentsPlaybook', () => {
       total: 1
     })
   })
-  
+
   it('should pass organization_id to searchAppointments', async () => {
     const { result } = renderHook(() => useAppointmentsPlaybook())
-    
+
     // Wait for the initial load
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     // Verify searchAppointments was called with organization_id
     expect(PlaybookEntities.searchAppointments).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -65,14 +65,14 @@ describe('useAppointmentsPlaybook', () => {
       })
     )
   })
-  
+
   it('should include date filters by default', async () => {
     const { result } = renderHook(() => useAppointmentsPlaybook())
-    
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     // Should have date_from and date_to in the params
     expect(PlaybookEntities.searchAppointments).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -81,72 +81,72 @@ describe('useAppointmentsPlaybook', () => {
       })
     )
   })
-  
+
   it('should pass status filter when provided', async () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useAppointmentsPlaybook({
         status: ['booked', 'checked_in']
       })
     )
-    
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     expect(PlaybookEntities.searchAppointments).toHaveBeenCalledWith(
       expect.objectContaining({
         status: ['booked', 'checked_in']
       })
     )
   })
-  
+
   it('should pass search query when provided', async () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useAppointmentsPlaybook({
         q: 'John Doe'
       })
     )
-    
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     expect(PlaybookEntities.searchAppointments).toHaveBeenCalledWith(
       expect.objectContaining({
         q: 'John Doe'
       })
     )
   })
-  
+
   it('should handle empty results', async () => {
-    (PlaybookEntities.searchAppointments as jest.Mock).mockResolvedValueOnce({
+    ;(PlaybookEntities.searchAppointments as jest.Mock).mockResolvedValueOnce({
       rows: [],
       total: 0
     })
-    
+
     const { result } = renderHook(() => useAppointmentsPlaybook())
-    
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     expect(result.current.data).toEqual([])
     expect(result.current.total).toBe(0)
     expect(result.current.error).toBeNull()
   })
-  
+
   it('should handle API errors', async () => {
     const errorMessage = 'Failed to load appointments'
     ;(PlaybookEntities.searchAppointments as jest.Mock).mockRejectedValueOnce(
       new Error(errorMessage)
     )
-    
+
     const { result } = renderHook(() => useAppointmentsPlaybook())
-    
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
     })
-    
+
     expect(result.current.error).toBe(errorMessage)
     expect(result.current.data).toEqual([])
   })

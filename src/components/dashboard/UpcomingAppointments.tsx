@@ -4,14 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import {
-  Calendar,
-  Clock,
-  User,
-  Play,
-  CreditCard,
-  ChevronRight
-} from 'lucide-react'
+import { Calendar, Clock, User, Play, CreditCard, ChevronRight } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -38,9 +31,9 @@ const defaultStatus = { label: 'Scheduled', color: 'bg-blue-500' }
 
 export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsProps) {
   const today = new Date().toISOString().split('T')[0]
-  
+
   console.log('🎯 UpcomingAppointments rendered with:', { organizationId, today })
-  
+
   // Use real appointments from universal_transactions
   const { data, isLoading, error } = useRealAppointmentsList({
     organizationId,
@@ -49,20 +42,19 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
   })
 
   const appointments = data?.appointments || []
-  
-  console.log('📊 Appointment data:', { 
-    isLoading, 
-    appointmentCount: appointments.length, 
+
+  console.log('📊 Appointment data:', {
+    isLoading,
+    appointmentCount: appointments.length,
     appointments,
     error,
-    hasData: !!data 
+    hasData: !!data
   })
-
 
   const handleStartService = async (appointmentId: string, e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
+
     // Update appointment status to in_progress
     // This would call the appointment update API
     console.log('Starting service for appointment:', appointmentId)
@@ -102,14 +94,12 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
           Upcoming Appointments
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 overflow-auto">
         {appointments.length === 0 ? (
           <div className="text-center py-8">
             <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">
-              No appointments scheduled for today
-            </p>
+            <p className="text-sm text-muted-foreground">No appointments scheduled for today</p>
             <Link href="/appointments/new">
               <Button variant="link" className="mt-2">
                 Book New Appointment
@@ -118,10 +108,11 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
           </div>
         ) : (
           <div className="space-y-3">
-            {appointments.map((appointment) => {
-              const status = statusConfig[appointment.status as keyof typeof statusConfig] || defaultStatus
+            {appointments.map(appointment => {
+              const status =
+                statusConfig[appointment.status as keyof typeof statusConfig] || defaultStatus
               const appointmentTime = format(new Date(appointment.datetime), 'HH:mm')
-              
+
               return (
                 <Link
                   key={appointment.id}
@@ -151,38 +142,30 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
                         {appointment.service_name}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
-                      <Badge 
-                        variant="secondary"
-                        className={cn("text-white", status.color)}
-                      >
+                      <Badge variant="secondary" className={cn('text-white', status.color)}>
                         {status.label}
                       </Badge>
-                      
+
                       {appointment.status === 'confirmed' && (
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={(e) => handleStartService(appointment.id, e)}
+                          onClick={e => handleStartService(appointment.id, e)}
                           className="h-8"
                           title="Start Service"
                         >
                           <Play className="h-3 w-3" />
                         </Button>
                       )}
-                      
+
                       {appointment.status === 'service_complete' && (
                         <Link
                           href={`/pos/sale?apptId=${appointment.id}`}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={e => e.stopPropagation()}
                         >
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8"
-                            title="Open POS"
-                          >
+                          <Button size="sm" variant="ghost" className="h-8" title="Open POS">
                             <CreditCard className="h-3 w-3" />
                           </Button>
                         </Link>
@@ -195,7 +178,7 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
           </div>
         )}
       </CardContent>
-      
+
       <CardFooter className="pt-3">
         <Link href="/appointments/calendar" className="w-full">
           <Button variant="ghost" className="w-full">

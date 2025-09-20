@@ -343,7 +343,9 @@ export function AuditSidebar({ isClient = false, user }: AuditSidebarProps) {
                               {item.badge}
                             </Badge>
                           )}
-                          {item.subItems && <ChevronRight className="w-4 h-4 text-muted-foreground" />}
+                          {item.subItems && (
+                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                          )}
                         </>
                       )}
                       {!isExpanded && item.badge && item.badge > 0 && (

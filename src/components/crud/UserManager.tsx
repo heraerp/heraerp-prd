@@ -983,7 +983,9 @@ export function UserManager() {
                               <Key className="h-4 w-4 mt-0.5 text-muted-foreground" />
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-sm">{permission.name}</p>
-                                <p className="text-xs text-muted-foreground">{permission.description}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {permission.description}
+                                </p>
                                 <code className="text-xs bg-gray-700 px-1 rounded">
                                   {permission.id}
                                 </code>
@@ -1005,7 +1007,9 @@ export function UserManager() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Users
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{users.length}</div>
@@ -1015,7 +1019,9 @@ export function UserManager() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Active Users</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Active Users
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-600">
@@ -1027,7 +1033,9 @@ export function UserManager() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Administrators</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Administrators
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
@@ -1042,7 +1050,9 @@ export function UserManager() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Departments</CardTitle>
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Departments
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-purple-600">
@@ -1324,7 +1334,9 @@ export function UserManager() {
                               )}
                               <div>
                                 <div className="font-medium">{role.label}</div>
-                                <div className="text-xs text-muted-foreground">{role.description}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {role.description}
+                                </div>
                               </div>
                             </div>
                           </SelectItem>
@@ -1362,7 +1374,9 @@ export function UserManager() {
                                   <Label htmlFor={permission.id} className="font-medium text-sm">
                                     {permission.name}
                                   </Label>
-                                  <p className="text-xs text-muted-foreground">{permission.description}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {permission.description}
+                                  </p>
                                 </div>
                               </div>
                             ))}

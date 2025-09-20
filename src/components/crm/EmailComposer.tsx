@@ -234,7 +234,9 @@ export function EmailComposer({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="font-medium">Email Templates</Label>
-              {isLoadingTemplates && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+              {isLoadingTemplates && (
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              )}
             </div>
             <Select
               value={selectedTemplate}

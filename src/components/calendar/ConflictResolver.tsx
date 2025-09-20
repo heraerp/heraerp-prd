@@ -193,7 +193,9 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                           {isSelected && <CheckCircle className="h-4 w-4 text-primary" />}
                         </div>
 
-                        <p className="text-sm text-muted-foreground mb-2">{suggestion.description}</p>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {suggestion.description}
+                        </p>
 
                         {/* Alternative options */}
                         {suggestion.alternative_slots &&

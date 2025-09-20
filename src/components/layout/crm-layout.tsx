@@ -173,7 +173,9 @@ export function CRMLayout({ children }: CRMLayoutProps) {
               <div className="relative">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/50 to-[#ec7f37]/50 rounded-xl blur" />
                 <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4">
-                  <h3 className="text-xs font-medium text-foreground/60 mb-3">Today's Performance</h3>
+                  <h3 className="text-xs font-medium text-foreground/60 mb-3">
+                    Today's Performance
+                  </h3>
                   <div className="space-y-2">
                     {stats.map((stat, index) => (
                       <div key={index} className="flex items-center justify-between">
@@ -198,7 +200,10 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
       {/* Sidebar - Mobile */}
       <div className={`lg:hidden fixed inset-0 z-40 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-background/50" onClick={() => setIsMobileMenuOpen(false)} />
+        <div
+          className="fixed inset-0 bg-background/50"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
         <div className="fixed inset-y-0 left-0 flex flex-col w-64 bg-gradient-to-b from-[#FF5A09]/20 via-[#ec7f37]/10 to-[#be4f0c]/20 backdrop-blur-xl border-r border-border/10">
           {/* Same navigation content as desktop */}
           <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
@@ -233,7 +238,9 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                   >
                     <item.icon
                       className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
-                        isActive ? 'text-[#FF5A09]' : 'text-foreground/70 group-hover:text-foreground'
+                        isActive
+                          ? 'text-[#FF5A09]'
+                          : 'text-foreground/70 group-hover:text-foreground'
                       }`}
                     />
                     <span className="flex-1">{item.name}</span>

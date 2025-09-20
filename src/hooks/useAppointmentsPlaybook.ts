@@ -1,18 +1,18 @@
 /**
  * HERA Appointment Management Hook - Playbook Version
  * Smart Code: HERA.HOOKS.APPOINTMENTS.PLAYBOOK.v1
- * 
+ *
  * Uses Playbook API for appointment operations
  * Follows HERA guardrails with Sacred Six tables
  */
 
 import { useState, useCallback, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { 
-  searchAppointments, 
-  AppointmentDTO, 
+import {
+  searchAppointments,
+  AppointmentDTO,
   AppointmentStatus,
-  AppointmentSearchParams 
+  AppointmentSearchParams
 } from '@/lib/playbook/entities'
 import { toast } from '@/hooks/use-toast'
 import { addDays, startOfDay, endOfDay } from 'date-fns'
@@ -35,14 +35,14 @@ export interface UseAppointmentsReturn {
   total: number
   loading: boolean
   error: string | null
-  
+
   // Filters
   filters: UseAppointmentsFilters
   setFilters: (filters: UseAppointmentsFilters) => void
-  
+
   // Actions
   refresh: () => Promise<void>
-  
+
   // Context
   organizationId: string | null
 }
@@ -51,13 +51,13 @@ export function useAppointmentsPlaybook(
   initialFilters?: Partial<UseAppointmentsFilters>
 ): UseAppointmentsReturn {
   const { organization, isAuthenticated, isLoading: contextLoading } = useHERAAuth()
-  
+
   // State
   const [data, setData] = useState<AppointmentDTO[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // Default filters: today to +14 days
   const defaultFilters: UseAppointmentsFilters = {
     date_from: startOfDay(new Date()).toISOString(),
@@ -66,49 +66,52 @@ export function useAppointmentsPlaybook(
     page_size: 20,
     ...initialFilters
   }
-  
+
   const [filters, setFilters] = useState<UseAppointmentsFilters>(defaultFilters)
-  
+
   // Use organization ID from context or demo
   const organizationId = organization?.id || null
-  
+
   // Check for demo organization in cookies
   const getDemoOrgId = useCallback(() => {
     if (typeof window === 'undefined') return null
-    
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=')
-      acc[key] = value
-      return acc
-    }, {} as Record<string, string>)
-    
+
+    const cookies = document.cookie.split(';').reduce(
+      (acc, cookie) => {
+        const [key, value] = cookie.trim().split('=')
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>
+    )
+
     return cookies['hera-demo-org'] || null
   }, [])
-  
+
   const effectiveOrgId = organizationId || getDemoOrgId()
-  
+
   // Load appointments
   const loadAppointments = useCallback(async () => {
     if (!effectiveOrgId) {
       console.log('⚠️ No organization ID available')
       return
     }
-    
+
     setLoading(true)
     setError(null)
-    
+
     try {
       const params: AppointmentSearchParams = {
         organization_id: effectiveOrgId,
         ...filters
       }
-      
+
       console.log('📅 Loading appointments with params:', params)
-      
+
       const result = await searchAppointments(params)
-      
+
       console.log(`✅ Loaded ${result.rows.length} appointments (total: ${result.total})`)
-      
+
       setData(result.rows)
       setTotal(result.total)
     } catch (err) {
@@ -124,14 +127,14 @@ export function useAppointmentsPlaybook(
       setLoading(false)
     }
   }, [effectiveOrgId, filters])
-  
+
   // Load appointments when filters or org changes
   useEffect(() => {
     if (effectiveOrgId && !contextLoading) {
       loadAppointments()
     }
   }, [effectiveOrgId, contextLoading, loadAppointments])
-  
+
   return {
     data,
     total,

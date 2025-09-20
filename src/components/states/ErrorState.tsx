@@ -23,17 +23,11 @@ export function ErrorState({
       <Alert className="max-w-md">
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>{title}</AlertTitle>
-        <AlertDescription className="mt-2">
-          {message}
-        </AlertDescription>
+        <AlertDescription className="mt-2">{message}</AlertDescription>
       </Alert>
-      
+
       {showRetry && onRetry && (
-        <Button
-          variant="outline"
-          onClick={onRetry}
-          className="mt-4"
-        >
+        <Button variant="outline" onClick={onRetry} className="mt-4">
           <RefreshCw className="mr-2 h-4 w-4" />
           Try Again
         </Button>
@@ -42,7 +36,7 @@ export function ErrorState({
   )
 }
 
-export function PlaybookErrorState({ error, onRetry }: { error: Error, onRetry?: () => void }) {
+export function PlaybookErrorState({ error, onRetry }: { error: Error; onRetry?: () => void }) {
   return (
     <ErrorState
       title="Failed to load playbooks"
@@ -52,7 +46,13 @@ export function PlaybookErrorState({ error, onRetry }: { error: Error, onRetry?:
   )
 }
 
-export function PlaybookDetailErrorState({ error, onRetry }: { error: Error, onRetry?: () => void }) {
+export function PlaybookDetailErrorState({
+  error,
+  onRetry
+}: {
+  error: Error
+  onRetry?: () => void
+}) {
   return (
     <ErrorState
       title="Failed to load playbook"

@@ -20,7 +20,7 @@ export function PageLayout({ children, className = '' }: PageLayoutProps) {
       {/* Main content wrapper with charcoal background for depth */}
       <div className="relative" style={{ minHeight: '100vh' }}>
         {/* Subtle gradient overlay for depth */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: `
@@ -28,13 +28,13 @@ export function PageLayout({ children, className = '' }: PageLayoutProps) {
               radial-gradient(circle at 80% 20%, ${LUXURY_COLORS.bronze}05 0%, transparent 50%),
               radial-gradient(circle at 40% 40%, ${LUXURY_COLORS.plum}03 0%, transparent 50%)
             `
-          }} 
+          }}
         />
-        
+
         {/* Content container */}
-        <div 
+        <div
           className={`container mx-auto px-6 py-8 relative ${className}`}
-          style={{ 
+          style={{
             backgroundColor: LUXURY_COLORS.charcoal,
             minHeight: '100vh',
             boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
@@ -63,7 +63,7 @@ export function PageWrapper({
 }) {
   // Dynamically import to avoid circular dependencies
   const [PageHeader, setPageHeader] = React.useState<any>(null)
-  
+
   React.useEffect(() => {
     import('./PageHeader').then(module => {
       setPageHeader(() => module.PageHeader)
@@ -73,11 +73,7 @@ export function PageWrapper({
   return (
     <PageLayout className={className}>
       {title && PageHeader && (
-        <PageHeader 
-          title={title}
-          breadcrumbs={breadcrumbs}
-          actions={actions}
-        />
+        <PageHeader title={title} breadcrumbs={breadcrumbs} actions={actions} />
       )}
       {children}
     </PageLayout>

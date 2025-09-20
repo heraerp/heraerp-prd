@@ -13,8 +13,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Calendar, 
+import {
+  Calendar,
   Lock,
   Save,
   RefreshCw,
@@ -62,15 +62,15 @@ export default function FiscalSettingsPage() {
     try {
       await fiscal.saveConfig.mutateAsync(data)
       toast({
-        title: "Fiscal Configuration Saved",
-        description: "Your fiscal year settings have been updated successfully.",
-        variant: "default"
+        title: 'Fiscal Configuration Saved',
+        description: 'Your fiscal year settings have been updated successfully.',
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save fiscal configuration",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save fiscal configuration',
+        variant: 'destructive'
       })
     }
   }
@@ -87,15 +87,15 @@ export default function FiscalSettingsPage() {
     try {
       await fiscal.generatePeriods(fiscal.config.fiscal_year_start)
       toast({
-        title: "Periods Generated",
+        title: 'Periods Generated',
         description: `12 fiscal periods created starting from ${fiscal.config.fiscal_year_start}`,
-        variant: "default"
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Generation Failed",
-        description: error instanceof Error ? error.message : "Failed to generate fiscal periods",
-        variant: "destructive"
+        title: 'Generation Failed',
+        description: error instanceof Error ? error.message : 'Failed to generate fiscal periods',
+        variant: 'destructive'
       })
     }
   }
@@ -125,12 +125,9 @@ export default function FiscalSettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-6">
-          
           {/* Page Header */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
@@ -162,7 +159,6 @@ export default function FiscalSettingsPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={form.handleSubmit(handleSaveConfig)} className="space-y-4">
-                
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="fiscal_year_start">Fiscal Year Start</Label>
@@ -226,7 +222,7 @@ export default function FiscalSettingsPage() {
                     <Plus className="h-4 w-4 mr-2" />
                     Generate Periods
                   </Button>
-                  
+
                   <Button
                     type="submit"
                     disabled={fiscal.saveConfig.isPending || !form.formState.isDirty}
@@ -244,19 +240,19 @@ export default function FiscalSettingsPage() {
                     )}
                   </Button>
                 </div>
-
               </form>
             </CardContent>
           </Card>
 
           {/* Period Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Periods</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Total Periods
+                    </div>
                     <div className="text-2xl font-bold">{fiscalStats.total}</div>
                   </div>
                   <Calendar className="h-8 w-8 text-gray-400" />
@@ -282,7 +278,9 @@ export default function FiscalSettingsPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Locked</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Locked
+                    </div>
                     <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">
                       {fiscalStats.locked}
                     </div>
@@ -296,7 +294,9 @@ export default function FiscalSettingsPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Closed</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Closed
+                    </div>
                     <div className="text-2xl font-bold text-green-700 dark:text-green-300">
                       {fiscalStats.closed}
                     </div>
@@ -305,11 +305,10 @@ export default function FiscalSettingsPage() {
                 </div>
               </CardContent>
             </Card>
-
           </div>
 
           {/* Fiscal Periods Table */}
-          <FiscalPeriodTable 
+          <FiscalPeriodTable
             periods={fiscal.periods}
             isLoading={fiscal.isPeriodsLoading}
             error={fiscal.periodsError}
@@ -320,12 +319,10 @@ export default function FiscalSettingsPage() {
             canLock={fiscal.canLockPeriod}
             canClose={fiscal.canClosePeriod}
           />
-
         </div>
 
         {/* Right Sidebar - Checklist */}
         <div className="space-y-6">
-          
           <FiscalCloseChecklist
             checklist={fiscal.checklist}
             isLoading={fiscal.isChecklistLoading}
@@ -339,9 +336,7 @@ export default function FiscalSettingsPage() {
             <Info className="h-4 w-4" />
             <AlertDescription>
               <div className="space-y-1">
-                <div className="font-medium text-blue-800 dark:text-blue-200">
-                  Audit Trail
-                </div>
+                <div className="font-medium text-blue-800 dark:text-blue-200">Audit Trail</div>
                 <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
                   <div>• Config: HERA.FIN.FISCAL.CONFIG.UPDATE.V1</div>
                   <div>• Lock: HERA.FIN.FISCAL.PERIOD.LOCK.V1</div>
@@ -351,9 +346,7 @@ export default function FiscalSettingsPage() {
               </div>
             </AlertDescription>
           </Alert>
-
         </div>
-
       </div>
 
       {/* Bottom Actions Bar */}
@@ -370,7 +363,6 @@ export default function FiscalSettingsPage() {
           isClosingYear={fiscal.closeYear.isPending}
         />
       </div>
-
     </div>
   )
 }

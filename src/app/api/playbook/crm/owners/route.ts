@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     .order('entity_name', { ascending: true })
 
   if (error) return NextResponse.json({ items: [] })
-  const items = (data || []).map((e) => ({ id: e.id, name: e.entity_name }))
+  const items = (data || []).map(e => ({ id: e.id, name: e.entity_name }))
   const ok = LookupListSchema.safeParse({ items })
   if (!ok.success) return NextResponse.json({ error: ok.error.flatten() }, { status: 500 })
   return NextResponse.json({ items })

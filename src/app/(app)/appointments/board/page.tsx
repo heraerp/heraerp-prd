@@ -28,9 +28,13 @@ const BOARD_COLUMNS: Array<{
   { status: 'draft', title: 'Draft', color: 'bg-gray-50 border-gray-200' },
   { status: 'confirmed', title: 'Confirmed', color: 'bg-primary-50 border-primary-200' },
   { status: 'in_progress', title: 'In Progress', color: 'bg-purple-50 border-purple-200' },
-  { status: 'service_complete', title: 'Service Complete', color: 'bg-secondary-50 border-secondary-200' },
+  {
+    status: 'service_complete',
+    title: 'Service Complete',
+    color: 'bg-secondary-50 border-secondary-200'
+  },
   { status: 'paid', title: 'Paid', color: 'bg-green-50 border-green-200' },
-  { status: 'closed', title: 'Closed', color: 'bg-blue-50 border-blue-200' },
+  { status: 'closed', title: 'Closed', color: 'bg-blue-50 border-blue-200' }
 ]
 
 interface AppointmentCardProps {
@@ -55,12 +59,8 @@ function AppointmentCard({ appointment, onTransition, onClick }: AppointmentCard
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <p className="font-medium text-gray-900 text-sm">
-            {appointment.customer.name}
-          </p>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {appointment.code}
-          </p>
+          <p className="font-medium text-gray-900 text-sm">{appointment.customer.name}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{appointment.code}</p>
         </div>
         <AppointmentStatusBadge status={appointment.status} size="sm" showDot={false} />
       </div>
@@ -87,7 +87,7 @@ function AppointmentCard({ appointment, onTransition, onClick }: AppointmentCard
       {/* Quick action buttons based on status */}
       {appointment.status === 'draft' && (
         <button
-          onClick={(e) => handleQuickAction('confirm', e)}
+          onClick={e => handleQuickAction('confirm', e)}
           className="mt-3 w-full text-xs bg-primary text-white rounded-md py-1.5 hover:bg-primary-600 transition-colors"
         >
           Confirm
@@ -95,7 +95,7 @@ function AppointmentCard({ appointment, onTransition, onClick }: AppointmentCard
       )}
       {appointment.status === 'confirmed' && (
         <button
-          onClick={(e) => handleQuickAction('start', e)}
+          onClick={e => handleQuickAction('start', e)}
           className="mt-3 w-full text-xs bg-purple-600 text-white rounded-md py-1.5 hover:bg-purple-700 transition-colors"
         >
           Check In
@@ -103,7 +103,7 @@ function AppointmentCard({ appointment, onTransition, onClick }: AppointmentCard
       )}
       {appointment.status === 'in_progress' && (
         <button
-          onClick={(e) => handleQuickAction('complete', e)}
+          onClick={e => handleQuickAction('complete', e)}
           className="mt-3 w-full text-xs bg-secondary text-white rounded-md py-1.5 hover:bg-secondary-600 transition-colors"
         >
           Complete
@@ -123,19 +123,23 @@ export default function AppointmentBoardPage() {
   const filters: AppointmentFilters = {
     organization_id: organizationId || '',
     from: `${selectedDate}T00:00:00Z`,
-    to: `${selectedDate}T23:59:59Z`,
+    to: `${selectedDate}T23:59:59Z`
   }
 
   const { data: appointments, isLoading, error } = useAppointments(filters, appointmentsApi)
 
   // Group appointments by status
-  const appointmentsByStatus = appointments?.reduce((acc, apt) => {
-    if (!acc[apt.status]) {
-      acc[apt.status] = []
-    }
-    acc[apt.status].push(apt)
-    return acc
-  }, {} as Record<string, Appointment[]>) || {}
+  const appointmentsByStatus =
+    appointments?.reduce(
+      (acc, apt) => {
+        if (!acc[apt.status]) {
+          acc[apt.status] = []
+        }
+        acc[apt.status].push(apt)
+        return acc
+      },
+      {} as Record<string, Appointment[]>
+    ) || {}
 
   const handleNewAppointment = () => {
     router.push('/appointments/new')
@@ -149,9 +153,7 @@ export default function AppointmentBoardPage() {
     return (
       <Card className="text-center p-8">
         <p className="text-red-600 mb-4">Error loading appointments</p>
-        <ButtonPrimary onClick={() => window.location.reload()}>
-          Retry
-        </ButtonPrimary>
+        <ButtonPrimary onClick={() => window.location.reload()}>Retry</ButtonPrimary>
       </Card>
     )
   }
@@ -161,26 +163,19 @@ export default function AppointmentBoardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Appointment Board
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage appointments through their lifecycle
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Appointment Board</h1>
+          <p className="text-sm text-gray-600 mt-1">Manage appointments through their lifecycle</p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <input
             type="date"
             value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            onChange={e => setSelectedDate(e.target.value)}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
           />
-          
-          <ButtonPrimary
-            onClick={handleNewAppointment}
-            icon={<Plus className="w-4 h-4" />}
-          >
+
+          <ButtonPrimary onClick={handleNewAppointment} icon={<Plus className="w-4 h-4" />}>
             Book Appointment
           </ButtonPrimary>
         </div>
@@ -189,13 +184,10 @@ export default function AppointmentBoardPage() {
       {/* Board Columns */}
       <div className="flex-1 overflow-x-auto">
         <div className="flex gap-4 min-w-max h-full">
-          {BOARD_COLUMNS.map((column) => (
+          {BOARD_COLUMNS.map(column => (
             <div
               key={column.status}
-              className={cn(
-                'w-80 flex flex-col rounded-lg border-2',
-                column.color
-              )}
+              className={cn('w-80 flex flex-col rounded-lg border-2', column.color)}
             >
               <div className="p-4 border-b">
                 <h3 className="font-medium text-gray-900">{column.title}</h3>
@@ -207,24 +199,20 @@ export default function AppointmentBoardPage() {
               <div className="flex-1 overflow-y-auto p-4">
                 {isLoading ? (
                   <div className="space-y-3">
-                    {[1, 2, 3].map((i) => (
+                    {[1, 2, 3].map(i => (
                       <div key={i} className="h-32 bg-gray-100 rounded-lg animate-pulse" />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {appointmentsByStatus[column.status]?.map((appointment) => (
+                    {appointmentsByStatus[column.status]?.map(appointment => (
                       <AppointmentCard
                         key={appointment.id}
                         appointment={appointment}
                         onTransition={() => {}}
                         onClick={() => handleAppointmentClick(appointment)}
                       />
-                    )) || (
-                      <p className="text-center text-sm text-gray-400 py-8">
-                        No appointments
-                      </p>
-                    )}
+                    )) || <p className="text-center text-sm text-gray-400 py-8">No appointments</p>}
                   </div>
                 )}
               </div>
@@ -242,7 +230,7 @@ export default function AppointmentBoardPage() {
 
             <div className="flex-1 overflow-y-auto p-4">
               <div className="space-y-3">
-                {appointmentsByStatus['cancelled']?.map((appointment) => (
+                {appointmentsByStatus['cancelled']?.map(appointment => (
                   <AppointmentCard
                     key={appointment.id}
                     appointment={appointment}

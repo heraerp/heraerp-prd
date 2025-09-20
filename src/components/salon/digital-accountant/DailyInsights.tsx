@@ -181,7 +181,9 @@ export function DailyInsights({
                 <p className="text-lg font-semibold">12</p>
               </div>
               <div className="text-center">
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">Avg Ticket</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  Avg Ticket
+                </p>
                 <p className="text-lg font-semibold">321</p>
               </div>
               <div className="text-center">

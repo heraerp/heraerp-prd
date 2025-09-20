@@ -1,61 +1,71 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Plus, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { FilterBar } from '@/components/civicflow/programs/FilterBar';
-import { ProgramCard } from '@/components/civicflow/programs/ProgramCard';
-import { CreateProgramModal } from '@/components/civicflow/programs/CreateProgramModal';
-import { CreateGrantRoundModal } from '@/components/civicflow/programs/CreateGrantRoundModal';
-import { useProgramKpis, useProgramList, useExportPrograms } from '@/hooks/use-programs';
-import type { ProgramFilters } from '@/types/crm-programs';
+import { useState } from 'react'
+import { Plus, Download } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { FilterBar } from '@/components/civicflow/programs/FilterBar'
+import { ProgramCard } from '@/components/civicflow/programs/ProgramCard'
+import { CreateProgramModal } from '@/components/civicflow/programs/CreateProgramModal'
+import { CreateGrantRoundModal } from '@/components/civicflow/programs/CreateGrantRoundModal'
+import { useProgramKpis, useProgramList, useExportPrograms } from '@/hooks/use-programs'
+import type { ProgramFilters } from '@/types/crm-programs'
 
 export default function ProgramsPage() {
   const [filters, setFilters] = useState<ProgramFilters>({
     page: 1,
-    page_size: 20,
-  });
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
-  const [isGrantRoundModalOpen, setIsGrantRoundModalOpen] = useState(false);
+    page_size: 20
+  })
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null)
+  const [isGrantRoundModalOpen, setIsGrantRoundModalOpen] = useState(false)
 
-  const { data: kpis, isLoading: kpisLoading } = useProgramKpis();
-  const { data: programsData, isLoading: programsLoading } = useProgramList(filters);
-  const exportPrograms = useExportPrograms();
+  const { data: kpis, isLoading: kpisLoading } = useProgramKpis()
+  const { data: programsData, isLoading: programsLoading } = useProgramList(filters)
+  const exportPrograms = useExportPrograms()
 
   const handleExport = (format: 'csv' | 'json') => {
-    exportPrograms.mutate({ filters, format });
-  };
+    exportPrograms.mutate({ filters, format })
+  }
 
   const handleCreateGrantRound = (programId: string) => {
-    setSelectedProgramId(programId);
-    setIsGrantRoundModalOpen(true);
-  };
+    setSelectedProgramId(programId)
+    setIsGrantRoundModalOpen(true)
+  }
 
   const kpiCards = [
     {
       title: 'Total Programs',
       value: kpis?.total_programs || 0,
-      color: 'text-primary',
+      color: 'text-primary'
     },
     {
       title: 'Active Rounds',
       value: kpis?.active_rounds || 0,
-      color: 'text-secondary',
+      color: 'text-secondary'
     },
     {
       title: 'Average Budget',
-      value: kpis?.avg_budget ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(kpis.avg_budget) : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(0),
-      color: 'text-accent',
+      value: kpis?.avg_budget
+        ? new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+          }).format(kpis.avg_budget)
+        : new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0
+          }).format(0),
+      color: 'text-accent'
     },
     {
       title: 'New This Month',
       value: kpis?.new_this_month || 0,
-      color: 'text-accent2',
-    },
-  ];
+      color: 'text-accent2'
+    }
+  ]
 
   return (
     <div className="p-6 lg:p-8 space-y-6">
@@ -90,9 +100,7 @@ export default function ProgramsPage() {
         {kpiCards.map((kpi, index) => (
           <Card key={index} className="bg-panel border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-text-300">
-                {kpi.title}
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-text-300">{kpi.title}</CardTitle>
             </CardHeader>
             <CardContent>
               {kpisLoading ? (
@@ -108,7 +116,7 @@ export default function ProgramsPage() {
       {/* Filters */}
       <FilterBar
         filters={filters}
-        onFiltersChange={(newFilters) => setFilters({ ...newFilters, page: 1 })}
+        onFiltersChange={newFilters => setFilters({ ...newFilters, page: 1 })}
       />
 
       {/* Programs Grid */}
@@ -136,7 +144,7 @@ export default function ProgramsPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {programsData?.items.map((program) => (
+            {programsData?.items.map(program => (
               <ProgramCard
                 key={program.id}
                 program={program}
@@ -150,7 +158,7 @@ export default function ProgramsPage() {
             <div className="flex justify-center gap-2 mt-6">
               <Button
                 variant="outline"
-                onClick={() => setFilters((f) => ({ ...f, page: Math.max(1, f.page! - 1) }))}
+                onClick={() => setFilters(f => ({ ...f, page: Math.max(1, f.page! - 1) }))}
                 disabled={filters.page === 1}
               >
                 Previous
@@ -160,7 +168,7 @@ export default function ProgramsPage() {
               </span>
               <Button
                 variant="outline"
-                onClick={() => setFilters((f) => ({ ...f, page: f.page! + 1 }))}
+                onClick={() => setFilters(f => ({ ...f, page: f.page! + 1 }))}
                 disabled={filters.page === programsData.total_pages}
               >
                 Next
@@ -171,10 +179,7 @@ export default function ProgramsPage() {
       )}
 
       {/* Modals */}
-      <CreateProgramModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+      <CreateProgramModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />
 
       {selectedProgramId && (
         <CreateGrantRoundModal
@@ -184,5 +189,5 @@ export default function ProgramsPage() {
         />
       )}
     </div>
-  );
+  )
 }

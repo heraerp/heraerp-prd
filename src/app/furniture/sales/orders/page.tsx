@@ -6,10 +6,20 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Plus, ShoppingCart, Package, IndianRupee, Clock, 
-  Truck, CheckCircle, AlertCircle, FileText, Search,
-  Filter, Calendar, TrendingUp
+import {
+  Plus,
+  ShoppingCart,
+  Package,
+  IndianRupee,
+  Clock,
+  Truck,
+  CheckCircle,
+  AlertCircle,
+  FileText,
+  Search,
+  Filter,
+  Calendar,
+  TrendingUp
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { useUniversalSearchParams } from '@/lib/dna/hooks/search-params'
@@ -31,10 +41,22 @@ interface FurnitureItem {
 }
 
 const mockFurnitureItems: FurnitureItem[] = [
-  { id: '1', name: 'Executive Teak Desk', category: 'Office Furniture', sku: 'OFC-DSK-001', price: 45000 },
+  {
+    id: '1',
+    name: 'Executive Teak Desk',
+    category: 'Office Furniture',
+    sku: 'OFC-DSK-001',
+    price: 45000
+  },
   { id: '2', name: 'Rosewood Chair Set (6)', category: 'Dining', sku: 'DIN-CHR-002', price: 78000 },
   { id: '3', name: 'Sandalwood Bed Frame', category: 'Bedroom', sku: 'BED-FRM-003', price: 125000 },
-  { id: '4', name: 'Custom Conference Table', category: 'Office Furniture', sku: 'OFC-TBL-004', price: 95000 }
+  {
+    id: '4',
+    name: 'Custom Conference Table',
+    category: 'Office Furniture',
+    sku: 'OFC-TBL-004',
+    price: 95000
+  }
 ]
 
 const statusConfig = {
@@ -52,7 +74,7 @@ export default function SalesOrdersPage() {
   const [selectedItems, setSelectedItems] = useState<FurnitureItem[]>([])
   const [customerName, setCustomerName] = useState('')
   const [deliveryDate, setDeliveryDate] = useState('')
-  
+
   const view = searchParams.get('view') || 'list'
 
   // Load orders
@@ -90,21 +112,24 @@ export default function SalesOrdersPage() {
   })
 
   const loading = ordersLoading || productsLoading
-  
-  const furnitureItems = products?.map(p => ({
-    id: p.id,
-    name: p.entity_name,
-    category: p.metadata?.category || 'Furniture',
-    sku: p.entity_code,
-    price: p.metadata?.price || 0
-  })) || mockFurnitureItems
+
+  const furnitureItems =
+    products?.map(p => ({
+      id: p.id,
+      name: p.entity_name,
+      category: p.metadata?.category || 'Furniture',
+      sku: p.entity_code,
+      price: p.metadata?.price || 0
+    })) || mockFurnitureItems
 
   // Calculate stats
   const stats = {
     totalOrders: orders?.length || 0,
     pendingOrders: orders?.filter(o => o.metadata?.status === 'confirmed').length || 0,
     monthlyRevenue: orders?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0,
-    avgOrderValue: orders?.length ? (orders.reduce((sum, o) => sum + (o.total_amount || 0), 0) / orders.length) : 0
+    avgOrderValue: orders?.length
+      ? orders.reduce((sum, o) => sum + (o.total_amount || 0), 0) / orders.length
+      : 0
   }
 
   const handleCreateOrder = async () => {
@@ -114,7 +139,7 @@ export default function SalesOrdersPage() {
     }
 
     const total = selectedItems.reduce((sum, item) => sum + item.price, 0)
-    
+
     try {
       await universalApi.create({
         table: 'universal_transactions',
@@ -132,7 +157,7 @@ export default function SalesOrdersPage() {
           smart_code: 'HERA.FURNITURE.SALES.ORDER.V1'
         }
       })
-      
+
       // Reset form
       setSelectedItems([])
       setCustomerName('')
@@ -150,11 +175,7 @@ export default function SalesOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft
-    return (
-      <Badge className={config.color}>
-        {config.label}
-      </Badge>
-    )
+    return <Badge className={config.color}>{config.label}</Badge>
   }
 
   return (
@@ -178,7 +199,10 @@ export default function SalesOrdersPage() {
               </Button>
             </Link>
             <Link href="/furniture/sales/orders/new">
-              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+              <Button
+                size="sm"
+                className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+              >
                 <Plus className="h-4 w-4" />
                 New Order
               </Button>
@@ -269,7 +293,10 @@ export default function SalesOrdersPage() {
                         </tr>
                       ) : orders?.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="text-center p-8 text-[var(--color-text-secondary)]">
+                          <td
+                            colSpan={6}
+                            className="text-center p-8 text-[var(--color-text-secondary)]"
+                          >
                             No orders found. Create your first order to get started.
                           </td>
                         </tr>
@@ -280,12 +307,20 @@ export default function SalesOrdersPage() {
                               <code className="text-sm">{order.transaction_code}</code>
                             </td>
                             <td className="p-4">{order.metadata?.customer_name || 'Unknown'}</td>
-                            <td className="p-4">{format(new Date(order.transaction_date), 'MMM dd, yyyy')}</td>
-                            <td className="p-4">{getStatusBadge(order.metadata?.status || 'draft')}</td>
-                            <td className="p-4 font-semibold">{formatCurrency(order.total_amount || 0)}</td>
+                            <td className="p-4">
+                              {format(new Date(order.transaction_date), 'MMM dd, yyyy')}
+                            </td>
+                            <td className="p-4">
+                              {getStatusBadge(order.metadata?.status || 'draft')}
+                            </td>
+                            <td className="p-4 font-semibold">
+                              {formatCurrency(order.total_amount || 0)}
+                            </td>
                             <td className="p-4">
                               <Link href={`/furniture/sales/orders/${order.id}`}>
-                                <Button variant="ghost" size="sm">View</Button>
+                                <Button variant="ghost" size="sm">
+                                  View
+                                </Button>
                               </Link>
                             </td>
                           </tr>
@@ -303,7 +338,9 @@ export default function SalesOrdersPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Product Selection */}
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
-                <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">Select Products</h3>
+                <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">
+                  Select Products
+                </h3>
                 <div className="space-y-3">
                   {loading ? (
                     <p className="text-[var(--color-text-secondary)]">Loading products...</p>
@@ -341,25 +378,25 @@ export default function SalesOrdersPage() {
                 <h3 className="bg-[var(--color-body)] text-lg font-semibold mb-4">
                   Cart ({selectedItems.length} items)
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Customer Name</label>
                     <input
                       type="text"
                       value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
+                      onChange={e => setCustomerName(e.target.value)}
                       className="w-full px-3 py-2 border rounded-md"
                       placeholder="Enter customer name"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium mb-2">Delivery Date</label>
                     <input
                       type="date"
                       value={deliveryDate}
-                      onChange={(e) => setDeliveryDate(e.target.value)}
+                      onChange={e => setDeliveryDate(e.target.value)}
                       className="w-full px-3 py-2 border rounded-md"
                     />
                   </div>
@@ -370,7 +407,10 @@ export default function SalesOrdersPage() {
                     <p className="text-[var(--color-text-secondary)]">No items in cart</p>
                   ) : (
                     selectedItems.map((item, index) => (
-                      <div key={index} className="bg-[var(--color-body)] flex items-center justify-between">
+                      <div
+                        key={index}
+                        className="bg-[var(--color-body)] flex items-center justify-between"
+                      >
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
                         </div>
@@ -379,7 +419,9 @@ export default function SalesOrdersPage() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => setSelectedItems(selectedItems.filter((_, i) => i !== index))}
+                            onClick={() =>
+                              setSelectedItems(selectedItems.filter((_, i) => i !== index))
+                            }
                           >
                             Remove
                           </Button>
@@ -394,7 +436,12 @@ export default function SalesOrdersPage() {
                     <div className="border-t pt-4 mt-4">
                       <div className="flex justify-between items-center text-lg font-semibold">
                         <span>Total</span>
-                        <span>₹{selectedItems.reduce((sum, item) => sum + item.price, 0).toLocaleString('en-IN')}</span>
+                        <span>
+                          ₹
+                          {selectedItems
+                            .reduce((sum, item) => sum + item.price, 0)
+                            .toLocaleString('en-IN')}
+                        </span>
                       </div>
                     </div>
 
@@ -426,16 +473,21 @@ export default function SalesOrdersPage() {
                         <Badge className={config.color}>{count}</Badge>
                       </div>
                       <div className="space-y-2">
-                        {orders?.filter(o => o.metadata?.status === key).slice(0, 3).map(order => (
-                          <Link key={order.id} href={`/furniture/sales/orders/${order.id}`}>
-                            <div className="p-2 bg-[var(--color-surface-raised)] rounded hover:shadow-sm transition-shadow cursor-pointer">
-                              <p className="text-sm font-medium">{order.metadata?.customer_name}</p>
-                              <p className="text-xs text-[var(--color-text-secondary)]">
-                                {formatCurrency(order.total_amount || 0)}
-                              </p>
-                            </div>
-                          </Link>
-                        ))}
+                        {orders
+                          ?.filter(o => o.metadata?.status === key)
+                          .slice(0, 3)
+                          .map(order => (
+                            <Link key={order.id} href={`/furniture/sales/orders/${order.id}`}>
+                              <div className="p-2 bg-[var(--color-surface-raised)] rounded hover:shadow-sm transition-shadow cursor-pointer">
+                                <p className="text-sm font-medium">
+                                  {order.metadata?.customer_name}
+                                </p>
+                                <p className="text-xs text-[var(--color-text-secondary)]">
+                                  {formatCurrency(order.total_amount || 0)}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
                       </div>
                     </div>
                   )

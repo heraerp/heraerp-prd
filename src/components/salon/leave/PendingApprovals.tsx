@@ -157,7 +157,9 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
           {pendingRequests.length === 0 && (
             <div className="text-center py-8">
               <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-              <p className="!text-muted-foreground dark:!text-muted-foreground">No pending leave requests</p>
+              <p className="!text-muted-foreground dark:!text-muted-foreground">
+                No pending leave requests
+              </p>
             </div>
           )}
         </div>

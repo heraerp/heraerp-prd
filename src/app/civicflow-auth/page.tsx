@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { CivicFlowDemoAuth } from '@/components/civicflow/CivicFlowDemoAuth';
+import { CivicFlowDemoAuth } from '@/components/civicflow/CivicFlowDemoAuth'
 
 export default function CivicFlowAuthPage() {
-  return <CivicFlowDemoAuth />;
+  return <CivicFlowDemoAuth />
 }

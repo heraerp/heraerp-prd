@@ -55,7 +55,12 @@ interface CatalogPaneProps {
   currentAppointmentId?: string
 }
 
-export function CatalogPane({ organizationId, onAddItem, currentCustomerId, currentAppointmentId }: CatalogPaneProps) {
+export function CatalogPane({
+  organizationId,
+  onAddItem,
+  currentCustomerId,
+  currentAppointmentId
+}: CatalogPaneProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [activeTab, setActiveTab] = useState<'services' | 'products'>('services')
@@ -73,10 +78,10 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
     const loadCatalogData = async () => {
       try {
         setLoading(true)
-        
+
         // Set organization context
         universalApi.setOrganizationId(organizationId)
-        
+
         // Load services from core_entities
         const servicesResponse = await universalApi.getEntities({
           filters: {
@@ -87,29 +92,29 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
 
         if (servicesResponse.success && servicesResponse.data) {
           console.log('Raw service entities from database:', servicesResponse.data.slice(0, 2)) // Log first 2 entities
-          
+
           // Convert entities to catalog format
           const servicesData = servicesResponse.data.map(entity => {
             // Extract pricing from metadata or dynamic data
             // First try metadata, then fall back to a default if needed
             let price = entity.metadata?.price || entity.metadata?.base_price || 0
-            
+
             // If no price in metadata, use a default based on service name
             if (price === 0 && entity.entity_type === 'service') {
               // Default prices for common services
               const defaultPrices: Record<string, number> = {
-                'cut': 60,
-                'color': 200,
-                'highlight': 280,
-                'treatment': 100,
-                'blowout': 75,
-                'style': 120,
-                'manicure': 45,
-                'pedicure': 65,
-                'facial': 180,
-                'massage': 200
+                cut: 60,
+                color: 200,
+                highlight: 280,
+                treatment: 100,
+                blowout: 75,
+                style: 120,
+                manicure: 45,
+                pedicure: 65,
+                facial: 180,
+                massage: 200
               }
-              
+
               const nameLower = entity.entity_name.toLowerCase()
               for (const [keyword, defaultPrice] of Object.entries(defaultPrices)) {
                 if (nameLower.includes(keyword)) {
@@ -118,7 +123,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
                   break
                 }
               }
-              
+
               // If still no price, use a generic default
               if (price === 0) {
                 price = 75
@@ -128,7 +133,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
             const duration = entity.metadata?.duration_mins || entity.metadata?.duration || 60
             const category = entity.metadata?.category || 'General'
             const description = entity.metadata?.description || ''
-            
+
             return {
               id: entity.id || '',
               name: entity.entity_name,
@@ -141,16 +146,19 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
               description: description,
               status: entity.metadata?.status || 'active',
               metadata: entity.metadata,
-              is_active: entity.metadata?.status !== 'inactive' && entity.metadata?.status !== 'archived'
+              is_active:
+                entity.metadata?.status !== 'inactive' && entity.metadata?.status !== 'archived'
             }
           })
 
-          console.log(`Loaded ${servicesData.length} services from database:`, 
-            servicesData.map(s => ({ 
-              name: s.name, 
+          console.log(
+            `Loaded ${servicesData.length} services from database:`,
+            servicesData.map(s => ({
+              name: s.name,
               price: s.price,
               metadata: s.metadata
-            })))
+            }))
+          )
 
           // Load dynamic pricing data if available
           if (servicesData.length > 0) {
@@ -159,7 +167,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
               // Note: The universal API doesn't have a bulk query for dynamic data,
               // so we'll skip this for now and rely on metadata pricing
               console.log('Using metadata pricing for services')
-              
+
               // Alternative: If you need dynamic pricing, you could:
               // 1. Loop through services and call getDynamicFields for each
               // 2. Or store pricing in entity metadata (recommended)
@@ -174,7 +182,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
           console.error('Failed to load services:', servicesResponse.error)
           setServices([])
         }
-        
+
         // Load products from core_entities
         const productsResponse = await universalApi.getEntities({
           filters: {
@@ -186,20 +194,20 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
         if (productsResponse.success && productsResponse.data) {
           const productsData = productsResponse.data.map(entity => {
             let price = entity.metadata?.price || entity.metadata?.base_price || 0
-            
+
             // If no price in metadata, use a default for products
             if (price === 0 && entity.entity_type === 'product') {
               const defaultProductPrices: Record<string, number> = {
-                'shampoo': 45,
-                'conditioner': 45,
-                'mask': 65,
-                'oil': 55,
-                'cream': 38,
-                'spray': 35,
-                'serum': 58,
-                'treatment': 48
+                shampoo: 45,
+                conditioner: 45,
+                mask: 65,
+                oil: 55,
+                cream: 38,
+                spray: 35,
+                serum: 58,
+                treatment: 48
               }
-              
+
               const nameLower = entity.entity_name.toLowerCase()
               for (const [keyword, defaultPrice] of Object.entries(defaultProductPrices)) {
                 if (nameLower.includes(keyword)) {
@@ -208,7 +216,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
                   break
                 }
               }
-              
+
               // Generic product default
               if (price === 0) {
                 price = 40
@@ -217,7 +225,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
             }
             const category = entity.metadata?.category || 'General'
             const description = entity.metadata?.description || ''
-            
+
             return {
               id: entity.id || '',
               name: entity.entity_name,
@@ -229,17 +237,17 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
               description: description,
               status: entity.metadata?.status || 'active',
               metadata: entity.metadata,
-              is_active: entity.metadata?.status !== 'inactive' && entity.metadata?.status !== 'archived'
+              is_active:
+                entity.metadata?.status !== 'inactive' && entity.metadata?.status !== 'archived'
             }
           })
-          
+
           console.log(`Loaded ${productsData.length} products from database`)
           setProducts(productsData)
         } else {
           console.log('No products found or error loading products')
           setProducts([])
         }
-        
       } catch (error) {
         console.error('Error loading catalog data:', error)
       } finally {
@@ -264,23 +272,27 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
   // Filter items
   const filteredItems = useMemo(() => {
     const filtered = currentItems.filter(item => {
-      const matchesSearch = searchQuery === '' || 
+      const matchesSearch =
+        searchQuery === '' ||
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item.description || '').toLowerCase().includes(searchQuery.toLowerCase())
-      
+
       const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
-      
+
       return matchesSearch && matchesCategory && item.is_active
     })
-    
+
     console.log(`Filtering: ${currentItems.length} total items, ${filtered.length} after filtering`)
-    console.log('Filtered items:', filtered.map(item => ({ 
-      name: item.name, 
-      price: item.price, 
-      is_active: item.is_active, 
-      category: item.category 
-    })))
-    
+    console.log(
+      'Filtered items:',
+      filtered.map(item => ({
+        name: item.name,
+        price: item.price,
+        is_active: item.is_active,
+        category: item.category
+      }))
+    )
+
     return filtered
   }, [currentItems, searchQuery, selectedCategory])
 
@@ -291,10 +303,10 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
       setShowStylistModal(true)
       return
     }
-    
+
     // For products, add directly to cart
     let finalPrice = item.price || 0
-    
+
     console.log('Adding product to cart:', {
       name: item.name,
       price: finalPrice
@@ -325,10 +337,15 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center" style={{ backgroundColor: COLORS.charcoal }}>
+      <div
+        className="h-full flex items-center justify-center"
+        style={{ backgroundColor: COLORS.charcoal }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" 
-               style={{ borderColor: COLORS.gold }}></div>
+          <div
+            className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4"
+            style={{ borderColor: COLORS.gold }}
+          ></div>
           <p style={{ color: COLORS.lightText }}>Loading catalog...</p>
         </div>
       </div>
@@ -336,29 +353,37 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
   }
 
   return (
-    <div className="h-full flex flex-col" 
-         style={{ 
-           backgroundColor: COLORS.charcoal,
-           boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
-         }}>
+    <div
+      className="h-full flex flex-col"
+      style={{
+        backgroundColor: COLORS.charcoal,
+        boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
+      }}
+    >
       {/* Header */}
-      <div className="p-6 border-b" 
-           style={{ 
-             borderColor: COLORS.bronze + '20',
-             backgroundColor: COLORS.charcoalLight,
-             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-           }}>
-        <h2 className="text-xl font-semibold mb-4" style={{ color: COLORS.champagne }}>Catalog</h2>
-        
+      <div
+        className="p-6 border-b"
+        style={{
+          borderColor: COLORS.bronze + '20',
+          backgroundColor: COLORS.charcoalLight,
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}
+      >
+        <h2 className="text-xl font-semibold mb-4" style={{ color: COLORS.champagne }}>
+          Catalog
+        </h2>
+
         {/* Search */}
         <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" 
-                  style={{ color: COLORS.bronze }} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
+            style={{ color: COLORS.bronze }}
+          />
           <input
             id="catalog-search"
             placeholder="Search services and products..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 rounded-lg border text-sm w-full"
             style={{
               borderColor: COLORS.bronze + '33',
@@ -370,42 +395,62 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
         </div>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-          <TabsList className="grid w-full grid-cols-2 p-0 border-b w-full justify-start h-auto rounded-none"
-                    style={{ 
-                      borderColor: COLORS.bronze + '33',
-                      backgroundColor: COLORS.charcoalLight,
-                      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-                    }}>
-            <TabsTrigger value="services" 
-                         className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
-                         style={{
-                           backgroundColor: activeTab === 'services' ? COLORS.charcoal : 'transparent'
-                         }}>
-              <Scissors className="w-4 h-4" 
-                       style={{ color: activeTab === 'services' ? COLORS.gold : COLORS.champagne }} />
-              <span style={{ color: activeTab === 'services' ? COLORS.champagne : COLORS.lightText }}>
+        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
+          <TabsList
+            className="grid w-full grid-cols-2 p-0 border-b w-full justify-start h-auto rounded-none"
+            style={{
+              borderColor: COLORS.bronze + '33',
+              backgroundColor: COLORS.charcoalLight,
+              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            <TabsTrigger
+              value="services"
+              className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+              style={{
+                backgroundColor: activeTab === 'services' ? COLORS.charcoal : 'transparent'
+              }}
+            >
+              <Scissors
+                className="w-4 h-4"
+                style={{ color: activeTab === 'services' ? COLORS.gold : COLORS.champagne }}
+              />
+              <span
+                style={{ color: activeTab === 'services' ? COLORS.champagne : COLORS.lightText }}
+              >
                 Services ({services.length})
               </span>
-              <div className={cn(
-                "absolute bottom-0 left-0 right-0 h-0.5 transition-all",
-                activeTab === 'services' ? 'opacity-100' : 'opacity-0'
-              )} style={{ backgroundColor: COLORS.gold }} />
+              <div
+                className={cn(
+                  'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
+                  activeTab === 'services' ? 'opacity-100' : 'opacity-0'
+                )}
+                style={{ backgroundColor: COLORS.gold }}
+              />
             </TabsTrigger>
-            <TabsTrigger value="products" 
-                         className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
-                         style={{
-                           backgroundColor: activeTab === 'products' ? COLORS.charcoal : 'transparent'
-                         }}>
-              <Package className="w-4 h-4" 
-                      style={{ color: activeTab === 'products' ? COLORS.gold : COLORS.champagne }} />
-              <span style={{ color: activeTab === 'products' ? COLORS.champagne : COLORS.lightText }}>
+            <TabsTrigger
+              value="products"
+              className="rounded-none px-6 py-3 relative transition-colors flex items-center gap-2"
+              style={{
+                backgroundColor: activeTab === 'products' ? COLORS.charcoal : 'transparent'
+              }}
+            >
+              <Package
+                className="w-4 h-4"
+                style={{ color: activeTab === 'products' ? COLORS.gold : COLORS.champagne }}
+              />
+              <span
+                style={{ color: activeTab === 'products' ? COLORS.champagne : COLORS.lightText }}
+              >
                 Products ({products.length})
               </span>
-              <div className={cn(
-                "absolute bottom-0 left-0 right-0 h-0.5 transition-all",
-                activeTab === 'products' ? 'opacity-100' : 'opacity-0'
-              )} style={{ backgroundColor: COLORS.gold }} />
+              <div
+                className={cn(
+                  'absolute bottom-0 left-0 right-0 h-0.5 transition-all',
+                  activeTab === 'products' ? 'opacity-100' : 'opacity-0'
+                )}
+                style={{ backgroundColor: COLORS.gold }}
+              />
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -417,10 +462,10 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
           {categories.map(category => (
             <Badge
               key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
+              variant={selectedCategory === category ? 'default' : 'outline'}
               className={cn(
-                "cursor-pointer transition-colors",
-                selectedCategory === category ? "" : ""
+                'cursor-pointer transition-colors',
+                selectedCategory === category ? '' : ''
               )}
               style={{
                 backgroundColor: selectedCategory === category ? COLORS.gold : 'transparent',
@@ -439,17 +484,23 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
       <div className="flex-1 overflow-y-auto p-6">
         {filteredItems.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                 style={{ backgroundColor: COLORS.charcoalLight }}>
+            <div
+              className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: COLORS.charcoalLight }}
+            >
               {activeTab === 'services' ? (
                 <Scissors className="w-8 h-8" style={{ color: COLORS.bronze }} />
               ) : (
                 <Package className="w-8 h-8" style={{ color: COLORS.bronze }} />
               )}
             </div>
-            <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>No items found</h3>
+            <h3 className="text-lg font-medium mb-2" style={{ color: COLORS.champagne }}>
+              No items found
+            </h3>
             <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
-              {searchQuery ? 'Try adjusting your search terms' : `No ${activeTab} available in this category`}
+              {searchQuery
+                ? 'Try adjusting your search terms'
+                : `No ${activeTab} available in this category`}
             </p>
           </div>
         ) : (
@@ -469,29 +520,39 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium truncate" style={{ color: COLORS.champagne }}>{item.name}</h3>
+                        <h3 className="font-medium truncate" style={{ color: COLORS.champagne }}>
+                          {item.name}
+                        </h3>
                         {item.category && (
-                          <Badge variant="secondary" className="text-xs"
-                                 style={{ 
-                                   backgroundColor: COLORS.charcoalDark,
-                                   color: COLORS.champagne,
-                                   border: `1px solid ${COLORS.gold}33`
-                                 }}>
+                          <Badge
+                            variant="secondary"
+                            className="text-xs"
+                            style={{
+                              backgroundColor: COLORS.charcoalDark,
+                              color: COLORS.champagne,
+                              border: `1px solid ${COLORS.gold}33`
+                            }}
+                          >
                             {item.category}
                           </Badge>
                         )}
                       </div>
-                      
+
                       {item.description && (
-                        <p className="text-sm line-clamp-2 mb-2" style={{ color: COLORS.lightText, opacity: 0.8 }}>
+                        <p
+                          className="text-sm line-clamp-2 mb-2"
+                          style={{ color: COLORS.lightText, opacity: 0.8 }}
+                        >
                           {item.description}
                         </p>
                       )}
-                      
-                      <div className="flex items-center gap-4 text-sm" style={{ color: COLORS.bronze }}>
+
+                      <div
+                        className="flex items-center gap-4 text-sm"
+                        style={{ color: COLORS.bronze }}
+                      >
                         <div className="flex items-center gap-1">
-                          <Tag className="w-3 h-3" />
-                          ${item.price?.toFixed(2) || '0.00'}
+                          <Tag className="w-3 h-3" />${item.price?.toFixed(2) || '0.00'}
                         </div>
                         {activeTab === 'services' && item.duration_mins && (
                           <div className="flex items-center gap-1">
@@ -501,7 +562,7 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
                         )}
                       </div>
                     </div>
-                    
+
                     <Button
                       size="sm"
                       variant="ghost"
@@ -512,8 +573,10 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
                       disabled={pricingLoading === item.id}
                     >
                       {pricingLoading === item.id ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2" 
-                             style={{ borderColor: COLORS.gold }}></div>
+                        <div
+                          className="animate-spin rounded-full h-4 w-4 border-b-2"
+                          style={{ borderColor: COLORS.gold }}
+                        ></div>
                       ) : (
                         <Plus className="w-4 h-4" />
                       )}
@@ -524,20 +587,20 @@ export function CatalogPane({ organizationId, onAddItem, currentCustomerId, curr
             ))}
           </div>
         )}
-      
-      {/* Stylist Selection Modal */}
-      {selectedService && (
-        <StylistSelectionModal
-          open={showStylistModal}
-          onClose={() => {
-            setShowStylistModal(false)
-            setSelectedService(null)
-          }}
-          service={selectedService}
-          organizationId={organizationId}
-          onConfirm={handleStylistConfirm}
-        />
-      )}
+
+        {/* Stylist Selection Modal */}
+        {selectedService && (
+          <StylistSelectionModal
+            open={showStylistModal}
+            onClose={() => {
+              setShowStylistModal(false)
+              setSelectedService(null)
+            }}
+            service={selectedService}
+            organizationId={organizationId}
+            onConfirm={handleStylistConfirm}
+          />
+        )}
       </div>
     </div>
   )

@@ -476,8 +476,12 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                           <div className="flex items-center space-x-2">
                             <Icon className="w-4 h-4 text-blue-400" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
-                              <p className="text-xs text-muted-foreground font-mono">{doc.method}</p>
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {doc.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground font-mono">
+                                {doc.method}
+                              </p>
                             </div>
                           </div>
                         </button>
@@ -501,8 +505,12 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                           <div className="flex items-center space-x-2">
                             <Icon className="w-4 h-4 text-purple-400" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
-                              <p className="text-xs text-muted-foreground font-mono">{doc.method}</p>
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {doc.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground font-mono">
+                                {doc.method}
+                              </p>
                             </div>
                           </div>
                         </button>
@@ -527,7 +535,9 @@ curl -X POST "http://localhost:3001/api/v1/templates" \\
                           <selectedDoc.icon className="w-6 h-6 text-foreground" />
                         </div>
                         <div>
-                          <CardTitle className="text-foreground text-xl">{selectedDoc.name}</CardTitle>
+                          <CardTitle className="text-foreground text-xl">
+                            {selectedDoc.name}
+                          </CardTitle>
                           <div className="flex items-center space-x-2 mt-1">
                             <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 font-mono text-xs">
                               {selectedDoc.method}

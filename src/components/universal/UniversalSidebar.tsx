@@ -70,7 +70,9 @@ const MobileBottomNav = React.memo(function MobileBottomNav({
               )}
             >
               <div className="relative">
-                <Icon className={cn('h-5 w-5', active ? 'text-violet-600' : 'text-muted-foreground')} />
+                <Icon
+                  className={cn('h-5 w-5', active ? 'text-violet-600' : 'text-muted-foreground')}
+                />
                 {item.badge && (
                   <span
                     className={cn(
@@ -321,7 +323,9 @@ function UniversalSidebar({
                     <Icon
                       className={cn(
                         'h-5 w-5',
-                        active ? 'text-violet-600' : 'text-muted-foreground group-hover:text-violet-600'
+                        active
+                          ? 'text-violet-600'
+                          : 'text-muted-foreground group-hover:text-violet-600'
                       )}
                     />
 
@@ -401,7 +405,9 @@ function UniversalSidebar({
                     <Icon
                       className={cn(
                         'h-5 w-5',
-                        active ? 'text-violet-600' : 'text-muted-foreground group-hover:text-violet-600'
+                        active
+                          ? 'text-violet-600'
+                          : 'text-muted-foreground group-hover:text-violet-600'
                       )}
                     />
 

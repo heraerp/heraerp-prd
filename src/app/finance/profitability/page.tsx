@@ -341,7 +341,9 @@ export default function ProfitabilityPage() {
                 <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.grossProfit / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-foreground/40 mt-1">{overviewMetrics.grossMargin}% margin</p>
+                <p className="text-xs text-foreground/40 mt-1">
+                  {overviewMetrics.grossMargin}% margin
+                </p>
               </div>
             </div>
 
@@ -377,7 +379,9 @@ export default function ProfitabilityPage() {
                 <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.netProfit / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-foreground/40 mt-1">{overviewMetrics.netMargin}% margin</p>
+                <p className="text-xs text-foreground/40 mt-1">
+                  {overviewMetrics.netMargin}% margin
+                </p>
               </div>
             </div>
 
@@ -394,7 +398,9 @@ export default function ProfitabilityPage() {
                 <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.ebitda / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-foreground/40 mt-1">{overviewMetrics.ebitdaMargin}% margin</p>
+                <p className="text-xs text-foreground/40 mt-1">
+                  {overviewMetrics.ebitdaMargin}% margin
+                </p>
               </div>
             </div>
           </div>
@@ -451,7 +457,9 @@ export default function ProfitabilityPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Performance Scorecard</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Performance Scorecard
+                </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <RadarChart data={performanceMetrics}>
                     <PolarGrid stroke="rgba(255,255,255,0.1)" />
@@ -487,7 +495,9 @@ export default function ProfitabilityPage() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl overflow-hidden">
               <div className="p-6 border-b border-border/10">
-                <h2 className="text-xl font-semibold text-foreground">Product Profitability Analysis</h2>
+                <h2 className="text-xl font-semibold text-foreground">
+                  Product Profitability Analysis
+                </h2>
               </div>
               <table className="w-full">
                 <thead className="bg-background/5 border-b border-border/10">
@@ -495,11 +505,19 @@ export default function ProfitabilityPage() {
                     <th className="text-left py-4 pl-6 text-sm font-medium text-foreground/60">
                       Product
                     </th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Revenue</th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Revenue
+                    </th>
                     <th className="text-right py-4 text-sm font-medium text-foreground/60">Cost</th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Profit</th>
-                    <th className="text-center py-4 text-sm font-medium text-foreground/60">Margin</th>
-                    <th className="text-right py-4 text-sm font-medium text-foreground/60">Units</th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Profit
+                    </th>
+                    <th className="text-center py-4 text-sm font-medium text-foreground/60">
+                      Margin
+                    </th>
+                    <th className="text-right py-4 text-sm font-medium text-foreground/60">
+                      Units
+                    </th>
                     <th className="text-center py-4 pr-6 text-sm font-medium text-foreground/60">
                       Trend
                     </th>
@@ -565,7 +583,9 @@ export default function ProfitabilityPage() {
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-6">Product Margin Comparison</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-6">
+                Product Margin Comparison
+              </h2>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={productProfitability}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -709,7 +729,9 @@ export default function ProfitabilityPage() {
           <div className="relative group mb-6">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#fff685] to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-6">Profitability Margin Trends</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-6">
+                Profitability Margin Trends
+              </h2>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={profitabilityTrend}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -774,7 +796,9 @@ export default function ProfitabilityPage() {
                   <div className="flex items-start space-x-3">
                     <TrendingUp className="h-4 w-4 text-emerald-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">Enterprise segment growth</p>
+                      <p className="text-sm font-medium text-foreground">
+                        Enterprise segment growth
+                      </p>
                       <p className="text-xs text-foreground/60">40% margin maintained</p>
                     </div>
                   </div>
@@ -802,7 +826,9 @@ export default function ProfitabilityPage() {
                   <div className="flex items-start space-x-3">
                     <Info className="h-4 w-4 text-yellow-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">Residential Basic margin</p>
+                      <p className="text-sm font-medium text-foreground">
+                        Residential Basic margin
+                      </p>
                       <p className="text-xs text-foreground/60">12% - below target of 15%</p>
                     </div>
                   </div>
@@ -816,7 +842,9 @@ export default function ProfitabilityPage() {
                   <div className="flex items-start space-x-3">
                     <Info className="h-4 w-4 text-yellow-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">Customer acquisition cost</p>
+                      <p className="text-sm font-medium text-foreground">
+                        Customer acquisition cost
+                      </p>
                       <p className="text-xs text-foreground/60">Rising in competitive segments</p>
                     </div>
                   </div>

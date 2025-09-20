@@ -17,9 +17,7 @@ export function Loading({ className, size = 'md', text = 'Loading...' }: Loading
   return (
     <div className={cn('flex flex-col items-center justify-center py-8', className)}>
       <Loader2 className={cn('animate-spin text-muted-foreground', sizeClasses[size])} />
-      {text && (
-        <p className="mt-2 text-sm text-muted-foreground">{text}</p>
-      )}
+      {text && <p className="mt-2 text-sm text-muted-foreground">{text}</p>}
     </div>
   )
 }
@@ -62,7 +60,7 @@ export function PlaybookDetailSkeleton() {
         </div>
         <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
       </div>
-      
+
       <div className="space-y-4">
         <div className="h-6 bg-muted animate-pulse rounded w-32" />
         {Array.from({ length: 4 }).map((_, i) => (

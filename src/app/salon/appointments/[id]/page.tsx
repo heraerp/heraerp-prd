@@ -48,8 +48,8 @@ interface AppointmentDetails {
   transaction_code: string
   total_amount: number
   metadata?: any
-  source_entity?: any  // Customer
-  target_entity?: any  // Stylist
+  source_entity?: any // Customer
+  target_entity?: any // Stylist
   status?: string
 }
 
@@ -67,35 +67,41 @@ interface TransactionLine {
 }
 
 const STATUS_CONFIG = {
-  DRAFT: { 
-    label: 'Draft', 
-    color: 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700', 
-    icon: AlertCircle 
+  DRAFT: {
+    label: 'Draft',
+    color:
+      'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700',
+    icon: AlertCircle
   },
-  CONFIRMED: { 
-    label: 'Confirmed', 
-    color: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700', 
-    icon: CheckCircle 
+  CONFIRMED: {
+    label: 'Confirmed',
+    color:
+      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+    icon: CheckCircle
   },
-  IN_SERVICE: { 
-    label: 'In Service', 
-    color: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700', 
-    icon: Clock 
+  IN_SERVICE: {
+    label: 'In Service',
+    color:
+      'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700',
+    icon: Clock
   },
-  COMPLETED: { 
-    label: 'Completed', 
-    color: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700', 
-    icon: CheckCircle 
+  COMPLETED: {
+    label: 'Completed',
+    color:
+      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700',
+    icon: CheckCircle
   },
-  CANCELLED: { 
-    label: 'Cancelled', 
-    color: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700', 
-    icon: XCircle 
+  CANCELLED: {
+    label: 'Cancelled',
+    color:
+      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700',
+    icon: XCircle
   },
-  NO_SHOW: { 
-    label: 'No Show', 
-    color: 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700', 
-    icon: XCircle 
+  NO_SHOW: {
+    label: 'No Show',
+    color:
+      'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700',
+    icon: XCircle
   }
 }
 
@@ -104,42 +110,42 @@ export default function ViewAppointmentPage({ params }: PageProps) {
   const { organization } = useHERAAuth()
   const organizationId = organization?.id
   const { toast } = useToast()
-  
+
   // Unwrap params Promise for Next.js 15
   const unwrappedParams = use(params)
-  
+
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(null)
   const [transactionLines, setTransactionLines] = useState<TransactionLine[]>([])
   const [customer, setCustomer] = useState<any>(null)
   const [stylist, setStylist] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
-  
+
   // Load appointment details
   useEffect(() => {
     if (!organizationId || !unwrappedParams.id) return
-    
+
     const loadAppointmentDetails = async () => {
       try {
         setLoading(true)
-        
+
         // Set organization ID on universalApi
         universalApi.setOrganizationId(organizationId)
-        
+
         console.log('📊 Loading appointment details for:', unwrappedParams.id)
-        
+
         // Load appointment
         const appointmentResponse = await universalApi.read('universal_transactions', {
           id: unwrappedParams.id,
           organization_id: organizationId
         })
-        
+
         console.log('📅 Appointment response:', appointmentResponse)
-        
+
         if (appointmentResponse.success && appointmentResponse.data?.length > 0) {
           const apt = appointmentResponse.data[0]
           setAppointment(apt)
-          
+
           // Load customer details if available
           if (apt.source_entity_id) {
             const customerResponse = await universalApi.read('core_entities', {
@@ -150,7 +156,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               setCustomer(customerResponse.data[0])
             }
           }
-          
+
           // Load stylist details if available
           if (apt.target_entity_id) {
             const stylistResponse = await universalApi.read('core_entities', {
@@ -161,15 +167,15 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               setStylist(stylistResponse.data[0])
             }
           }
-          
+
           // Load transaction lines
           const linesResponse = await universalApi.read('universal_transaction_lines', {
             transaction_id: params.id,
             organization_id: organizationId
           })
-          
+
           console.log('📝 Transaction lines response:', linesResponse)
-          
+
           if (linesResponse.success && linesResponse.data) {
             // Load service/product details for each line
             const linesWithDetails = await Promise.all(
@@ -186,7 +192,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 return line
               })
             )
-            
+
             setTransactionLines(linesWithDetails)
           }
         } else {
@@ -197,7 +203,6 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           })
           router.push('/salon/appointments')
         }
-        
       } catch (error) {
         console.error('Error loading appointment details:', error)
         toast({
@@ -209,15 +214,15 @@ export default function ViewAppointmentPage({ params }: PageProps) {
         setLoading(false)
       }
     }
-    
+
     loadAppointmentDetails()
   }, [organizationId, unwrappedParams.id])
-  
+
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this appointment?')) return
-    
+
     setDeleting(true)
-    
+
     try {
       const response = await universalApi.delete('universal_transactions', params.id)
       if (response.success) {
@@ -237,7 +242,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
       setDeleting(false)
     }
   }
-  
+
   const getStatusBadge = (status: string = 'DRAFT') => {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.DRAFT
     const Icon = config.icon
@@ -248,7 +253,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
       </Badge>
     )
   }
-  
+
   if (!organizationId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
@@ -265,7 +270,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
       </div>
     )
   }
-  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -280,7 +285,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
       </div>
     )
   }
-  
+
   if (!appointment) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -290,10 +295,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Appointment Not Found
               </h2>
-              <Button
-                className="mt-4"
-                onClick={() => router.push('/salon/appointments')}
-              >
+              <Button className="mt-4" onClick={() => router.push('/salon/appointments')}>
                 Back to Appointments
               </Button>
             </div>
@@ -302,11 +304,11 @@ export default function ViewAppointmentPage({ params }: PageProps) {
       </div>
     )
   }
-  
+
   const appointmentDate = new Date(appointment.transaction_date)
   const status = appointment.metadata?.status || 'DRAFT'
   const totalDuration = appointment.metadata?.total_service_duration_minutes || 0
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
@@ -336,7 +338,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               {getStatusBadge(status)}
               <Button
@@ -360,7 +362,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           </div>
         </div>
       </div>
-      
+
       <div className="container mx-auto px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Customer & Stylist Details */}
@@ -382,25 +384,31 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                       Customer Code: {customer.entity_code}
                     </p>
                   </div>
-                  
+
                   {customer.metadata?.phone && (
                     <div className="flex items-center gap-2 text-sm">
                       <Phone className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">{customer.metadata.phone}</span>
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {customer.metadata.phone}
+                      </span>
                     </div>
                   )}
-                  
+
                   {customer.metadata?.email && (
                     <div className="flex items-center gap-2 text-sm">
                       <Mail className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">{customer.metadata.email}</span>
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {customer.metadata.email}
+                      </span>
                     </div>
                   )}
-                  
+
                   {customer.metadata?.address && (
                     <div className="flex items-start gap-2 text-sm">
                       <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400 mt-0.5" />
-                      <span className="text-gray-700 dark:text-gray-300">{customer.metadata.address}</span>
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {customer.metadata.address}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -408,7 +416,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 <p className="text-muted-foreground">No customer information available</p>
               )}
             </Card>
-            
+
             <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
               <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
@@ -426,7 +434,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                       Employee Code: {stylist.entity_code}
                     </p>
                   </div>
-                  
+
                   {stylist.metadata?.specialties && stylist.metadata.specialties.length > 0 && (
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Specialties:</p>
@@ -439,7 +447,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                       </div>
                     </div>
                   )}
-                  
+
                   {stylist.metadata?.hourly_rate && (
                     <div className="text-sm">
                       <span className="text-gray-600 dark:text-gray-400">Hourly Rate: </span>
@@ -453,7 +461,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 <p className="text-muted-foreground">No stylist information available</p>
               )}
             </Card>
-            
+
             <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
               <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
@@ -468,21 +476,21 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     {format(appointmentDate, 'MMMM d, yyyy')}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Time</p>
                   <p className="font-medium text-gray-900 dark:text-gray-100">
                     {format(appointmentDate, 'h:mm a')}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Duration</p>
                   <p className="font-medium text-gray-900 dark:text-gray-100">
                     {totalDuration} minutes
                   </p>
                 </div>
-                
+
                 {appointment.metadata?.notes && (
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Notes</p>
@@ -496,7 +504,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               </div>
             </Card>
           </div>
-          
+
           {/* Center Column - Services */}
           <div className="space-y-4">
             <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors h-fit">
@@ -511,7 +519,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   </Badge>
                 )}
               </h3>
-              
+
               {transactionLines.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8 dark:text-gray-400">
                   No services found
@@ -519,7 +527,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               ) : (
                 <ScrollArea className="h-[600px] pr-2 appointment-scrollbar">
                   <div className="space-y-3">
-                    {transactionLines.map((line) => (
+                    {transactionLines.map(line => (
                       <div
                         key={line.id}
                         className="p-4 border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700"
@@ -534,7 +542,10 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                                 <span className="flex items-center gap-1">
                                   <Clock className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                                   <span className="dark:text-gray-400">
-                                    {line.entity.metadata?.duration_minutes || line.line_data?.duration_minutes || 30} min
+                                    {line.entity.metadata?.duration_minutes ||
+                                      line.line_data?.duration_minutes ||
+                                      30}{' '}
+                                    min
                                   </span>
                                 </span>
                                 <span className="flex items-center gap-1">
@@ -550,7 +561,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                             {line.line_type}
                           </Badge>
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600 dark:text-gray-400">
                             Quantity: {line.quantity}
@@ -566,7 +577,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               )}
             </Card>
           </div>
-          
+
           {/* Right Column - Summary */}
           <div className="space-y-4">
             <Card className="p-4 border-2 border-violet-400 dark:border-violet-600 bg-violet-50 dark:bg-violet-950/30">
@@ -582,28 +593,28 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     <span className="text-gray-600 dark:text-gray-400">Status:</span>
                     <span>{getStatusBadge(status)}</span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Booking Code:</span>
                     <span className="font-medium text-gray-900 dark:text-gray-100">
                       #{appointment.transaction_code}
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Items:</span>
                     <span className="font-medium text-gray-900 dark:text-gray-100">
                       {transactionLines.length} service{transactionLines.length !== 1 ? 's' : ''}
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Total Duration:</span>
                     <span className="font-medium text-gray-900 dark:text-gray-100">
                       {totalDuration} minutes
                     </span>
                   </div>
-                  
+
                   <div className="pt-2 border-t dark:border-gray-600">
                     <div className="flex justify-between text-lg font-semibold">
                       <span className="text-gray-900 dark:text-gray-100">Total Amount:</span>
@@ -613,17 +624,18 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     </div>
                   </div>
                 </div>
-                
+
                 {appointment.metadata?.created_at && (
                   <div className="pt-2 border-t dark:border-gray-600">
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Created on {format(new Date(appointment.metadata.created_at), 'MMM d, yyyy at h:mm a')}
+                      Created on{' '}
+                      {format(new Date(appointment.metadata.created_at), 'MMM d, yyyy at h:mm a')}
                     </p>
                   </div>
                 )}
               </div>
             </Card>
-            
+
             <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
               <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
@@ -640,7 +652,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Appointment
                 </Button>
-                
+
                 <Button
                   className="w-full justify-start"
                   variant="outline"
@@ -655,7 +667,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <Calendar className="w-4 h-4 mr-2" />
                   Duplicate Appointment
                 </Button>
-                
+
                 <Button
                   className="w-full justify-start"
                   variant="outline"
@@ -667,7 +679,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <FileText className="w-4 h-4 mr-2" />
                   Print Details
                 </Button>
-                
+
                 <Button
                   className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                   variant="outline"

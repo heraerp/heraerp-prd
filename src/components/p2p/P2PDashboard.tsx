@@ -154,7 +154,9 @@ export function P2PDashboard() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
+              {title}
+            </p>
             <p className="text-2xl font-bold mt-1">{value}</p>
             {trend && (
               <p className="text-xs text-green-600 mt-1 flex items-center">

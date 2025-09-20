@@ -512,7 +512,9 @@ export function ContextualSidebar({
                             <div>
                               <span className="text-sm font-medium">{item.label}</span>
                               {item.description && (
-                                <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {item.description}
+                                </p>
                               )}
                             </div>
                           </div>
@@ -526,7 +528,9 @@ export function ContextualSidebar({
                               </Badge>
                             )}
                             {item.hotkey && (
-                              <span className="text-xs text-muted-foreground font-mono">{item.hotkey}</span>
+                              <span className="text-xs text-muted-foreground font-mono">
+                                {item.hotkey}
+                              </span>
                             )}
                             <ArrowUpRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
@@ -542,7 +546,9 @@ export function ContextualSidebar({
                           <div>
                             <span className="text-sm font-medium">{item.label}</span>
                             {item.description && (
-                              <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {item.description}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -556,7 +562,9 @@ export function ContextualSidebar({
                             </Badge>
                           )}
                           {item.hotkey && (
-                            <span className="text-xs text-muted-foreground font-mono">{item.hotkey}</span>
+                            <span className="text-xs text-muted-foreground font-mono">
+                              {item.hotkey}
+                            </span>
                           )}
                         </div>
                       </div>

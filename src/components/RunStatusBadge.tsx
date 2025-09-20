@@ -1,8 +1,8 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import React from 'react'
+import { Badge } from '@/components/ui/badge'
 
 interface RunStatusBadgeProps {
-  status: string;
+  status: string
 }
 
 export function RunStatusBadge({ status }: RunStatusBadgeProps) {
@@ -10,28 +10,24 @@ export function RunStatusBadge({ status }: RunStatusBadgeProps) {
     switch (status.toLowerCase()) {
       case 'completed':
       case 'success':
-        return 'default';
+        return 'default'
       case 'running':
       case 'in_progress':
-        return 'secondary';
+        return 'secondary'
       case 'failed':
       case 'error':
-        return 'destructive';
+        return 'destructive'
       case 'pending':
       case 'queued':
-        return 'outline';
+        return 'outline'
       default:
-        return 'outline';
+        return 'outline'
     }
-  };
+  }
 
   const getDisplayText = () => {
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase().replace(/_/g, ' ');
-  };
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase().replace(/_/g, ' ')
+  }
 
-  return (
-    <Badge variant={getVariant()}>
-      {getDisplayText()}
-    </Badge>
-  );
+  return <Badge variant={getVariant()}>{getDisplayText()}</Badge>
 }

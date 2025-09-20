@@ -7,7 +7,7 @@ const BaseWrite = z.object({
   orgId: z.string().uuid(),
   smart_code: z.string().regex(/^HERA\.CRM\.[A-Z0-9._]+\.v\d+$/i),
   idempotency_key: z.string().min(8).optional(),
-  actor_user_id: z.string().uuid().optional(),
+  actor_user_id: z.string().uuid().optional()
 })
 
 const AccountCreate = BaseWrite.extend({
@@ -16,8 +16,8 @@ const AccountCreate = BaseWrite.extend({
     website: z.string().url().optional(),
     phone: z.string().optional(),
     industry: z.string().optional(),
-    owner_id: z.string().uuid().optional(),
-  }),
+    owner_id: z.string().uuid().optional()
+  })
 })
 
 const AccountUpdate = BaseWrite.extend({
@@ -29,9 +29,9 @@ const AccountUpdate = BaseWrite.extend({
       phone: z.string().optional(),
       industry: z.string().optional(),
       owner_id: z.string().uuid().optional(),
-      status: z.enum(['active', 'archived']).optional(),
+      status: z.enum(['active', 'archived']).optional()
     })
-    .refine(o => Object.keys(o).length > 1, { message: 'No-op update' }),
+    .refine(o => Object.keys(o).length > 1, { message: 'No-op update' })
 })
 
 const Query = z.object({
@@ -39,7 +39,7 @@ const Query = z.object({
   q: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(25),
-  id: z.string().uuid().optional(),
+  id: z.string().uuid().optional()
 })
 
 export async function GET(request: NextRequest) {
@@ -74,7 +74,12 @@ export async function GET(request: NextRequest) {
 
     const { data, count, error } = await sel
     if (error) return serverError(error.message)
-    return NextResponse.json({ items: data ?? [], page: q.page, pageSize: q.pageSize, total: count ?? 0 })
+    return NextResponse.json({
+      items: data ?? [],
+      page: q.page,
+      pageSize: q.pageSize,
+      total: count ?? 0
+    })
   } catch (e) {
     return badRequest(String(e))
   }
@@ -97,21 +102,38 @@ export async function POST(request: NextRequest) {
         entity_type: 'account',
         entity_name: account.entity_name,
         smart_code,
-        status: 'active',
+        status: 'active'
       })
       .select()
       .single()
     if (e1) return serverError(e1.message)
 
     const dynBase = [
-      account.website && { field_name: 'website', field_type: 'text', field_value_text: account.website },
+      account.website && {
+        field_name: 'website',
+        field_type: 'text',
+        field_value_text: account.website
+      },
       account.phone && { field_name: 'phone', field_type: 'text', field_value_text: account.phone },
-      account.industry && { field_name: 'industry', field_type: 'text', field_value_text: account.industry },
-      account.owner_id && { field_name: 'owner_id', field_type: 'text', field_value_text: account.owner_id },
+      account.industry && {
+        field_name: 'industry',
+        field_type: 'text',
+        field_value_text: account.industry
+      },
+      account.owner_id && {
+        field_name: 'owner_id',
+        field_type: 'text',
+        field_value_text: account.owner_id
+      }
     ].filter(Boolean) as Array<{ field_name: string; field_type: string; field_value_text: string }>
 
     if (dynBase.length) {
-      const dynRows = dynBase.map(r => ({ ...r, organization_id: orgId, entity_id: ent.id, smart_code }))
+      const dynRows = dynBase.map(r => ({
+        ...r,
+        organization_id: orgId,
+        entity_id: ent.id,
+        smart_code
+      }))
       const { error: e2 } = await db.from('core_dynamic_data').insert(dynRows as any)
       if (e2) return serverError(e2.message)
     }
@@ -123,7 +145,7 @@ export async function POST(request: NextRequest) {
       smart_code,
       source_entity_id: account.owner_id ?? null,
       target_entity_id: ent.id,
-      total_amount: 0,
+      total_amount: 0
     })
 
     return NextResponse.json({ id: ent.id, entity_name: ent.entity_name }, { status: 201 })
@@ -148,7 +170,7 @@ export async function PUT(request: NextRequest) {
         .update({
           ...(account.entity_name ? { entity_name: account.entity_name } : {}),
           ...(account.status ? { status: account.status } : {}),
-          smart_code,
+          smart_code
         })
         .eq('organization_id', orgId)
         .eq('id', account.id)
@@ -158,11 +180,31 @@ export async function PUT(request: NextRequest) {
 
     const dynUpserts = (
       [
-        account.website && { field_name: 'website', field_type: 'text', field_value_text: account.website },
-        account.phone && { field_name: 'phone', field_type: 'text', field_value_text: account.phone },
-        account.industry && { field_name: 'industry', field_type: 'text', field_value_text: account.industry },
-        account.owner_id && { field_name: 'owner_id', field_type: 'text', field_value_text: account.owner_id },
-      ].filter(Boolean) as Array<{ field_name: string; field_type: string; field_value_text: string }>
+        account.website && {
+          field_name: 'website',
+          field_type: 'text',
+          field_value_text: account.website
+        },
+        account.phone && {
+          field_name: 'phone',
+          field_type: 'text',
+          field_value_text: account.phone
+        },
+        account.industry && {
+          field_name: 'industry',
+          field_type: 'text',
+          field_value_text: account.industry
+        },
+        account.owner_id && {
+          field_name: 'owner_id',
+          field_type: 'text',
+          field_value_text: account.owner_id
+        }
+      ].filter(Boolean) as Array<{
+        field_name: string
+        field_type: string
+        field_value_text: string
+      }>
     ).map(r => ({ ...r, organization_id: orgId, entity_id: account.id, smart_code }))
 
     for (const row of dynUpserts) {
@@ -182,7 +224,7 @@ export async function PUT(request: NextRequest) {
       transaction_status: 'completed',
       smart_code,
       target_entity_id: account.id,
-      total_amount: 0,
+      total_amount: 0
     })
 
     return NextResponse.json({ id: account.id, updated: true })
@@ -214,7 +256,7 @@ export async function DELETE(request: NextRequest) {
       transaction_status: 'completed',
       smart_code,
       target_entity_id: id,
-      total_amount: 0,
+      total_amount: 0
     })
     return NextResponse.json({ id, deleted: true })
   } catch (e) {

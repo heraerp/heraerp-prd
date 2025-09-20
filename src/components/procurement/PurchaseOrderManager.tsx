@@ -587,7 +587,9 @@ export function PurchaseOrderManager() {
           <div className="bg-background rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-100">Create Purchase Order</h2>
-              <p className="text-muted-foreground mt-1">Create a new purchase order for your supplier</p>
+              <p className="text-muted-foreground mt-1">
+                Create a new purchase order for your supplier
+              </p>
             </div>
 
             <form onSubmit={handleCreatePO} className="p-6 space-y-6">

@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS EXPORT BUTTONS
-// Smart Code: HERA.UI.REPORTS.EXPORT.v1  
+// Smart Code: HERA.UI.REPORTS.EXPORT.v1
 // CSV export and print functionality with accessibility
 // ================================================================================
 
@@ -8,11 +8,16 @@
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Download, 
-  FileSpreadsheet, 
+import {
+  Download,
+  FileSpreadsheet,
   Printer,
   FileText,
   ChevronDown,
@@ -48,40 +53,51 @@ export function ExportButtons({
   onEmail,
   className
 }: ExportButtonsProps) {
-  
   const [isExporting, setIsExporting] = React.useState(false)
   const [exportingFormat, setExportingFormat] = React.useState<ExportFormat | null>(null)
 
   // Generate CSV content
   const generateCSV = () => {
     if (!data || data.length === 0) return ''
-    
+
     let csvContent = ''
-    
+
     // Add report header
     csvContent += `${reportTitle}\n`
     csvContent += `Period: ${reportPeriod}\n`
     csvContent += `Generated: ${new Date().toLocaleString()}\n`
     csvContent += `Currency: ${currency}\n\n`
-    
+
     // Add summary if available
     if (summary) {
       csvContent += 'SUMMARY\n'
       Object.entries(summary).forEach(([key, value]) => {
         const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-        const formattedValue = typeof value === 'number' ? 
-          (key.includes('percent') ? `${value.toFixed(1)}%` : value.toLocaleString()) : value
+        const formattedValue =
+          typeof value === 'number'
+            ? key.includes('percent')
+              ? `${value.toFixed(1)}%`
+              : value.toLocaleString()
+            : value
         csvContent += `${formattedKey},${formattedValue}\n`
       })
       csvContent += '\n'
     }
-    
+
     // Add data headers based on report type
     let headers: string[] = []
     switch (reportType) {
       case 'daily_sales':
       case 'monthly_sales':
-        headers = ['Date/Hour', 'Service Revenue', 'Product Revenue', 'VAT', 'Gross Total', 'Transactions', 'Avg Ticket']
+        headers = [
+          'Date/Hour',
+          'Service Revenue',
+          'Product Revenue',
+          'VAT',
+          'Gross Total',
+          'Transactions',
+          'Avg Ticket'
+        ]
         break
       case 'pnl':
         headers = ['Account Code', 'Account Name', 'Group', 'Amount', 'Percentage']
@@ -90,19 +106,19 @@ export function ExportButtons({
         headers = ['Account Code', 'Account Name', 'Group', 'Amount', 'Percentage']
         break
     }
-    
+
     csvContent += headers.join(',') + '\n'
-    
+
     // Add data rows
     data.forEach(row => {
       const values: string[] = []
-      
+
       switch (reportType) {
         case 'daily_sales':
           values.push(
             row.hour || row.date || '',
             row.service_net?.toString() || '0',
-            row.product_net?.toString() || '0', 
+            row.product_net?.toString() || '0',
             row.vat?.toString() || '0',
             row.gross?.toString() || '0',
             row.txn_count?.toString() || '0',
@@ -114,7 +130,7 @@ export function ExportButtons({
             row.date || '',
             row.service_net?.toString() || '0',
             row.product_net?.toString() || '0',
-            row.vat?.toString() || '0', 
+            row.vat?.toString() || '0',
             row.gross?.toString() || '0',
             row.txn_count?.toString() || '0',
             row.avg_ticket?.toString() || '0'
@@ -131,10 +147,10 @@ export function ExportButtons({
           )
           break
       }
-      
+
       csvContent += values.join(',') + '\n'
     })
-    
+
     return csvContent
   }
 
@@ -143,9 +159,9 @@ export function ExportButtons({
     const csvContent = generateCSV()
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
-    
+
     const filename = `${reportType}_${reportPeriod.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`
-    
+
     if (link.download !== undefined) {
       const url = URL.createObjectURL(blob)
       link.setAttribute('href', url)
@@ -160,10 +176,10 @@ export function ExportButtons({
   // Handle export
   const handleExport = async (format: ExportFormat) => {
     if (isExporting) return
-    
+
     setIsExporting(true)
     setExportingFormat(format)
-    
+
     try {
       if (format === 'csv') {
         downloadCSV()
@@ -201,17 +217,16 @@ export function ExportButtons({
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      
       {/* Record Count Badge */}
       <Badge variant="outline" className="text-gray-600 border-gray-300">
         {getRecordCount()} records
       </Badge>
-      
+
       {/* Export Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="sm"
             disabled={isLoading || isExporting || !data || data.length === 0}
             className="border-violet-300 text-violet-700 hover:bg-violet-100 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-900/50"
@@ -228,7 +243,7 @@ export function ExportButtons({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => handleExport('csv')}
             disabled={isExporting}
             className="flex items-center gap-2"
@@ -239,10 +254,10 @@ export function ExportButtons({
               <div className="text-xs text-gray-500">Excel compatible</div>
             </div>
           </DropdownMenuItem>
-          
+
           {onExport && (
             <>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => handleExport('excel')}
                 disabled={isExporting}
                 className="flex items-center gap-2"
@@ -253,8 +268,8 @@ export function ExportButtons({
                   <div className="text-xs text-gray-500">Native .xlsx format</div>
                 </div>
               </DropdownMenuItem>
-              
-              <DropdownMenuItem 
+
+              <DropdownMenuItem
                 onClick={() => handleExport('pdf')}
                 disabled={isExporting}
                 className="flex items-center gap-2"
@@ -269,10 +284,10 @@ export function ExportButtons({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      
+
       {/* Print Button */}
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         size="sm"
         onClick={handlePrint}
         disabled={isLoading || !data || data.length === 0}
@@ -281,11 +296,11 @@ export function ExportButtons({
         <Printer className="h-3 w-3 mr-1" />
         Print
       </Button>
-      
+
       {/* Email Button (if available) */}
       {onEmail && (
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={onEmail}
           disabled={isLoading || !data || data.length === 0}
@@ -295,10 +310,10 @@ export function ExportButtons({
           Email
         </Button>
       )}
-      
+
       {/* Print Preview Link (for desktop) */}
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         size="sm"
         onClick={() => {
           // Open print preview in new window
@@ -342,7 +357,6 @@ export function ExportButtons({
         <ExternalLink className="h-3 w-3 mr-1" />
         Preview
       </Button>
-      
     </div>
   )
 }
@@ -356,61 +370,63 @@ export function useReportExports(reportType: string) {
     filename: string
   } | null>(null)
 
-  const exportReport = React.useCallback(async (
-    format: ExportFormat,
-    data: any[],
-    metadata: {
-      title: string
-      period: string
-      currency: string
-      summary?: Record<string, any>
-    }
-  ) => {
-    setIsExporting(true)
-    
-    try {
-      // Implementation would depend on backend API
-      const response = await fetch('/api/v1/reports/export', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          format,
-          report_type: reportType,
-          data,
-          metadata
-        })
-      })
-      
-      if (!response.ok) {
-        throw new Error('Export failed')
+  const exportReport = React.useCallback(
+    async (
+      format: ExportFormat,
+      data: any[],
+      metadata: {
+        title: string
+        period: string
+        currency: string
+        summary?: Record<string, any>
       }
-      
-      const blob = await response.blob()
-      const filename = `${reportType}_${metadata.period}_${new Date().toISOString().split('T')[0]}.${format}`
-      
-      // Download the file
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = filename
-      link.click()
-      URL.revokeObjectURL(url)
-      
-      setLastExport({
-        format,
-        timestamp: new Date(),
-        filename
-      })
-      
-    } catch (error) {
-      console.error('Export failed:', error)
-      throw error
-    } finally {
-      setIsExporting(false)
-    }
-  }, [reportType])
+    ) => {
+      setIsExporting(true)
+
+      try {
+        // Implementation would depend on backend API
+        const response = await fetch('/api/v1/reports/export', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            format,
+            report_type: reportType,
+            data,
+            metadata
+          })
+        })
+
+        if (!response.ok) {
+          throw new Error('Export failed')
+        }
+
+        const blob = await response.blob()
+        const filename = `${reportType}_${metadata.period}_${new Date().toISOString().split('T')[0]}.${format}`
+
+        // Download the file
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        link.click()
+        URL.revokeObjectURL(url)
+
+        setLastExport({
+          format,
+          timestamp: new Date(),
+          filename
+        })
+      } catch (error) {
+        console.error('Export failed:', error)
+        throw error
+      } finally {
+        setIsExporting(false)
+      }
+    },
+    [reportType]
+  )
 
   return {
     isExporting,

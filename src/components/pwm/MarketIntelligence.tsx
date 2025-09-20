@@ -141,12 +141,11 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
         {/* Market Indices */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
           {marketIndices.map(index => (
-            <div
-              key={index.name}
-              className="p-3 rounded-lg bg-muted/50 border border-border/50"
-            >
+            <div key={index.name} className="p-3 rounded-lg bg-muted/50 border border-border/50">
               <p className="text-xs text-muted-foreground mb-1">{index.name}</p>
-              <p className="text-lg font-bold text-foreground mb-1">{index.value.toLocaleString()}</p>
+              <p className="text-lg font-bold text-foreground mb-1">
+                {index.value.toLocaleString()}
+              </p>
               <div
                 className={cn(
                   'flex items-center gap-1 text-sm',
@@ -220,10 +219,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
         <ScrollArea className="h-96">
           <div className="space-y-4">
             {marketEvents.map(event => (
-              <div
-                key={event.id}
-                className="p-4 rounded-xl border bg-muted/30 border-border/50"
-              >
+              <div key={event.id} className="p-4 rounded-xl border bg-muted/30 border-border/50">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-start gap-3">
                     <div

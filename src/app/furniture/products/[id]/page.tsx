@@ -11,78 +11,89 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { universalApi } from '@/lib/universal-api'
 import { BOMExplorer } from '@/components/furniture/BOMExplorer'
 import { SupplierRelationships } from '@/components/furniture/SupplierRelationships'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
-
 export default function ProductDetailPage() {
   const params = useParams()
 
-const router = useRouter()
+  const router = useRouter()
 
-const productId = params.id as string;
-const { currentOrganization } = useMultiOrgAuth()
+  const productId = params.id as string
+  const { currentOrganization } = useMultiOrgAuth()
 
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-const [product, setProduct] = useState<any>(null)
+  const [product, setProduct] = useState<any>(null)
 
-const [dynamicData, setDynamicData] = useState<any[]>([]);
+  const [dynamicData, setDynamicData] = useState<any[]>([])
 
-useEffect(() => {
-  if (currentOrganization?.id && productId) {
-    loadProductData();
-  }
-}, [currentOrganization?.id, productId])
+  useEffect(() => {
+    if (currentOrganization?.id && productId) {
+      loadProductData()
+    }
+  }, [currentOrganization?.id, productId])
 
-const loadProductData = async () => {
-  try {
-    setLoading(true);
-    // Get product details
-  const { data: entities } = await universalApi.read({ table: 'core_entities', organizationId: currentOrganization!.id })
+  const loadProductData = async () => {
+    try {
+      setLoading(true)
+      // Get product details
+      const { data: entities } = await universalApi.read({
+        table: 'core_entities',
+        organizationId: currentOrganization!.id
+      })
 
-const productData = entities?.find((e: any) => e.id === productId);
-    if (!productData) throw new Error('Product not found');
-    setProduct(productData);
-    
-    // Get dynamic data
-  const { data: dynamicFields } = await universalApi.read({ table: 'core_dynamic_data', organizationId: currentOrganization!.id })
+      const productData = entities?.find((e: any) => e.id === productId)
+      if (!productData) throw new Error('Product not found')
+      setProduct(productData)
 
-const productFields = dynamicFields?.filter((f: any) => f.entity_id === productId) || [];
-    setDynamicData(productFields);
+      // Get dynamic data
+      const { data: dynamicFields } = await universalApi.read({
+        table: 'core_dynamic_data',
+        organizationId: currentOrganization!.id
+      })
+
+      const productFields = dynamicFields?.filter((f: any) => f.entity_id === productId) || []
+      setDynamicData(productFields)
     } catch (err) {
-    console.error('Error loading product:', err);
-  } finally {
-    setLoading(false);
+      console.error('Error loading product:', err)
+    } finally {
+      setLoading(false)
+    }
   }
-};
 
-if (loading) {
-  return (
-    <div className="min-h-screen bg-[var(--color-body)] p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <Skeleton className="h-10 w-32" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Skeleton className="h-96 lg:col-span-1" />
-          <Skeleton className="h-96 lg:col-span-2" />
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-body)] p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <Skeleton className="h-10 w-32" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Skeleton className="h-96 lg:col-span-1" />
+            <Skeleton className="h-96 lg:col-span-2" />
+          </div>
         </div>
       </div>
-      </div>
-    );
-}
+    )
+  }
 
-if (!product) {
-  return (
-    <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
-      <div className="text-center">
-        <Package className="h-16 w-16 text-[var(--color-text-secondary)] mx-auto mb-4" />
-        <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-2">Product Not Found</h2>
-        <Button onClick={() => router.push('/furniture/products')}>Back to Products</Button>
-      </div>
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
+        <div className="text-center">
+          <Package className="h-16 w-16 text-[var(--color-text-secondary)] mx-auto mb-4" />
+          <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)] mb-2">
+            Product Not Found
+          </h2>
+          <Button onClick={() => router.push('/furniture/products')}>Back to Products</Button>
+        </div>
       </div>
     )
   }
@@ -97,7 +108,9 @@ if (!product) {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="bg-[var(--color-body)] text-2xl font-bold text-[var(--color-text-primary)]">{product.entity_name}</h1>
+              <h1 className="bg-[var(--color-body)] text-2xl font-bold text-[var(--color-text-primary)]">
+                {product.entity_name}
+              </h1>
               <p className="text-[var(--color-text-secondary)]">{product.entity_code}</p>
             </div>
           </div>
@@ -147,7 +160,9 @@ if (!product) {
                 </div>
                 <div>
                   <p className="text-sm text-[var(--color-text-secondary)]">Smart Code</p>
-                  <p className="text-sm font-mono text-[var(--color-text-primary)] mt-1">{product.smart_code}</p>
+                  <p className="text-sm font-mono text-[var(--color-text-primary)] mt-1">
+                    {product.smart_code}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-[var(--color-text-secondary)]">Status</p>
@@ -171,7 +186,9 @@ if (!product) {
                         {field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </p>
                       <p className="text-[var(--color-text-primary)] mt-1">
-                        {field.field_value_text || field.field_value_number || field.field_value_json}
+                        {field.field_value_text ||
+                          field.field_value_number ||
+                          field.field_value_json}
                       </p>
                     </div>
                   ))}
@@ -187,10 +204,16 @@ if (!product) {
                 <TabsTrigger value="bom" className="data-[state=active]:bg-muted-foreground/10">
                   Bill of Materials
                 </TabsTrigger>
-                <TabsTrigger value="suppliers" className="data-[state=active]:bg-muted-foreground/10">
+                <TabsTrigger
+                  value="suppliers"
+                  className="data-[state=active]:bg-muted-foreground/10"
+                >
                   Suppliers
                 </TabsTrigger>
-                <TabsTrigger value="inventory" className="data-[state=active]:bg-muted-foreground/10">
+                <TabsTrigger
+                  value="inventory"
+                  className="data-[state=active]:bg-muted-foreground/10"
+                >
                   Inventory
                 </TabsTrigger>
               </TabsList>
@@ -200,7 +223,10 @@ if (!product) {
               </TabsContent>
 
               <TabsContent value="suppliers" className="bg-[var(--color-body)] mt-6">
-                <SupplierRelationships productId={productId} organizationId={currentOrganization!.id} />
+                <SupplierRelationships
+                  productId={productId}
+                  organizationId={currentOrganization!.id}
+                />
               </TabsContent>
 
               <TabsContent value="inventory" className="bg-[var(--color-body)] mt-6">
@@ -220,6 +246,6 @@ if (!product) {
           </div>
         </div>
       </div>
-      </div>
-    )
+    </div>
+  )
 }

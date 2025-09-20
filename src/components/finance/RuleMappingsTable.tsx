@@ -34,11 +34,7 @@ interface RuleMappingsTableProps {
   errors?: Record<number, string>
 }
 
-export function RuleMappingsTable({
-  mappings,
-  onChange,
-  errors = {}
-}: RuleMappingsTableProps) {
+export function RuleMappingsTable({ mappings, onChange, errors = {} }: RuleMappingsTableProps) {
   const addMapping = () => {
     const newMapping: Mapping = {
       account: '',
@@ -64,17 +60,15 @@ export function RuleMappingsTable({
   }
 
   const getSideColor = (side: 'debit' | 'credit') => {
-    return side === 'debit' 
-      ? 'text-green-700 dark:text-green-300' 
+    return side === 'debit'
+      ? 'text-green-700 dark:text-green-300'
       : 'text-blue-700 dark:text-blue-300'
   }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Account Mappings
-        </h3>
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Account Mappings</h3>
         <Button
           type="button"
           size="sm"
@@ -113,20 +107,17 @@ export function RuleMappingsTable({
                   <TableCell>
                     <Input
                       value={mapping.account}
-                      onChange={(e) => updateMapping(index, 'account', e.target.value)}
+                      onChange={e => updateMapping(index, 'account', e.target.value)}
                       placeholder="4100"
-                      className={cn(
-                        "font-mono text-sm w-full",
-                        errors[index] && "border-red-500"
-                      )}
+                      className={cn('font-mono text-sm w-full', errors[index] && 'border-red-500')}
                       aria-label={`Account code for mapping ${index + 1}`}
                     />
                   </TableCell>
-                  
+
                   <TableCell>
-                    <Select 
-                      value={mapping.side} 
-                      onValueChange={(value: 'debit' | 'credit') => 
+                    <Select
+                      value={mapping.side}
+                      onValueChange={(value: 'debit' | 'credit') =>
                         updateMapping(index, 'side', value)
                       }
                     >
@@ -143,51 +134,67 @@ export function RuleMappingsTable({
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  
+
                   <TableCell>
-                    <Select 
-                      value={mapping.amount_source} 
-                      onValueChange={(value) => 
-                        updateMapping(index, 'amount_source', value)
-                      }
+                    <Select
+                      value={mapping.amount_source}
+                      onValueChange={value => updateMapping(index, 'amount_source', value)}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="hera-select-content">
-                        <SelectItem value="net" className="hera-select-item">Net</SelectItem>
-                        <SelectItem value="tax" className="hera-select-item">Tax</SelectItem>
-                        <SelectItem value="gross" className="hera-select-item">Gross</SelectItem>
-                        <SelectItem value="tip" className="hera-select-item">Tip</SelectItem>
-                        <SelectItem value="discount" className="hera-select-item">Discount</SelectItem>
-                        <SelectItem value="cogs" className="hera-select-item">COGS</SelectItem>
-                        <SelectItem value="commission" className="hera-select-item">Commission</SelectItem>
-                        <SelectItem value="custom" className="hera-select-item">Custom</SelectItem>
+                        <SelectItem value="net" className="hera-select-item">
+                          Net
+                        </SelectItem>
+                        <SelectItem value="tax" className="hera-select-item">
+                          Tax
+                        </SelectItem>
+                        <SelectItem value="gross" className="hera-select-item">
+                          Gross
+                        </SelectItem>
+                        <SelectItem value="tip" className="hera-select-item">
+                          Tip
+                        </SelectItem>
+                        <SelectItem value="discount" className="hera-select-item">
+                          Discount
+                        </SelectItem>
+                        <SelectItem value="cogs" className="hera-select-item">
+                          COGS
+                        </SelectItem>
+                        <SelectItem value="commission" className="hera-select-item">
+                          Commission
+                        </SelectItem>
+                        <SelectItem value="custom" className="hera-select-item">
+                          Custom
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  
+
                   <TableCell>
                     <Input
                       type="number"
                       value={mapping.multiplier}
-                      onChange={(e) => updateMapping(index, 'multiplier', parseFloat(e.target.value) || 1)}
+                      onChange={e =>
+                        updateMapping(index, 'multiplier', parseFloat(e.target.value) || 1)
+                      }
                       step="0.01"
                       className="text-sm w-full"
                       aria-label={`Multiplier for mapping ${index + 1}`}
                     />
                   </TableCell>
-                  
+
                   <TableCell>
                     <Input
                       value={mapping.memo || ''}
-                      onChange={(e) => updateMapping(index, 'memo', e.target.value || undefined)}
+                      onChange={e => updateMapping(index, 'memo', e.target.value || undefined)}
                       placeholder="Optional memo"
                       className="text-sm w-full"
                       aria-label={`Memo for mapping ${index + 1}`}
                     />
                   </TableCell>
-                  
+
                   <TableCell>
                     <Button
                       type="button"
@@ -204,13 +211,18 @@ export function RuleMappingsTable({
               ))}
             </TableBody>
           </Table>
-          
+
           {Object.keys(errors).length > 0 && (
             <div className="p-3 bg-red-50 dark:bg-red-950/30 border-t">
               {Object.entries(errors).map(([index, error]) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+                <div
+                  key={index}
+                  className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400"
+                >
                   <AlertCircle className="h-3 w-3" />
-                  <span>Row {parseInt(index) + 1}: {error}</span>
+                  <span>
+                    Row {parseInt(index) + 1}: {error}
+                  </span>
                 </div>
               ))}
             </div>

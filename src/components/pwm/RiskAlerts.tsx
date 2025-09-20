@@ -60,7 +60,9 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
         <div className="mb-6">
           <div className="flex items-end justify-between mb-2">
             <span className="text-sm text-muted-foreground">Overall Risk Score</span>
-            <span className="text-3xl font-bold text-foreground">{riskMetrics.overallScore}/10</span>
+            <span className="text-3xl font-bold text-foreground">
+              {riskMetrics.overallScore}/10
+            </span>
           </div>
           <Progress value={riskMetrics.overallScore * 10} className="h-3" />
           <div className="flex justify-between mt-2 text-xs text-slate-500">
@@ -121,10 +123,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
             </div>
           ) : (
             insights.map(insight => (
-              <div
-                key={insight.id}
-                className="p-4 rounded-xl border bg-muted/30 border-border/50"
-              >
+              <div key={insight.id} className="p-4 rounded-xl border bg-muted/30 border-border/50">
                 <div className="flex items-start gap-3">
                   <div className="p-2 rounded-lg bg-red-500/20 border border-red-500/30">
                     <AlertTriangle className="h-4 w-4 text-red-400" />
@@ -176,7 +175,9 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">Reduce Tech Exposure</p>
-              <p className="text-xs text-muted-foreground">Decrease allocation by 5% to balance risk</p>
+              <p className="text-xs text-muted-foreground">
+                Decrease allocation by 5% to balance risk
+              </p>
             </div>
             <Button size="sm" variant="ghost" className="text-blue-400">
               Review

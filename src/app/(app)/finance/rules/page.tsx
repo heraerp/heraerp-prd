@@ -11,13 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  BookOpen,
-  Plus,
-  AlertCircle,
-  RefreshCw,
-  Info
-} from 'lucide-react'
+import { BookOpen, Plus, AlertCircle, RefreshCw, Info } from 'lucide-react'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 import { useFinanceRulesApi } from '@/lib/api/financeRules'
 import { PostingRule } from '@/lib/schemas/financeRules'
@@ -30,7 +24,7 @@ import { useToast } from '@/components/ui/use-toast'
 export default function PostingRulesViewerPage() {
   const { currentOrganization } = useOrganization()
   const { toast } = useToast()
-  
+
   // State
   const [searchTerm, setSearchTerm] = React.useState('')
   const [categoryFilter, setCategoryFilter] = React.useState<CategoryFilter>('all')
@@ -47,7 +41,8 @@ export default function PostingRulesViewerPage() {
   const filteredRules = React.useMemo(() => {
     return rulesApi.rules.filter(rule => {
       // Search filter
-      const matchesSearch = searchTerm === '' ||
+      const matchesSearch =
+        searchTerm === '' ||
         rule.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
         rule.title.toLowerCase().includes(searchTerm.toLowerCase())
 
@@ -66,14 +61,14 @@ export default function PostingRulesViewerPage() {
     try {
       await rulesApi.toggle.mutateAsync({ key: rule.key, enabled })
       toast({
-        title: "Rule Updated",
-        description: `${rule.title} has been ${enabled ? 'enabled' : 'disabled'}`,
+        title: 'Rule Updated',
+        description: `${rule.title} has been ${enabled ? 'enabled' : 'disabled'}`
       })
     } catch (error) {
       toast({
-        title: "Update Failed",
-        description: error instanceof Error ? error.message : "Failed to update rule",
-        variant: "destructive"
+        title: 'Update Failed',
+        description: error instanceof Error ? error.message : 'Failed to update rule',
+        variant: 'destructive'
       })
     }
   }
@@ -110,14 +105,14 @@ export default function PostingRulesViewerPage() {
       await rulesApi.upsert.mutateAsync(rule)
       setEditorOpen(false)
       toast({
-        title: createMode ? "Rule Created" : "Rule Saved",
-        description: `${rule.title} has been saved successfully`,
+        title: createMode ? 'Rule Created' : 'Rule Saved',
+        description: `${rule.title} has been saved successfully`
       })
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save rule",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save rule',
+        variant: 'destructive'
       })
     }
   }
@@ -126,14 +121,14 @@ export default function PostingRulesViewerPage() {
     try {
       const newRule = await rulesApi.cloneToNewVersion.mutateAsync(rule.key)
       toast({
-        title: "Rule Cloned",
-        description: `Created ${newRule.key} (disabled by default)`,
+        title: 'Rule Cloned',
+        description: `Created ${newRule.key} (disabled by default)`
       })
     } catch (error) {
       toast({
-        title: "Clone Failed",
-        description: error instanceof Error ? error.message : "Failed to clone rule",
-        variant: "destructive"
+        title: 'Clone Failed',
+        description: error instanceof Error ? error.message : 'Failed to clone rule',
+        variant: 'destructive'
       })
     }
   }
@@ -163,10 +158,7 @@ export default function PostingRulesViewerPage() {
             Manage posting rules that drive automatic journal entries
           </p>
         </div>
-        <Button
-          onClick={handleCreate}
-          className="bg-violet-600 hover:bg-violet-700"
-        >
+        <Button onClick={handleCreate} className="bg-violet-600 hover:bg-violet-700">
           <Plus className="h-4 w-4 mr-2" />
           Create Rule
         </Button>
@@ -208,16 +200,12 @@ export default function PostingRulesViewerPage() {
           <CardContent className="py-12 text-center">
             <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-600 dark:text-gray-400">
-              {rulesApi.rules.length === 0 
-                ? "No posting rules defined yet."
-                : "No rules match your filters."}
+              {rulesApi.rules.length === 0
+                ? 'No posting rules defined yet.'
+                : 'No rules match your filters.'}
             </p>
             {rulesApi.rules.length === 0 && (
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={handleCreate}
-              >
+              <Button variant="outline" className="mt-4" onClick={handleCreate}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create First Rule
               </Button>
@@ -226,11 +214,11 @@ export default function PostingRulesViewerPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredRules.map((rule) => (
+          {filteredRules.map(rule => (
             <RuleCard
               key={rule.key}
               rule={rule}
-              onToggle={(enabled) => handleToggle(rule, enabled)}
+              onToggle={enabled => handleToggle(rule, enabled)}
               onEdit={() => handleEdit(rule)}
               onClone={() => handleClone(rule)}
               onViewJson={() => setJsonViewRule(rule)}
@@ -249,9 +237,10 @@ export default function PostingRulesViewerPage() {
               Policy-as-Data Architecture
             </div>
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              All posting rules are stored in <code className="font-mono text-xs">core_dynamic_data</code> with 
-              keys like <code className="font-mono text-xs">FIN_DNA.RULES.*</code>. Rules are versioned 
-              (v1, v2, etc.) and changes only affect future transactions.
+              All posting rules are stored in{' '}
+              <code className="font-mono text-xs">core_dynamic_data</code> with keys like{' '}
+              <code className="font-mono text-xs">FIN_DNA.RULES.*</code>. Rules are versioned (v1,
+              v2, etc.) and changes only affect future transactions.
             </div>
           </div>
         </AlertDescription>
@@ -275,7 +264,7 @@ export default function PostingRulesViewerPage() {
         >
           <div
             className="max-w-3xl w-full max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <JsonView
               data={jsonViewRule}
@@ -284,10 +273,7 @@ export default function PostingRulesViewerPage() {
               maxHeight={600}
             />
             <div className="mt-4 text-center">
-              <Button
-                variant="outline"
-                onClick={() => setJsonViewRule(null)}
-              >
+              <Button variant="outline" onClick={() => setJsonViewRule(null)}>
                 Close
               </Button>
             </div>

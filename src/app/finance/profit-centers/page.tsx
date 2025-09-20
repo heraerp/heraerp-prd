@@ -295,7 +295,9 @@ export default function ProfitCentersPage() {
                 <p className="text-2xl font-bold text-foreground">
                   ₹{(overviewMetrics.totalProfit / 10000000).toFixed(1)} Cr
                 </p>
-                <p className="text-xs text-foreground/40 mt-1">{overviewMetrics.avgMargin}% margin</p>
+                <p className="text-xs text-foreground/40 mt-1">
+                  {overviewMetrics.avgMargin}% margin
+                </p>
               </div>
             </div>
 
@@ -321,7 +323,9 @@ export default function ProfitCentersPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Revenue & Profit Trend</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Revenue & Profit Trend
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <ComposedChart data={monthlyPerformance}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />

@@ -386,7 +386,9 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-100">{item.menu_item_name}</p>
-                      <p className="text-xs text-muted-foreground">${item.unit_price.toFixed(2)} each</p>
+                      <p className="text-xs text-muted-foreground">
+                        ${item.unit_price.toFixed(2)} each
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button
@@ -418,7 +420,9 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
                   </div>
                 ))}
                 {cart.length === 0 && (
-                  <p className="text-sm text-muted-foreground text-center py-4">No items added yet</p>
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No items added yet
+                  </p>
                 )}
               </div>
             </div>

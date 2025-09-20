@@ -11,8 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Calculator, 
+import {
+  Calculator,
   Percent,
   DollarSign,
   Receipt,
@@ -32,26 +32,24 @@ export default function SalesSettingsPage() {
   const { currentOrganization } = useOrganization()
   const { toast } = useToast()
 
-  const {
-    salesPolicy,
-    isSalesPolicyLoading,
-    salesPolicyError,
-    saveSalesPolicy
-  } = useOrgSettings(currentOrganization?.id || '')
+  const { salesPolicy, isSalesPolicyLoading, salesPolicyError, saveSalesPolicy } = useOrgSettings(
+    currentOrganization?.id || ''
+  )
 
   const handleSaveSalesPolicy = async (policy: SalesPolicy) => {
     try {
       await saveSalesPolicy.mutateAsync(policy)
       toast({
-        title: "Sales Settings Updated",
-        description: "Your sales policy has been saved successfully. Changes will reflect immediately in POS and reports.",
-        variant: "default"
+        title: 'Sales Settings Updated',
+        description:
+          'Your sales policy has been saved successfully. Changes will reflect immediately in POS and reports.',
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save sales settings",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save sales settings',
+        variant: 'destructive'
       })
     }
   }
@@ -59,19 +57,21 @@ export default function SalesSettingsPage() {
   // Calculate derived values for display
   const derivedValues = React.useMemo(() => {
     if (!salesPolicy) return null
-    
+
     return {
       vatDisplay: `${Math.round(salesPolicy.vat_rate * 100)}%`,
       commissionDisplay: `${Math.round(salesPolicy.commission_rate * 100)}%`,
       vatAmount: (amount: number) => amount * salesPolicy.vat_rate,
       commissionAmount: (amount: number) => amount * salesPolicy.commission_rate,
-      netAmount: (amount: number) => amount - (amount * salesPolicy.vat_rate),
+      netAmount: (amount: number) => amount - amount * salesPolicy.vat_rate,
       exampleCalculations: {
         saleAmount: 100,
         vatAmount: 100 * salesPolicy.vat_rate,
         commissionAmount: 100 * salesPolicy.commission_rate,
         tipsAmount: 15,
-        commissionOnTips: salesPolicy.include_tips_in_commission ? 15 * salesPolicy.commission_rate : 0
+        commissionOnTips: salesPolicy.include_tips_in_commission
+          ? 15 * salesPolicy.commission_rate
+          : 0
       }
     }
   }, [salesPolicy])
@@ -90,7 +90,6 @@ export default function SalesSettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -99,7 +98,8 @@ export default function SalesSettingsPage() {
             Sales Settings
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Configure VAT rates, commission structure, and payment policies for {currentOrganization.name}
+            Configure VAT rates, commission structure, and payment policies for{' '}
+            {currentOrganization.name}
           </p>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="outline" className="text-violet-700 border-violet-300">
@@ -117,12 +117,13 @@ export default function SalesSettingsPage() {
       {/* Current Policy Summary */}
       {derivedValues && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">VAT Rate</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    VAT Rate
+                  </div>
                   <div className="text-2xl font-bold flex items-center gap-2">
                     {derivedValues.vatDisplay}
                     <Percent className="h-5 w-5 text-gray-400" />
@@ -137,7 +138,9 @@ export default function SalesSettingsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Commission Rate</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Commission Rate
+                  </div>
                   <div className="text-2xl font-bold flex items-center gap-2">
                     {derivedValues.commissionDisplay}
                     <Percent className="h-5 w-5 text-gray-400" />
@@ -152,7 +155,9 @@ export default function SalesSettingsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Tips in Commission</div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Tips in Commission
+                  </div>
                   <div className="text-2xl font-bold">
                     {salesPolicy?.include_tips_in_commission ? 'Yes' : 'No'}
                   </div>
@@ -166,16 +171,15 @@ export default function SalesSettingsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Currency</div>
-                  <div className="text-2xl font-bold">
-                    {salesPolicy?.currency || 'AED'}
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Currency
                   </div>
+                  <div className="text-2xl font-bold">{salesPolicy?.currency || 'AED'}</div>
                 </div>
                 <DollarSign className="h-8 w-8 text-orange-500" />
               </div>
             </CardContent>
           </Card>
-
         </div>
       )}
 
@@ -191,7 +195,7 @@ export default function SalesSettingsPage() {
           <CardContent>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <div className="text-sm font-medium mb-3">Example: AED 100 Service Sale</div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <div className="flex justify-between">
@@ -200,35 +204,53 @@ export default function SalesSettingsPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>VAT ({derivedValues.vatDisplay}):</span>
-                    <span className="font-medium">AED {derivedValues.exampleCalculations.vatAmount.toFixed(2)}</span>
+                    <span className="font-medium">
+                      AED {derivedValues.exampleCalculations.vatAmount.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t pt-2">
                     <span className="font-medium">Total with VAT:</span>
-                    <span className="font-bold">AED {(derivedValues.exampleCalculations.saleAmount + derivedValues.exampleCalculations.vatAmount).toFixed(2)}</span>
+                    <span className="font-bold">
+                      AED{' '}
+                      {(
+                        derivedValues.exampleCalculations.saleAmount +
+                        derivedValues.exampleCalculations.vatAmount
+                      ).toFixed(2)}
+                    </span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Commission ({derivedValues.commissionDisplay}):</span>
-                    <span className="font-medium">AED {derivedValues.exampleCalculations.commissionAmount.toFixed(2)}</span>
+                    <span className="font-medium">
+                      AED {derivedValues.exampleCalculations.commissionAmount.toFixed(2)}
+                    </span>
                   </div>
                   {salesPolicy?.tips_enabled && (
                     <>
                       <div className="flex justify-between">
                         <span>Tips:</span>
-                        <span className="font-medium">AED {derivedValues.exampleCalculations.tipsAmount.toFixed(2)}</span>
+                        <span className="font-medium">
+                          AED {derivedValues.exampleCalculations.tipsAmount.toFixed(2)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Commission on Tips:</span>
-                        <span className="font-medium">AED {derivedValues.exampleCalculations.commissionOnTips.toFixed(2)}</span>
+                        <span className="font-medium">
+                          AED {derivedValues.exampleCalculations.commissionOnTips.toFixed(2)}
+                        </span>
                       </div>
                     </>
                   )}
                   <div className="flex justify-between border-t pt-2">
                     <span className="font-medium">Total Commission:</span>
                     <span className="font-bold text-green-600">
-                      AED {(derivedValues.exampleCalculations.commissionAmount + derivedValues.exampleCalculations.commissionOnTips).toFixed(2)}
+                      AED{' '}
+                      {(
+                        derivedValues.exampleCalculations.commissionAmount +
+                        derivedValues.exampleCalculations.commissionOnTips
+                      ).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -274,19 +296,15 @@ export default function SalesSettingsPage() {
         <Info className="h-4 w-4" />
         <AlertDescription>
           <div className="space-y-1">
-            <div className="font-medium text-blue-800 dark:text-blue-200">
-              Settings Impact
-            </div>
+            <div className="font-medium text-blue-800 dark:text-blue-200">Settings Impact</div>
             <div className="text-sm text-blue-700 dark:text-blue-300">
-              • VAT and commission rates apply immediately to new transactions
-              • POS system will automatically calculate taxes and commissions
-              • Financial reports will reflect these settings
-              • All changes are logged for audit purposes
+              • VAT and commission rates apply immediately to new transactions • POS system will
+              automatically calculate taxes and commissions • Financial reports will reflect these
+              settings • All changes are logged for audit purposes
             </div>
           </div>
         </AlertDescription>
       </Alert>
-
     </div>
   )
 }

@@ -1,18 +1,18 @@
 'use client'
 
 import React, { useState, useRef } from 'react'
-import { 
-  BottomSheet, 
-  useBottomSheet, 
+import {
+  BottomSheet,
+  useBottomSheet,
   BottomSheetRef,
-  BottomSheetPresets 
+  BottomSheetPresets
 } from '@/lib/dna/components/mobile/BottomSheet'
 import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'
-import { 
-  Smartphone, 
-  Settings, 
-  Share2, 
-  Filter, 
+import {
+  Smartphone,
+  Settings,
+  Share2,
+  Filter,
   Calendar,
   MapPin,
   Image as ImageIcon,
@@ -79,7 +79,6 @@ export default function BottomSheetDemo() {
 
       {/* Demo Grid */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
         {/* Basic Example */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-2">Basic Example</h3>
@@ -137,9 +136,7 @@ export default function BottomSheetDemo() {
         {/* Fullscreen Sheet */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-2">Fullscreen Mode</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Takes up entire viewport
-          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Takes up entire viewport</p>
           <HeraButtonDNA onClick={fullscreenSheet.open} fullWidth variant="secondary">
             Open Fullscreen
           </HeraButtonDNA>
@@ -158,7 +155,6 @@ export default function BottomSheetDemo() {
             Multi-Height Sheet
           </HeraButtonDNA>
         </div>
-
       </div>
 
       {/* Imperative Control Demo */}
@@ -169,19 +165,19 @@ export default function BottomSheetDemo() {
             Control bottom sheet programmatically with ref methods
           </p>
           <div className="flex flex-wrap gap-2">
-            <button 
+            <button
               onClick={() => imperativeSheetRef.current?.expand()}
               className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             >
               Expand
             </button>
-            <button 
+            <button
               onClick={() => imperativeSheetRef.current?.collapse()}
               className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             >
               Collapse
             </button>
-            <button 
+            <button
               onClick={() => imperativeSheetRef.current?.snapTo(1)}
               className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             >
@@ -192,7 +188,7 @@ export default function BottomSheetDemo() {
       </div>
 
       {/* Bottom Sheets */}
-      
+
       {/* Basic Sheet */}
       <BottomSheet
         {...basicSheet.sheetProps}
@@ -201,8 +197,8 @@ export default function BottomSheetDemo() {
       >
         <div className="space-y-4">
           <p className="text-gray-700 dark:text-gray-300">
-            This is a simple bottom sheet with default settings. You can drag it up and down
-            to see different snap points, or swipe down to dismiss.
+            This is a simple bottom sheet with default settings. You can drag it up and down to see
+            different snap points, or swipe down to dismiss.
           </p>
           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
             <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -223,7 +219,7 @@ export default function BottomSheetDemo() {
         defaultSnapPoint={0}
       >
         <div className="space-y-2">
-          {shareOptions.map((option) => (
+          {shareOptions.map(option => (
             <button
               key={option.id}
               onClick={() => {
@@ -249,10 +245,13 @@ export default function BottomSheetDemo() {
             <HeraButtonDNA variant="outline" fullWidth onClick={formSheet.close}>
               Cancel
             </HeraButtonDNA>
-            <HeraButtonDNA fullWidth onClick={() => {
-              console.log('Saving profile:', profileData)
-              formSheet.close()
-            }}>
+            <HeraButtonDNA
+              fullWidth
+              onClick={() => {
+                console.log('Saving profile:', profileData)
+                formSheet.close()
+              }}
+            >
               Save Changes
             </HeraButtonDNA>
           </div>
@@ -266,7 +265,7 @@ export default function BottomSheetDemo() {
             <input
               type="text"
               value={profileData.name}
-              onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+              onChange={e => setProfileData({ ...profileData, name: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -277,7 +276,7 @@ export default function BottomSheetDemo() {
             <input
               type="email"
               value={profileData.email}
-              onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+              onChange={e => setProfileData({ ...profileData, email: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -288,7 +287,7 @@ export default function BottomSheetDemo() {
             <input
               type="tel"
               value={profileData.phone}
-              onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+              onChange={e => setProfileData({ ...profileData, phone: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -320,27 +319,30 @@ export default function BottomSheetDemo() {
             <HeraButtonDNA variant="outline" fullWidth onClick={filterSheet.close}>
               Cancel
             </HeraButtonDNA>
-            <HeraButtonDNA fullWidth onClick={() => {
-              console.log('Applying filters:', filters)
-              filterSheet.close()
-            }}>
+            <HeraButtonDNA
+              fullWidth
+              onClick={() => {
+                console.log('Applying filters:', filters)
+                filterSheet.close()
+              }}
+            >
               Apply Filters
             </HeraButtonDNA>
           </div>
         }
       >
         <div className="space-y-6">
-          {filters.map((filter) => (
+          {filters.map(filter => (
             <div key={filter.id}>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {filter.label}
               </label>
-              <select 
+              <select
                 value={filter.value}
-                onChange={(e) => {
-                  setFilters(filters.map(f => 
-                    f.id === filter.id ? { ...f, value: e.target.value } : f
-                  ))
+                onChange={e => {
+                  setFilters(
+                    filters.map(f => (f.id === filter.id ? { ...f, value: e.target.value } : f))
+                  )
                 }}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
@@ -374,8 +376,8 @@ export default function BottomSheetDemo() {
           <p className="text-gray-600 dark:text-gray-400">
             Select your preferred payment method for this purchase
           </p>
-          
-          {paymentMethods.map((method) => (
+
+          {paymentMethods.map(method => (
             <button
               key={method.id}
               onClick={() => setSelectedPayment(method.id)}
@@ -390,12 +392,10 @@ export default function BottomSheetDemo() {
                 <p className="font-medium">{method.label}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{method.sublabel}</p>
               </div>
-              {selectedPayment === method.id && (
-                <Check className="h-5 w-5 text-blue-600" />
-              )}
+              {selectedPayment === method.id && <Check className="h-5 w-5 text-blue-600" />}
             </button>
           ))}
-          
+
           <button className="w-full p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
             + Add New Payment Method
           </button>
@@ -409,14 +409,14 @@ export default function BottomSheetDemo() {
         title="Multi-Height Sheet"
         snapPoints={[200, '50%', '90%']}
         defaultSnapPoint={1}
-        onSnapChange={(index) => console.log('Snapped to index:', index)}
+        onSnapChange={index => console.log('Snapped to index:', index)}
       >
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-xl">
             <h4 className="font-semibold mb-2">Snap Points Demo</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              This sheet has 3 snap points: 200px, 50%, and 90% of screen height.
-              Try dragging to different heights!
+              This sheet has 3 snap points: 200px, 50%, and 90% of screen height. Try dragging to
+              different heights!
             </p>
           </div>
 
@@ -446,19 +446,18 @@ export default function BottomSheetDemo() {
           {/* Add more content to demonstrate scrolling */}
           <div className="space-y-4">
             <h4 className="font-semibold">Additional Content</h4>
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[1, 2, 3, 4, 5].map(i => (
               <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <p className="font-medium">Section {i}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  This is scrollable content within the bottom sheet. The sheet maintains
-                  its snap points while allowing internal scrolling.
+                  This is scrollable content within the bottom sheet. The sheet maintains its snap
+                  points while allowing internal scrolling.
                 </p>
               </div>
             ))}
           </div>
         </div>
       </BottomSheet>
-
     </div>
   )
 }

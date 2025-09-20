@@ -5,11 +5,29 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
 } from 'recharts'
 import {
-  TrendingUp, Trophy, Brain, DollarSign, Target, Clock, AlertCircle, FileText
+  TrendingUp,
+  Trophy,
+  Brain,
+  DollarSign,
+  Target,
+  Clock,
+  AlertCircle,
+  FileText
 } from 'lucide-react'
 import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
@@ -17,7 +35,7 @@ import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
 import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import TenderListTable from '@/components/furniture/tender/TenderListTable'
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
 // Mock data for charts
 const monthlyBidData = [
@@ -26,7 +44,7 @@ const monthlyBidData = [
   { month: 'Nov', submitted: 18, won: 8, lost: 10, value: 78 },
   { month: 'Dec', submitted: 22, won: 10, lost: 12, value: 95 },
   { month: 'Jan', submitted: 24, won: 11, lost: 13, value: 102 }
-];
+]
 
 const winRateByCategory = [
   { category: 'Teak', winRate: 65, totalBids: 15 },
@@ -34,7 +52,7 @@ const winRateByCategory = [
   { category: 'Sandalwood', winRate: 38, totalBids: 8 },
   { category: 'Mixed Timber', winRate: 55, totalBids: 20 },
   { category: 'Bamboo', winRate: 72, totalBids: 10 }
-];
+]
 
 const competitorAnalysis = [
   { name: 'ABC Timber', share: 28, color: '#ff6b6b' },
@@ -42,7 +60,7 @@ const competitorAnalysis = [
   { name: 'PQR Timbers', share: 18, color: '#45b7d1' },
   { name: 'Kerala Furniture', share: 15, color: '#f9ca24' },
   { name: 'Others', share: 17, color: '#95a5a6' }
-];
+]
 
 const dashboardStats = [
   {
@@ -82,7 +100,7 @@ const dashboardStats = [
 export default function TenderDashboardPage() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const [activeTab, setActiveTab] = useState('overview')
-  
+
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
@@ -109,7 +127,7 @@ export default function TenderDashboardPage() {
             </Button>
           }
         />
-        
+
         {/* Key Metrics */}
         <div className="space-y-4">
           <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)]">
@@ -123,7 +141,11 @@ export default function TenderDashboardPage() {
         </div>
 
         {/* Analytics Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-[var(--color-body)] space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="bg-[var(--color-body)] space-y-4"
+        >
           <TabsList className="bg-[var(--color-body)]/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="trends">Bid Trends</TabsTrigger>
@@ -167,8 +189,12 @@ export default function TenderDashboardPage() {
                   {winRateByCategory.map(item => (
                     <div key={item.category} className="bg-[var(--color-body)] space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-[var(--color-text-secondary)]">{item.category}</span>
-                        <span className="text-sm font-medium text-[var(--color-text-primary)]">{item.winRate}%</span>
+                        <span className="text-sm text-[var(--color-text-secondary)]">
+                          {item.category}
+                        </span>
+                        <span className="text-sm font-medium text-[var(--color-text-primary)]">
+                          {item.winRate}%
+                        </span>
                       </div>
                       <div className="h-2 bg-muted-foreground/10 rounded-full overflow-hidden">
                         <div
@@ -239,7 +265,8 @@ export default function TenderDashboardPage() {
                     Upcoming Tender Closures
                   </h4>
                   <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-                    3 tenders closing in the next 7 days. KFD/2025/WOOD/001 requires immediate attention for bid submission.
+                    3 tenders closing in the next 7 days. KFD/2025/WOOD/001 requires immediate
+                    attention for bid submission.
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Button size="sm" variant="secondary">
@@ -309,12 +336,16 @@ export default function TenderDashboardPage() {
                 <div className="p-4 rounded-lg bg-muted-foreground/10">
                   <p className="text-sm text-[var(--color-text-secondary)]">Revenue Impact</p>
                   <p className="text-2xl font-bold text-[var(--color-text-primary)] mt-1">₹45L</p>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">Additional revenue from AI</p>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                    Additional revenue from AI
+                  </p>
                 </div>
                 <div className="p-4 rounded-lg bg-muted-foreground/10">
                   <p className="text-sm text-[var(--color-text-secondary)]">Time Saved</p>
                   <p className="text-2xl font-bold text-[var(--color-text-primary)] mt-1">120hrs</p>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">Monthly automation benefit</p>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                    Monthly automation benefit
+                  </p>
                 </div>
               </div>
             </Card>

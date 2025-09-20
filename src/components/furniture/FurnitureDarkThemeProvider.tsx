@@ -9,27 +9,27 @@ interface FurnitureDarkThemeProviderProps {
 export function FurnitureDarkThemeProvider({ children }: FurnitureDarkThemeProviderProps) {
   useEffect(() => {
     // Force dark mode for furniture module
-  const root = window.document.documentElement
-    
+    const root = window.document.documentElement
+
     // Remove any existing theme classes
     root.classList.remove('light')
-    
+
     // Always add dark class
     root.classList.add('dark')
-    
+
     // Override any stored theme preference for furniture pages
-  const originalTheme = localStorage.getItem('hera-theme')
-    
+    const originalTheme = localStorage.getItem('hera-theme')
+
     // Store original theme to restore when leaving furniture module
     if (originalTheme) {
       sessionStorage.setItem('furniture-original-theme', originalTheme)
     }
 
-// Force dark theme in localStorage while in furniture module
+    // Force dark theme in localStorage while in furniture module
     localStorage.setItem('hera-theme', 'dark')
-    
+
     // Cleanup function to restore original theme when leaving furniture module
-    
+
     return () => {
       const savedOriginalTheme = sessionStorage.getItem('furniture-original-theme')
       if (savedOriginalTheme) {
@@ -49,8 +49,7 @@ export function FurnitureDarkThemeProvider({ children }: FurnitureDarkThemeProvi
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     mediaQuery.addEventListener('change', handleSystemThemeChange)
-    
-    
+
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange)
     }

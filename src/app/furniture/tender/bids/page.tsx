@@ -6,11 +6,39 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from '@/components/ui/table'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { FileText, Search, Filter, MoreVertical, Eye, Edit, Send, Download, Trash2, Copy, Clock, CheckCircle, XCircle, AlertCircle, Trophy, DollarSign
+import {
+  FileText,
+  Search,
+  Filter,
+  MoreVertical,
+  Eye,
+  Edit,
+  Send,
+  Download,
+  Trash2,
+  Copy,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Trophy,
+  DollarSign
 } from 'lucide-react'
 import Link from 'next/link'
 import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
@@ -19,7 +47,6 @@ import { universalApi } from '@/lib/universal-api'
 import { useToast } from '@/hooks/use-toast'
 import { format } from 'date-fns'
 
-
 export const dynamic = 'force-dynamic'
 
 interface Bid {
@@ -27,16 +54,16 @@ interface Bid {
   entity_code: string
   entity_name: string
   metadata: {
-    tender_code: string;
-    bid_amount: number;
-    status: string;
-    submission_time?: string;
-    validity_period_days: number;
-    bid_strategy: string;
-    documents_attached?: string[];
-}
-  created_at: string;
-  updated_at: string;
+    tender_code: string
+    bid_amount: number
+    status: string
+    submission_time?: string
+    validity_period_days: number
+    bid_strategy: string
+    documents_attached?: string[]
+  }
+  created_at: string
+  updated_at: string
 }
 
 const getStatusBadge = (status: string) => {
@@ -84,118 +111,327 @@ const getStatusBadge = (status: string) => {
 export default function BidsPage() {
   const { organizationId, orgLoading } = useFurnitureOrg()
 
-const { toast } = useToast()
+  const { toast } = useToast()
 
-const [bids, setBids] = useState<Bid[]>([])
+  const [bids, setBids] = useState<Bid[]>([])
 
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
-const [activeTab, setActiveTab] = useState('all')
+  const [activeTab, setActiveTab] = useState('all')
 
-useEffect(() => {
-  if (organizationId && !orgLoading) {
-    loadBids()
-  }
-}, [organizationId, orgLoading])
-
-const loadBids = async () => { 
-  try { 
-    setLoading(true)
-    universalApi.setOrganizationId(organizationId)
-
-const response = await universalApi.read({ table: 'core_entities', filter: `entity_type=HERA.FURNITURE.TENDER.BID.v1` })
-        if (response.data) {
-  setBids(response.data as Bid[])
-        }
-      } catch (error) {
-        console.error('Error loading bids:', error)
-        toast({ title: 'Error', description: 'Failed to load bids.', variant: 'destructive' })
-      } finally {
-    setLoading(false)
-  }
-}
-
-const filteredBids = bids.filter(bid => {
-  const matchesSearch = bid.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    bid.metadata.tender_code?.toLowerCase().includes(searchTerm.toLowerCase())
-
-  const matchesTab = activeTab === 'all' || 
-    (activeTab === 'draft' && bid.metadata.status === 'draft') || 
-    (activeTab === 'submitted' && bid.metadata.status === 'submitted') || 
-    (activeTab === 'won' && bid.metadata.status === 'won') || 
-    (activeTab === 'lost' && bid.metadata.status === 'lost')
-  
-  return matchesSearch && matchesTab
-})
-
-const handleDuplicate = async (bid: Bid) => {
-  try {
-    const newBid = {
-      entity_type: 'HERA.FURNITURE.TENDER.BID.v1',
-      entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`,
-      entity_name: `Copy of ${bid.entity_name}`,
-      smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',
-      metadata: {
-        ...bid.metadata,
-        status: 'draft',
-        original_bid_id: bid.id
-      }
+  useEffect(() => {
+    if (organizationId && !orgLoading) {
+      loadBids()
     }
-    await universalApi.createEntity(newBid)
-    toast({ title: 'Bid Duplicated', description: 'A copy of the bid has been created as draft.' })
-    loadBids()
-  } catch (error) {
-    console.error('Error duplicating bid:', error)
-    toast({ title: 'Error', description: 'Failed to duplicate bid.', variant: 'destructive' })
-  }
-}
+  }, [organizationId, orgLoading])
 
-const handleDelete = async (bidId: string) => {
-  try {
-    await universalApi.delete({ table: 'core_entities', id: bidId })
-    toast({ title: 'Bid Deleted', description: 'The bid has been deleted.' })
-    loadBids()
-  } catch (error) {
-    console.error('Error deleting bid:', error)
-    toast({ title: 'Error', description: 'Failed to delete bid.', variant: 'destructive' })
-  }
-}
+  const loadBids = async () => {
+    try {
+      setLoading(true)
+      universalApi.setOrganizationId(organizationId)
 
-const stats = {
+      const response = await universalApi.read({
+        table: 'core_entities',
+        filter: `entity_type=HERA.FURNITURE.TENDER.BID.v1`
+      })
+      if (response.data) {
+        setBids(response.data as Bid[])
+      }
+    } catch (error) {
+      console.error('Error loading bids:', error)
+      toast({ title: 'Error', description: 'Failed to load bids.', variant: 'destructive' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const filteredBids = bids.filter(bid => {
+    const matchesSearch =
+      bid.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bid.metadata.tender_code?.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesTab =
+      activeTab === 'all' ||
+      (activeTab === 'draft' && bid.metadata.status === 'draft') ||
+      (activeTab === 'submitted' && bid.metadata.status === 'submitted') ||
+      (activeTab === 'won' && bid.metadata.status === 'won') ||
+      (activeTab === 'lost' && bid.metadata.status === 'lost')
+
+    return matchesSearch && matchesTab
+  })
+
+  const handleDuplicate = async (bid: Bid) => {
+    try {
+      const newBid = {
+        entity_type: 'HERA.FURNITURE.TENDER.BID.v1',
+        entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`,
+        entity_name: `Copy of ${bid.entity_name}`,
+        smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',
+        metadata: {
+          ...bid.metadata,
+          status: 'draft',
+          original_bid_id: bid.id
+        }
+      }
+      await universalApi.createEntity(newBid)
+      toast({
+        title: 'Bid Duplicated',
+        description: 'A copy of the bid has been created as draft.'
+      })
+      loadBids()
+    } catch (error) {
+      console.error('Error duplicating bid:', error)
+      toast({ title: 'Error', description: 'Failed to duplicate bid.', variant: 'destructive' })
+    }
+  }
+
+  const handleDelete = async (bidId: string) => {
+    try {
+      await universalApi.delete({ table: 'core_entities', id: bidId })
+      toast({ title: 'Bid Deleted', description: 'The bid has been deleted.' })
+      loadBids()
+    } catch (error) {
+      console.error('Error deleting bid:', error)
+      toast({ title: 'Error', description: 'Failed to delete bid.', variant: 'destructive' })
+    }
+  }
+
+  const stats = {
     total: bids.length,
     draft: bids.filter(b => b.metadata.status === 'draft').length,
     submitted: bids.filter(b => b.metadata.status === 'submitted').length,
     won: bids.filter(b => b.metadata.status === 'won').length,
     lost: bids.filter(b => b.metadata.status === 'lost').length,
     totalValue: bids.reduce((sum, b) => sum + (b.metadata.bid_amount || 0), 0),
-    winRate: bids.length > 0 ? 
-      ((bids.filter(b => b.metadata.status === 'won').length / 
-        bids.filter(b => ['won', 'lost'].includes(b.metadata.status)).length) * 100).toFixed(0) : 0
+    winRate:
+      bids.length > 0
+        ? (
+            (bids.filter(b => b.metadata.status === 'won').length /
+              bids.filter(b => ['won', 'lost'].includes(b.metadata.status)).length) *
+            100
+          ).toFixed(0)
+        : 0
   }
 
   if (orgLoading) {
-  return <div>Loading organization...</div> }
+    return <div>Loading organization...</div>
+  }
 
   return (
-    <div> <FurniturePageHeader title="Bid Management" subtitle="Track and manage all your tender bids" /> 
-        {/* Stats Cards  */}
-        <div className="bg-[var(--color-body)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"> <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Total Bids</p> <p className="text-2xl font-bold">{stats.total}</p> </div> <FileText className="h-8 w-8 text-[var(--color-icon-secondary)]" /> </div> </Card>
-        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Active Bids</p> <p className="text-2xl font-bold">{stats.submitted}</p> </div> <Clock className="h-8 w-8 text-[var(--color-icon-secondary)]" /> </div> </Card>
-        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Win Rate</p> <p className="text-2xl font-bold">{stats.winRate}%</p> </div> <Trophy className="h-8 w-8 text-green-500" /> </div> </Card>
-        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="bg-[var(--color-body)] flex items-center justify-between"> <div> <p className="text-sm text-[var(--color-text-secondary)]">Total Value</p> <p className="text-2xl font-bold">₹{(stats.totalValue / 100000).toFixed(1)}L</p> </div> <DollarSign className="h-8 w-8 text-[var(--color-icon-secondary)]" /> </div> </Card> </div> 
-        {/* Search and Filters  */}
-        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6"> <div className="bg-[var(--color-body)] flex items-center justify-between mb-6"> <div className="flex items-center gap-4"> <div className="relative w-96"> <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" /> <Input placeholder="Search by bid code or tender code..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="bg-[var(--color-body)] pl-10" /> </div> <Button variant="outline"> <Filter className="h-4 w-4 mr-2" /> Filters </Button> </div> <Button variant="outline"> <Download className="h-4 w-4 mr-2" /> Export </Button> </div> <Tabs value={activeTab} onValueChange={setActiveTab}> <TabsList> <TabsTrigger value="all">All Bids ({stats.total})</TabsTrigger> <TabsTrigger value="draft">Draft ({stats.draft})</TabsTrigger> <TabsTrigger value="submitted">Submitted ({stats.submitted})</TabsTrigger> <TabsTrigger value="won">Won ({stats.won})</TabsTrigger> <TabsTrigger value="lost">Lost ({stats.lost})</TabsTrigger> </TabsList> <TabsContent value={activeTab} className="bg-[var(--color-body)] mt-6"> {loading ? (
-            <div className="text-center py-8">Loading bids...</div> ) : filteredBids.length === 0 ? (
-            <div className="text-center py-8 text-[var(--color-text-secondary)]">No bids found</div> )
-          : (
-            <Table> <TableHeader> <TableRow> <TableHead>Bid Code</TableHead> <TableHead>Tender Code</TableHead> <TableHead>Bid Amount</TableHead> <TableHead>Strategy</TableHead> <TableHead>Status</TableHead> <TableHead>Submitted</TableHead> <TableHead>Actions</TableHead> </TableRow> </TableHeader> <TableBody> {filteredBids.map(bid => ( <TableRow key={bid.id}> <TableCell className="font-medium">{bid.entity_code}</TableCell> <TableCell> <Link href={`/furniture/tender/${bid.metadata.tender_code}`} className="bg-[var(--color-body)] text-primary hover:underline" > {bid.metadata.tender_code} </Link> </TableCell> <TableCell>₹{bid.metadata.bid_amount?.toLocaleString('en-IN')}</TableCell> <TableCell className="capitalize"> {bid.metadata.bid_strategy || 'N/A'} </TableCell> <TableCell>{getStatusBadge(bid.metadata.status)}</TableCell> <TableCell> {bid.metadata.submission_time ? format(new Date(bid.metadata.submission_time), 'dd MMM yyyy') : format(new Date(bid.created_at), 'dd MMM yyyy')} </TableCell> <TableCell> <DropdownMenu> <DropdownMenuTrigger asChild> <Button variant="ghost" size="sm"> <MoreVertical className="h-4 w-4" /> </Button> </DropdownMenuTrigger> <DropdownMenuContent align="end"> <DropdownMenuLabel>Actions</DropdownMenuLabel> <DropdownMenuSeparator /> <DropdownMenuItem asChild> <Link href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}`} > <Eye className="h-4 w-4 mr-2" /> View Details </Link> </DropdownMenuItem> {bid.metadata.status === 'draft' && ( <> <DropdownMenuItem asChild> <Link href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}/edit`} > <Edit className="h-4 w-4 mr-2" /> Edit </Link> </DropdownMenuItem> <DropdownMenuItem> <Send className="h-4 w-4 mr-2" /> Submit </DropdownMenuItem> </> )} <DropdownMenuItem onClick={() => handleDuplicate(bid)}
-        > <Copy className="h-4 w-4 mr-2" /> Duplicate </DropdownMenuItem> <DropdownMenuSeparator /> {bid.metadata.status === 'draft' && ( <DropdownMenuItem onClick={() => handleDelete(bid.id)} className="bg-[var(--color-body)] text-red-600" > <Trash2 className="h-4 w-4 mr-2" /> Delete </DropdownMenuItem> )} </DropdownMenuContent> </DropdownMenu> </TableCell>
-      </TableRow>
-    ))} </TableBody>
-      </Table>
-    )} </TabsContent> </Tabs> </Card>
+    <div>
+      {' '}
+      <FurniturePageHeader
+        title="Bid Management"
+        subtitle="Track and manage all your tender bids"
+      />
+      {/* Stats Cards  */}
+      <div className="bg-[var(--color-body)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {' '}
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          {' '}
+          <div className="flex items-center justify-between">
+            {' '}
+            <div>
+              {' '}
+              <p className="text-sm text-[var(--color-text-secondary)]">Total Bids</p>{' '}
+              <p className="text-2xl font-bold">{stats.total}</p>{' '}
+            </div>{' '}
+            <FileText className="h-8 w-8 text-[var(--color-icon-secondary)]" />{' '}
+          </div>{' '}
+        </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          {' '}
+          <div className="bg-[var(--color-body)] flex items-center justify-between">
+            {' '}
+            <div>
+              {' '}
+              <p className="text-sm text-[var(--color-text-secondary)]">Active Bids</p>{' '}
+              <p className="text-2xl font-bold">{stats.submitted}</p>{' '}
+            </div>{' '}
+            <Clock className="h-8 w-8 text-[var(--color-icon-secondary)]" />{' '}
+          </div>{' '}
+        </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          {' '}
+          <div className="bg-[var(--color-body)] flex items-center justify-between">
+            {' '}
+            <div>
+              {' '}
+              <p className="text-sm text-[var(--color-text-secondary)]">Win Rate</p>{' '}
+              <p className="text-2xl font-bold">{stats.winRate}%</p>{' '}
+            </div>{' '}
+            <Trophy className="h-8 w-8 text-green-500" />{' '}
+          </div>{' '}
+        </Card>
+        <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+          {' '}
+          <div className="bg-[var(--color-body)] flex items-center justify-between">
+            {' '}
+            <div>
+              {' '}
+              <p className="text-sm text-[var(--color-text-secondary)]">Total Value</p>{' '}
+              <p className="text-2xl font-bold">₹{(stats.totalValue / 100000).toFixed(1)}L</p>{' '}
+            </div>{' '}
+            <DollarSign className="h-8 w-8 text-[var(--color-icon-secondary)]" />{' '}
+          </div>{' '}
+        </Card>{' '}
       </div>
-      )
+      {/* Search and Filters  */}
+      <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6">
+        {' '}
+        <div className="bg-[var(--color-body)] flex items-center justify-between mb-6">
+          {' '}
+          <div className="flex items-center gap-4">
+            {' '}
+            <div className="relative w-96">
+              {' '}
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" />{' '}
+              <Input
+                placeholder="Search by bid code or tender code..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="bg-[var(--color-body)] pl-10"
+              />{' '}
+            </div>{' '}
+            <Button variant="outline">
+              {' '}
+              <Filter className="h-4 w-4 mr-2" /> Filters{' '}
+            </Button>{' '}
+          </div>{' '}
+          <Button variant="outline">
+            {' '}
+            <Download className="h-4 w-4 mr-2" /> Export{' '}
+          </Button>{' '}
+        </div>{' '}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {' '}
+          <TabsList>
+            {' '}
+            <TabsTrigger value="all">All Bids ({stats.total})</TabsTrigger>{' '}
+            <TabsTrigger value="draft">Draft ({stats.draft})</TabsTrigger>{' '}
+            <TabsTrigger value="submitted">Submitted ({stats.submitted})</TabsTrigger>{' '}
+            <TabsTrigger value="won">Won ({stats.won})</TabsTrigger>{' '}
+            <TabsTrigger value="lost">Lost ({stats.lost})</TabsTrigger>{' '}
+          </TabsList>{' '}
+          <TabsContent value={activeTab} className="bg-[var(--color-body)] mt-6">
+            {' '}
+            {loading ? (
+              <div className="text-center py-8">Loading bids...</div>
+            ) : filteredBids.length === 0 ? (
+              <div className="text-center py-8 text-[var(--color-text-secondary)]">
+                No bids found
+              </div>
+            ) : (
+              <Table>
+                {' '}
+                <TableHeader>
+                  {' '}
+                  <TableRow>
+                    {' '}
+                    <TableHead>Bid Code</TableHead> <TableHead>Tender Code</TableHead>{' '}
+                    <TableHead>Bid Amount</TableHead> <TableHead>Strategy</TableHead>{' '}
+                    <TableHead>Status</TableHead> <TableHead>Submitted</TableHead>{' '}
+                    <TableHead>Actions</TableHead>{' '}
+                  </TableRow>{' '}
+                </TableHeader>{' '}
+                <TableBody>
+                  {' '}
+                  {filteredBids.map(bid => (
+                    <TableRow key={bid.id}>
+                      {' '}
+                      <TableCell className="font-medium">{bid.entity_code}</TableCell>{' '}
+                      <TableCell>
+                        {' '}
+                        <Link
+                          href={`/furniture/tender/${bid.metadata.tender_code}`}
+                          className="bg-[var(--color-body)] text-primary hover:underline"
+                        >
+                          {' '}
+                          {bid.metadata.tender_code}{' '}
+                        </Link>{' '}
+                      </TableCell>{' '}
+                      <TableCell>₹{bid.metadata.bid_amount?.toLocaleString('en-IN')}</TableCell>{' '}
+                      <TableCell className="capitalize">
+                        {' '}
+                        {bid.metadata.bid_strategy || 'N/A'}{' '}
+                      </TableCell>{' '}
+                      <TableCell>{getStatusBadge(bid.metadata.status)}</TableCell>{' '}
+                      <TableCell>
+                        {' '}
+                        {bid.metadata.submission_time
+                          ? format(new Date(bid.metadata.submission_time), 'dd MMM yyyy')
+                          : format(new Date(bid.created_at), 'dd MMM yyyy')}{' '}
+                      </TableCell>{' '}
+                      <TableCell>
+                        {' '}
+                        <DropdownMenu>
+                          {' '}
+                          <DropdownMenuTrigger asChild>
+                            {' '}
+                            <Button variant="ghost" size="sm">
+                              {' '}
+                              <MoreVertical className="h-4 w-4" />{' '}
+                            </Button>{' '}
+                          </DropdownMenuTrigger>{' '}
+                          <DropdownMenuContent align="end">
+                            {' '}
+                            <DropdownMenuLabel>
+                              Actions
+                            </DropdownMenuLabel> <DropdownMenuSeparator />{' '}
+                            <DropdownMenuItem asChild>
+                              {' '}
+                              <Link
+                                href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}`}
+                              >
+                                {' '}
+                                <Eye className="h-4 w-4 mr-2" /> View Details{' '}
+                              </Link>{' '}
+                            </DropdownMenuItem>{' '}
+                            {bid.metadata.status === 'draft' && (
+                              <>
+                                {' '}
+                                <DropdownMenuItem asChild>
+                                  {' '}
+                                  <Link
+                                    href={`/furniture/tender/${bid.metadata.tender_code}/bid/${bid.id}/edit`}
+                                  >
+                                    {' '}
+                                    <Edit className="h-4 w-4 mr-2" /> Edit{' '}
+                                  </Link>{' '}
+                                </DropdownMenuItem>{' '}
+                                <DropdownMenuItem>
+                                  {' '}
+                                  <Send className="h-4 w-4 mr-2" /> Submit{' '}
+                                </DropdownMenuItem>{' '}
+                              </>
+                            )}{' '}
+                            <DropdownMenuItem onClick={() => handleDuplicate(bid)}>
+                              {' '}
+                              <Copy className="h-4 w-4 mr-2" /> Duplicate{' '}
+                            </DropdownMenuItem>{' '}
+                            <DropdownMenuSeparator />{' '}
+                            {bid.metadata.status === 'draft' && (
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(bid.id)}
+                                className="bg-[var(--color-body)] text-red-600"
+                              >
+                                {' '}
+                                <Trash2 className="h-4 w-4 mr-2" /> Delete{' '}
+                              </DropdownMenuItem>
+                            )}{' '}
+                          </DropdownMenuContent>{' '}
+                        </DropdownMenu>{' '}
+                      </TableCell>
+                    </TableRow>
+                  ))}{' '}
+                </TableBody>
+              </Table>
+            )}{' '}
+          </TabsContent>{' '}
+        </Tabs>{' '}
+      </Card>
+    </div>
+  )
 }

@@ -18,7 +18,12 @@ import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
 import { ExportButtons } from '@/components/reports/ExportButtons'
 import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
 import { useUniversalReports } from '@/hooks/useUniversalReports'
-import { FinancialFilters, PnLRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
+import {
+  FinancialFilters,
+  PnLRow,
+  DrillDownResponse,
+  TransactionDetail
+} from '@/lib/schemas/reports'
 import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 export default function ProfitLossStatementPage() {
@@ -28,9 +33,11 @@ export default function ProfitLossStatementPage() {
     account?: PnLRow
     isOpen: boolean
   }>({ group: '', isOpen: false })
-  
+
   const [drillDownData, setDrillDownData] = React.useState<DrillDownResponse | null>(null)
-  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(null)
+  const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionDetail | null>(
+    null
+  )
   const [isDrillDownLoading, setIsDrillDownLoading] = React.useState(false)
   const [isTransactionLoading, setIsTransactionLoading] = React.useState(false)
 
@@ -55,15 +62,9 @@ export default function ProfitLossStatementPage() {
   }
 
   const { filters, updateFilters } = useReportFilters(initialFilters)
-  
+
   // Main report data using useUniversalReports hook
-  const { 
-    isLoading, 
-    error, 
-    data: reportData,
-    getProfitLoss,
-    clearError 
-  } = useUniversalReports()
+  const { isLoading, error, data: reportData, getProfitLoss, clearError } = useUniversalReports()
 
   // Load P&L data
   React.useEffect(() => {
@@ -74,7 +75,13 @@ export default function ProfitLossStatementPage() {
         organization_id: currentOrganization.id
       })
     }
-  }, [currentOrganization?.id, filters.from_date, filters.to_date, filters.branch_id, getProfitLoss])
+  }, [
+    currentOrganization?.id,
+    filters.from_date,
+    filters.to_date,
+    filters.branch_id,
+    getProfitLoss
+  ])
 
   // Mock data transformation (in production, this would come from the API)
   const transformedData = React.useMemo(() => {
@@ -83,39 +90,207 @@ export default function ProfitLossStatementPage() {
     // Transform universal report data to P&L format
     const mockPnLData: PnLRow[] = [
       // REVENUE GROUP
-      { account_code: 'REV_TOTAL', account_name: 'Total Revenue', group: 'revenue', amount: -115000, percentage: 100, is_subtotal: true, level: 0 },
-      { account_code: '4100', account_name: 'Service Revenue - Haircuts', group: 'revenue', amount: -75000, percentage: 65.2, is_subtotal: false, level: 1 },
-      { account_code: '4110', account_name: 'Service Revenue - Coloring', group: 'revenue', amount: -25000, percentage: 21.7, is_subtotal: false, level: 1 },
-      { account_code: '4120', account_name: 'Service Revenue - Treatments', group: 'revenue', amount: -10000, percentage: 8.7, is_subtotal: false, level: 1 },
-      { account_code: '4200', account_name: 'Product Sales', group: 'revenue', amount: -5000, percentage: 4.3, is_subtotal: false, level: 1 },
-      
+      {
+        account_code: 'REV_TOTAL',
+        account_name: 'Total Revenue',
+        group: 'revenue',
+        amount: -115000,
+        percentage: 100,
+        is_subtotal: true,
+        level: 0
+      },
+      {
+        account_code: '4100',
+        account_name: 'Service Revenue - Haircuts',
+        group: 'revenue',
+        amount: -75000,
+        percentage: 65.2,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '4110',
+        account_name: 'Service Revenue - Coloring',
+        group: 'revenue',
+        amount: -25000,
+        percentage: 21.7,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '4120',
+        account_name: 'Service Revenue - Treatments',
+        group: 'revenue',
+        amount: -10000,
+        percentage: 8.7,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '4200',
+        account_name: 'Product Sales',
+        group: 'revenue',
+        amount: -5000,
+        percentage: 4.3,
+        is_subtotal: false,
+        level: 1
+      },
+
       // COGS GROUP
-      { account_code: 'COGS_TOTAL', account_name: 'Total Cost of Goods Sold', group: 'cogs', amount: 28000, percentage: 24.3, is_subtotal: true, level: 0 },
-      { account_code: '5100', account_name: 'Product Costs', group: 'cogs', amount: 2000, percentage: 1.7, is_subtotal: false, level: 1 },
-      { account_code: '5200', account_name: 'Service Materials', group: 'cogs', amount: 8000, percentage: 7.0, is_subtotal: false, level: 1 },
-      { account_code: '5300', account_name: 'Staff Commissions', group: 'cogs', amount: 18000, percentage: 15.7, is_subtotal: false, level: 1 },
-      
+      {
+        account_code: 'COGS_TOTAL',
+        account_name: 'Total Cost of Goods Sold',
+        group: 'cogs',
+        amount: 28000,
+        percentage: 24.3,
+        is_subtotal: true,
+        level: 0
+      },
+      {
+        account_code: '5100',
+        account_name: 'Product Costs',
+        group: 'cogs',
+        amount: 2000,
+        percentage: 1.7,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '5200',
+        account_name: 'Service Materials',
+        group: 'cogs',
+        amount: 8000,
+        percentage: 7.0,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '5300',
+        account_name: 'Staff Commissions',
+        group: 'cogs',
+        amount: 18000,
+        percentage: 15.7,
+        is_subtotal: false,
+        level: 1
+      },
+
       // GROSS PROFIT
-      { account_code: 'GROSS_PROFIT', account_name: 'Gross Profit', group: 'gross_profit', amount: 87000, percentage: 75.7, is_subtotal: true, level: 0 },
-      
+      {
+        account_code: 'GROSS_PROFIT',
+        account_name: 'Gross Profit',
+        group: 'gross_profit',
+        amount: 87000,
+        percentage: 75.7,
+        is_subtotal: true,
+        level: 0
+      },
+
       // EXPENSES GROUP
-      { account_code: 'EXP_TOTAL', account_name: 'Total Operating Expenses', group: 'expenses', amount: 45500, percentage: 39.6, is_subtotal: true, level: 0 },
-      { account_code: '6100', account_name: 'Staff Salaries', group: 'expenses', amount: 22000, percentage: 19.1, is_subtotal: false, level: 1 },
-      { account_code: '6200', account_name: 'Rent & Utilities', group: 'expenses', amount: 15000, percentage: 13.0, is_subtotal: false, level: 1 },
-      { account_code: '6300', account_name: 'Marketing & Advertising', group: 'expenses', amount: 3500, percentage: 3.0, is_subtotal: false, level: 1 },
-      { account_code: '6400', account_name: 'Insurance & Legal', group: 'expenses', amount: 2500, percentage: 2.2, is_subtotal: false, level: 1 },
-      { account_code: '6500', account_name: 'Equipment & Maintenance', group: 'expenses', amount: 2500, percentage: 2.2, is_subtotal: false, level: 1 },
-      
+      {
+        account_code: 'EXP_TOTAL',
+        account_name: 'Total Operating Expenses',
+        group: 'expenses',
+        amount: 45500,
+        percentage: 39.6,
+        is_subtotal: true,
+        level: 0
+      },
+      {
+        account_code: '6100',
+        account_name: 'Staff Salaries',
+        group: 'expenses',
+        amount: 22000,
+        percentage: 19.1,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '6200',
+        account_name: 'Rent & Utilities',
+        group: 'expenses',
+        amount: 15000,
+        percentage: 13.0,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '6300',
+        account_name: 'Marketing & Advertising',
+        group: 'expenses',
+        amount: 3500,
+        percentage: 3.0,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '6400',
+        account_name: 'Insurance & Legal',
+        group: 'expenses',
+        amount: 2500,
+        percentage: 2.2,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '6500',
+        account_name: 'Equipment & Maintenance',
+        group: 'expenses',
+        amount: 2500,
+        percentage: 2.2,
+        is_subtotal: false,
+        level: 1
+      },
+
       // OPERATING PROFIT
-      { account_code: 'OP_PROFIT', account_name: 'Operating Profit', group: 'operating_profit', amount: 41500, percentage: 36.1, is_subtotal: true, level: 0 },
-      
+      {
+        account_code: 'OP_PROFIT',
+        account_name: 'Operating Profit',
+        group: 'operating_profit',
+        amount: 41500,
+        percentage: 36.1,
+        is_subtotal: true,
+        level: 0
+      },
+
       // OTHER
-      { account_code: 'OTHER_TOTAL', account_name: 'Other Income/Expenses', group: 'other', amount: -800, percentage: -0.7, is_subtotal: true, level: 0 },
-      { account_code: '7100', account_name: 'Interest Income', group: 'other', amount: -200, percentage: -0.2, is_subtotal: false, level: 1 },
-      { account_code: '8100', account_name: 'Bank Charges', group: 'other', amount: 600, percentage: 0.5, is_subtotal: false, level: 1 },
-      
+      {
+        account_code: 'OTHER_TOTAL',
+        account_name: 'Other Income/Expenses',
+        group: 'other',
+        amount: -800,
+        percentage: -0.7,
+        is_subtotal: true,
+        level: 0
+      },
+      {
+        account_code: '7100',
+        account_name: 'Interest Income',
+        group: 'other',
+        amount: -200,
+        percentage: -0.2,
+        is_subtotal: false,
+        level: 1
+      },
+      {
+        account_code: '8100',
+        account_name: 'Bank Charges',
+        group: 'other',
+        amount: 600,
+        percentage: 0.5,
+        is_subtotal: false,
+        level: 1
+      },
+
       // NET INCOME
-      { account_code: 'NET_INCOME', account_name: 'Net Income', group: 'net_income', amount: 42300, percentage: 36.8, is_subtotal: true, level: 0 }
+      {
+        account_code: 'NET_INCOME',
+        account_name: 'Net Income',
+        group: 'net_income',
+        amount: 42300,
+        percentage: 36.8,
+        is_subtotal: true,
+        level: 0
+      }
     ]
 
     const mockSummary = {
@@ -140,7 +315,7 @@ export default function ProfitLossStatementPage() {
   // Handle drill-down clicks
   const handleDrillDown = async (row: PnLRow) => {
     if (row.is_subtotal) return // Don't drill down on subtotals
-    
+
     setSelectedDrillDown({ group: row.group, account: row, isOpen: true })
     setIsDrillDownLoading(true)
     setDrillDownData(null)
@@ -149,7 +324,7 @@ export default function ProfitLossStatementPage() {
     try {
       // In production, this would call your drill-down API
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      
+
       const mockTransactions = [
         {
           transaction_id: 'abc12345-e89b-12d3-a456-426614174000',
@@ -195,7 +370,7 @@ export default function ProfitLossStatementPage() {
     setIsTransactionLoading(true)
     try {
       await new Promise(resolve => setTimeout(resolve, 800))
-      
+
       const mockTransactionDetail: TransactionDetail = {
         transaction: {
           id: transactionId,
@@ -223,24 +398,34 @@ export default function ProfitLossStatementPage() {
             description: 'Cash receipt from POS sales',
             quantity: undefined,
             unit_amount: undefined,
-            line_amount: 275.00,
+            line_amount: 275.0,
             smart_code: 'HERA.FIN.GL.CASH.DR.V1'
           },
           {
             line_number: 2,
-            line_type: 'credit', 
+            line_type: 'credit',
             entity_id: 'gl-account-4100',
             entity_name: 'Service Revenue',
             description: 'Service revenue recognition',
             quantity: undefined,
             unit_amount: undefined,
-            line_amount: -275.00,
+            line_amount: -275.0,
             smart_code: 'HERA.FIN.GL.REVENUE.CR.V1'
           }
         ],
         related_entities: [
-          { entity_id: 'gl-account-1100', entity_type: 'gl_account', entity_name: 'Cash in Hand', role: 'debit_account' },
-          { entity_id: 'gl-account-4100', entity_type: 'gl_account', entity_name: 'Service Revenue', role: 'credit_account' }
+          {
+            entity_id: 'gl-account-1100',
+            entity_type: 'gl_account',
+            entity_name: 'Cash in Hand',
+            role: 'debit_account'
+          },
+          {
+            entity_id: 'gl-account-4100',
+            entity_type: 'gl_account',
+            entity_name: 'Service Revenue',
+            role: 'credit_account'
+          }
         ]
       }
 
@@ -266,10 +451,7 @@ export default function ProfitLossStatementPage() {
           <AlertCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
             Failed to load P&L statement: {error}
-            <button 
-              onClick={clearError}
-              className="ml-2 underline hover:no-underline"
-            >
+            <button onClick={clearError} className="ml-2 underline hover:no-underline">
               Retry
             </button>
           </AlertDescription>
@@ -283,22 +465,20 @@ export default function ProfitLossStatementPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to view reports.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to view reports.</AlertDescription>
         </Alert>
       </div>
     )
   }
 
-  const reportTitle = "Profit & Loss Statement"
-  const reportPeriod = filters.from_date && filters.to_date 
-    ? `${new Date(filters.from_date + 'T00:00:00').toLocaleDateString('en-AE')} - ${new Date(filters.to_date + 'T00:00:00').toLocaleDateString('en-AE')}`
-    : 'Current Month'
+  const reportTitle = 'Profit & Loss Statement'
+  const reportPeriod =
+    filters.from_date && filters.to_date
+      ? `${new Date(filters.from_date + 'T00:00:00').toLocaleDateString('en-AE')} - ${new Date(filters.to_date + 'T00:00:00').toLocaleDateString('en-AE')}`
+      : 'Current Month'
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -311,14 +491,14 @@ export default function ProfitLossStatementPage() {
           </p>
           {transformedData?.summary.net_margin_percent && (
             <div className="flex items-center gap-2 mt-2">
-              <Badge 
+              <Badge
                 variant="outline"
                 className={
                   transformedData.summary.net_margin_percent > 30
-                    ? "text-emerald-700 border-emerald-300 bg-emerald-50"
+                    ? 'text-emerald-700 border-emerald-300 bg-emerald-50'
                     : transformedData.summary.net_margin_percent > 15
-                    ? "text-blue-700 border-blue-300 bg-blue-50"
-                    : "text-red-700 border-red-300 bg-red-50"
+                      ? 'text-blue-700 border-blue-300 bg-blue-50'
+                      : 'text-red-700 border-red-300 bg-red-50'
                 }
               >
                 <TrendingUp className="h-3 w-3 mr-1" />
@@ -327,12 +507,12 @@ export default function ProfitLossStatementPage() {
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="text-violet-700 border-violet-300">
             {currentOrganization.name}
           </Badge>
-          
+
           {transformedData && (
             <ExportButtons
               reportType="pnl"
@@ -363,7 +543,7 @@ export default function ProfitLossStatementPage() {
           summary={transformedData.summary}
           reportType="pnl"
           currency={transformedData.currency}
-          onDrillDown={(group) => console.log(`Drill down on ${group}`)}
+          onDrillDown={group => console.log(`Drill down on ${group}`)}
         />
       )}
 
@@ -444,10 +624,7 @@ export default function ProfitLossStatementPage() {
                 currency={transformedData.currency}
                 className="mb-6"
               />
-              <PnLTable
-                data={transformedData.line_items}
-                currency={transformedData.currency}
-              />
+              <PnLTable data={transformedData.line_items} currency={transformedData.currency} />
             </>
           )}
         </PrintLayout>

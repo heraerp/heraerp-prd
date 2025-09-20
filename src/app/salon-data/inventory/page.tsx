@@ -499,7 +499,9 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(inventoryMetrics.totalValue)}</div>
-            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Cost basis</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+              Cost basis
+            </p>
           </CardContent>
         </Card>
 
@@ -531,7 +533,9 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.lowStockCount}</div>
-            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Need reordering</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+              Need reordering
+            </p>
           </CardContent>
         </Card>
 
@@ -546,7 +550,9 @@ export default function SalonInventoryManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{inventoryMetrics.totalItems}</div>
-            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Active items</p>
+            <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+              Active items
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -606,7 +612,9 @@ export default function SalonInventoryManagement() {
                   {type === 'consignment' && <Package className="w-5 h-5 text-green-500" />}
                   <div>
                     <h4 className="font-medium capitalize">{type.replace('_', ' ')}</h4>
-                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">{data.count} items</p>
+                    <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                      {data.count} items
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -935,7 +943,9 @@ export default function SalonInventoryManagement() {
 
                     <div className="flex-1">
                       <h4 className="font-semibold">{movement.product_name}</h4>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">{movement.reason}</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        {movement.reason}
+                      </p>
                       <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <User className="w-3 h-3" />
@@ -997,17 +1007,23 @@ export default function SalonInventoryManagement() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground dark:text-muted-foreground">Total Cost Value</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">
+                  Total Cost Value
+                </span>
                 <span className="font-semibold">{formatCurrency(inventoryMetrics.totalValue)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground dark:text-muted-foreground">Total Retail Value</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">
+                  Total Retail Value
+                </span>
                 <span className="font-semibold">
                   {formatCurrency(inventoryMetrics.retailValue)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-muted-foreground dark:text-muted-foreground">Potential Profit</span>
+                <span className="text-muted-foreground dark:text-muted-foreground">
+                  Potential Profit
+                </span>
                 <span className="font-semibold text-green-600">
                   {formatCurrency(inventoryMetrics.retailValue - inventoryMetrics.totalValue)}
                 </span>
@@ -1152,7 +1168,9 @@ export default function SalonInventoryManagement() {
               <div className="flex items-center justify-between p-3 bg-muted dark:bg-muted rounded-lg">
                 <div>
                   <p className="font-medium">Email Notifications</p>
-                  <p className="text-sm text-muted-foreground">Receive email alerts for low stock</p>
+                  <p className="text-sm text-muted-foreground">
+                    Receive email alerts for low stock
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   Configure

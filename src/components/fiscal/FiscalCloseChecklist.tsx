@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   CheckSquare,
   Square,
   RefreshCw,
@@ -119,18 +119,19 @@ export function FiscalCloseChecklist({
               <FileCheck className="h-4 w-4" />
               Period Close Checklist
             </span>
-            <Badge 
-              className={isComplete 
-                ? "bg-green-100 text-green-800 border-green-300" 
-                : "bg-violet-100 text-violet-800 border-violet-300"
+            <Badge
+              className={
+                isComplete
+                  ? 'bg-green-100 text-green-800 border-green-300'
+                  : 'bg-violet-100 text-violet-800 border-violet-300'
               }
             >
               {completedCount} / {totalCount}
             </Badge>
           </CardTitle>
-          
+
           <Progress value={progressPercentage} className="h-2" />
-          
+
           {isComplete && (
             <Alert className="border-green-200 bg-green-50 dark:bg-green-950/30">
               <CheckCircle className="h-4 w-4" />
@@ -141,20 +142,20 @@ export function FiscalCloseChecklist({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-0">
         <ScrollArea className="h-[600px] px-6 pb-6">
           <div className="space-y-1">
             {checklist.map((item, index) => {
               const isProcessing = processingItem === item.key
               const isDisabled = isProcessing || isUpdating
-              
+
               return (
                 <div
                   key={item.key}
                   className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${
-                    item.completed 
-                      ? 'bg-green-50/50 dark:bg-green-950/20' 
+                    item.completed
+                      ? 'bg-green-50/50 dark:bg-green-950/20'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
                   } ${index % 2 === 0 ? 'bg-gray-50/30 dark:bg-gray-800/10' : ''}`}
                 >
@@ -167,8 +168,8 @@ export function FiscalCloseChecklist({
                       aria-label={`Toggle ${item.label}`}
                     />
                   </div>
-                  
-                  <label 
+
+                  <label
                     htmlFor={`checklist-${item.key}`}
                     className={`flex-1 cursor-pointer select-none ${
                       isDisabled ? 'opacity-50' : ''
@@ -179,20 +180,22 @@ export function FiscalCloseChecklist({
                         {getCategoryIcon(item.key)}
                       </span>
                       <div className="flex-1 space-y-1">
-                        <div className={`text-sm font-medium ${
-                          item.completed 
-                            ? 'text-green-700 dark:text-green-300 line-through' 
-                            : 'text-gray-900 dark:text-gray-100'
-                        }`}>
+                        <div
+                          className={`text-sm font-medium ${
+                            item.completed
+                              ? 'text-green-700 dark:text-green-300 line-through'
+                              : 'text-gray-900 dark:text-gray-100'
+                          }`}
+                        >
                           {item.label}
                         </div>
-                        
+
                         {item.description && (
                           <p className="text-xs text-gray-600 dark:text-gray-400">
                             {item.description}
                           </p>
                         )}
-                        
+
                         {item.completed && item.completed_at && (
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <CheckCircle className="h-3 w-3" />
@@ -202,17 +205,15 @@ export function FiscalCloseChecklist({
                             </span>
                           </div>
                         )}
-                        
+
                         {item.notes && (
                           <p className="text-xs text-gray-600 dark:text-gray-400 italic">
                             Note: {item.notes}
                           </p>
                         )}
                       </div>
-                      
-                      {isProcessing && (
-                        <Clock className="h-4 w-4 animate-spin text-violet-600" />
-                      )}
+
+                      {isProcessing && <Clock className="h-4 w-4 animate-spin text-violet-600" />}
                     </div>
                   </label>
                 </div>
@@ -226,9 +227,7 @@ export function FiscalCloseChecklist({
         <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs">
-            <div className="font-medium text-blue-800 dark:text-blue-200">
-              Checklist Progress
-            </div>
+            <div className="font-medium text-blue-800 dark:text-blue-200">Checklist Progress</div>
             <div className="text-blue-700 dark:text-blue-300 mt-1">
               Complete all items before closing the period. Changes are saved automatically.
             </div>

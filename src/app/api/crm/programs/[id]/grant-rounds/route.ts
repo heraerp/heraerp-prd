@@ -1,23 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import type { CreateGrantRoundRequest, GrantRoundLite } from '@/types/crm-programs';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import type { CreateGrantRoundRequest, GrantRoundLite } from '@/types/crm-programs'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const supabase = createClient();
-  const orgId = request.headers.get('X-Organization-Id');
-  
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const supabase = createClient()
+  const orgId = request.headers.get('X-Organization-Id')
+
   if (!orgId) {
-    return NextResponse.json(
-      { error: 'Organization ID required' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
   }
 
   try {
-    const body: CreateGrantRoundRequest = await request.json();
+    const body: CreateGrantRoundRequest = await request.json()
 
     // Validate program exists
     const { data: program, error: programError } = await supabase
@@ -26,13 +20,10 @@ export async function POST(
       .eq('id', params.id)
       .eq('organization_id', orgId)
       .eq('entity_type', 'program')
-      .single();
+      .single()
 
     if (programError || !program) {
-      return NextResponse.json(
-        { error: 'Program not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Program not found' }, { status: 404 })
     }
 
     // Create grant round entity
@@ -47,29 +38,27 @@ export async function POST(
         metadata: {
           program_id: params.id,
           window_open: body.window_open,
-          window_close: body.window_close,
-        },
+          window_close: body.window_close
+        }
       })
       .select()
-      .single();
+      .single()
 
     if (roundError || !grantRound) {
-      throw new Error('Failed to create grant round');
+      throw new Error('Failed to create grant round')
     }
 
     // Create relationship to program
-    await supabase
-      .from('core_relationships')
-      .insert({
-        organization_id: orgId,
-        from_entity_id: grantRound.id,
-        to_entity_id: params.id,
-        relationship_type: 'belongs_to_program',
-        smart_code: 'HERA.CRM.PROGRAMS.REL.ROUND_TO_PROGRAM.v1',
-      });
+    await supabase.from('core_relationships').insert({
+      organization_id: orgId,
+      from_entity_id: grantRound.id,
+      to_entity_id: params.id,
+      relationship_type: 'belongs_to_program',
+      smart_code: 'HERA.CRM.PROGRAMS.REL.ROUND_TO_PROGRAM.v1'
+    })
 
     // Store dynamic data
-    const dynamicFields = [];
+    const dynamicFields = []
 
     if (body.window_open) {
       dynamicFields.push({
@@ -77,8 +66,8 @@ export async function POST(
         entity_id: grantRound.id,
         field_name: 'window_open',
         field_value_date: body.window_open,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.WINDOW_OPEN.v1',
-      });
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.WINDOW_OPEN.v1'
+      })
     }
 
     if (body.window_close) {
@@ -87,8 +76,8 @@ export async function POST(
         entity_id: grantRound.id,
         field_name: 'window_close',
         field_value_date: body.window_close,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.WINDOW_CLOSE.v1',
-      });
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.WINDOW_CLOSE.v1'
+      })
     }
 
     if (body.budget !== undefined) {
@@ -97,8 +86,8 @@ export async function POST(
         entity_id: grantRound.id,
         field_name: 'budget',
         field_value_number: body.budget,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.BUDGET.v1',
-      });
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.BUDGET.v1'
+      })
     }
 
     if (body.kpis && Object.keys(body.kpis).length > 0) {
@@ -107,31 +96,27 @@ export async function POST(
         entity_id: grantRound.id,
         field_name: 'kpis',
         field_value_json: body.kpis,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.KPIS.v1',
-      });
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.KPIS.v1'
+      })
     }
 
     if (dynamicFields.length > 0) {
-      await supabase
-        .from('core_dynamic_data')
-        .insert(dynamicFields);
+      await supabase.from('core_dynamic_data').insert(dynamicFields)
     }
 
     // Log transaction
-    await supabase
-      .from('universal_transactions')
-      .insert({
-        organization_id: orgId,
-        transaction_type: 'grant_round_created',
-        transaction_code: `TXN-GR-${Date.now()}`,
-        smart_code: 'HERA.CRM.PROGRAMS.TXN.GRANT_ROUND_CREATED.v1',
-        total_amount: body.budget || 0,
-        metadata: {
-          program_id: params.id,
-          grant_round_id: grantRound.id,
-          round_code: body.round_code,
-        },
-      });
+    await supabase.from('universal_transactions').insert({
+      organization_id: orgId,
+      transaction_type: 'grant_round_created',
+      transaction_code: `TXN-GR-${Date.now()}`,
+      smart_code: 'HERA.CRM.PROGRAMS.TXN.GRANT_ROUND_CREATED.v1',
+      total_amount: body.budget || 0,
+      metadata: {
+        program_id: params.id,
+        grant_round_id: grantRound.id,
+        round_code: body.round_code
+      }
+    })
 
     const response: GrantRoundLite = {
       id: grantRound.id,
@@ -139,15 +124,12 @@ export async function POST(
       window_open: body.window_open,
       window_close: body.window_close,
       budget: body.budget,
-      kpis: body.kpis,
-    };
+      kpis: body.kpis
+    }
 
-    return NextResponse.json(response, { status: 201 });
+    return NextResponse.json(response, { status: 201 })
   } catch (error) {
-    console.error('Error creating grant round:', error);
-    return NextResponse.json(
-      { error: 'Failed to create grant round' },
-      { status: 500 }
-    );
+    console.error('Error creating grant round:', error)
+    return NextResponse.json({ error: 'Failed to create grant round' }, { status: 500 })
   }
 }

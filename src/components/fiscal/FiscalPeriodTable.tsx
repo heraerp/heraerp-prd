@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   Calendar,
   Lock,
   CheckCircle,
@@ -29,7 +29,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 
 interface FiscalPeriodTableProps {
@@ -102,7 +102,7 @@ export function FiscalPeriodTable({
 
   const handleConfirmAction = async () => {
     const { action, periodCode } = confirmDialog
-    
+
     try {
       if (action === 'lock') {
         await onLock(periodCode)
@@ -118,9 +118,9 @@ export function FiscalPeriodTable({
 
   const handleBulkLock = async () => {
     const periodsToLock = Array.from(selectedPeriods).filter(canLock)
-    
+
     if (periodsToLock.length === 0) return
-    
+
     if (!window.confirm(`Lock ${periodsToLock.length} selected periods?`)) {
       return
     }
@@ -137,10 +137,14 @@ export function FiscalPeriodTable({
 
   const handleBulkClose = async () => {
     const periodsToClose = Array.from(selectedPeriods).filter(canClose)
-    
+
     if (periodsToClose.length === 0) return
-    
-    if (!window.confirm(`Close ${periodsToClose.length} selected periods? Ensure checklist is complete.`)) {
+
+    if (
+      !window.confirm(
+        `Close ${periodsToClose.length} selected periods? Ensure checklist is complete.`
+      )
+    ) {
       return
     }
 
@@ -157,20 +161,26 @@ export function FiscalPeriodTable({
   const getStatusBadge = (status: FiscalPeriod['status']) => {
     switch (status) {
       case 'open':
-        return <Badge className="bg-violet-100 text-violet-800 border-violet-300">
-          <Clock className="h-3 w-3 mr-1" />
-          Open
-        </Badge>
+        return (
+          <Badge className="bg-violet-100 text-violet-800 border-violet-300">
+            <Clock className="h-3 w-3 mr-1" />
+            Open
+          </Badge>
+        )
       case 'locked':
-        return <Badge variant="outline" className="text-purple-700 border-purple-300">
-          <Lock className="h-3 w-3 mr-1" />
-          Locked
-        </Badge>
+        return (
+          <Badge variant="outline" className="text-purple-700 border-purple-300">
+            <Lock className="h-3 w-3 mr-1" />
+            Locked
+          </Badge>
+        )
       case 'closed':
-        return <Badge className="bg-green-100 text-green-800 border-green-300">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Closed
-        </Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 border-green-300">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Closed
+          </Badge>
+        )
     }
   }
 
@@ -236,12 +246,10 @@ export function FiscalPeriodTable({
               <Calendar className="h-4 w-4" />
               Fiscal Periods
             </CardTitle>
-            
+
             {hasSelectedPeriods && (
               <div className="flex items-center gap-2">
-                <Badge variant="outline">
-                  {selectedPeriods.size} selected
-                </Badge>
+                <Badge variant="outline">{selectedPeriods.size} selected</Badge>
                 <Button
                   size="sm"
                   variant="outline"
@@ -271,7 +279,10 @@ export function FiscalPeriodTable({
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th className="w-12 px-4 py-3">
                     <Checkbox
-                      checked={canSelectAll && selectedPeriods.size === periods.filter(p => p.status === 'open').length}
+                      checked={
+                        canSelectAll &&
+                        selectedPeriods.size === periods.filter(p => p.status === 'open').length
+                      }
                       onCheckedChange={handleSelectAll}
                       disabled={!canSelectAll}
                       aria-label="Select all open periods"
@@ -296,9 +307,9 @@ export function FiscalPeriodTable({
                   const isEven = index % 2 === 0
                   const isSelectable = period.status === 'open'
                   const isSelected = selectedPeriods.has(period.code)
-                  
+
                   return (
-                    <tr 
+                    <tr
                       key={period.code}
                       className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
                         isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
@@ -307,12 +318,14 @@ export function FiscalPeriodTable({
                       <td className="px-4 py-4">
                         <Checkbox
                           checked={isSelected}
-                          onCheckedChange={(checked) => handleSelectPeriod(period.code, checked as boolean)}
+                          onCheckedChange={checked =>
+                            handleSelectPeriod(period.code, checked as boolean)
+                          }
                           disabled={!isSelectable}
                           aria-label={`Select period ${period.code}`}
                         />
                       </td>
-                      
+
                       <td className="px-4 py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 font-mono">
                           {period.code}
@@ -327,9 +340,7 @@ export function FiscalPeriodTable({
                         </div>
                       </td>
 
-                      <td className="px-4 py-4">
-                        {getStatusBadge(period.status)}
-                      </td>
+                      <td className="px-4 py-4">{getStatusBadge(period.status)}</td>
 
                       <td className="px-4 py-4">
                         <div className="flex items-center justify-end gap-2">
@@ -348,7 +359,7 @@ export function FiscalPeriodTable({
                               )}
                             </Button>
                           )}
-                          
+
                           {canClose(period.code) && (
                             <Button
                               size="sm"
@@ -367,7 +378,8 @@ export function FiscalPeriodTable({
 
                           {period.status === 'closed' && (
                             <span className="text-sm text-gray-500 px-2">
-                              {period.closed_at && `Closed ${new Date(period.closed_at).toLocaleDateString()}`}
+                              {period.closed_at &&
+                                `Closed ${new Date(period.closed_at).toLocaleDateString()}`}
                             </span>
                           )}
                         </div>
@@ -382,7 +394,10 @@ export function FiscalPeriodTable({
       </Card>
 
       {/* Confirmation Dialog */}
-      <Dialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog({ ...confirmDialog, open })}>
+      <Dialog
+        open={confirmDialog.open}
+        onOpenChange={open => setConfirmDialog({ ...confirmDialog, open })}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -436,7 +451,11 @@ export function FiscalPeriodTable({
             <Button
               onClick={handleConfirmAction}
               disabled={isLocking || isClosing}
-              className={confirmDialog.action === 'lock' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}
+              className={
+                confirmDialog.action === 'lock'
+                  ? 'bg-purple-600 hover:bg-purple-700'
+                  : 'bg-green-600 hover:bg-green-700'
+              }
             >
               {isLocking || isClosing ? (
                 <>
@@ -444,9 +463,7 @@ export function FiscalPeriodTable({
                   Processing...
                 </>
               ) : (
-                <>
-                  {confirmDialog.action === 'lock' ? 'Lock Period' : 'Close Period'}
-                </>
+                <>{confirmDialog.action === 'lock' ? 'Lock Period' : 'Close Period'}</>
               )}
             </Button>
           </DialogFooter>

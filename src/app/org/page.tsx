@@ -326,7 +326,9 @@ export default function OrganizationDashboard() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-6">Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-gray-100 dark:text-foreground mb-6">
+            Quick Actions
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card
               className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border/20 dark:border-border/50 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer group"

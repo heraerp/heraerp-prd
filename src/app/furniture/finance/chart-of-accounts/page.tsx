@@ -37,11 +37,11 @@ export default function ChartOfAccounts() {
 
   const [accounts, setAccounts] = useState<GLAccountNode[]>([])
 
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(
     new Set(['1000000', '2000000', '3000000', '4000000', '5000000'])
@@ -52,7 +52,7 @@ const [searchTerm, setSearchTerm] = useState('')
   // Initialize report engine when organization changes
   useEffect(() => {
     if (organizationId) {
-  const engine = new UniversalReportEngine({
+      const engine = new UniversalReportEngine({
         organizationId,
         smartCodePrefix: 'HERA.URP',
         enableCaching: true,
@@ -80,7 +80,7 @@ const [searchTerm, setSearchTerm] = useState('')
 
       // Use the existing report engine instance
       if (!reportEngine) {
-  setError('Report engine not initialized')
+        setError('Report engine not initialized')
         console.error('❌ Report engine not initialized')
         return
       }
@@ -88,7 +88,7 @@ const [searchTerm, setSearchTerm] = useState('')
       console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.V1')
 
       // Execute Chart of Accounts recipe
-  const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.V1', {
+      const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.V1', {
         fiscalYear: new Date().getFullYear(),
         includeInactive: false,
         hierarchyDepth: 5
@@ -101,11 +101,11 @@ const [searchTerm, setSearchTerm] = useState('')
       console.log('Result:', result)
 
       if (Array.isArray(result) && result.length > 0) {
-  console.log('✅ Got URP result, transforming accounts...')
+        console.log('✅ Got URP result, transforming accounts...')
         console.log('Sample account from URP:', result[0])
 
         // Transform URP result to GLAccountNode format recursively
-  const transformAccount = (account: any): GLAccountNode => ({
+        const transformAccount = (account: any): GLAccountNode => ({
           id: account.id,
           entity_code: account.accountCode || account.entity_code,
           entity_name: account.entity_name,
@@ -134,7 +134,7 @@ const [searchTerm, setSearchTerm] = useState('')
         setAccounts([])
       }
     } catch (error) {
-  console.error('❌ Failed to load chart of accounts:', error)
+      console.error('❌ Failed to load chart of accounts:', error)
       console.error('Error details:', {
         name: error?.name,
         message: error?.message,
@@ -149,7 +149,7 @@ const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     if (organizationId && !orgLoading && reportEngine) {
-  console.log('🎯 Triggering loadChartOfAccounts - all conditions met')
+      console.log('🎯 Triggering loadChartOfAccounts - all conditions met')
       loadChartOfAccounts()
     } else {
       console.log('⏳ Waiting for conditions:', {
@@ -164,17 +164,17 @@ const [searchTerm, setSearchTerm] = useState('')
     setExpandedNodes(prev => {
       const newSet = new Set(prev)
       if (newSet.has(accountCode)) {
-  newSet.delete(accountCode)
+        newSet.delete(accountCode)
       } else {
         newSet.add(accountCode)
       }
-    return newSet
+      return newSet
     })
   }
 
   const handleExport = async (format: 'csv' | 'excel' = 'csv') => {
     if (!reportEngine) {
-  alert('Report engine not initialized')
+      alert('Report engine not initialized')
       return
     }
 
@@ -192,7 +192,7 @@ const [searchTerm, setSearchTerm] = useState('')
       )
 
       // Create download
-  const blob = new Blob([result], {
+      const blob = new Blob([result], {
         type: format === 'csv' ? 'text/csv' : 'application/vnd.ms-excel'
       })
 
@@ -205,7 +205,7 @@ const [searchTerm, setSearchTerm] = useState('')
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
     } catch (error) {
-  console.error('Export failed:', error)
+      console.error('Export failed:', error)
       alert('Failed to export Chart of Accounts')
     }
   }
@@ -218,17 +218,16 @@ const [searchTerm, setSearchTerm] = useState('')
 
     // Filter by search term
     if (searchTerm) {
-  const matchesSearch = account.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      const matchesSearch =
+        account.entity_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         account.entity_name.toLowerCase().includes(searchTerm.toLowerCase())
-      if (!matchesSearch && !hasChildren) 
-    return null
+      if (!matchesSearch && !hasChildren) return null
     }
 
-// Handle cases where metadata might be null or undefined
-  const accountType = (account.metadata as any)?.account_type || 'detail'
+    // Handle cases where metadata might be null or undefined
+    const accountType = (account.metadata as any)?.account_type || 'detail'
     const accountLevel = (account.metadata as any)?.account_level || 0
 
-    
     return (
       <div key={account.entity_code}>
         {' '}
@@ -243,8 +242,7 @@ const [searchTerm, setSearchTerm] = useState('')
           {/* Account Code & Name */}{' '}
           <div
             className="bg-[var(--color-body)] col-span-6 flex items-center gap-2"
-            style={{ paddingLeft: `${level * 24}px` }
-    }
+            style={{ paddingLeft: `${level * 24}px` }}
           >
             {' '}
             {hasChildren && (
@@ -265,9 +263,11 @@ const [searchTerm, setSearchTerm] = useState('')
               {' '}
               <span
                 className={cn(
-            'font-mono text-sm',
-            isHeader ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'
-          )}
+                  'font-mono text-sm',
+                  isHeader
+                    ? 'text-[var(--color-text-secondary)]'
+                    : 'text-[var(--color-text-secondary)]'
+                )}
               >
                 {' '}
                 {account.entity_code}{' '}
@@ -363,7 +363,7 @@ const [searchTerm, setSearchTerm] = useState('')
     )
   }
 
-// Calculate totals and count all accounts including children const countAllAccounts = (accs: GLAccountNode[]): number => { return accs.reduce((count, account) => { return count + 1 + (account.children ? countAllAccounts(account.children) : 0  ), 0  )
+  // Calculate totals and count all accounts including children const countAllAccounts = (accs: GLAccountNode[]): number => { return accs.reduce((count, account) => { return count + 1 + (account.children ? countAllAccounts(account.children) : 0  ), 0  )
   const totalAccountCount = countAllAccounts(accounts)
 
   const totals = accounts.reduce(
@@ -377,12 +377,12 @@ const [searchTerm, setSearchTerm] = useState('')
 
   // Show loading state
   if (orgLoading) {
-  return <FurnitureOrgLoading />
+    return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (isAuthenticated && contextLoading) {
-  return (
+    return (
       <div className="min-h-screen bg-[var(--color-body)] p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           <Skeleton className="h-10 w-64" />
@@ -409,11 +409,10 @@ const [searchTerm, setSearchTerm] = useState('')
                 size="sm"
                 onClick={async () => {
                   if (reportEngine) {
-  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.V1')
+                    await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.V1')
                   }
                   loadChartOfAccounts()
-                }
-    }
+                }}
               >
                 {' '}
                 <RefreshCw className="h-4 w-4 mr-2" /> Refresh{' '}
@@ -520,14 +519,13 @@ const [searchTerm, setSearchTerm] = useState('')
                   className="ml-4 border-[var(--color-accent-indigo)] text-[var(--color-accent-indigo)] hover:bg-[var(--color-accent-indigo)] hover:text-[var(--color-text-primary)]"
                   onClick={() => {
                     if (error) {
-  loadChartOfAccounts()
+                      loadChartOfAccounts()
                     } else {
                       alert(
                         'Chart of Accounts setup would be triggered here. This typically involves running the COA setup for furniture manufacturing industry.'
                       )
                     }
-                  }
-    }
+                  }}
                 >
                   {error ? 'Retry' : 'Setup Chart of Accounts'}
                 </Button>
@@ -570,7 +568,9 @@ const [searchTerm, setSearchTerm] = useState('')
               <div className="p-8 text-center">
                 <div className="inline-flex items-center gap-2">
                   <div className="bg-[var(--color-body)] w-6 h-6 border-4 border-[#6b6975] border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-[var(--color-text-secondary)]">Loading chart of accounts...</span>
+                  <span className="text-[var(--color-text-secondary)]">
+                    Loading chart of accounts...
+                  </span>
                 </div>
               </div>
             ) : accounts.length === 0 ? (

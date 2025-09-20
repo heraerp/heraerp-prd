@@ -21,14 +21,13 @@ import { QuickActions } from '@/components/dashboard/QuickActions'
 import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 import { DataDebugger } from '@/components/debug/DataDebugger'
 
-
 export default function SalonDashboard() {
   const { currentOrganization, isLoading, isLoadingOrgs } = useMultiOrgAuth()
   const contextLoading = isLoading || isLoadingOrgs
 
   // Use the current organization or fallback to the demo salon org
   const organizationId = currentOrganization?.id || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
-  
+
   return (
     <Guard allowedRoles={['owner', 'manager']}>
       <div className={`min-h-screen ${salonClasses.pageGradient}`}>
@@ -81,7 +80,7 @@ export default function SalonDashboard() {
             <QuickActions organizationId={organizationId} />
           </div>
         )}
-        
+
         {/* Debug components - only show in development */}
         <DemoOrgDebug />
         <DataDebugger organizationId={organizationId} />

@@ -27,7 +27,7 @@ export function AppointmentCalendar({
   appointments,
   onAppointmentClick,
   loading = false,
-  className,
+  className
 }: AppointmentCalendarProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('week')
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -73,11 +73,11 @@ export function AppointmentCalendar({
   // Group appointments by date
   const groupedAppointments = useMemo(() => {
     const groups: Record<string, Appointment[]> = {}
-    
+
     filteredAppointments.forEach(apt => {
       const date = new Date(apt.start_time)
       const key = date.toISOString().split('T')[0]
-      
+
       if (!groups[key]) {
         groups[key] = []
       }
@@ -86,8 +86,8 @@ export function AppointmentCalendar({
 
     // Sort appointments within each day
     Object.values(groups).forEach(dayAppointments => {
-      dayAppointments.sort((a, b) => 
-        new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+      dayAppointments.sort(
+        (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
       )
     })
 
@@ -96,7 +96,7 @@ export function AppointmentCalendar({
 
   const navigate = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
-    
+
     switch (viewMode) {
       case 'month':
         newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1))
@@ -108,7 +108,7 @@ export function AppointmentCalendar({
         newDate.setDate(newDate.getDate() + (direction === 'next' ? 1 : -1))
         break
     }
-    
+
     setCurrentDate(newDate)
   }
 
@@ -119,7 +119,7 @@ export function AppointmentCalendar({
   const getDateLabel = () => {
     const options: Intl.DateTimeFormatOptions = {
       month: 'long',
-      year: 'numeric',
+      year: 'numeric'
     }
 
     switch (viewMode) {
@@ -134,7 +134,7 @@ export function AppointmentCalendar({
           weekday: 'long',
           month: 'long',
           day: 'numeric',
-          year: 'numeric',
+          year: 'numeric'
         })
     }
   }
@@ -154,7 +154,7 @@ export function AppointmentCalendar({
         </div>
         <AppointmentStatusBadge status={appointment.status} size="sm" />
       </div>
-      
+
       <div className="space-y-1">
         <div className="flex items-center gap-1.5 text-sm text-gray-700">
           <User className="w-3.5 h-3.5 text-gray-400" />
@@ -162,14 +162,14 @@ export function AppointmentCalendar({
           <span className="text-gray-400">with</span>
           <span>{appointment.stylist.name}</span>
         </div>
-        
+
         {appointment.services && appointment.services.length > 0 && (
           <div className="text-xs text-gray-500">
             {appointment.services.map(s => s.name).join(', ')}
           </div>
         )}
       </div>
-      
+
       <div className="mt-2 text-xs text-gray-400 font-mono group-hover:text-gray-600">
         {appointment.code}
       </div>
@@ -197,34 +197,28 @@ export function AppointmentCalendar({
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold text-gray-900">{getDateLabel()}</h2>
-          <ButtonPrimary
-            onClick={goToToday}
-            variant="outline"
-            size="sm"
-          >
+          <ButtonPrimary onClick={goToToday} variant="outline" size="sm">
             Today
           </ButtonPrimary>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {/* View Mode Selector */}
           <div className="flex rounded-lg border border-gray-200 p-1">
-            {(['month', 'week', 'day'] as const).map((mode) => (
+            {(['month', 'week', 'day'] as const).map(mode => (
               <button
                 key={mode}
                 onClick={() => setViewMode(mode)}
                 className={cn(
                   'px-3 py-1.5 text-sm font-medium rounded-md transition-colors capitalize',
-                  viewMode === mode
-                    ? 'bg-primary text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                  viewMode === mode ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'
                 )}
               >
                 {mode}
               </button>
             ))}
           </div>
-          
+
           {/* Navigation */}
           <ButtonPrimary
             onClick={() => navigate('prev')}
@@ -248,7 +242,7 @@ export function AppointmentCalendar({
             <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 mb-4">No appointments scheduled</p>
             <ButtonPrimary
-              onClick={() => window.location.href = '/appointments/new'}
+              onClick={() => (window.location.href = '/appointments/new')}
               variant="primary"
             >
               Book your first appointment
@@ -259,25 +253,26 @@ export function AppointmentCalendar({
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([dateKey, dayAppointments]) => {
               const date = new Date(dateKey)
-              const dateLabel = isToday(date) ? 'Today' :
-                              isTomorrow(date) ? 'Tomorrow' :
-                              date.toLocaleDateString('en-US', {
-                                weekday: 'long',
-                                month: 'long',
-                                day: 'numeric',
-                              })
+              const dateLabel = isToday(date)
+                ? 'Today'
+                : isTomorrow(date)
+                  ? 'Tomorrow'
+                  : date.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric'
+                    })
 
               return (
                 <div key={dateKey}>
                   <h3 className="text-sm font-medium text-gray-700 mb-3">
                     {dateLabel}
                     <span className="ml-2 text-xs text-gray-500">
-                      ({dayAppointments.length} appointment{dayAppointments.length !== 1 ? 's' : ''})
+                      ({dayAppointments.length} appointment{dayAppointments.length !== 1 ? 's' : ''}
+                      )
                     </span>
                   </h3>
-                  <div className="space-y-2">
-                    {dayAppointments.map(renderAppointment)}
-                  </div>
+                  <div className="space-y-2">{dayAppointments.map(renderAppointment)}</div>
                 </div>
               )
             })

@@ -204,7 +204,9 @@ export default function ProofPage() {
                 key={index}
                 className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-border dark:border-border text-center"
               >
-                <h3 className="font-semibold text-foreground dark:text-foreground mb-4">{item.metric}</h3>
+                <h3 className="font-semibold text-foreground dark:text-foreground mb-4">
+                  {item.metric}
+                </h3>
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-red-600">Before:</span>
@@ -214,7 +216,9 @@ export default function ProofPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-green-600">After:</span>
-                    <span className="font-medium text-foreground dark:text-foreground">{item.after}</span>
+                    <span className="font-medium text-foreground dark:text-foreground">
+                      {item.after}
+                    </span>
                   </div>
                 </div>
                 <div className="text-xl font-bold text-green-600">{item.improvement}</div>
@@ -259,7 +263,9 @@ export default function ProofPage() {
 
                 {/* Challenge */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-foreground dark:text-foreground mb-2">Challenge</h4>
+                  <h4 className="font-semibold text-foreground dark:text-foreground mb-2">
+                    Challenge
+                  </h4>
                   <p className="text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
                     {study.challenge}
                   </p>
@@ -277,14 +283,18 @@ export default function ProofPage() {
 
                 {/* Results */}
                 <div className="mb-6">
-                  <h4 className="font-semibold text-foreground dark:text-foreground mb-3">Results</h4>
+                  <h4 className="font-semibold text-foreground dark:text-foreground mb-3">
+                    Results
+                  </h4>
                   <div className="grid grid-cols-2 gap-3">
                     {Object.entries(study.results).map(([key, value]) => (
                       <div key={key} className="bg-slate-50 dark:bg-muted rounded-lg p-3">
                         <p className="text-xs text-muted-foreground dark:text-muted-foreground capitalize">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </p>
-                        <p className="font-semibold text-foreground dark:text-foreground">{value}</p>
+                        <p className="font-semibold text-foreground dark:text-foreground">
+                          {value}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -480,19 +490,27 @@ export default function ProofPage() {
                     Average Savings
                   </h3>
                   <p className="text-3xl font-bold text-green-600">$2.8M</p>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">per implementation</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    per implementation
+                  </p>
                 </div>
                 <div className="text-center">
                   <Clock className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-                  <h3 className="font-semibold text-foreground dark:text-foreground mb-2">Time Saved</h3>
+                  <h3 className="font-semibold text-foreground dark:text-foreground mb-2">
+                    Time Saved
+                  </h3>
                   <p className="text-3xl font-bold text-purple-600">17.5</p>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">months average</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    months average
+                  </p>
                 </div>
                 <div className="text-center">
                   <TrendingUp className="h-8 w-8 text-orange-600 mx-auto mb-3" />
                   <h3 className="font-semibold text-foreground dark:text-foreground mb-2">ROI</h3>
                   <p className="text-3xl font-bold text-orange-600">847%</p>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">average return</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    average return
+                  </p>
                 </div>
               </div>
 

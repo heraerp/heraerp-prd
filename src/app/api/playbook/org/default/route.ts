@@ -14,7 +14,9 @@ export async function GET() {
     if (!org) return NextResponse.json({ error: 'No organizations found' }, { status: 404 })
     return NextResponse.json({ id: org.id, name: org.organization_name })
   } catch (err: any) {
-    return NextResponse.json({ error: err?.message || 'Failed to resolve default org' }, { status: 500 })
+    return NextResponse.json(
+      { error: err?.message || 'Failed to resolve default org' },
+      { status: 500 }
+    )
   }
 }
-

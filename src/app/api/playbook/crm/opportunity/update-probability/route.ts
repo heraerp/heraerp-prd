@@ -10,6 +10,9 @@ export async function POST(req: Request) {
     const result = await updateOpportunityProbability(parsed.data)
     return NextResponse.json({ ok: true, result })
   } catch (e: any) {
-    return NextResponse.json({ error: e?.message || 'Failed to update probability' }, { status: 500 })
+    return NextResponse.json(
+      { error: e?.message || 'Failed to update probability' },
+      { status: 500 }
+    )
   }
 }

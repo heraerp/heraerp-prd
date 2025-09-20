@@ -1063,7 +1063,9 @@ export function POSTerminalGlass({
                           {(item.metadata as any)?.rating && (
                             <>
                               <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                              <span className="text-xs text-foreground/70">{item.metadata.rating}</span>
+                              <span className="text-xs text-foreground/70">
+                                {item.metadata.rating}
+                              </span>
                             </>
                           )}
                         </div>
@@ -1240,7 +1242,9 @@ export function POSTerminalGlass({
         {/* Table Selection for Dine-in */}
         {orderType === 'dine-in' && (
           <div className="p-4 border-b border-border/20">
-            <Label className="text-sm font-medium mb-2 block text-foreground/80">Select Table</Label>
+            <Label className="text-sm font-medium mb-2 block text-foreground/80">
+              Select Table
+            </Label>
             <Select value={selectedTable} onValueChange={setSelectedTable}>
               <SelectTrigger className="bg-background/10 border-border/20 text-foreground">
                 <SelectValue placeholder="Choose a table" />

@@ -387,9 +387,7 @@ export default function AppsPage() {
                 {app.status !== 'production' && (
                   <div
                     className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
-                      app.status === 'beta'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-muted text-gray-700'
+                      app.status === 'beta' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-gray-700'
                     }`}
                   >
                     {app.status === 'beta' ? 'Beta' : 'Coming Soon'}
@@ -409,7 +407,10 @@ export default function AppsPage() {
                 <CardContent>
                   <div className="space-y-2 mb-4">
                     {app.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 text-sm text-muted-foreground"
+                      >
                         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
                         {feature}
                       </div>

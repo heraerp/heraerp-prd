@@ -9,13 +9,13 @@ export default function SalonDashboardDebug() {
   const authContext = useHERAAuth()
   const [sessionInfo, setSessionInfo] = useState<any>(null)
   const [storageInfo, setStorageInfo] = useState<any>({})
-  
+
   useEffect(() => {
     // Get session info
     supabase.auth.getSession().then(({ data }) => {
       setSessionInfo(data.session)
     })
-    
+
     // Get storage info
     setStorageInfo({
       localStorage: {
@@ -24,49 +24,57 @@ export default function SalonDashboardDebug() {
         'selected-organization': localStorage.getItem('selected-organization')
       },
       sessionStorage: {
-        'isDemoLogin': sessionStorage.getItem('isDemoLogin'),
-        'demoModule': sessionStorage.getItem('demoModule'),
+        isDemoLogin: sessionStorage.getItem('isDemoLogin'),
+        demoModule: sessionStorage.getItem('demoModule'),
         'demo-org-id': sessionStorage.getItem('demo-org-id')
       }
     })
   }, [])
-  
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Salon Dashboard Debug Information</h1>
-      
+
       <Card className="p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Auth Context</h2>
         <pre className="text-xs overflow-auto bg-gray-100 p-4 rounded">
-          {JSON.stringify({
-            user: authContext.user,
-            isAuthenticated: authContext.isAuthenticated,
-            isLoading: authContext.isLoading,
-            contextLoading: authContext.isLoading,
-            organization: authContext.organization,
-            organizations: authContext.organizations
-          }, null, 2)}
+          {JSON.stringify(
+            {
+              user: authContext.user,
+              isAuthenticated: authContext.isAuthenticated,
+              isLoading: authContext.isLoading,
+              contextLoading: authContext.isLoading,
+              organization: authContext.organization,
+              organizations: authContext.organizations
+            },
+            null,
+            2
+          )}
         </pre>
       </Card>
-      
+
       <Card className="p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Supabase Session</h2>
         <pre className="text-xs overflow-auto bg-gray-100 p-4 rounded">
-          {JSON.stringify({
-            hasSession: !!sessionInfo,
-            user: sessionInfo?.user?.email,
-            userId: sessionInfo?.user?.id
-          }, null, 2)}
+          {JSON.stringify(
+            {
+              hasSession: !!sessionInfo,
+              user: sessionInfo?.user?.email,
+              userId: sessionInfo?.user?.id
+            },
+            null,
+            2
+          )}
         </pre>
       </Card>
-      
+
       <Card className="p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Storage Values</h2>
         <pre className="text-xs overflow-auto bg-gray-100 p-4 rounded">
           {JSON.stringify(storageInfo, null, 2)}
         </pre>
       </Card>
-      
+
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Expected Values</h2>
         <ul className="list-disc list-inside text-sm space-y-1">

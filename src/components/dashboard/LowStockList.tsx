@@ -67,20 +67,18 @@ export function LowStockList({ organizationId }: LowStockListProps) {
           )}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1">
         {items.length === 0 ? (
           <div className="text-center py-8">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">
-              All items are well stocked
-            </p>
+            <p className="text-sm text-muted-foreground">All items are well stocked</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {items.map((item) => {
+            {items.map(item => {
               const stockLevel = getStockLevel(item.on_hand, item.reorder_point)
-              
+
               return (
                 <Link
                   key={item.id}
@@ -89,14 +87,12 @@ export function LowStockList({ organizationId }: LowStockListProps) {
                 >
                   <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
-                        {item.name}
-                      </p>
+                      <p className="font-medium text-sm truncate">{item.name}</p>
                       <p className="text-xs text-muted-foreground">
                         Code: {item.code} • Reorder: {item.reorder_point}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <div className="text-right">
                         <p className="text-sm font-medium">{item.on_hand}</p>
@@ -113,7 +109,7 @@ export function LowStockList({ organizationId }: LowStockListProps) {
           </div>
         )}
       </CardContent>
-      
+
       <CardFooter className="pt-3">
         <Link href="/inventory/alerts" className="w-full">
           <Button variant="ghost" className="w-full">

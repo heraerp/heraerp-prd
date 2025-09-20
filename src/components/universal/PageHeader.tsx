@@ -23,12 +23,7 @@ interface PageHeaderProps {
   className?: string
 }
 
-export function PageHeader({
-  title,
-  breadcrumbs = [],
-  actions,
-  className = ''
-}: PageHeaderProps) {
+export function PageHeader({ title, breadcrumbs = [], actions, className = '' }: PageHeaderProps) {
   // Default breadcrumbs if none provided
   const defaultBreadcrumbs: Breadcrumb[] = [
     { label: 'HERA' },
@@ -39,9 +34,9 @@ export function PageHeader({
   const crumbs = breadcrumbs.length > 0 ? breadcrumbs : defaultBreadcrumbs
 
   return (
-    <div 
+    <div
       className={`mb-8 p-6 rounded-xl ${className}`}
-      style={{ 
+      style={{
         backgroundColor: LUXURY_COLORS.charcoalLight,
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
         border: `1px solid ${LUXURY_COLORS.bronze}20`
@@ -52,13 +47,10 @@ export function PageHeader({
         {crumbs.map((crumb, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
-              <ChevronRight 
-                className="w-4 h-4" 
-                style={{ color: LUXURY_COLORS.bronze }} 
-              />
+              <ChevronRight className="w-4 h-4" style={{ color: LUXURY_COLORS.bronze }} />
             )}
-            <span 
-              style={{ 
+            <span
+              style={{
                 color: crumb.isActive ? LUXURY_COLORS.champagne : LUXURY_COLORS.bronze,
                 cursor: crumb.href ? 'pointer' : 'default'
               }}
@@ -79,12 +71,8 @@ export function PageHeader({
         <h1 className="text-3xl font-bold" style={{ color: LUXURY_COLORS.champagne }}>
           {title}
         </h1>
-        
-        {actions && (
-          <div className="flex items-center gap-3">
-            {actions}
-          </div>
-        )}
+
+        {actions && <div className="flex items-center gap-3">{actions}</div>}
       </div>
     </div>
   )
@@ -110,16 +98,20 @@ export function PageHeaderButton({
     <button
       onClick={onClick}
       className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${className}`}
-      style={isPrimary ? {
-        background: `linear-gradient(135deg, ${LUXURY_COLORS.gold} 0%, ${LUXURY_COLORS.goldDark} 100%)`,
-        color: LUXURY_COLORS.black,
-        boxShadow: '0 2px 4px rgba(212, 175, 55, 0.2)'
-      } : {
-        border: `1px solid ${LUXURY_COLORS.bronze}`,
-        color: LUXURY_COLORS.champagne,
-        backgroundColor: 'transparent'
-      }}
-      onMouseEnter={(e) => {
+      style={
+        isPrimary
+          ? {
+              background: `linear-gradient(135deg, ${LUXURY_COLORS.gold} 0%, ${LUXURY_COLORS.goldDark} 100%)`,
+              color: LUXURY_COLORS.black,
+              boxShadow: '0 2px 4px rgba(212, 175, 55, 0.2)'
+            }
+          : {
+              border: `1px solid ${LUXURY_COLORS.bronze}`,
+              color: LUXURY_COLORS.champagne,
+              backgroundColor: 'transparent'
+            }
+      }
+      onMouseEnter={e => {
         if (isPrimary) {
           e.currentTarget.style.boxShadow = '0 4px 6px rgba(212, 175, 55, 0.3)'
           e.currentTarget.style.transform = 'translateY(-1px)'
@@ -127,7 +119,7 @@ export function PageHeaderButton({
           e.currentTarget.style.backgroundColor = `${LUXURY_COLORS.bronze}20`
         }
       }}
-      onMouseLeave={(e) => {
+      onMouseLeave={e => {
         if (isPrimary) {
           e.currentTarget.style.boxShadow = '0 2px 4px rgba(212, 175, 55, 0.2)'
           e.currentTarget.style.transform = 'translateY(0)'
@@ -169,7 +161,7 @@ export function PageHeaderSearch({
         type="text"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         className="pl-10 pr-4 py-2 rounded-lg border text-sm w-64"
         style={{
           borderColor: `${LUXURY_COLORS.bronze}33`,
@@ -196,7 +188,7 @@ export function PageHeaderSelect({
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       className={`px-4 py-2 rounded-lg border text-sm ${className}`}
       style={{
         borderColor: `${LUXURY_COLORS.bronze}33`,

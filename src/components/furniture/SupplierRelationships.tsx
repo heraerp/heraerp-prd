@@ -8,7 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 
 interface SupplierInfo {
   id: string
@@ -37,7 +44,11 @@ interface SupplierRelationshipsProps {
   productId?: string
 }
 
-export function SupplierRelationships({ organizationId, className, productId }: SupplierRelationshipsProps) {
+export function SupplierRelationships({
+  organizationId,
+  className,
+  productId
+}: SupplierRelationshipsProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [suppliers, setSuppliers] = useState<SupplierInfo[]>([])
@@ -51,34 +62,35 @@ export function SupplierRelationships({ organizationId, className, productId }: 
     try {
       setLoading(true)
       setError(null)
-      
+
       // Get all entities
-  const { data: entities } = await universalApi.read({ 
-        table: 'core_entities', 
-        organizationId 
+      const { data: entities } = await universalApi.read({
+        table: 'core_entities',
+        organizationId
       })
-      
+
       // Get all relationships
-  const { data: relationships } = await universalApi.read({ 
-        table: 'core_relationships', 
-        organizationId 
+      const { data: relationships } = await universalApi.read({
+        table: 'core_relationships',
+        organizationId
       })
-      
+
       // Filter suppliers
-  const supplierEntities = entities?.filter((e: any) => e.entity_type === 'supplier') || []
-      
+      const supplierEntities = entities?.filter((e: any) => e.entity_type === 'supplier') || []
+
       // Build supplier info
-  const supplierData: SupplierInfo[] = []
-      
+      const supplierData: SupplierInfo[] = []
+
       for (const supplier of supplierEntities) {
         // Find all products this supplier sources
-  const supplierRels = relationships?.filter(
-          (r: any) => r.from_entity_id === supplier.id && r.relationship_type === 'sources'
-        ) || []
-        
+        const supplierRels =
+          relationships?.filter(
+            (r: any) => r.from_entity_id === supplier.id && r.relationship_type === 'sources'
+          ) || []
+
         const products = []
         let totalLeadTime = 0
-        
+
         for (const rel of supplierRels) {
           const product = entities?.find((e: any) => e.id === rel.to_entity_id)
           if (product) {
@@ -190,7 +202,9 @@ export function SupplierRelationships({ organizationId, className, productId }: 
                 <div className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-[var(--color-icon-secondary)]" />
                   <div>
-                    <h4 className="font-medium text-[var(--color-text-primary)]">{supplier.name}</h4>
+                    <h4 className="font-medium text-[var(--color-text-primary)]">
+                      {supplier.name}
+                    </h4>
                     <p className="text-xs text-[var(--color-text-secondary)]">{supplier.code}</p>
                   </div>
                 </div>
@@ -201,7 +215,9 @@ export function SupplierRelationships({ organizationId, className, productId }: 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <p className="text-[var(--color-text-secondary)]">Products</p>
-                  <p className="font-semibold text-[var(--color-text-primary)]">{supplier.totalProducts}</p>
+                  <p className="font-semibold text-[var(--color-text-primary)]">
+                    {supplier.totalProducts}
+                  </p>
                 </div>
                 <div>
                   <p className="text-[var(--color-text-secondary)]">Avg Lead Time</p>
@@ -214,14 +230,19 @@ export function SupplierRelationships({ organizationId, className, productId }: 
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-sm mb-1">
                     <span className="text-[var(--color-text-secondary)]">Quality Rating</span>
-                    <span className={cn(
-                      'font-semibold',
-                      getQualityColor(supplier.products[0].qualityRating)
-                    )}>
+                    <span
+                      className={cn(
+                        'font-semibold',
+                        getQualityColor(supplier.products[0].qualityRating)
+                      )}
+                    >
                       {supplier.products[0].qualityRating}/5
                     </span>
                   </div>
-                  <Progress value={supplier.products[0].qualityRating * 20} className="h-2 bg-muted-foreground/10" />
+                  <Progress
+                    value={supplier.products[0].qualityRating * 20}
+                    className="h-2 bg-muted-foreground/10"
+                  />
                 </div>
               )}
             </CardContent>
@@ -255,8 +276,12 @@ export function SupplierRelationships({ organizationId, className, productId }: 
                     <TableRow key={product.id} className="border-[var(--color-border)]">
                       <TableCell>
                         <div>
-                          <p className="font-medium text-[var(--color-text-primary)]">{product.name}</p>
-                          <p className="text-xs text-[var(--color-text-secondary)]">{product.code}</p>
+                          <p className="font-medium text-[var(--color-text-primary)]">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-[var(--color-text-secondary)]">
+                            {product.code}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>

@@ -17,7 +17,9 @@ export default function FinanceDemoPage() {
         <h2 className="text-2xl font-semibold text-foreground dark:text-foreground mb-2">
           Finance Management Demo
         </h2>
-        <p className="text-muted-foreground dark:text-slate-300">Loading financial management suite...</p>
+        <p className="text-muted-foreground dark:text-slate-300">
+          Loading financial management suite...
+        </p>
       </div>
     </div>
   )

@@ -3,15 +3,28 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Edit2, Trash2, Calendar, Package, User, FileText, Clock, CheckCircle, AlertCircle, Truck } from 'lucide-react'
+import {
+  ArrowLeft,
+  Edit2,
+  Trash2,
+  Calendar,
+  Package,
+  User,
+  FileText,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Truck
+} from 'lucide-react'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData, universalFilters } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import {
+  useUniversalData,
+  universalFilters
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
 import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
-export default function ProductionOrderDetailPage({ params }: {
-  params: Promise<{ id: string }>
-}) {
+export default function ProductionOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const router = useRouter()
   const { organizationId, orgLoading } = useDemoOrganization()
@@ -20,7 +33,10 @@ export default function ProductionOrderDetailPage({ params }: {
   // Load the specific production order
   const { data: productionOrders } = useUniversalData({
     table: 'universal_transactions',
-    filter: item => item.id === id && item.transaction_type === 'production_order' && item.organization_id === organizationId,
+    filter: item =>
+      item.id === id &&
+      item.transaction_type === 'production_order' &&
+      item.organization_id === organizationId,
     organizationId,
     enabled: !!organizationId
   })
@@ -50,18 +66,35 @@ export default function ProductionOrderDetailPage({ params }: {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-200', icon: Clock },
-      in_progress: { bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30', text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]', icon: Package },
-      completed: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-200', icon: CheckCircle },
-      cancelled: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-200', icon: AlertCircle }
+      pending: {
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+        text: 'text-yellow-800 dark:text-yellow-200',
+        icon: Clock
+      },
+      in_progress: {
+        bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30',
+        text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]',
+        icon: Package
+      },
+      completed: {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-800 dark:text-green-200',
+        icon: CheckCircle
+      },
+      cancelled: {
+        bg: 'bg-red-100 dark:bg-red-900/30',
+        text: 'text-red-800 dark:text-red-200',
+        icon: AlertCircle
+      }
     }
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
     const Icon = config.icon
-    
-    
+
     return (
-      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}>
+      <span
+        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}
+      >
         <Icon className="h-4 w-4" />
         {status.replace('_', ' ').charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')}
       </span>
@@ -70,17 +103,27 @@ export default function ProductionOrderDetailPage({ params }: {
 
   const getPriorityBadge = (priority: string) => {
     const priorityConfig = {
-      low: { bg: 'bg-[var(--color-body)] bg-[var(--color-body)]/30', text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]' },
-      normal: { bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30', text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]' },
-      high: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-800 dark:text-orange-200' },
+      low: {
+        bg: 'bg-[var(--color-body)] bg-[var(--color-body)]/30',
+        text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]'
+      },
+      normal: {
+        bg: 'bg-[var(--color-body)] dark:bg-[var(--color-body)]/30',
+        text: 'text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)]'
+      },
+      high: {
+        bg: 'bg-orange-100 dark:bg-orange-900/30',
+        text: 'text-orange-800 dark:text-orange-200'
+      },
       urgent: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-200' }
     }
 
     const config = priorityConfig[priority as keyof typeof priorityConfig] || priorityConfig.normal
-    
-    
+
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+      >
         {priority.charAt(0).toUpperCase() + priority.slice(1)}
       </span>
     )
@@ -131,7 +174,9 @@ export default function ProductionOrderDetailPage({ params }: {
 
       {/* Content */}
       <div className="text-center p-8">
-        <p className="text-[var(--color-text-secondary)]">Production order details interface is being loaded...</p>
+        <p className="text-[var(--color-text-secondary)]">
+          Production order details interface is being loaded...
+        </p>
       </div>
     </div>
   )

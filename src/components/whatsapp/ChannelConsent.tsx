@@ -13,20 +13,26 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Shield, 
-  UserCheck, 
+import {
+  Shield,
+  UserCheck,
   UserX,
   Phone,
   MessageCircle,
@@ -43,7 +49,10 @@ import { useToast } from '@/components/ui/use-toast'
 
 const ConsentFormSchema = z.object({
   customer_code: z.string().min(1, 'Customer code is required'),
-  phone_number: z.string().min(10, 'Valid phone number is required').regex(/^\\+?[1-9]\\d{1,14}$/, 'Invalid phone number format'),
+  phone_number: z
+    .string()
+    .min(10, 'Valid phone number is required')
+    .regex(/^\\+?[1-9]\\d{1,14}$/, 'Invalid phone number format'),
   opted_in: z.boolean(),
   consent_method: z.enum(['explicit', 'implicit']),
   notes: z.string().optional()
@@ -59,15 +68,18 @@ interface ChannelConsentProps {
   onClose: () => void
 }
 
-export function ChannelConsent({ open, onOpenChange, organizationId, customerCode, onClose }: ChannelConsentProps) {
+export function ChannelConsent({
+  open,
+  onOpenChange,
+  organizationId,
+  customerCode,
+  onClose
+}: ChannelConsentProps) {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [existingPrefs, setExistingPrefs] = React.useState<any>(null)
 
-  const {
-    getCustomerPrefs,
-    setCustomerPrefs
-  } = useWhatsappApi(organizationId)
+  const { getCustomerPrefs, setCustomerPrefs } = useWhatsappApi(organizationId)
 
   const form = useForm<ConsentFormData>({
     resolver: zodResolver(ConsentFormSchema),
@@ -145,18 +157,17 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
       })
 
       toast({
-        title: isEditMode ? "Preferences Updated" : "Customer Added",
+        title: isEditMode ? 'Preferences Updated' : 'Customer Added',
         description: `WhatsApp preferences for ${data.customer_code} have been ${isEditMode ? 'updated' : 'saved'} successfully.`,
-        variant: "default"
+        variant: 'default'
       })
 
       onClose()
-
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save customer preferences",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save customer preferences',
+        variant: 'destructive'
       })
     } finally {
       setIsSubmitting(false)
@@ -197,22 +208,19 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
             {isEditMode ? 'Edit Customer Preferences' : 'Add Customer Preferences'}
           </DialogTitle>
           <DialogDescription>
-            {isEditMode 
+            {isEditMode
               ? `Manage WhatsApp consent and preferences for customer ${customerCode}`
-              : 'Add a new customer and configure their WhatsApp communication preferences'
-            }
+              : 'Add a new customer and configure their WhatsApp communication preferences'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          
           {/* Customer Information */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Customer Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               <div className="space-y-2">
                 <Label htmlFor="customer_code">Customer Code *</Label>
                 <Input
@@ -248,7 +256,6 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   </p>
                 )}
               </div>
-
             </CardContent>
           </Card>
 
@@ -267,7 +274,6 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              
               {/* Consent Switch */}
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
@@ -281,7 +287,7 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                 <Switch
                   id="opted_in"
                   checked={form.watch('opted_in')}
-                  onCheckedChange={(checked) => form.setValue('opted_in', checked)}
+                  onCheckedChange={checked => form.setValue('opted_in', checked)}
                 />
               </div>
 
@@ -290,7 +296,9 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                 <Label htmlFor="consent_method">Consent Method</Label>
                 <Select
                   value={form.watch('consent_method')}
-                  onValueChange={(value: 'explicit' | 'implicit') => form.setValue('consent_method', value)}
+                  onValueChange={(value: 'explicit' | 'implicit') =>
+                    form.setValue('consent_method', value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -311,10 +319,9 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-gray-500">
-                  {form.watch('consent_method') === 'explicit' 
+                  {form.watch('consent_method') === 'explicit'
                     ? 'Customer actively opted in (recommended for compliance)'
-                    : 'Customer implied consent through prior business relationship'
-                  }
+                    : 'Customer implied consent through prior business relationship'}
                 </p>
               </div>
 
@@ -330,7 +337,6 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   Record any additional context about the consent process
                 </p>
               </div>
-
             </CardContent>
           </Card>
 
@@ -351,10 +357,9 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   <div>
                     <Label className="text-gray-600">Last Updated</Label>
                     <p className="font-medium">
-                      {existingPrefs.consent_ts 
+                      {existingPrefs.consent_ts
                         ? new Date(existingPrefs.consent_ts).toLocaleDateString('en-AE')
-                        : 'Never'
-                      }
+                        : 'Never'}
                     </p>
                   </div>
                   <div>
@@ -366,9 +371,11 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   <div>
                     <Label className="text-gray-600">Consent Method</Label>
                     <p className="font-medium">
-                      {existingPrefs.consent_method === 'explicit' ? 'Explicit' :
-                       existingPrefs.consent_method === 'implicit' ? 'Implicit' :
-                       'Not specified'}
+                      {existingPrefs.consent_method === 'explicit'
+                        ? 'Explicit'
+                        : existingPrefs.consent_method === 'implicit'
+                          ? 'Implicit'
+                          : 'Not specified'}
                     </p>
                   </div>
                 </div>
@@ -385,26 +392,20 @@ export function ChannelConsent({ open, onOpenChange, organizationId, customerCod
                   Data Protection & Compliance
                 </div>
                 <div className="text-sm text-blue-700 dark:text-blue-300">
-                  • Customer consent is recorded with timestamp and method
-                  • All data is stored securely using HERA's Sacred Six architecture
-                  • Customers can opt-out at any time by replying "STOP" to messages
-                  • WhatsApp Business API compliance maintained automatically
+                  • Customer consent is recorded with timestamp and method • All data is stored
+                  securely using HERA's Sacred Six architecture • Customers can opt-out at any time
+                  by replying "STOP" to messages • WhatsApp Business API compliance maintained
+                  automatically
                 </div>
               </div>
             </AlertDescription>
           </Alert>
-
         </form>
 
         <Separator />
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button

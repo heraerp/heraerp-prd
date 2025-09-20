@@ -30,7 +30,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-AE', {
       dateStyle: 'medium',
-      timeStyle: 'short',
+      timeStyle: 'short'
     })
   }
 
@@ -93,19 +93,19 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <h2 className="text-3xl font-bold text-primary">Hair Talkz</h2>
               <p className="text-gray-600 mt-1">Premium Salon & Spa</p>
               <p className="text-sm text-gray-500 mt-2">
-                123 Business Bay, Dubai, UAE<br />
-                Tel: +971 4 123 4567<br />
+                123 Business Bay, Dubai, UAE
+                <br />
+                Tel: +971 4 123 4567
+                <br />
                 TRN: 100123456789012
               </p>
             </div>
             <div className="text-right">
               <h3 className="text-2xl font-bold">{invoice.header.invoice_number}</h3>
-              <Badge className={cn("mt-2", getStatusColor(invoice.header.status))}>
+              <Badge className={cn('mt-2', getStatusColor(invoice.header.status))}>
                 {invoice.header.status.toUpperCase()}
               </Badge>
-              <p className="text-sm text-gray-500 mt-2">
-                {formatDate(invoice.header.created_at)}
-              </p>
+              <p className="text-sm text-gray-500 mt-2">{formatDate(invoice.header.created_at)}</p>
             </div>
           </div>
 
@@ -116,7 +116,9 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <p className="font-medium">{invoice.header.customer.name}</p>
               <p className="text-sm text-gray-600">Customer Code: {invoice.header.customer.code}</p>
               {invoice.header.appointment_id && (
-                <p className="text-sm text-gray-600">Appointment: {invoice.header.appointment_id}</p>
+                <p className="text-sm text-gray-600">
+                  Appointment: {invoice.header.appointment_id}
+                </p>
               )}
             </div>
           )}
@@ -136,7 +138,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
                 </tr>
               </thead>
               <tbody>
-                {invoice.lines.map((line) => (
+                {invoice.lines.map(line => (
                   <tr key={line.line_id} className="border-b">
                     <td className="py-3">
                       <div>
@@ -144,15 +146,15 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
                         <p className="text-xs text-gray-500">{line.smart_code}</p>
                       </div>
                     </td>
-                    <td className="text-center py-3">
-                      {line.qty !== undefined ? line.qty : '-'}
-                    </td>
+                    <td className="text-center py-3">{line.qty !== undefined ? line.qty : '-'}</td>
                     <td className="text-right py-3">
                       {line.unit_price !== undefined ? formatCurrency(line.unit_price) : '-'}
                     </td>
                     <td className="text-right py-3 font-medium">
                       {line.line_type === 'discount' ? (
-                        <span className="text-green-600">-{formatCurrency(Math.abs(line.amount))}</span>
+                        <span className="text-green-600">
+                          -{formatCurrency(Math.abs(line.amount))}
+                        </span>
                       ) : line.line_type === 'tip' ? (
                         <span className="text-blue-600">+{formatCurrency(line.amount)}</span>
                       ) : (
@@ -190,7 +192,9 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <span>{formatCurrency(invoice.totals.taxable_subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">VAT ({(invoice.totals.tax_rate * 100).toFixed(0)}%)</span>
+              <span className="text-gray-600">
+                VAT ({(invoice.totals.tax_rate * 100).toFixed(0)}%)
+              </span>
               <span>{formatCurrency(invoice.totals.tax_total)}</span>
             </div>
             {invoice.totals.tip_total > 0 && (
@@ -240,7 +244,8 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
           <div className="text-center text-sm text-gray-500 pt-6">
             <p>Thank you for your business!</p>
             <p className="mt-2">
-              Transaction ID: {invoice.header.txn_id}<br />
+              Transaction ID: {invoice.header.txn_id}
+              <br />
               Smart Code: {invoice.header.smart_code}
             </p>
           </div>
@@ -253,7 +258,9 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
           body * {
             visibility: hidden;
           }
-          ${printRef.current ? '#' + printRef.current.id : ''}, ${printRef.current ? '#' + printRef.current.id : ''} * {
+          ${printRef.current ? '#' + printRef.current.id : ''}, ${printRef.current
+            ? '#' + printRef.current.id
+            : ''} * {
             visibility: visible;
           }
           ${printRef.current ? '#' + printRef.current.id : ''} {

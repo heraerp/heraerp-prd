@@ -303,7 +303,9 @@ export default function LeadsPage() {
                     {/* Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-foreground">{lead.entity_name}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          {lead.entity_name}
+                        </h3>
                         <div className="flex items-center space-x-4 mt-1">
                           <div className="flex items-center space-x-1 text-sm text-foreground/60">
                             <Building2 className="h-4 w-4" />
@@ -345,7 +347,9 @@ export default function LeadsPage() {
                       </div>
                       <div>
                         <p className="text-xs text-foreground/60 mb-1">Timeline</p>
-                        <p className="text-sm text-foreground">{lead.metadata?.timeline || 'N/A'}</p>
+                        <p className="text-sm text-foreground">
+                          {lead.metadata?.timeline || 'N/A'}
+                        </p>
                       </div>
                     </div>
 

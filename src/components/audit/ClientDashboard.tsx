@@ -307,9 +307,7 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
               </div>
               <div className="pt-3 border-t">
                 <p className="text-sm text-muted-foreground">HERA Organization ID</p>
-                <p className="font-mono text-xs bg-muted p-2 rounded">
-                  {client.organization_id}
-                </p>
+                <p className="font-mono text-xs bg-muted p-2 rounded">{client.organization_id}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Each GSPU audit client has isolated data via unique organization ID
                 </p>
@@ -532,7 +530,9 @@ export function ClientDashboard({ clientId, onBack }: ClientDashboardProps) {
                       <div className="flex-1">
                         <p className="font-medium text-muted-foreground">Manager Review</p>
                         <p className="text-sm text-muted-foreground">March 15, 2025 (Planned)</p>
-                        <p className="text-xs text-muted-foreground mt-1">Comprehensive file review</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Comprehensive file review
+                        </p>
                       </div>
                     </div>
 

@@ -143,7 +143,9 @@ function OldPartnerExperienceHub() {
                   <DollarSign className="h-8 w-8 text-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">50% Forever</h3>
-                <p className="text-muted-foreground">Not 5%, not 15%. Half of everything. Always.</p>
+                <p className="text-muted-foreground">
+                  Not 5%, not 15%. Half of everything. Always.
+                </p>
               </div>
 
               <div className="text-center">

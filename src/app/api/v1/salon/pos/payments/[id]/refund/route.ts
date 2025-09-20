@@ -39,7 +39,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for refund operations',
           details: 'Ensure middleware is properly configured'
@@ -113,7 +113,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         idempotent: result.data.idempotent_match || false
       }
     })
-
   } catch (error) {
     console.error('Payment refund error:', error)
 
@@ -156,15 +155,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'PAYMENT_NOT_FOUND': 404,
-    'PAYMENT_NOT_CAPTURED': 400,
-    'REFUND_AMOUNT_EXCEEDED': 400,
-    'GATEWAY_REFUND_FAILED': 502,
-    'INSUFFICIENT_CASH_DRAWER': 400,
-    'GIFT_CARD_REACTIVATION_FAILED': 500,
-    'DUPLICATE_REFUND': 409,
-    'REFUND_WINDOW_EXCEEDED': 400,
-    'REFUND_PROCESSING_ERROR': 500
+    PAYMENT_NOT_FOUND: 404,
+    PAYMENT_NOT_CAPTURED: 400,
+    REFUND_AMOUNT_EXCEEDED: 400,
+    GATEWAY_REFUND_FAILED: 502,
+    INSUFFICIENT_CASH_DRAWER: 400,
+    GIFT_CARD_REACTIVATION_FAILED: 500,
+    DUPLICATE_REFUND: 409,
+    REFUND_WINDOW_EXCEEDED: 400,
+    REFUND_PROCESSING_ERROR: 500
   }
 
   return errorMap[errorCode] || 500

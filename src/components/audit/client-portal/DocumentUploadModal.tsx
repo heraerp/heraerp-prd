@@ -214,7 +214,9 @@ export function DocumentUploadModal({
             onDrop={handleDrop}
           >
             <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-2">Drag and drop files here, or click to browse</p>
+            <p className="text-muted-foreground mb-2">
+              Drag and drop files here, or click to browse
+            </p>
             <p className="text-sm text-muted-foreground mb-4">
               Supported formats: PDF, JPG, PNG, DOC, DOCX, XLS, XLSX (Max 10MB)
             </p>

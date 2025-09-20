@@ -102,21 +102,22 @@ export default function WatchlistPage() {
   const [showAlertsOnly, setShowAlertsOnly] = useState(false)
 
   const filteredWatchlist = watchlist.filter(item => {
-    const matchesSearch = item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      item.tender_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.tender_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.department.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesFilter = !showAlertsOnly || item.alerts_enabled
-    
+
     return matchesSearch && matchesFilter
   })
 
   const handleToggleAlerts = (tenderId: string) => {
-    setWatchlist(prev => prev.map(item =>
-      item.tender_id === tenderId
-        ? { ...item, alerts_enabled: !item.alerts_enabled }
-        : item
-    ))
+    setWatchlist(prev =>
+      prev.map(item =>
+        item.tender_id === tenderId ? { ...item, alerts_enabled: !item.alerts_enabled } : item
+      )
+    )
     toast({
       title: 'Alert Settings Updated',
       description: 'Notification preferences have been saved.'
@@ -140,7 +141,11 @@ export default function WatchlistPage() {
       case 'high':
         return <Badge variant="destructive">High Priority</Badge>
       case 'medium':
-        return <Badge variant="default" className="furniture-btn-premium">Medium</Badge>
+        return (
+          <Badge variant="default" className="furniture-btn-premium">
+            Medium
+          </Badge>
+        )
       case 'low':
         return <Badge variant="secondary">Low</Badge>
       default:
@@ -221,7 +226,11 @@ export default function WatchlistPage() {
             <div>
               <p className="text-sm text-[var(--color-text-secondary)]">Total Value</p>
               <p className="text-2xl font-bold">
-                ₹{(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed(1)}L
+                ₹
+                {(watchlist.reduce((sum, item) => sum + item.estimated_value, 0) / 100000).toFixed(
+                  1
+                )}
+                L
               </p>
             </div>
             <Calendar className="h-8 w-8 text-[var(--color-icon-secondary)]" />
@@ -248,10 +257,7 @@ export default function WatchlistPage() {
                 checked={showAlertsOnly}
                 onCheckedChange={setShowAlertsOnly}
               />
-              <label
-                htmlFor="alerts-only"
-                className="bg-[var(--color-body)] text-sm"
-              >
+              <label htmlFor="alerts-only" className="bg-[var(--color-body)] text-sm">
                 Show alerts enabled only
               </label>
             </div>
@@ -283,7 +289,7 @@ export default function WatchlistPage() {
               {filteredWatchlist.map(item => {
                 const daysRemaining = getDaysRemaining(item.closing_date)
                 const isUrgent = daysRemaining <= 3
-                
+
                 return (
                   <TableRow key={item.tender_id}>
                     <TableCell>

@@ -14,9 +14,11 @@ Enterprise-grade service catalog management for HERA Salon module.
 ## Smart Codes
 
 ### Entity Smart Codes
+
 - `HERA.SALON.SERVICE.V1` - Service entity
 
 ### Dynamic Data Smart Codes
+
 - `HERA.SALON.SERVICE.PRICE.V1` - Service pricing (value, currency, effective_from)
 - `HERA.SALON.SERVICE.TAX.V1` - Tax configuration (rate)
 - `HERA.SALON.SERVICE.COMMISSION.V1` - Commission settings (type, value)
@@ -24,6 +26,7 @@ Enterprise-grade service catalog management for HERA Salon module.
 ## API Endpoints
 
 ### Playbook Integration
+
 All endpoints use the Playbook API with Bearer authentication.
 
 ```typescript
@@ -63,6 +66,7 @@ If environment variables are not set, the system will use deterministic mock dat
 ## Usage
 
 ### Basic Usage
+
 ```typescript
 import { useServicesPlaybook } from '@/hooks/useServicesPlaybook'
 
@@ -78,6 +82,7 @@ const { items, total, isLoading, createOne, updateOne } = useServicesPlaybook({
 ```
 
 ### Create Service with Dynamic Data
+
 ```typescript
 await createOne({
   name: 'Premium Cut & Style',
@@ -120,6 +125,7 @@ src/
 ## Testing
 
 Run the test suite:
+
 ```bash
 npm test src/schemas/__tests__/service.spec.ts
 npm test src/components/salon/services/__tests__/ServiceList.spec.tsx

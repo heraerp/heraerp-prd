@@ -35,7 +35,7 @@ export default function HairTalkzWorkflowDashboard() {
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([])
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
-  
+
   const supabase = createSupabaseClient()
 
   useEffect(() => {
@@ -137,9 +137,7 @@ export default function HairTalkzWorkflowDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {featureFlags.map(flag => (
               <div key={flag.feature} className="flex items-center space-x-2">
-                <Badge variant={flag.enabled ? "default" : "secondary"}>
-                  {flag.feature}
-                </Badge>
+                <Badge variant={flag.enabled ? 'default' : 'secondary'}>{flag.feature}</Badge>
                 {flag.enabled ? (
                   <CheckCircle2 className="h-4 w-4 text-green-500" />
                 ) : (
@@ -166,10 +164,7 @@ export default function HairTalkzWorkflowDashboard() {
                 </div>
                 {getStatusIcon(getMetricStatus('p95_latency', metrics.p95_latency_ms))}
               </div>
-              <Progress 
-                value={(200 - metrics.p95_latency_ms) / 2} 
-                className="mt-2"
-              />
+              <Progress value={(200 - metrics.p95_latency_ms) / 2} className="mt-2" />
             </CardContent>
           </Card>
 
@@ -185,10 +180,7 @@ export default function HairTalkzWorkflowDashboard() {
                 </div>
                 {getStatusIcon(getMetricStatus('error_rate', metrics.error_rate_percent))}
               </div>
-              <Progress 
-                value={100 - (metrics.error_rate_percent * 1000)} 
-                className="mt-2"
-              />
+              <Progress value={100 - metrics.error_rate_percent * 1000} className="mt-2" />
             </CardContent>
           </Card>
 
@@ -199,15 +191,16 @@ export default function HairTalkzWorkflowDashboard() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-3xl font-bold">{metrics.correlation_coverage_percent.toFixed(1)}%</p>
+                  <p className="text-3xl font-bold">
+                    {metrics.correlation_coverage_percent.toFixed(1)}%
+                  </p>
                   <p className="text-sm text-gray-500">Target: ≥95%</p>
                 </div>
-                {getStatusIcon(getMetricStatus('correlation_coverage', metrics.correlation_coverage_percent))}
+                {getStatusIcon(
+                  getMetricStatus('correlation_coverage', metrics.correlation_coverage_percent)
+                )}
               </div>
-              <Progress 
-                value={metrics.correlation_coverage_percent} 
-                className="mt-2"
-              />
+              <Progress value={metrics.correlation_coverage_percent} className="mt-2" />
             </CardContent>
           </Card>
 
@@ -258,15 +251,11 @@ export default function HairTalkzWorkflowDashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <p className="text-sm text-gray-600">
-              If metrics are red, run rollback immediately:
-            </p>
+            <p className="text-sm text-gray-600">If metrics are red, run rollback immediately:</p>
             <code className="block p-2 bg-gray-100 rounded text-sm">
               npm run salon:canary:rollback
             </code>
-            <p className="text-sm text-gray-600 mt-4">
-              View detailed logs:
-            </p>
+            <p className="text-sm text-gray-600 mt-4">View detailed logs:</p>
             <code className="block p-2 bg-gray-100 rounded text-sm">
               tail -f /var/log/hera/workflow-engine.log | grep hair-talkz
             </code>

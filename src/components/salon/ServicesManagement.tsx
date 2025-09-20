@@ -224,8 +224,7 @@ const mockServices: Service[] = [
 export default function ServicesManagement() {
   // ----------------------------- Get Organization ID ------------------------------------
   const { organization } = useHERAAuth()
-  const organizationId =
-    organization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || ''
+  const organizationId = organization?.id || process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || ''
 
   // ----------------------------- State Management ------------------------------------
   const [activeTab, setActiveTab] = useState<'services' | 'categories'>('services')

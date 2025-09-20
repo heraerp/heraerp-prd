@@ -641,7 +641,9 @@ export function BYOCManager({
                               {provider.icon}
                               <div>
                                 <div className="font-medium">{provider.name}</div>
-                                <div className="text-xs text-muted-foreground">{provider.description}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  {provider.description}
+                                </div>
                               </div>
                             </div>
                           </SelectItem>
@@ -699,8 +701,12 @@ export function BYOCManager({
               {!canManageSecrets ? (
                 <div className="text-center py-8">
                   <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">You don't have permission to manage secrets</p>
-                  <p className="text-sm text-muted-foreground">Contact your administrator for access</p>
+                  <p className="text-muted-foreground">
+                    You don't have permission to manage secrets
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Contact your administrator for access
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -754,7 +760,9 @@ export function BYOCManager({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Audit trail interface would be implemented here</p>
+              <p className="text-muted-foreground">
+                Audit trail interface would be implemented here
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

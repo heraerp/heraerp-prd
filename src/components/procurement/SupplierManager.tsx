@@ -483,10 +483,7 @@ export function SupplierManager() {
               {supplier.email && (
                 <div className="flex items-center space-x-3 text-sm">
                   <Mail className="w-4 h-4 text-muted-foreground" />
-                  <a
-                    href={`mailto:${supplier.email}`}
-                    className="text-primary hover:text-blue-800"
-                  >
+                  <a href={`mailto:${supplier.email}`} className="text-primary hover:text-blue-800">
                     {supplier.email}
                   </a>
                 </div>
@@ -495,7 +492,10 @@ export function SupplierManager() {
               {supplier.phone && (
                 <div className="flex items-center space-x-3 text-sm">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  <a href={`tel:${supplier.phone}`} className="text-muted-foreground hover:text-gray-200">
+                  <a
+                    href={`tel:${supplier.phone}`}
+                    className="text-muted-foreground hover:text-gray-200"
+                  >
                     {supplier.phone}
                   </a>
                 </div>

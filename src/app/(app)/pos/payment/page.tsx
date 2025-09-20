@@ -18,16 +18,15 @@ import { useInvoice, usePayment, usePosNavigation } from '@/lib/hooks/usePos'
 const posApi = new PosApi()
 
 function PaymentProcessingContent() {
-
   const router = useRouter()
   const searchParams = useSearchParams()
   const invoiceId = searchParams.get('invoice')
   const { user } = useSession()
   const navigation = usePosNavigation()
-  
+
   // Load invoice
   const { data: invoice, isLoading } = useInvoice(invoiceId || '', posApi)
-  
+
   // Payment mutation
   const payment = usePayment(posApi)
 
@@ -36,9 +35,7 @@ function PaymentProcessingContent() {
       <div className="container mx-auto p-6">
         <Card className="p-8 text-center">
           <p className="text-gray-600 mb-4">No invoice specified</p>
-          <Button onClick={() => navigation.goToSale()}>
-            Back to POS
-          </Button>
+          <Button onClick={() => navigation.goToSale()}>Back to POS</Button>
         </Card>
       </div>
     )
@@ -62,9 +59,7 @@ function PaymentProcessingContent() {
       <div className="container mx-auto p-6">
         <Card className="p-8 text-center">
           <p className="text-gray-600 mb-4">Invoice not found</p>
-          <Button onClick={() => navigation.goToSale()}>
-            Back to POS
-          </Button>
+          <Button onClick={() => navigation.goToSale()}>Back to POS</Button>
         </Card>
       </div>
     )
@@ -73,12 +68,11 @@ function PaymentProcessingContent() {
   const handlePayment = (paymentData: any) => {
     payment.mutate({
       invoiceId: invoice.header.id,
-      payment: paymentData,
+      payment: paymentData
     })
   }
 
-  
-return (
+  return (
     <div className="container mx-auto p-6 max-w-4xl">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
@@ -86,13 +80,12 @@ return (
           <h1 className="text-3xl font-bold text-gray-800">Process Payment</h1>
           <div className="flex items-center gap-2 mt-2">
             <Code className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-500 font-mono">HERA.SALON.POS.PAYMENT.PROCESS.V1</span>
+            <span className="text-sm text-gray-500 font-mono">
+              HERA.SALON.POS.PAYMENT.PROCESS.V1
+            </span>
           </div>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => navigation.goToSale()}
-        >
+        <Button variant="outline" onClick={() => navigation.goToSale()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to POS
         </Button>
@@ -170,12 +163,11 @@ return (
       </div>
     </div>
   )
-
 }
 
 export default function PaymentProcessingPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

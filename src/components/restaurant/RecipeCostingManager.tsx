@@ -792,7 +792,9 @@ export function RecipeCostingManager() {
                           <span className="text-muted-foreground">
                             {recipe.ingredients.length} ingredients
                           </span>
-                          <span className="text-muted-foreground">{recipe.servings} serving(s)</span>
+                          <span className="text-muted-foreground">
+                            {recipe.servings} serving(s)
+                          </span>
                         </div>
                       </div>
                     </div>

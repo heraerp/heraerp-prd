@@ -16,7 +16,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
@@ -41,14 +47,14 @@ export default function EditAppointmentPage() {
   const params = useParams()
   const appointmentId = params.id as string
   const { toast } = useToast()
-  
+
   const { organization, isLoading: authLoading } = useHERAAuth()
   const [appointment, setAppointment] = useState<AppointmentDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [demoOrganizationId, setDemoOrganizationId] = useState<string | null>(null)
   const [isCheckingDemo, setIsCheckingDemo] = useState(true)
-  
+
   // Form state
   const [appointmentDate, setAppointmentDate] = useState('')
   const [appointmentTime, setAppointmentTime] = useState('')
@@ -58,56 +64,62 @@ export default function EditAppointmentPage() {
   const [duration, setDuration] = useState('60')
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState('CONFIRMED')
-  
+
   // Check for demo session on mount
   useEffect(() => {
     const checkDemoSession = () => {
-      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split('=')
-        acc[key] = value
-        return acc
-      }, {} as Record<string, string>)
-      
+      const cookies = document.cookie.split(';').reduce(
+        (acc, cookie) => {
+          const [key, value] = cookie.trim().split('=')
+          acc[key] = value
+          return acc
+        },
+        {} as Record<string, string>
+      )
+
       const demoOrgId = cookies['hera-demo-org']
       if (demoOrgId) {
         setDemoOrganizationId(demoOrgId || DEFAULT_SALON_ORG_ID)
       }
-      
+
       setIsCheckingDemo(false)
     }
-    
+
     checkDemoSession()
   }, [])
-  
+
   // Use demo org ID if available, otherwise use authenticated org
-  const organizationId = demoOrganizationId || organization?.id || (sessionStorage.getItem('isDemoLogin') === 'true' ? DEFAULT_SALON_ORG_ID : null)
-  
+  const organizationId =
+    demoOrganizationId ||
+    organization?.id ||
+    (sessionStorage.getItem('isDemoLogin') === 'true' ? DEFAULT_SALON_ORG_ID : null)
+
   // Load appointment details
   const loadAppointment = async () => {
     if (!organizationId || !appointmentId) {
       console.log('⚠️ Missing organizationId or appointmentId')
       return
     }
-    
+
     try {
       setLoading(true)
-      
+
       // Set organization ID on universalApi
       universalApi.setOrganizationId(organizationId)
-      
+
       // Get appointment details
       const response = await universalApi.read('universal_transactions', {
         id: appointmentId,
         organization_id: organizationId
       })
-      
+
       if (response.success && response.data && response.data.length > 0) {
         const apt = response.data[0]
         setAppointment(apt)
-        
+
         // Set form values from appointment data
         const aptDate = new Date(apt.transaction_date)
-        
+
         setAppointmentDate(format(aptDate, 'yyyy-MM-dd'))
         setAppointmentTime(format(aptDate, 'HH:mm'))
         setSelectedCustomer(apt.source_entity_id || '')
@@ -128,22 +140,22 @@ export default function EditAppointmentPage() {
       setLoading(false)
     }
   }
-  
+
   useEffect(() => {
     if (!authLoading && !isCheckingDemo && organizationId) {
       loadAppointment()
     }
   }, [organizationId, authLoading, isCheckingDemo, appointmentId])
-  
+
   const handleSave = async () => {
     if (!organizationId || !appointmentId) return
-    
+
     try {
       setSaving(true)
-      
+
       // Combine date and time
       const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}:00`)
-      
+
       // Update appointment
       const updateData = {
         transaction_date: appointmentDateTime.toISOString(),
@@ -159,9 +171,13 @@ export default function EditAppointmentPage() {
           updated_at: new Date().toISOString()
         }
       }
-      
-      const response = await universalApi.update('universal_transactions', appointmentId, updateData)
-      
+
+      const response = await universalApi.update(
+        'universal_transactions',
+        appointmentId,
+        updateData
+      )
+
       if (response.success) {
         toast({
           title: 'Success',
@@ -180,7 +196,7 @@ export default function EditAppointmentPage() {
       setSaving(false)
     }
   }
-  
+
   if (authLoading || isCheckingDemo || loading) {
     return (
       <div className="container mx-auto p-6 max-w-4xl">
@@ -193,7 +209,7 @@ export default function EditAppointmentPage() {
       </div>
     )
   }
-  
+
   if (!organizationId || !appointment) {
     return (
       <div className="container mx-auto p-6 max-w-4xl">
@@ -206,10 +222,7 @@ export default function EditAppointmentPage() {
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               The appointment you're looking for doesn't exist
             </p>
-            <Button 
-              onClick={() => router.push('/salon/appointments')}
-              className="mt-4"
-            >
+            <Button onClick={() => router.push('/salon/appointments')} className="mt-4">
               Back to Appointments
             </Button>
           </div>
@@ -217,17 +230,13 @@ export default function EditAppointmentPage() {
       </div>
     )
   }
-  
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push('/salon/appointments')}
-          >
+          <Button variant="ghost" size="icon" onClick={() => router.push('/salon/appointments')}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
@@ -239,17 +248,13 @@ export default function EditAppointmentPage() {
             </p>
           </div>
         </div>
-        
-        <Button
-          onClick={handleSave}
-          disabled={saving}
-          className="gap-2"
-        >
+
+        <Button onClick={handleSave} disabled={saving} className="gap-2">
           <Save className="w-4 h-4" />
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle className="text-gray-900 dark:text-gray-100">Appointment Details</CardTitle>
@@ -258,37 +263,43 @@ export default function EditAppointmentPage() {
           {/* Date and Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="date" className="text-gray-700 dark:text-gray-300">Date</Label>
+              <Label htmlFor="date" className="text-gray-700 dark:text-gray-300">
+                Date
+              </Label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <Input
                   id="date"
                   type="date"
                   value={appointmentDate}
-                  onChange={(e) => setAppointmentDate(e.target.value)}
+                  onChange={e => setAppointmentDate(e.target.value)}
                   className="pl-9 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
             </div>
-            
+
             <div>
-              <Label htmlFor="time" className="text-gray-700 dark:text-gray-300">Time</Label>
+              <Label htmlFor="time" className="text-gray-700 dark:text-gray-300">
+                Time
+              </Label>
               <div className="relative">
                 <Clock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <Input
                   id="time"
                   type="time"
                   value={appointmentTime}
-                  onChange={(e) => setAppointmentTime(e.target.value)}
+                  onChange={e => setAppointmentTime(e.target.value)}
                   className="pl-9 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
             </div>
           </div>
-          
+
           {/* Customer */}
           <div>
-            <Label htmlFor="customer" className="text-gray-700 dark:text-gray-300">Customer</Label>
+            <Label htmlFor="customer" className="text-gray-700 dark:text-gray-300">
+              Customer
+            </Label>
             <div className="relative">
               <User className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
@@ -302,10 +313,12 @@ export default function EditAppointmentPage() {
               Customer cannot be changed after booking
             </p>
           </div>
-          
+
           {/* Stylist */}
           <div>
-            <Label htmlFor="stylist" className="text-gray-700 dark:text-gray-300">Stylist</Label>
+            <Label htmlFor="stylist" className="text-gray-700 dark:text-gray-300">
+              Stylist
+            </Label>
             <Select value={selectedStylist} onValueChange={setSelectedStylist}>
               <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                 <SelectValue placeholder="Select stylist">
@@ -320,10 +333,12 @@ export default function EditAppointmentPage() {
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Service */}
           <div>
-            <Label htmlFor="service" className="text-gray-700 dark:text-gray-300">Service</Label>
+            <Label htmlFor="service" className="text-gray-700 dark:text-gray-300">
+              Service
+            </Label>
             <Input
               id="service"
               value={appointment.metadata?.service_name || 'Service'}
@@ -334,11 +349,13 @@ export default function EditAppointmentPage() {
               Service cannot be changed after booking
             </p>
           </div>
-          
+
           {/* Duration */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="duration" className="text-gray-700 dark:text-gray-300">Duration (minutes)</Label>
+              <Label htmlFor="duration" className="text-gray-700 dark:text-gray-300">
+                Duration (minutes)
+              </Label>
               <Select value={duration} onValueChange={setDuration}>
                 <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                   <SelectValue />
@@ -353,9 +370,11 @@ export default function EditAppointmentPage() {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
-              <Label htmlFor="status" className="text-gray-700 dark:text-gray-300">Status</Label>
+              <Label htmlFor="status" className="text-gray-700 dark:text-gray-300">
+                Status
+              </Label>
               <Select value={status} onValueChange={setStatus}>
                 <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                   <SelectValue />
@@ -371,14 +390,16 @@ export default function EditAppointmentPage() {
               </Select>
             </div>
           </div>
-          
+
           {/* Notes */}
           <div>
-            <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">Notes</Label>
+            <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">
+              Notes
+            </Label>
             <Textarea
               id="notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="Add any special notes or instructions..."
               rows={3}
               className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400"

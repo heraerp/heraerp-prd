@@ -33,7 +33,12 @@ const COLORS = {
   lightText: '#E0E0E0'
 }
 
-export function ValuationSummary({ summary, totalValue, totalQuantity, loading }: ValuationSummaryProps) {
+export function ValuationSummary({
+  summary,
+  totalValue,
+  totalQuantity,
+  loading
+}: ValuationSummaryProps) {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -67,7 +72,10 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-card/50 border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2" style={{ color: COLORS.bronze }}>
+            <CardTitle
+              className="text-sm font-medium flex items-center gap-2"
+              style={{ color: COLORS.bronze }}
+            >
               <Package className="h-4 w-4" />
               Total Stock Value
             </CardTitle>
@@ -81,7 +89,10 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
 
         <Card className="bg-card/50 border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2" style={{ color: COLORS.bronze }}>
+            <CardTitle
+              className="text-sm font-medium flex items-center gap-2"
+              style={{ color: COLORS.bronze }}
+            >
               <TrendingUp className="h-4 w-4" />
               Total Items
             </CardTitle>
@@ -95,7 +106,10 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
 
         <Card className="bg-card/50 border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2" style={{ color: COLORS.bronze }}>
+            <CardTitle
+              className="text-sm font-medium flex items-center gap-2"
+              style={{ color: COLORS.bronze }}
+            >
               <DollarSign className="h-4 w-4" />
               Average Value
             </CardTitle>
@@ -144,8 +158,8 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
                 <TableRow
                   key={`${item.item_id}-${item.branch_id}`}
                   className={cn(
-                    "border-b border-border hover:bg-muted/30 transition-colors",
-                    index % 2 === 0 && "bg-muted/10"
+                    'border-b border-border hover:bg-muted/30 transition-colors',
+                    index % 2 === 0 && 'bg-muted/10'
                   )}
                 >
                   <TableCell>
@@ -158,9 +172,7 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
                       )}
                     </div>
                   </TableCell>
-                  <TableCell style={{ color: COLORS.lightText }}>
-                    {item.branch_name}
-                  </TableCell>
+                  <TableCell style={{ color: COLORS.lightText }}>{item.branch_name}</TableCell>
                   <TableCell className="text-right font-medium" style={{ color: COLORS.lightText }}>
                     {item.quantity.toLocaleString()}
                   </TableCell>
@@ -176,10 +188,9 @@ export function ValuationSummary({ summary, totalValue, totalQuantity, loading }
                     </Badge>
                   </TableCell>
                   <TableCell style={{ color: COLORS.lightText }}>
-                    {item.last_movement_date 
+                    {item.last_movement_date
                       ? new Date(item.last_movement_date).toLocaleDateString()
-                      : '-'
-                    }
+                      : '-'}
                   </TableCell>
                 </TableRow>
               ))}

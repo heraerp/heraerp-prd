@@ -23,7 +23,6 @@ A comprehensive table view component for displaying and managing configuration r
 
 ```tsx
 import { RulesList } from '@/components/admin/config'
-
 ;<RulesList
   onEditRule={rule => console.log('Edit:', rule)}
   onDeleteRule={ruleId => console.log('Delete:', ruleId)}
@@ -50,7 +49,6 @@ A comprehensive form component for creating and editing configuration rules.
 
 ```tsx
 import { RuleEditor } from '@/components/admin/config'
-
 ;<RuleEditor
   rule={existingRule} // Optional for editing
   onSave={rule => console.log('Save:', rule)}
@@ -76,7 +74,6 @@ An advanced preview and testing component for configuration rules.
 
 ```tsx
 import { RulePreview } from '@/components/admin/config'
-
 ;<RulePreview rule={ruleToPreview} onClose={() => console.log('Close preview')} />
 ```
 

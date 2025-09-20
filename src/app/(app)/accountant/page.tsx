@@ -7,7 +7,16 @@
 'use client'
 
 import React from 'react'
-import { Loader2, TrendingUp, DollarSign, FileText, Calendar, AlertTriangle, ChevronRight, Download } from 'lucide-react'
+import {
+  Loader2,
+  TrendingUp,
+  DollarSign,
+  FileText,
+  Calendar,
+  AlertTriangle,
+  ChevronRight,
+  Download
+} from 'lucide-react'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Guard } from '@/lib/auth/guard'
 import { useDashboardMetrics } from '@/lib/api/dashboard'
@@ -95,11 +104,10 @@ export default function AccountantDashboard() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
             {/* Page Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">
-                Financial Dashboard
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
               <p className="text-gray-600 mt-1">
-                Monitor financial health and prepare reports for {currentOrganization?.name || 'the salon'}
+                Monitor financial health and prepare reports for{' '}
+                {currentOrganization?.name || 'the salon'}
               </p>
             </div>
 
@@ -111,7 +119,9 @@ export default function AccountantDashboard() {
                     <div className={`p-3 rounded-lg ${kpi.bgColor}`}>
                       <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
                     </div>
-                    <span className={`text-sm font-medium ${kpi.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                    <span
+                      className={`text-sm font-medium ${kpi.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}
+                    >
                       {kpi.change}
                     </span>
                   </div>
@@ -138,7 +148,10 @@ export default function AccountantDashboard() {
                   </div>
                   <div className="p-6 space-y-4">
                     {recentReports.map((report, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
                         <div className="flex items-center space-x-4">
                           <FileText className="w-5 h-5 text-violet-600" />
                           <div>
@@ -149,13 +162,17 @@ export default function AccountantDashboard() {
                         <div className="flex items-center space-x-2">
                           {report.status === 'ready' ? (
                             <>
-                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Ready</span>
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                Ready
+                              </span>
                               <Button size="sm" variant="ghost">
                                 <Download className="w-4 h-4" />
                               </Button>
                             </>
                           ) : (
-                            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Generating</span>
+                            <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                              Generating
+                            </span>
                           )}
                         </div>
                       </div>
@@ -175,13 +192,15 @@ export default function AccountantDashboard() {
                       <div key={index} className="space-y-2">
                         <div className="flex items-start justify-between">
                           <p className="text-sm font-medium text-gray-900">{task.task}</p>
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            task.priority === 'high' 
-                              ? 'bg-red-100 text-red-800' 
-                              : task.priority === 'medium' 
-                              ? 'bg-yellow-100 text-yellow-800' 
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              task.priority === 'high'
+                                ? 'bg-red-100 text-red-800'
+                                : task.priority === 'medium'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
                             {task.priority}
                           </span>
                         </div>

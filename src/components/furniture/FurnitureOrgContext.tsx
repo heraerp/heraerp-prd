@@ -19,7 +19,11 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
   children: ReactNode
 }) {
   const pathname = usePathname()
-  const { organization: currentOrganization, isLoading: isLoadingOrgs, isAuthenticated } = useHERAAuth()
+  const {
+    organization: currentOrganization,
+    isLoading: isLoadingOrgs,
+    isAuthenticated
+  } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 
   // Always use the furniture organization when in furniture module
@@ -42,12 +46,11 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
         }
       }
     }
-    
+
     loadDemoOrg()
   }, [isAuthenticated, currentOrganization, pathname])
 
-  
-    return (
+  return (
     <FurnitureOrgContext.Provider value={{ organizationId, organizationName, orgLoading }}>
       {children}
     </FurnitureOrgContext.Provider>
@@ -56,17 +59,16 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
 
 export function useFurnitureOrg() {
   const context = useContext(FurnitureOrgContext)
-  
+
   if (!context) {
     throw new Error('useFurnitureOrg must be used within FurnitureOrgProvider')
   }
-    return context
+  return context
 }
 
 // Loading component for consistent loading state
 export function FurnitureOrgLoading() {
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center">
       <div className="text-center">
         <div className="inline-flex items-center space-x-2">

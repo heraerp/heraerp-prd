@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
         commission,
         rating: baseMetrics.rating,
         specialties: staff.metadata?.specialties || ['Hair Styling'],
-        utilization: 75 + (index * 5) // Sample utilization
+        utilization: 75 + index * 5 // Sample utilization
       }
     })
 
@@ -61,7 +61,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Staff performance API error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch staff performance', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to fetch staff performance',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }

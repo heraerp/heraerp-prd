@@ -179,9 +179,10 @@ export function MovementModal({
     setItemSearch('')
   }
 
-  const filteredItems = items.filter(item =>
-    item.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
-    (item.sku && item.sku.toLowerCase().includes(itemSearch.toLowerCase()))
+  const filteredItems = items.filter(
+    item =>
+      item.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
+      (item.sku && item.sku.toLowerCase().includes(itemSearch.toLowerCase()))
   )
 
   // Calculate totals
@@ -220,8 +221,10 @@ export function MovementModal({
             <div className="space-y-6">
               {/* Movement Type Selection */}
               <div className="space-y-3">
-                <label className="text-sm font-medium uppercase tracking-wider"
-                       style={{ color: COLORS.bronze }}>
+                <label
+                  className="text-sm font-medium uppercase tracking-wider"
+                  style={{ color: COLORS.bronze }}
+                >
                   Movement Type
                 </label>
                 <div className="grid grid-cols-4 gap-3">
@@ -234,10 +237,10 @@ export function MovementModal({
                         type="button"
                         onClick={() => setValue('type', type as any)}
                         className={cn(
-                          "p-4 rounded-lg border-2 transition-all",
+                          'p-4 rounded-lg border-2 transition-all',
                           isSelected
-                            ? "border-current shadow-lg"
-                            : "border-transparent hover:border-current/30"
+                            ? 'border-current shadow-lg'
+                            : 'border-transparent hover:border-current/30'
                         )}
                         style={{
                           backgroundColor: isSelected ? config.color + '20' : COLORS.black + '30',
@@ -247,16 +250,12 @@ export function MovementModal({
                       >
                         <Icon className="w-6 h-6 mx-auto mb-2" />
                         <div className="font-medium">{config.label}</div>
-                        <div className="text-xs mt-1 opacity-70">
-                          {config.description}
-                        </div>
+                        <div className="text-xs mt-1 opacity-70">{config.description}</div>
                       </button>
                     )
                   })}
                 </div>
-                {errors.type && (
-                  <p className="text-sm text-red-400">{errors.type.message}</p>
-                )}
+                {errors.type && <p className="text-sm text-red-400">{errors.type.message}</p>}
               </div>
 
               {/* Basic Information */}
@@ -265,7 +264,7 @@ export function MovementModal({
                   type="datetime-local"
                   label="Date & Time"
                   value={format(watch('when_ts') || new Date(), "yyyy-MM-dd'T'HH:mm")}
-                  onChange={(value) => setValue('when_ts', new Date(value))}
+                  onChange={value => setValue('when_ts', new Date(value))}
                   error={errors.when_ts?.message}
                   required
                 />
@@ -274,7 +273,7 @@ export function MovementModal({
                   type="text"
                   label="Reference"
                   value={watch('reference') || ''}
-                  onChange={(value) => setValue('reference', value)}
+                  onChange={value => setValue('reference', value)}
                   placeholder="e.g., PO-2024-001"
                   error={errors.reference?.message}
                 />
@@ -288,7 +287,7 @@ export function MovementModal({
                       type="select"
                       label="From Branch"
                       value={watch('from_branch_id') || ''}
-                      onChange={(value) => setValue('from_branch_id', value)}
+                      onChange={value => setValue('from_branch_id', value)}
                       options={branches.map(b => ({ value: b.id, label: b.name }))}
                       error={errors.from_branch_id?.message}
                       required
@@ -297,7 +296,7 @@ export function MovementModal({
                       type="select"
                       label="To Branch"
                       value={watch('to_branch_id') || ''}
-                      onChange={(value) => setValue('to_branch_id', value)}
+                      onChange={value => setValue('to_branch_id', value)}
                       options={branches.map(b => ({ value: b.id, label: b.name }))}
                       error={errors.to_branch_id?.message}
                       required
@@ -308,7 +307,7 @@ export function MovementModal({
                     type="select"
                     label="Branch"
                     value={watch('branch_id') || ''}
-                    onChange={(value) => setValue('branch_id', value)}
+                    onChange={value => setValue('branch_id', value)}
                     options={branches.map(b => ({ value: b.id, label: b.name }))}
                     error={errors.branch_id?.message}
                     required
@@ -317,10 +316,15 @@ export function MovementModal({
               </div>
 
               {/* Line Items */}
-              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
+              <div
+                className="space-y-4 pt-6 border-t"
+                style={{ borderColor: COLORS.bronze + '33' }}
+              >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
-                      style={{ color: COLORS.bronze }}>
+                  <h3
+                    className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                    style={{ color: COLORS.bronze }}
+                  >
                     <Package className="w-4 h-4" />
                     Line Items
                   </h3>
@@ -341,8 +345,10 @@ export function MovementModal({
                 </div>
 
                 {fields.length === 0 ? (
-                  <div className="text-center py-8 border-2 border-dashed rounded-lg"
-                       style={{ borderColor: COLORS.bronze + '33' }}>
+                  <div
+                    className="text-center py-8 border-2 border-dashed rounded-lg"
+                    style={{ borderColor: COLORS.bronze + '33' }}
+                  >
                     <Package className="w-8 h-8 mx-auto mb-2" style={{ color: COLORS.bronze }} />
                     <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
                       No items added yet. Click "Add Item" to start.
@@ -351,16 +357,21 @@ export function MovementModal({
                 ) : (
                   <div className="space-y-3">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="p-4 rounded-lg border"
-                           style={{
-                             backgroundColor: COLORS.black + '30',
-                             borderColor: COLORS.bronze + '33'
-                           }}>
+                      <div
+                        key={field.id}
+                        className="p-4 rounded-lg border"
+                        style={{
+                          backgroundColor: COLORS.black + '30',
+                          borderColor: COLORS.bronze + '33'
+                        }}
+                      >
                         <div className="grid grid-cols-12 gap-3">
                           {/* Item Selector */}
                           <div className="col-span-5 relative">
-                            <label className="text-xs uppercase tracking-wider"
-                                   style={{ color: COLORS.bronze }}>
+                            <label
+                              className="text-xs uppercase tracking-wider"
+                              style={{ color: COLORS.bronze }}
+                            >
                               Item
                             </label>
                             <div className="mt-1 relative">
@@ -378,17 +389,22 @@ export function MovementModal({
                                 }}
                               />
                               {showItemPicker === index && (
-                                <div className="absolute z-10 top-full mt-1 w-full rounded-lg border shadow-xl"
-                                     style={{
-                                       backgroundColor: COLORS.charcoal,
-                                       borderColor: COLORS.bronze + '33',
-                                       maxHeight: '300px'
-                                     }}>
-                                  <div className="p-2 border-b" style={{ borderColor: COLORS.bronze + '33' }}>
+                                <div
+                                  className="absolute z-10 top-full mt-1 w-full rounded-lg border shadow-xl"
+                                  style={{
+                                    backgroundColor: COLORS.charcoal,
+                                    borderColor: COLORS.bronze + '33',
+                                    maxHeight: '300px'
+                                  }}
+                                >
+                                  <div
+                                    className="p-2 border-b"
+                                    style={{ borderColor: COLORS.bronze + '33' }}
+                                  >
                                     <input
                                       type="text"
                                       value={itemSearch}
-                                      onChange={(e) => setItemSearch(e.target.value)}
+                                      onChange={e => setItemSearch(e.target.value)}
                                       placeholder="Search items..."
                                       className="w-full px-3 py-1.5 rounded-md"
                                       style={{
@@ -400,7 +416,10 @@ export function MovementModal({
                                   </div>
                                   <ScrollAreaDNA height="h-[250px]">
                                     {filteredItems.length === 0 ? (
-                                      <div className="p-4 text-center" style={{ color: COLORS.lightText }}>
+                                      <div
+                                        className="p-4 text-center"
+                                        style={{ color: COLORS.lightText }}
+                                      >
                                         No items found
                                       </div>
                                     ) : (
@@ -417,12 +436,18 @@ export function MovementModal({
                                                 {item.name}
                                               </div>
                                               {item.sku && (
-                                                <div className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                                                <div
+                                                  className="text-xs"
+                                                  style={{ color: COLORS.lightText, opacity: 0.7 }}
+                                                >
                                                   {item.sku}
                                                 </div>
                                               )}
                                             </div>
-                                            <div className="text-sm" style={{ color: COLORS.lightText }}>
+                                            <div
+                                              className="text-sm"
+                                              style={{ color: COLORS.lightText }}
+                                            >
                                               Stock: {item.on_hand || 0}
                                             </div>
                                           </div>
@@ -441,7 +466,7 @@ export function MovementModal({
                               type="number"
                               label="Qty"
                               value={field.qty?.toString() || ''}
-                              onChange={(value) => {
+                              onChange={value => {
                                 const qty = parseInt(value) || 0
                                 update(index, { ...field, qty })
                               }}
@@ -457,7 +482,7 @@ export function MovementModal({
                                 type="number"
                                 label="Cost"
                                 value={field.unit_cost?.toString() || ''}
-                                onChange={(value) => {
+                                onChange={value => {
                                   const cost = parseFloat(value) || 0
                                   update(index, { ...field, unit_cost: cost })
                                 }}
@@ -469,14 +494,16 @@ export function MovementModal({
                           )}
 
                           {/* Note */}
-                          <div className={cn(
-                            typeConfig[movementType].requiresCost ? "col-span-2" : "col-span-4"
-                          )}>
+                          <div
+                            className={cn(
+                              typeConfig[movementType].requiresCost ? 'col-span-2' : 'col-span-4'
+                            )}
+                          >
                             <FormFieldDNA
                               type="text"
                               label="Note"
                               value={field.note || ''}
-                              onChange={(value) => update(index, { ...field, note: value })}
+                              onChange={value => update(index, { ...field, note: value })}
                               placeholder="Optional"
                             />
                           </div>
@@ -499,21 +526,27 @@ export function MovementModal({
                   </div>
                 )}
 
-                {errors.lines && (
-                  <p className="text-sm text-red-400">{errors.lines.message}</p>
-                )}
+                {errors.lines && <p className="text-sm text-red-400">{errors.lines.message}</p>}
               </div>
 
               {/* Summary Section */}
               {fields.length > 0 && (
-                <div className="mt-6 p-4 rounded-lg" 
-                     style={{ backgroundColor: COLORS.black + '20', border: '1px solid ' + COLORS.bronze + '33' }}>
+                <div
+                  className="mt-6 p-4 rounded-lg"
+                  style={{
+                    backgroundColor: COLORS.black + '20',
+                    border: '1px solid ' + COLORS.bronze + '33'
+                  }}
+                >
                   <h3 className="font-medium mb-3" style={{ color: COLORS.champagne }}>
                     Movement Summary
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <p
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Total Items
                       </p>
                       <p className="text-lg font-medium mt-1" style={{ color: COLORS.lightText }}>
@@ -521,7 +554,10 @@ export function MovementModal({
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      <p
+                        className="text-xs uppercase tracking-wider"
+                        style={{ color: COLORS.bronze }}
+                      >
                         Total Quantity
                       </p>
                       <p className="text-lg font-medium mt-1" style={{ color: COLORS.lightText }}>
@@ -530,7 +566,10 @@ export function MovementModal({
                     </div>
                     {typeConfig[movementType].requiresCost && (
                       <div>
-                        <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                        <p
+                          className="text-xs uppercase tracking-wider"
+                          style={{ color: COLORS.bronze }}
+                        >
                           Total Value
                         </p>
                         <p className="text-lg font-medium mt-1" style={{ color: COLORS.champagne }}>
@@ -544,8 +583,13 @@ export function MovementModal({
 
               {/* Journal Preview */}
               {fields.length > 0 && (
-                <div className="mt-4 p-4 rounded-lg" 
-                     style={{ backgroundColor: COLORS.black + '10', border: '1px solid ' + COLORS.bronze + '20' }}>
+                <div
+                  className="mt-4 p-4 rounded-lg"
+                  style={{
+                    backgroundColor: COLORS.black + '10',
+                    border: '1px solid ' + COLORS.bronze + '20'
+                  }}
+                >
                   <div className="flex items-center gap-2 mb-3">
                     <FileText className="w-4 h-4" style={{ color: COLORS.bronze }} />
                     <h4 className="font-medium" style={{ color: COLORS.champagne }}>
@@ -557,11 +601,15 @@ export function MovementModal({
                       <>
                         <div className="flex justify-between">
                           <span style={{ color: COLORS.lightText }}>DR: Inventory</span>
-                          <span style={{ color: COLORS.champagne }}>{formatCurrency(totalValue)}</span>
+                          <span style={{ color: COLORS.champagne }}>
+                            {formatCurrency(totalValue)}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span style={{ color: COLORS.lightText }}>CR: Accounts Payable</span>
-                          <span style={{ color: COLORS.champagne }}>{formatCurrency(totalValue)}</span>
+                          <span style={{ color: COLORS.champagne }}>
+                            {formatCurrency(totalValue)}
+                          </span>
                         </div>
                       </>
                     )}
@@ -569,11 +617,15 @@ export function MovementModal({
                       <>
                         <div className="flex justify-between">
                           <span style={{ color: COLORS.lightText }}>DR: Cost of Goods Sold</span>
-                          <span style={{ color: COLORS.champagne }}>{formatCurrency(totalValue)}</span>
+                          <span style={{ color: COLORS.champagne }}>
+                            {formatCurrency(totalValue)}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span style={{ color: COLORS.lightText }}>CR: Inventory</span>
-                          <span style={{ color: COLORS.champagne }}>{formatCurrency(totalValue)}</span>
+                          <span style={{ color: COLORS.champagne }}>
+                            {formatCurrency(totalValue)}
+                          </span>
                         </div>
                       </>
                     )}
@@ -604,14 +656,11 @@ export function MovementModal({
           </ScrollAreaDNA>
 
           {/* Fixed Footer with Actions */}
-          <div className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3" 
-               style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}>
-            <SecondaryButtonDNA
-              type="button"
-              icon={X}
-              onClick={onClose}
-              disabled={saving}
-            >
+          <div
+            className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3"
+            style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}
+          >
+            <SecondaryButtonDNA type="button" icon={X} onClick={onClose} disabled={saving}>
               Cancel
             </SecondaryButtonDNA>
             <PrimaryButtonDNA

@@ -35,87 +35,104 @@ export function useUniversalReports(): UseUniversalReportsReturn {
   const [data, setData] = useState<any>(null)
   const { currentOrganization } = useOrganization()
 
-  const executeReport = useCallback(async (reportType: string, filters: ReportFilters = {}) => {
-    if (!currentOrganization?.id) {
-      throw new Error('Organization context required for reports')
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      // Build query parameters
-      const params = new URLSearchParams()
-      
-      // Always add organization filter (guardrail)
-      params.append('organization_id', currentOrganization.id)
-      
-      // Add date filters
-      if (filters.start_date) params.append('start_date', filters.start_date)
-      if (filters.end_date) params.append('end_date', filters.end_date)
-      
-      // Add other filters
-      if (filters.transaction_types?.length) {
-        params.append('transaction_types', filters.transaction_types.join(','))
-      }
-      if (filters.entity_ids?.length) {
-        params.append('entity_ids', filters.entity_ids.join(','))
-      }
-      if (filters.smart_code_pattern) {
-        params.append('smart_code_pattern', filters.smart_code_pattern)
+  const executeReport = useCallback(
+    async (reportType: string, filters: ReportFilters = {}) => {
+      if (!currentOrganization?.id) {
+        throw new Error('Organization context required for reports')
       }
 
-      const url = `/api/v1/reports/${reportType}?${params.toString()}`
-      
-      console.log(`Fetching ${reportType} report:`, url)
+      setIsLoading(true)
+      setError(null)
 
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      try {
+        // Build query parameters
+        const params = new URLSearchParams()
+
+        // Always add organization filter (guardrail)
+        params.append('organization_id', currentOrganization.id)
+
+        // Add date filters
+        if (filters.start_date) params.append('start_date', filters.start_date)
+        if (filters.end_date) params.append('end_date', filters.end_date)
+
+        // Add other filters
+        if (filters.transaction_types?.length) {
+          params.append('transaction_types', filters.transaction_types.join(','))
         }
-      })
+        if (filters.entity_ids?.length) {
+          params.append('entity_ids', filters.entity_ids.join(','))
+        }
+        if (filters.smart_code_pattern) {
+          params.append('smart_code_pattern', filters.smart_code_pattern)
+        }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `Failed to generate ${reportType} report`)
+        const url = `/api/v1/reports/${reportType}?${params.toString()}`
+
+        console.log(`Fetching ${reportType} report:`, url)
+
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.error || `Failed to generate ${reportType} report`)
+        }
+
+        const result = await response.json()
+        setData(result)
+
+        console.log(`${reportType} report data:`, result)
+        return result
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Report generation failed'
+        setError(errorMessage)
+        console.error('Report error:', err)
+        throw err
+      } finally {
+        setIsLoading(false)
       }
+    },
+    [currentOrganization?.id]
+  )
 
-      const result = await response.json()
-      setData(result)
-      
-      console.log(`${reportType} report data:`, result)
-      return result
+  const getTrialBalance = useCallback(
+    (filters: ReportFilters = {}) => {
+      return executeReport('trial-balance', filters)
+    },
+    [executeReport]
+  )
 
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Report generation failed'
-      setError(errorMessage)
-      console.error('Report error:', err)
-      throw err
-    } finally {
-      setIsLoading(false)
-    }
-  }, [currentOrganization?.id])
+  const getProfitLoss = useCallback(
+    (filters: ReportFilters = {}) => {
+      return executeReport('profit-loss', filters)
+    },
+    [executeReport]
+  )
 
-  const getTrialBalance = useCallback((filters: ReportFilters = {}) => {
-    return executeReport('trial-balance', filters)
-  }, [executeReport])
+  const getBalanceSheet = useCallback(
+    (filters: ReportFilters = {}) => {
+      return executeReport('balance-sheet', filters)
+    },
+    [executeReport]
+  )
 
-  const getProfitLoss = useCallback((filters: ReportFilters = {}) => {
-    return executeReport('profit-loss', filters)
-  }, [executeReport])
+  const getCashFlow = useCallback(
+    (filters: ReportFilters = {}) => {
+      return executeReport('cash-flow', filters)
+    },
+    [executeReport]
+  )
 
-  const getBalanceSheet = useCallback((filters: ReportFilters = {}) => {
-    return executeReport('balance-sheet', filters)
-  }, [executeReport])
-
-  const getCashFlow = useCallback((filters: ReportFilters = {}) => {
-    return executeReport('cash-flow', filters)
-  }, [executeReport])
-
-  const getTransactionReport = useCallback((filters: ReportFilters = {}) => {
-    return executeReport('transactions', filters)
-  }, [executeReport])
+  const getTransactionReport = useCallback(
+    (filters: ReportFilters = {}) => {
+      return executeReport('transactions', filters)
+    },
+    [executeReport]
+  )
 
   const clearError = () => {
     setError(null)
@@ -137,7 +154,7 @@ export function useUniversalReports(): UseUniversalReportsReturn {
 // Specialized hook for real-time dashboard metrics
 export function useUniversalMetrics() {
   const reports = useUniversalReports()
-  
+
   const getTodayMetrics = useCallback(() => {
     const today = new Date().toISOString().split('T')[0]
     return reports.getTransactionReport({
@@ -151,23 +168,26 @@ export function useUniversalMetrics() {
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
     const today = now.toISOString().split('T')[0]
-    
+
     return reports.getTransactionReport({
       start_date: startOfMonth,
       end_date: today
     })
   }, [reports])
 
-  const getRevenueTrend = useCallback((days: number = 30) => {
-    const endDate = new Date()
-    const startDate = new Date(endDate.getTime() - (days * 24 * 60 * 60 * 1000))
-    
-    return reports.getTransactionReport({
-      start_date: startDate.toISOString().split('T')[0],
-      end_date: endDate.toISOString().split('T')[0],
-      smart_code_pattern: 'HERA.SALON.POS.SALE%'
-    })
-  }, [reports])
+  const getRevenueTrend = useCallback(
+    (days: number = 30) => {
+      const endDate = new Date()
+      const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000)
+
+      return reports.getTransactionReport({
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+        smart_code_pattern: 'HERA.SALON.POS.SALE%'
+      })
+    },
+    [reports]
+  )
 
   return {
     ...reports,

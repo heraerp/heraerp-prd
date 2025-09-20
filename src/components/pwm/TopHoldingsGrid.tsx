@@ -109,7 +109,9 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
               <div className="flex items-end justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Value</p>
-                  <p className="text-xl font-bold text-foreground">{formatCurrency(holding.value)}</p>
+                  <p className="text-xl font-bold text-foreground">
+                    {formatCurrency(holding.value)}
+                  </p>
                 </div>
                 <div
                   className={cn(

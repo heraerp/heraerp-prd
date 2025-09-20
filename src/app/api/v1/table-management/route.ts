@@ -159,7 +159,6 @@ export async function GET(request: NextRequest) {
             }
             return false
           }) || null
-
         ;(table as any).next_reservation =
           tableReservations
             .filter(res => {
@@ -173,7 +172,6 @@ export async function GET(request: NextRequest) {
                 parseInt((a.metadata as any)?.start_time || '0') -
                 parseInt((b.metadata as any)?.start_time || '0')
             )[0] || null
-
         ;(table as any).availability_status = (table as any).current_reservation
           ? 'occupied'
           : 'available'

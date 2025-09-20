@@ -128,7 +128,9 @@ export function ModernModal({
               <div className="flex-1 min-w-0">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-100 truncate">{title}</h2>
                 {subtitle && (
-                  <p className="text-sm text-muted-foreground mt-0.5 sm:mt-1 truncate">{subtitle}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5 sm:mt-1 truncate">
+                    {subtitle}
+                  </p>
                 )}
               </div>
             </div>

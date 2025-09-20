@@ -130,7 +130,9 @@ describe('LeaveApprovalDrawer', () => {
     fireEvent.click(rejectButton)
 
     expect(screen.getByText('Rejection Reason (Required)')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('Please provide a reason for rejection...')).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText('Please provide a reason for rejection...')
+    ).toBeInTheDocument()
   })
 
   it('validates rejection reason is required', () => {

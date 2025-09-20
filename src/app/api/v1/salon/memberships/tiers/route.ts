@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
-    
+
     const searchParams = request.nextUrl.searchParams
     const organizationId = searchParams.get('organization_id')
 
@@ -18,12 +18,14 @@ export async function GET(request: NextRequest) {
     // Get membership tiers
     const { data: tiers, error: tiersError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_name,
         entity_code,
         metadata
-      `)
+      `
+      )
       .eq('organization_id', organizationId)
       .eq('entity_type', 'membership_tier')
       .order('entity_code')
@@ -50,15 +52,23 @@ export async function GET(request: NextRequest) {
 
     // Process membership tiers
     let tierStats = []
-    
+
     if (tiers && tiers.length > 0) {
       tierStats = await Promise.all(
-        tiers.map(async (tier) => {
+        tiers.map(async tier => {
           // Extract tier details from dynamic data
-          const benefits = dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'benefits')?.field_value_text || 'Premium benefits, Priority booking, Exclusive offers'
-          const discount = dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'discount_percentage')?.field_value_number || 10
-          const minSpend = dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'minimum_spend')?.field_value_number || 500
-          const color = dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'color')?.field_value_text || '#6B7280'
+          const benefits =
+            dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'benefits')
+              ?.field_value_text || 'Premium benefits, Priority booking, Exclusive offers'
+          const discount =
+            dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'discount_percentage')
+              ?.field_value_number || 10
+          const minSpend =
+            dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'minimum_spend')
+              ?.field_value_number || 500
+          const color =
+            dynamicData.find(d => d.entity_id === tier.id && d.field_name === 'color')
+              ?.field_value_text || '#6B7280'
 
           // Count customers in this tier
           const { data: customers, error: customersError } = await supabase
@@ -105,7 +115,12 @@ export async function GET(request: NextRequest) {
           name: 'Silver',
           code: 'TIER-SILVER',
           customerCount: 28,
-          benefits: ['Enhanced loyalty points', 'Priority booking', 'Quarterly promotions', 'Birthday discount'],
+          benefits: [
+            'Enhanced loyalty points',
+            'Priority booking',
+            'Quarterly promotions',
+            'Birthday discount'
+          ],
           discount: 10,
           minimumSpend: 500,
           color: '#C0C0C0',
@@ -116,7 +131,13 @@ export async function GET(request: NextRequest) {
           name: 'Gold',
           code: 'TIER-GOLD',
           customerCount: 15,
-          benefits: ['Premium loyalty points', 'VIP priority booking', 'Monthly promotions', 'Complimentary services', 'Extended hours access'],
+          benefits: [
+            'Premium loyalty points',
+            'VIP priority booking',
+            'Monthly promotions',
+            'Complimentary services',
+            'Extended hours access'
+          ],
           discount: 15,
           minimumSpend: 1000,
           color: '#FFD700',
@@ -127,7 +148,14 @@ export async function GET(request: NextRequest) {
           name: 'Platinum',
           code: 'TIER-PLATINUM',
           customerCount: 8,
-          benefits: ['Maximum loyalty points', 'Concierge service', 'Exclusive events', 'Personal stylist', 'Complimentary treatments', '24/7 booking'],
+          benefits: [
+            'Maximum loyalty points',
+            'Concierge service',
+            'Exclusive events',
+            'Personal stylist',
+            'Complimentary treatments',
+            '24/7 booking'
+          ],
           discount: 20,
           minimumSpend: 2500,
           color: '#E5E4E2',
@@ -150,9 +178,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Membership tiers API error:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch membership tiers', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Failed to fetch membership tiers',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     )

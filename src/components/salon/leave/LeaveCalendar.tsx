@@ -43,7 +43,7 @@ export function LeaveCalendar({ requests, staff, branchId, showAppointments }: L
       const from = request.metadata?.from ? new Date(request.metadata.from) : null
       const to = request.metadata?.to ? new Date(request.metadata.to) : null
       if (!from || !to) return false
-      
+
       return date >= from && date <= to
     })
   }
@@ -60,18 +60,21 @@ export function LeaveCalendar({ requests, staff, branchId, showAppointments }: L
         return 'bg-purple-500 border-purple-600'
     }
   }
-  
+
   // Get staff name by ID
   const getStaffName = (staffId: string) => {
     const staffMember = staff.find(s => s.id === staffId)
     return staffMember?.entity_name || 'Unknown'
   }
-  
+
   const getStaffInitials = (staffId: string) => {
     const staffMember = staff.find(s => s.id === staffId)
     if (!staffMember) return '??'
     const names = staffMember.entity_name.split(' ')
-    return names.map((n: string) => n[0]).join('').toUpperCase()
+    return names
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase()
   }
 
   const goToPreviousMonth = () => setCurrentDate(subMonths(currentDate, 1))

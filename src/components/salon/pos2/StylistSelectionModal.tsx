@@ -5,12 +5,7 @@ import { User, Check, Clock, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { universalApi } from '@/lib/universal-api-v2'
 import { cn } from '@/lib/utils'
 
@@ -81,7 +76,7 @@ export function StylistSelectionModal({
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Load employees who are stylists
       const response = await universalApi.getEntities({
         filters: {
@@ -96,11 +91,12 @@ export function StylistSelectionModal({
             // Check if employee is a stylist based on metadata
             const role = emp.metadata?.role || emp.metadata?.position
             const isActive = emp.metadata?.is_active !== false
-            return isActive && (
-              role === 'stylist' || 
-              role === 'senior_stylist' || 
-              role === 'master_stylist' ||
-              emp.metadata?.is_stylist === true
+            return (
+              isActive &&
+              (role === 'stylist' ||
+                role === 'senior_stylist' ||
+                role === 'master_stylist' ||
+                emp.metadata?.is_stylist === true)
             )
           })
           .map(emp => ({
@@ -111,7 +107,7 @@ export function StylistSelectionModal({
             available: emp.metadata?.available !== false,
             avatar: emp.metadata?.avatar_url
           }))
-        
+
         // Add a "No Preference" option
         setStylists([
           {
@@ -128,11 +124,41 @@ export function StylistSelectionModal({
       console.error('Error loading stylists:', error)
       // Fallback stylists for demo
       setStylists([
-        { id: 'any', name: 'Any Available Stylist', specialties: ['All Services'], rating: 0, available: true },
-        { id: 'sarah', name: 'Sarah Johnson', specialties: ['Color', 'Cuts'], rating: 4.8, available: true },
-        { id: 'mike', name: 'Mike Chen', specialties: ['Cuts', 'Styling'], rating: 4.9, available: true },
-        { id: 'lisa', name: 'Lisa Williams', specialties: ['Color', 'Treatments'], rating: 4.7, available: true },
-        { id: 'alex', name: 'Alex Rodriguez', specialties: ['Cuts', 'Beard'], rating: 4.6, available: false }
+        {
+          id: 'any',
+          name: 'Any Available Stylist',
+          specialties: ['All Services'],
+          rating: 0,
+          available: true
+        },
+        {
+          id: 'sarah',
+          name: 'Sarah Johnson',
+          specialties: ['Color', 'Cuts'],
+          rating: 4.8,
+          available: true
+        },
+        {
+          id: 'mike',
+          name: 'Mike Chen',
+          specialties: ['Cuts', 'Styling'],
+          rating: 4.9,
+          available: true
+        },
+        {
+          id: 'lisa',
+          name: 'Lisa Williams',
+          specialties: ['Color', 'Treatments'],
+          rating: 4.7,
+          available: true
+        },
+        {
+          id: 'alex',
+          name: 'Alex Rodriguez',
+          specialties: ['Cuts', 'Beard'],
+          rating: 4.6,
+          available: false
+        }
       ])
     } finally {
       setLoading(false)
@@ -141,7 +167,7 @@ export function StylistSelectionModal({
 
   const handleConfirm = () => {
     const finalStylist = selectedStylist?.id === 'any' ? null : selectedStylist
-    
+
     onConfirm({
       entity_id: service.id,
       entity_type: service.entity_type,
@@ -151,7 +177,7 @@ export function StylistSelectionModal({
       stylist_id: finalStylist?.id,
       stylist_name: finalStylist?.name
     })
-    
+
     // Reset and close
     setSelectedStylist(null)
     setQuantity(1)
@@ -173,8 +199,8 @@ export function StylistSelectionModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
+    <Dialog open={open} onOpenChange={open => !open && onClose()}>
+      <DialogContent
         className="max-w-2xl"
         style={{
           backgroundColor: COLORS.charcoal,
@@ -189,8 +215,7 @@ export function StylistSelectionModal({
 
         <div className="space-y-6">
           {/* Service Info */}
-          <div className="p-4 rounded-lg" 
-               style={{ backgroundColor: COLORS.charcoalLight }}>
+          <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.charcoalLight }}>
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium" style={{ color: COLORS.champagne }}>
@@ -227,8 +252,10 @@ export function StylistSelectionModal({
           {/* Stylist Selection */}
           {loading ? (
             <div className="py-8 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
-                   style={{ borderColor: COLORS.gold }}></div>
+              <div
+                className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
+                style={{ borderColor: COLORS.gold }}
+              ></div>
               <p className="mt-4" style={{ color: COLORS.lightText }}>
                 Loading stylists...
               </p>
@@ -239,16 +266,16 @@ export function StylistSelectionModal({
                 <Card
                   key={stylist.id}
                   className={cn(
-                    "cursor-pointer transition-all hover:shadow-md",
-                    selectedStylist?.id === stylist.id && "ring-2"
+                    'cursor-pointer transition-all hover:shadow-md',
+                    selectedStylist?.id === stylist.id && 'ring-2'
                   )}
                   style={{
-                    backgroundColor: selectedStylist?.id === stylist.id 
-                      ? COLORS.gold + '20' 
-                      : COLORS.charcoalLight,
-                    borderColor: selectedStylist?.id === stylist.id 
-                      ? COLORS.gold 
-                      : COLORS.bronze + '33',
+                    backgroundColor:
+                      selectedStylist?.id === stylist.id
+                        ? COLORS.gold + '20'
+                        : COLORS.charcoalLight,
+                    borderColor:
+                      selectedStylist?.id === stylist.id ? COLORS.gold : COLORS.bronze + '33',
                     ringColor: COLORS.gold
                   }}
                   onClick={() => setSelectedStylist(stylist)}
@@ -256,8 +283,10 @@ export function StylistSelectionModal({
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center"
-                             style={{ backgroundColor: COLORS.bronze + '20' }}>
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: COLORS.bronze + '20' }}
+                        >
                           <User className="w-5 h-5" style={{ color: COLORS.bronze }} />
                         </div>
                         <div>
@@ -267,8 +296,10 @@ export function StylistSelectionModal({
                           <div className="flex items-center gap-2 mt-1">
                             {stylist.rating > 0 && (
                               <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 fill-current" 
-                                      style={{ color: COLORS.gold }} />
+                                <Star
+                                  className="w-3 h-3 fill-current"
+                                  style={{ color: COLORS.gold }}
+                                />
                                 <span className="text-xs" style={{ color: COLORS.bronze }}>
                                   {stylist.rating}
                                 </span>
@@ -276,9 +307,9 @@ export function StylistSelectionModal({
                             )}
                             <div className="flex gap-1">
                               {stylist.specialties.slice(0, 2).map((spec, i) => (
-                                <Badge 
-                                  key={i} 
-                                  variant="secondary" 
+                                <Badge
+                                  key={i}
+                                  variant="secondary"
                                   className="text-xs"
                                   style={{
                                     backgroundColor: COLORS.charcoalDark,
@@ -295,7 +326,7 @@ export function StylistSelectionModal({
                       </div>
                       <div className="flex items-center gap-2">
                         {!stylist.available && stylist.id !== 'any' && (
-                          <Badge 
+                          <Badge
                             variant="secondary"
                             style={{
                               backgroundColor: '#DC2626' + '20',
@@ -307,8 +338,10 @@ export function StylistSelectionModal({
                           </Badge>
                         )}
                         {selectedStylist?.id === stylist.id && (
-                          <div className="w-6 h-6 rounded-full flex items-center justify-center"
-                               style={{ backgroundColor: COLORS.gold }}>
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: COLORS.gold }}
+                          >
                             <Check className="w-4 h-4" style={{ color: COLORS.black }} />
                           </div>
                         )}
@@ -347,7 +380,7 @@ export function StylistSelectionModal({
               onClick={handleConfirm}
               disabled={!selectedStylist}
               style={{
-                background: selectedStylist 
+                background: selectedStylist
                   ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                   : undefined,
                 color: selectedStylist ? COLORS.black : undefined,

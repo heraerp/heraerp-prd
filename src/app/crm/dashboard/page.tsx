@@ -549,7 +549,9 @@ export default function CRMDashboard() {
                 const Icon = getActivityIcon(activity.type)
                 return (
                   <div key={activity.id} className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg bg-background/5 ${getActivityColor(activity.type)}`}>
+                    <div
+                      className={`p-2 rounded-lg bg-background/5 ${getActivityColor(activity.type)}`}
+                    >
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1">

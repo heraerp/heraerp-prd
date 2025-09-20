@@ -34,7 +34,7 @@ const demos = [
   },
   {
     id: 'restaurant',
-    name: 'Mario\'s Restaurant',
+    name: "Mario's Restaurant",
     description: 'Full-service restaurant with POS, inventory, and kitchen management',
     icon: Store,
     href: '/demo/restaurant',
@@ -102,9 +102,9 @@ export default function DemoPage() {
     console.log('🎨 Demo page mounted')
     console.log('📍 Current pathname:', window.location.pathname)
     console.log('📍 Current href:', window.location.href)
-    
+
     checkCurrentSession()
-    
+
     // Check if something is causing a redirect
     const checkRedirect = setInterval(() => {
       if (window.location.pathname !== '/demo') {
@@ -113,15 +113,15 @@ export default function DemoPage() {
         clearInterval(checkRedirect)
       }
     }, 100)
-    
+
     // Prevent any redirects
     window.history.replaceState(null, '', '/demo')
-    
+
     // Listen for navigation events
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener('popstate', e => {
       console.log('🔄 Popstate event:', e)
     })
-    
+
     return () => {
       clearInterval(checkRedirect)
     }
@@ -130,10 +130,13 @@ export default function DemoPage() {
   const checkCurrentSession = async () => {
     try {
       console.log('🔍 Checking current session...')
-      
+
       // Check Supabase session
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
+      const {
+        data: { session },
+        error
+      } = await supabase.auth.getSession()
+
       if (error) {
         console.log('❌ Session error:', error)
         setLoading(false)
@@ -142,14 +145,14 @@ export default function DemoPage() {
 
       if (session?.user) {
         console.log('👤 Found user session:', session.user.email)
-        
+
         // Check localStorage for demo context
         const organizationId = localStorage.getItem('organizationId')
         const currentRole = localStorage.getItem('currentRole')
-        
+
         console.log('🏢 Organization ID:', organizationId)
         console.log('👔 Current role:', currentRole)
-        
+
         // Determine demo type based on organization ID
         let demoType = null
         if (organizationId === 'hair-talkz-salon-org-uuid') {
@@ -157,18 +160,18 @@ export default function DemoPage() {
         } else if (organizationId === '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77') {
           demoType = 'civicflow'
         }
-        
+
         setCurrentSession({
           user: session.user,
           organizationId,
           demoType,
           userRole: currentRole
         })
-        
-        console.log('✅ Current session detected:', { 
-          email: session.user.email, 
-          demoType, 
-          role: currentRole 
+
+        console.log('✅ Current session detected:', {
+          email: session.user.email,
+          demoType,
+          role: currentRole
         })
       } else {
         console.log('🚫 No active session found')
@@ -183,23 +186,29 @@ export default function DemoPage() {
   const handleLogout = async () => {
     try {
       console.log('🚪 Logging out...')
-      
+
       // Clear localStorage
       const keys = Object.keys(localStorage)
       keys.forEach(key => {
-        if (key.includes('auth') || key.includes('org') || key.includes('demo') || key.includes('supabase') || key.includes('Role')) {
+        if (
+          key.includes('auth') ||
+          key.includes('org') ||
+          key.includes('demo') ||
+          key.includes('supabase') ||
+          key.includes('Role')
+        ) {
           console.log(`🗑️ Removing localStorage key: ${key}`)
           localStorage.removeItem(key)
         }
       })
-      
+
       // Sign out from Supabase
       await supabase.auth.signOut()
-      
+
       // Clear current session state
       setCurrentSession(null)
       setShowLogoutConfirm(false)
-      
+
       console.log('✅ Logged out successfully')
     } catch (error) {
       console.error('💥 Logout error:', error)
@@ -210,7 +219,7 @@ export default function DemoPage() {
     const demo = demos.find(d => d.id === demoType)
     return demo?.name || 'Unknown Demo'
   }
-  
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -226,9 +235,7 @@ export default function DemoPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            HERA Demo Gallery
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">HERA Demo Gallery</h1>
           <p className="text-xl text-gray-600">
             Experience HERA&apos;s universal architecture across different industries
           </p>
@@ -247,7 +254,8 @@ export default function DemoPage() {
                     Currently logged into: {getDemoDisplayName(currentSession.demoType)}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    User: {currentSession.user.email} • Role: {currentSession.userRole || 'Demo User'}
+                    User: {currentSession.user.email} • Role:{' '}
+                    {currentSession.userRole || 'Demo User'}
                   </p>
                 </div>
               </div>
@@ -260,7 +268,8 @@ export default function DemoPage() {
               </button>
             </div>
             <div className="mt-4 text-sm text-blue-800 bg-blue-100 rounded-md p-3">
-              💡 <strong>Tip:</strong> You&apos;re currently in a demo session. To try a different demo, please logout first to ensure a clean experience.
+              💡 <strong>Tip:</strong> You&apos;re currently in a demo session. To try a different
+              demo, please logout first to ensure a clean experience.
             </div>
           </div>
         )}
@@ -271,8 +280,9 @@ export default function DemoPage() {
             <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Confirm Logout</h3>
               <p className="text-gray-600 mb-6">
-                Are you sure you want to logout from <strong>{getDemoDisplayName(currentSession?.demoType)}</strong>? 
-                This will end your current demo session.
+                Are you sure you want to logout from{' '}
+                <strong>{getDemoDisplayName(currentSession?.demoType)}</strong>? This will end your
+                current demo session.
               </p>
               <div className="flex space-x-4">
                 <button
@@ -293,7 +303,7 @@ export default function DemoPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {demos.map((demo) => {
+          {demos.map(demo => {
             const Icon = demo.icon
             return (
               <div
@@ -304,21 +314,17 @@ export default function DemoPage() {
                 `}
               >
                 <div className={`h-2 ${demo.bgColor}`} />
-                
+
                 <div className="p-6">
                   <div className="flex items-center mb-4">
                     <div className={`p-3 rounded-lg ${demo.bgColorLight}`}>
                       <Icon className={`w-6 h-6 ${demo.textColor}`} />
                     </div>
-                    <h3 className="ml-3 text-xl font-semibold text-gray-900">
-                      {demo.name}
-                    </h3>
+                    <h3 className="ml-3 text-xl font-semibold text-gray-900">{demo.name}</h3>
                   </div>
-                  
-                  <p className="text-gray-600 mb-4 h-12">
-                    {demo.description}
-                  </p>
-                  
+
+                  <p className="text-gray-600 mb-4 h-12">{demo.description}</p>
+
                   {demo.available ? (
                     <div>
                       <Link
@@ -344,18 +350,14 @@ export default function DemoPage() {
                   )}
                 </div>
 
-                {!demo.available && (
-                  <div className="absolute inset-0 bg-gray-50 bg-opacity-50" />
-                )}
+                {!demo.available && <div className="absolute inset-0 bg-gray-50 bg-opacity-50" />}
               </div>
             )
           })}
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-gray-600">
-            Each demo runs on the same universal 6-table architecture
-          </p>
+          <p className="text-gray-600">Each demo runs on the same universal 6-table architecture</p>
           <p className="text-sm text-gray-500 mt-2">
             Demo sessions expire after 30 minutes for security
           </p>

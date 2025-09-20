@@ -406,7 +406,9 @@ export function SaaSConversionWizard({
                   ${plan.monthlyPrice}
                   <span className="text-base text-muted-foreground font-normal">/month</span>
                 </div>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">{plan.description}</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {plan.description}
+                </p>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -439,7 +441,9 @@ export function SaaSConversionWizard({
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground dark:text-muted-foreground">{feature}</span>
+                    <span className="text-muted-foreground dark:text-muted-foreground">
+                      {feature}
+                    </span>
                   </li>
                 ))}
               </ul>

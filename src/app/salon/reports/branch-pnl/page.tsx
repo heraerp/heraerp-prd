@@ -82,7 +82,7 @@ export default function BranchPnLReportPage() {
       })
 
       const response = await fetch(`/api/reports/branch-pnl?${params}`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to load branch P&L data')
       }
@@ -179,7 +179,7 @@ export default function BranchPnLReportPage() {
                 variant={viewMode === 'single' ? 'default' : 'outline'}
                 onClick={() => setViewMode('single')}
                 className={cn(
-                  viewMode === 'single' 
+                  viewMode === 'single'
                     ? 'bg-purple-600 hover:bg-purple-700'
                     : 'border-white/20 text-white hover:bg-white/10'
                 )}
@@ -190,7 +190,7 @@ export default function BranchPnLReportPage() {
                 variant={viewMode === 'comparison' ? 'default' : 'outline'}
                 onClick={() => setViewMode('comparison')}
                 className={cn(
-                  viewMode === 'comparison' 
+                  viewMode === 'comparison'
                     ? 'bg-purple-600 hover:bg-purple-700'
                     : 'border-white/20 text-white hover:bg-white/10'
                 )}
@@ -233,7 +233,7 @@ export default function BranchPnLReportPage() {
                 <input
                   type="date"
                   value={dateRange.from}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, from: e.target.value }))}
+                  onChange={e => setDateRange(prev => ({ ...prev, from: e.target.value }))}
                   className="px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white"
                 />
               </div>
@@ -242,7 +242,7 @@ export default function BranchPnLReportPage() {
                 <input
                   type="date"
                   value={dateRange.to}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, to: e.target.value }))}
+                  onChange={e => setDateRange(prev => ({ ...prev, to: e.target.value }))}
                   className="px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white"
                 />
               </div>
@@ -275,17 +275,23 @@ export default function BranchPnLReportPage() {
                   <TrendingUp className="h-4 w-4 text-green-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{formatCurrency(totals.revenue)}</div>
+                  <div className="text-2xl font-bold text-white">
+                    {formatCurrency(totals.revenue)}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card className="border-white/10 bg-gradient-to-br from-red-500/20 to-red-600/20 backdrop-blur-xl">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-white/80">Total Expenses</CardTitle>
+                  <CardTitle className="text-sm font-medium text-white/80">
+                    Total Expenses
+                  </CardTitle>
                   <TrendingDown className="h-4 w-4 text-red-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{formatCurrency(totals.expenses)}</div>
+                  <div className="text-2xl font-bold text-white">
+                    {formatCurrency(totals.expenses)}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -295,9 +301,14 @@ export default function BranchPnLReportPage() {
                   <BarChart3 className="h-4 w-4 text-blue-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{formatCurrency(totals.netIncome)}</div>
+                  <div className="text-2xl font-bold text-white">
+                    {formatCurrency(totals.netIncome)}
+                  </div>
                   <p className="text-xs text-white/60 mt-1">
-                    {totals.revenue > 0 ? ((totals.netIncome / totals.revenue) * 100).toFixed(1) : '0'}% margin
+                    {totals.revenue > 0
+                      ? ((totals.netIncome / totals.revenue) * 100).toFixed(1)
+                      : '0'}
+                    % margin
                   </p>
                 </CardContent>
               </Card>
@@ -324,7 +335,9 @@ export default function BranchPnLReportPage() {
                         <tr key={idx} className="border-b border-white/5 hover:bg-white/5">
                           <td className="py-3">{row.branch_name || row.branch_id}</td>
                           <td className="py-3">{row.line_type}</td>
-                          <td className="py-3 text-right font-mono">{formatCurrency(Math.abs(row.amount))}</td>
+                          <td className="py-3 text-right font-mono">
+                            {formatCurrency(Math.abs(row.amount))}
+                          </td>
                           <td className="py-3 text-right">{row.transaction_count || 0}</td>
                         </tr>
                       ))}
@@ -355,8 +368,11 @@ export default function BranchPnLReportPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {comparisonData.map((branch) => (
-                      <tr key={branch.branch_id} className="border-b border-white/5 hover:bg-white/5">
+                    {comparisonData.map(branch => (
+                      <tr
+                        key={branch.branch_id}
+                        className="border-b border-white/5 hover:bg-white/5"
+                      >
                         <td className="py-3">
                           <div className="flex items-center gap-2">
                             <Building2 className="h-4 w-4 text-gray-400" />
@@ -370,19 +386,25 @@ export default function BranchPnLReportPage() {
                           {formatCurrency(branch.expenses)}
                         </td>
                         <td className="py-3 text-right font-mono">
-                          <span className={cn(
-                            branch.net_income >= 0 ? 'text-green-400' : 'text-red-400'
-                          )}>
+                          <span
+                            className={cn(
+                              branch.net_income >= 0 ? 'text-green-400' : 'text-red-400'
+                            )}
+                          >
                             {formatCurrency(branch.net_income)}
                           </span>
                         </td>
                         <td className="py-3 text-right">
-                          <span className={cn(
-                            'font-medium',
-                            branch.margin_percentage >= 20 ? 'text-green-400' :
-                            branch.margin_percentage >= 10 ? 'text-yellow-400' :
-                            'text-red-400'
-                          )}>
+                          <span
+                            className={cn(
+                              'font-medium',
+                              branch.margin_percentage >= 20
+                                ? 'text-green-400'
+                                : branch.margin_percentage >= 10
+                                  ? 'text-yellow-400'
+                                  : 'text-red-400'
+                            )}
+                          >
                             {branch.margin_percentage.toFixed(1)}%
                           </span>
                         </td>

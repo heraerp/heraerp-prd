@@ -41,7 +41,7 @@ interface RepriceResponse {
 
 /**
  * POST /api/v1/salon/pos/carts/:id/reprice
- * 
+ *
  * Reprice cart with optional discount/tip application
  * All pricing logic handled by HERA.SALON.POS.CART.REPRICE.V1 procedure
  */
@@ -53,7 +53,7 @@ export async function POST(
     const { id: cartId } = await params
     const headersList = await headers()
     const idempotencyKey = headersList.get('idempotency-key')
-    
+
     if (!idempotencyKey) {
       return NextResponse.json(
         { error: 'Idempotency-Key header required for reprice operations' },
@@ -74,14 +74,11 @@ export async function POST(
       .from('universal_transactions')
       .select('id, organization_id, transaction_status, metadata')
       .eq('id', cartId)
-      .eq('transaction_type', 'SALE')  // Match exact case from database
+      .eq('transaction_type', 'SALE') // Match exact case from database
       .single()
 
     if (cartError || !cart) {
-      return NextResponse.json(
-        { error: 'Cart not found', cart_id: cartId },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Cart not found', cart_id: cartId }, { status: 404 })
     }
 
     if (cart.transaction_status !== 'pending') {
@@ -97,7 +94,7 @@ export async function POST(
       cartId,
       idempotencyKey
     )
-    
+
     if (existingOperation) {
       // Return cached result for duplicate request
       return NextResponse.json(existingOperation.result)
@@ -106,10 +103,7 @@ export async function POST(
     // Validate request payload
     const validationError = validateRepriceRequest(body)
     if (validationError) {
-      return NextResponse.json(
-        { error: validationError },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: validationError }, { status: 400 })
     }
 
     // Execute reprice procedure
@@ -128,15 +122,9 @@ export async function POST(
     }
 
     // Cache result for idempotency
-    await cacheIdempotencyResult(
-      cart.organization_id,
-      cartId,
-      idempotencyKey,
-      repriceResult.data
-    )
+    await cacheIdempotencyResult(cart.organization_id, cartId, idempotencyKey, repriceResult.data)
 
     return NextResponse.json(repriceResult.data)
-
   } catch (error) {
     console.error('Reprice API error:', error)
     return NextResponse.json(
@@ -153,19 +141,19 @@ function validateRepriceRequest(body: RepriceRequest): string | null {
   // Validate discount
   if (body.discount) {
     const { type, value, reason } = body.discount
-    
+
     if (!['percent', 'amount'].includes(type)) {
       return 'Discount type must be "percent" or "amount"'
     }
-    
+
     if (typeof value !== 'number' || value < 0) {
       return 'Discount value must be a positive number'
     }
-    
+
     if (type === 'percent' && value > 100) {
       return 'Percent discount cannot exceed 100%'
     }
-    
+
     if (!reason || typeof reason !== 'string') {
       return 'Discount reason is required'
     }
@@ -174,11 +162,11 @@ function validateRepriceRequest(body: RepriceRequest): string | null {
   // Validate tip
   if (body.tip) {
     const { method, amount } = body.tip
-    
+
     if (!['card', 'cash'].includes(method)) {
       return 'Tip method must be "card" or "cash"'
     }
-    
+
     if (typeof amount !== 'number' || amount <= 0) {
       return 'Tip amount must be a positive number'
     }
@@ -239,7 +227,6 @@ async function executeRepriceProcedure(
       .eq('id', execution.id)
 
     return { success: true, data: mockResult }
-
   } catch (error) {
     return { success: false, error: 'Procedure execution failed', details: error }
   }
@@ -279,16 +266,18 @@ async function simulateRepriceProcedure(
 
   // Apply discount if provided
   if (payload.discount) {
-    const discountAmount = payload.discount.type === 'percent'
-      ? subtotal * (payload.discount.value / 100)
-      : payload.discount.value
+    const discountAmount =
+      payload.discount.type === 'percent'
+        ? subtotal * (payload.discount.value / 100)
+        : payload.discount.value
 
     discounts = Math.round(discountAmount * 100) / 100
 
     // Create/update discount line
-    const discountSmartCode = payload.discount.type === 'percent'
-      ? 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1'
-      : 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.AMT.V1'
+    const discountSmartCode =
+      payload.discount.type === 'percent'
+        ? 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1'
+        : 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.AMT.V1'
 
     await upsertCartLine(cartId, 'DISCOUNT', discountSmartCode, -discounts, {
       discount_type: payload.discount.type,
@@ -303,9 +292,8 @@ async function simulateRepriceProcedure(
   if (payload.tip) {
     tip = payload.tip.amount
 
-    const tipSmartCode = payload.tip.method === 'card'
-      ? 'HERA.SALON.TIP.CARD.V1'
-      : 'HERA.SALON.TIP.CASH.V1'
+    const tipSmartCode =
+      payload.tip.method === 'card' ? 'HERA.SALON.TIP.CARD.V1' : 'HERA.SALON.TIP.CASH.V1'
 
     await upsertCartLine(cartId, 'TIP', tipSmartCode, tip, {
       tip_method: payload.tip.method
@@ -403,30 +391,24 @@ async function upsertCartLine(
 
     const nextLineNumber = (lines?.[0]?.line_number || 0) + 1
 
-    await supabase
-      .from('universal_transaction_lines')
-      .insert({
-        transaction_id: cartId,
-        line_number: nextLineNumber,
-        line_type: lineType,
-        line_description: `${lineType} line`,
-        quantity: 1,
-        unit_price: amount,
-        line_amount: amount,
-        smart_code: smartCode,
-        line_data: metadata
-      })
+    await supabase.from('universal_transaction_lines').insert({
+      transaction_id: cartId,
+      line_number: nextLineNumber,
+      line_type: lineType,
+      line_description: `${lineType} line`,
+      quantity: 1,
+      unit_price: amount,
+      line_amount: amount,
+      smart_code: smartCode,
+      line_data: metadata
+    })
   }
 }
 
 /**
  * Check for existing idempotency key
  */
-async function checkIdempotencyKey(
-  organizationId: string,
-  cartId: string,
-  idempotencyKey: string
-) {
+async function checkIdempotencyKey(organizationId: string, cartId: string, idempotencyKey: string) {
   const { data } = await supabase
     .from('universal_transactions')
     .select('metadata')

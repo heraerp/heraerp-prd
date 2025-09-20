@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -16,7 +23,7 @@ const COLORS = {
   bronze: '#8C7853',
   emerald: '#0F6F5C',
   rose: '#E8B4B8',
-  lightText: '#E0E0E0',
+  lightText: '#E0E0E0'
 }
 
 interface PolicyModalProps {
@@ -35,7 +42,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
     prorate_first_year: true,
     allow_negative_balance: false,
     accrual_rate: 1.75, // days per month
-    description: '',
+    description: ''
   })
 
   useEffect(() => {
@@ -49,7 +56,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
         prorate_first_year: policy.metadata?.prorate_first_year ?? true,
         allow_negative_balance: policy.metadata?.allow_negative_balance ?? false,
         accrual_rate: policy.metadata?.accrual_rate || 1.75,
-        description: policy.metadata?.description || '',
+        description: policy.metadata?.description || ''
       })
     }
   }, [policy])
@@ -62,9 +69,13 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent 
-        className="sm:max-w-2xl max-h-[90vh] flex flex-col" 
-        style={{ backgroundColor: COLORS.charcoal, color: COLORS.champagne, border: `1px solid ${COLORS.black}` }}
+      <DialogContent
+        className="sm:max-w-2xl max-h-[90vh] flex flex-col"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          color: COLORS.champagne,
+          border: `1px solid ${COLORS.black}`
+        }}
       >
         <DialogHeader className="flex-shrink-0">
           <DialogTitle style={{ color: COLORS.champagne }}>
@@ -78,11 +89,13 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
         <div className="space-y-6 py-4 overflow-y-auto flex-1 min-h-0">
           {/* Policy Name */}
           <div className="space-y-2">
-            <Label htmlFor="name" style={{ color: COLORS.champagne }}>Policy Name</Label>
+            <Label htmlFor="name" style={{ color: COLORS.champagne }}>
+              Policy Name
+            </Label>
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Standard Annual Leave"
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
@@ -98,13 +111,13 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               id="entitlement"
               type="number"
               value={formData.annual_entitlement}
-              onChange={(e) => setFormData({ ...formData, annual_entitlement: parseInt(e.target.value) || 0 })}
+              onChange={e =>
+                setFormData({ ...formData, annual_entitlement: parseInt(e.target.value) || 0 })
+              }
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
-            <p className="text-xs opacity-70">
-              Number of days employees are entitled to per year
-            </p>
+            <p className="text-xs opacity-70">Number of days employees are entitled to per year</p>
           </div>
 
           {/* Carry Over Cap */}
@@ -116,13 +129,13 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               id="carryover"
               type="number"
               value={formData.carry_over_cap}
-              onChange={(e) => setFormData({ ...formData, carry_over_cap: parseInt(e.target.value) || 0 })}
+              onChange={e =>
+                setFormData({ ...formData, carry_over_cap: parseInt(e.target.value) || 0 })
+              }
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
-            <p className="text-xs opacity-70">
-              Maximum days that can be carried over to next year
-            </p>
+            <p className="text-xs opacity-70">Maximum days that can be carried over to next year</p>
           </div>
 
           {/* Notice Period */}
@@ -134,7 +147,9 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               id="notice"
               type="number"
               value={formData.min_notice_days}
-              onChange={(e) => setFormData({ ...formData, min_notice_days: parseInt(e.target.value) || 0 })}
+              onChange={e =>
+                setFormData({ ...formData, min_notice_days: parseInt(e.target.value) || 0 })
+              }
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
@@ -149,7 +164,9 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               id="maxdays"
               type="number"
               value={formData.max_consecutive_days}
-              onChange={(e) => setFormData({ ...formData, max_consecutive_days: parseInt(e.target.value) || 0 })}
+              onChange={e =>
+                setFormData({ ...formData, max_consecutive_days: parseInt(e.target.value) || 0 })
+              }
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
@@ -165,7 +182,9 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               type="number"
               step="0.1"
               value={formData.accrual_rate}
-              onChange={(e) => setFormData({ ...formData, accrual_rate: parseFloat(e.target.value) || 0 })}
+              onChange={e =>
+                setFormData({ ...formData, accrual_rate: parseFloat(e.target.value) || 0 })
+              }
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
@@ -188,7 +207,9 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               <Switch
                 id="prorate"
                 checked={formData.prorate_first_year}
-                onCheckedChange={(checked) => setFormData({ ...formData, prorate_first_year: checked })}
+                onCheckedChange={checked =>
+                  setFormData({ ...formData, prorate_first_year: checked })
+                }
               />
             </div>
 
@@ -197,14 +218,14 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
                 <Label htmlFor="negative" style={{ color: COLORS.champagne }}>
                   Allow Negative Balance
                 </Label>
-                <p className="text-xs opacity-70">
-                  Allow employees to take leave in advance
-                </p>
+                <p className="text-xs opacity-70">Allow employees to take leave in advance</p>
               </div>
               <Switch
                 id="negative"
                 checked={formData.allow_negative_balance}
-                onCheckedChange={(checked) => setFormData({ ...formData, allow_negative_balance: checked })}
+                onCheckedChange={checked =>
+                  setFormData({ ...formData, allow_negative_balance: checked })
+                }
               />
             </div>
           </div>
@@ -217,7 +238,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               placeholder="Additional policy details..."
               className="bg-transparent border resize-none"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
@@ -226,7 +247,10 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
           </div>
 
           {/* Info Box */}
-          <div className="p-4 rounded-lg" style={{ backgroundColor: '#141414', border: `1px solid ${COLORS.black}` }}>
+          <div
+            className="p-4 rounded-lg"
+            style={{ backgroundColor: '#141414', border: `1px solid ${COLORS.black}` }}
+          >
             <div className="flex items-start gap-2">
               <Info size={16} color={COLORS.bronze} className="mt-0.5" />
               <div className="space-y-1 text-xs opacity-70">
@@ -252,7 +276,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
             className="border-0"
             style={{
               backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-              color: COLORS.black,
+              color: COLORS.black
             }}
           >
             {policy ? 'Update Policy' : 'Create Policy'}

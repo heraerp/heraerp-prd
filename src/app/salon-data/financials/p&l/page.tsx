@@ -495,7 +495,9 @@ export default function SalonProfitLossPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-muted-foreground dark:text-muted-foreground">Loading financial data...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground">
+            Loading financial data...
+          </p>
         </div>
       </div>
     )
@@ -617,7 +619,9 @@ export default function SalonProfitLossPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Revenue</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Net Revenue
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.revenue_net)}
                   </p>
@@ -631,7 +635,9 @@ export default function SalonProfitLossPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Gross Margin</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Gross Margin
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatPercent(currentReport.kpis.gross_margin)}
                   </p>
@@ -659,7 +665,9 @@ export default function SalonProfitLossPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Net Profit</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    Net Profit
+                  </p>
                   <p className="text-2xl font-bold text-gray-100 dark:text-foreground">
                     {formatCurrency(currentReport.kpis.net_profit)}
                   </p>
@@ -813,13 +821,17 @@ export default function SalonProfitLossPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-muted dark:bg-background rounded-lg p-4">
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Output VAT (Sales)</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Output VAT (Sales)
+                </p>
                 <p className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_sales)}
                 </p>
               </div>
               <div className="bg-muted dark:bg-background rounded-lg p-4">
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Input VAT (Purchases)</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Input VAT (Purchases)
+                </p>
                 <p className="text-xl font-semibold text-gray-100 dark:text-foreground">
                   {formatCurrency(currentReport.vat_summary.vat_on_purchases)}
                 </p>

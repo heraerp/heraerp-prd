@@ -216,7 +216,9 @@ export default function CostCentersPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
             Cost Centers
           </h1>
-          <p className="text-foreground/60 mt-1">Monitor and manage departmental costs and budgets</p>
+          <p className="text-foreground/60 mt-1">
+            Monitor and manage departmental costs and budgets
+          </p>
         </div>
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
@@ -332,7 +334,9 @@ export default function CostCentersPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Budget vs Actual Spend</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Budget vs Actual Spend
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={spendTrend}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -363,7 +367,9 @@ export default function CostCentersPage() {
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00DDFF] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
               <div className="relative bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Department Efficiency</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-6">
+                  Department Efficiency
+                </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <RadialBarChart
                     cx="50%"
@@ -487,7 +493,9 @@ export default function CostCentersPage() {
                           </div>
                           <div>
                             <p className="text-xs text-foreground/60 mb-1">Headcount</p>
-                            <p className="text-lg font-semibold text-foreground">{center.headcount}</p>
+                            <p className="text-lg font-semibold text-foreground">
+                              {center.headcount}
+                            </p>
                           </div>
                         </div>
 
@@ -554,7 +562,9 @@ export default function CostCentersPage() {
                 {categoryBreakdown.map(category => (
                   <div key={category.category}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-foreground">{category.category}</span>
+                      <span className="text-sm font-medium text-foreground">
+                        {category.category}
+                      </span>
                       <div className="flex items-center space-x-4">
                         <span className="text-sm text-foreground/60">
                           Budget: ₹{(category.budget / 10000000).toFixed(0)} Cr

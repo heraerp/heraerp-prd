@@ -226,7 +226,9 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                       <SelectItem key={stylist.id} value={stylist.id}>
                         <div className="flex items-center gap-2">
                           <Avatar className="w-5 h-5">
-                            <AvatarFallback className={cn(stylist.color, 'text-foreground text-xs')}>
+                            <AvatarFallback
+                              className={cn(stylist.color, 'text-foreground text-xs')}
+                            >
                               {stylist.avatar}
                             </AvatarFallback>
                           </Avatar>
@@ -397,15 +399,27 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
       {/* Quick Actions Footer */}
       <div className="flex items-center justify-between bg-background dark:bg-muted rounded-xl border border-border dark:border-border p-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground dark:text-muted-foreground"
+          >
             <Clock className="w-4 h-4 mr-2" />
             Working Hours
           </Button>
-          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground dark:text-muted-foreground"
+          >
             <MapPin className="w-4 h-4 mr-2" />
             Salon Location
           </Button>
-          <Button variant="ghost" size="sm" className="text-muted-foreground dark:text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground dark:text-muted-foreground"
+          >
             <List className="w-4 h-4 mr-2" />
             Export Schedule
           </Button>

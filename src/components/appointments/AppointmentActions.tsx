@@ -5,17 +5,13 @@
 // ================================================================================
 
 import React from 'react'
-import { 
-  Play, 
-  CheckCircle, 
-  DollarSign, 
-  Lock, 
-  XCircle, 
-  UserX,
-  Calendar
-} from 'lucide-react'
+import { Play, CheckCircle, DollarSign, Lock, XCircle, UserX, Calendar } from 'lucide-react'
 import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
-import { getAllowedTransitions, type Appointment, type AppointmentTransition } from '@/lib/schemas/appointment'
+import {
+  getAllowedTransitions,
+  type Appointment,
+  type AppointmentTransition
+} from '@/lib/schemas/appointment'
 import { cn } from '@/lib/utils'
 
 interface AppointmentActionsProps {
@@ -31,62 +27,65 @@ export function AppointmentActions({
   onTransition,
   onOpenPOS,
   loading = false,
-  className,
+  className
 }: AppointmentActionsProps) {
   const allowedTransitions = getAllowedTransitions(appointment.status)
 
-  const actionConfig: Record<AppointmentTransition['action'], {
-    label: string
-    icon: React.ReactNode
-    variant?: 'primary' | 'secondary' | 'outline'
-    className?: string
-  }> = {
+  const actionConfig: Record<
+    AppointmentTransition['action'],
+    {
+      label: string
+      icon: React.ReactNode
+      variant?: 'primary' | 'secondary' | 'outline'
+      className?: string
+    }
+  > = {
     confirm: {
       label: 'Confirm Appointment',
       icon: <Calendar className="w-4 h-4" />,
-      variant: 'primary',
+      variant: 'primary'
     },
     start: {
       label: 'Check In',
       icon: <Play className="w-4 h-4" />,
       variant: 'primary',
-      className: 'bg-purple-600 hover:bg-purple-700',
+      className: 'bg-purple-600 hover:bg-purple-700'
     },
     complete: {
       label: 'Mark Complete',
       icon: <CheckCircle className="w-4 h-4" />,
-      variant: 'secondary',
+      variant: 'secondary'
     },
     mark_paid: {
       label: 'Mark as Paid',
       icon: <DollarSign className="w-4 h-4" />,
       variant: 'primary',
-      className: 'bg-green-600 hover:bg-green-700',
+      className: 'bg-green-600 hover:bg-green-700'
     },
     close: {
       label: 'Close Appointment',
       icon: <Lock className="w-4 h-4" />,
-      variant: 'outline',
+      variant: 'outline'
     },
     cancel: {
       label: 'Cancel',
       icon: <XCircle className="w-4 h-4" />,
       variant: 'outline',
-      className: 'text-red-600 border-red-200 hover:bg-red-50',
+      className: 'text-red-600 border-red-200 hover:bg-red-50'
     },
     no_show: {
       label: 'No Show',
       icon: <UserX className="w-4 h-4" />,
       variant: 'outline',
-      className: 'text-gray-600 border-gray-200 hover:bg-gray-50',
-    },
+      className: 'text-gray-600 border-gray-200 hover:bg-gray-50'
+    }
   }
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      {allowedTransitions.map((action) => {
+      {allowedTransitions.map(action => {
         const config = actionConfig[action]
-        
+
         return (
           <ButtonPrimary
             key={action}

@@ -62,13 +62,14 @@ export function usePosCheckout(): UsePosCheckoutReturn {
       } = checkoutData
 
       // Calculate totals
-      const subtotal = items.reduce((sum, item) => 
-        sum + (item.quantity * item.unit_price) - (item.discount || 0), 0
+      const subtotal = items.reduce(
+        (sum, item) => sum + item.quantity * item.unit_price - (item.discount || 0),
+        0
       )
-      
+
       const tax_amount = (subtotal - discount_total) * tax_rate
       const total_amount = subtotal - discount_total + tax_amount
-      
+
       // Validate payments equal total
       const payment_total = payments.reduce((sum, payment) => sum + payment.amount, 0)
       if (Math.abs(payment_total - total_amount) > 0.01) {
@@ -81,8 +82,8 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 
       // Service/Product lines
       for (const item of items) {
-        const line_amount = (item.quantity * item.unit_price) - (item.discount || 0)
-        
+        const line_amount = item.quantity * item.unit_price - (item.discount || 0)
+
         lines.push({
           line_number: line_number++,
           line_type: item.type,
@@ -92,7 +93,8 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           unit_amount: item.unit_price,
           line_amount,
           discount_amount: item.discount || 0,
-          smart_code: item.type === 'service' ? SMART_CODES.SERVICE_COMPLETE : SMART_CODES.PRODUCT_SALE,
+          smart_code:
+            item.type === 'service' ? SMART_CODES.SERVICE_COMPLETE : SMART_CODES.PRODUCT_SALE,
           metadata: {
             staff_id: item.staff_id,
             appointment_id
@@ -103,7 +105,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         if (item.staff_id && item.type === 'service') {
           const commission_rate = 0.4 // 40% commission
           const commission_amount = line_amount * commission_rate
-          
+
           lines.push({
             line_number: line_number++,
             line_type: 'commission',
@@ -160,7 +162,8 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: payment.amount,
           line_amount: payment.amount,
-          smart_code: payment.method === 'cash' ? SMART_CODES.CASH_PAYMENT : SMART_CODES.CARD_PAYMENT,
+          smart_code:
+            payment.method === 'cash' ? SMART_CODES.CASH_PAYMENT : SMART_CODES.CARD_PAYMENT,
           metadata: {
             payment_method: payment.method,
             reference: payment.reference
@@ -204,7 +207,6 @@ export function usePosCheckout(): UsePosCheckoutReturn {
         lines: lines.length,
         auto_journal_triggered: true
       }
-
     } catch (err) {
       console.error('POS checkout error:', err)
       throw err
@@ -224,8 +226,9 @@ export function usePosCheckout(): UsePosCheckoutReturn {
 // Utility functions for POS calculations
 export const PosUtils = {
   calculateSubtotal: (items: PosCartItem[]) => {
-    return items.reduce((sum, item) => 
-      sum + (item.quantity * item.unit_price) - (item.discount || 0), 0
+    return items.reduce(
+      (sum, item) => sum + item.quantity * item.unit_price - (item.discount || 0),
+      0
     )
   },
 

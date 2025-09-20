@@ -164,7 +164,9 @@ export function ModulePipelineView({
                       <Icon className={cn('w-5 h-5', `text-${info.color}-600`)} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-100 dark:text-foreground">{info.name}</h3>
+                      <h3 className="font-semibold text-gray-100 dark:text-foreground">
+                        {info.name}
+                      </h3>
                       <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                         <span>Module: {moduleCode}</span>
                         <span>Duration: {formattedDuration}</span>

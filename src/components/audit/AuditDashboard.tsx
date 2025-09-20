@@ -456,7 +456,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                   <p className="font-medium text-gray-100">
                     ABC Trading - Bank confirmations overdue
                   </p>
-                  <p className="text-sm text-muted-foreground">Due 3 days ago • Partner: Michael Brown</p>
+                  <p className="text-sm text-muted-foreground">
+                    Due 3 days ago • Partner: Michael Brown
+                  </p>
                 </div>
               </div>
               <Button
@@ -484,7 +486,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                   <p className="font-medium text-gray-100">
                     Tech Solutions - Partner review needed
                   </p>
-                  <p className="text-sm text-muted-foreground">Waiting 2 days • Manager: David Wilson</p>
+                  <p className="text-sm text-muted-foreground">
+                    Waiting 2 days • Manager: David Wilson
+                  </p>
                 </div>
               </div>
               <Button
@@ -721,7 +725,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 <div className="space-y-3">
                   <div className="p-3 border rounded-lg">
                     <p className="font-medium text-gray-100">Tech Solutions - Revenue Testing</p>
-                    <p className="text-sm text-muted-foreground">Submitted by David Wilson • 2 days ago</p>
+                    <p className="text-sm text-muted-foreground">
+                      Submitted by David Wilson • 2 days ago
+                    </p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
                       <Button size="sm" variant="outline">
@@ -732,7 +738,9 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
 
                   <div className="p-3 border rounded-lg">
                     <p className="font-medium text-gray-100">XYZ Manufacturing - Inventory Count</p>
-                    <p className="text-sm text-muted-foreground">Submitted by Sarah Johnson • 1 day ago</p>
+                    <p className="text-sm text-muted-foreground">
+                      Submitted by Sarah Johnson • 1 day ago
+                    </p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button size="sm">Review</Button>
                       <Button size="sm" variant="outline">

@@ -396,9 +396,7 @@ export function OrdersManagement() {
                   )}
                 </div>
                 <div className="text-right">
-                  <Badge
-                    className={statusConfig[order.status]?.color || 'bg-muted text-gray-200'}
-                  >
+                  <Badge className={statusConfig[order.status]?.color || 'bg-muted text-gray-200'}>
                     {statusConfig[order.status]?.label || order.status}
                   </Badge>
                   {order.gl_posting && (
@@ -438,7 +436,9 @@ export function OrdersManagement() {
                   </div>
                 ))}
                 {order.items.length > 2 && (
-                  <p className="text-xs text-muted-foreground">+{order.items.length - 2} more items</p>
+                  <p className="text-xs text-muted-foreground">
+                    +{order.items.length - 2} more items
+                  </p>
                 )}
               </div>
 
@@ -615,18 +615,20 @@ export function OrdersManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-sm text-gray-100">{order.customer_name || 'Walk-in'}</p>
-                      {order.phone && <p className="text-sm text-muted-foreground">{order.phone}</p>}
+                      {order.phone && (
+                        <p className="text-sm text-muted-foreground">{order.phone}</p>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-100">{order.items.length} items</p>
-                      <p className="text-sm text-muted-foreground">{order.items[0]?.menu_item_name}...</p>
+                      <p className="text-sm text-muted-foreground">
+                        {order.items[0]?.menu_item_name}...
+                      </p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <Badge
-                          className={
-                            statusConfig[order.status]?.color || 'bg-muted text-gray-200'
-                          }
+                          className={statusConfig[order.status]?.color || 'bg-muted text-gray-200'}
                         >
                           {statusConfig[order.status]?.label || order.status}
                         </Badge>

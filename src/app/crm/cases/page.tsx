@@ -265,7 +265,9 @@ export default function CasesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Support Cases</h1>
-          <p className="text-foreground/60 mt-1">Manage customer support tickets and service requests</p>
+          <p className="text-foreground/60 mt-1">
+            Manage customer support tickets and service requests
+          </p>
         </div>
         <button
           onClick={() => setIsCreating(true)}
@@ -374,7 +376,9 @@ export default function CasesPage() {
                           <TypeIcon className="h-5 w-5 text-foreground" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-foreground">{kase.entity_name}</h3>
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {kase.entity_name}
+                          </h3>
                           <p className="text-sm text-foreground/60 mt-1">{kase.entity_code}</p>
                         </div>
                       </div>
@@ -425,7 +429,9 @@ export default function CasesPage() {
                       </div>
                       <div>
                         <p className="text-xs text-foreground/60 mb-1">Assigned To</p>
-                        <p className="text-sm text-foreground">{relation.assignee || 'Unassigned'}</p>
+                        <p className="text-sm text-foreground">
+                          {relation.assignee || 'Unassigned'}
+                        </p>
                       </div>
                     </div>
 

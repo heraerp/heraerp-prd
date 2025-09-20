@@ -406,7 +406,9 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Globe className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">Custom Domain</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
+              Custom Domain
+            </h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Professional branded URL for your business
             </p>
@@ -426,7 +428,9 @@ export default function CreateOrganizationPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-blue-100/90 to-cyan-100/90 dark:from-blue-900/50 dark:to-cyan-900/50 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-200/50 dark:border-blue-700/50 group-hover:scale-110 transition-transform duration-300">
               <Zap className="h-8 w-8 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">Instant Setup</h3>
+            <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
+              Instant Setup
+            </h3>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               Start using your enterprise tools immediately
             </p>

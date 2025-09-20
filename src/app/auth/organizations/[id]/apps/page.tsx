@@ -274,7 +274,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/20 animate-pulse">
             <Loader2 className="w-10 h-10 text-primary dark:text-blue-400 animate-spin" />
           </div>
-          <p className="text-muted-foreground dark:text-muted-foreground mt-4">Loading organization...</p>
+          <p className="text-muted-foreground dark:text-muted-foreground mt-4">
+            Loading organization...
+          </p>
         </div>
       </div>
     )
@@ -306,7 +308,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
                   Select Apps
                 </h1>
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground">{organization.name}</p>
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                  {organization.name}
+                </p>
               </div>
             </div>
             <Badge
@@ -382,7 +386,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
                       )}
                     </div>
                   </div>
-                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">{app.name}</CardTitle>
+                  <CardTitle className="mt-4 text-gray-100 dark:text-foreground">
+                    {app.name}
+                  </CardTitle>
                   <CardDescription className="text-muted-foreground dark:text-muted-foreground">
                     {app.description}
                   </CardDescription>
@@ -457,7 +463,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             <div className="w-12 h-12 bg-gradient-to-br from-blue-100/80 to-cyan-100/80 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-sm rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Shield className="h-6 w-6 text-primary dark:text-blue-400" />
             </div>
-            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">Fully Integrated</h3>
+            <h3 className="font-semibold mb-1 text-gray-100 dark:text-foreground">
+              Fully Integrated
+            </h3>
             <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               All apps work seamlessly together with shared data
             </p>

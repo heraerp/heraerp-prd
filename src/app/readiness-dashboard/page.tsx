@@ -748,7 +748,9 @@ export default function ReadinessDashboardPage() {
                     >
                       <FileText className="h-10 w-10 text-purple-400 drop-shadow-md" />
                     </div>
-                    <h3 className="text-xl font-bold !text-foreground mb-3">No assessments found</h3>
+                    <h3 className="text-xl font-bold !text-foreground mb-3">
+                      No assessments found
+                    </h3>
                     <p className="text-muted-foreground dark:text-gray-300 mb-6">
                       Start by creating your first readiness assessment.
                     </p>
@@ -1499,7 +1501,9 @@ export default function ReadinessDashboardPage() {
                         >
                           <FileText className="h-10 w-10 text-purple-400 drop-shadow-md" />
                         </div>
-                        <p className="text-muted-foreground text-lg">Select a session to view details</p>
+                        <p className="text-muted-foreground text-lg">
+                          Select a session to view details
+                        </p>
                       </CardContent>
                     </Card>
                   )}

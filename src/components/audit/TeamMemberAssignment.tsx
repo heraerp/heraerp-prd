@@ -303,7 +303,9 @@ export function TeamMemberAssignment({
                       <p className="font-medium text-gray-100">{member.member_name}</p>
                       <p className="text-sm text-muted-foreground capitalize">{member.role}</p>
                       {member.specialization.length > 0 && (
-                        <p className="text-xs text-muted-foreground">{member.specialization.join(', ')}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {member.specialization.join(', ')}
+                        </p>
                       )}
                     </div>
                   </div>

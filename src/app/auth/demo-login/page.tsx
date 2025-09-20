@@ -1,6 +1,6 @@
 'use client'
 
-import React, {  useEffect, useState , Suspense } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/card'
@@ -17,12 +17,11 @@ const DEMO_CREDENTIALS = {
 }
 
 function DemoLoginContent() {
-
   const router = useRouter()
   const searchParams = useSearchParams()
   const app = searchParams.get('app')
   const redirectUrl = searchParams.get('redirect') || '/dashboard'
-  
+
   const [status, setStatus] = useState<'authenticating' | 'success' | 'error'>('authenticating')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -35,12 +34,12 @@ function DemoLoginContent() {
       }
 
       const credentials = DEMO_CREDENTIALS[app as keyof typeof DEMO_CREDENTIALS]
-      
+
       try {
         // First, sign out any existing session
         console.log('Signing out existing session...')
         await supabase.auth.signOut()
-        
+
         // Sign in with demo credentials
         console.log('Attempting to sign in with:', credentials.email)
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,14 +49,14 @@ function DemoLoginContent() {
 
         if (error) {
           console.log('Sign in failed:', error.message)
-          
+
           // If it's invalid credentials, don't try to create user (user already exists)
           if (error.message === 'Invalid login credentials') {
             setStatus('error')
             setErrorMessage('Invalid demo credentials. Please contact support.')
             return
           }
-          
+
           // For other errors, try to create the demo user
           console.log('Attempting to create demo user...')
           const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
@@ -88,7 +87,7 @@ function DemoLoginContent() {
             console.error('Retry sign in failed:', retryError)
             throw retryError
           }
-          
+
           // Use retry data if successful
           if (retryData?.session) {
             console.log('Successfully signed in after retry')
@@ -100,40 +99,42 @@ function DemoLoginContent() {
         // Verify we have a session before proceeding
         const { data: sessionData } = await supabase.auth.getSession()
         console.log('Session after auth:', sessionData.session)
-        
+
         if (!sessionData.session) {
           console.error('No session after authentication!')
           setStatus('error')
           setErrorMessage('Authentication succeeded but no session was created')
           return
         }
-        
+
         // Set organization context
         console.log('Setting organization context...')
         localStorage.setItem('current-organization-id', credentials.organizationId)
         localStorage.setItem('current-organization-name', credentials.organizationName)
-        localStorage.setItem('selected-organization', JSON.stringify({
-          id: credentials.organizationId,
-          name: credentials.organizationName
-        }))
-        
+        localStorage.setItem(
+          'selected-organization',
+          JSON.stringify({
+            id: credentials.organizationId,
+            name: credentials.organizationName
+          })
+        )
+
         // Mark as demo session
         sessionStorage.setItem('isDemoLogin', 'true')
         sessionStorage.setItem('demoModule', app)
         sessionStorage.setItem('demo-org-id', credentials.organizationId)
-        
+
         setStatus('success')
-        
+
         console.log('Redirecting to:', redirectUrl)
-        
+
         // Wait a bit for session to propagate
         await new Promise(resolve => setTimeout(resolve, 500))
-        
+
         // Redirect to the target page
         console.log('About to redirect to:', redirectUrl)
         // Use router.push first, then fallback to window.location
         router.push(redirectUrl)
-        
       } catch (error: any) {
         console.error('Demo authentication failed:', error)
         setStatus('error')
@@ -144,8 +145,7 @@ function DemoLoginContent() {
     authenticateDemo()
   }, [app, redirectUrl, router])
 
-  
-return (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8">
         {status === 'authenticating' && (
@@ -202,9 +202,7 @@ return (
               </svg>
             </div>
             <h2 className="text-xl font-semibold mb-2">Demo setup failed</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              {errorMessage}
-            </p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{errorMessage}</p>
             <button
               onClick={() => router.push('/demo')}
               className="text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
@@ -216,12 +214,11 @@ return (
       </Card>
     </div>
   )
-
 }
 
 export default function DemoLoginPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

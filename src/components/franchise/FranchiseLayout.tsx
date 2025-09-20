@@ -164,7 +164,9 @@ export function FranchiseLayout({ children }: FranchiseLayoutProps) {
             </div>
 
             <div>
-              <h3 className="font-semibold text-foreground dark:text-foreground mb-3">Quick Links</h3>
+              <h3 className="font-semibold text-foreground dark:text-foreground mb-3">
+                Quick Links
+              </h3>
               <ul className="space-y-2">
                 <li>
                   <Link

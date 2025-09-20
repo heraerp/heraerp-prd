@@ -196,7 +196,9 @@ export default function FAQPage() {
                 className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800 rounded-xl p-6 border border-border dark:border-border"
               >
                 <div className="text-3xl font-bold text-primary mb-2">{stat.number}</div>
-                <div className="text-sm text-muted-foreground dark:text-muted-foreground">{stat.label}</div>
+                <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>

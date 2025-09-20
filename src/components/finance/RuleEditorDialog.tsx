@@ -7,7 +7,7 @@
 'use client'
 
 import React from 'react'
-import { 
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -68,12 +68,15 @@ export function RuleEditorDialog({
   if (!formData) return null
 
   const updateField = (field: keyof PostingRule, value: any) => {
-    setFormData(prev => prev ? { ...prev, [field]: value } : null)
+    setFormData(prev => (prev ? { ...prev, [field]: value } : null))
     setErrors(prev => ({ ...prev, [field]: '' }))
   }
 
   const updateAppliesTo = (value: string) => {
-    const codes = value.split(',').map(s => s.trim()).filter(Boolean)
+    const codes = value
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
     updateField('applies_to', codes)
   }
 
@@ -159,7 +162,7 @@ export function RuleEditorDialog({
                 <Input
                   id="rule-key"
                   value={formData.key}
-                  onChange={(e) => updateField('key', e.target.value)}
+                  onChange={e => updateField('key', e.target.value)}
                   disabled={mode === 'edit'}
                   className="font-mono"
                   placeholder="FIN_DNA.RULES.EXAMPLE.v1"
@@ -171,9 +174,7 @@ export function RuleEditorDialog({
                   Key cannot be changed. Use "Clone to new version" for breaking changes.
                 </p>
               )}
-              {errors.key && (
-                <p className="text-xs text-red-600 dark:text-red-400">{errors.key}</p>
-              )}
+              {errors.key && <p className="text-xs text-red-600 dark:text-red-400">{errors.key}</p>}
             </div>
 
             {/* Title */}
@@ -182,7 +183,7 @@ export function RuleEditorDialog({
               <Input
                 id="rule-title"
                 value={formData.title}
-                onChange={(e) => updateField('title', e.target.value)}
+                onChange={e => updateField('title', e.target.value)}
                 placeholder="POS Sale Posting"
               />
               {errors.title && (
@@ -196,7 +197,7 @@ export function RuleEditorDialog({
               <Textarea
                 id="rule-description"
                 value={formData.description || ''}
-                onChange={(e) => updateField('description', e.target.value || undefined)}
+                onChange={e => updateField('description', e.target.value || undefined)}
                 placeholder="Describe what this rule does..."
                 rows={2}
               />
@@ -205,20 +206,32 @@ export function RuleEditorDialog({
             {/* Category */}
             <div className="space-y-2">
               <Label htmlFor="rule-category">Category</Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => updateField('category', value)}
+              <Select
+                value={formData.category}
+                onValueChange={value => updateField('category', value)}
               >
                 <SelectTrigger id="rule-category">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="hera-select-content">
-                  <SelectItem value="pos" className="hera-select-item">POS</SelectItem>
-                  <SelectItem value="payments" className="hera-select-item">Payments</SelectItem>
-                  <SelectItem value="inventory" className="hera-select-item">Inventory</SelectItem>
-                  <SelectItem value="commissions" className="hera-select-item">Commissions</SelectItem>
-                  <SelectItem value="fiscal" className="hera-select-item">Fiscal</SelectItem>
-                  <SelectItem value="other" className="hera-select-item">Other</SelectItem>
+                  <SelectItem value="pos" className="hera-select-item">
+                    POS
+                  </SelectItem>
+                  <SelectItem value="payments" className="hera-select-item">
+                    Payments
+                  </SelectItem>
+                  <SelectItem value="inventory" className="hera-select-item">
+                    Inventory
+                  </SelectItem>
+                  <SelectItem value="commissions" className="hera-select-item">
+                    Commissions
+                  </SelectItem>
+                  <SelectItem value="fiscal" className="hera-select-item">
+                    Fiscal
+                  </SelectItem>
+                  <SelectItem value="other" className="hera-select-item">
+                    Other
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -229,7 +242,7 @@ export function RuleEditorDialog({
               <Input
                 id="rule-smart-code"
                 value={formData.smart_code}
-                onChange={(e) => updateField('smart_code', e.target.value)}
+                onChange={e => updateField('smart_code', e.target.value)}
                 placeholder="HERA.FIN.POSTING.RULE.v1"
                 className="font-mono"
               />
@@ -244,7 +257,7 @@ export function RuleEditorDialog({
               <Textarea
                 id="rule-applies-to"
                 value={formData.applies_to.join(', ')}
-                onChange={(e) => updateAppliesTo(e.target.value)}
+                onChange={e => updateAppliesTo(e.target.value)}
                 placeholder="HERA.POS.SALE.v1, HERA.POS.SALE.LINE.v1"
                 rows={2}
                 className="font-mono text-sm"
@@ -258,7 +271,7 @@ export function RuleEditorDialog({
           <TabsContent value="mappings" className="mt-4">
             <RuleMappingsTable
               mappings={formData.mappings}
-              onChange={(mappings) => updateField('mappings', mappings)}
+              onChange={mappings => updateField('mappings', mappings)}
               errors={mappingErrors}
             />
             {errors.mappings && (
@@ -276,7 +289,7 @@ export function RuleEditorDialog({
               <Label>Conditions (JSON)</Label>
               <Textarea
                 value={JSON.stringify(formData.conditions, null, 2)}
-                onChange={(e) => {
+                onChange={e => {
                   try {
                     const parsed = JSON.parse(e.target.value)
                     updateField('conditions', parsed)
@@ -292,12 +305,7 @@ export function RuleEditorDialog({
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Optional conditional logic for when this rule applies
                 </p>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={formatConditions}
-                >
+                <Button type="button" size="sm" variant="outline" onClick={formatConditions}>
                   Format JSON
                 </Button>
               </div>
@@ -308,11 +316,7 @@ export function RuleEditorDialog({
           </TabsContent>
 
           <TabsContent value="preview" className="mt-4">
-            <JsonView 
-              data={formData}
-              title="Rule Preview"
-              defaultExpanded={true}
-            />
+            <JsonView data={formData} title="Rule Preview" defaultExpanded={true} />
           </TabsContent>
         </Tabs>
 
@@ -320,18 +324,13 @@ export function RuleEditorDialog({
         <Alert className="mt-4 border-blue-200 bg-blue-50 dark:bg-blue-950/30">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-sm">
-            <strong>Note:</strong> Rule changes affect future transactions only. 
-            Existing journal entries will not be modified.
+            <strong>Note:</strong> Rule changes affect future transactions only. Existing journal
+            entries will not be modified.
           </AlertDescription>
         </Alert>
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={isSaving}
-          >
+          <Button type="button" variant="outline" onClick={onClose} disabled={isSaving}>
             <X className="h-4 w-4 mr-2" />
             Cancel
           </Button>

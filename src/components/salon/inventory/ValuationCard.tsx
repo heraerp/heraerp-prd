@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
-import { 
+import {
   BarChart,
   AlertTriangle,
   TrendingUp,
@@ -74,9 +74,9 @@ export function ValuationCard({
   const hasStockIssues = low_stock_items > 0 || out_of_stock_items > 0
 
   return (
-    <div 
+    <div
       className="rounded-xl border overflow-hidden"
-      style={{ 
+      style={{
         backgroundColor: COLORS.charcoal,
         borderColor: COLORS.bronze + '33'
       }}
@@ -92,11 +92,7 @@ export function ValuationCard({
               ID: {branch_id}
             </p>
           </div>
-          <Badge 
-            variant="secondary" 
-            className="bg-muted/30"
-            style={{ color: COLORS.gold }}
-          >
+          <Badge variant="secondary" className="bg-muted/30" style={{ color: COLORS.gold }}>
             {valuation_method}
           </Badge>
         </div>
@@ -108,14 +104,21 @@ export function ValuationCard({
               {formatCompactCurrency(total_value)}
             </p>
             {trend && (
-              <div className={cn(
-                "flex items-center gap-1 text-sm font-medium",
-                trend.direction === 'up' ? 'text-green-500' : 
-                trend.direction === 'down' ? 'text-red-500' : 
-                'text-gray-500'
-              )}>
-                {trend.direction === 'up' ? <TrendingUp className="w-4 h-4" /> : 
-                 trend.direction === 'down' ? <TrendingDown className="w-4 h-4" /> : null}
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm font-medium',
+                  trend.direction === 'up'
+                    ? 'text-green-500'
+                    : trend.direction === 'down'
+                      ? 'text-red-500'
+                      : 'text-gray-500'
+                )}
+              >
+                {trend.direction === 'up' ? (
+                  <TrendingUp className="w-4 h-4" />
+                ) : trend.direction === 'down' ? (
+                  <TrendingDown className="w-4 h-4" />
+                ) : null}
                 <span>{trend.percentage}%</span>
                 <span className="text-xs font-normal opacity-70">vs {trend.period}</span>
               </div>
@@ -157,11 +160,13 @@ export function ValuationCard({
 
         {/* Low Stock Alert */}
         {hasStockIssues && (
-          <div className="col-span-2 mt-2 p-3 rounded-lg border"
-               style={{ 
-                 backgroundColor: '#DC2626' + '10',
-                 borderColor: '#DC2626' + '30'
-               }}>
+          <div
+            className="col-span-2 mt-2 p-3 rounded-lg border"
+            style={{
+              backgroundColor: '#DC2626' + '10',
+              borderColor: '#DC2626' + '30'
+            }}
+          >
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 mt-0.5" style={{ color: '#DC2626' }} />
               <div className="flex-1">
@@ -170,9 +175,7 @@ export function ValuationCard({
                 </p>
                 <div className="flex gap-4 mt-1 text-sm">
                   {low_stock_items > 0 && (
-                    <span style={{ color: COLORS.lightText }}>
-                      {low_stock_items} low stock
-                    </span>
+                    <span style={{ color: COLORS.lightText }}>{low_stock_items} low stock</span>
                   )}
                   {out_of_stock_items > 0 && (
                     <span style={{ color: COLORS.lightText }}>
@@ -187,18 +190,18 @@ export function ValuationCard({
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 border-t" style={{ 
-        borderColor: COLORS.bronze + '20',
-        backgroundColor: COLORS.black + '20'
-      }}>
+      <div
+        className="px-6 py-3 border-t"
+        style={{
+          borderColor: COLORS.bronze + '20',
+          backgroundColor: COLORS.black + '20'
+        }}
+      >
         <div className="flex items-center justify-between text-xs">
           <span style={{ color: COLORS.lightText, opacity: 0.7 }}>
             Last updated {formatDistanceToNow(new Date(last_updated), { addSuffix: true })}
           </span>
-          <button 
-            className="hover:underline transition-all"
-            style={{ color: COLORS.gold }}
-          >
+          <button className="hover:underline transition-all" style={{ color: COLORS.gold }}>
             View Details →
           </button>
         </div>

@@ -6,7 +6,7 @@
 
 'use client'
 
-import React, {  useState, useEffect , Suspense } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import '@/styles/dialog-overrides.css'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format, addMinutes } from 'date-fns'
@@ -26,7 +26,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { toast } from '@/hooks/use-toast'
 import {
@@ -89,45 +89,42 @@ interface TimeSlot {
 }
 
 function NewAppointmentContent() {
-
   const router = useRouter()
   const searchParams = useSearchParams()
   const { organization } = useHERAAuth()
-  
+
   // Demo organization ID for Hair Talkz Salon
   const DEFAULT_SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
   const [demoOrganizationId, setDemoOrganizationId] = useState<string | null>(null)
-  
+
   // Check for demo session on mount
   useEffect(() => {
     const checkDemoSession = () => {
       const isDemoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
       const demoModule = sessionStorage.getItem('demoModule')
       const demoOrgId = sessionStorage.getItem('demo-org-id')
-      
+
       if (isDemoLogin && demoModule === 'salon') {
         setDemoOrganizationId(demoOrgId || DEFAULT_SALON_ORG_ID)
       }
     }
-    
+
     checkDemoSession()
   }, [])
-  
+
   // Use demo org ID if available, otherwise use authenticated org
   const organizationId = demoOrganizationId || organization?.id
-  
+
   // Get customerId from URL if provided
   const customerIdFromUrl = searchParams.get('customerId')
-  
+
   // Form state
-  const [selectedDate, setSelectedDate] = useState(
-    format(new Date(), 'yyyy-MM-dd')
-  )
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [selectedTime, setSelectedTime] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null)
   const [notes, setNotes] = useState('')
-  
+
   // Data state
   const [customers, setCustomers] = useState<Customer[]>([])
   const [services, setServices] = useState<Service[]>([])
@@ -135,87 +132,86 @@ function NewAppointmentContent() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  
+
   // Search state
   const [customerSearch, setCustomerSearch] = useState('')
   const [serviceSearch, setServiceSearch] = useState('')
-  
+
   // Generate available time slots
   const generateTimeSlots = (): TimeSlot[] => {
     const slots: TimeSlot[] = []
     const date = new Date(`${selectedDate}T09:00:00`)
     const endTime = new Date(`${selectedDate}T18:00:00`)
-    
+
     while (date < endTime) {
       const start = new Date(date)
       const end = new Date(date.getTime() + 30 * 60 * 1000) // 30 min slots
-      
+
       slots.push({
         start: start.toTimeString().substring(0, 5),
         end: end.toTimeString().substring(0, 5)
       })
-      
+
       date.setMinutes(date.getMinutes() + 30)
     }
-    
+
     return slots
   }
-  
+
   // Computed values
-  const filteredCustomers = customers.filter(customer => 
+  const filteredCustomers = customers.filter(customer =>
     customer.entity_name.toLowerCase().includes(customerSearch.toLowerCase())
   )
-  
+
   const filteredServices = services.filter(service =>
     service.entity_name.toLowerCase().includes(serviceSearch.toLowerCase())
   )
-  
+
   const timeSlots = generateTimeSlots()
-  
-  const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-  const totalDuration = cart.reduce((sum, item) => sum + (item.duration * item.quantity), 0)
-  
+
+  const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const totalDuration = cart.reduce((sum, item) => sum + item.duration * item.quantity, 0)
+
   // Load initial data
   useEffect(() => {
     if (!organizationId) return
-    
+
     const loadData = async () => {
       try {
         setLoading(true)
-        
+
         // Set organization ID on universalApi
         universalApi.setOrganizationId(organizationId)
-        
+
         console.log('📊 Loading appointment data for org:', organizationId)
-        
+
         // Load customers
         const customersResponse = await universalApi.read('core_entities', {
           organization_id: organizationId,
           entity_type: 'customer'
         })
-        
+
         console.log('👥 Customers response:', customersResponse)
-        
+
         // Load services
         const servicesResponse = await universalApi.read('core_entities', {
           organization_id: organizationId,
           entity_type: 'service'
         })
-        
+
         console.log('✂️ Services response:', servicesResponse)
-        
+
         // Load stylists
         const stylistsResponse = await universalApi.read('core_entities', {
           organization_id: organizationId,
           entity_type: 'employee'
         })
-        
+
         console.log('💇 Stylists response:', stylistsResponse)
-        
+
         if (customersResponse.success) setCustomers(customersResponse.data || [])
         if (servicesResponse.success) setServices(servicesResponse.data || [])
         if (stylistsResponse.success) setStylists(stylistsResponse.data || [])
-        
       } catch (error) {
         console.error('Error loading data:', error)
         toast({
@@ -226,10 +222,10 @@ function NewAppointmentContent() {
         setLoading(false)
       }
     }
-    
+
     loadData()
   }, [organizationId])
-  
+
   // Pre-select customer if customerId is provided in URL
   useEffect(() => {
     if (customerIdFromUrl && customers.length > 0) {
@@ -240,37 +236,42 @@ function NewAppointmentContent() {
       }
     }
   }, [customerIdFromUrl, customers])
-  
+
   // Cart operations
   const addToCart = (service: Service) => {
     const existingItem = cart.find(item => item.service.id === service.id)
-    
+
     if (existingItem) {
       updateQuantity(service.id, 1)
     } else {
-      setCart([...cart, {
-        service,
-        quantity: 1,
-        price: service.metadata?.price || 0,
-        duration: service.metadata?.duration_minutes || 30
-      }])
+      setCart([
+        ...cart,
+        {
+          service,
+          quantity: 1,
+          price: service.metadata?.price || 0,
+          duration: service.metadata?.duration_minutes || 30
+        }
+      ])
     }
   }
-  
+
   const updateQuantity = (serviceId: string, delta: number) => {
-    setCart(cart.map(item => {
-      if (item.service.id === serviceId) {
-        const newQuantity = Math.max(1, item.quantity + delta)
-        return { ...item, quantity: newQuantity }
-      }
-      return item
-    }))
+    setCart(
+      cart.map(item => {
+        if (item.service.id === serviceId) {
+          const newQuantity = Math.max(1, item.quantity + delta)
+          return { ...item, quantity: newQuantity }
+        }
+        return item
+      })
+    )
   }
-  
+
   const removeFromCart = (serviceId: string) => {
     setCart(cart.filter(item => item.service.id !== serviceId))
   }
-  
+
   // Save appointment
   const handleSave = async () => {
     if (!organizationId) {
@@ -280,7 +281,7 @@ function NewAppointmentContent() {
       })
       return
     }
-    
+
     if (!selectedCustomer) {
       toast({
         title: 'Error',
@@ -288,7 +289,7 @@ function NewAppointmentContent() {
       })
       return
     }
-    
+
     if (!selectedStylist) {
       toast({
         title: 'Error',
@@ -296,7 +297,7 @@ function NewAppointmentContent() {
       })
       return
     }
-    
+
     if (!selectedTime) {
       toast({
         title: 'Error',
@@ -304,7 +305,7 @@ function NewAppointmentContent() {
       })
       return
     }
-    
+
     if (cart.length === 0) {
       toast({
         title: 'Error',
@@ -312,12 +313,12 @@ function NewAppointmentContent() {
       })
       return
     }
-    
+
     setSaving(true)
-    
+
     try {
       const startAt = new Date(`${selectedDate}T${selectedTime}:00`).toISOString()
-      
+
       // Create draft appointment
       const { id: appointmentId } = await createDraftAppointment({
         organizationId,
@@ -327,7 +328,7 @@ function NewAppointmentContent() {
         preferredStylistEntityId: selectedStylist.id,
         notes: notes || undefined
       })
-      
+
       // Create appointment lines
       await upsertAppointmentLines({
         organizationId,
@@ -340,15 +341,14 @@ function NewAppointmentContent() {
           durationMin: item.duration
         }))
       })
-      
+
       toast({
         title: 'Success',
         description: 'Appointment created successfully'
       })
-      
+
       // Redirect to appointments list
       router.push('/salon/appointments')
-      
     } catch (error) {
       console.error('Error creating appointment:', error)
       toast({
@@ -359,7 +359,7 @@ function NewAppointmentContent() {
       setSaving(false)
     }
   }
-  
+
   if (!organizationId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
@@ -376,22 +376,30 @@ function NewAppointmentContent() {
       </div>
     )
   }
-  
-  
-return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 50%, #0F0F0F 100%)' }}>
+
+  return (
+    <div
+      className="min-h-screen"
+      style={{ background: 'linear-gradient(135deg, #0B0B0B 0%, #1A1A1A 50%, #0F0F0F 100%)' }}
+    >
       {/* Header with enterprise depth */}
-      <div 
+      <div
         className="border-b relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, rgba(212,175,55,0.03) 0%, rgba(184,134,11,0.02) 100%)',
+          background:
+            'linear-gradient(135deg, rgba(212,175,55,0.03) 0%, rgba(184,134,11,0.02) 100%)',
           borderColor: 'rgba(245,230,200,0.08)',
-          backdropFilter: 'blur(20px)',
+          backdropFilter: 'blur(20px)'
         }}
       >
         {/* Decorative golden accent line */}
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)' }}></div>
-        
+        <div
+          className="absolute top-0 left-0 right-0 h-px"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent)'
+          }}
+        ></div>
+
         <div className="container mx-auto px-6 py-5 relative z-10">
           <div className="flex items-center gap-4">
             <Button
@@ -399,7 +407,7 @@ return (
               size="icon"
               onClick={() => router.push('/salon/appointments')}
               className="hover:bg-[#D4AF37]/10 transition-all duration-300"
-              style={{ 
+              style={{
                 boxShadow: 'inset 0 1px 0 rgba(245,230,200,0.1), 0 4px 6px rgba(0,0,0,0.3)',
                 border: '1px solid rgba(245,230,200,0.08)'
               }}
@@ -407,20 +415,24 @@ return (
               <ArrowLeft className="h-5 w-5 text-[#F5E6C8]" />
             </Button>
             <div className="flex items-center gap-3">
-              <div 
+              <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center relative"
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
-                  boxShadow: '0 10px 30px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+                  boxShadow: '0 10px 30px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)'
                 }}
               >
                 <Calendar className="w-6 h-6 text-[#0B0B0B]" />
-                <div className="absolute inset-0 rounded-xl" style={{ background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)' }}></div>
+                <div
+                  className="absolute inset-0 rounded-xl"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%)'
+                  }}
+                ></div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-[#F5E6C8]">
-                  Book New Appointment
-                </h1>
+                <h1 className="text-3xl font-bold text-[#F5E6C8]">Book New Appointment</h1>
                 <p className="text-sm text-[#F5E6C8]/70 mt-1">
                   Schedule a premium service appointment for your valued customer
                 </p>
@@ -429,7 +441,7 @@ return (
           </div>
         </div>
       </div>
-      
+
       {loading ? (
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
@@ -444,7 +456,7 @@ return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Customer & Time Selection */}
             <div className="space-y-4">
-              <Card 
+              <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
                 style={{
                   background: 'rgba(26,26,26,0.95)',
@@ -454,10 +466,11 @@ return (
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.1) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.1) 100%)',
                       border: '1px solid rgba(212,175,55,0.3)'
                     }}
                   >
@@ -466,7 +479,7 @@ return (
                   Customer Details
                 </h3>
                 {selectedCustomer ? (
-                  <div 
+                  <div
                     className="p-4 rounded-lg"
                     style={{
                       background: 'rgba(212,175,55,0.05)',
@@ -497,7 +510,7 @@ return (
                       <Input
                         placeholder="Search customers..."
                         value={customerSearch}
-                        onChange={(e) => setCustomerSearch(e.target.value)}
+                        onChange={e => setCustomerSearch(e.target.value)}
                         className="pl-9"
                         style={{
                           background: 'rgba(0,0,0,0.3)',
@@ -507,9 +520,12 @@ return (
                         }}
                       />
                     </div>
-                    
+
                     {customerSearch && (
-                      <ScrollArea className="h-32" style={{ '--scrollbar-color': 'rgba(212,175,55,0.3)' } as any}>
+                      <ScrollArea
+                        className="h-32"
+                        style={{ '--scrollbar-color': 'rgba(212,175,55,0.3)' } as any}
+                      >
                         {filteredCustomers.map(customer => (
                           <div
                             key={customer.id}
@@ -518,8 +534,12 @@ return (
                               background: customerSearch ? 'rgba(0,0,0,0.2)' : 'transparent',
                               ':hover': { background: 'rgba(212,175,55,0.1)' }
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(212,175,55,0.1)'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'}
+                            onMouseEnter={e =>
+                              (e.currentTarget.style.background = 'rgba(212,175,55,0.1)')
+                            }
+                            onMouseLeave={e =>
+                              (e.currentTarget.style.background = 'rgba(0,0,0,0.2)')
+                            }
                             onClick={() => {
                               setSelectedCustomer(customer)
                               setCustomerSearch('')
@@ -536,8 +556,8 @@ return (
                   </div>
                 )}
               </Card>
-              
-              <Card 
+
+              <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
                 style={{
                   background: 'rgba(26,26,26,0.95)',
@@ -547,10 +567,11 @@ return (
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(184,134,11,0.2) 0%, rgba(212,175,55,0.1) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(184,134,11,0.2) 0%, rgba(212,175,55,0.1) 100%)',
                       border: '1px solid rgba(184,134,11,0.3)'
                     }}
                   >
@@ -560,12 +581,12 @@ return (
                 </h3>
                 <Select
                   value={selectedStylist?.id || ''}
-                  onValueChange={(value) => {
+                  onValueChange={value => {
                     const stylist = stylists.find(s => s.id === value)
                     setSelectedStylist(stylist || null)
                   }}
                 >
-                  <SelectTrigger 
+                  <SelectTrigger
                     style={{
                       background: 'rgba(0,0,0,0.3)',
                       border: '1px solid rgba(245,230,200,0.15)',
@@ -574,7 +595,7 @@ return (
                   >
                     <SelectValue placeholder="Select a stylist" />
                   </SelectTrigger>
-                  <SelectContent 
+                  <SelectContent
                     className="hera-select-content"
                     style={{
                       background: 'rgba(26,26,26,0.98)',
@@ -582,15 +603,19 @@ return (
                     }}
                   >
                     {stylists.map(stylist => (
-                      <SelectItem key={stylist.id} value={stylist.id} className="text-[#F5E6C8] hover:bg-[#D4AF37]/10">
+                      <SelectItem
+                        key={stylist.id}
+                        value={stylist.id}
+                        className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                      >
                         {stylist.entity_name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </Card>
-              
-              <Card 
+
+              <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
                 style={{
                   background: 'rgba(26,26,26,0.95)',
@@ -600,10 +625,11 @@ return (
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.1) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(184,134,11,0.1) 100%)',
                       border: '1px solid rgba(212,175,55,0.25)'
                     }}
                   >
@@ -617,7 +643,7 @@ return (
                     <Input
                       type="date"
                       value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
+                      onChange={e => setSelectedDate(e.target.value)}
                       min={format(new Date(), 'yyyy-MM-dd')}
                       style={{
                         background: 'rgba(0,0,0,0.3)',
@@ -626,11 +652,11 @@ return (
                       }}
                     />
                   </div>
-                  
+
                   <div>
                     <Label className="text-[#F5E6C8]/70 text-sm">Time</Label>
                     <Select value={selectedTime} onValueChange={setSelectedTime}>
-                      <SelectTrigger 
+                      <SelectTrigger
                         style={{
                           background: 'rgba(0,0,0,0.3)',
                           border: '1px solid rgba(245,230,200,0.15)',
@@ -639,7 +665,7 @@ return (
                       >
                         <SelectValue placeholder="Select time" />
                       </SelectTrigger>
-                      <SelectContent 
+                      <SelectContent
                         className="hera-select-content"
                         style={{
                           background: 'rgba(26,26,26,0.98)',
@@ -647,20 +673,24 @@ return (
                         }}
                       >
                         {timeSlots.map(slot => (
-                          <SelectItem key={slot.start} value={slot.start} className="text-[#F5E6C8] hover:bg-[#D4AF37]/10">
+                          <SelectItem
+                            key={slot.start}
+                            value={slot.start}
+                            className="text-[#F5E6C8] hover:bg-[#D4AF37]/10"
+                          >
                             {slot.start}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <Label className="text-[#F5E6C8]/70 text-sm">Notes (Optional)</Label>
                     <Textarea
                       placeholder="Any special requests..."
                       value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
+                      onChange={e => setNotes(e.target.value)}
                       rows={2}
                       style={{
                         background: 'rgba(0,0,0,0.3)',
@@ -674,10 +704,10 @@ return (
                 </div>
               </Card>
             </div>
-            
+
             {/* Center Column - Service Selection */}
             <div className="space-y-4">
-              <Card 
+              <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px] h-fit"
                 style={{
                   background: 'rgba(26,26,26,0.95)',
@@ -687,10 +717,11 @@ return (
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.15) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(184,134,11,0.15) 100%)',
                       border: '1px solid rgba(212,175,55,0.3)'
                     }}
                   >
@@ -703,7 +734,7 @@ return (
                   <Input
                     placeholder="Search services..."
                     value={serviceSearch}
-                    onChange={(e) => setServiceSearch(e.target.value)}
+                    onChange={e => setServiceSearch(e.target.value)}
                     className="pl-9"
                     style={{
                       background: 'rgba(0,0,0,0.3)',
@@ -712,7 +743,7 @@ return (
                     }}
                   />
                 </div>
-                
+
                 <ScrollArea className="h-[600px] pr-2">
                   <div className="space-y-2">
                     {filteredServices.map(service => (
@@ -723,13 +754,13 @@ return (
                           background: 'rgba(0,0,0,0.2)',
                           border: '1px solid rgba(245,230,200,0.08)'
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(212,175,55,0.05)';
-                          e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)';
+                        onMouseEnter={e => {
+                          e.currentTarget.style.background = 'rgba(212,175,55,0.05)'
+                          e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)'
                         }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(0,0,0,0.2)';
-                          e.currentTarget.style.borderColor = 'rgba(245,230,200,0.08)';
+                        onMouseLeave={e => {
+                          e.currentTarget.style.background = 'rgba(0,0,0,0.2)'
+                          e.currentTarget.style.borderColor = 'rgba(245,230,200,0.08)'
                         }}
                         onClick={() => addToCart(service)}
                       >
@@ -747,8 +778,8 @@ return (
                               </span>
                             </div>
                           </div>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="ghost"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
                             style={{
@@ -756,7 +787,7 @@ return (
                               border: '1px solid rgba(212,175,55,0.2)',
                               color: '#D4AF37'
                             }}
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation()
                               addToCart(service)
                             }}
@@ -770,10 +801,10 @@ return (
                 </ScrollArea>
               </Card>
             </div>
-            
+
             {/* Right Column - Cart & Summary */}
             <div className="space-y-4 lg:col-span-1">
-              <Card 
+              <Card
                 className="p-5 transition-all duration-300 hover:translate-y-[-2px]"
                 style={{
                   background: 'rgba(26,26,26,0.95)',
@@ -783,10 +814,11 @@ return (
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(184,134,11,0.2) 0%, rgba(212,175,55,0.15) 100%)',
+                      background:
+                        'linear-gradient(135deg, rgba(184,134,11,0.2) 0%, rgba(212,175,55,0.15) 100%)',
                       border: '1px solid rgba(184,134,11,0.3)'
                     }}
                   >
@@ -794,8 +826,8 @@ return (
                   </div>
                   Selected Services
                   {cart.length > 0 && (
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="ml-auto"
                       style={{
                         background: 'rgba(212,175,55,0.2)',
@@ -807,17 +839,15 @@ return (
                     </Badge>
                   )}
                 </h3>
-                
+
                 {cart.length === 0 ? (
-                  <p className="text-[#F5E6C8]/40 text-center py-8">
-                    No services selected
-                  </p>
+                  <p className="text-[#F5E6C8]/40 text-center py-8">No services selected</p>
                 ) : (
                   <ScrollArea className="h-48 lg:h-64">
                     <div className="space-y-3">
                       {cart.map(item => (
-                        <div 
-                          key={item.service.id} 
+                        <div
+                          key={item.service.id}
                           className="p-3 rounded-lg"
                           style={{
                             background: 'rgba(0,0,0,0.3)',
@@ -825,7 +855,9 @@ return (
                           }}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <p className="font-medium text-sm text-[#F5E6C8]">{item.service.entity_name}</p>
+                            <p className="font-medium text-sm text-[#F5E6C8]">
+                              {item.service.entity_name}
+                            </p>
                             <Button
                               size="icon"
                               variant="ghost"
@@ -835,7 +867,7 @@ return (
                               <X className="w-4 h-4 text-[#F5E6C8]/60 hover:text-red-400" />
                             </Button>
                           </div>
-                          
+
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               <Button
@@ -850,7 +882,9 @@ return (
                               >
                                 <Minus className="w-3 h-3 text-[#F5E6C8]/60" />
                               </Button>
-                              <span className="w-6 text-center text-sm text-[#F5E6C8]">{item.quantity}</span>
+                              <span className="w-6 text-center text-sm text-[#F5E6C8]">
+                                {item.quantity}
+                              </span>
                               <Button
                                 size="icon"
                                 variant="outline"
@@ -864,7 +898,7 @@ return (
                                 <Plus className="w-3 h-3 text-[#F5E6C8]/60" />
                               </Button>
                             </div>
-                            
+
                             <div className="text-sm text-[#D4AF37] font-medium">
                               AED {(item.price * item.quantity).toFixed(2)}
                             </div>
@@ -875,18 +909,20 @@ return (
                   </ScrollArea>
                 )}
               </Card>
-              
-              <Card 
+
+              <Card
                 className="p-5 transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(184,134,11,0.05) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(184,134,11,0.05) 100%)',
                   border: '1px solid rgba(212,175,55,0.2)',
-                  boxShadow: '0 10px 40px rgba(212,175,55,0.15), inset 0 1px 0 rgba(245,230,200,0.1)',
+                  boxShadow:
+                    '0 10px 40px rgba(212,175,55,0.15), inset 0 1px 0 rgba(245,230,200,0.1)',
                   backdropFilter: 'blur(10px)'
                 }}
               >
                 <h3 className="font-medium mb-4 flex items-center gap-2 text-[#F5E6C8]">
-                  <div 
+                  <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center"
                     style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
@@ -901,17 +937,21 @@ return (
                   {selectedCustomer && (
                     <div className="flex justify-between">
                       <span className="text-[#F5E6C8]/60">Customer:</span>
-                      <span className="font-medium text-[#F5E6C8]">{selectedCustomer.entity_name}</span>
+                      <span className="font-medium text-[#F5E6C8]">
+                        {selectedCustomer.entity_name}
+                      </span>
                     </div>
                   )}
-                  
+
                   {selectedStylist && (
                     <div className="flex justify-between">
                       <span className="text-[#F5E6C8]/60">Stylist:</span>
-                      <span className="font-medium text-[#F5E6C8]">{selectedStylist.entity_name}</span>
+                      <span className="font-medium text-[#F5E6C8]">
+                        {selectedStylist.entity_name}
+                      </span>
                     </div>
                   )}
-                  
+
                   {selectedDate && selectedTime && (
                     <div className="flex justify-between">
                       <span className="text-[#F5E6C8]/60">Time:</span>
@@ -920,12 +960,12 @@ return (
                       </span>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-between">
                     <span className="text-[#F5E6C8]/60">Duration:</span>
                     <span className="font-medium text-[#F5E6C8]">{totalDuration} minutes</span>
                   </div>
-                  
+
                   <div className="pt-3 border-t" style={{ borderColor: 'rgba(245,230,200,0.15)' }}>
                     <div className="flex justify-between text-lg font-semibold">
                       <span className="text-[#F5E6C8]">Total:</span>
@@ -933,18 +973,25 @@ return (
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 space-y-3">
                   <Button
                     className="w-full"
                     size="lg"
                     onClick={handleSave}
-                    disabled={!selectedCustomer || !selectedStylist || !selectedTime || cart.length === 0 || saving}
+                    disabled={
+                      !selectedCustomer ||
+                      !selectedStylist ||
+                      !selectedTime ||
+                      cart.length === 0 ||
+                      saving
+                    }
                     style={{
                       background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
                       color: '#0B0B0B',
                       fontWeight: '600',
-                      boxShadow: '0 8px 24px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+                      boxShadow:
+                        '0 8px 24px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
                       border: 'none'
                     }}
                   >
@@ -960,7 +1007,7 @@ return (
                       </>
                     )}
                   </Button>
-                  
+
                   <Button
                     className="w-full"
                     variant="outline"
@@ -983,12 +1030,11 @@ return (
       )}
     </div>
   )
-
 }
 
 export default function NewAppointmentPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

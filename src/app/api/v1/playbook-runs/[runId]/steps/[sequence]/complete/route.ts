@@ -1,14 +1,14 @@
 /**
  * HERA Playbooks Step Completion API
- * 
+ *
  * Implements POST /playbook-runs/{runId}/steps/{sequence}/complete
  * Marks a playbook run step as completed with output data and triggers next steps.
  */
-import { NextRequest, NextResponse } from 'next/server';
-import { universalApi } from '@/lib/universal-api';
-import { playbookAuthService } from '@/lib/playbooks/auth/playbook-auth';
-import { playbookDataLayer } from '@/lib/playbooks/data/playbook-data-layer';
-import { PlaybookSmartCodes } from '@/lib/playbooks/smart-codes/playbook-smart-codes';
+import { NextRequest, NextResponse } from 'next/server'
+import { universalApi } from '@/lib/universal-api'
+import { playbookAuthService } from '@/lib/playbooks/auth/playbook-auth'
+import { playbookDataLayer } from '@/lib/playbooks/data/playbook-data-layer'
+import { PlaybookSmartCodes } from '@/lib/playbooks/smart-codes/playbook-smart-codes'
 
 export async function POST(
   request: NextRequest,
@@ -16,35 +16,41 @@ export async function POST(
 ) {
   try {
     // Extract auth
-    const auth = await playbookAuthService.authenticate(request);
+    const auth = await playbookAuthService.authenticate(request)
     if (!auth.success) {
-      return NextResponse.json({ 
-        success: false, 
-        error: auth.error 
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: auth.error
+        },
+        { status: 401 }
+      )
     }
-    
+
     // Parse request body
-    const body = await request.json();
-    const { 
+    const body = await request.json()
+    const {
       output_data,
       status = 'completed', // completed | failed | cancelled
       error_message,
       completion_notes,
       actual_duration_minutes
-    } = body;
-    
+    } = body
+
     // Validate input
     if (!['completed', 'failed', 'cancelled'].includes(status)) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Invalid status. Must be completed, failed, or cancelled' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid status. Must be completed, failed, or cancelled'
+        },
+        { status: 400 }
+      )
     }
-    
+
     // Set organization context
-    universalApi.setOrganizationId(auth.organizationId!);
-    
+    universalApi.setOrganizationId(auth.organizationId!)
+
     // Get the run header
     const runs = await universalApi.readTransactions({
       filters: {
@@ -52,79 +58,94 @@ export async function POST(
         transaction_type: 'playbook_run',
         organization_id: auth.organizationId!
       }
-    });
-    
+    })
+
     if (!runs || runs.length === 0) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Playbook run not found' 
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Playbook run not found'
+        },
+        { status: 404 }
+      )
     }
-    
-    const run = runs[0];
-    
+
+    const run = runs[0]
+
     // Check permission to complete steps in this run
     const hasPermission = await playbookAuthService.checkPermission(
       auth.userId!,
       auth.organizationId!,
       'PLAYBOOK_RUN_COMPLETE',
       { playbook_id: run.metadata?.playbook_id }
-    );
-    
+    )
+
     if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Permission denied' 
-      }, { status: 403 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Permission denied'
+        },
+        { status: 403 }
+      )
     }
-    
+
     // Get the step line
     const stepLines = await universalApi.readTransactionLines({
       transaction_id: params.runId,
       filters: {
         line_number: parseInt(params.sequence)
       }
-    });
-    
+    })
+
     if (!stepLines || stepLines.length === 0) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Step not found' 
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Step not found'
+        },
+        { status: 404 }
+      )
     }
-    
-    const stepLine = stepLines[0];
-    
+
+    const stepLine = stepLines[0]
+
     // Validate step is in a state that can be completed
-    const currentStatus = stepLine.metadata?.status;
+    const currentStatus = stepLine.metadata?.status
     if (!['in_progress', 'waiting_for_input', 'waiting_for_signal'].includes(currentStatus)) {
-      return NextResponse.json({ 
-        success: false, 
-        error: `Step cannot be completed from status: ${currentStatus}` 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Step cannot be completed from status: ${currentStatus}`
+        },
+        { status: 400 }
+      )
     }
-    
+
     // Additional validation for human tasks
     if (stepLine.metadata?.step_type === 'human') {
       // Check if the completing user is the assigned user
-      const assignedUserId = stepLine.metadata?.assigned_to_user_id;
+      const assignedUserId = stepLine.metadata?.assigned_to_user_id
       if (assignedUserId && assignedUserId !== auth.userId) {
         // Check if user has override permission
         const canOverride = await playbookAuthService.checkPermission(
           auth.userId!,
           auth.organizationId!,
           'PLAYBOOK_STEP_OVERRIDE'
-        );
-        
+        )
+
         if (!canOverride) {
-          return NextResponse.json({ 
-            success: false, 
-            error: 'This step is assigned to another user' 
-          }, { status: 403 });
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'This step is assigned to another user'
+            },
+            { status: 403 }
+          )
         }
       }
     }
-    
+
     // Update step line status
     const updatedLine = await universalApi.updateTransactionLine(
       params.runId,
@@ -142,8 +163,8 @@ export async function POST(
           completed_by_user_name: auth.userName
         }
       }
-    );
-    
+    )
+
     // Create completion event transaction
     const completionEvent = await universalApi.createTransaction({
       transaction_type: 'playbook_step_completion',
@@ -164,19 +185,19 @@ export async function POST(
         completed_by: auth.userId,
         timestamp: new Date().toISOString()
       }
-    });
-    
+    })
+
     // Handle post-completion actions based on status
     if (status === 'completed') {
       // Check and activate dependent steps
-      await activateDependentSteps(params.runId, parseInt(params.sequence), auth.organizationId!);
-      
+      await activateDependentSteps(params.runId, parseInt(params.sequence), auth.organizationId!)
+
       // Check if all steps are complete
-      await checkRunCompletion(params.runId, auth.organizationId!);
+      await checkRunCompletion(params.runId, auth.organizationId!)
     } else if (status === 'failed') {
       // Handle failure based on step configuration
-      const failurePolicy = stepLine.metadata?.on_failure || 'stop';
-      
+      const failurePolicy = stepLine.metadata?.on_failure || 'stop'
+
       if (failurePolicy === 'stop') {
         // Mark run as failed
         await universalApi.updateTransaction(params.runId, {
@@ -187,14 +208,14 @@ export async function POST(
             failure_reason: error_message,
             failed_at: new Date().toISOString()
           }
-        });
+        })
       } else if (failurePolicy === 'continue') {
         // Continue with dependent steps despite failure
-        await activateDependentSteps(params.runId, parseInt(params.sequence), auth.organizationId!);
+        await activateDependentSteps(params.runId, parseInt(params.sequence), auth.organizationId!)
       }
       // 'retry' policy is handled by the orchestrator
     }
-    
+
     return NextResponse.json({
       success: true,
       message: `Step ${params.sequence} marked as ${status}`,
@@ -204,20 +225,20 @@ export async function POST(
         status,
         output_data,
         completion_event_id: completionEvent.id,
-        next_steps_activated: status === 'completed' || 
+        next_steps_activated:
+          status === 'completed' ||
           (status === 'failed' && stepLine.metadata?.on_failure === 'continue')
       }
-    });
-    
+    })
   } catch (error) {
-    console.error('Failed to complete step:', error);
+    console.error('Failed to complete step:', error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error'
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -229,17 +250,17 @@ async function activateDependentSteps(
   // Get all step lines for the run
   const allLines = await universalApi.readTransactionLines({
     transaction_id: runId
-  });
-  
-  if (!allLines || allLines.length === 0) return;
-  
+  })
+
+  if (!allLines || allLines.length === 0) return
+
   // Find steps that depend on the completed step
   for (const line of allLines) {
-    const dependencies = line.metadata?.dependencies || [];
+    const dependencies = line.metadata?.dependencies || []
     const dependsOnCompleted = dependencies.some(
       (dep: any) => dep.step_sequence === completedSequence
-    );
-    
+    )
+
     if (dependsOnCompleted && line.metadata?.status === 'pending') {
       // Check if all dependencies are satisfied
       const allDependenciesMet = await checkAllDependencies(
@@ -247,22 +268,18 @@ async function activateDependentSteps(
         line.line_number,
         dependencies,
         allLines
-      );
-      
+      )
+
       if (allDependenciesMet) {
         // Activate the step
-        await universalApi.updateTransactionLine(
-          runId,
-          line.line_number,
-          {
-            metadata: {
-              ...line.metadata,
-              status: 'ready',
-              activated_at: new Date().toISOString()
-            }
+        await universalApi.updateTransactionLine(runId, line.line_number, {
+          metadata: {
+            ...line.metadata,
+            status: 'ready',
+            activated_at: new Date().toISOString()
           }
-        );
-        
+        })
+
         // Create activation event
         await universalApi.createTransaction({
           transaction_type: 'playbook_step_activation',
@@ -277,7 +294,7 @@ async function activateDependentSteps(
             activated_by_completion_of: completedSequence,
             timestamp: new Date().toISOString()
           }
-        });
+        })
       }
     }
   }
@@ -290,55 +307,52 @@ async function checkAllDependencies(
   allLines: any[]
 ): Promise<boolean> {
   for (const dep of dependencies) {
-    const depLine = allLines.find(l => l.line_number === dep.step_sequence);
-    if (!depLine) return false;
-    
-    const depStatus = depLine.metadata?.status;
-    
+    const depLine = allLines.find(l => l.line_number === dep.step_sequence)
+    if (!depLine) return false
+
+    const depStatus = depLine.metadata?.status
+
     // Check based on dependency type
     if (dep.dependency_type === 'completion') {
-      if (depStatus !== 'completed') return false;
+      if (depStatus !== 'completed') return false
     } else if (dep.dependency_type === 'success') {
-      if (depStatus !== 'completed') return false;
+      if (depStatus !== 'completed') return false
     } else if (dep.dependency_type === 'any') {
-      if (!['completed', 'failed', 'cancelled'].includes(depStatus)) return false;
+      if (!['completed', 'failed', 'cancelled'].includes(depStatus)) return false
     }
   }
-  
-  return true;
+
+  return true
 }
 
-async function checkRunCompletion(
-  runId: string,
-  organizationId: string
-): Promise<void> {
+async function checkRunCompletion(runId: string, organizationId: string): Promise<void> {
   // Get all step lines
   const allLines = await universalApi.readTransactionLines({
     transaction_id: runId
-  });
-  
-  if (!allLines || allLines.length === 0) return;
-  
+  })
+
+  if (!allLines || allLines.length === 0) return
+
   // Check if all steps are in a terminal state
   const allComplete = allLines.every(line => {
-    const status = line.metadata?.status;
-    return ['completed', 'failed', 'cancelled', 'skipped'].includes(status);
-  });
-  
+    const status = line.metadata?.status
+    return ['completed', 'failed', 'cancelled', 'skipped'].includes(status)
+  })
+
   if (allComplete) {
     // Calculate overall status
-    const hasFailures = allLines.some(l => l.metadata?.status === 'failed');
-    const hasCancellations = allLines.some(l => l.metadata?.status === 'cancelled');
-    
-    let runStatus = 'completed';
-    if (hasFailures) runStatus = 'completed_with_errors';
-    if (hasCancellations) runStatus = 'partially_completed';
-    
+    const hasFailures = allLines.some(l => l.metadata?.status === 'failed')
+    const hasCancellations = allLines.some(l => l.metadata?.status === 'cancelled')
+
+    let runStatus = 'completed'
+    if (hasFailures) runStatus = 'completed_with_errors'
+    if (hasCancellations) runStatus = 'partially_completed'
+
     // Update run header
     const run = await universalApi.readTransactions({
       filters: { id: runId }
-    });
-    
+    })
+
     if (run && run.length > 0) {
       await universalApi.updateTransaction(runId, {
         metadata: {
@@ -354,8 +368,8 @@ async function checkRunCompletion(
             skipped: allLines.filter(l => l.metadata?.status === 'skipped').length
           }
         }
-      });
-      
+      })
+
       // Create run completion event
       await universalApi.createTransaction({
         transaction_type: 'playbook_run_completion',
@@ -376,13 +390,13 @@ async function checkRunCompletion(
           },
           timestamp: new Date().toISOString()
         }
-      });
+      })
     }
   }
 }
 
 function calculateTotalDuration(run: any, lines: any[]): number {
-  const startTime = new Date(run.created_at || run.metadata?.started_at).getTime();
-  const endTime = Date.now();
-  return Math.round((endTime - startTime) / 1000 / 60); // minutes
+  const startTime = new Date(run.created_at || run.metadata?.started_at).getTime()
+  const endTime = Date.now()
+  return Math.round((endTime - startTime) / 1000 / 60) // minutes
 }

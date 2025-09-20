@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Plus, 
-  Minus, 
-  X, 
-  User, 
-  Percent, 
-  DollarSign, 
+import {
+  Plus,
+  Minus,
+  X,
+  User,
+  Percent,
+  DollarSign,
   MessageSquare,
   Gift,
   Tag,
@@ -26,14 +26,14 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog'
 import { StylistAssignmentModal } from './StylistAssignmentModal'
 import { cn } from '@/lib/utils'
@@ -120,7 +120,7 @@ export function TicketEditor({
     if (newQuantity === 0) {
       onRemoveItem(itemId)
     } else {
-      onUpdateItem(itemId, { 
+      onUpdateItem(itemId, {
         quantity: newQuantity,
         line_amount: newQuantity * item.unit_price
       })
@@ -177,7 +177,9 @@ export function TicketEditor({
       onAddDiscount({
         type: discountType,
         value,
-        description: discountDescription || `${discountType === 'percentage' ? value + '%' : '$' + value} discount`,
+        description:
+          discountDescription ||
+          `${discountType === 'percentage' ? value + '%' : '$' + value} discount`,
         applied_to: 'subtotal'
       })
 
@@ -201,7 +203,7 @@ export function TicketEditor({
           <div className="space-y-4">
             <div>
               <Label>Discount Type</Label>
-              <Select value={discountType} onValueChange={(v) => setDiscountType(v as any)}>
+              <Select value={discountType} onValueChange={v => setDiscountType(v as any)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -218,7 +220,7 @@ export function TicketEditor({
                 step="0.01"
                 placeholder={discountType === 'percentage' ? 'e.g. 10' : 'e.g. 25.00'}
                 value={discountValue}
-                onChange={(e) => setDiscountValue(e.target.value)}
+                onChange={e => setDiscountValue(e.target.value)}
               />
             </div>
             <div>
@@ -226,7 +228,7 @@ export function TicketEditor({
               <Input
                 placeholder="e.g. Senior discount, First time customer"
                 value={discountDescription}
-                onChange={(e) => setDiscountDescription(e.target.value)}
+                onChange={e => setDiscountDescription(e.target.value)}
               />
             </div>
             <Button onClick={handleAddDiscount} className="w-full">
@@ -281,12 +283,12 @@ export function TicketEditor({
                 step="0.01"
                 placeholder="e.g. 15.00"
                 value={tipAmount}
-                onChange={(e) => setTipAmount(e.target.value)}
+                onChange={e => setTipAmount(e.target.value)}
               />
             </div>
             <div>
               <Label>Payment Method</Label>
-              <Select value={tipMethod} onValueChange={(v) => setTipMethod(v as any)}>
+              <Select value={tipMethod} onValueChange={v => setTipMethod(v as any)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -329,7 +331,8 @@ export function TicketEditor({
           </div>
           <h3 className="text-lg font-medium mb-2">No items in ticket</h3>
           <p className="text-muted-foreground mb-4">
-            Search for a customer or appointment to get started, or add services and products from the catalog.
+            Search for a customer or appointment to get started, or add services and products from
+            the catalog.
           </p>
           <div className="flex justify-center gap-2">
             <AddDiscountDialog />
@@ -363,7 +366,10 @@ export function TicketEditor({
       {/* Line Items */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {ticket.lineItems.map((item, index) => (
-          <Card key={item.id} className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700">
+          <Card
+            key={item.id}
+            className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700"
+          >
             <CardContent className="p-4">
               <div className="space-y-3">
                 {/* Item Header */}
@@ -419,16 +425,14 @@ export function TicketEditor({
                       type="number"
                       step="0.01"
                       value={item.unit_price}
-                      onChange={(e) => handlePriceChange(item.id, parseFloat(e.target.value) || 0)}
+                      onChange={e => handlePriceChange(item.id, parseFloat(e.target.value) || 0)}
                       className="w-20 h-8 text-sm"
                     />
                   </div>
 
                   <div className="flex items-center gap-2 ml-auto">
                     <Label className="text-xs text-muted-foreground">Total:</Label>
-                    <span className="font-bold text-lg">
-                      ${item.line_amount.toFixed(2)}
-                    </span>
+                    <span className="font-bold text-lg">${item.line_amount.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -440,7 +444,9 @@ export function TicketEditor({
                       {item.stylist_name ? (
                         <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 rounded-md">
                           <User className="w-3 h-3 text-blue-600" />
-                          <span className="text-sm text-blue-700 dark:text-blue-300">{item.stylist_name}</span>
+                          <span className="text-sm text-blue-700 dark:text-blue-300">
+                            {item.stylist_name}
+                          </span>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -474,7 +480,7 @@ export function TicketEditor({
                   <Textarea
                     placeholder="Add notes for this item..."
                     value={item.notes || ''}
-                    onChange={(e) => handleNotesChange(item.id, e.target.value)}
+                    onChange={e => handleNotesChange(item.id, e.target.value)}
                     className="min-h-[60px] text-sm"
                   />
                 </div>
@@ -488,14 +494,20 @@ export function TicketEditor({
           <div className="space-y-2">
             <Separator />
             <h3 className="font-medium text-sm text-muted-foreground">Discounts</h3>
-            {ticket.discounts.map((discount) => (
-              <div key={discount.id} className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950 rounded-md border border-green-200 dark:border-green-800">
+            {ticket.discounts.map(discount => (
+              <div
+                key={discount.id}
+                className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950 rounded-md border border-green-200 dark:border-green-800"
+              >
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-green-600" />
                   <span className="text-sm">{discount.description}</span>
                 </div>
                 <span className="font-medium text-green-600">
-                  -{discount.type === 'percentage' ? `${discount.value}%` : `$${discount.value.toFixed(2)}`}
+                  -
+                  {discount.type === 'percentage'
+                    ? `${discount.value}%`
+                    : `$${discount.value.toFixed(2)}`}
                 </span>
               </div>
             ))}
@@ -507,17 +519,18 @@ export function TicketEditor({
           <div className="space-y-2">
             <Separator />
             <h3 className="font-medium text-sm text-muted-foreground">Tips</h3>
-            {ticket.tips.map((tip) => (
-              <div key={tip.id} className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800">
+            {ticket.tips.map(tip => (
+              <div
+                key={tip.id}
+                className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800"
+              >
                 <div className="flex items-center gap-2">
                   <Gift className="w-4 h-4 text-blue-600" />
                   <span className="text-sm">
                     Tip {tip.stylist_name ? `for ${tip.stylist_name}` : ''} ({tip.method})
                   </span>
                 </div>
-                <span className="font-medium text-blue-600">
-                  +${tip.amount.toFixed(2)}
-                </span>
+                <span className="font-medium text-blue-600">+${tip.amount.toFixed(2)}</span>
               </div>
             ))}
           </div>

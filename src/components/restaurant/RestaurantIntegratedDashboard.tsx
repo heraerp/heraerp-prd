@@ -199,7 +199,9 @@ export function RestaurantIntegratedDashboard() {
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{integration.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono">{integration.smartCode}</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono">
+                      {integration.smartCode}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -272,7 +274,9 @@ export function RestaurantIntegratedDashboard() {
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div>
                     <p className="font-medium">Auto-journal posted</p>
-                    <p className="text-xs text-muted-foreground">Sales transactions batch processed</p>
+                    <p className="text-xs text-muted-foreground">
+                      Sales transactions batch processed
+                    </p>
                   </div>
                 </div>
                 <span className="text-xs text-muted-foreground">5 min ago</span>
@@ -282,7 +286,9 @@ export function RestaurantIntegratedDashboard() {
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                   <div>
                     <p className="font-medium">Low stock alert</p>
-                    <p className="text-xs text-muted-foreground">Salmon fillet below reorder point</p>
+                    <p className="text-xs text-muted-foreground">
+                      Salmon fillet below reorder point
+                    </p>
                   </div>
                 </div>
                 <span className="text-xs text-muted-foreground">15 min ago</span>

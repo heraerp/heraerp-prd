@@ -15,12 +15,12 @@ import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  MessageCircle, 
-  Settings, 
-  CheckCircle, 
-  AlertCircle, 
-  Eye, 
+import {
+  MessageCircle,
+  Settings,
+  CheckCircle,
+  AlertCircle,
+  Eye,
   EyeOff,
   Zap,
   Shield,
@@ -38,14 +38,13 @@ export default function WhatsAppConfigPage() {
   const { currentOrganization } = useOrganization()
   const [showToken, setShowToken] = React.useState(false)
   const [testDialogOpen, setTestDialogOpen] = React.useState(false)
-  const [connectionStatus, setConnectionStatus] = React.useState<'unknown' | 'testing' | 'connected' | 'failed'>('unknown')
+  const [connectionStatus, setConnectionStatus] = React.useState<
+    'unknown' | 'testing' | 'connected' | 'failed'
+  >('unknown')
 
-  const {
-    config,
-    isConfigLoading,
-    saveConfig,
-    testConnection
-  } = useWhatsappApi(currentOrganization?.id || '')
+  const { config, isConfigLoading, saveConfig, testConnection } = useWhatsappApi(
+    currentOrganization?.id || ''
+  )
 
   const form = useForm<WaConfig>({
     resolver: zodResolver(WaConfig),
@@ -76,7 +75,7 @@ export default function WhatsAppConfigPage() {
   const onSubmit = async (data: WaConfig) => {
     try {
       await saveConfig.mutateAsync(data)
-      
+
       // Test connection if enabled
       if (data.enabled && data.organization_token) {
         setConnectionStatus('testing')
@@ -142,7 +141,6 @@ export default function WhatsAppConfigPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -157,14 +155,14 @@ export default function WhatsAppConfigPage() {
             <Badge variant="outline" className="text-violet-700 border-violet-300">
               {currentOrganization.name}
             </Badge>
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className={
                 connectionStatus === 'connected'
-                  ? "text-green-700 border-green-300 bg-green-50"
+                  ? 'text-green-700 border-green-300 bg-green-50'
                   : connectionStatus === 'failed'
-                  ? "text-red-700 border-red-300 bg-red-50"
-                  : "text-gray-700 border-gray-300"
+                    ? 'text-red-700 border-red-300 bg-red-50'
+                    : 'text-gray-700 border-gray-300'
               }
             >
               {getConnectionStatusIcon()}
@@ -172,7 +170,7 @@ export default function WhatsAppConfigPage() {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
@@ -182,7 +180,7 @@ export default function WhatsAppConfigPage() {
             <Zap className="h-4 w-4 mr-2" />
             Test Connection
           </Button>
-          
+
           <Button
             onClick={() => setTestDialogOpen(true)}
             disabled={!config?.enabled || connectionStatus !== 'connected'}
@@ -196,15 +194,16 @@ export default function WhatsAppConfigPage() {
       <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30">
         <Shield className="h-4 w-4" />
         <AlertDescription>
-          <strong>HERA Managed Service Provider (MSP)</strong><br />
-          Your WhatsApp messaging is powered by HERA's managed WhatsApp API. 
-          This provides enterprise-grade reliability, compliance, and scaling without the complexity of managing your own WhatsApp Business API.
+          <strong>HERA Managed Service Provider (MSP)</strong>
+          <br />
+          Your WhatsApp messaging is powered by HERA's managed WhatsApp API. This provides
+          enterprise-grade reliability, compliance, and scaling without the complexity of managing
+          your own WhatsApp Business API.
         </AlertDescription>
       </Alert>
 
       {/* Configuration Form */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        
         <Tabs defaultValue="connection" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="connection">Connection</TabsTrigger>
@@ -222,7 +221,6 @@ export default function WhatsAppConfigPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                
                 {/* API Endpoint */}
                 <div className="space-y-2">
                   <Label htmlFor="hera_api_endpoint">HERA MSP API Endpoint</Label>
@@ -256,11 +254,7 @@ export default function WhatsAppConfigPage() {
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowToken(!showToken)}
                     >
-                      {showToken ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
+                      {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   <p className="text-sm text-gray-500">
@@ -296,10 +290,9 @@ export default function WhatsAppConfigPage() {
                   <div className="space-y-1">
                     <Label>Environment</Label>
                     <p className="text-sm text-gray-500">
-                      {form.watch('sandbox') 
-                        ? 'Sandbox mode - for testing and development' 
-                        : 'Production mode - live messages to customers'
-                      }
+                      {form.watch('sandbox')
+                        ? 'Sandbox mode - for testing and development'
+                        : 'Production mode - live messages to customers'}
                     </p>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -309,7 +302,7 @@ export default function WhatsAppConfigPage() {
                     <Switch
                       id="sandbox"
                       checked={form.watch('sandbox')}
-                      onCheckedChange={(checked) => form.setValue('sandbox', checked)}
+                      onCheckedChange={checked => form.setValue('sandbox', checked)}
                     />
                   </div>
                 </div>
@@ -325,10 +318,9 @@ export default function WhatsAppConfigPage() {
                   <Switch
                     id="enabled"
                     checked={form.watch('enabled')}
-                    onCheckedChange={(checked) => form.setValue('enabled', checked)}
+                    onCheckedChange={checked => form.setValue('enabled', checked)}
                   />
                 </div>
-
               </CardContent>
             </Card>
           </TabsContent>
@@ -339,7 +331,6 @@ export default function WhatsAppConfigPage() {
                 <CardTitle>Usage Limits & Quotas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                
                 <div className="space-y-2">
                   <Label htmlFor="daily_limit">Daily Message Limit</Label>
                   <Input
@@ -349,9 +340,7 @@ export default function WhatsAppConfigPage() {
                     min={1}
                     max={10000}
                   />
-                  <p className="text-sm text-gray-500">
-                    Maximum messages per day (1-10,000)
-                  </p>
+                  <p className="text-sm text-gray-500">Maximum messages per day (1-10,000)</p>
                 </div>
 
                 <div className="space-y-2">
@@ -363,18 +352,15 @@ export default function WhatsAppConfigPage() {
                     min={1}
                     max={100}
                   />
-                  <p className="text-sm text-gray-500">
-                    Maximum messages per minute (1-100)
-                  </p>
+                  <p className="text-sm text-gray-500">Maximum messages per minute (1-100)</p>
                 </div>
 
                 <Alert>
                   <AlertDescription>
-                    These limits help prevent spam and ensure reliable delivery. 
-                    Contact HERA support to increase limits if needed.
+                    These limits help prevent spam and ensure reliable delivery. Contact HERA
+                    support to increase limits if needed.
                   </AlertDescription>
                 </Alert>
-
               </CardContent>
             </Card>
           </TabsContent>
@@ -385,7 +371,6 @@ export default function WhatsAppConfigPage() {
                 <CardTitle>Available Features</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                
                 {/* Templates */}
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-1">
@@ -396,9 +381,7 @@ export default function WhatsAppConfigPage() {
                   </div>
                   <Switch
                     checked={form.watch('features.templates')}
-                    onCheckedChange={(checked) => 
-                      form.setValue('features.templates', checked)
-                    }
+                    onCheckedChange={checked => form.setValue('features.templates', checked)}
                   />
                 </div>
 
@@ -406,15 +389,11 @@ export default function WhatsAppConfigPage() {
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="space-y-1">
                     <Label>Media Messages</Label>
-                    <p className="text-sm text-gray-500">
-                      Send images, documents, and other media
-                    </p>
+                    <p className="text-sm text-gray-500">Send images, documents, and other media</p>
                   </div>
                   <Switch
                     checked={form.watch('features.media')}
-                    onCheckedChange={(checked) => 
-                      form.setValue('features.media', checked)
-                    }
+                    onCheckedChange={checked => form.setValue('features.media', checked)}
                   />
                 </div>
 
@@ -428,9 +407,7 @@ export default function WhatsAppConfigPage() {
                   </div>
                   <Switch
                     checked={form.watch('features.interactive')}
-                    onCheckedChange={(checked) => 
-                      form.setValue('features.interactive', checked)
-                    }
+                    onCheckedChange={checked => form.setValue('features.interactive', checked)}
                     disabled
                   />
                 </div>
@@ -445,12 +422,9 @@ export default function WhatsAppConfigPage() {
                   </div>
                   <Switch
                     checked={form.watch('features.webhooks')}
-                    onCheckedChange={(checked) => 
-                      form.setValue('features.webhooks', checked)
-                    }
+                    onCheckedChange={checked => form.setValue('features.webhooks', checked)}
                   />
                 </div>
-
               </CardContent>
             </Card>
           </TabsContent>
@@ -461,7 +435,6 @@ export default function WhatsAppConfigPage() {
                 <CardTitle>Webhook Configuration</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                
                 <div className="space-y-2">
                   <Label htmlFor="webhook_secret">Webhook Secret</Label>
                   <div className="relative">
@@ -479,11 +452,7 @@ export default function WhatsAppConfigPage() {
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                       onClick={() => setShowToken(!showToken)}
                     >
-                      {showToken ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
+                      {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
                   <p className="text-sm text-gray-500">
@@ -493,11 +462,11 @@ export default function WhatsAppConfigPage() {
 
                 <Alert>
                   <AlertDescription>
-                    <strong>Webhook URL:</strong> https://your-domain.com/api/webhooks/whatsapp<br />
+                    <strong>Webhook URL:</strong> https://your-domain.com/api/webhooks/whatsapp
+                    <br />
                     This will be configured automatically by HERA MSP when you enable webhooks.
                   </AlertDescription>
                 </Alert>
-
               </CardContent>
             </Card>
           </TabsContent>
@@ -513,10 +482,7 @@ export default function WhatsAppConfigPage() {
           >
             Reset
           </Button>
-          <Button
-            type="submit"
-            disabled={saveConfig.isPending || isConfigLoading}
-          >
+          <Button type="submit" disabled={saveConfig.isPending || isConfigLoading}>
             {saveConfig.isPending ? 'Saving...' : 'Save Configuration'}
           </Button>
         </div>

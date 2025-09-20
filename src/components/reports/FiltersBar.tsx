@@ -11,7 +11,13 @@ import { Calendar, Building2, DollarSign, Sliders3, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -26,17 +32,17 @@ interface FiltersBarProps {
   className?: string
 }
 
-export function FiltersBar({ 
-  filters, 
-  onChange, 
-  reportType, 
-  branches = [], 
+export function FiltersBar({
+  filters,
+  onChange,
+  reportType,
+  branches = [],
   isLoading = false,
-  className = '' 
+  className = ''
 }: FiltersBarProps) {
   // Helper to get today's date in YYYY-MM-DD format
   const getTodayISO = () => new Date().toISOString().split('T')[0]
-  
+
   // Helper to get current month in YYYY-MM format
   const getCurrentMonthISO = () => {
     const now = new Date()
@@ -80,25 +86,31 @@ export function FiltersBar({
   }
 
   return (
-    <Card className={`bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-950/30 dark:to-pink-950/30 border-violet-200 dark:border-violet-800 ${className}`}>
+    <Card
+      className={`bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-950/30 dark:to-pink-950/30 border-violet-200 dark:border-violet-800 ${className}`}
+    >
       <CardContent className="p-4">
         <div className="flex flex-col space-y-4">
-          
           {/* Header with clear filters */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-violet-600" />
-              <span className="font-medium text-violet-900 dark:text-violet-100">Report Filters</span>
+              <span className="font-medium text-violet-900 dark:text-violet-100">
+                Report Filters
+              </span>
               {getActiveFilterCount() > 0 && (
-                <Badge variant="secondary" className="bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
+                <Badge
+                  variant="secondary"
+                  className="bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300"
+                >
                   {getActiveFilterCount()} active
                 </Badge>
               )}
             </div>
             {getActiveFilterCount() > 0 && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={clearFilters}
                 className="text-violet-600 hover:text-violet-700 hover:bg-violet-100 dark:text-violet-400 dark:hover:text-violet-300 dark:hover:bg-violet-900/50"
               >
@@ -109,17 +121,21 @@ export function FiltersBar({
 
           {/* Filter Controls */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            
             {/* Branch Selection */}
             {branches.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="branch-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Label
+                  htmlFor="branch-select"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   <Building2 className="inline h-3 w-3 mr-1" />
                   Branch
                 </Label>
-                <Select 
-                  value={filters.branch_id || 'all'} 
-                  onValueChange={(value) => onChange({ branch_id: value === 'all' ? undefined : value })}
+                <Select
+                  value={filters.branch_id || 'all'}
+                  onValueChange={value =>
+                    onChange({ branch_id: value === 'all' ? undefined : value })
+                  }
                   disabled={isLoading}
                 >
                   <SelectTrigger id="branch-select" className="bg-white dark:bg-gray-800">
@@ -127,7 +143,7 @@ export function FiltersBar({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Branches</SelectItem>
-                    {branches.map((branch) => (
+                    {branches.map(branch => (
                       <SelectItem key={branch.id} value={branch.id}>
                         {branch.name} ({branch.code})
                       </SelectItem>
@@ -142,7 +158,10 @@ export function FiltersBar({
               <>
                 {'date' in filters && (
                   <div className="space-y-2">
-                    <Label htmlFor="date-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="date-select"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       Date
                     </Label>
@@ -150,7 +169,7 @@ export function FiltersBar({
                       id="date-select"
                       type="date"
                       value={filters.date || getTodayISO()}
-                      onChange={(e) => onChange({ date: e.target.value })}
+                      onChange={e => onChange({ date: e.target.value })}
                       disabled={isLoading}
                       className="bg-white dark:bg-gray-800"
                     />
@@ -159,7 +178,10 @@ export function FiltersBar({
 
                 {'month' in filters && (
                   <div className="space-y-2">
-                    <Label htmlFor="month-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="month-select"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       Month
                     </Label>
@@ -167,7 +189,7 @@ export function FiltersBar({
                       id="month-select"
                       type="month"
                       value={filters.month || getCurrentMonthISO()}
-                      onChange={(e) => onChange({ month: e.target.value })}
+                      onChange={e => onChange({ month: e.target.value })}
                       disabled={isLoading}
                       className="bg-white dark:bg-gray-800"
                     />
@@ -181,7 +203,10 @@ export function FiltersBar({
               <>
                 {'from_date' in filters && (
                   <div className="space-y-2">
-                    <Label htmlFor="from-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="from-date"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       From Date
                     </Label>
@@ -189,7 +214,7 @@ export function FiltersBar({
                       id="from-date"
                       type="date"
                       value={filters.from_date || ''}
-                      onChange={(e) => onChange({ from_date: e.target.value })}
+                      onChange={e => onChange({ from_date: e.target.value })}
                       disabled={isLoading}
                       className="bg-white dark:bg-gray-800"
                     />
@@ -198,7 +223,10 @@ export function FiltersBar({
 
                 {'to_date' in filters && (
                   <div className="space-y-2">
-                    <Label htmlFor="to-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="to-date"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       To Date
                     </Label>
@@ -206,7 +234,7 @@ export function FiltersBar({
                       id="to-date"
                       type="date"
                       value={filters.to_date || getTodayISO()}
-                      onChange={(e) => onChange({ to_date: e.target.value })}
+                      onChange={e => onChange({ to_date: e.target.value })}
                       disabled={isLoading}
                       className="bg-white dark:bg-gray-800"
                     />
@@ -215,7 +243,10 @@ export function FiltersBar({
 
                 {'as_of_date' in filters && (
                   <div className="space-y-2">
-                    <Label htmlFor="as-of-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="as-of-date"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       As of Date
                     </Label>
@@ -223,7 +254,7 @@ export function FiltersBar({
                       id="as-of-date"
                       type="date"
                       value={filters.as_of_date || getTodayISO()}
-                      onChange={(e) => onChange({ as_of_date: e.target.value })}
+                      onChange={e => onChange({ as_of_date: e.target.value })}
                       disabled={isLoading}
                       className="bg-white dark:bg-gray-800"
                     />
@@ -231,12 +262,10 @@ export function FiltersBar({
                 )}
               </>
             )}
-
           </div>
 
           {/* Toggle Options */}
           <div className="flex flex-wrap gap-6 pt-2 border-t border-violet-200 dark:border-violet-800">
-            
             {/* Sales-specific toggles */}
             {reportType === 'sales' && 'include_tips' in filters && (
               <>
@@ -244,10 +273,13 @@ export function FiltersBar({
                   <Checkbox
                     id="include-tips"
                     checked={filters.include_tips}
-                    onCheckedChange={(checked) => onChange({ include_tips: !!checked })}
+                    onCheckedChange={checked => onChange({ include_tips: !!checked })}
                     disabled={isLoading}
                   />
-                  <Label htmlFor="include-tips" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <Label
+                    htmlFor="include-tips"
+                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
                     <DollarSign className="inline h-3 w-3 mr-1" />
                     Include Tips
                   </Label>
@@ -257,13 +289,18 @@ export function FiltersBar({
                   <Checkbox
                     id="service-only"
                     checked={'service_only' in filters ? filters.service_only : false}
-                    onCheckedChange={(checked) => onChange({ 
-                      service_only: !!checked, 
-                      product_only: false // Mutually exclusive
-                    })}
+                    onCheckedChange={checked =>
+                      onChange({
+                        service_only: !!checked,
+                        product_only: false // Mutually exclusive
+                      })
+                    }
                     disabled={isLoading}
                   />
-                  <Label htmlFor="service-only" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <Label
+                    htmlFor="service-only"
+                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
                     Services Only
                   </Label>
                 </div>
@@ -272,13 +309,18 @@ export function FiltersBar({
                   <Checkbox
                     id="product-only"
                     checked={'product_only' in filters ? filters.product_only : false}
-                    onCheckedChange={(checked) => onChange({ 
-                      product_only: !!checked,
-                      service_only: false // Mutually exclusive
-                    })}
+                    onCheckedChange={checked =>
+                      onChange({
+                        product_only: !!checked,
+                        service_only: false // Mutually exclusive
+                      })
+                    }
                     disabled={isLoading}
                   />
-                  <Label htmlFor="product-only" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                  <Label
+                    htmlFor="product-only"
+                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
                     Products Only
                   </Label>
                 </div>
@@ -291,26 +333,30 @@ export function FiltersBar({
                 <Checkbox
                   id="consolidated"
                   checked={filters.consolidated}
-                  onCheckedChange={(checked) => onChange({ consolidated: !!checked })}
+                  onCheckedChange={checked => onChange({ consolidated: !!checked })}
                   disabled={isLoading}
                 />
-                <Label htmlFor="consolidated" className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                <Label
+                  htmlFor="consolidated"
+                  className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                >
                   <Sliders3 className="inline h-3 w-3 mr-1" />
                   Consolidated View
                 </Label>
               </div>
             )}
-
           </div>
 
           {/* Quick Date Presets */}
           <div className="flex flex-wrap gap-2 pt-2 border-t border-violet-200 dark:border-violet-800">
-            <span className="text-xs font-medium text-gray-500 mr-2 self-center">Quick filters:</span>
-            
+            <span className="text-xs font-medium text-gray-500 mr-2 self-center">
+              Quick filters:
+            </span>
+
             {reportType === 'sales' && 'date' in filters && (
               <>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => onChange({ date: getTodayISO() })}
                   disabled={isLoading}
@@ -318,8 +364,8 @@ export function FiltersBar({
                 >
                   Today
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     const yesterday = new Date()
@@ -336,8 +382,8 @@ export function FiltersBar({
 
             {reportType === 'sales' && 'month' in filters && (
               <>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => onChange({ month: getCurrentMonthISO() })}
                   disabled={isLoading}
@@ -345,8 +391,8 @@ export function FiltersBar({
                 >
                   This Month
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     const lastMonth = new Date()
@@ -364,13 +410,13 @@ export function FiltersBar({
 
             {reportType === 'financial' && (
               <>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     const now = new Date()
                     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
-                    onChange({ 
+                    onChange({
                       from_date: firstDay.toISOString().split('T')[0],
                       to_date: getTodayISO()
                     })
@@ -380,13 +426,13 @@ export function FiltersBar({
                 >
                   Month to Date
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     const now = new Date()
                     const firstDay = new Date(now.getFullYear(), 0, 1)
-                    onChange({ 
+                    onChange({
                       from_date: firstDay.toISOString().split('T')[0],
                       to_date: getTodayISO()
                     })
@@ -399,7 +445,6 @@ export function FiltersBar({
               </>
             )}
           </div>
-
         </div>
       </CardContent>
     </Card>
@@ -412,12 +457,15 @@ export function useReportFilters<T extends SalesFilters | FinancialFilters>(
   onFiltersChange?: (filters: T) => void
 ) {
   const [filters, setFilters] = React.useState<T>(initialFilters)
-  
-  const updateFilters = React.useCallback((updates: Partial<T>) => {
-    const newFilters = { ...filters, ...updates } as T
-    setFilters(newFilters)
-    onFiltersChange?.(newFilters)
-  }, [filters, onFiltersChange])
+
+  const updateFilters = React.useCallback(
+    (updates: Partial<T>) => {
+      const newFilters = { ...filters, ...updates } as T
+      setFilters(newFilters)
+      onFiltersChange?.(newFilters)
+    },
+    [filters, onFiltersChange]
+  )
 
   const resetFilters = React.useCallback(() => {
     setFilters(initialFilters)

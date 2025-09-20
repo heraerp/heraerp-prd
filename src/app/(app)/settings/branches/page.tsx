@@ -12,10 +12,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Plus, 
-  Search, 
-  Edit, 
+import {
+  Plus,
+  Search,
+  Edit,
   MapPin,
   Phone,
   Building,
@@ -37,23 +37,20 @@ export default function BranchManagementPage() {
   const [selectedBranch, setSelectedBranch] = React.useState<Branch | null>(null)
   const [formMode, setFormMode] = React.useState<'create' | 'edit' | null>(null)
 
-  const {
-    branches,
-    isBranchesLoading,
-    branchesError,
-    saveBranch,
-    deleteBranch
-  } = useOrgSettings(currentOrganization?.id || '')
+  const { branches, isBranchesLoading, branchesError, saveBranch, deleteBranch } = useOrgSettings(
+    currentOrganization?.id || ''
+  )
 
   // Filter branches based on search
   const filteredBranches = React.useMemo(() => {
     if (!searchTerm.trim()) return branches
 
     const search = searchTerm.toLowerCase()
-    return branches.filter(branch => 
-      branch.entity_code.toLowerCase().includes(search) ||
-      branch.entity_name.toLowerCase().includes(search) ||
-      branch.contact?.phone?.toLowerCase().includes(search)
+    return branches.filter(
+      branch =>
+        branch.entity_code.toLowerCase().includes(search) ||
+        branch.entity_name.toLowerCase().includes(search) ||
+        branch.contact?.phone?.toLowerCase().includes(search)
     )
   }, [branches, searchTerm])
 
@@ -75,15 +72,15 @@ export default function BranchManagementPage() {
     try {
       await deleteBranch.mutateAsync(branch.entity_code)
       toast({
-        title: "Branch Deactivated",
+        title: 'Branch Deactivated',
         description: `Branch "${branch.entity_name}" has been deactivated successfully.`,
-        variant: "default"
+        variant: 'default'
       })
     } catch (error) {
       toast({
-        title: "Deactivation Failed",
-        description: error instanceof Error ? error.message : "Failed to deactivate branch",
-        variant: "destructive"
+        title: 'Deactivation Failed',
+        description: error instanceof Error ? error.message : 'Failed to deactivate branch',
+        variant: 'destructive'
       })
     }
   }
@@ -97,31 +94,35 @@ export default function BranchManagementPage() {
     try {
       await saveBranch.mutateAsync(branch)
       toast({
-        title: formMode === 'create' ? "Branch Created" : "Branch Updated",
+        title: formMode === 'create' ? 'Branch Created' : 'Branch Updated',
         description: `Branch "${branch.entity_name}" has been ${formMode === 'create' ? 'created' : 'updated'} successfully.`,
-        variant: "default"
+        variant: 'default'
       })
       handleFormClose()
     } catch (error) {
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save branch",
-        variant: "destructive"
+        title: 'Save Failed',
+        description: error instanceof Error ? error.message : 'Failed to save branch',
+        variant: 'destructive'
       })
     }
   }
 
   const getStatusBadge = (branch: Branch) => {
     if (branch.is_active) {
-      return <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
-        <CheckCircle className="h-3 w-3 mr-1" />
-        Active
-      </Badge>
+      return (
+        <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
+          <CheckCircle className="h-3 w-3 mr-1" />
+          Active
+        </Badge>
+      )
     } else {
-      return <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
-        <XCircle className="h-3 w-3 mr-1" />
-        Inactive
-      </Badge>
+      return (
+        <Badge variant="outline" className="text-red-700 border-red-300 bg-red-50">
+          <XCircle className="h-3 w-3 mr-1" />
+          Inactive
+        </Badge>
+      )
     }
   }
 
@@ -129,9 +130,7 @@ export default function BranchManagementPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>
-            Please select an organization to manage branches.
-          </AlertDescription>
+          <AlertDescription>Please select an organization to manage branches.</AlertDescription>
         </Alert>
       </div>
     )
@@ -139,7 +138,6 @@ export default function BranchManagementPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -159,11 +157,9 @@ export default function BranchManagementPage() {
             </Badge>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <Button
-            onClick={handleCreateBranch}
-          >
+          <Button onClick={handleCreateBranch}>
             <Plus className="h-4 w-4 mr-2" />
             Add Branch
           </Button>
@@ -179,7 +175,7 @@ export default function BranchManagementPage() {
               <Input
                 placeholder="Search branches by code, name, or phone..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -213,10 +209,9 @@ export default function BranchManagementPage() {
                 {searchTerm ? 'No branches found' : 'No branches yet'}
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                {searchTerm 
+                {searchTerm
                   ? 'Try adjusting your search criteria.'
-                  : 'Create your first branch location to get started.'
-                }
+                  : 'Create your first branch location to get started.'}
               </p>
               {!searchTerm && (
                 <Button onClick={handleCreateBranch}>
@@ -229,14 +224,12 @@ export default function BranchManagementPage() {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {filteredBranches.map((branch) => (
+          {filteredBranches.map(branch => (
             <Card key={branch.entity_code} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <CardTitle className="text-lg font-semibold">
-                      {branch.entity_name}
-                    </CardTitle>
+                    <CardTitle className="text-lg font-semibold">{branch.entity_name}</CardTitle>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary" className="font-mono text-xs">
                         {branch.entity_code}
@@ -250,13 +243,9 @@ export default function BranchManagementPage() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditBranch(branch)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => handleEditBranch(branch)}>
                       <Edit className="h-3 w-3" />
                     </Button>
                     {branch.is_active && (
@@ -272,10 +261,9 @@ export default function BranchManagementPage() {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <div className="space-y-3">
-                  
                   {/* Contact Information */}
                   {(branch.contact?.phone || branch.contact?.email || branch.contact?.manager) && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -285,25 +273,19 @@ export default function BranchManagementPage() {
                             <Phone className="h-3 w-3" />
                             Phone
                           </div>
-                          <div className="font-medium font-mono">
-                            {branch.contact.phone}
-                          </div>
+                          <div className="font-medium font-mono">{branch.contact.phone}</div>
                         </div>
                       )}
                       {branch.contact?.email && (
                         <div>
                           <div className="text-gray-600 dark:text-gray-400">Email</div>
-                          <div className="font-medium">
-                            {branch.contact.email}
-                          </div>
+                          <div className="font-medium">{branch.contact.email}</div>
                         </div>
                       )}
                       {branch.contact?.manager && (
                         <div>
                           <div className="text-gray-600 dark:text-gray-400">Manager</div>
-                          <div className="font-medium">
-                            {branch.contact.manager}
-                          </div>
+                          <div className="font-medium">{branch.contact.manager}</div>
                         </div>
                       )}
                     </div>
@@ -328,10 +310,10 @@ export default function BranchManagementPage() {
                   {/* Smart Code (Audit Slot) */}
                   <div className="flex items-center justify-between text-xs text-gray-500 border-t pt-2">
                     <span>
-                      Created: {branch.created_at 
+                      Created:{' '}
+                      {branch.created_at
                         ? new Date(branch.created_at).toLocaleDateString()
-                        : 'Unknown'
-                      }
+                        : 'Unknown'}
                     </span>
                     <div className="flex items-center gap-1">
                       <span className="text-gray-400">Smart Code:</span>
@@ -358,7 +340,6 @@ export default function BranchManagementPage() {
           isSubmitting={saveBranch.isPending}
         />
       )}
-
     </div>
   )
 }

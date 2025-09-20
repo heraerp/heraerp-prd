@@ -45,7 +45,7 @@ export default function OrganizationsPage() {
 
           {/* Organization Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {organizations.map((org) => (
+            {organizations.map(org => (
               <div
                 key={org.id}
                 className={`bg-gray-800 rounded-lg border ${
@@ -70,11 +70,9 @@ export default function OrganizationsPage() {
                       </span>
                     )}
                   </div>
-                  
+
                   <h3 className="text-lg font-semibold text-white mb-1">{org.name}</h3>
-                  <p className="text-sm text-gray-400 capitalize mb-4">
-                    Your role: {org.role}
-                  </p>
+                  <p className="text-sm text-gray-400 capitalize mb-4">Your role: {org.role}</p>
 
                   {/* Quick Stats */}
                   <div className="space-y-2 mb-6">

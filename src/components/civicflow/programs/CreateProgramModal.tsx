@@ -1,39 +1,47 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { X } from 'lucide-react';
+import { useState } from 'react'
+import { X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { useCreateProgram } from '@/hooks/use-programs';
-import { api } from '@/lib/api-client';
-import type { CreateProgramRequest } from '@/types/crm-programs';
+  SelectValue
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { useCreateProgram } from '@/hooks/use-programs'
+import { api } from '@/lib/api-client'
+import type { CreateProgramRequest } from '@/types/crm-programs'
 
 interface CreateProgramModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 const AVAILABLE_TAGS = [
-  'SNAP', 'HOUSING', 'HEALTHCARE', 'EDUCATION', 'VETERANS',
-  'YOUTH', 'SENIORS', 'WORKFORCE', 'ENVIRONMENT', 'TRANSPORTATION'
-];
+  'SNAP',
+  'HOUSING',
+  'HEALTHCARE',
+  'EDUCATION',
+  'VETERANS',
+  'YOUTH',
+  'SENIORS',
+  'WORKFORCE',
+  'ENVIRONMENT',
+  'TRANSPORTATION'
+]
 
 export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps) {
   const [formData, setFormData] = useState<CreateProgramRequest>({
@@ -43,23 +51,23 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
     budget: undefined,
     tags: [],
     sponsor_org_id: '',
-    status: 'active',
-  });
-  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+    status: 'active'
+  })
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
 
-  const createProgram = useCreateProgram();
-  const orgId = api.getOrgId();
+  const createProgram = useCreateProgram()
+  const orgId = api.getOrgId()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orgId) return;
+    e.preventDefault()
+    if (!orgId) return
 
     await createProgram.mutateAsync({
       ...formData,
-      tags: Array.from(selectedTags),
-    });
-    
-    onClose();
+      tags: Array.from(selectedTags)
+    })
+
+    onClose()
     // Reset form
     setFormData({
       code: '',
@@ -68,26 +76,26 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
       budget: undefined,
       tags: [],
       sponsor_org_id: '',
-      status: 'active',
-    });
-    setSelectedTags(new Set());
-  };
+      status: 'active'
+    })
+    setSelectedTags(new Set())
+  }
 
   const toggleTag = (tag: string) => {
-    const newTags = new Set(selectedTags);
+    const newTags = new Set(selectedTags)
     if (newTags.has(tag)) {
-      newTags.delete(tag);
+      newTags.delete(tag)
     } else {
-      newTags.add(tag);
+      newTags.add(tag)
     }
-    setSelectedTags(newTags);
-  };
+    setSelectedTags(newTags)
+  }
 
   const generateCode = () => {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).substring(2, 5).toUpperCase();
-    setFormData(prev => ({ ...prev, code: `PROG-${timestamp}-${random}` }));
-  };
+    const timestamp = Date.now().toString(36).toUpperCase()
+    const random = Math.random().toString(36).substring(2, 5).toUpperCase()
+    setFormData(prev => ({ ...prev, code: `PROG-${timestamp}-${random}` }))
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -109,7 +117,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
               <Input
                 id="code"
                 value={formData.code}
-                onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value }))}
+                onChange={e => setFormData(prev => ({ ...prev, code: e.target.value }))}
                 placeholder="PROG-2024-SNAP"
                 required
                 className="bg-panel-alt border-border"
@@ -131,7 +139,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
               placeholder="Supplemental Nutrition Assistance Program"
               required
               className="bg-panel-alt border-border"
@@ -144,7 +152,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
             <Textarea
               id="description"
               value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Describe the program's goals and objectives..."
               rows={3}
               className="bg-panel-alt border-border"
@@ -158,10 +166,12 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
               id="budget"
               type="number"
               value={formData.budget || ''}
-              onChange={(e) => setFormData(prev => ({ 
-                ...prev, 
-                budget: e.target.value ? parseFloat(e.target.value) : undefined 
-              }))}
+              onChange={e =>
+                setFormData(prev => ({
+                  ...prev,
+                  budget: e.target.value ? parseFloat(e.target.value) : undefined
+                }))
+              }
               placeholder="1000000"
               min="0"
               step="1000"
@@ -174,10 +184,12 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
             <Label htmlFor="status">Status</Label>
             <Select
               value={formData.status}
-              onValueChange={(value) => setFormData(prev => ({ 
-                ...prev, 
-                status: value as 'active' | 'paused' | 'archived' 
-              }))}
+              onValueChange={value =>
+                setFormData(prev => ({
+                  ...prev,
+                  status: value as 'active' | 'paused' | 'archived'
+                }))
+              }
             >
               <SelectTrigger className="bg-panel-alt border-border">
                 <SelectValue />
@@ -194,7 +206,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
           <div className="space-y-2">
             <Label>Program Tags</Label>
             <div className="flex flex-wrap gap-2">
-              {AVAILABLE_TAGS.map((tag) => (
+              {AVAILABLE_TAGS.map(tag => (
                 <Badge
                   key={tag}
                   variant={selectedTags.has(tag) ? 'default' : 'outline'}
@@ -213,12 +225,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="border-border"
-            >
+            <Button type="button" variant="outline" onClick={onClose} className="border-border">
               Cancel
             </Button>
             <Button
@@ -232,5 +239,5 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

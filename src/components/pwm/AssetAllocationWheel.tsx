@@ -133,7 +133,9 @@ export function AssetAllocationWheel({
             </p>
             <p className="text-sm">
               <span className="text-muted-foreground">Allocation:</span>
-              <span className="ml-2 font-medium text-foreground">{data.percentage.toFixed(1)}%</span>
+              <span className="ml-2 font-medium text-foreground">
+                {data.percentage.toFixed(1)}%
+              </span>
             </p>
             <p className="text-sm">
               <span className="text-muted-foreground">24h Change:</span>

@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Calendar,
   Play,
   RefreshCw,
@@ -44,21 +44,21 @@ export default function ClosingDashboardPage() {
   const handleStartClosing = async () => {
     if (!fiscal.config?.fiscal_year_start) {
       toast({
-        title: "Configuration Missing",
-        description: "Please configure fiscal year settings first",
-        variant: "destructive"
+        title: 'Configuration Missing',
+        description: 'Please configure fiscal year settings first',
+        variant: 'destructive'
       })
       return
     }
 
     const year = new Date(fiscal.config.fiscal_year_start).getFullYear().toString()
-    
+
     try {
       await closing.startClosingWorkflow.mutateAsync(year)
       toast({
-        title: "Closing Process Started",
+        title: 'Closing Process Started',
         description: `Year-end closing workflow initiated for fiscal year ${year}`,
-        variant: "default"
+        variant: 'default'
       })
 
       // Start simulating the first step
@@ -69,9 +69,9 @@ export default function ClosingDashboardPage() {
       }
     } catch (error) {
       toast({
-        title: "Failed to Start",
-        description: error instanceof Error ? error.message : "Failed to start closing workflow",
-        variant: "destructive"
+        title: 'Failed to Start',
+        description: error instanceof Error ? error.message : 'Failed to start closing workflow',
+        variant: 'destructive'
       })
     }
   }
@@ -90,10 +90,7 @@ export default function ClosingDashboardPage() {
       errorSteps,
       currentStep,
       progress: closing.getStepProgress(),
-      canStart: closing.canStartClosing(
-        fiscal.isChecklistComplete(),
-        fiscal.areAllPeriodsClosed()
-      )
+      canStart: closing.canStartClosing(fiscal.isChecklistComplete(), fiscal.areAllPeriodsClosed())
     }
   }, [closing.workflow, closing.getStepProgress, fiscal, closing.canStartClosing])
 
@@ -104,9 +101,12 @@ export default function ClosingDashboardPage() {
       completed: branches.filter(b => b.closing_status === 'done').length,
       inProgress: branches.filter(b => b.closing_status === 'in_progress').length,
       errors: branches.filter(b => b.has_errors).length,
-      avgCompletion: branches.length > 0 
-        ? Math.round(branches.reduce((sum, b) => sum + b.checklist_completion, 0) / branches.length)
-        : 0
+      avgCompletion:
+        branches.length > 0
+          ? Math.round(
+              branches.reduce((sum, b) => sum + b.checklist_completion, 0) / branches.length
+            )
+          : 0
     }
   }, [closing.branchStatus])
 
@@ -124,12 +124,9 @@ export default function ClosingDashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
         {/* Main Content Area - 3 columns */}
         <div className="lg:col-span-3 space-y-6">
-          
           {/* Page Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -145,17 +142,20 @@ export default function ClosingDashboardPage() {
                   {closing.workflow?.fiscal_year || new Date().getFullYear()}
                 </Badge>
                 {closing.workflow?.status && closing.workflow.status !== 'pending' && (
-                  <Badge 
+                  <Badge
                     className={
-                      closing.workflow.status === 'done' 
-                        ? "bg-green-100 text-green-800 border-green-300"
+                      closing.workflow.status === 'done'
+                        ? 'bg-green-100 text-green-800 border-green-300'
                         : closing.workflow.status === 'error'
-                        ? "bg-red-100 text-red-800 border-red-300"
-                        : "bg-blue-100 text-blue-800 border-blue-300"
+                          ? 'bg-red-100 text-red-800 border-red-300'
+                          : 'bg-blue-100 text-blue-800 border-blue-300'
                     }
                   >
-                    {closing.workflow.status === 'in_progress' && <Clock className="h-3 w-3 mr-1 animate-pulse" />}
-                    {closing.workflow.status.charAt(0).toUpperCase() + closing.workflow.status.slice(1).replace('_', ' ')}
+                    {closing.workflow.status === 'in_progress' && (
+                      <Clock className="h-3 w-3 mr-1 animate-pulse" />
+                    )}
+                    {closing.workflow.status.charAt(0).toUpperCase() +
+                      closing.workflow.status.slice(1).replace('_', ' ')}
                   </Badge>
                 )}
               </div>
@@ -163,10 +163,7 @@ export default function ClosingDashboardPage() {
 
             <div className="flex items-center gap-3">
               {showJournals ? (
-                <Button
-                  variant="outline"
-                  onClick={() => setShowJournals(false)}
-                >
+                <Button variant="outline" onClick={() => setShowJournals(false)}>
                   <FileText className="h-4 w-4 mr-2" />
                   Back to Workflow
                 </Button>
@@ -180,7 +177,7 @@ export default function ClosingDashboardPage() {
                     <FileText className="h-4 w-4 mr-2" />
                     View Journals ({closing.closingJournals.length})
                   </Button>
-                  
+
                   <Button
                     onClick={handleStartClosing}
                     disabled={!workflowStats?.canStart || closing.startClosingWorkflow.isPending}
@@ -234,16 +231,21 @@ export default function ClosingDashboardPage() {
 
           {/* Workflow Status Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Status</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Status
+                    </div>
                     <div className="text-xl font-bold">
-                      {closing.workflow?.status === 'done' ? 'Complete' : 
-                       closing.workflow?.status === 'error' ? 'Error' :
-                       closing.workflow?.status === 'in_progress' ? 'Running' : 'Ready'}
+                      {closing.workflow?.status === 'done'
+                        ? 'Complete'
+                        : closing.workflow?.status === 'error'
+                          ? 'Error'
+                          : closing.workflow?.status === 'in_progress'
+                            ? 'Running'
+                            : 'Ready'}
                     </div>
                   </div>
                   {closing.workflow?.status === 'done' ? (
@@ -263,7 +265,9 @@ export default function ClosingDashboardPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Checklist</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Checklist
+                    </div>
                     <div className="text-xl font-bold text-violet-700 dark:text-violet-300">
                       {fiscal.isChecklistComplete() ? 'Complete' : 'Pending'}
                     </div>
@@ -277,7 +281,9 @@ export default function ClosingDashboardPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Journal Entries</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Journal Entries
+                    </div>
                     <div className="text-xl font-bold text-green-700 dark:text-green-300">
                       {closing.closingJournals.length}
                     </div>
@@ -291,7 +297,9 @@ export default function ClosingDashboardPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Branches</div>
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Branches
+                    </div>
                     <div className="text-xl font-bold text-blue-700 dark:text-blue-300">
                       {branchSummary.completed}/{branchSummary.total}
                     </div>
@@ -300,7 +308,6 @@ export default function ClosingDashboardPage() {
                 </div>
               </CardContent>
             </Card>
-
           </div>
 
           {/* Main Content - Workflow or Journal View */}
@@ -315,7 +322,7 @@ export default function ClosingDashboardPage() {
               workflow={closing.workflow}
               isLoading={closing.isWorkflowLoading}
               error={closing.workflowError}
-              onStepClick={(step) => {
+              onStepClick={step => {
                 if (step.journal_entry_id) {
                   setShowJournals(true)
                 }
@@ -334,14 +341,23 @@ export default function ClosingDashboardPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {closing.branchStatus.map((branch) => (
-                    <div key={branch.branch_id} className="flex items-center justify-between p-3 border rounded-lg">
+                  {closing.branchStatus.map(branch => (
+                    <div
+                      key={branch.branch_id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${
-                          branch.closing_status === 'done' ? 'bg-green-500' :
-                          branch.closing_status === 'in_progress' ? 'bg-blue-500 animate-pulse' :
-                          branch.has_errors ? 'bg-red-500' : 'bg-gray-300'
-                        }`} />
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            branch.closing_status === 'done'
+                              ? 'bg-green-500'
+                              : branch.closing_status === 'in_progress'
+                                ? 'bg-blue-500 animate-pulse'
+                                : branch.has_errors
+                                  ? 'bg-red-500'
+                                  : 'bg-gray-300'
+                          }`}
+                        />
                         <div>
                           <div className="font-medium">{branch.branch_name}</div>
                           <div className="text-sm text-gray-500">Code: {branch.branch_code}</div>
@@ -350,13 +366,21 @@ export default function ClosingDashboardPage() {
                       <div className="flex items-center gap-4">
                         <div className="text-right">
                           <div className="text-sm font-medium">Checklist</div>
-                          <div className="text-sm text-gray-500">{branch.checklist_completion}%</div>
+                          <div className="text-sm text-gray-500">
+                            {branch.checklist_completion}%
+                          </div>
                         </div>
-                        <Badge variant={
-                          branch.closing_status === 'done' ? 'default' :
-                          branch.closing_status === 'in_progress' ? 'outline' :
-                          branch.has_errors ? 'destructive' : 'secondary'
-                        }>
+                        <Badge
+                          variant={
+                            branch.closing_status === 'done'
+                              ? 'default'
+                              : branch.closing_status === 'in_progress'
+                                ? 'outline'
+                                : branch.has_errors
+                                  ? 'destructive'
+                                  : 'secondary'
+                          }
+                        >
                           {branch.closing_status.replace('_', ' ')}
                         </Badge>
                       </div>
@@ -366,12 +390,10 @@ export default function ClosingDashboardPage() {
               </CardContent>
             </Card>
           )}
-
         </div>
 
         {/* Right Sidebar - Checklist */}
         <div className="space-y-6">
-          
           <ClosingChecklistPanel
             checklist={fiscal.checklist}
             isLoading={fiscal.isChecklistLoading}
@@ -416,7 +438,9 @@ export default function ClosingDashboardPage() {
                     ) : (
                       <Clock className="h-4 w-4 text-gray-400" />
                     )}
-                    <span className={fiscal.isChecklistComplete() ? 'text-green-700' : 'text-gray-600'}>
+                    <span
+                      className={fiscal.isChecklistComplete() ? 'text-green-700' : 'text-gray-600'}
+                    >
                       Complete closing checklist
                     </span>
                   </div>
@@ -426,7 +450,9 @@ export default function ClosingDashboardPage() {
                     ) : (
                       <Clock className="h-4 w-4 text-gray-400" />
                     )}
-                    <span className={fiscal.areAllPeriodsClosed() ? 'text-green-700' : 'text-gray-600'}>
+                    <span
+                      className={fiscal.areAllPeriodsClosed() ? 'text-green-700' : 'text-gray-600'}
+                    >
                       Close all fiscal periods
                     </span>
                   </div>
@@ -436,7 +462,13 @@ export default function ClosingDashboardPage() {
                     ) : (
                       <Clock className="h-4 w-4 text-gray-400" />
                     )}
-                    <span className={fiscal.config?.retained_earnings_account ? 'text-green-700' : 'text-gray-600'}>
+                    <span
+                      className={
+                        fiscal.config?.retained_earnings_account
+                          ? 'text-green-700'
+                          : 'text-gray-600'
+                      }
+                    >
                       Configure RE account
                     </span>
                   </div>
@@ -444,11 +476,8 @@ export default function ClosingDashboardPage() {
               </CardContent>
             </Card>
           )}
-
         </div>
-
       </div>
-
     </div>
   )
 }

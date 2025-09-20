@@ -227,14 +227,14 @@ export class ClaudeContractHandshakeSystem {
       feature_name: handshake.understanding.feature_description,
       smart_code: `${handshake.understanding.smart_code_family}.FEATURE.v1`,
       description: handshake.understanding.feature_description,
-      contracts_required: handshake.plan.contracts_to_create.map(contract => ({
+      contracts_required: handshake.plan.contracts_to_create.map((contract: { contract_path: string; contract_name: string; purpose: string }) => ({
         contract_path: contract.contract_path,
         contract_name: contract.contract_name,
         purpose: contract.purpose,
         exists: false,
         needs_update: false
       })),
-      tests_required: handshake.plan.tests_to_create.map(test => ({
+      tests_required: handshake.plan.tests_to_create.map((test: { test_path: string; test_name: string; test_type: string; initial_failure_reason: string }) => ({
         test_path: test.test_path,
         test_name: test.test_name,
         test_type: test.test_type as 'unit' | 'integration' | 'e2e' | 'type-safety',
@@ -403,13 +403,13 @@ export class ClaudeContractHandshakeSystem {
     };
   }
 
-  private loadHandshake(handshakeId: string): any {
+  private loadHandshake(handshakeId: string): ClaudeHandshake & { handshakeId: string; createdAt: string; status: string } | null {
     const handshakePath = path.join(this.handshakesDir, `${handshakeId}.json`);
     if (!fs.existsSync(handshakePath)) {
       return null;
     }
     
-    return JSON.parse(fs.readFileSync(handshakePath, 'utf-8'));
+    return JSON.parse(fs.readFileSync(handshakePath, 'utf-8')) as ClaudeHandshake & { handshakeId: string; createdAt: string; status: string };
   }
 }
 

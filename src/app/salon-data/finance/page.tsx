@@ -123,7 +123,9 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Today's Revenue</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Today's Revenue
+                </span>
                 <DollarSign className="w-4 h-4 text-purple-600" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.todayRevenue)}</p>
@@ -137,7 +139,9 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Month to Date</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Month to Date
+                </span>
                 <Calendar className="w-4 h-4 text-primary" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.monthRevenue)}</p>
@@ -160,7 +164,9 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Pending Payments</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Pending Payments
+                </span>
                 <CreditCard className="w-4 h-4 text-orange-600" />
               </div>
               <p className="text-2xl font-bold">{formatCurrency(quickStats.pendingPayments)}</p>
@@ -171,7 +177,9 @@ export default function SalonFinanceDashboard() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground dark:text-muted-foreground">Profit Margin</span>
+                <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Profit Margin
+                </span>
                 <PieChart className="w-4 h-4 text-green-600" />
               </div>
               <p className="text-2xl font-bold">42.5%</p>
@@ -247,7 +255,9 @@ export default function SalonFinanceDashboard() {
                   </div>
                   <div>
                     <p className="font-medium">Card Batch Submitted</p>
-                    <p className="text-sm text-muted-foreground">Network International - 62 transactions</p>
+                    <p className="text-sm text-muted-foreground">
+                      Network International - 62 transactions
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">

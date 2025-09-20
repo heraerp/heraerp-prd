@@ -9,7 +9,22 @@ import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Package, ShoppingCart, Factory, Users, TrendingUp, Clock, CheckCircle, AlertCircle, DollarSign, Truck, BarChart3, Settings, FileText, Brain, Sparkles
+import {
+  Package,
+  ShoppingCart,
+  Factory,
+  Users,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  DollarSign,
+  Truck,
+  BarChart3,
+  Settings,
+  FileText,
+  Brain,
+  Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
@@ -17,35 +32,95 @@ import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 
 function FurnitureDashboard() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  
+
   // Dashboard stats - in production these would come from Universal API
   // Memoized to prevent re-creation
-  const stats = React.useMemo(() => [
-  { label: 'Active Orders', value: '47', change: '+12%', trend: 'up' as const, icon: ShoppingCart, gradient: 'from-blue-500 to-cyan-500' },
-  { label: 'Production Queue', value: '23', change: '5 urgent', trend: 'neutral' as const, icon: Factory, gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]' },
-  { label: 'Monthly Revenue', value: '₹28.5L', change: '+18%', trend: 'up' as const, icon: TrendingUp, gradient: 'from-green-500 to-emerald-500' },
-    { label: 'Inventory Value', value: '₹45.2L', change: 'Well stocked', trend: 'neutral' as const, icon: Package, gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]' }
-  ], [])
+  const stats = React.useMemo(
+    () => [
+      {
+        label: 'Active Orders',
+        value: '47',
+        change: '+12%',
+        trend: 'up' as const,
+        icon: ShoppingCart,
+        gradient: 'from-blue-500 to-cyan-500'
+      },
+      {
+        label: 'Production Queue',
+        value: '23',
+        change: '5 urgent',
+        trend: 'neutral' as const,
+        icon: Factory,
+        gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]'
+      },
+      {
+        label: 'Monthly Revenue',
+        value: '₹28.5L',
+        change: '+18%',
+        trend: 'up' as const,
+        icon: TrendingUp,
+        gradient: 'from-green-500 to-emerald-500'
+      },
+      {
+        label: 'Inventory Value',
+        value: '₹45.2L',
+        change: 'Well stocked',
+        trend: 'neutral' as const,
+        icon: Package,
+        gradient: 'from-[var(--color-accent-teal)] to-[var(--color-accent-teal)]'
+      }
+    ],
+    []
+  )
 
-  const recentActivities = React.useMemo(() => [
-  { id: '1', type: 'order' as const, title: 'New order from Marriott Hotels', description: '150 Executive Room Chairs', time: '2 hours ago', amount: '₹12,50,000' },
-  { id: '2', type: 'production' as const, title: 'Production completed', description: 'Order #FRN-2025-0234 ready for dispatch', time: '4 hours ago' },
-    { id: '3', type: 'payment' as const, title: 'Payment received', description: 'ITC Hotels - ₹8,50,000', time: '6 hours ago', amount: '₹8,50,000' }
-  ], [])
+  const recentActivities = React.useMemo(
+    () => [
+      {
+        id: '1',
+        type: 'order' as const,
+        title: 'New order from Marriott Hotels',
+        description: '150 Executive Room Chairs',
+        time: '2 hours ago',
+        amount: '₹12,50,000'
+      },
+      {
+        id: '2',
+        type: 'production' as const,
+        title: 'Production completed',
+        description: 'Order #FRN-2025-0234 ready for dispatch',
+        time: '4 hours ago'
+      },
+      {
+        id: '3',
+        type: 'payment' as const,
+        title: 'Payment received',
+        description: 'ITC Hotels - ₹8,50,000',
+        time: '6 hours ago',
+        amount: '₹8,50,000'
+      }
+    ],
+    []
+  )
 
-  const productionKPIs = React.useMemo(() => [
-  { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
-  { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
-  { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
-  { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
-], [] )
+  const productionKPIs = React.useMemo(
+    () => [
+      { label: 'Capacity Utilization', value: 78, target: 85, color: 'blue' },
+      { label: 'On-Time Delivery', value: 92, target: 95, color: 'green' },
+      { label: 'Quality Pass Rate', value: 96.5, target: 98, color: 'purple' },
+      { label: 'Machine Efficiency', value: 84, target: 90, color: 'amber' }
+    ],
+    []
+  )
 
-const quickActions = React.useMemo( () => [
-  { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
-  { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
-  { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
-  { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
-], [])
+  const quickActions = React.useMemo(
+    () => [
+      { label: 'Create Order', href: '/furniture/sales/orders/new', icon: ShoppingCart },
+      { label: 'Production Planning', href: '/furniture/production/planning', icon: Factory },
+      { label: 'View Inventory', href: '/furniture/inventory', icon: Package },
+      { label: 'Payroll Processing', href: '/furniture/hr/payroll', icon: Users }
+    ],
+    []
+  )
 
   // Show loading state while organization is loading
   if (orgLoading) {
@@ -76,7 +151,7 @@ const quickActions = React.useMemo( () => [
             </>
           }
         />
-        
+
         {/* Debug info - temporary */}
         <div className="furniture-card rounded-lg p-4 text-sm text-[var(--color-text-secondary)]">
           <p>Organization ID: {organizationId || 'Not loaded'}</p>
@@ -105,15 +180,19 @@ const quickActions = React.useMemo( () => [
                   </div>
                   <div>
                     <h3 className="bg-[var(--color-body)] text-lg font-semibold flex items-center gap-2">
-                      AI Business Manager <Sparkles className="h-4 w-4 text-[var(--color-icon-secondary)]" />
+                      AI Business Manager{' '}
+                      <Sparkles className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                     </h3>
                     <p className="text-sm text-[var(--color-text-secondary)]">
-                      Get instant insights, recommendations, and strategic analysis for your furniture business
+                      Get instant insights, recommendations, and strategic analysis for your
+                      furniture business
                     </p>
                   </div>
                 </div>
                 <div className="bg-[var(--color-body)] flex flex-col items-end">
-                  <span className="text-sm font-medium text-[var(--color-text-secondary)]">Ask anything</span>
+                  <span className="text-sm font-medium text-[var(--color-text-secondary)]">
+                    Ask anything
+                  </span>
                   <span className="text-xs text-[var(--color-text-secondary)]">Powered by AI</span>
                 </div>
               </div>
@@ -160,8 +239,12 @@ const quickActions = React.useMemo( () => [
                     >
                       <div className="flex-1">
                         <p className="font-medium">{activity.title}</p>
-                        <p className="text-sm text-[var(--color-text-secondary)]">{activity.description}</p>
-                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">{activity.time}</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          {activity.description}
+                        </p>
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                          {activity.time}
+                        </p>
                       </div>
                       {activity.amount && <p className="font-semibold">{activity.amount}</p>}
                     </div>
@@ -181,7 +264,10 @@ const quickActions = React.useMemo( () => [
               <h3 className="bg-[var(--color-body)] text-lg font-semibold">Production KPIs</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {productionKPIs.map(kpi => (
-                  <Card key={kpi.label} className="p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
+                  <Card
+                    key={kpi.label}
+                    className="p-4 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm"
+                  >
                     <div className="space-y-2">
                       <p className="text-sm text-[var(--color-text-secondary)]">{kpi.label}</p>
                       <p className="text-2xl font-bold">{kpi.value}%</p>
@@ -190,7 +276,9 @@ const quickActions = React.useMemo( () => [
                           <span>Target: {kpi.target}%</span>
                           <span
                             className={
-                              kpi.value >= kpi.target ? 'text-green-600' : 'text-[var(--color-accent-indigo)]'
+                              kpi.value >= kpi.target
+                                ? 'text-green-600'
+                                : 'text-[var(--color-accent-indigo)]'
                             }
                           >
                             {kpi.value >= kpi.target ? '✓' : '↓'}
@@ -199,8 +287,7 @@ const quickActions = React.useMemo( () => [
                         <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
                           <div
                             className={`h-full bg-${kpi.color}-500 transition-all`}
-                            style={{ width: `${kpi.value}%` }
-    }
+                            style={{ width: `${kpi.value}%` }}
                           />
                         </div>
                       </div>
@@ -231,8 +318,7 @@ const quickActions = React.useMemo( () => [
                       <div className="h-2 bg-[var(--color-body)] bg-muted-foreground/10 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[var(--color-body)] transition-all"
-                          style={{ width: `${center.value}%` }
-    }
+                          style={{ width: `${center.value}%` }}
                         />
                       </div>
                     </div>
@@ -247,7 +333,9 @@ const quickActions = React.useMemo( () => [
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
                 <div className="bg-[var(--color-body)] flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">Outstanding Receivables</p>
+                    <p className="text-sm text-[var(--color-text-secondary)]">
+                      Outstanding Receivables
+                    </p>
                     <p className="text-2xl font-bold">₹15.2L</p>
                     <p className="text-sm text-[var(--color-accent-indigo)]">5 overdue</p>
                   </div>
@@ -352,8 +440,7 @@ const ModuleLink = React.memo(function ModuleLink({
   icon: React.ElementType
   label: string
 }) {
-  
-    return (
+  return (
     <Link href={href}>
       <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 hover:scale-105 transition-transform cursor-pointer bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/20 border-[var(--color-border)]/50">
         <div className="bg-[var(--color-body)] flex flex-col items-center text-center gap-2">

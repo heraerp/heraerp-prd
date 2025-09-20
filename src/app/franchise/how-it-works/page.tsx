@@ -200,7 +200,9 @@ export default function HowItWorksPage() {
                       <h4 className="font-semibold text-foreground dark:text-foreground mb-2">
                         Step {step.number}
                       </h4>
-                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">{step.timeline}</p>
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                        {step.timeline}
+                      </p>
                     </div>
                   </div>
                 </div>

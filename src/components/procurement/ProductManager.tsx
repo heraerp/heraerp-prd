@@ -619,7 +619,9 @@ export function ProductManager() {
           <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-100">Add New Product</h2>
-              <p className="text-muted-foreground mt-1">Create a new product or material in your catalog</p>
+              <p className="text-muted-foreground mt-1">
+                Create a new product or material in your catalog
+              </p>
             </div>
 
             <form onSubmit={handleCreateProduct} className="p-6 space-y-6">
@@ -965,7 +967,9 @@ export function ProductManager() {
           <div className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-border">
               <h2 className="text-xl font-semibold text-gray-100">Pencil Product</h2>
-              <p className="text-muted-foreground mt-1">Update product information and specifications</p>
+              <p className="text-muted-foreground mt-1">
+                Update product information and specifications
+              </p>
             </div>
 
             <form onSubmit={handleUpdateProduct} className="p-6 space-y-6">

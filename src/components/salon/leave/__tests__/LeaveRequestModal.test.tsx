@@ -137,7 +137,7 @@ describe('LeaveRequestModal', () => {
     // Select dates (mocked to return 5 working days)
     const fromDateButton = screen.getByText('Select date')
     fireEvent.click(fromDateButton)
-    
+
     // After date selection, working days should be displayed
     await waitFor(() => {
       expect(screen.getByText('5')).toBeInTheDocument()
@@ -158,7 +158,7 @@ describe('LeaveRequestModal', () => {
 
     // Simulate date selection by setting component state
     // (In real scenario, this would be done through date picker interaction)
-    
+
     // Half day options should appear after dates are selected
     await waitFor(() => {
       expect(screen.queryByLabelText('Half day on start date')).toBeInTheDocument()
@@ -179,7 +179,7 @@ describe('LeaveRequestModal', () => {
     )
 
     const submitButton = screen.getByText('Submit Request')
-    
+
     // Should be disabled without required fields
     expect(submitButton).toBeDisabled()
   })

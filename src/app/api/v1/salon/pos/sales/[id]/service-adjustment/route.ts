@@ -12,10 +12,12 @@ const ServiceAdjustmentSchema = z.object({
     value: z.number().negative('Adjustment value must be negative'),
     reason: z.string().min(1, 'Adjustment reason is required')
   }),
-  manager_approval: z.object({
-    manager_id: z.string().uuid('Manager ID must be a valid UUID'),
-    approval_code: z.string().min(1, 'Approval code is required')
-  }).optional(),
+  manager_approval: z
+    .object({
+      manager_id: z.string().uuid('Manager ID must be a valid UUID'),
+      approval_code: z.string().min(1, 'Approval code is required')
+    })
+    .optional(),
   adjustment_metadata: z.record(z.any()).optional().default({})
 })
 
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const organizationId = request.headers.get('x-organization-id')
     if (!organizationId) {
       return NextResponse.json(
-        { 
+        {
           error: 'ORGANIZATION_CONTEXT_MISSING',
           message: 'Organization context is required for adjustment operations',
           details: 'Ensure middleware is properly configured'
@@ -124,7 +126,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         manager_approved: !!validatedPayload.manager_approval
       }
     })
-
   } catch (error) {
     console.error('Service adjustment error:', error)
 
@@ -167,19 +168,19 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 // Map procedure error codes to HTTP status codes
 function getStatusCodeFromError(errorCode: string): number {
   const errorMap: Record<string, number> = {
-    'SALE_NOT_FOUND': 404,
-    'SALE_NOT_COMMITTED': 400,
-    'SERVICE_LINE_NOT_FOUND': 404,
-    'POSITIVE_ADJUSTMENT_ATTEMPTED': 400,
-    'MANAGER_APPROVAL_REQUIRED': 403,
-    'INVALID_APPROVAL_CODE': 403,
-    'ADJUSTMENT_LIMIT_EXCEEDED': 400,
-    'DUPLICATE_ADJUSTMENT': 409,
-    'TAX_CALCULATION_ERROR': 500,
-    'PAYMENT_NOT_FOUND': 404,
-    'REFUND_AMOUNT_EXCEEDED': 400,
-    'GATEWAY_REFUND_FAILED': 502,
-    'GL_POSTING_FAILED': 500
+    SALE_NOT_FOUND: 404,
+    SALE_NOT_COMMITTED: 400,
+    SERVICE_LINE_NOT_FOUND: 404,
+    POSITIVE_ADJUSTMENT_ATTEMPTED: 400,
+    MANAGER_APPROVAL_REQUIRED: 403,
+    INVALID_APPROVAL_CODE: 403,
+    ADJUSTMENT_LIMIT_EXCEEDED: 400,
+    DUPLICATE_ADJUSTMENT: 409,
+    TAX_CALCULATION_ERROR: 500,
+    PAYMENT_NOT_FOUND: 404,
+    REFUND_AMOUNT_EXCEEDED: 400,
+    GATEWAY_REFUND_FAILED: 502,
+    GL_POSTING_FAILED: 500
   }
 
   return errorMap[errorCode] || 500

@@ -25,7 +25,7 @@ export default function AppointmentsCalendarPage() {
 
   // Set up filters for current organization
   const filters: AppointmentFilters = {
-    organization_id: organizationId || '',
+    organization_id: organizationId || ''
     // Can add date range filters here if needed
   }
 
@@ -43,9 +43,7 @@ export default function AppointmentsCalendarPage() {
     return (
       <Card className="text-center p-8">
         <p className="text-red-600 mb-4">Error loading appointments</p>
-        <ButtonPrimary onClick={() => window.location.reload()}>
-          Retry
-        </ButtonPrimary>
+        <ButtonPrimary onClick={() => window.location.reload()}>Retry</ButtonPrimary>
       </Card>
     )
   }
@@ -55,18 +53,11 @@ export default function AppointmentsCalendarPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Appointments Calendar
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            View and manage all salon appointments
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Appointments Calendar</h1>
+          <p className="text-sm text-gray-600 mt-1">View and manage all salon appointments</p>
         </div>
-        
-        <ButtonPrimary
-          onClick={handleNewAppointment}
-          icon={<Plus className="w-4 h-4" />}
-        >
+
+        <ButtonPrimary onClick={handleNewAppointment} icon={<Plus className="w-4 h-4" />}>
           Book Appointment
         </ButtonPrimary>
       </div>
@@ -85,36 +76,40 @@ export default function AppointmentsCalendarPage() {
             <div className="text-center">
               <p className="text-sm font-medium text-gray-600">Today</p>
               <p className="text-2xl font-bold text-primary">
-                {appointments.filter(apt => {
-                  const today = new Date()
-                  const aptDate = new Date(apt.start_time)
-                  return (
-                    aptDate.getDate() === today.getDate() &&
-                    aptDate.getMonth() === today.getMonth() &&
-                    aptDate.getFullYear() === today.getFullYear()
-                  )
-                }).length}
+                {
+                  appointments.filter(apt => {
+                    const today = new Date()
+                    const aptDate = new Date(apt.start_time)
+                    return (
+                      aptDate.getDate() === today.getDate() &&
+                      aptDate.getMonth() === today.getMonth() &&
+                      aptDate.getFullYear() === today.getFullYear()
+                    )
+                  }).length
+                }
               </p>
             </div>
           </Card>
-          
+
           <Card padding="md">
             <div className="text-center">
               <p className="text-sm font-medium text-gray-600">This Week</p>
               <p className="text-2xl font-bold text-primary">
-                {appointments.filter(apt => {
-                  const now = new Date()
-                  const aptDate = new Date(apt.start_time)
-                  const weekStart = new Date(now)
-                  weekStart.setDate(now.getDate() - now.getDay())
-                  const weekEnd = new Date(weekStart)
-                  weekEnd.setDate(weekStart.getDate() + 6)
-                  return aptDate >= weekStart && aptDate <= weekEnd
-                }).length}
+                {
+                  appointments.filter(apt => {
+                    const now = new Date()
+                    const aptDate = new Date(apt.start_time)
+                    const weekStart = new Date(now)
+                    weekStart.setDate(now.getDate() - now.getDay())
+                    const weekEnd = new Date(weekStart)
+                    weekEnd.setDate(weekStart.getDate() + 6)
+                    return aptDate >= weekStart && aptDate <= weekEnd
+                  }).length
+                }
               </p>
             </div>
           </Card>
-          
+
           <Card padding="md">
             <div className="text-center">
               <p className="text-sm font-medium text-gray-600">Confirmed</p>
@@ -123,7 +118,7 @@ export default function AppointmentsCalendarPage() {
               </p>
             </div>
           </Card>
-          
+
           <Card padding="md">
             <div className="text-center">
               <p className="text-sm font-medium text-gray-600">In Progress</p>

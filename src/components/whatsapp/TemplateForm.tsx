@@ -13,25 +13,31 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
-import { 
-  MessageSquare, 
-  Plus, 
+import {
+  MessageSquare,
+  Plus,
   X,
-  AlertCircle, 
-  CheckCircle, 
+  AlertCircle,
+  CheckCircle,
   Eye,
   Wand2,
   FileText,
@@ -40,7 +46,12 @@ import {
 } from 'lucide-react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { WaTemplate, validateTemplateVariables, renderTemplate, HERA_MSP_CONFIG } from '@/lib/schemas/whatsapp'
+import {
+  WaTemplate,
+  validateTemplateVariables,
+  renderTemplate,
+  HERA_MSP_CONFIG
+} from '@/lib/schemas/whatsapp'
 
 interface TemplateFormProps {
   open: boolean
@@ -50,10 +61,16 @@ interface TemplateFormProps {
   isSubmitting: boolean
 }
 
-export function TemplateForm({ open, onOpenChange, template, onSubmit, isSubmitting }: TemplateFormProps) {
-  const [previewVariables, setPreviewVariables] = React.useState<Record<string, string>>({});
-const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
-const form = useForm<WaTemplate>({
+export function TemplateForm({
+  open,
+  onOpenChange,
+  template,
+  onSubmit,
+  isSubmitting
+}: TemplateFormProps) {
+  const [previewVariables, setPreviewVariables] = React.useState<Record<string, string>>({})
+  const [validationErrors, setValidationErrors] = React.useState<string[]>([])
+  const form = useForm<WaTemplate>({
     resolver: zodResolver(WaTemplate),
     defaultValues: template || {
       name: '',
@@ -63,8 +80,12 @@ const form = useForm<WaTemplate>({
       variables: [],
       sample: {}
     }
-  });
-const { fields: variableFields, append: appendVariable, remove: removeVariable } = useFieldArray({
+  })
+  const {
+    fields: variableFields,
+    append: appendVariable,
+    remove: removeVariable
+  } = useFieldArray({
     control: form.control,
     name: 'variables'
   })
@@ -93,9 +114,9 @@ const { fields: variableFields, append: appendVariable, remove: removeVariable }
 
   // Validate template variables when body or variables change
   React.useEffect(() => {
-    const body = form.watch('body');
-const variables = form.watch('variables')
-    
+    const body = form.watch('body')
+    const variables = form.watch('variables')
+
     if (body && variables) {
       const templateData = { ...form.getValues() }
       const validation = validateTemplateVariables(templateData)
@@ -114,7 +135,7 @@ const variables = form.watch('variables')
 
     // Clear existing variables and add detected ones
     form.setValue('variables', detectedVariables)
-    
+
     // Initialize preview variables
     const newPreviewVars: Record<string, string> = {}
     detectedVariables.forEach(varName => {
@@ -165,16 +186,16 @@ const variables = form.watch('variables')
   }
 
   const getPreviewText = () => {
-    const templateData = form.getValues();
-return renderTemplate(templateData, previewVariables)
+    const templateData = form.getValues()
+    return renderTemplate(templateData, previewVariables)
   }
 
   const handleSubmit = async (data: WaTemplate) => {
     // Final validation
     const validation = validateTemplateVariables(data)
     if (!validation.isValid) {
-      setValidationErrors(validation.errors);
-return
+      setValidationErrors(validation.errors)
+      return
     }
 
     // Add sample data for preview
@@ -192,8 +213,8 @@ return
     }
   }
 
-  const isValid = validationErrors.length === 0 && form.watch('name') && form.watch('body');
-return (
+  const isValid = validationErrors.length === 0 && form.watch('name') && form.watch('body')
+  return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -202,13 +223,14 @@ return (
             {template ? 'Edit Template' : 'Create Template'}
           </DialogTitle>
           <DialogDescription>
-            {template 
-              ? `Edit the WhatsApp message template "${template.name}"`              : 'Create a new WhatsApp message template for your organization'            }`
+            {template
+              ? `Edit the WhatsApp message template "${template.name}"`
+              : 'Create a new WhatsApp message template for your organization'}
+            `
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          
           <Tabs defaultValue="details" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details">Template Details</TabsTrigger>
@@ -222,7 +244,6 @@ return (
                   <CardTitle className="text-lg">Basic Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  
                   {/* Template Name */}
                   <div className="space-y-2">
                     <Label htmlFor="name">Template Name *</Label>
@@ -236,9 +257,7 @@ return (
                       Uppercase letters, numbers, and underscores only
                     </p>
                     {form.formState.errors.name && (
-                      <p className="text-sm text-red-600">
-                        {form.formState.errors.name.message}
-                      </p>
+                      <p className="text-sm text-red-600">{form.formState.errors.name.message}</p>
                     )}
                   </div>
 
@@ -248,13 +267,13 @@ return (
                       <Label htmlFor="language">Language</Label>
                       <Select
                         value={form.watch('language')}
-                        onValueChange={(value) => form.setValue('language', value)}
+                        onValueChange={value => form.setValue('language', value)}
                       >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {HERA_MSP_CONFIG.SUPPORTED_LANGUAGES.map((lang) => (
+                          {HERA_MSP_CONFIG.SUPPORTED_LANGUAGES.map(lang => (
                             <SelectItem key={lang} value={lang}>
                               {lang.toUpperCase()}
                             </SelectItem>
@@ -279,9 +298,7 @@ return (
                           <SelectItem value="authentication">Authentication</SelectItem>
                         </SelectContent>
                       </Select>
-                      <p className="text-sm text-gray-500">
-                        Utility templates are approved faster
-                      </p>
+                      <p className="text-sm text-gray-500">Utility templates are approved faster</p>
                     </div>
                   </div>
 
@@ -313,12 +330,9 @@ return (
                       </span>
                     </div>
                     {form.formState.errors.body && (
-                      <p className="text-sm text-red-600">
-                        {form.formState.errors.body.message}
-                      </p>
+                      <p className="text-sm text-red-600">{form.formState.errors.body.message}</p>
                     )}
                   </div>
-
                 </CardContent>
               </Card>
 
@@ -328,7 +342,6 @@ return (
                   <CardTitle className="text-lg">Template Features</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-3">
                       <Image className="h-5 w-5 text-blue-600" />
@@ -339,9 +352,7 @@ return (
                     </div>
                     <Switch
                       checked={form.watch('sample')?.allow_media || false}
-                      onCheckedChange={(checked) => 
-                        form.setValue('sample.allow_media', checked)
-                      }
+                      onCheckedChange={checked => form.setValue('sample.allow_media', checked)}
                     />
                   </div>
 
@@ -350,15 +361,13 @@ return (
                       <MousePointer className="h-5 w-5 text-purple-600" />
                       <div>
                         <Label>Interactive Elements</Label>
-                        <p className="text-sm text-gray-500">Buttons and quick replies (Coming Soon)</p>
+                        <p className="text-sm text-gray-500">
+                          Buttons and quick replies (Coming Soon)
+                        </p>
                       </div>
                     </div>
-                    <Switch
-                      checked={false}
-                      disabled
-                    />
+                    <Switch checked={false} disabled />
                   </div>
-
                 </CardContent>
               </Card>
             </TabsContent>
@@ -381,7 +390,6 @@ return (
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  
                   {variableFields.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
@@ -393,12 +401,13 @@ return (
                       {variableFields.map((field, index) => {
                         const varName = form.watch(`variables.${index}`)
                         return (
-                          <div key={field.id} className="flex items-center space-x-3">`
+                          <div key={field.id} className="flex items-center space-x-3">
+                            `
                             <div className="flex-1">
                               <Input
                                 placeholder="variable_name"
                                 value={varName}
-                                onChange={(e) => handleVariableChange(varName, e.target.value, index)}
+                                onChange={e => handleVariableChange(varName, e.target.value, index)}
                                 className="font-mono"
                               />
                             </div>
@@ -406,7 +415,7 @@ return (
                               <Input
                                 placeholder="Sample value for preview"
                                 value={previewVariables[varName] || ''}
-                                onChange={(e) => handlePreviewVariableChange(varName, e.target.value)}
+                                onChange={e => handlePreviewVariableChange(varName, e.target.value)}
                               />
                             </div>
                             <Button
@@ -426,11 +435,11 @@ return (
                   {variableFields.length >= HERA_MSP_CONFIG.MAX_TEMPLATE_VARIABLES && (
                     <Alert>
                       <AlertDescription>
-                        Maximum {HERA_MSP_CONFIG.MAX_TEMPLATE_VARIABLES} variables allowed per template
+                        Maximum {HERA_MSP_CONFIG.MAX_TEMPLATE_VARIABLES} variables allowed per
+                        template
                       </AlertDescription>
                     </Alert>
                   )}
-
                 </CardContent>
               </Card>
             </TabsContent>
@@ -444,7 +453,6 @@ return (
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  
                   {form.watch('body') ? (
                     <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950/30 dark:to-green-900/30 rounded-lg p-4 border-l-4 border-green-500">
                       <div className="flex items-center gap-2 mb-3">
@@ -466,7 +474,6 @@ return (
                       <p>Enter template body to see preview</p>
                     </div>
                   )}
-
                 </CardContent>
               </Card>
             </TabsContent>
@@ -480,7 +487,9 @@ return (
                 <div className="font-medium mb-1">Template validation failed:</div>
                 <ul className="list-disc list-inside space-y-1">
                   {validationErrors.map((error, index) => (
-                    <li key={index} className="text-sm">{error}</li>
+                    <li key={index} className="text-sm">
+                      {error}
+                    </li>
                   ))}
                 </ul>
               </AlertDescription>
@@ -496,7 +505,6 @@ return (
               </AlertDescription>
             </Alert>
           )}
-
         </form>
 
         <Separator />
@@ -510,10 +518,7 @@ return (
           >
             Cancel
           </Button>
-          <Button
-            onClick={form.handleSubmit(handleSubmit)}
-            disabled={!isValid || isSubmitting}
-          >
+          <Button onClick={form.handleSubmit(handleSubmit)} disabled={!isValid || isSubmitting}>
             {isSubmitting ? 'Saving...' : template ? 'Update Template' : 'Create Template'}
           </Button>
         </DialogFooter>

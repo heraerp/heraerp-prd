@@ -57,12 +57,24 @@ export interface SidebarItem {
 // Main sidebar items (production ready)
 const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-  { title: 'Appointments', href: '/salon/appointments', icon: Calendar, badge: '3', badgeColor: 'bg-violet-500' },
+  {
+    title: 'Appointments',
+    href: '/salon/appointments',
+    icon: Calendar,
+    badge: '3',
+    badgeColor: 'bg-violet-500'
+  },
   { title: 'POS', href: '/salon/pos2', icon: CreditCard },
   { title: 'Clients', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },
   { title: 'Inventory', href: '/salon/inventory', icon: Package },
-  { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageCircle, badge: '5', badgeColor: 'bg-green-500' },
+  {
+    title: 'WhatsApp',
+    href: '/salon/whatsapp',
+    icon: MessageCircle,
+    badge: '5',
+    badgeColor: 'bg-green-500'
+  },
   { title: 'Reports', href: '/salon/reports', icon: BarChart }
 ]
 
@@ -75,16 +87,16 @@ const allApps: SidebarItem[] = [
   { title: 'Customers', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },
   { title: 'Inventory', href: '/salon/inventory', icon: Package },
-  
+
   // Communication
   { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageCircle },
   { title: 'Marketing', href: '/salon/marketing', icon: Megaphone },
-  
+
   // Staff Management
   { title: 'Team', href: '/salon/team', icon: UserPlus },
   { title: 'Leave', href: '/salon/leave', icon: CalendarCheck },
   { title: 'Payroll', href: '/salon/payroll', icon: DollarSign },
-  
+
   // Financial
   { title: 'Finance', href: '/salon/finance', icon: TrendingDown },
   { title: 'P&L Report', href: '/salon/reports/pnl', icon: BarChart3 },
@@ -97,27 +109,27 @@ const allApps: SidebarItem[] = [
     badge: 'AI',
     badgeColor: 'bg-purple-500'
   },
-  
+
   // Reports & Analytics
   { title: 'Reports', href: '/salon/reports', icon: BarChart },
   { title: 'Analytics', href: '/salon/analytics', icon: TrendingUp },
-  
+
   // Products & Sales
   { title: 'Products', href: '/salon/products', icon: ShoppingBag },
   { title: 'Invoices', href: '/salon/invoices', icon: Receipt },
   { title: 'Payments', href: '/salon/payments', icon: CreditCard },
-  
+
   // Loyalty & Reviews
   { title: 'Promotions', href: '/salon/promotions', icon: Gift },
   { title: 'Reviews', href: '/salon/reviews', icon: Star },
   { title: 'Rewards', href: '/salon/rewards', icon: Award },
-  
+
   // Administration
   { title: 'Settings', href: '/salon/settings', icon: Settings },
   { title: 'Security', href: '/salon/security', icon: Shield },
   { title: 'HR Portal', href: '/salon/hr', icon: Briefcase },
   { title: 'Training', href: '/salon/training', icon: BookOpen },
-  
+
   // Others
   { title: 'Gallery', href: '/salon/gallery', icon: Camera },
   { title: 'Themes', href: '/salon/themes', icon: Palette },
@@ -160,7 +172,9 @@ function AppsModal({
           <div className="flex items-center justify-between p-6 border-b border-border/50">
             <div>
               <h2 className="text-2xl font-bold text-foreground">All Apps</h2>
-              <p className="text-sm text-muted-foreground mt-1">Access all your salon management tools</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Access all your salon management tools
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -201,14 +215,18 @@ function AppsModal({
                       <Icon
                         className={cn(
                           'h-6 w-6',
-                          active ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'
+                          active
+                            ? 'text-foreground'
+                            : 'text-muted-foreground group-hover:text-foreground'
                         )}
                       />
                     </div>
                     <span
                       className={cn(
                         'text-xs font-medium text-center',
-                        active ? 'text-violet-400' : 'text-muted-foreground group-hover:text-foreground'
+                        active
+                          ? 'text-violet-400'
+                          : 'text-muted-foreground group-hover:text-foreground'
                       )}
                     >
                       {app.title}
@@ -225,7 +243,11 @@ function AppsModal({
   )
 }
 
-export default function SalonDarkSidebar({ extraItems = [] as SidebarItem[] }: { extraItems?: SidebarItem[] }) {
+export default function SalonDarkSidebar({
+  extraItems = [] as SidebarItem[]
+}: {
+  extraItems?: SidebarItem[]
+}) {
   const pathname = usePathname()
   const [showAppsModal, setShowAppsModal] = useState(false)
 
@@ -237,20 +259,27 @@ export default function SalonDarkSidebar({ extraItems = [] as SidebarItem[] }: {
   }
 
   return (
-    <div className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r"
-         style={{
-           backgroundColor: '#1A1A1A',                      // light charcoal
-           borderColor: 'rgba(245,230,200,0.08)',
-           boxShadow: 'inset -1px 0 0 rgba(0,0,0,0.45), 0 10px 30px rgba(0,0,0,0.5)',
-         }}>
+    <div
+      className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r"
+      style={{
+        backgroundColor: '#1A1A1A', // light charcoal
+        borderColor: 'rgba(245,230,200,0.08)',
+        boxShadow: 'inset -1px 0 0 rgba(0,0,0,0.45), 0 10px 30px rgba(0,0,0,0.5)'
+      }}
+    >
       {/* Right edge highlight */}
-      <div className="absolute top-0 right-0 h-full w-px pointer-events-none"
-           style={{
-             background:
-               'linear-gradient(to bottom, rgba(245,230,200,0.28), rgba(212,175,55,0.12), transparent)',
-           }} />
+      <div
+        className="absolute top-0 right-0 h-full w-px pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(245,230,200,0.28), rgba(212,175,55,0.12), transparent)'
+        }}
+      />
       {/* Logo Section */}
-      <div className="h-20 flex flex-col items-center justify-center border-b" style={{ borderColor: 'rgba(245,230,200,0.08)', backgroundColor: 'rgba(0,0,0,0.2)' }}>
+      <div
+        className="h-20 flex flex-col items-center justify-center border-b"
+        style={{ borderColor: 'rgba(245,230,200,0.08)', backgroundColor: 'rgba(0,0,0,0.2)' }}
+      >
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#B8860B] flex items-center justify-center shadow-lg">
           <Sparkles className="h-6 w-6 text-[#0B0B0B]" />
         </div>
@@ -304,7 +333,9 @@ export default function SalonDarkSidebar({ extraItems = [] as SidebarItem[] }: {
                 <span
                   className={cn(
                     'text-[9px] mt-0.5 font-medium text-center leading-tight',
-                    active ? (item.activeColor || 'text-[#F5E6C8]') : 'text-[#E0E0E0]/80 group-hover:text-[#F5E6C8]'
+                    active
+                      ? item.activeColor || 'text-[#F5E6C8]'
+                      : 'text-[#E0E0E0]/80 group-hover:text-[#F5E6C8]'
                   )}
                 >
                   {displayTitle}

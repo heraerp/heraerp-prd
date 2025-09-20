@@ -18,18 +18,8 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSalonPosIntegration } from '@/lib/playbook/salon-pos-integration'
@@ -68,16 +58,16 @@ export function PaymentDialog({
   const [validationWarnings, setValidationWarnings] = useState<string[]>([])
 
   const { validatePosTicket, processPosTransaction } = useSalonPosIntegration(organizationId)
-  
+
   // Cash specific
   const [cashAmount, setCashAmount] = useState('')
   const [changeAmount, setChangeAmount] = useState(0)
-  
+
   // Card specific
   const [cardAmount, setCardAmount] = useState('')
   const [cardType, setCardType] = useState('visa')
   const [cardReference, setCardReference] = useState('')
-  
+
   // Voucher specific
   const [voucherAmount, setVoucherAmount] = useState('')
   const [voucherCode, setVoucherCode] = useState('')
@@ -88,9 +78,9 @@ export function PaymentDialog({
   const quickAmounts = [
     exactAmount, // Exact amount
     roundedAmount, // Rounded amount
-    20, 
-    50, 
-    100, 
+    20,
+    50,
+    100,
     200
   ].filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
 
@@ -105,7 +95,7 @@ export function PaymentDialog({
     const totalCashPaid = cashPayments.reduce((sum, p) => sum + p.amount, 0)
     const currentCashInput = parseFloat(cashAmount) || 0
     const potentialCashTotal = totalCashPaid + currentCashInput
-    
+
     if (potentialCashTotal > (totals?.total || 0)) {
       setChangeAmount(potentialCashTotal - (totals?.total || 0))
     } else {
@@ -179,7 +169,7 @@ export function PaymentDialog({
     try {
       // First validate the ticket
       const validation = await validatePosTicket(ticket)
-      
+
       if (!validation.isValid) {
         setError(`Validation failed: ${validation.errors.join(', ')}`)
         setProcessing(false)
@@ -220,7 +210,6 @@ export function PaymentDialog({
       }
 
       onComplete(saleData)
-
     } catch (err) {
       console.error('Payment processing error:', err)
       setError(err instanceof Error ? err.message : 'Payment processing failed')
@@ -243,19 +232,27 @@ export function PaymentDialog({
 
   const getPaymentIcon = (type: string) => {
     switch (type) {
-      case 'cash': return <Banknote className="w-4 h-4" />
-      case 'card': return <CreditCard className="w-4 h-4" />
-      case 'voucher': return <Gift className="w-4 h-4" />
-      default: return <CreditCard className="w-4 h-4" />
+      case 'cash':
+        return <Banknote className="w-4 h-4" />
+      case 'card':
+        return <CreditCard className="w-4 h-4" />
+      case 'voucher':
+        return <Gift className="w-4 h-4" />
+      default:
+        return <CreditCard className="w-4 h-4" />
     }
   }
 
   const getPaymentColor = (type: string) => {
     switch (type) {
-      case 'cash': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'card': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'voucher': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'cash':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'card':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case 'voucher':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
@@ -308,7 +305,7 @@ export function PaymentDialog({
           {/* Payment Methods */}
           <div>
             <h3 className="font-medium mb-3 text-slate-900 dark:text-white">Payment Methods</h3>
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+            <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="card" className="flex items-center gap-2">
                   <CreditCard className="w-4 h-4" />
@@ -333,15 +330,15 @@ export function PaymentDialog({
                       step="0.01"
                       placeholder="0.00"
                       value={cardAmount}
-                      onChange={(e) => setCardAmount(e.target.value)}
+                      onChange={e => setCardAmount(e.target.value)}
                     />
                   </div>
                   <div>
                     <Label>Card Type</Label>
-                    <select 
+                    <select
                       className="w-full p-2 border rounded-md"
                       value={cardType}
-                      onChange={(e) => setCardType(e.target.value)}
+                      onChange={e => setCardType(e.target.value)}
                     >
                       <option value="visa">Visa</option>
                       <option value="mastercard">Mastercard</option>
@@ -355,10 +352,10 @@ export function PaymentDialog({
                   <Input
                     placeholder="1234"
                     value={cardReference}
-                    onChange={(e) => setCardReference(e.target.value)}
+                    onChange={e => setCardReference(e.target.value)}
                   />
                 </div>
-                <Button 
+                <Button
                   onClick={() => addPayment('card')}
                   disabled={!cardAmount || parseFloat(cardAmount) <= 0}
                   className="w-full"
@@ -376,10 +373,10 @@ export function PaymentDialog({
                     step="0.01"
                     placeholder="0.00"
                     value={cashAmount}
-                    onChange={(e) => setCashAmount(e.target.value)}
+                    onChange={e => setCashAmount(e.target.value)}
                   />
                 </div>
-                
+
                 {/* Quick Cash Buttons */}
                 <div>
                   <Label className="text-sm text-muted-foreground">Quick amounts:</Label>
@@ -387,15 +384,16 @@ export function PaymentDialog({
                     {quickAmounts.map((amount, index) => (
                       <Button
                         key={amount}
-                        variant={index === 0 ? "default" : "outline"}
+                        variant={index === 0 ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => addQuickCash(amount)}
                         className={cn(
-                          "text-xs",
-                          index === 0 && "bg-green-600 hover:bg-green-700 text-white border-green-600"
+                          'text-xs',
+                          index === 0 &&
+                            'bg-green-600 hover:bg-green-700 text-white border-green-600'
                         )}
                       >
-                        {index === 0 ? "Exact" : ""} ${amount.toFixed(amount % 1 === 0 ? 0 : 2)}
+                        {index === 0 ? 'Exact' : ''} ${amount.toFixed(amount % 1 === 0 ? 0 : 2)}
                       </Button>
                     ))}
                   </div>
@@ -410,7 +408,7 @@ export function PaymentDialog({
                   </Alert>
                 )}
 
-                <Button 
+                <Button
                   onClick={() => addPayment('cash')}
                   disabled={!cashAmount || parseFloat(cashAmount) <= 0}
                   className="w-full"
@@ -429,7 +427,7 @@ export function PaymentDialog({
                       step="0.01"
                       placeholder="0.00"
                       value={voucherAmount}
-                      onChange={(e) => setVoucherAmount(e.target.value)}
+                      onChange={e => setVoucherAmount(e.target.value)}
                     />
                   </div>
                   <div>
@@ -437,11 +435,11 @@ export function PaymentDialog({
                     <Input
                       placeholder="VOUCHER123"
                       value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
+                      onChange={e => setVoucherCode(e.target.value)}
                     />
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={() => addPayment('voucher')}
                   disabled={!voucherAmount || !voucherCode || parseFloat(voucherAmount) <= 0}
                   className="w-full"
@@ -458,17 +456,15 @@ export function PaymentDialog({
             <div>
               <h3 className="font-medium mb-3">Added Payments</h3>
               <div className="space-y-2">
-                {payments.map((payment) => (
-                  <div 
+                {payments.map(payment => (
+                  <div
                     key={payment.id}
                     className="flex items-center justify-between p-3 border rounded-md"
                   >
                     <div className="flex items-center gap-3">
                       {getPaymentIcon(payment.type)}
                       <div>
-                        <div className="font-medium">
-                          ${payment.amount.toFixed(2)}
-                        </div>
+                        <div className="font-medium">${payment.amount.toFixed(2)}</div>
                         <div className="text-sm text-muted-foreground">
                           {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
                           {payment.reference && ` - ${payment.reference}`}
@@ -512,8 +508,12 @@ export function PaymentDialog({
                 </div>
               ) : changeAmount > 0 ? (
                 <div className="flex justify-between text-lg bg-green-100 dark:bg-green-900/30 p-2 rounded">
-                  <span className="font-medium text-green-700 dark:text-green-300">Change Due:</span>
-                  <span className="font-bold text-green-700 dark:text-green-300">${changeAmount.toFixed(2)}</span>
+                  <span className="font-medium text-green-700 dark:text-green-300">
+                    Change Due:
+                  </span>
+                  <span className="font-bold text-green-700 dark:text-green-300">
+                    ${changeAmount.toFixed(2)}
+                  </span>
                 </div>
               ) : null}
             </div>
@@ -535,7 +535,9 @@ export function PaymentDialog({
                 <div className="space-y-1">
                   <div className="font-medium">Warnings:</div>
                   {validationWarnings.map((warning, index) => (
-                    <div key={index} className="text-sm">• {warning}</div>
+                    <div key={index} className="text-sm">
+                      • {warning}
+                    </div>
                   ))}
                 </div>
               </AlertDescription>
@@ -547,7 +549,7 @@ export function PaymentDialog({
             <Button variant="outline" onClick={handleClose} disabled={processing}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={processPayment}
               disabled={!isFullyPaid || processing}
               className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"

@@ -5,7 +5,7 @@ import '@testing-library/jest-dom'
 
 // Mock the LeaveApprovalDrawer component
 jest.mock('../LeaveApprovalDrawer', () => ({
-  LeaveApprovalDrawer: ({ open, onClose }: any) => 
+  LeaveApprovalDrawer: ({ open, onClose }: any) =>
     open ? <div data-testid="approval-drawer">Approval Drawer</div> : null
 }))
 

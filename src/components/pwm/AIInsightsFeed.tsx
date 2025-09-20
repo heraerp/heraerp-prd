@@ -126,7 +126,9 @@ export function AIInsightsFeed({
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-foreground mb-1">{insight.title}</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{insight.description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {insight.description}
+                  </p>
                 </div>
               </div>
               <Badge variant="outline" className={cn('ml-3', getPriorityColor(insight.priority))}>

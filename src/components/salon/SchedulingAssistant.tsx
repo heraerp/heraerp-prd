@@ -532,7 +532,9 @@ export function SchedulingAssistant({
           ) : (
             <div className="text-center py-8">
               <CalendarX className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground dark:text-muted-foreground">No available slots today</p>
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                No available slots today
+              </p>
             </div>
           )}
         </ScrollArea>

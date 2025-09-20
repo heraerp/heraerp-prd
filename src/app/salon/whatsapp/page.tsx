@@ -61,7 +61,9 @@ import { BookingAutomationService } from '@/lib/whatsapp/booking-automation'
 // Dynamically import components to avoid build issues
 const BookingAutomationPanel = dynamicImport(
   () =>
-    import('@/components/whatsapp/BookingAutomationPanel').then(mod => mod.default || mod.BookingAutomationPanel),
+    import('@/components/whatsapp/BookingAutomationPanel').then(
+      mod => mod.default || mod.BookingAutomationPanel
+    ),
   {
     loading: () => (
       <div className="p-4 bg-muted/50 border border-border rounded-lg animate-pulse">
@@ -146,14 +148,20 @@ const mcpApi = {
 
 // Playbook sender function
 async function sendWhatsAppPB({
-  to, template_code, params, text, media, metadata, organizationId
+  to,
+  template_code,
+  params,
+  text,
+  media,
+  metadata,
+  organizationId
 }: {
-  to: string,
-  template_code?: string,
-  params?: Record<string,string>,
-  text?: string,
-  media?: { type:'image'|'document'; url:string },
-  metadata?: Record<string,any>,
+  to: string
+  template_code?: string
+  params?: Record<string, string>
+  text?: string
+  media?: { type: 'image' | 'document'; url: string }
+  metadata?: Record<string, any>
   organizationId: string
 }) {
   const headers: HeadersInit = {
@@ -170,13 +178,19 @@ async function sendWhatsAppPB({
     metadata: { source: 'WHATSAPP_UI', ...(metadata ?? {}) }
   }
   const res = await fetch('/api/v1/salon/comms/whatsapp/send', {
-    method: 'POST', headers, body: JSON.stringify(body)
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body)
   })
   if (!res.ok) throw new Error('Send failed')
   return res.json() // expect { _mode:'playbook', message_id, status }
 }
 
-export default function SalonWhatsAppPage({ searchParams }: { searchParams: Promise<{ org_id?: string }> | { org_id?: string } }) {
+export default function SalonWhatsAppPage({
+  searchParams
+}: {
+  searchParams: Promise<{ org_id?: string }> | { org_id?: string }
+}) {
   const router = useRouter()
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -202,7 +216,7 @@ export default function SalonWhatsAppPage({ searchParams }: { searchParams: Prom
   })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [orgId, setOrgId] = useState(HAIR_TALKZ_ORG)
-  
+
   // Handle async searchParams
   useEffect(() => {
     const resolveOrgId = async () => {
@@ -540,11 +554,11 @@ export default function SalonWhatsAppPage({ searchParams }: { searchParams: Prom
       // Use Playbook API to send message
       const sendResult = await sendWhatsAppPB({
         to: selectedContact.phone,
-        ...(isWindowOpen 
-          ? { text: messageInput } 
-          : { 
-              template_code: 'GENERAL_RESPONSE_v1', 
-              params: { message: messageInput } 
+        ...(isWindowOpen
+          ? { text: messageInput }
+          : {
+              template_code: 'GENERAL_RESPONSE_v1',
+              params: { message: messageInput }
             }),
         organizationId: orgId
       })
@@ -578,7 +592,7 @@ export default function SalonWhatsAppPage({ searchParams }: { searchParams: Prom
             prev.map(msg => (msg.id === newMessage.id ? { ...msg, status: 'delivered' } : msg))
           )
         }, 1500)
-        
+
         // Refresh messages after a short delay to get the actual sent message
         setTimeout(() => {
           fetchWhatsAppData()

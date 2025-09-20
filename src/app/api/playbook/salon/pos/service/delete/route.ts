@@ -6,7 +6,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const body = await req.json()
     const parsed = ServiceDeleteSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Validation failed', details: parsed.error.flatten() },
@@ -27,10 +27,7 @@ export async function DELETE(req: NextRequest) {
       .single()
 
     if (fetchError || !existingEntity) {
-      return NextResponse.json(
-        { error: 'Service not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
     // Check if already archived
@@ -38,7 +35,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({
         id: service.id,
         deleted: true,
-        message: 'Service already archived',
+        message: 'Service already archived'
       })
     }
 
@@ -59,34 +56,28 @@ export async function DELETE(req: NextRequest) {
 
     // Create audit transaction
     if (actor_user_id) {
-      await supabase
-        .from('universal_transactions')
-        .insert({
-          organization_id: orgId,
-          transaction_type: 'CATALOG_EVENT',
-          smart_code,
-          source_entity_id: actor_user_id,
-          target_entity_id: service.id,
-          total_amount: 0,
-          transaction_status: 'completed',
-          business_context: {
-            action: 'delete',
-            entity_type: 'salon_service',
-            entity_name: existingEntity.entity_name,
-          },
-        })
+      await supabase.from('universal_transactions').insert({
+        organization_id: orgId,
+        transaction_type: 'CATALOG_EVENT',
+        smart_code,
+        source_entity_id: actor_user_id,
+        target_entity_id: service.id,
+        total_amount: 0,
+        transaction_status: 'completed',
+        business_context: {
+          action: 'delete',
+          entity_type: 'salon_service',
+          entity_name: existingEntity.entity_name
+        }
+      })
     }
 
     return NextResponse.json({
       id: service.id,
-      deleted: true,
+      deleted: true
     })
-
   } catch (error) {
     console.error('Unexpected error in service deletion:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

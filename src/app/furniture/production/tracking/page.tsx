@@ -5,5 +5,5 @@ export default function page() {
       <h1 className="text-2xl font-bold">Page Under Construction</h1>
       <p className="text-gray-600 mt-2">This page is temporarily unavailable due to maintenance.</p>
     </div>
-  );
+  )
 }

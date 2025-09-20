@@ -314,7 +314,9 @@ export function TeamManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-100">GSPU Team Management</h1>
-          <p className="text-muted-foreground mt-1">Manage audit teams, assignments, and performance</p>
+          <p className="text-muted-foreground mt-1">
+            Manage audit teams, assignments, and performance
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
@@ -458,7 +460,9 @@ export function TeamManagement() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">{team.member_count || 0} members</p>
+                      <p className="text-sm text-muted-foreground">
+                        {team.member_count || 0} members
+                      </p>
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="w-3 h-3 text-yellow-500" />
                         <span className="text-xs text-muted-foreground">
@@ -780,7 +784,9 @@ function TeamDetails({
                       {member.availability_percentage}% available
                     </p>
                     {member.specialization.length > 0 && (
-                      <p className="text-xs text-muted-foreground">{member.specialization.join(', ')}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {member.specialization.join(', ')}
+                      </p>
                     )}
                   </div>
                 </div>

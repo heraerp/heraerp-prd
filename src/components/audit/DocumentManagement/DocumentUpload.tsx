@@ -254,7 +254,9 @@ export function DocumentUpload({
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
               <p className="text-sm text-muted-foreground">Uploading files...</p>
               <Progress value={uploadProgress} className="w-full" />
-              <p className="text-xs text-muted-foreground">{Math.round(uploadProgress)}% complete</p>
+              <p className="text-xs text-muted-foreground">
+                {Math.round(uploadProgress)}% complete
+              </p>
             </div>
           ) : (
             <div className="space-y-4">

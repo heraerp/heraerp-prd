@@ -1,25 +1,45 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useOrganization, useContacts, useUpdateOrganization, useCreateContact, useLogActivity } from '@/hooks/use-organizations';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { EngagementStageBadge } from '@/components/civicflow/EngagementStageBadge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  Building2, 
-  ArrowLeft, 
-  Users, 
-  Mail, 
-  Phone, 
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+  useOrganization,
+  useContacts,
+  useUpdateOrganization,
+  useCreateContact,
+  useLogActivity
+} from '@/hooks/use-organizations'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { EngagementStageBadge } from '@/components/civicflow/EngagementStageBadge'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Building2,
+  ArrowLeft,
+  Users,
+  Mail,
+  Phone,
   Calendar,
   MessageSquare,
   FileText,
@@ -27,38 +47,38 @@ import {
   Plus,
   User,
   Edit
-} from 'lucide-react';
-import type { EngagementStage, ActivityType } from '@/types/organizations';
+} from 'lucide-react'
+import type { EngagementStage, ActivityType } from '@/types/organizations'
 
 export default function Client({ id }: { id: string }) {
-  const router = useRouter();
-  const { currentOrgId } = useOrgStore();
-  const { data: org, isLoading } = useOrganization(id, currentOrgId || undefined);
-  const { data: contacts } = useContacts(id, currentOrgId || undefined);
-  const updateOrg = useUpdateOrganization(id, currentOrgId || undefined);
-  const createContact = useCreateContact(id);
-  const logActivity = useLogActivity(id, currentOrgId || '');
-  
-  const [activeTab, setActiveTab] = useState('overview');
-  const [isContactOpen, setIsContactOpen] = useState(false);
-  const [isActivityOpen, setIsActivityOpen] = useState(false);
-  const [isStageOpen, setIsStageOpen] = useState(false);
-  
+  const router = useRouter()
+  const { currentOrgId } = useOrgStore()
+  const { data: org, isLoading } = useOrganization(id, currentOrgId || undefined)
+  const { data: contacts } = useContacts(id, currentOrgId || undefined)
+  const updateOrg = useUpdateOrganization(id, currentOrgId || undefined)
+  const createContact = useCreateContact(id)
+  const logActivity = useLogActivity(id, currentOrgId || '')
+
+  const [activeTab, setActiveTab] = useState('overview')
+  const [isContactOpen, setIsContactOpen] = useState(false)
+  const [isActivityOpen, setIsActivityOpen] = useState(false)
+  const [isStageOpen, setIsStageOpen] = useState(false)
+
   // Form states
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [contactRole, setContactRole] = useState('');
-  
-  const [activityType, setActivityType] = useState<ActivityType>('note');
-  const [activitySubject, setActivitySubject] = useState('');
-  const [activityBody, setActivityBody] = useState('');
-  
-  const [newStage, setNewStage] = useState<EngagementStage>('Exploration');
+  const [contactName, setContactName] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
+  const [contactPhone, setContactPhone] = useState('')
+  const [contactRole, setContactRole] = useState('')
+
+  const [activityType, setActivityType] = useState<ActivityType>('note')
+  const [activitySubject, setActivitySubject] = useState('')
+  const [activityBody, setActivityBody] = useState('')
+
+  const [newStage, setNewStage] = useState<EngagementStage>('Exploration')
 
   const handleCreateContact = async () => {
-    if (!contactName || !currentOrgId) return;
-    
+    if (!contactName || !currentOrgId) return
+
     await createContact.mutateAsync({
       entity_type: 'person',
       entity_name: contactName,
@@ -68,42 +88,42 @@ export default function Client({ id }: { id: string }) {
         email: contactEmail,
         phone: contactPhone,
         role: contactRole,
-        org_entity_id: id,
+        org_entity_id: id
       }
-    });
-    
-    setIsContactOpen(false);
-    setContactName('');
-    setContactEmail('');
-    setContactPhone('');
-    setContactRole('');
-  };
+    })
+
+    setIsContactOpen(false)
+    setContactName('')
+    setContactEmail('')
+    setContactPhone('')
+    setContactRole('')
+  }
 
   const handleLogActivity = async () => {
-    if (!activitySubject) return;
-    
+    if (!activitySubject) return
+
     await logActivity.mutateAsync({
       type: activityType,
       occurred_at: new Date().toISOString(),
       subject: activitySubject,
-      body: activityBody,
-    });
-    
-    setIsActivityOpen(false);
-    setActivityType('note');
-    setActivitySubject('');
-    setActivityBody('');
-  };
+      body: activityBody
+    })
+
+    setIsActivityOpen(false)
+    setActivityType('note')
+    setActivitySubject('')
+    setActivityBody('')
+  }
 
   const handleUpdateStage = async () => {
     await updateOrg.mutateAsync({
       metadata: {
         ...org?.metadata,
-        engagement_stage: newStage,
+        engagement_stage: newStage
       }
-    });
-    setIsStageOpen(false);
-  };
+    })
+    setIsStageOpen(false)
+  }
 
   if (isLoading) {
     return (
@@ -112,7 +132,7 @@ export default function Client({ id }: { id: string }) {
         <Skeleton className="h-32 w-full" />
         <Skeleton className="h-64 w-full" />
       </div>
-    );
+    )
   }
 
   if (!org) {
@@ -124,7 +144,7 @@ export default function Client({ id }: { id: string }) {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -142,9 +162,7 @@ export default function Client({ id }: { id: string }) {
           <div>
             <h1 className="text-3xl font-bold text-text-100">{org.name}</h1>
             <div className="flex items-center gap-3 mt-2">
-              {org.metadata?.type && (
-                <Badge variant="outline">{org.metadata.type}</Badge>
-              )}
+              {org.metadata?.type && <Badge variant="outline">{org.metadata.type}</Badge>}
               {org.metadata?.engagement_stage && (
                 <EngagementStageBadge stage={org.metadata.engagement_stage} />
               )}
@@ -162,14 +180,15 @@ export default function Client({ id }: { id: string }) {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Log Activity</DialogTitle>
-                <DialogDescription>
-                  Record an interaction with this organization.
-                </DialogDescription>
+                <DialogDescription>Record an interaction with this organization.</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div>
                   <Label htmlFor="activity-type">Type</Label>
-                  <Select value={activityType} onValueChange={(v) => setActivityType(v as ActivityType)}>
+                  <Select
+                    value={activityType}
+                    onValueChange={v => setActivityType(v as ActivityType)}
+                  >
                     <SelectTrigger id="activity-type">
                       <SelectValue />
                     </SelectTrigger>
@@ -186,7 +205,7 @@ export default function Client({ id }: { id: string }) {
                   <Input
                     id="activity-subject"
                     value={activitySubject}
-                    onChange={(e) => setActivitySubject(e.target.value)}
+                    onChange={e => setActivitySubject(e.target.value)}
                     placeholder="Brief description"
                   />
                 </div>
@@ -195,15 +214,20 @@ export default function Client({ id }: { id: string }) {
                   <Textarea
                     id="activity-body"
                     value={activityBody}
-                    onChange={(e) => setActivityBody(e.target.value)}
+                    onChange={e => setActivityBody(e.target.value)}
                     placeholder="Add more details..."
                     rows={4}
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsActivityOpen(false)}>Cancel</Button>
-                <Button onClick={handleLogActivity} disabled={!activitySubject || logActivity.isPending}>
+                <Button variant="outline" onClick={() => setIsActivityOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleLogActivity}
+                  disabled={!activitySubject || logActivity.isPending}
+                >
                   {logActivity.isPending ? 'Logging...' : 'Log Activity'}
                 </Button>
               </DialogFooter>
@@ -247,7 +271,9 @@ export default function Client({ id }: { id: string }) {
                       <div className="flex gap-2 mt-1">
                         {org.metadata?.tags?.length ? (
                           org.metadata.tags.map((tag: string) => (
-                            <Badge key={tag} variant="secondary">{tag}</Badge>
+                            <Badge key={tag} variant="secondary">
+                              {tag}
+                            </Badge>
                           ))
                         ) : (
                           <span className="text-text-500">No tags</span>
@@ -286,7 +312,7 @@ export default function Client({ id }: { id: string }) {
                           <Input
                             id="contact-name"
                             value={contactName}
-                            onChange={(e) => setContactName(e.target.value)}
+                            onChange={e => setContactName(e.target.value)}
                             placeholder="Full name"
                           />
                         </div>
@@ -296,7 +322,7 @@ export default function Client({ id }: { id: string }) {
                             id="contact-email"
                             type="email"
                             value={contactEmail}
-                            onChange={(e) => setContactEmail(e.target.value)}
+                            onChange={e => setContactEmail(e.target.value)}
                             placeholder="email@example.com"
                           />
                         </div>
@@ -305,7 +331,7 @@ export default function Client({ id }: { id: string }) {
                           <Input
                             id="contact-phone"
                             value={contactPhone}
-                            onChange={(e) => setContactPhone(e.target.value)}
+                            onChange={e => setContactPhone(e.target.value)}
                             placeholder="+1 234 567 8900"
                           />
                         </div>
@@ -314,14 +340,19 @@ export default function Client({ id }: { id: string }) {
                           <Input
                             id="contact-role"
                             value={contactRole}
-                            onChange={(e) => setContactRole(e.target.value)}
+                            onChange={e => setContactRole(e.target.value)}
                             placeholder="e.g., Program Director"
                           />
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsContactOpen(false)}>Cancel</Button>
-                        <Button onClick={handleCreateContact} disabled={!contactName || createContact.isPending}>
+                        <Button variant="outline" onClick={() => setIsContactOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleCreateContact}
+                          disabled={!contactName || createContact.isPending}
+                        >
                           {createContact.isPending ? 'Adding...' : 'Add Contact'}
                         </Button>
                       </DialogFooter>
@@ -331,15 +362,20 @@ export default function Client({ id }: { id: string }) {
                 <CardContent>
                   {contacts && contacts.length > 0 ? (
                     <div className="space-y-3">
-                      {contacts.map((contact) => (
-                        <div key={contact.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                      {contacts.map(contact => (
+                        <div
+                          key={contact.id}
+                          className="flex items-center justify-between p-3 border border-border rounded-lg"
+                        >
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center">
                               <User className="h-5 w-5 text-accent" />
                             </div>
                             <div>
                               <p className="font-medium text-text-100">{contact.name}</p>
-                              <p className="text-sm text-text-500">{contact.metadata?.role || 'Contact'}</p>
+                              <p className="text-sm text-text-500">
+                                {contact.metadata?.role || 'Contact'}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 text-sm text-text-500">
@@ -416,7 +452,10 @@ export default function Client({ id }: { id: string }) {
                       </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
-                      <Select value={newStage} onValueChange={(v) => setNewStage(v as EngagementStage)}>
+                      <Select
+                        value={newStage}
+                        onValueChange={v => setNewStage(v as EngagementStage)}
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
@@ -430,7 +469,9 @@ export default function Client({ id }: { id: string }) {
                       </Select>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsStageOpen(false)}>Cancel</Button>
+                      <Button variant="outline" onClick={() => setIsStageOpen(false)}>
+                        Cancel
+                      </Button>
                       <Button onClick={handleUpdateStage} disabled={updateOrg.isPending}>
                         {updateOrg.isPending ? 'Updating...' : 'Update Stage'}
                       </Button>
@@ -477,5 +518,5 @@ export default function Client({ id }: { id: string }) {
         </div>
       </div>
     </div>
-  );
+  )
 }

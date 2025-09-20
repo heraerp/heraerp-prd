@@ -51,7 +51,12 @@ import { useToast } from '@/hooks/use-toast'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import { universalApi } from '@/lib/universal-api'
-import { searchStaff, searchServices, searchCustomers, upsertAppointment } from '@/lib/playbook/entities'
+import {
+  searchStaff,
+  searchServices,
+  searchCustomers,
+  upsertAppointment
+} from '@/lib/playbook/entities'
 
 interface Service {
   id: string
