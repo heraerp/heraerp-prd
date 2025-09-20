@@ -172,14 +172,14 @@ export default function ProgramsPage() {
 
       {/* Modals */}
       <CreateProgramModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
       />
 
       {selectedProgramId && (
         <CreateGrantRoundModal
-          open={isGrantRoundModalOpen}
-          onOpenChange={setIsGrantRoundModalOpen}
+          isOpen={isGrantRoundModalOpen}
+          onClose={() => setIsGrantRoundModalOpen(false)}
           programId={selectedProgramId}
         />
       )}

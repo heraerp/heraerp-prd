@@ -1,7 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+
 import { Plus, Loader2 } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -16,21 +22,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+
+import type { CreateGrantModalProps } from './props';
+import type { 
+  CreateGrantApplicationRequest, 
+  CreateGrantApplicationRequestSchema 
+} from '@/contracts/crm-grants';
+import { exact } from '@/utils/exact';
 import { useCreateGrant } from '@/hooks/use-grants';
-import type { CreateGrantRequest } from '@/types/crm-grants';
 
-interface CreateGrantModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) {
-  const [formData, setFormData] = useState<CreateGrantRequest>({
+export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
+  // Validate props at runtime
+  const { isOpen, onClose } = exact<CreateGrantModalProps>()(props);
+  
+  const [formData, setFormData] = useState<CreateGrantApplicationRequest>({
     applicant: {
       type: 'constituent',
       id: '',
@@ -44,15 +50,17 @@ export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) 
   const [tagInput, setTagInput] = useState('');
   const createGrant = useCreateGrant();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (!formData.applicant.id || !formData.round_id) return;
 
     try {
-      await createGrant.mutateAsync(formData);
+      // Validate form data with Zod before submission
+      const validatedData = CreateGrantApplicationRequestSchema.parse(formData);
+      await createGrant.mutateAsync(validatedData);
       
-      // Reset form
-      setFormData({
+      // Reset form with exact type safety
+      const resetFormData = exact<CreateGrantApplicationRequest>()({
         applicant: {
           type: 'constituent',
           id: '',
@@ -63,14 +71,15 @@ export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) 
         tags: [],
         start_run: false,
       });
+      setFormData(resetFormData);
       setTagInput('');
-      onOpenChange(false);
+      onClose();
     } catch (error) {
       // Error is handled by the mutation
     }
   };
 
-  const handleAddTag = () => {
+  const handleAddTag = (): void => {
     if (tagInput.trim() && !formData.tags?.includes(tagInput.trim())) {
       setFormData(prev => ({
         ...prev,
@@ -80,14 +89,14 @@ export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) 
     }
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
+  const handleRemoveTag = (tagToRemove: string): void => {
     setFormData(prev => ({
       ...prev,
       tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
     }));
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddTag();
@@ -95,7 +104,7 @@ export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl bg-panel border-border">
         <DialogHeader>
           <DialogTitle className="text-text-100">Create Grant Application</DialogTitle>
@@ -242,7 +251,7 @@ export function CreateGrantModal({ open, onOpenChange }: CreateGrantModalProps) 
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={onClose}
               className="border-border hover:bg-accent-soft"
             >
               Cancel

@@ -1,16 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+
 import { Plus, Download } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+
 import { FilterBar } from '@/components/civicflow/grants/FilterBar';
 import { ApplicationCard } from '@/components/civicflow/grants/ApplicationCard';
 import { CreateGrantModal } from '@/components/civicflow/grants/CreateGrantModal';
 import { ReviewGrantModal } from '@/components/civicflow/grants/ReviewGrantModal';
+
+import type { CreateGrantModalProps, ReviewGrantModalProps } from '@/components/civicflow/grants/props';
+import type { GrantFilters } from '@/contracts/crm-grants';
+import { exact } from '@/utils/exact';
 import { useGrantKpis, useGrantList, useExportGrants } from '@/hooks/use-grants';
-import type { GrantFilters } from '@/types/crm-grants';
 
 export default function GrantsPage() {
   const [filters, setFilters] = useState<GrantFilters>({
@@ -180,15 +186,19 @@ export default function GrantsPage() {
 
       {/* Modals */}
       <CreateGrantModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
+        {...exact<CreateGrantModalProps>()({
+          isOpen: isCreateModalOpen,
+          onClose: () => setIsCreateModalOpen(false),
+        })}
       />
 
       {selectedApplicationId && (
         <ReviewGrantModal
-          open={isReviewModalOpen}
-          onOpenChange={setIsReviewModalOpen}
-          applicationId={selectedApplicationId}
+          {...exact<ReviewGrantModalProps>()({
+            isOpen: isReviewModalOpen,
+            onClose: () => setIsReviewModalOpen(false),
+            applicationId: selectedApplicationId,
+          })}
         />
       )}
     </div>

@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, XCircle, Award, Loader2, FileText, Star, DollarSign } from 'lucide-react';
+
+import { CheckCircle, XCircle, Award, Loader2, FileText, DollarSign } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -9,6 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -16,21 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useGrant, useReviewGrant } from '@/hooks/use-grants';
-import type { GrantReviewAction, ReviewGrantRequest } from '@/types/crm-grants';
+import { Textarea } from '@/components/ui/textarea';
 
-interface ReviewGrantModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  applicationId: string;
-}
+import type { ReviewGrantModalProps } from './props';
+import type { 
+  GrantReviewAction, 
+  ReviewGrantRequest,
+  ReviewGrantRequestSchema 
+} from '@/contracts/crm-grants';
+import { exact } from '@/utils/exact';
+import { useGrant, useReviewGrant } from '@/hooks/use-grants';
 
 const ACTION_CONFIG = {
   approve: {
@@ -63,7 +66,9 @@ const STATUS_COLORS = {
   closed: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300',
 } as const;
 
-export function ReviewGrantModal({ open, onOpenChange, applicationId }: ReviewGrantModalProps) {
+export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
+  // Validate props at runtime with exact type checking
+  const { isOpen, onClose, applicationId } = exact<ReviewGrantModalProps>()(props);
   const { data: application, isLoading } = useGrant(applicationId);
   const reviewGrant = useReviewGrant(applicationId);
 
@@ -73,22 +78,27 @@ export function ReviewGrantModal({ open, onOpenChange, applicationId }: ReviewGr
     notes: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      await reviewGrant.mutateAsync(formData);
-      setFormData({
+      // Validate form data with Zod before submission
+      const validatedData = ReviewGrantRequestSchema.parse(formData);
+      await reviewGrant.mutateAsync(validatedData);
+      
+      // Reset form with exact type safety
+      const resetFormData = exact<ReviewGrantRequest>()({
         action: 'approve',
         amount_awarded: undefined,
         notes: '',
       });
-      onOpenChange(false);
+      setFormData(resetFormData);
+      onClose();
     } catch (error) {
       // Error is handled by the mutation
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -96,7 +106,7 @@ export function ReviewGrantModal({ open, onOpenChange, applicationId }: ReviewGr
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string): string => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
@@ -107,7 +117,7 @@ export function ReviewGrantModal({ open, onOpenChange, applicationId }: ReviewGr
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl bg-panel border-border max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-text-100">Review Grant Application</DialogTitle>
@@ -322,7 +332,7 @@ export function ReviewGrantModal({ open, onOpenChange, applicationId }: ReviewGr
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => onOpenChange(false)}
+                      onClick={onClose}
                       className="border-border hover:bg-accent-soft"
                     >
                       Cancel

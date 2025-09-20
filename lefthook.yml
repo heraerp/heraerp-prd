@@ -1,0 +1,70 @@
+# HERA Contract-First Development Git Hooks
+# 
+# These hooks enforce contract-first development and prevent Claude from "coding wrongly"
+# by ensuring all requirements are met before any code changes are committed.
+
+pre-commit:
+  parallel: true
+  commands:
+    # Contract-First Development Check - BLOCKS if not ready
+    contract-first-gate:
+      run: npm run contract-first:status
+      fail_text: "🚫 Contract-first development gate failed. Complete handshake and contracts before committing."
+      
+    # TypeScript strict mode compilation check
+    typecheck-strict:
+      run: npm run typecheck:strict
+      fail_text: "❌ TypeScript strict mode compilation failed. Fix all type errors before committing."
+      
+    # ESLint with contract-first enforcement rules
+    lint-contract-first:
+      run: npm run lint
+      fail_text: "❌ ESLint contract-first validation failed. Fix all contract violations before committing."
+      
+    # Run type safety tests (must pass 100%)
+    test-type-safety:
+      run: npm run test:type-safety
+      fail_text: "❌ Type safety tests failed. All contract validation tests must pass before committing."
+      
+    # Validate all contracts are properly defined
+    validate-contracts:
+      run: npm run validate:contracts
+      fail_text: "❌ Contract validation failed. All contracts must be properly defined with Zod schemas."
+
+pre-push:
+  parallel: false  # Sequential execution for merge protection gates
+  commands:
+    # FULL MERGE PROTECTION SYSTEM - All gates must pass
+    ci-merge-protection:
+      run: npm run ci:merge-protection
+      fail_text: "🚫 CI Merge Protection BLOCKED the push. All contract-first development gates must pass."
+      
+    # Full test suite with coverage requirements
+    test-with-coverage:
+      run: npm run test:coverage
+      fail_text: "❌ Test suite failed or coverage below 100%. Fix all tests before pushing."
+      
+    # Production build verification
+    build-production:
+      run: npm run build
+      fail_text: "❌ Production build failed. Fix all build errors before pushing."
+
+commit-msg:
+  commands:
+    # Validate commit follows contract-first development patterns
+    contract-first-commit-check:
+      run: |
+        if grep -q "feat\|fix\|refactor" "$1"; then
+          if ! grep -q "contract\|schema\|type.*safety\|DOOD" "$1"; then
+            echo "⚠️  Consider referencing contracts, schemas, or type safety in your commit message"
+          else
+            echo "✅ Contract-first development commit detected - excellent!"
+          fi
+        fi
+        
+    # Check for DOOD compliance reference
+    dood-compliance-check:
+      run: |
+        if grep -q "DOOD\|Definition.*Done" "$1"; then
+          echo "✅ DOOD compliance referenced - following best practices!"
+        fi

@@ -162,8 +162,8 @@ export async function initializePlaybooks(options?: {
       success: true,
       version: PLAYBOOKS_VERSION,
       buildDate: PLAYBOOKS_BUILD_DATE,
-      organizationId: options?.organizationId || playbookAuthService.getOrganizationId(),
-      authenticated: playbookAuthService.getState().isAuthenticated
+      organizationId: options?.organizationId || (playbookAuthService?.getOrganizationId?.() ?? null),
+      authenticated: playbookAuthService?.getState?.()?.isAuthenticated ?? false
     };
   } catch (error) {
     console.error('Failed to initialize HERA Playbooks:', error);
@@ -178,7 +178,7 @@ export async function initializePlaybooks(options?: {
  * Get system health status
  */
 export function getPlaybooksHealth() {
-  const authState = playbookAuthService.getState();
+  const authState = playbookAuthService?.getState?.() ?? { isAuthenticated: false, organization: null, user: null };
   
   return {
     version: PLAYBOOKS_VERSION,
@@ -191,14 +191,14 @@ export function getPlaybooksHealth() {
     },
     smartCodes: {
       enabled: true,
-      templates: Object.keys(playbookSmartCodeService.getSmartCodeTemplates()).length,
+      templates: Object.keys(playbookSmartCodeService?.getSmartCodeTemplates?.() ?? {}).length,
       validator: 'active'
     },
     dataLayer: {
       enabled: true,
-      organizationContext: playbookDataLayer.getOrganizationId() !== null,
+      organizationContext: playbookDataLayer?.getOrganizationId?.() !== null,
       universalApiConnected: true
     },
-    overall: authState.isAuthenticated && playbookDataLayer.getOrganizationId() ? 'healthy' : 'requires_setup'
+    overall: authState.isAuthenticated && playbookDataLayer?.getOrganizationId?.() ? 'healthy' : 'requires_setup'
   };
 }

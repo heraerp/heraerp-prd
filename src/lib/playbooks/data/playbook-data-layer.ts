@@ -167,7 +167,7 @@ export class PlaybookDataLayer {
    * Set organization context for all operations
    */
   setOrganizationContext(orgId?: string): void {
-    this.organizationId = orgId || playbookAuthService.getOrganizationId();
+    this.organizationId = orgId || (playbookAuthService?.getOrganizationId?.() ?? null);
     
     if (this.organizationId) {
       universalApi.setOrganizationId(this.organizationId);

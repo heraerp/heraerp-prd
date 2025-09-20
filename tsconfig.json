@@ -1,20 +1,38 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": false,
+    "incremental": true,
+    
+    // Maximum TypeScript Safety Settings
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useUnknownInCatchVariables": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    
     "plugins": [
       {
         "name": "next"
@@ -22,20 +40,28 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@/contracts/*": ["./src/contracts/*"],
+      "@/utils/*": ["./src/utils/*"],
       "@hera/dna-sdk": ["./packages/hera-dna-sdk/dist/index"],
       "@hera/dna-sdk/*": ["./packages/hera-dna-sdk/dist/*"]
-    },
-    "strictNullChecks": false,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
-    "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "noImplicitAny": false,
-    "alwaysStrict": false,
-    "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": false,
-    "ignoreDeprecations": "5.0"
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "api/**/*", "scripts/**/*", "tests/**/*", "src/components_old/**/*"]
+  "include": [
+    "next-env.d.ts", 
+    "**/*.ts", 
+    "**/*.tsx", 
+    ".next/types/**/*.ts",
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules", 
+    "api/**/*", 
+    "scripts/**/*", 
+    "src/components_old/**/*",
+    "src/app_old/**/*",
+    "src/components/furniture/**/*",
+    "dist/**/*",
+    ".next/**/*"
+  ]
 }
