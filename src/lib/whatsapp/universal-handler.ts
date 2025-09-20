@@ -5,10 +5,10 @@
  */
 
 import { UniversalConfigService, ConfigSmartCodes } from './universal-config-service'
-import { UniversalWhatsAppAI } from '@/src/lib/ai/universal-whatsapp-ai'
-import { MCPTools } from '@/src/lib/mcp/whatsapp-mcp-tools'
+import { UniversalWhatsAppAI } from '@/lib/ai/universal-whatsapp-ai'
+import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
 import { WhatsAppService } from './whatsapp-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface ProcessingContext {
   organizationId: string

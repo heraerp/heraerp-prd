@@ -1,0 +1,103 @@
+smart_code: HERA.SALON.CATALOG.PROFILE.V1
+description: Salon catalog management profile for universal entity CRUD
+entity_types: 
+  - SERVICE
+  - PRODUCT
+  - EMPLOYEE
+  - CUSTOMER
+required_role_create: catalog_admin
+required_role_read: org_member
+required_role_update: catalog_admin
+required_role_archive: catalog_admin
+unique_key: entity_code
+derivation_rules:
+  SERVICE: "HERA.SALON.SVC.${CODE}.V1"
+  PRODUCT: "HERA.SALON.RETAIL.${CODE}.V1"
+  EMPLOYEE: "HERA.SALON.HR.EMPLOYEE.${CODE}.V1"
+  CUSTOMER: "HERA.SALON.CRM.CUSTOMER.${CODE}.V1"
+validation:
+  SERVICE:
+    dynamic_json_schema:
+      type: object
+      properties:
+        duration_minutes:
+          type: number
+          minimum: 15
+          maximum: 480
+        base_price:
+          type: number
+          minimum: 0
+        category:
+          type: string
+          enum: [HAIR, NAILS, FACIAL, MASSAGE, OTHER]
+        requires_appointment:
+          type: boolean
+      required: [duration_minutes, base_price, category]
+  PRODUCT:
+    dynamic_json_schema:
+      type: object
+      properties:
+        sku:
+          type: string
+          pattern: "^[A-Z0-9-]+$"
+        base_price:
+          type: number
+          minimum: 0
+        stock_tracked:
+          type: boolean
+        category:
+          type: string
+          enum: [SHAMPOO, CONDITIONER, STYLING, TREATMENT, RETAIL_OTHER]
+      required: [sku, base_price]
+  EMPLOYEE:
+    dynamic_json_schema:
+      type: object
+      properties:
+        employee_number:
+          type: string
+        role:
+          type: string
+          enum: [STYLIST, COLORIST, MANAGER, RECEPTIONIST, ASSISTANT]
+        commission_rate:
+          type: number
+          minimum: 0
+          maximum: 1
+        schedule_type:
+          type: string
+          enum: [FULL_TIME, PART_TIME, CONTRACT]
+      required: [role, commission_rate]
+  CUSTOMER:
+    dynamic_json_schema:
+      type: object
+      properties:
+        phone:
+          type: string
+          pattern: "^\\+?[1-9]\\d{1,14}$"
+        email:
+          type: string
+          format: email
+        loyalty_tier:
+          type: string
+          enum: [BRONZE, SILVER, GOLD, PLATINUM]
+        preferences:
+          type: object
+      required: [phone]
+after_create:
+  SERVICE: [HERA.SALON.PRICING.CREATE_PRICE_RULES.V1]
+  EMPLOYEE: [HERA.SALON.HR.CREATE_SCHEDULE.V1]
+  CUSTOMER: [HERA.SALON.LOYALTY.ASSIGN_TIER.V1]
+after_update:
+  SERVICE: [HERA.SALON.PRICING.UPDATE_PRICE_RULES.V1]
+  EMPLOYEE: [HERA.SALON.HR.UPDATE_SCHEDULE.V1]
+after_archive:
+  SERVICE: [HERA.SALON.PRICING.ARCHIVE_PRICE_RULES.V1]
+  EMPLOYEE: [HERA.SALON.HR.CLOSE_SCHEDULE.V1]
+cascade_policy:
+  SERVICE:
+    cascade_allowed: false
+    must_have_no_dependents: true
+  PRODUCT:
+    cascade_allowed: true
+    cascade_to: [PRICE_RULES, STOCK_RECORDS]
+metadata_update_allowed: true
+log_reads: false

@@ -1,5 +1,5 @@
 # Restaurant Bundle Order - Core Pattern
-smart_code: HERA.RESTAURANT.BUNDLE.ORDER.v1
+smart_code: HERA.RESTAURANT.POS.BUNDLE.ORDER.V1
 intent: >
   Place an order for a menu bundle with optional substitutions.
 scope:
@@ -44,7 +44,7 @@ outputs:
   entities_created: []
   transactions_emitted:
     - slug: pos_order
-      header_rules: total from pricing strategy, smart_code HERA.REST.POS.TXN.ORDER.v1
+      header_rules: total from pricing strategy, smart_code HERA.REST.POS.TXN.ORDER.V1
       line_rules: 
         - sales_line for bundle parent
         - sales_line for child items

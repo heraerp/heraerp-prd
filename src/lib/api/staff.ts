@@ -5,7 +5,7 @@
 // ================================================================================
 
 import { useQuery } from '@tanstack/react-query'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface StaffUtilizationData {
   id: string

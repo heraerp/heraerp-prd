@@ -22,7 +22,7 @@ import {
   HeraSection,
   HeraThemeProvider,
   HeraThemeToggle
-} from '@/src/components/universal/ui'
+} from '@/components/universal/ui'
 import {
   DollarSign,
   TrendingUp,
@@ -34,7 +34,7 @@ import {
   Shield,
   Activity
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 
 function DesignSystemShowcase() {
   return (

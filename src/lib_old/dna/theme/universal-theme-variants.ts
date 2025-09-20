@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UNIVERSAL THEME VARIANTS SYSTEM
-// Smart Code: HERA.DNA.THEME.VARIANTS.UNIVERSAL.v1
+// Smart Code: HERA.DNA.THEME.VARIANTS.UNIVERSAL.V1
 // Dynamic color theming with main and accent colors in multiple shades for depth
 // ================================================================================
 
@@ -55,7 +55,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'professional',
     name: 'Professional Blue',
     description: 'Classic professional theme with blue tones',
-    smartCode: 'HERA.DNA.THEME.VARIANT.PROFESSIONAL.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.PROFESSIONAL.V1',
     main: {
       50: '#eff6ff',   // Very light blue
       100: '#dbeafe',  // Light blue
@@ -106,7 +106,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'elegant',
     name: 'Elegant Purple',
     description: 'Sophisticated purple theme for premium experiences',
-    smartCode: 'HERA.DNA.THEME.VARIANT.ELEGANT.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.ELEGANT.V1',
     main: {
       50: '#faf5ff',   // Very light purple
       100: '#f3e8ff',  // Light purple
@@ -157,7 +157,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'vibrant',
     name: 'Vibrant Green',
     description: 'Fresh and energetic green theme',
-    smartCode: 'HERA.DNA.THEME.VARIANT.VIBRANT.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.VIBRANT.V1',
     main: {
       50: '#f0fdf4',   // Very light green
       100: '#dcfce7',  // Light green
@@ -208,7 +208,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'modern',
     name: 'Modern Slate',
     description: 'Contemporary slate theme with orange accents',
-    smartCode: 'HERA.DNA.THEME.VARIANT.MODERN.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.MODERN.V1',
     main: {
       50: '#f8fafc',   // Very light slate
       100: '#f1f5f9',  // Light slate
@@ -259,7 +259,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'warm',
     name: 'Warm Earth',
     description: 'Cozy earth tones with red accents',
-    smartCode: 'HERA.DNA.THEME.VARIANT.WARM.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.WARM.V1',
     main: {
       50: '#fefaf8',   // Very light brown
       100: '#fef2ee',  // Light brown
@@ -310,7 +310,7 @@ export const THEME_VARIANTS: Record<string, ThemeVariant> = {
     id: 'cool',
     name: 'Cool Teal',
     description: 'Refreshing teal theme with indigo accents',
-    smartCode: 'HERA.DNA.THEME.VARIANT.COOL.v1',
+    smartCode: 'HERA.DNA.THEME.VARIANT.COOL.V1',
     main: {
       50: '#f0fdfa',   // Very light teal
       100: '#ccfbf1',  // Light teal

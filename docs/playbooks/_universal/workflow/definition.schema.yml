@@ -1,0 +1,87 @@
+smart_code: HERA.UNIV.WF.DEFINITION.V1
+intent: Workflow definition spec stored in core_dynamic_data.
+schema:
+  type: object
+  required: [code, states, transitions]
+  properties:
+    code: 
+      type: string
+      description: Unique workflow definition code (e.g., LEAVE_APPROVAL)
+    states: 
+      type: array
+      items: 
+        type: string
+      description: List of valid states in the workflow
+    transitions:
+      type: array
+      description: Valid state transitions with roles and guards
+      items:
+        type: object
+        required: [from, to, by]
+        properties:
+          from: 
+            type: string
+            description: Source state
+          to: 
+            type: string
+            description: Target state
+          by: 
+            type: array
+            items: 
+              type: string
+            description: Roles allowed to make this transition
+          guards: 
+            type: array
+            items: 
+              type: string
+            description: Smart codes to run before transition (must all pass)
+          effects:
+            type: array
+            items: 
+              type: string
+            description: Smart codes to run after successful transition
+    timers:
+      type: array
+      description: Timers to set when entering specific states
+      items:
+        type: object
+        required: [on_enter, minutes, on_fire]
+        properties:
+          on_enter: 
+            type: string
+            description: State that triggers timer creation
+          minutes: 
+            type: number
+            minimum: 1
+            description: Timer duration in minutes
+          on_fire: 
+            type: string
+            description: Smart code to execute when timer fires
+          name:
+            type: string
+            description: Optional timer name for cancellation
+example:
+  code: "LEAVE_APPROVAL"
+  states: ["DRAFT", "SUBMITTED", "MANAGER_REVIEW", "APPROVED", "REJECTED", "CANCELLED"]
+  transitions:
+    - from: "DRAFT"
+      to: "SUBMITTED"
+      by: ["employee"]
+    - from: "SUBMITTED"
+      to: "MANAGER_REVIEW"
+      by: ["system"]
+      guards: ["HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1"]
+    - from: "MANAGER_REVIEW"
+      to: "APPROVED"
+      by: ["manager"]
+      effects: ["HERA.SALON.HR.LEAVE.BLOCK.CALENDAR.V1"]
+    - from: "MANAGER_REVIEW"
+      to: "REJECTED"
+      by: ["manager"]
+    - from: "SUBMITTED"
+      to: "CANCELLED"
+      by: ["employee"]
+  timers:
+    - on_enter: "MANAGER_REVIEW"
+      minutes: 1440
+      on_fire: "HERA.UNIV.TASK.ESCALATE.V1"

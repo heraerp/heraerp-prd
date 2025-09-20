@@ -5,12 +5,12 @@ import React, { useState, useEffect, useCallback } from 'react'
 // Force dynamic rendering to avoid build issues
 
 export const dynamic = 'force-dynamic'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   ChevronRight,
   ChevronDown,
@@ -22,12 +22,12 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { UniversalReportEngine } from '@/src/lib/dna/urp/report-engine'
-import type { GLAccountNode } from '@/src/lib/furniture/chart-of-accounts-service'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
+import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
+import { cn } from '@/lib/utils'
 
 // Remove old GLAccount interface as we're using GLAccountNode from the service
 export default function ChartOfAccounts() {
@@ -85,10 +85,10 @@ const [searchTerm, setSearchTerm] = useState('')
         return
       }
 
-      console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.v1')
+      console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.V1')
 
       // Execute Chart of Accounts recipe
-  const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.v1', {
+  const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.V1', {
         fiscalYear: new Date().getFullYear(),
         includeInactive: false,
         hierarchyDepth: 5
@@ -180,7 +180,7 @@ const [searchTerm, setSearchTerm] = useState('')
 
     try {
       const result = await reportEngine.executeRecipe(
-        'HERA.URP.RECIPE.FINANCE.COA.v1',
+        'HERA.URP.RECIPE.FINANCE.COA.V1',
         {
           fiscalYear: new Date().getFullYear(),
           includeInactive: false,
@@ -254,9 +254,9 @@ const [searchTerm, setSearchTerm] = useState('')
               >
                 {' '}
                 {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 text-[#37353E]" />
+                  <ChevronDown className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                 ) : (
-                  <ChevronRight className="h-4 w-4 text-[#37353E]" />
+                  <ChevronRight className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                 )}{' '}
               </button>
             )}{' '}
@@ -266,7 +266,7 @@ const [searchTerm, setSearchTerm] = useState('')
               <span
                 className={cn(
             'font-mono text-sm',
-            isHeader ? 'text-[var(--color-text-secondary)]' : 'text-gray-300'
+            isHeader ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'
           )}
               >
                 {' '}
@@ -409,7 +409,7 @@ const [searchTerm, setSearchTerm] = useState('')
                 size="sm"
                 onClick={async () => {
                   if (reportEngine) {
-  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.v1')
+  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.V1')
                   }
                   loadChartOfAccounts()
                 }
@@ -437,7 +437,7 @@ const [searchTerm, setSearchTerm] = useState('')
                 <p className="text-sm text-[var(--color-text-secondary)]">Total Accounts</p>{' '}
                 <p className="text-2xl font-bold">{totalAccountCount}</p>{' '}
               </div>{' '}
-              <FileText className="h-8 w-8 text-[#37353E]" />{' '}
+              <FileText className="h-8 w-8 text-[var(--color-icon-secondary)]" />{' '}
             </div>{' '}
           </Card>{' '}
           <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
@@ -492,7 +492,7 @@ const [searchTerm, setSearchTerm] = useState('')
         {!loading && (error || accounts.length === 0) && (
           <Alert className="bg-amber-900/20 border-[var(--color-accent-indigo)]/50">
             {' '}
-            <AlertCircle className="h-4 w-4 text-[#37353E]" />{' '}
+            <AlertCircle className="h-4 w-4 text-[var(--color-icon-secondary)]" />{' '}
             <AlertDescription>
               {' '}
               <div className="flex items-center justify-between">
@@ -556,7 +556,7 @@ const [searchTerm, setSearchTerm] = useState('')
         {/* Chart of Accounts Table */}
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] bg-[var(--color-body)]/50 border-[var(--color-border)] overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 py-3 px-3 bg-[var(--color-body)]/50 border-b border-[var(--color-border)] font-semibold text-sm text-gray-300">
+          <div className="grid grid-cols-12 gap-4 py-3 px-3 bg-[var(--color-body)]/50 border-b border-[var(--color-border)] font-semibold text-sm text-[var(--color-text-secondary)]">
             <div className="col-span-6">Account Code & Description</div>
             <div className="col-span-1">Type</div>
             <div className="col-span-2 text-right">Debit (₹)</div>
@@ -586,7 +586,7 @@ const [searchTerm, setSearchTerm] = useState('')
           {/* Table Footer */}
           {accounts.length > 0 && (
             <div className="grid grid-cols-12 gap-4 py-3 px-3 bg-[var(--color-body)]/50 border-t border-[var(--color-border)] font-bold text-sm">
-              <div className="col-span-7 text-gray-300">TOTAL</div>
+              <div className="col-span-7 text-[var(--color-text-secondary)]">TOTAL</div>
               <div className="bg-[var(--color-body)] col-span-2 text-right text-red-400 font-mono">
                 ₹{' '}
                 {totals.debit.toLocaleString('en-IN', {

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   Brain,
   Sparkles,
@@ -28,7 +28,7 @@ import {
   UniversalAIInventory,
   InventoryAIEngine,
   INVENTORY_SMART_CODES
-} from '@/src/lib/inventory/universal-ai-inventory'
+} from '@/lib/inventory/universal-ai-inventory'
 
 // HERA Universal AI Inventory Dashboard
 // Smart Code: HERA.INV.AI.DASHBOARD.v1

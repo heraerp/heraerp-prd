@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA SALON DASHBOARD EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.SALON.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.SALON.V1
 // Complete salon & spa operations dashboard with appointment management
 // ================================================================================
 

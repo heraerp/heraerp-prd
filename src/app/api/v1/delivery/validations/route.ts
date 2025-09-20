@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // GET /delivery/validations - Fetch all delivery items
 export async function GET(request: NextRequest) {

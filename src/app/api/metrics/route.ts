@@ -4,7 +4,7 @@
 // ================================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { heraMetrics } from '@/src/lib/monitoring/prometheus-metrics'
+import { heraMetrics } from '@/lib/monitoring/prometheus-metrics'
 
 export async function GET(request: NextRequest) {
   try {

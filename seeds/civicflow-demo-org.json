@@ -1,0 +1,103 @@
+{
+  "organizations": [
+    {
+      "id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "name": "CivicFlow Demo Agency",
+      "subdomain": "civicflow-demo",
+      "industry": "public_sector",
+      "settings": {
+        "demo_mode": true,
+        "demo_reset_enabled": true,
+        "timezone": "America/New_York",
+        "currency": "USD",
+        "language": "en",
+        "fiscal_year_start": "07-01",
+        "public_sector_type": "municipal_government",
+        "service_areas": ["social_services", "education", "housing", "healthcare"],
+        "constituent_count": 50000,
+        "annual_budget": 250000000
+      },
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "e1f4a2b1-7c8d-4e5f-9a6b-3c2d5e8f9a1b",
+      "email": "admin@civicflow-demo.gov",
+      "full_name": "Sarah Johnson",
+      "role": "admin",
+      "department": "IT Services",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
+      "email": "case.manager@civicflow-demo.gov",
+      "full_name": "Michael Chen",
+      "role": "case_manager",
+      "department": "Social Services",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "b3c4d5e6-7f8a-9b0c-1d2e-3f4a5b6c7d8e",
+      "email": "grants.officer@civicflow-demo.gov",
+      "full_name": "Emily Rodriguez",
+      "role": "grants_officer",
+      "department": "Grants Management",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "c4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f",
+      "email": "outreach@civicflow-demo.gov",
+      "full_name": "David Thompson",
+      "role": "outreach_coordinator",
+      "department": "Community Outreach",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "d5e6f7a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a",
+      "email": "director@civicflow-demo.gov",
+      "full_name": "Patricia Williams",
+      "role": "director",
+      "department": "Executive Office",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "user_organizations": [
+    {
+      "user_id": "e1f4a2b1-7c8d-4e5f-9a6b-3c2d5e8f9a1b",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "role": "admin",
+      "is_primary": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "user_id": "a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "role": "case_manager",
+      "is_primary": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "user_id": "b3c4d5e6-7f8a-9b0c-1d2e-3f4a5b6c7d8e",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "role": "grants_officer",
+      "is_primary": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "user_id": "c4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "role": "outreach_coordinator",
+      "is_primary": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "user_id": "d5e6f7a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "role": "director",
+      "is_primary": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { salonServices, salonProducts } from '@/src/lib/salon-data'
+import { salonServices, salonProducts } from '@/lib/salon-data'
 
 export interface SalonSetupOptions {
   organizationId: string

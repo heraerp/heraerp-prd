@@ -1,7 +1,7 @@
 // HERA Universal Calendar Smart Code Service
 // Handles smart code generation, validation, and classification for calendar entities
 
-import { CalendarSmartCodes, UniversalResource, UniversalAppointment } from '@/src/types/calendar.types'
+import { CalendarSmartCodes, UniversalResource, UniversalAppointment } from '@/types/calendar.types'
 
 export class CalendarSmartCodeService {
   // Smart Code Pattern: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{OBJECT}.{STATUS}.v{VERSION}
@@ -132,53 +132,53 @@ export class CalendarSmartCodeService {
       case 'healthcare':
         return {
           ...basePatterns,
-          PATIENT_APPOINTMENT: 'HERA.HLTH.CRM.TXN.APPT.v1',
-          SURGERY_BOOKING: 'HERA.HLTH.CRM.TXN.SURG.v1',
-          EQUIPMENT_MAINTENANCE: 'HERA.HLTH.CRM.TXN.MAINT.v1',
-          DOCTOR: 'HERA.HLTH.CRM.RES.DOCTOR.v1',
-          NURSE: 'HERA.HLTH.CRM.RES.NURSE.v1',
-          MEDICAL_EQUIPMENT: 'HERA.HLTH.CRM.RES.MEDEQUIP.v1',
-          EXAMINATION_ROOM: 'HERA.HLTH.CRM.RES.EXAMROOM.v1',
-          OPERATING_ROOM: 'HERA.HLTH.CRM.RES.OPROOM.v1'
+          PATIENT_APPOINTMENT: 'HERA.HLTH.CRM.TXN.APPT.V1',
+          SURGERY_BOOKING: 'HERA.HLTH.CRM.TXN.SURG.V1',
+          EQUIPMENT_MAINTENANCE: 'HERA.HLTH.CRM.TXN.MAINT.V1',
+          DOCTOR: 'HERA.HLTH.CRM.RES.DOCTOR.V1',
+          NURSE: 'HERA.HLTH.CRM.RES.NURSE.V1',
+          MEDICAL_EQUIPMENT: 'HERA.HLTH.CRM.RES.MEDEQUIP.V1',
+          EXAMINATION_ROOM: 'HERA.HLTH.CRM.RES.EXAMROOM.V1',
+          OPERATING_ROOM: 'HERA.HLTH.CRM.RES.OPROOM.V1'
         }
 
       case 'restaurant':
         return {
           ...basePatterns,
-          TABLE_RESERVATION: 'HERA.REST.CRM.TXN.RESV.v1',
-          EVENT_BOOKING: 'HERA.REST.CRM.TXN.EVENT.v1',
-          CATERING_ORDER: 'HERA.REST.CRM.TXN.CATER.v1',
-          DINING_TABLE: 'HERA.REST.CRM.RES.TABLE.v1',
-          PRIVATE_ROOM: 'HERA.REST.CRM.RES.PRIVROOM.v1',
-          KITCHEN_STATION: 'HERA.REST.CRM.RES.KITCHEN.v1',
-          SERVER: 'HERA.REST.CRM.RES.SERVER.v1',
-          CHEF: 'HERA.REST.CRM.RES.CHEF.v1',
-          BAR_STATION: 'HERA.REST.CRM.RES.BAR.v1'
+          TABLE_RESERVATION: 'HERA.REST.CRM.TXN.RESV.V1',
+          EVENT_BOOKING: 'HERA.REST.CRM.TXN.EVENT.V1',
+          CATERING_ORDER: 'HERA.REST.CRM.TXN.CATER.V1',
+          DINING_TABLE: 'HERA.REST.CRM.RES.TABLE.V1',
+          PRIVATE_ROOM: 'HERA.REST.CRM.RES.PRIVROOM.V1',
+          KITCHEN_STATION: 'HERA.REST.CRM.RES.KITCHEN.V1',
+          SERVER: 'HERA.REST.CRM.RES.SERVER.V1',
+          CHEF: 'HERA.REST.CRM.RES.CHEF.V1',
+          BAR_STATION: 'HERA.REST.CRM.RES.BAR.V1'
         }
 
       case 'professional':
         return {
           ...basePatterns,
-          CLIENT_MEETING: 'HERA.PROF.CRM.TXN.MEET.v1',
-          CONSULTATION: 'HERA.PROF.CRM.TXN.CONSULT.v1',
-          PROJECT_REVIEW: 'HERA.PROF.CRM.TXN.REVIEW.v1',
-          CONSULTANT: 'HERA.PROF.CRM.RES.CONSULT.v1',
-          CONFERENCE_ROOM: 'HERA.PROF.CRM.RES.CONFROOM.v1',
-          VIDEO_CALL_ROOM: 'HERA.PROF.CRM.RES.VIRTUAL.v1',
-          PRESENTATION_ROOM: 'HERA.PROF.CRM.RES.PRESROOM.v1'
+          CLIENT_MEETING: 'HERA.PROF.CRM.TXN.MEET.V1',
+          CONSULTATION: 'HERA.PROF.CRM.TXN.CONSULT.V1',
+          PROJECT_REVIEW: 'HERA.PROF.CRM.TXN.REVIEW.V1',
+          CONSULTANT: 'HERA.PROF.CRM.RES.CONSULT.V1',
+          CONFERENCE_ROOM: 'HERA.PROF.CRM.RES.CONFROOM.V1',
+          VIDEO_CALL_ROOM: 'HERA.PROF.CRM.RES.VIRTUAL.V1',
+          PRESENTATION_ROOM: 'HERA.PROF.CRM.RES.PRESROOM.V1'
         }
 
       case 'manufacturing':
         return {
           ...basePatterns,
-          EQUIPMENT_MAINTENANCE: 'HERA.MFG.CRM.TXN.MAINT.v1',
-          PRODUCTION_SCHEDULE: 'HERA.MFG.CRM.TXN.PROD.v1',
-          QUALITY_INSPECTION: 'HERA.MFG.CRM.TXN.QC.v1',
-          PRODUCTION_LINE: 'HERA.MFG.CRM.RES.LINE.v1',
-          MACHINE: 'HERA.MFG.CRM.RES.MACHINE.v1',
-          OPERATOR: 'HERA.MFG.CRM.RES.OPERATOR.v1',
-          TECHNICIAN: 'HERA.MFG.CRM.RES.TECH.v1',
-          QUALITY_STATION: 'HERA.MFG.CRM.RES.QC.v1'
+          EQUIPMENT_MAINTENANCE: 'HERA.MFG.CRM.TXN.MAINT.V1',
+          PRODUCTION_SCHEDULE: 'HERA.MFG.CRM.TXN.PROD.V1',
+          QUALITY_INSPECTION: 'HERA.MFG.CRM.TXN.QC.V1',
+          PRODUCTION_LINE: 'HERA.MFG.CRM.RES.LINE.V1',
+          MACHINE: 'HERA.MFG.CRM.RES.MACHINE.V1',
+          OPERATOR: 'HERA.MFG.CRM.RES.OPERATOR.V1',
+          TECHNICIAN: 'HERA.MFG.CRM.RES.TECH.V1',
+          QUALITY_STATION: 'HERA.MFG.CRM.RES.QC.V1'
         }
 
       default:

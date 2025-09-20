@@ -31,8 +31,8 @@ export async function GET(request: NextRequest) {
         transaction_code: `WA-MSG-${Date.now()}`,
         smart_code:
           direction === 'inbound'
-            ? 'HERA.CRM.MSG.WHATSAPP.INBOUND.v1'
-            : 'HERA.CRM.MSG.WHATSAPP.OUTBOUND.v1',
+            ? 'HERA.CRM.MSG.WHATSAPP.INBOUND.V1'
+            : 'HERA.CRM.MSG.WHATSAPP.OUTBOUND.V1',
         transaction_date: new Date().toISOString(),
         total_amount: 0,
         metadata: {

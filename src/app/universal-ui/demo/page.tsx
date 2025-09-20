@@ -1,19 +1,19 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { UniversalRenderer } from '@/src/components/universal-ui/UniversalRenderer'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+} from '@/components/ui/select'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Info,
   Package,
@@ -30,8 +30,8 @@ import {
 import {
   industryConfigurations,
   getIndustryViews
-} from '@/src/lib/universal-ui/industry-configurations'
-import { ViewMetaService } from '@/src/lib/universal-ui/view-meta-service'
+} from '@/lib/universal-ui/industry-configurations'
+import { ViewMetaService } from '@/lib/universal-ui/view-meta-service'
 
 // Demo configurations showing SAME widgets used across ALL industries
 const DEMO_CONFIGS = [
@@ -156,14 +156,14 @@ const DEMO_CONFIGS = [
     items: [
       {
         name: 'BOM Detail View',
-        smartCode: 'HERA.FURN.BOM.ITEM.PRODUCT.v1',
+        smartCode: 'HERA.FURN.BOM.ITEM.PRODUCT.V1',
         viewType: 'detail',
         description: 'Complete BOM management with components, costs, and revisions',
         highlights: ['Stats, Form, Grid, Chart, Timeline widgets']
       },
       {
         name: 'BOM List View',
-        smartCode: 'HERA.FURN.BOM.ITEM.LIST.v1',
+        smartCode: 'HERA.FURN.BOM.ITEM.LIST.V1',
         viewType: 'list',
         description: 'Browse and search all products with BOMs',
         highlights: ['Grid Widget with filters']

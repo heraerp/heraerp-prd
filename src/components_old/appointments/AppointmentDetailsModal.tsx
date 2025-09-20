@@ -36,7 +36,7 @@ import {
 } from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Appointment Details Modal
-// Smart Code: HERA.UNIV.CRM.APT.MODAL.v1
+// Smart Code: HERA.UNIV.CRM.APT.MODAL.V1
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean

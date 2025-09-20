@@ -13,21 +13,21 @@ export const fetchCache = 'force-no-store'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Building2,
   Package,
@@ -51,8 +51,8 @@ import {
   ExternalLink,
   Sparkles
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { MODULE_REGISTRY, ModuleCategory } from '@/src/lib/modules/registry'
+import { cn } from '@/lib/utils'
+import { MODULE_REGISTRY, ModuleCategory } from '@/lib/modules/registry'
 
 interface Tenant {
   id: string
@@ -80,7 +80,7 @@ const mockTenants: Tenant[] = [
     modules: [
       'HERA.SALON.POS.MODULE.v1',
       'HERA.FIN.ACCOUNTING.MODULE.v1',
-      'HERA.FIN.AUTO.JOURNAL.MODULE.v1'
+      'HERA.FIN.AUTO.JOURNAL.MODULE.V1'
     ],
     createdAt: '2024-01-15'
   },

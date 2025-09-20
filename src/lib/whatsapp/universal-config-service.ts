@@ -1,10 +1,10 @@
 /**
  * Universal Configuration Service for WhatsApp + MCP + AI
  * HERA-native implementation using Sacred Six tables only
- * Smart Code: HERA.COMMS.WHATSAPP.UNIVERSAL.CONFIG.v1
+ * Smart Code: HERA.COMMS.WHATSAPP.UNIVERSAL.CONFIG.V1
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 // Smart Code Namespaces

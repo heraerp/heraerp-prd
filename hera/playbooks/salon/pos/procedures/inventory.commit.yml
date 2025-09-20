@@ -1,0 +1,110 @@
+smart_code: HERA.SALON.INV.COMMIT.SALE.V1
+intent: >
+  Decrement stock for retail lines; release remaining reservations.
+  Finalizes inventory impact of completed sale.
+
+scope:
+  in_scope:
+    - Stock decrements for retail products
+    - Reservation release for uncommitted items
+    - Inventory transaction recording
+    - Stock level validation
+  out_of_scope:
+    - Service inventory (services don't have stock)
+    - Inventory valuation (separate concern)
+    - Reorder point triggers (separate process)
+    - Physical inventory reconciliation
+
+preconditions:
+  - sale record exists and is committed
+  - retail lines have valid product references
+  - inventory reservations exist for retail items
+  - has_permissions: [pos_operator, inventory_commit]
+
+invariants:
+  - stock decrements match sold quantities
+  - all reservations are either committed or released
+  - inventory transactions are properly recorded
+  - stock levels remain non-negative (with warnings)
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for inventory management
+    - name: sale_id
+      type: uuid
+      where: payload
+      description: Sale to commit inventory for
+  optional:
+    - name: force_negative_stock
+      type: boolean
+      where: payload
+      default: false
+      description: Allow negative stock levels (with warnings)
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: inventory_commitment
+      description: Inventory movement transactions
+      smart_codes:
+        - HERA.SALON.INV.COMMIT.RETAIL.V1
+        - HERA.SALON.INV.RESERVE.RELEASE.V1
+  side_effects:
+    - decrement stock for retail products
+    - release soft reservations
+    - create inventory movement audit trail
+    - update product stock levels
+
+happy_path:
+  - step: Load sale record and identify retail lines
+  - step: Validate inventory reservations exist for retail items
+  - step: For each retail line, commit reservation to stock decrement
+  - step: Create inventory movement transaction with proper smart code
+  - step: Update product stock levels
+  - step: Release any remaining soft reservations
+  - step: Record inventory commitment completion
+  - step: Return inventory movement summary
+
+errors:
+  - code: SALE_NOT_FOUND
+    when: sale_id does not exist
+    action: return error with valid sale requirements
+  - code: SALE_NOT_COMMITTED
+    when: sale is not in committed status
+    action: return error - only committed sales can affect inventory
+  - code: INVENTORY_RESERVATION_NOT_FOUND
+    when: expected reservations missing for retail items
+    action: log warning and proceed with direct stock decrement
+  - code: INSUFFICIENT_STOCK
+    when: stock would go negative and force_negative_stock=false
+    action: return error with stock availability details
+  - code: PRODUCT_NOT_FOUND
+    when: retail line references non-existent product
+    action: log error and skip this line
+  - code: INVENTORY_UPDATE_FAILED
+    when: cannot update product stock levels
+    action: return error with inventory system details
+  - code: RESERVATION_RELEASE_FAILED
+    when: cannot release soft reservations
+    action: log warning but continue (reservations will expire)
+
+observability:
+  logs: [inventory_commit_requested, reservations_validated, stock_decremented, reservations_released]
+  audit_json: true
+  metrics: [inventory_commit_duration_ms, products_affected, total_quantity_decremented]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  sale_id: "sale-123"
+  force_negative_stock: false
+
+checks:
+  - description: All retail product stock properly decremented
+  - description: Soft reservations released or committed
+  - description: Inventory movements recorded with audit trail
+  - description: Stock levels updated correctly
+  - description: No orphaned reservations remain
+  - description: Inventory commitment completes successfully

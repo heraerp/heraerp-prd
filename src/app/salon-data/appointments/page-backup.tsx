@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import type { Organization } from '@/src/types/salon.types'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import type { Organization } from '@/types/salon.types'
 
 // Simple fallback component while we debug the import issue
 function SimpleAppointmentDashboard({ organizationId }: { organizationId: string }) {

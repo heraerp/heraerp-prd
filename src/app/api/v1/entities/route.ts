@@ -1,11 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
-import { HERAJWTService } from '@/src/lib/auth/jwt-service'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { HERAJWTService } from '@/lib/auth/jwt-service'
 
 const jwtService = new HERAJWTService()
 
-// Helper function to extract organization_id from JWT token
+// Helper function to extract organization_id from JWT token or headers
 async function getOrganizationFromAuth(request: NextRequest): Promise<string> {
+  // First check for X-Organization-Id header (used by demo and client apps)
+  const orgHeader = request.headers.get('X-Organization-Id')
+  if (orgHeader) {
+    return orgHeader
+  }
+
+  // For CivicFlow demo, check if we're in demo context
+  const referer = request.headers.get('referer')
+  if (referer?.includes('/civicflow')) {
+    // Return CivicFlow demo org ID
+    return '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
+  }
+
+  // Fall back to JWT token
   const authHeader = request.headers.get('Authorization')
   if (!authHeader?.startsWith('Bearer ')) {
     throw new Error('Authentication required')
@@ -67,7 +81,7 @@ export async function GET(request: NextRequest) {
 
       const { data: dynamicData, error: dynamicError } = await supabaseAdmin
         .from('core_dynamic_data')
-        .select('entity_id, field_name, field_value, field_type')
+        .select('entity_id, field_name, field_type, field_value_text, field_value_number, field_value_boolean, field_value_date, field_value_json')
         .in('entity_id', entityIds)
 
       if (!dynamicError && dynamicData) {
@@ -78,26 +92,35 @@ export async function GET(request: NextRequest) {
           // Convert dynamic data to object
           const properties: Record<string, any> = {}
           entityDynamicData.forEach(data => {
-            let value = data.field_value
+            let value: any = null
 
-            // Parse based on field type
-            if (data.field_type === 'json') {
-              try {
-                value = JSON.parse(data.field_value)
-              } catch (e) {
-                console.warn(`Failed to parse JSON for ${data.field_name}:`, data.field_value)
-              }
-            } else if (data.field_type === 'number' || data.field_type === 'decimal') {
-              value = parseFloat(data.field_value)
-            } else if (data.field_type === 'integer') {
-              value = parseInt(data.field_value, 10)
-            } else if (data.field_type === 'boolean') {
-              value = data.field_value === 'true'
-            } else if (data.field_type === 'date') {
-              value = new Date(data.field_value)
+            // Get value from the appropriate column based on field type
+            switch (data.field_type) {
+              case 'text':
+                value = data.field_value_text
+                break
+              case 'number':
+              case 'decimal':
+              case 'integer':
+                value = data.field_value_number
+                break
+              case 'boolean':
+                value = data.field_value_boolean
+                break
+              case 'date':
+              case 'datetime':
+                value = data.field_value_date ? new Date(data.field_value_date) : null
+                break
+              case 'json':
+                value = data.field_value_json
+                break
+              default:
+                value = data.field_value_text
             }
 
-            properties[data.field_name] = value
+            if (value !== null && value !== undefined) {
+              properties[data.field_name] = value
+            }
           })
 
           return {
@@ -146,6 +169,7 @@ export async function POST(request: NextRequest) {
       entity_subcategory,
       description,
       tags,
+      smart_code,
       status = 'active',
       properties = {}
     } = body
@@ -162,15 +186,16 @@ export async function POST(request: NextRequest) {
         entity_subcategory,
         description,
         tags,
+        smart_code,
         status
       })
       .select()
       .single()
 
     if (entityError) {
-      console.error('Error creating entity:', entityError)
+      console.error('Error creating entity:', JSON.stringify(entityError, null, 2))
       return NextResponse.json(
-        { success: false, message: 'Failed to create entity' },
+        { success: false, message: 'Failed to create entity', error: entityError.message },
         { status: 500 }
       )
     }
@@ -178,28 +203,25 @@ export async function POST(request: NextRequest) {
     // Create dynamic properties if provided
     if (Object.keys(properties).length > 0) {
       const dynamicDataInserts = Object.entries(properties).map(([key, value]) => {
-        let field_type = 'text'
-        let field_value = String(value)
-
-        // Determine field type
-        if (typeof value === 'boolean') {
-          field_type = 'boolean'
-        } else if (typeof value === 'number') {
-          field_type = Number.isInteger(value) ? 'integer' : 'decimal'
-        } else if (typeof value === 'object' && value !== null) {
-          field_type = 'json'
-          field_value = JSON.stringify(value)
-        } else if (value instanceof Date) {
-          field_type = 'datetime'
-          field_value = value.toISOString()
-        }
-
-        return {
+        const baseData = {
           entity_id: entity.id,
           organization_id: organizationId,
           field_name: key,
-          field_value,
-          field_type
+          field_type: 'text'
+        }
+
+        // Set the appropriate field_value_* column based on type
+        if (typeof value === 'boolean') {
+          return { ...baseData, field_type: 'boolean', field_value_boolean: value }
+        } else if (typeof value === 'number') {
+          return { ...baseData, field_type: Number.isInteger(value) ? 'integer' : 'decimal', field_value_number: value }
+        } else if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
+          return { ...baseData, field_type: 'json', field_value_json: value }
+        } else if (value instanceof Date) {
+          return { ...baseData, field_type: 'datetime', field_value_date: value.toISOString() }
+        } else {
+          // Default to text
+          return { ...baseData, field_type: 'text', field_value_text: String(value) }
         }
       })
 

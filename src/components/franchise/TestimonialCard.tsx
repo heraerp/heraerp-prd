@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Star, Quote } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface TestimonialCardProps {
   name: string

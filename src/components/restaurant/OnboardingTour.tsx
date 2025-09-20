@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   ChevronLeft,
   ChevronRight,
@@ -27,7 +27,7 @@ import {
   Lightbulb
 } from 'lucide-react'
 
-// Smart Code: HERA.REST.ONBOARDING.TOUR.PROGRESSIVE.v1
+// Smart Code: HERA.REST.ONBOARDING.TOUR.PROGRESSIVE.V1
 // Progressive disclosure onboarding for restaurant platform
 
 interface TourStep {

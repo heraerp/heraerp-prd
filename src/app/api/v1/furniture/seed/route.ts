@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 // Furniture product master data
 const FURNITURE_PRODUCTS = [
   {
     entity_code: 'DESK-EXE-001',
     entity_name: 'Executive Office Desk - Premium Teak',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Office Furniture',
       sub_category: 'Desks',
@@ -30,7 +30,7 @@ const FURNITURE_PRODUCTS = [
   {
     entity_code: 'CHAIR-ERG-001',
     entity_name: 'Ergonomic High-Back Office Chair',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Office Furniture',
       sub_category: 'Chairs',
@@ -52,7 +52,7 @@ const FURNITURE_PRODUCTS = [
   {
     entity_code: 'TABLE-CONF-008',
     entity_name: 'Conference Table 8-Seater Oval',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Conference Room',
       sub_category: 'Tables',
@@ -75,7 +75,7 @@ const FURNITURE_PRODUCTS = [
   {
     entity_code: 'WORK-MOD-001',
     entity_name: 'Modular Workstation 4-Person Cluster',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Office Furniture',
       sub_category: 'Workstations',
@@ -96,7 +96,7 @@ const FURNITURE_PRODUCTS = [
   {
     entity_code: 'CAB-FILE-002',
     entity_name: 'Vertical Filing Cabinet 4-Drawer',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Storage',
       sub_category: 'Cabinets',
@@ -117,7 +117,7 @@ const FURNITURE_PRODUCTS = [
   {
     entity_code: 'SOFA-REC-003',
     entity_name: 'Reception Sofa 3-Seater Premium',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1',
     metadata: {
       category: 'Reception',
       sub_category: 'Sofas',
@@ -142,21 +142,21 @@ const RAW_MATERIALS = [
   {
     entity_code: 'RM-WOOD-TEAK',
     entity_name: 'Teak Wood - Grade A',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.V1',
     metadata: { category: 'Wood', uom: 'CFT', hsn_code: '440399' },
     dynamic_fields: { cost_per_unit: 8500, min_stock: 100, reorder_qty: 200 }
   },
   {
     entity_code: 'RM-PLY-18MM',
     entity_name: 'Plywood 18mm Commercial',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.V1',
     metadata: { category: 'Board', uom: 'SQ.FT', hsn_code: '441213' },
     dynamic_fields: { cost_per_unit: 65, min_stock: 500, reorder_qty: 1000 }
   },
   {
     entity_code: 'RM-FOAM-35D',
     entity_name: 'Foam Sheet 35 Density',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.RAW_MATERIAL.V1',
     metadata: { category: 'Foam', uom: 'SHEET', hsn_code: '392190' },
     dynamic_fields: { cost_per_unit: 450, min_stock: 50, reorder_qty: 100 }
   }
@@ -167,19 +167,19 @@ const WORK_CENTERS = [
   {
     entity_code: 'WC-CUT-01',
     entity_name: 'Cutting Station 1',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.V1',
     metadata: { type: 'Cutting', capacity_per_shift: 50 }
   },
   {
     entity_code: 'WC-ASM-01',
     entity_name: 'Assembly Line 1',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.V1',
     metadata: { type: 'Assembly', capacity_per_shift: 20 }
   },
   {
     entity_code: 'WC-FIN-01',
     entity_name: 'Finishing Bay 1',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.WORK_CENTER.V1',
     metadata: { type: 'Finishing', capacity_per_shift: 30 }
   }
 ]
@@ -189,7 +189,7 @@ const CUSTOMERS = [
   {
     entity_code: 'CUST-MAR-001',
     entity_name: 'Marriott Hotels India',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.V1',
     metadata: {
       industry: 'Hospitality',
       segment: 'Enterprise'
@@ -207,7 +207,7 @@ const CUSTOMERS = [
   {
     entity_code: 'CUST-ITC-001',
     entity_name: 'ITC Hotels Ltd',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.V1',
     metadata: {
       industry: 'Hospitality',
       segment: 'Enterprise'
@@ -225,7 +225,7 @@ const CUSTOMERS = [
   {
     entity_code: 'CUST-TM-001',
     entity_name: 'Tech Mahindra Limited',
-    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.v1',
+    smart_code: 'HERA.MANUFACTURING.FURNITURE.MASTER.CUSTOMER.V1',
     metadata: {
       industry: 'IT Services',
       segment: 'Enterprise'
@@ -341,7 +341,7 @@ export async function POST(request: NextRequest) {
           from_entity_id: desk.id,
           to_entity_id: teak.id,
           relationship_type: 'bom_component',
-          smart_code: 'HERA.MANUFACTURING.FURNITURE.BOM.COMPONENT.v1',
+          smart_code: 'HERA.MANUFACTURING.FURNITURE.BOM.COMPONENT.V1',
           metadata: {
             quantity: 12,
             uom: 'CFT',
@@ -355,7 +355,7 @@ export async function POST(request: NextRequest) {
           from_entity_id: desk.id,
           to_entity_id: plywood.id,
           relationship_type: 'bom_component',
-          smart_code: 'HERA.MANUFACTURING.FURNITURE.BOM.COMPONENT.v1',
+          smart_code: 'HERA.MANUFACTURING.FURNITURE.BOM.COMPONENT.V1',
           metadata: {
             quantity: 50,
             uom: 'SQ.FT',
@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
         quantity: '10',
         unit_amount: 55000,
         line_amount: 550000,
-        smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.v1',
+        smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.V1',
         metadata: {
           discount_percent: 0,
           tax_rate: 18,
@@ -410,7 +410,7 @@ export async function POST(request: NextRequest) {
         quantity: '20',
         unit_amount: 18500,
         line_amount: 370000,
-        smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.v1',
+        smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.V1',
         metadata: {
           discount_percent: 5,
           tax_rate: 18,
@@ -451,7 +451,7 @@ export async function POST(request: NextRequest) {
           quantity: '5',
           unit_amount: 95000,
           line_amount: 475000,
-          smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.v1'
+          smart_code: 'HERA.FURNITURE.SALES.ORDER.LINE.V1'
         })
 
         await universalApi.updateTransaction(order2.id, {

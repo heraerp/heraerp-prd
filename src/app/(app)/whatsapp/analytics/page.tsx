@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -27,9 +27,9 @@ import {
   RefreshCw,
   Download
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { AnalyticsCards } from '@/src/components/whatsapp/AnalyticsCards'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { AnalyticsCards } from '@/components/whatsapp/AnalyticsCards'
 
 export default function WhatsAppAnalyticsPage() {
   const { currentOrganization } = useOrganization()

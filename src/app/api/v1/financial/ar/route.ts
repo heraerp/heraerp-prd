@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export async function GET(request: NextRequest) {
   const moduleName = 'ar'

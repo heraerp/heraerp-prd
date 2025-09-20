@@ -1,7 +1,7 @@
 'use client'
 /**
  * Daily Insights Component
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.INSIGHTS.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.INSIGHTS.V1
  */
 
 import React from 'react'

@@ -3,8 +3,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { UniversalAppointment, AppointmentLine } from '@/src/types/calendar.types'
-import { calendarSmartCodeService } from '@/src/services/calendarSmartCodeService'
+import { UniversalAppointment, AppointmentLine } from '@/types/calendar.types'
+import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
 // Mock database operations - replace with actual HERA API calls
 class MockCalendarAppointmentDB {
@@ -16,7 +16,7 @@ class MockCalendarAppointmentDB {
       transaction_id: 'appt_001',
       organization_id: 'org_healthcare_demo',
       transaction_type: 'appointment',
-      smart_code: 'HERA.HLTH.CRM.TXN.APPT.v1',
+      smart_code: 'HERA.HLTH.CRM.TXN.APPT.V1',
       reference_number: 'APT-001',
       transaction_date: new Date('2025-08-06T10:00:00Z'),
       status: 'confirmed',
@@ -42,7 +42,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 60,
             allocation_type: 'primary',
-            smart_code: 'HERA.HLTH.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.HLTH.CRM.LIN.RESV.V1'
           },
           {
             line_id: 'line_002',
@@ -52,7 +52,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 60,
             allocation_type: 'primary',
-            smart_code: 'HERA.HLTH.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.HLTH.CRM.LIN.RESV.V1'
           }
         ]
       },
@@ -65,7 +65,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 60,
           allocation_type: 'primary',
-          smart_code: 'HERA.HLTH.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.HLTH.CRM.LIN.RESV.V1'
         },
         {
           line_id: 'line_002',
@@ -75,7 +75,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 60,
           allocation_type: 'primary',
-          smart_code: 'HERA.HLTH.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.HLTH.CRM.LIN.RESV.V1'
         }
       ]
     },
@@ -84,7 +84,7 @@ class MockCalendarAppointmentDB {
       transaction_id: 'resv_001',
       organization_id: 'org_restaurant_demo',
       transaction_type: 'reservation',
-      smart_code: 'HERA.REST.CRM.TXN.RESV.v1',
+      smart_code: 'HERA.REST.CRM.TXN.RESV.V1',
       reference_number: 'RSV-001',
       transaction_date: new Date('2025-08-06T19:00:00Z'),
       status: 'confirmed',
@@ -110,7 +110,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 120,
             allocation_type: 'primary',
-            smart_code: 'HERA.REST.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.REST.CRM.LIN.RESV.V1'
           },
           {
             line_id: 'line_004',
@@ -120,7 +120,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 30, // Chef consultation for wine pairing
             allocation_type: 'secondary',
-            smart_code: 'HERA.REST.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.REST.CRM.LIN.RESV.V1'
           }
         ]
       },
@@ -133,7 +133,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 120,
           allocation_type: 'primary',
-          smart_code: 'HERA.REST.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.REST.CRM.LIN.RESV.V1'
         },
         {
           line_id: 'line_004',
@@ -143,7 +143,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 30,
           allocation_type: 'secondary',
-          smart_code: 'HERA.REST.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.REST.CRM.LIN.RESV.V1'
         }
       ]
     },
@@ -152,7 +152,7 @@ class MockCalendarAppointmentDB {
       transaction_id: 'meet_001',
       organization_id: 'org_professional_demo',
       transaction_type: 'appointment',
-      smart_code: 'HERA.PROF.CRM.TXN.MEET.v1',
+      smart_code: 'HERA.PROF.CRM.TXN.MEET.V1',
       reference_number: 'MTG-001',
       transaction_date: new Date('2025-08-07T14:00:00Z'),
       status: 'confirmed',
@@ -178,7 +178,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 120,
             allocation_type: 'primary',
-            smart_code: 'HERA.PROF.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.PROF.CRM.LIN.RESV.V1'
           }
         ]
       },
@@ -191,7 +191,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 120,
           allocation_type: 'primary',
-          smart_code: 'HERA.PROF.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.PROF.CRM.LIN.RESV.V1'
         }
       ]
     },
@@ -200,7 +200,7 @@ class MockCalendarAppointmentDB {
       transaction_id: 'maint_001',
       organization_id: 'org_manufacturing_demo',
       transaction_type: 'maintenance',
-      smart_code: 'HERA.MFG.CRM.TXN.MAINT.v1',
+      smart_code: 'HERA.MFG.CRM.TXN.MAINT.V1',
       reference_number: 'MNT-001',
       transaction_date: new Date('2025-08-08T08:00:00Z'),
       status: 'confirmed',
@@ -226,7 +226,7 @@ class MockCalendarAppointmentDB {
             quantity: 1,
             duration_minutes: 240,
             allocation_type: 'primary',
-            smart_code: 'HERA.MFG.CRM.LIN.RESV.v1'
+            smart_code: 'HERA.MFG.CRM.LIN.RESV.V1'
           }
         ]
       },
@@ -239,7 +239,7 @@ class MockCalendarAppointmentDB {
           quantity: 1,
           duration_minutes: 240,
           allocation_type: 'primary',
-          smart_code: 'HERA.MFG.CRM.LIN.RESV.v1'
+          smart_code: 'HERA.MFG.CRM.LIN.RESV.V1'
         }
       ]
     }
@@ -295,7 +295,7 @@ class MockCalendarAppointmentDB {
       transaction_id: `appt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       organization_id: appointment.organization_id!,
       transaction_type: appointment.transaction_type || 'appointment',
-      smart_code: appointment.smart_code || 'HERA.UNI.CRM.TXN.APPT.v1',
+      smart_code: appointment.smart_code || 'HERA.UNI.CRM.TXN.APPT.V1',
       reference_number: appointment.reference_number || `APT-${Date.now()}`,
       transaction_date: new Date(),
       status: appointment.status || 'draft',
@@ -318,7 +318,7 @@ class MockCalendarAppointmentDB {
           quantity: alloc.quantity || 1,
           duration_minutes: alloc.duration_minutes || appointment.duration_minutes || 60,
           allocation_type: alloc.allocation_type || 'primary',
-          smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.v1'
+          smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.V1'
         }))
       },
       resource_allocations: resourceAllocations.map((alloc, index) => ({
@@ -329,7 +329,7 @@ class MockCalendarAppointmentDB {
         quantity: alloc.quantity || 1,
         duration_minutes: alloc.duration_minutes || appointment.duration_minutes || 60,
         allocation_type: alloc.allocation_type || 'primary',
-        smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.v1'
+        smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.V1'
       }))
     } as UniversalAppointment & { resource_allocations: AppointmentLine[] }
 
@@ -365,7 +365,7 @@ class MockCalendarAppointmentDB {
         quantity: alloc.quantity || 1,
         duration_minutes: alloc.duration_minutes || updates.duration_minutes || 60,
         allocation_type: alloc.allocation_type || 'primary',
-        smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.v1'
+        smart_code: alloc.smart_code || 'HERA.UNI.CRM.LIN.RESV.V1'
       }))
 
       // Also update in industry_data

@@ -2,16 +2,16 @@
 
 import React from 'react'
 import { Card }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Badge }
-from '@/src/components/ui/badge'
+from '@/components/ui/badge'
 import { Progress }
-from '@/src/components/ui/progress'
+from '@/components/ui/progress'
 import { FileText, Search, Target, DollarSign, Trophy, Truck, CheckCircle, XCircle, Clock, AlertCircle
 }
 from 'lucide-react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface WorkflowStage {
@@ -198,7 +198,7 @@ export default function TenderWorkflowStatus({
                             <p className="text-[var(--color-text-secondary)] font-medium">
                               Action Required
                             </p>
-                            <p className="text-gray-300 mt-1">
+                            <p className="text-[var(--color-text-secondary)] mt-1">
                               Submit technical and price bid documents by 25th January
                             </p>
                           </div>

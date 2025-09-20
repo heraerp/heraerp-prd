@@ -1,4 +1,4 @@
-smart_code: HERA.TEST.SCOPE.SALON.MINI.v1
+smart_code: HERA.TEST.SCOPE.SALON.MINI.V1
 setup: []
 teardown: []
 
@@ -59,7 +59,7 @@ cases:
         lines:
           - { line_type: "fee" }
       reports:
-        - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.v1
+        - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.V1
           params: { from: "2025-09-01", to: "2025-12-31" }
           excludes:
             appt_cancel_id:

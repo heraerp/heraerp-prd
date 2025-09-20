@@ -1,4 +1,4 @@
-smart_code: HERA.HCM.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.HCM.MDM.RELATIONSHIPS.SEED.V1
 rows:
   # Employee assignment
   - from_slug: employee:EMP001

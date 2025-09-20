@@ -1,7 +1,7 @@
 'use client'
 /**
  * Salon Appointments – Faceted Grid (React + Tailwind)
- * Smart Code: HERA.SALON.APPOINTMENTS.FACETED.GRID.v1
+ * Smart Code: HERA.SALON.APPOINTMENTS.FACETED.GRID.V1
  *
  * Features:
  * - Facet filters with live counts (Stylist, Service, Status, Payment)

@@ -1,0 +1,138 @@
+smart_code: HERA.SALON.POS.RETURN.RETAIL.V1
+intent: >
+  Process retail product returns; create return transaction referencing original sale.
+  Supports full or partial returns with condition tracking and audit trail.
+
+scope:
+  in_scope:
+    - Retail product returns (full or partial)
+    - Return condition tracking (good/damaged)
+    - Return reason documentation
+    - Original sale line validation
+    - Return transaction creation
+  out_of_scope:
+    - Service returns/refunds (separate procedure)
+    - Payment processing (separate procedure)
+    - Inventory restocking (separate procedure)
+    - GL posting (separate procedure)
+
+preconditions:
+  - original sale exists and is committed
+  - sale lines being returned are retail products
+  - return quantity <= original sale quantity
+  - return window policy not exceeded
+  - has_permissions: [pos_operator, process_returns]
+
+invariants:
+  - original sale remains immutable
+  - return lines reference original sale lines
+  - return quantities tracked separately
+  - complete audit trail maintained
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing return
+    - name: sale_id
+      type: uuid
+      where: payload
+      description: Original sale being returned against
+    - name: lines
+      type: array
+      where: payload
+      description: Array of lines to return
+      schema:
+        sale_line_id: uuid
+        qty: number
+        condition: enum[good,damaged]
+        reason: string
+  optional:
+    - name: customer_id
+      type: uuid
+      where: payload
+      description: Customer returning items (if different from sale)
+    - name: return_metadata
+      type: object
+      where: payload
+      default: {}
+      description: Additional return context
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: return_header
+      description: Return transaction header
+      smart_code: HERA.SALON.POS.RETURN.RETAIL.V1
+    - slug: return_lines
+      description: Individual return line items
+  side_effects:
+    - create return transaction with header and lines
+    - establish relationships to original sale lines
+    - calculate return totals and tax implications
+    - prepare for downstream processing
+
+happy_path:
+  - step: Load original sale and validate it exists and is committed
+  - step: Validate each return line references valid sale line
+  - step: Check return quantities don't exceed sale quantities
+  - step: Verify return window policy not exceeded
+  - step: Create return transaction header with HERA.SALON.POS.RETURN.RETAIL.V1
+  - step: For each return line, create transaction line with condition and reason
+  - step: Set relationships RETURN_LINE DERIVES_FROM SALE_LINE
+  - step: Calculate return subtotal, tax, and total amounts
+  - step: Store original_sale_line_id in dynamic data for each line
+  - step: Return return_id and return summary
+
+errors:
+  - code: SALE_NOT_FOUND
+    when: sale_id does not exist
+    action: return error with valid sale requirements
+  - code: SALE_NOT_COMMITTED
+    when: sale is not in committed status
+    action: return error - only committed sales can be returned
+  - code: SALE_LINE_NOT_FOUND
+    when: sale_line_id does not exist in original sale
+    action: return error with valid line details
+  - code: RETURN_QUANTITY_EXCEEDED
+    when: return qty > original sale qty minus already returned
+    action: return error with available return quantity
+  - code: RETURN_WINDOW_EXCEEDED
+    when: days since sale > org return policy window
+    action: return error with return policy details
+  - code: NON_RETAIL_RETURN_ATTEMPTED
+    when: attempting to return service lines through retail return
+    action: return error directing to service adjustment procedure
+  - code: DUPLICATE_RETURN
+    when: same line already fully returned
+    action: return error with return history
+  - code: RETURN_CREATION_FAILED
+    when: cannot create return transaction
+    action: return error with system details
+
+observability:
+  logs: [return_requested, sale_validated, lines_validated, return_created]
+  audit_json: true
+  metrics: [return_processing_duration_ms, return_line_count, return_total_amount]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  sale_id: "sale-123"
+  lines:
+    - sale_line_id: "ln_retail_3"
+      qty: 1
+      condition: "good"
+      reason: "unopened"
+    - sale_line_id: "ln_retail_5"
+      qty: 2
+      condition: "damaged"
+      reason: "defective"
+
+checks:
+  - description: Original sale properly validated before return
+  - description: Return quantities within allowed limits
+  - description: Return transaction created with proper smart code
+  - description: All return lines reference original sale lines
+  - description: Condition and reason tracked for each line
+  - description: Complete audit trail with relationships

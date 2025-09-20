@@ -3,13 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import { AlertTriangle, FileText, Package, MessageSquareWarning, X } from 'lucide-react'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Button } from '@/src/components/ui/button'
-import { cn } from '@/src/lib/utils'
-import { salonClasses } from '@/src/lib/theme/salon-theme'
-import { useClosingStatus } from '@/src/lib/api/closing'
-import { useInventoryAlerts } from '@/src/lib/api/inventory'
-import { useWhatsappFailures } from '@/src/lib/api/whatsapp'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { salonClasses } from '@/lib/theme/salon-theme'
+import { useClosingStatus } from '@/lib/api/closing'
+import { useInventoryAlerts } from '@/lib/api/inventory'
+import { useWhatsappFailures } from '@/lib/api/whatsapp'
 
 interface AlertsStripProps {
   organizationId: string

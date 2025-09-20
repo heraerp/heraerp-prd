@@ -5,7 +5,7 @@
 // ================================================================================
 
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface DashboardMetrics {
   // General metrics
@@ -57,27 +57,34 @@ export function useDashboardMetrics(organizationId: string) {
     queryFn: async () => {
       if (!organizationId) return null
       
-      // Fetch transactions for today
+      // Fetch transactions and compute today's metrics (client-side date filter)
       const today = new Date().toISOString().split('T')[0]
-      const transactions = await universalApi.read({
-        table: 'universal_transactions',
-        filter: {
-          organization_id: organizationId,
-          transaction_type: 'sale',
-          transaction_date: today
-        }
+
+      // Ensure org context for legacy helpers
+      universalApi.setOrganizationId(organizationId)
+
+      const txResult = await universalApi.getTransactions({
+        organizationId,
+        filters: { transaction_type: 'sale' },
+        orderBy: 'transaction_date',
+        orderDirection: 'desc'
       })
-      
+
+      const txns = txResult.success && txResult.data ? txResult.data : []
+
+      // Match only today's transactions by date part (YYYY-MM-DD)
+      const todays = txns.filter(t => (t.transaction_date || '').slice(0, 10) === today)
+
       // Calculate metrics
-      const grossSales = transactions.reduce((sum, t) => sum + (t.total_amount || 0), 0)
-      const netRevenue = grossSales * 0.85 // Assuming 15% costs
+      const grossSales = todays.reduce((sum, t) => sum + (t.total_amount || 0), 0)
+      const netRevenue = grossSales * 0.85 // Keep same assumption for now
       
       // Mock other metrics for now
       return {
         grossSales,
         netRevenue,
         appointmentsToday: 12,
-        averageTicketSize: grossSales / Math.max(transactions.length, 1),
+        averageTicketSize: grossSales / Math.max(todays.length, 1),
         whatsappDelivered: 45,
         lowStockCount: 3,
         monthlyRevenue: grossSales * 30,

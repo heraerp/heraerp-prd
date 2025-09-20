@@ -3,7 +3,7 @@
  * Handles appointment booking via WhatsApp with sacred table integration
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface BookingRequest {
   customerPhone: string
@@ -188,7 +188,7 @@ export class WhatsAppBookingService {
           quantity: 1,
           unit_price: request.price,
           line_amount: request.price,
-          smart_code: 'HERA.SALON.APPOINTMENT.LINE.SERVICE.v1',
+          smart_code: 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1',
           metadata: {
             service_name: request.serviceName,
             duration: request.duration
@@ -216,7 +216,7 @@ export class WhatsAppBookingService {
       from_entity_id: customerId,
       to_entity_id: appointmentId,
       relationship_type: 'has_appointment',
-      smart_code: 'HERA.SALON.REL.CUSTOMER.APPOINTMENT.v1',
+      smart_code: 'HERA.SALON.REL.CUSTOMER.APPOINTMENT.V1',
       metadata: {
         created_via: 'whatsapp_booking'
       }
@@ -227,7 +227,7 @@ export class WhatsAppBookingService {
       from_entity_id: appointmentId,
       to_entity_id: serviceId,
       relationship_type: 'for_service',
-      smart_code: 'HERA.SALON.REL.APPOINTMENT.SERVICE.v1'
+      smart_code: 'HERA.SALON.REL.APPOINTMENT.SERVICE.V1'
     })
 
     // Appointment → Stylist
@@ -236,7 +236,7 @@ export class WhatsAppBookingService {
         from_entity_id: appointmentId,
         to_entity_id: stylistId,
         relationship_type: 'with_stylist',
-        smart_code: 'HERA.SALON.REL.APPOINTMENT.STYLIST.v1'
+        smart_code: 'HERA.SALON.REL.APPOINTMENT.STYLIST.V1'
       })
     }
   }

@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
       transaction_code: `DOC-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       source_entity_id: documentId,
-      smart_code: 'HERA.FURNITURE.DOCUMENT.UPLOAD.TXN.v1',
+      smart_code: 'HERA.FURNITURE.DOCUMENT.UPLOAD.TXN.V1',
       metadata: {
         document_type: documentType,
         file_name: file.name,

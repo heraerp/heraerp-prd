@@ -127,52 +127,52 @@ export async function POST(request: NextRequest) {
           {
             field_name: 'category',
             field_value_text: item.category,
-            smart_code: 'HERA.SALON.INV.FIELD.CATEGORY.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.CATEGORY.V1'
           },
           {
             field_name: 'brand',
             field_value_text: item.brand,
-            smart_code: 'HERA.SALON.INV.FIELD.BRAND.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.BRAND.V1'
           },
           {
             field_name: 'sku',
             field_value_text: item.sku,
-            smart_code: 'HERA.SALON.INV.FIELD.SKU.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.SKU.V1'
           },
           {
             field_name: 'current_stock',
             field_value_number: item.currentStock,
-            smart_code: 'HERA.SALON.INV.FIELD.CURRENT_STOCK.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.CURRENT_STOCK.V1'
           },
           {
             field_name: 'min_stock',
             field_value_number: item.minStock,
-            smart_code: 'HERA.SALON.INV.FIELD.MIN_STOCK.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.MIN_STOCK.V1'
           },
           {
             field_name: 'max_stock',
             field_value_number: item.maxStock,
-            smart_code: 'HERA.SALON.INV.FIELD.MAX_STOCK.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.MAX_STOCK.V1'
           },
           {
             field_name: 'unit_cost',
             field_value_number: item.unitCost,
-            smart_code: 'HERA.SALON.INV.FIELD.UNIT_COST.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.UNIT_COST.V1'
           },
           {
             field_name: 'selling_price',
             field_value_number: item.sellingPrice,
-            smart_code: 'HERA.SALON.INV.FIELD.SELLING_PRICE.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.SELLING_PRICE.V1'
           },
           {
             field_name: 'supplier',
             field_value_text: item.supplier,
-            smart_code: 'HERA.SALON.INV.FIELD.SUPPLIER.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.SUPPLIER.V1'
           },
           {
             field_name: 'location',
             field_value_text: item.location,
-            smart_code: 'HERA.SALON.INV.FIELD.LOCATION.v1'
+            smart_code: 'HERA.SALON.INV.FIELD.LOCATION.V1'
           }
         ]
 

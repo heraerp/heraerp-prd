@@ -1,0 +1,74 @@
+smart_code: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+intent: Pause a workflow instance; timers skip when paused.
+scope:
+  in_scope:
+    - pause instance execution
+    - record pause reason
+    - create audit step
+    - prevent timer execution
+  out_of_scope:
+    - cancelling existing timers
+    - task reassignment
+    - notification sending
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or system
+  - instance exists and is not in terminal state
+  - instance is not already paused
+invariants:
+  - paused instances skip timer execution
+  - org isolation maintained
+  - audit trail of pause action
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance to pause
+  optional:
+    - reason: string                               # reason for pausing
+    - paused_by: uuid                              # user who paused
+happy_path:
+  - step: load instance header and verify not already paused
+  - step: verify instance is not in terminal state (COMPLETED, CANCELLED, FAILED)
+  - step: update instance.dynamic.paused = true
+  - step: update instance.dynamic.paused_at = now()
+  - step: if reason provided, store in instance.dynamic.pause_reason
+  - step: if paused_by provided, store in instance.dynamic.paused_by
+  - step: create STEP line smart_code=HERA.UNIV.WF.STEP.V1
+          metadata: {note: "PAUSE", reason, paused_by, timestamp: now()}
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # instance paused
+    - universal_transaction_lines: 1               # audit step created
+  response:
+    instance_id: uuid
+    paused: boolean
+    paused_at: timestamp
+    pause_reason: string
+    paused_by: uuid
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INSTANCE_ALREADY_PAUSED
+    when: instance.dynamic.paused is already true
+    action: return 409 with current pause details
+  - code: INSTANCE_TERMINAL
+    when: instance is in terminal state
+    action: return 400 with current state
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_admin
+    action: return 403
+observability:
+  logs:
+    - instance_paused: { instance_id, reason, paused_by }
+  audit_json: true
+  metrics:
+    - instance_pause_count by definition_code
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  reason: "Investigation needed for unusual behavior"
+  paused_by: "901e2345-e89b-12d3-a456-426614174000"
+checks:
+  - description: verify instance is pauseable
+  - description: ensure pause reason is meaningful
+  - description: validate audit trail is complete

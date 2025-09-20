@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import crypto from 'crypto'
 
 // Steve Jobs Principle: "Simplicity is the ultimate sophistication"

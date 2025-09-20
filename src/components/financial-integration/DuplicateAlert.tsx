@@ -8,12 +8,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Card, CardContent } from '@/src/components/ui/card'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
+} from '@/components/ui/table'
 import {
   AlertTriangle,
   FileText,

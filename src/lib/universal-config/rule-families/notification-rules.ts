@@ -146,14 +146,14 @@ export const NotificationRuleFamily = {
 
   // Sub-families for specific notification scenarios
   subFamilies: {
-    BOOKING: 'HERA.UNIV.CONFIG.NOTIFICATION.BOOKING.v1',
-    PAYMENT: 'HERA.UNIV.CONFIG.NOTIFICATION.PAYMENT.v1',
-    LOYALTY: 'HERA.UNIV.CONFIG.NOTIFICATION.LOYALTY.v1',
-    MARKETING: 'HERA.UNIV.CONFIG.NOTIFICATION.MARKETING.v1',
-    OPERATIONAL: 'HERA.UNIV.CONFIG.NOTIFICATION.OPERATIONAL.v1',
-    REMINDER: 'HERA.UNIV.CONFIG.NOTIFICATION.REMINDER.v1',
-    FEEDBACK: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.v1',
-    CUSTOM: 'HERA.UNIV.CONFIG.NOTIFICATION.CUSTOM.v1'
+    BOOKING: 'HERA.UNIV.CONFIG.NOTIFICATION.BOOKING.V1',
+    PAYMENT: 'HERA.UNIV.CONFIG.NOTIFICATION.PAYMENT.V1',
+    LOYALTY: 'HERA.UNIV.CONFIG.NOTIFICATION.LOYALTY.V1',
+    MARKETING: 'HERA.UNIV.CONFIG.NOTIFICATION.MARKETING.V1',
+    OPERATIONAL: 'HERA.UNIV.CONFIG.NOTIFICATION.OPERATIONAL.V1',
+    REMINDER: 'HERA.UNIV.CONFIG.NOTIFICATION.REMINDER.V1',
+    FEEDBACK: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.V1',
+    CUSTOM: 'HERA.UNIV.CONFIG.NOTIFICATION.CUSTOM.V1'
   },
 
   // Default conditions
@@ -230,7 +230,7 @@ export const NotificationRuleFamily = {
   // Sample templates
   templates: {
     bookingConfirmation: {
-      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.BOOKING.v1',
+      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.BOOKING.V1',
       status: 'active',
       priority: 100,
       conditions: {
@@ -283,7 +283,7 @@ We look forward to seeing you!`,
     },
 
     appointmentReminder: {
-      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.REMINDER.v1',
+      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.REMINDER.V1',
       status: 'active',
       priority: 100,
       conditions: {
@@ -314,7 +314,7 @@ We look forward to seeing you!`,
     },
 
     loyaltyPointsEarned: {
-      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.LOYALTY.v1',
+      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.LOYALTY.V1',
       status: 'active',
       priority: 50,
       conditions: {
@@ -349,7 +349,7 @@ You have enough points to redeem rewards! Check them out in your account.
     },
 
     feedbackRequest: {
-      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.v1',
+      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.FEEDBACK.V1',
       status: 'active',
       priority: 30,
       conditions: {
@@ -392,7 +392,7 @@ Thank you!`,
 
     // A/B testing example
     promotionalWithVariants: {
-      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.MARKETING.v1',
+      smart_code: 'HERA.UNIV.CONFIG.NOTIFICATION.MARKETING.V1',
       status: 'active',
       priority: 20,
       conditions: {

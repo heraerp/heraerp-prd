@@ -288,7 +288,7 @@ export const ADDON_MODULES: ModuleConfig[] = [
   {
     id: 'auto-journal',
     name: 'Auto-Journal Engine',
-    smartCode: 'HERA.FIN.AUTO.JOURNAL.MODULE.v1',
+    smartCode: 'HERA.FIN.AUTO.JOURNAL.MODULE.V1',
     version: 'v1',
     description: 'AI-powered automatic journal entry creation',
     category: 'addon',

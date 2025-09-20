@@ -3,7 +3,7 @@
  * Auto-generated using Universal Configuration Factory
  */
 
-import { ConfigurationFactory, CONFIG_TYPES } from '@/src/lib/universal-config/config-factory'
+import { ConfigurationFactory, CONFIG_TYPES } from '@/lib/universal-config/config-factory'
 
 const factory = new ConfigurationFactory()
 const handlers = factory.createRouteHandlers(CONFIG_TYPES.EXPENSE_CATEGORY)

@@ -250,7 +250,7 @@ export function BookAppointmentModal({
             id: 'srv-1',
             entity_name: 'Brazilian Blowout',
             entity_code: 'SRV-001',
-            smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+            smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1',
             duration: 240,
             price: 500,
             buffer_before: 15,
@@ -564,7 +564,7 @@ export function BookAppointmentModal({
           quantity: 1,
           unit_amount: service.price,
           line_amount: service.price,
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.v1',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.V1',
           line_data: {
             duration_minutes: service.duration,
             buffer_before: service.buffer_before,

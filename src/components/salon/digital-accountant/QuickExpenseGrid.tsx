@@ -1,13 +1,13 @@
 'use client'
 /**
  * Quick Expense Grid Component
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.EXPENSES.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.EXPENSES.V1
  */
 
 import React from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Package,
   Zap,
@@ -25,7 +25,7 @@ import {
   Coffee,
   Scissors
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface ExpenseCategory {
   id: string

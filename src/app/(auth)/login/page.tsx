@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA LOGIN PAGE - SALON THEME
-// Smart Code: HERA.AUTH.LOGIN.PAGE.SALON.v1
+// Smart Code: HERA.AUTH.LOGIN.PAGE.SALON.V1
 // Email+password form with react-hook-form + zod validation
 // ================================================================================
 
@@ -11,8 +11,8 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, Loader2, Sparkles } from 'lucide-react'
-import { useAuth } from '@/src/lib/auth/session'
-import { LoginRequest } from '@/src/lib/schemas/universal'
+import { useAuth } from '@/lib/auth/session'
+import { LoginRequest } from '@/lib/schemas/universal'
 
 export default function LoginPage() {
   const router = useRouter()

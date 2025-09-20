@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA HEALTHCARE DASHBOARD EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.HEALTHCARE.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.HEALTHCARE.V1
 // Complete healthcare practice dashboard with patient management
 // ================================================================================
 

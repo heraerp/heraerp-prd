@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Progress } from '@/components/ui/progress'
 import {
   Clock,
   ChefHat,
@@ -41,8 +41,8 @@ import {
   Star,
   Filter
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { universalApi } from '@/src/lib/universal-api'
+import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
 
 // Order status flow for kitchen
 type OrderStatus = 'new' | 'acknowledged' | 'preparing' | 'ready' | 'served' | 'completed'

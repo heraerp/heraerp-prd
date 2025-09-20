@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.SALON.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Services
   - { entity_slug: service:HAIRCUT_BASIC, key_slug: service.category,     value: "service", value_type: text }

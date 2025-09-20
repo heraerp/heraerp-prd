@@ -1,0 +1,55 @@
+smart_code: HERA.SALON.CRM.MEMBERSHIP.CHECK.DUE.V1
+intent: Check for memberships due for renewal and return list for workflow creation.
+scope:
+  in_scope:
+    - identify expiring memberships
+    - calculate renewal dates
+    - filter active customers
+  out_of_scope:
+    - workflow creation (done by scheduler)
+    - payment processing
+preconditions:
+  - scheduled execution context
+  - membership data available
+invariants:
+  - read-only operation
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+  optional:
+    - days_ahead: number=30                        # check 30 days ahead
+    - membership_types: array                      # filter by types
+happy_path:
+  - step: query customers with active memberships
+  - step: calculate expiry dates within days_ahead window
+  - step: exclude customers with pending renewal workflows
+  - step: return list of due memberships for workflow creation
+outputs:
+  due_memberships: array
+    - customer_id: uuid
+      membership_type: string
+      expiry_date: timestamp
+      renewal_fee: number
+      notification_preference: string
+errors:
+  - code: NO_MEMBERSHIPS_DUE
+    when: no memberships found in window
+    action: return empty list (not an error)
+observability:
+  logs:
+    - membership_check_completed: { organization_id, due_count, days_ahead }
+  metrics:
+    - membership_due_count by type
+    - renewal_rate
+example_response:
+  due_memberships:
+    - customer_id: "cust-123"
+      membership_type: "gold"
+      expiry_date: "2024-02-15T00:00:00Z"
+      renewal_fee: 200.00
+      notification_preference: "whatsapp"
+checks:
+  - description: ensure only active memberships are checked
+  - description: avoid duplicate workflow creation
+  - description: respect customer notification preferences

@@ -4,7 +4,7 @@
  * Enterprise-grade accounting automation types for HERA's universal architecture
  * Follows sacred 6-table principles with smart code intelligence
  *
- * Smart Code: HERA.FIN.ACCT.DIGITAL.TYPES.v1
+ * Smart Code: HERA.FIN.ACCT.DIGITAL.TYPES.V1
  */
 
 import {
@@ -349,11 +349,11 @@ export interface ValidationInfo {
  */
 export const ACCOUNTANT_SMART_CODES = {
   // Journal entries
-  JOURNAL_MANUAL: 'HERA.FIN.GL.JE.MANUAL.v1',
-  JOURNAL_AUTO: 'HERA.FIN.GL.JE.AUTO.v1',
-  JOURNAL_REVERSAL: 'HERA.FIN.GL.JE.REVERSAL.v1',
-  JOURNAL_ADJUSTMENT: 'HERA.FIN.GL.JE.ADJUST.v1',
-  JOURNAL_CLOSING: 'HERA.FIN.GL.JE.CLOSING.v1',
+  JOURNAL_MANUAL: 'HERA.FIN.GL.JE.MANUAL.V1',
+  JOURNAL_AUTO: 'HERA.FIN.GL.JE.AUTO.V1',
+  JOURNAL_REVERSAL: 'HERA.FIN.GL.JE.REVERSAL.V1',
+  JOURNAL_ADJUSTMENT: 'HERA.FIN.GL.JE.ADJUST.V1',
+  JOURNAL_CLOSING: 'HERA.FIN.GL.JE.CLOSING.V1',
 
   // Reconciliation
   RECON_BANK: 'HERA.FIN.RECON.BANK.v1',

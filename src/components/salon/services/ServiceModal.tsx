@@ -8,22 +8,30 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ServiceForm, ServiceFormSchema, ServiceWithDynamicData } from '@/schemas/service'
-import { Loader2, Save, X } from 'lucide-react'
+import { 
+  Loader2, 
+  Save, 
+  X, 
+  Clock,
+  DollarSign,
+  Percent,
+  Tag,
+  FileText,
+  Wrench,
+  Sparkles
+} from 'lucide-react'
+import { 
+  PrimaryButtonDNA,
+  SecondaryButtonDNA,
+  FormFieldDNA,
+  ScrollAreaDNA,
+  BadgeDNA
+} from '@/lib/dna/components/ui'
 
 interface ServiceModalProps {
   open: boolean
@@ -39,6 +47,7 @@ const COLORS = {
   gold: '#D4AF37',
   goldDark: '#B8860B',
   champagne: '#F5E6C8',
+  bronze: '#8C7853',
   lightText: '#E0E0E0'
 }
 
@@ -114,271 +123,261 @@ export function ServiceModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-2xl"
+        className="max-w-2xl max-h-[90vh] p-0 overflow-hidden"
         style={{ backgroundColor: COLORS.charcoal, color: COLORS.lightText }}
       >
-        <DialogHeader>
-          <DialogTitle style={{ color: COLORS.champagne }}>
-            {service ? 'Edit Service' : 'Create New Service'}
-          </DialogTitle>
-          <DialogDescription style={{ color: COLORS.lightText, opacity: 0.7 }}>
-            Add or update service details. Pricing and commission settings will be saved separately.
-          </DialogDescription>
+        <DialogHeader className="px-6 pt-6 pb-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle style={{ color: COLORS.champagne }} className="text-xl flex items-center gap-2">
+                <Sparkles className="w-5 h-5" style={{ color: COLORS.gold }} />
+                {service ? 'Edit Service' : 'Create New Service'}
+              </DialogTitle>
+              <DialogDescription style={{ color: COLORS.lightText, opacity: 0.7 }} className="mt-1">
+                Configure service details, pricing, and commission settings
+              </DialogDescription>
+            </div>
+            {service && (
+              <BadgeDNA variant="secondary" className="ml-4">
+                ID: {service.code || service.id.slice(0, 8)}
+              </BadgeDNA>
+            )}
+          </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="name" style={{ color: COLORS.champagne }}>
-                  Service Name *
-                </Label>
-                <Input
-                  id="name"
-                  {...register('name')}
-                  placeholder="e.g., Premium Cut & Style"
-                  className="bg-background/30 border-border text-foreground"
-                />
-                {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="code" style={{ color: COLORS.champagne }}>
-                  Service Code
-                </Label>
-                <Input
-                  id="code"
-                  {...register('code')}
-                  placeholder="e.g., SVC001"
-                  className="bg-background/30 border-border text-foreground uppercase"
-                />
-                {errors.code && <p className="text-red-400 text-sm mt-1">{errors.code.message}</p>}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="category" style={{ color: COLORS.champagne }}>
-                  Category
-                </Label>
-                <Controller
-                  name="category"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="bg-background/30 border-border text-foreground">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="duration_mins" style={{ color: COLORS.champagne }}>
-                  Duration (minutes) *
-                </Label>
-                <Input
-                  id="duration_mins"
-                  type="number"
-                  {...register('duration_mins', { valueAsNumber: true })}
-                  min={5}
-                  max={480}
-                  className="bg-background/30 border-border text-foreground"
-                />
-                {errors.duration_mins && (
-                  <p className="text-red-400 text-sm mt-1">{errors.duration_mins.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Pricing */}
-          <div className="space-y-4 border-t border-border pt-4">
-            <h3 style={{ color: COLORS.champagne }} className="font-medium">
-              Pricing
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="price" style={{ color: COLORS.champagne }}>
-                  Price *
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    {...register('price', { valueAsNumber: true })}
-                    min={0}
-                    className="bg-background/30 border-border text-foreground"
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+          <ScrollAreaDNA height="h-[calc(90vh-200px)]" className="px-6 py-4">
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
+                    style={{ color: COLORS.bronze }}>
+                  <Tag className="w-4 h-4" />
+                  Basic Information
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormFieldDNA
+                    type="text"
+                    label="Service Name"
+                    value={watch('name')}
+                    onChange={(value) => setValue('name', value)}
+                    placeholder="e.g., Premium Cut & Style"
+                    error={errors.name?.message}
+                    required
                   />
-                  <Select value="AED" disabled>
-                    <SelectTrigger className="w-20 bg-background/30 border-border text-foreground">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="AED">AED</SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                  <FormFieldDNA
+                    type="text"
+                    label="Service Code"
+                    value={watch('code') || ''}
+                    onChange={(value) => setValue('code', value.toUpperCase())}
+                    placeholder="e.g., SVC001"
+                    error={errors.code?.message}
+                    helper="Optional unique identifier"
+                  />
                 </div>
-                {errors.price && (
-                  <p className="text-red-400 text-sm mt-1">{errors.price.message}</p>
-                )}
-              </div>
 
-              <div>
-                <Label htmlFor="tax_rate" style={{ color: COLORS.champagne }}>
-                  Tax Rate (%)
-                </Label>
-                <Input
-                  id="tax_rate"
-                  type="number"
-                  step="0.01"
-                  {...register('tax_rate', { valueAsNumber: true })}
-                  min={0}
-                  max={100}
-                  className="bg-background/30 border-border text-foreground"
-                />
-                {errors.tax_rate && (
-                  <p className="text-red-400 text-sm mt-1">{errors.tax_rate.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Commission */}
-          <div className="space-y-4 border-t border-border pt-4">
-            <h3 style={{ color: COLORS.champagne }} className="font-medium">
-              Commission
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="commission_type" style={{ color: COLORS.champagne }}>
-                  Commission Type
-                </Label>
-                <Controller
-                  name="commission_type"
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="bg-background/30 border-border text-foreground">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="percent">Percentage</SelectItem>
-                        <SelectItem value="flat">Flat Rate</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="commission_value" style={{ color: COLORS.champagne }}>
-                  Commission Value {commissionType === 'percent' ? '(%)' : `(${watch('currency')})`}
-                </Label>
-                <Input
-                  id="commission_value"
-                  type="number"
-                  step="0.01"
-                  {...register('commission_value', { valueAsNumber: true })}
-                  min={0}
-                  max={commissionType === 'percent' ? 100 : undefined}
-                  className="bg-background/30 border-border text-foreground"
-                />
-                {errors.commission_value && (
-                  <p className="text-red-400 text-sm mt-1">{errors.commission_value.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className="space-y-4 border-t border-border pt-4">
-            <div>
-              <Label htmlFor="description" style={{ color: COLORS.champagne }}>
-                Description
-              </Label>
-              <Textarea
-                id="description"
-                {...register('description')}
-                placeholder="Service details, benefits, or special notes..."
-                rows={3}
-                className="bg-background/30 border-border text-foreground"
-              />
-              {errors.description && (
-                <p className="text-red-400 text-sm mt-1">{errors.description.message}</p>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="requires_equipment" style={{ color: COLORS.champagne }}>
-                Requires special room or equipment
-              </Label>
-              <Controller
-                name="requires_equipment"
-                control={control}
-                render={({ field }) => (
-                  <Switch
-                    id="requires_equipment"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormFieldDNA
+                    type="select"
+                    label="Category"
+                    value={watch('category') || ''}
+                    onChange={(value) => setValue('category', value)}
+                    options={categories.map(cat => ({ value: cat, label: cat }))}
+                    placeholder="Select category"
                   />
-                )}
-              />
+
+                  <FormFieldDNA
+                    type="number"
+                    label="Duration (minutes)"
+                    value={watch('duration_mins').toString()}
+                    onChange={(value) => setValue('duration_mins', parseInt(value) || 30)}
+                    min={5}
+                    max={480}
+                    error={errors.duration_mins?.message}
+                    icon={Clock}
+                    required
+                    helper="Service duration in minutes"
+                  />
+                </div>
+              </div>
+
+              {/* Pricing */}
+              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
+                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
+                    style={{ color: COLORS.bronze }}>
+                  <DollarSign className="w-4 h-4" />
+                  Pricing Configuration
+                </h3>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormFieldDNA
+                    type="number"
+                    label="Service Price"
+                    value={watch('price').toString()}
+                    onChange={(value) => setValue('price', parseFloat(value) || 0)}
+                    min={0}
+                    step={0.01}
+                    error={errors.price?.message}
+                    icon={DollarSign}
+                    suffix="AED"
+                    required
+                  />
+
+                  <FormFieldDNA
+                    type="number"
+                    label="Tax Rate"
+                    value={watch('tax_rate')?.toString() || '5'}
+                    onChange={(value) => setValue('tax_rate', parseFloat(value) || 0)}
+                    min={0}
+                    max={100}
+                    step={0.01}
+                    error={errors.tax_rate?.message}
+                    icon={Percent}
+                    suffix="%"
+                    helper="UAE VAT is 5%"
+                  />
+                </div>
+
+                {/* Price Preview */}
+                <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.black + '30', border: '1px solid ' + COLORS.bronze + '33' }}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>Total with Tax</span>
+                    <span className="text-lg font-semibold" style={{ color: COLORS.gold }}>
+                      AED {(watch('price') * (1 + (watch('tax_rate') || 0) / 100)).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Commission */}
+              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
+                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
+                    style={{ color: COLORS.bronze }}>
+                  <Percent className="w-4 h-4" />
+                  Commission Settings
+                </h3>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormFieldDNA
+                    type="select"
+                    label="Commission Type"
+                    value={watch('commission_type') || 'percent'}
+                    onChange={(value) => setValue('commission_type', value as 'flat' | 'percent')}
+                    options={[
+                      { value: 'percent', label: 'Percentage' },
+                      { value: 'flat', label: 'Flat Rate' }
+                    ]}
+                  />
+
+                  <FormFieldDNA
+                    type="number"
+                    label={`Commission Value`}
+                    value={watch('commission_value')?.toString() || '20'}
+                    onChange={(value) => setValue('commission_value', parseFloat(value) || 0)}
+                    min={0}
+                    max={commissionType === 'percent' ? 100 : undefined}
+                    step={0.01}
+                    error={errors.commission_value?.message}
+                    suffix={commissionType === 'percent' ? '%' : 'AED'}
+                    helper={commissionType === 'percent' ? 'Percentage of service price' : 'Fixed amount per service'}
+                  />
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              <div className="space-y-4 pt-6 border-t" style={{ borderColor: COLORS.bronze + '33' }}>
+                <h3 className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider" 
+                    style={{ color: COLORS.bronze }}>
+                  <FileText className="w-4 h-4" />
+                  Additional Details
+                </h3>
+
+                <FormFieldDNA
+                  type="textarea"
+                  label="Service Description"
+                  value={watch('description') || ''}
+                  onChange={(value) => setValue('description', value)}
+                  placeholder="Describe the service, what's included, benefits..."
+                  rows={3}
+                  error={errors.description?.message}
+                  helper="This description will be visible to customers"
+                />
+
+                <div className="flex items-center justify-between p-4 rounded-lg" 
+                     style={{ backgroundColor: COLORS.black + '30', border: '1px solid ' + COLORS.bronze + '33' }}>
+                  <div className="flex items-center gap-3">
+                    <Wrench className="w-5 h-5" style={{ color: COLORS.bronze }} />
+                    <div>
+                      <Label htmlFor="requires_equipment" className="font-medium cursor-pointer" style={{ color: COLORS.champagne }}>
+                        Requires special equipment
+                      </Label>
+                      <p className="text-xs mt-1" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                        Enable if this service needs specific equipment or a designated room
+                      </p>
+                    </div>
+                  </div>
+                  <Controller
+                    name="requires_equipment"
+                    control={control}
+                    render={({ field }) => (
+                      <Switch
+                        id="requires_equipment"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-gold"
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Smart Code Display */}
+              <div className="mt-6 p-4 rounded-lg" 
+                   style={{ backgroundColor: COLORS.black + '20', border: '1px solid ' + COLORS.bronze + '33' }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-wider" style={{ color: COLORS.bronze }}>
+                      Smart Code
+                    </p>
+                    <p className="font-mono text-sm mt-1" style={{ color: COLORS.champagne }}>
+                      HERA.SALON.SERVICE.V1
+                    </p>
+                  </div>
+                  <BadgeDNA variant="secondary" className="text-xs">
+                    Auto-generated
+                  </BadgeDNA>
+                </div>
+              </div>
             </div>
-          </div>
+          </ScrollAreaDNA>
 
-          {/* Smart Code Display */}
-          <div className="p-3 rounded-lg" style={{ backgroundColor: COLORS.black }}>
-            <p className="text-xs" style={{ color: COLORS.lightText, opacity: 0.7 }}>
-              Smart Code: <span className="font-mono">HERA.SALON.SERVICE.V1</span>
-            </p>
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
-            <Button
+          {/* Fixed Footer with Actions */}
+          <div className="flex-shrink-0 px-6 py-4 border-t flex justify-end gap-3" 
+               style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.bronze + '33' }}>
+            <SecondaryButtonDNA
               type="button"
-              variant="outline"
+              icon={X}
               onClick={onClose}
               disabled={saving}
-              className="border-border hover:bg-muted"
             >
-              <X className="w-4 h-4 mr-1" />
               Cancel
-            </Button>
-            <Button
+            </SecondaryButtonDNA>
+            <PrimaryButtonDNA
               type="submit"
-              disabled={saving}
-              className="font-semibold"
+              icon={Save}
+              loading={saving}
+              loadingText="Saving..."
+              className="min-w-[140px]"
               style={{
-                background: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                color: COLORS.black
+                background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                color: COLORS.black,
+                fontWeight: '600'
               }}
             >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-1" />
-                  Save Service
-                </>
-              )}
-            </Button>
+              {service ? 'Update Service' : 'Create Service'}
+            </PrimaryButtonDNA>
           </div>
         </form>
       </DialogContent>

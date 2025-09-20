@@ -455,7 +455,7 @@ export class ApprovalWorkflowService {
         organization_id: this.organizationId,
         entity_type: 'approval_workflow',
         entity_name: `Approval for ${entity.entity_name}`,
-        smart_code: 'HERA.FIN.ACCT.APPROVAL.WORKFLOW.v1',
+        smart_code: 'HERA.FIN.ACCT.APPROVAL.WORKFLOW.V1',
         metadata: {
           entity_type: request.entity_type,
           entity_id: request.entity_id,

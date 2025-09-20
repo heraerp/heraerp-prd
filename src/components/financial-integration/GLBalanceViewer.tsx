@@ -1,19 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
+} from '@/components/ui/table'
 import {
   BarChart,
   Bar,

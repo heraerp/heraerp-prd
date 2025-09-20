@@ -1,0 +1,89 @@
+smart_code: HERA.UNIV.TXN.LINE.REMOVE.V1
+intent: Remove a line and execute optional compensations.
+scope:
+  in_scope:
+    - remove line from transaction
+    - execute compensation procedures
+    - maintain audit trail of removal
+    - handle dependent adjustments
+  out_of_scope:
+    - header deletion
+    - line updates (use txn.line.update)
+    - cascade deletion of related transactions
+preconditions:
+  - permissions: [$PROFILE.required_role_write]
+  - transaction header exists and belongs to organization
+  - header.state in $PROFILE.line_remove_allowed_states
+  - line exists in transaction
+invariants:
+  - removed lines are deleted, not soft-deleted
+  - audit trail captures removed line data
+  - dependent adjustments handled per profile
+  - line numbers not resequenced after removal
+inputs:
+  required:
+    - organization_id: uuid
+    - transaction_id: uuid
+    - line_id: uuid
+  optional:
+    - reason: string                               # audit trail context
+    - cascade_adjustments: boolean=true            # remove related adjustments
+happy_path:
+  - step: verify transaction and line exist and belong to organization_id
+  - step: check transaction state in $PROFILE.line_remove_allowed_states
+  - step: validate permissions against $PROFILE.required_role_write
+  - step: capture line data for audit before deletion
+  - step: if cascade_adjustments, identify adjustments targeting this line
+  - step: delete line from universal_transaction_lines
+  - step: if cascade_adjustments, recursively remove dependent adjustments
+  - step: if $PROFILE.after_remove, run compensations (e.g., release inventory reservation)
+  - step: emit removal event with captured line data for audit trail
+outputs:
+  lines_removed:
+    - universal_transaction_lines: 1+              # main line + cascaded adjustments
+  compensations_executed: [$PROFILE.after_remove]
+  response:
+    line_id: uuid
+    removed_at: timestamp
+    cascaded_lines: array                          # if adjustments removed
+    audit_data: object                             # captured line data
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist or wrong organization
+    action: return 404
+  - code: LINE_NOT_FOUND
+    when: line_id does not exist in transaction
+    action: return 404
+  - code: INVALID_TRANSACTION_STATE
+    when: header.state not in $PROFILE.line_remove_allowed_states
+    action: return 409 with allowed states
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_write
+    action: return 403 with required permissions
+  - code: CANNOT_REMOVE_LAST_LINE
+    when: $PROFILE.require_minimum_lines and this is last line
+    action: return 400 with minimum requirement
+  - code: HAS_DEPENDENT_LINES
+    when: other lines depend on this one and cascade_adjustments=false
+    action: return 409 with dependent line ids
+observability:
+  logs:
+    - line_removed: { transaction_id, line_id, line_data, reason, organization_id }
+    - cascade_removal: { parent_line_id, dependent_line_ids }
+    - compensations_executed: { transaction_id, procedures }
+  audit_json: true
+  metrics:
+    - line_removal_count by line_type
+    - cascade_removal_count
+    - compensation_execution_count
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  transaction_id: "234e5678-e89b-12d3-a456-426614174000"
+  line_id: "345e6789-e89b-12d3-a456-426614174000"
+  reason: "Customer changed mind about service"
+  cascade_adjustments: true
+checks:
+  - description: verify line ownership by transaction
+  - description: check for dependent adjustments if cascade enabled
+  - description: ensure audit trail captures full line data
+  - description: validate minimum line requirements if configured

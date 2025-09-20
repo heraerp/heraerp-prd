@@ -5,14 +5,14 @@
  * Core building blocks for all HERA reports
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import type {
   CoreEntities,
   CoreDynamicData,
   CoreRelationships,
   UniversalTransactions,
   UniversalTransactionLines
-} from '@/src/types/hera-database.types'
+} from '@/types/hera-database.types'
 
 export interface URPContext {
   organizationId: string

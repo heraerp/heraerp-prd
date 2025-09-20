@@ -148,10 +148,10 @@ const DevelopmentMatrix = () => {
       description:
         'Restaurant POS & Management - Complete restaurant operations from menu management to customer orders to inventory.',
       smartCodes: [
-        'HERA.REST.CRM.ENT.MENU.v1 - Menu items',
-        'HERA.REST.CRM.TXN.ORDER.v1 - Customer orders',
-        'HERA.REST.INV.RCV.TXN.FOOD.v1 - Food delivery',
-        'HERA.REST.FIN.GL.RPT.FOOD.v1 - Food cost analysis'
+        'HERA.REST.CRM.ENT.MENU.V1 - Menu items',
+        'HERA.REST.CRM.TXN.ORDER.V1 - Customer orders',
+        'HERA.REST.INV.RCV.TXN.FOOD.V1 - Food delivery',
+        'HERA.REST.FIN.GL.RPT.FOOD.V1 - Food cost analysis'
       ]
     },
     {
@@ -161,10 +161,10 @@ const DevelopmentMatrix = () => {
       description:
         'Medical Practice Management - Patient records, appointments, treatments, billing, and insurance claims.',
       smartCodes: [
-        'HERA.HLTH.CRM.ENT.PAT.v1 - Patient records',
-        'HERA.HLTH.CRM.TXN.VISIT.v1 - Patient visits',
-        'HERA.HLTH.FIN.AR.TXN.CLM.v1 - Insurance claims',
-        'HERA.HLTH.INV.VAL.RPT.EXP.v1 - Drug expiration'
+        'HERA.HLTH.CRM.ENT.PAT.V1 - Patient records',
+        'HERA.HLTH.CRM.TXN.VISIT.V1 - Patient visits',
+        'HERA.HLTH.FIN.AR.TXN.CLM.V1 - Insurance claims',
+        'HERA.HLTH.INV.VAL.RPT.EXP.V1 - Drug expiration'
       ]
     },
     {
@@ -174,9 +174,9 @@ const DevelopmentMatrix = () => {
       description:
         'Any Business Type - Standard ERP functions that work for manufacturing, professional services, retail, etc.',
       smartCodes: [
-        'HERA.FIN.GL.TXN.JE.v1 - Journal entries',
-        'HERA.INV.RCV.TXN.IN.v1 - Inventory receiving',
-        'HERA.CRM.CUS.ENT.PROF.v1 - Customer profiles',
+        'HERA.FIN.GL.TXN.JE.V1 - Journal entries',
+        'HERA.INV.RCV.TXN.IN.V1 - Inventory receiving',
+        'HERA.CRM.CUS.ENT.PROF.V1 - Customer profiles',
         'HERA.HR.PAY.TXN.RUN.v1 - Payroll processing'
       ]
     }

@@ -1,0 +1,76 @@
+smart_code: HERA.UNIV.WF.TIMER.CANCEL.V1
+intent: Cancel pending timers for a workflow instance.
+scope:
+  in_scope:
+    - cancel specific named timer
+    - cancel all timers for instance
+    - update timer status
+    - maintain cancellation audit
+  out_of_scope:
+    - cancel already fired timers
+    - modify timer schedules
+    - pause/resume timers
+preconditions:
+  - permissions: [$PROFILE.required_role_timer]
+  - instance exists
+  - timer(s) in PENDING status
+invariants:
+  - only PENDING timers can be cancelled
+  - cancelled timers cannot be reactivated
+  - audit trail maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+  optional:
+    - name: string                                 # specific timer name to cancel
+    - reason: string                               # cancellation reason for audit
+happy_path:
+  - step: verify instance exists and belongs to organization
+  - step: if name provided, find timer by instance_id + name + status=PENDING
+  - step: if name not provided, find all timers by instance_id + status=PENDING
+  - step: for each timer found, update status = CANCELLED
+  - step: record cancellation metadata with reason and timestamp
+outputs:
+  transactions_updated:
+    - universal_transactions: 1-n                  # cancelled timers
+  response:
+    instance_id: uuid
+    cancelled_count: number
+    cancelled_timers: array
+      - timer_id: uuid
+        name: string
+        was_due_at: timestamp
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: TIMER_NOT_FOUND
+    when: named timer doesn't exist for instance
+    action: return 404
+  - code: NO_PENDING_TIMERS
+    when: no PENDING timers found to cancel
+    action: return 404
+  - code: TIMER_ALREADY_PROCESSED
+    when: named timer is not in PENDING status
+    action: return 409 with current status
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_timer
+    action: return 403
+observability:
+  logs:
+    - timer_cancelled: { timer_id, instance_id, name, reason }
+    - bulk_timers_cancelled: { instance_id, count, reason }
+  audit_json: true
+  metrics:
+    - timer_cancel_count by workflow_definition
+    - timer_cancel_reason_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  name: "manager_review_timeout"
+  reason: "Workflow advanced before timer fired"
+checks:
+  - description: verify timer is in cancellable state
+  - description: ensure proper authorization
+  - description: maintain audit trail of cancellation

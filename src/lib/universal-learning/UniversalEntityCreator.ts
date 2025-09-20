@@ -359,7 +359,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'learning_science' },
             confidence_score: 0.8,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.COGNITIVE.LOAD.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.COGNITIVE.LOAD.V1'
           },
           {
             entity_id: entity.entity_id,
@@ -383,7 +383,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'ai_enhancement', source: 'universal_ai' },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.AI.EXPLANATION.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.AI.EXPLANATION.V1'
           },
           {
             entity_id: entity.entity_id,
@@ -396,7 +396,7 @@ export class UniversalEntityCreator {
             },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.AI.EXAMPLES.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.AI.EXAMPLES.V1'
           },
           {
             entity_id: entity.entity_id,
@@ -406,7 +406,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'ai_enhancement' },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.AI.ANALOGIES.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.AI.ANALOGIES.V1'
           },
           {
             entity_id: entity.entity_id,
@@ -416,7 +416,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'ai_enhancement' },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.AI.MNEMONICS.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.AI.MNEMONICS.V1'
           }
         )
 
@@ -442,7 +442,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'metrics', calculated: true },
             confidence_score: analysisResult.confidenceScore,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.LEARNING.VALUE.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.LEARNING.VALUE.V1'
           }
         )
 
@@ -469,7 +469,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'relationships', count: element.relatedConcepts.length },
             confidence_score: 0.75,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.RELATED.CONCEPTS.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.RELATED.CONCEPTS.V1'
           })
         }
       }
@@ -584,7 +584,7 @@ export class UniversalEntityCreator {
                 relationshipReason: `${prerequisite} is prerequisite for ${entity.entity_name}`,
                 prerequisiteDepth: 1
               },
-              smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.PREREQUISITE.v1'
+              smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.PREREQUISITE.V1'
             }
 
             relationships.push(relationship)
@@ -612,7 +612,7 @@ export class UniversalEntityCreator {
                 relationshipReason: `${entity.entity_name} is related to ${relatedConcept}`,
                 prerequisiteDepth: 0
               },
-              smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.RELATED.v1'
+              smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.RELATED.V1'
             }
 
             relationships.push(relationship)
@@ -663,7 +663,7 @@ export class UniversalEntityCreator {
               relationshipReason: `${currentLevel} precedes ${nextLevel} in Bloom's taxonomy`,
               learningSequence: i + 1
             },
-            smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.SEQUENCE.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.RELATIONSHIP.SEQUENCE.V1'
           }
 
           relationships.push(relationship)

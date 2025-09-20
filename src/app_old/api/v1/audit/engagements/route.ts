@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         entity_code: body.data.client_code,
         entity_name: `${body.data.client_name} - FY${body.data.audit_year || new Date().getFullYear()}`,
         organization_id: clientOrgId, // Each GSPU audit client gets their own organization
-        smart_code: 'HERA.AUD.ENG.ENT.MASTER.v1',
+        smart_code: 'HERA.AUD.ENG.ENT.MASTER.V1',
         status: 'planning',
 
         // Client information
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         // Universal transaction for engagement creation
         transaction_data: {
           transaction_type: 'engagement_creation',
-          smart_code: 'HERA.AUD.ENG.TXN.CREATE.v1',
+          smart_code: 'HERA.AUD.ENG.TXN.CREATE.V1',
           reference_number: body.data.client_code,
           total_amount: parseFloat(body.data.estimated_fees) || 0,
           metadata: {
@@ -272,7 +272,7 @@ export async function GET(request: NextRequest) {
       ...eng,
       entity_type: 'audit_engagement',
       organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
-      smart_code: 'HERA.AUD.ENG.ENT.MASTER.v1'
+      smart_code: 'HERA.AUD.ENG.ENT.MASTER.V1'
     }))
 
     return NextResponse.json({

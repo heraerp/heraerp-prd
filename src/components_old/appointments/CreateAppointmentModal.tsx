@@ -40,7 +40,7 @@ import {
 } from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Create Appointment Modal
-// Smart Code: HERA.UNIV.CRM.APT.CREATE.v1
+// Smart Code: HERA.UNIV.CRM.APT.CREATE.V1
 
 interface CreateAppointmentModalProps {
   isOpen: boolean
@@ -720,7 +720,7 @@ export function CreateAppointmentModal({
 
             <div className="ml-auto flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
-                HERA.UNIV.CRM.APT.CREATE.v1
+                HERA.UNIV.CRM.APT.CREATE.V1
               </Badge>
               <Button
                 variant="outline"

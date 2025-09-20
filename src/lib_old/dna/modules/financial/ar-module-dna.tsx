@@ -299,7 +299,7 @@ export function ARModule({
         to_entity_id: selectedCustomer,
         transaction_code: `INV-${Date.now()}`,
         total_amount: totals.total,
-        smart_code: 'HERA.FIN.AR.TXN.INV.v1',
+        smart_code: 'HERA.FIN.AR.TXN.INV.V1',
         metadata: {
           ...invoiceForm.metadata,
           channel: invoiceForm.channel,
@@ -1207,10 +1207,10 @@ export const AR_MODULE_DNA = {
     'Organization context'
   ],
   smartCodes: [
-    'HERA.FIN.AR.ENT.CUS.v1',
-    'HERA.FIN.AR.TXN.INV.v1',
-    'HERA.FIN.AR.TXN.PAY.v1',
-    'HERA.FIN.AR.TXN.CM.v1',
+    'HERA.FIN.AR.ENT.CUS.V1',
+    'HERA.FIN.AR.TXN.INV.V1',
+    'HERA.FIN.AR.TXN.PAY.V1',
+    'HERA.FIN.AR.TXN.CM.V1',
     'HERA.FIN.AR.VAL.*'
   ]
 }

@@ -9,7 +9,7 @@ const auditPlanningEntities = [
     entity_name: 'Cyprus Trading Ltd - 2025 Audit Planning',
     entity_code: 'PLAN-2025-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.PLAN.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.PLAN.ENT.MASTER.V1',
     status: 'in_progress',
     created_date: '2025-01-15',
     metadata: {
@@ -40,7 +40,7 @@ const riskAssessmentEntities = [
     entity_name: 'Revenue Recognition Risk Assessment',
     entity_code: 'RISK-REV-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.v1',
+    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.V1',
     status: 'identified',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -67,7 +67,7 @@ const riskAssessmentEntities = [
     entity_name: 'Management Override Risk Assessment',
     entity_code: 'RISK-MO-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.v1',
+    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.V1',
     status: 'identified',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -93,7 +93,7 @@ const riskAssessmentEntities = [
     entity_name: 'IT General Controls Risk Assessment',
     entity_code: 'RISK-IT-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.v1',
+    smart_code: 'HERA.AUD.RISK.ENT.ASSESS.V1',
     status: 'identified',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -123,7 +123,7 @@ const planningAreas = [
     entity_name: 'Risk Assessment Work Program',
     entity_code: 'WP-RISK-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.WP.ENT.PROGRAM.v1',
+    smart_code: 'HERA.AUD.WP.ENT.PROGRAM.V1',
     status: 'completed',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -145,7 +145,7 @@ const planningAreas = [
     entity_name: 'Analytical Review Work Program',
     entity_code: 'WP-ANAL-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.WP.ENT.PROGRAM.v1',
+    smart_code: 'HERA.AUD.WP.ENT.PROGRAM.V1',
     status: 'in_progress',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -171,7 +171,7 @@ const planningMilestones = [
     entity_name: 'Client Acceptance Milestone',
     entity_code: 'MS-ACC-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.MS.ENT.TRACK.v1',
+    smart_code: 'HERA.AUD.MS.ENT.TRACK.V1',
     status: 'completed',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -192,7 +192,7 @@ const planningMilestones = [
     entity_name: 'Planning Memorandum Milestone',
     entity_code: 'MS-PLAN-001',
     organization_id: 'gspu_audit_partners_org',
-    smart_code: 'HERA.AUD.MS.ENT.TRACK.v1',
+    smart_code: 'HERA.AUD.MS.ENT.TRACK.V1',
     status: 'in_progress',
     parent_id: 'eng_planning_001',
     metadata: {
@@ -389,7 +389,7 @@ export async function POST(request: NextRequest) {
         entity_code:
           data.engagement_code || `PLAN-${data.audit_year}-${Math.floor(Math.random() * 1000)}`,
         organization_id: data.organization_id || 'gspu_audit_partners_org',
-        smart_code: 'HERA.AUD.PLAN.ENT.MASTER.v1',
+        smart_code: 'HERA.AUD.PLAN.ENT.MASTER.V1',
         status: 'draft',
         created_date: new Date().toISOString(),
         metadata: {
@@ -448,7 +448,7 @@ export async function POST(request: NextRequest) {
         entity_name: `${data.risk_category} Risk Assessment`,
         entity_code: `RISK-${data.risk_category.substring(0, 3).toUpperCase()}-${Math.floor(Math.random() * 1000)}`,
         organization_id: data.organization_id || 'gspu_audit_partners_org',
-        smart_code: 'HERA.AUD.RISK.ENT.ASSESS.v1',
+        smart_code: 'HERA.AUD.RISK.ENT.ASSESS.V1',
         status: 'identified',
         parent_id: data.engagement_id,
         created_date: new Date().toISOString(),

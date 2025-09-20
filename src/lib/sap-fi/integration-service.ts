@@ -1,8 +1,8 @@
-import { supabaseClient } from '@/src/lib/supabase-client'
+import { supabaseClient } from '@/lib/supabase-client'
 import { SAPConnectorFactory } from './connectors/factory'
 import { SAPValidationService } from './business-logic/validation'
 import { SAPMappingService } from './business-logic/mapping'
-import { UniversalTransaction, UniversalTransactionLine } from '@/src/types/hera-database.types'
+import { UniversalTransaction, UniversalTransactionLine } from '@/types/hera-database.types'
 
 export interface IntegrationResult {
   success: boolean
@@ -217,7 +217,7 @@ export class SAPIntegrationService {
       from_entity_id: transactionId,
       to_entity_id: transactionId, // Self-reference
       relationship_type: 'sap_posted',
-      smart_code: 'HERA.ERP.FI.EVENT.POSTED.v1',
+      smart_code: 'HERA.ERP.FI.EVENT.POSTED.V1',
       metadata: {
         sap_document_number: sapDocumentNumber,
         sap_fiscal_year: sapFiscalYear,
@@ -255,7 +255,7 @@ export class SAPIntegrationService {
           stack_trace: error.stack,
           timestamp: new Date().toISOString()
         },
-        smart_code: 'HERA.ERP.FI.ERROR.POST.v1'
+        smart_code: 'HERA.ERP.FI.ERROR.POST.V1'
       })
     } catch (logError) {
       console.error('Failed to log error:', logError)

@@ -323,7 +323,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: CHART_OF_ACCOUNTS,
-          smart_code: 'HERA.FIN.GL.ENT.COA.v1',
+          smart_code: 'HERA.FIN.GL.ENT.COA.V1',
           total_accounts: Object.keys(CHART_OF_ACCOUNTS).length
         })
 
@@ -349,7 +349,7 @@ export async function GET(request: NextRequest) {
               CHART_OF_ACCOUNTS[account_code as keyof typeof CHART_OF_ACCOUNTS].normal_balance,
             last_updated: new Date().toISOString()
           },
-          smart_code: 'HERA.FIN.GL.RPT.BAL.v1'
+          smart_code: 'HERA.FIN.GL.RPT.BAL.V1'
         })
 
       case 'trial_balance':
@@ -394,7 +394,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Journal Entry Handler (HERA.FIN.GL.TXN.JE.v1)
+// Journal Entry Handler (HERA.FIN.GL.TXN.JE.V1)
 async function handleJournalEntry(
   data: JournalEntryData,
   smart_code: string,
@@ -456,7 +456,7 @@ async function handleJournalEntry(
   })
 }
 
-// Invoice Handler (HERA.FIN.AR.TXN.INV.v1)
+// Invoice Handler (HERA.FIN.AR.TXN.INV.V1)
 async function handleInvoice(data: InvoiceData, smart_code: string, organization_id: string) {
   const invoice_id = `INV-${Date.now()}`
 
@@ -494,7 +494,7 @@ async function handleInvoice(data: InvoiceData, smart_code: string, organization
   })
 }
 
-// Payment Handler (HERA.FIN.AP.TXN.PMT.v1 or HERA.FIN.AR.TXN.PMT.v1)
+// Payment Handler (HERA.FIN.AP.TXN.PMT.V1 or HERA.FIN.AR.TXN.PMT.V1)
 async function handlePayment(data: PaymentData, smart_code: string, organization_id: string) {
   const payment_id = `PMT-${Date.now()}`
   const is_ar_payment = smart_code.includes('AR')
@@ -545,7 +545,7 @@ async function handlePayment(data: PaymentData, smart_code: string, organization
   })
 }
 
-// Bank Deposit Handler (HERA.FIN.BL.TXN.DEP.v1)
+// Bank Deposit Handler (HERA.FIN.BL.TXN.DEP.V1)
 async function handleBankDeposit(data: any, smart_code: string, organization_id: string) {
   const deposit_id = `DEP-${Date.now()}`
 
@@ -565,7 +565,7 @@ async function handleBankDeposit(data: any, smart_code: string, organization_id:
   })
 }
 
-// Asset Acquisition Handler (HERA.FIN.AA.TXN.ACQ.v1)
+// Asset Acquisition Handler (HERA.FIN.AA.TXN.ACQ.V1)
 async function handleAssetAcquisition(
   data: AssetData,
   smart_code: string,
@@ -608,7 +608,7 @@ async function handleAssetAcquisition(
   })
 }
 
-// Budget Creation Handler (HERA.FIN.BD.ENT.BUD.v1)
+// Budget Creation Handler (HERA.FIN.BD.ENT.BUD.V1)
 async function handleBudgetCreate(data: BudgetData, smart_code: string, organization_id: string) {
   const budget_id = `BUD-${Date.now()}`
   const total_budget = data.line_items.reduce((sum, item) => sum + item.budgeted_amount, 0)
@@ -634,7 +634,7 @@ async function handleBudgetCreate(data: BudgetData, smart_code: string, organiza
   })
 }
 
-// Tax Calculation Handler (HERA.FIN.TX.TXN.VAT.v1)
+// Tax Calculation Handler (HERA.FIN.TX.TXN.VAT.V1)
 async function handleTaxCalculation(data: any, smart_code: string, organization_id: string) {
   const tax_rate = data.tax_rate || 0.1 // Default 10%
   const tax_amount = data.taxable_amount * tax_rate
@@ -837,7 +837,7 @@ async function generateTrialBalance(organization_id: string) {
       total_credits,
       is_balanced: Math.abs(total_debits - total_credits) < 0.01
     },
-    smart_code: 'HERA.FIN.GL.RPT.TB.v1',
+    smart_code: 'HERA.FIN.GL.RPT.TB.V1',
     organization_id
   })
 }
@@ -865,7 +865,7 @@ async function generateIncomeStatement(organization_id: string) {
       net_income: 180000,
       earnings_per_share: 1.8
     },
-    smart_code: 'HERA.FIN.GL.RPT.PL.v1',
+    smart_code: 'HERA.FIN.GL.RPT.PL.V1',
     organization_id
   })
 }
@@ -910,7 +910,7 @@ async function generateBalanceSheet(organization_id: string) {
       },
       total_liabilities_and_equity: 675000
     },
-    smart_code: 'HERA.FIN.GL.RPT.BS.v1',
+    smart_code: 'HERA.FIN.GL.RPT.BS.V1',
     organization_id
   })
 }
@@ -941,7 +941,7 @@ async function generateCashFlowStatement(organization_id: string) {
       beginning_cash: 89000,
       ending_cash: 300000
     },
-    smart_code: 'HERA.FIN.GL.RPT.CF.v1',
+    smart_code: 'HERA.FIN.GL.RPT.CF.V1',
     organization_id
   })
 }

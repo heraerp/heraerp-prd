@@ -6,15 +6,15 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { toast } from '@/src/lib/utils'
-import { AppointmentsApi } from '@/src/lib/api/appointments'
+import { toast } from '@/lib/utils'
+import { AppointmentsApi } from '@/lib/api/appointments'
 import { 
   AppointmentCreate, 
   AppointmentTransition, 
   AppointmentFilters,
   ACTION_TO_STATUS,
   Appointment
-} from '@/src/lib/schemas/appointment'
+} from '@/lib/schemas/appointment'
 
 // Single appointment hook
 export function useAppointment(id: string, api: AppointmentsApi) {

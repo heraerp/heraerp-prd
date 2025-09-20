@@ -11,18 +11,18 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { salonApiClient } from '@/src/lib/salon/salon-api-client'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { salonApiClient } from '@/lib/salon/salon-api-client'
 // Import the glassmorphism modal with WSAG effects
-import { BookAppointmentModalGlass } from '@/src/components/salon/BookAppointmentModalGlass'
-import SalonDarkSidebar from '@/src/components/salon/SalonDarkSidebar'
-import type { DashboardData, Organization } from '@/src/types/salon.types'
-import { handleError, withErrorHandler } from '@/src/lib/salon/error-handler'
-import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
+import { BookAppointmentModalGlass } from '@/components/salon/BookAppointmentModalGlass'
+import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
+import type { DashboardData, Organization } from '@/types/salon.types'
+import { handleError, withErrorHandler } from '@/lib/salon/error-handler'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import {
   Users,
   Calendar,
@@ -60,7 +60,7 @@ import {
   FileText,
   Brain
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 // Default organization ID for salon - Hair Talkz Park Regis
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'

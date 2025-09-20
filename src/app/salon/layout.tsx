@@ -1,26 +1,30 @@
 'use client'
 
 import React from 'react'
-import SalonDashboardSidebar from '@/src/components/salon/SalonDashboardSidebar'
+import { usePathname } from 'next/navigation'
+import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
 
 export default function SalonLayout({
   children
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  
+  // Don't show sidebar on the public landing page
+  const isPublicPage = pathname === '/salon'
+  
+  if (isPublicPage) {
+    return <>{children}</>
+  }
+  
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Sidebar */}
-      <SalonDashboardSidebar />
-      
-      {/* Main Content Area - Offset by sidebar width */}
-      <div className="lg:pl-64">
-        {/* Mobile spacing for bottom nav */}
-        <div className="lg:hidden h-16" />
-        
-        {/* Page Content */}
+    <>
+      <SalonDarkSidebar />
+      {/* reserve exactly the sidebar width */}
+      <main id="salon-main" className="ml-20 min-h-[100dvh]">
         {children}
-      </div>
-    </div>
+      </main>
+    </>
   )
 }

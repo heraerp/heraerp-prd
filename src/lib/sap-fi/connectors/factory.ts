@@ -1,6 +1,6 @@
 import { ISAPConnector, SAPConfig } from './base'
 import { S4HANACloudConnector } from './s4hana-cloud'
-import { supabaseClient } from '@/src/lib/supabase-client'
+import { supabaseClient } from '@/lib/supabase-client'
 
 // Connector Factory
 export class SAPConnectorFactory {

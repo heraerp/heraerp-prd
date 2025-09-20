@@ -5,41 +5,41 @@ from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogTrigger
 }
-from '@/src/components/ui/dialog'
+from '@/components/ui/dialog'
 import { Button }
-from '@/src/components/ui/button'
+from '@/components/ui/button'
 import { Input }
-from '@/src/components/ui/input'
+from '@/components/ui/input'
 import { Label }
-from '@/src/components/ui/label'
+from '@/components/ui/label'
 import { Textarea }
-from '@/src/components/ui/textarea'
+from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger,
   SelectValue
 }
-from '@/src/components/ui/select'
+from '@/components/ui/select'
 import { Card }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Badge }
-from '@/src/components/ui/badge'
+from '@/components/ui/badge'
 import { Separator }
-from '@/src/components/ui/separator'
+from '@/components/ui/separator'
 import { Plus, Minus, ShoppingCart, User, Package, Calendar, CreditCard, Truck, FileText, Search, X, Maximize2,
   Minimize2
 }
 from 'lucide-react'
 import { universalApi }
-from '@/src/lib/universal-api'
+from '@/lib/universal-api'
 import { useDemoOrganization }
-from '@/src/lib/dna/patterns/demo-org-pattern'
+from '@/lib/dna/patterns/demo-org-pattern'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 import { useToast }
-from '@/src/hooks/use-toast'
+from '@/hooks/use-toast'
 import { generateHeraDocumentNumber, useHeraDocumentNumbering, HERA_DNA_DOCUMENT_TYPES,
   HeraDocumentNumberDisplay
 }
-from '@/src/lib/dna/components/document-numbering-dna'
+from '@/lib/dna/components/document-numbering-dna'
 
 
 interface Customer {
@@ -319,7 +319,7 @@ const loadData = async () => {
         entity_type: 'customer',
         entity_name: customerFormData.name,
         entity_code: `CUST-${Date.now()}`,
-        smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.v1',
+        smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.V1',
         organization_id: organizationId
       })
       
@@ -334,7 +334,7 @@ const loadData = async () => {
         
         for (const field of dynamicFields) {
           await universalApi.setDynamicField(customerId, field.field_name, field.field_value_text, {
-            smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.v1'
+            smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.V1'
           })
         }
         
@@ -464,7 +464,7 @@ const loadData = async () => {
             transaction_date: orderDetails.order_date,
             reference_entity_id: orderId,
             total_amount: totals.total,
-            smart_code: 'HERA.FURNITURE.SALES.ORDER.POSTED.v1', // Universal Event Contract
+            smart_code: 'HERA.FURNITURE.SALES.ORDER.POSTED.V1', // Universal Event Contract
             metadata: {
               source_system: 'FurnitureSales',
               origin_txn_id: orderId,
@@ -669,7 +669,7 @@ metadata: {
                   border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}
               >
-                <ShoppingCart className="h-5 w-5 text-[#37353E]" />
+                <ShoppingCart className="h-5 w-5 text-[var(--color-icon-secondary)]" />
               </div>
               <span className="text-xl font-semibold">Create New Sales Order</span>
             </div>
@@ -701,7 +701,7 @@ metadata: {
               {/* Customer Selection */}
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
                 <div className="flex items-center gap-2 mb-4">
-                  <User className="h-5 w-5 text-[#37353E]" />
+                  <User className="h-5 w-5 text-[var(--color-icon-secondary)]" />
                   <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Customer Information</h3>
                 </div>
                 {!selectedCustomer && !newCustomerMode ? (
@@ -848,7 +848,7 @@ metadata: {
               {/* Product Selection */}
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]">
                 <div className="flex items-center gap-2 mb-4">
-                  <Package className="h-5 w-5 text-[#37353E]" />
+                  <Package className="h-5 w-5 text-[var(--color-icon-secondary)]" />
                   <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Add Products</h3>
                 </div>
                 <div className="space-y-3">

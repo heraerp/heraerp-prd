@@ -1,0 +1,130 @@
+smart_code: HERA.FIN.POSTING.GL.REVERSE.V1
+intent: >
+  Post balanced GL reversal entries for returns and adjustments.
+  Reverses revenue, COGS, tax liabilities per Finance DNA mapping.
+
+scope:
+  in_scope:
+    - GL reversal journal creation
+    - Revenue reversal entries
+    - Tax liability adjustments
+    - COGS reversal for returns
+    - Refund payment entries
+  out_of_scope:
+    - Original sale modification
+    - Account reconciliation
+    - Period closing adjustments
+    - Management reporting
+
+preconditions:
+  - return/adjustment/refund transactions exist
+  - Finance DNA integration is active
+  - GL account mappings configured
+  - has_permissions: [gl_posting, financial_adjustments]
+
+invariants:
+  - journal entries are always balanced
+  - reversals reference original entries
+  - posting follows Finance DNA mappings
+  - audit trail is complete
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for GL posting
+    - name: reversal_context
+      type: object
+      where: payload
+      description: Context for reversal posting
+      schema:
+        return_id: uuid
+        adjustment_id: uuid
+        refund_id: uuid
+        tax_reversal_id: uuid
+  optional:
+    - name: posting_date
+      type: date
+      where: payload
+      default: "current_date"
+      description: GL posting date
+    - name: journal_memo
+      type: string
+      where: payload
+      default: "Return/Refund Reversal"
+      description: Journal entry memo
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: gl_reversal_journal
+      description: Balanced GL reversal journal
+      smart_code: HERA.FIN.POSTING.GL.REVERSE.V1
+  side_effects:
+    - create reversal journal entries
+    - update GL account balances
+    - maintain audit references
+    - ensure balanced posting
+
+happy_path:
+  - step: Load all reversal context transactions
+  - step: Query Finance DNA for GL account mappings
+  - step: Create reversal journal header with reference to original
+  - step: For retail returns, reverse revenue and COGS entries
+  - step: For service adjustments, reverse service revenue only
+  - step: For tax reversals, reverse tax liability accounts
+  - step: For payment refunds, reverse payment receipt entries
+  - step: Ensure total debits equal total credits
+  - step: Create journal transaction with all reversal lines
+  - step: Link to source transactions for audit trail
+  - step: Return journal_entry_id and posting summary
+
+errors:
+  - code: CONTEXT_TRANSACTION_NOT_FOUND
+    when: return/adjustment/refund transaction not found
+    action: return error with missing transaction details
+  - code: FINANCE_DNA_NOT_ACTIVE
+    when: Finance DNA integration not configured
+    action: return error with activation requirements
+  - code: GL_MAPPING_NOT_FOUND
+    when: smart codes lack GL account mappings
+    action: return error with missing mappings
+  - code: ORIGINAL_JOURNAL_NOT_FOUND
+    when: cannot find original GL entries to reverse
+    action: return error with journal linkage requirements
+  - code: JOURNAL_NOT_BALANCED
+    when: reversal debits != credits
+    action: return error with balance analysis
+  - code: POSTING_DATE_INVALID
+    when: posting date is in closed period
+    action: return error with valid date range
+  - code: REVERSAL_ALREADY_POSTED
+    when: reversal journal already exists
+    action: return existing journal details
+  - code: GL_POSTING_FAILED
+    when: cannot create GL journal
+    action: return error with system details
+
+observability:
+  logs: [gl_reversal_requested, context_loaded, mappings_resolved, journal_posted]
+  audit_json: true
+  metrics: [gl_reversal_duration_ms, journal_line_count, reversal_total_amount]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  reversal_context:
+    return_id: "ret-123"
+    adjustment_id: null
+    refund_id: "rf-456"
+    tax_reversal_id: "tax-789"
+  posting_date: "2025-01-15"
+  journal_memo: "Return #RET-123 with refund"
+
+checks:
+  - description: All context transactions properly loaded
+  - description: GL mappings correctly resolved
+  - description: Reversal entries mirror original postings
+  - description: Journal perfectly balanced
+  - description: All references maintained for audit
+  - description: Finance DNA patterns followed

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { X, Maximize2, Minimize2, Move, Sparkles } from 'lucide-react'
 import { Button } from './button'
 

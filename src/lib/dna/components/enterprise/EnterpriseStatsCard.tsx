@@ -7,10 +7,10 @@
 
 import React from 'react'
 import { LucideIcon, TrendingUp, TrendingDown, Minus, AlertCircle } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EnterpriseCard } from './EnterpriseCard'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface MetricData {
   current: number | string

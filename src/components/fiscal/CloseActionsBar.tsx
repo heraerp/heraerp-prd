@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
   DialogContent,
@@ -19,8 +19,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/src/components/ui/dialog'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+} from '@/components/ui/dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Lock,
   CheckCircle,
@@ -31,8 +31,8 @@ import {
   FileText,
   Info
 } from 'lucide-react'
-import { FiscalPeriod, YearCloseRequest } from '@/src/lib/schemas/fiscal'
-import { useToast } from '@/src/components/ui/use-toast'
+import { FiscalPeriod, YearCloseRequest } from '@/lib/schemas/fiscal'
+import { useToast } from '@/components/ui/use-toast'
 
 interface CloseActionsBarProps {
   currentPeriod?: FiscalPeriod
@@ -342,7 +342,7 @@ export function CloseActionsBar({
                   Audit Trail
                 </div>
                 <div className="text-blue-700 dark:text-blue-300 mt-1">
-                  Smart Code: HERA.FIN.FISCAL.YEAR.CLOSE.v1
+                  Smart Code: HERA.FIN.FISCAL.YEAR.CLOSE.V1
                 </div>
               </AlertDescription>
             </Alert>

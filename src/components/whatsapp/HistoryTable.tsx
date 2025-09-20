@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Eye, 
   MessageSquare, 
@@ -25,7 +25,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
-import { WaMessage, MessageFilters } from '@/src/lib/schemas/whatsapp'
+import { WaMessage, MessageFilters } from '@/lib/schemas/whatsapp'
 
 interface HistoryTableProps {
   messages: WaMessage[]

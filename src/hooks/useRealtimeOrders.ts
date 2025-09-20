@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-// Smart Code: HERA.REST.REALTIME.ORDERS.HOOK.v1
+// Smart Code: HERA.REST.REALTIME.ORDERS.HOOK.V1
 // Real-time order tracking using Supabase subscriptions
 
 interface Order {
@@ -178,7 +178,7 @@ export const useRealtimeOrders = ({
             entity_id: orderId,
             field_name: 'kitchen_status',
             field_value_text: updates.kitchen_status,
-            smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.v1'
+            smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.V1'
           })
         }
 
@@ -187,7 +187,7 @@ export const useRealtimeOrders = ({
             entity_id: orderId,
             field_name: 'estimated_ready',
             field_value_text: updates.estimated_ready,
-            smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.v1'
+            smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.V1'
           })
         }
 
@@ -196,7 +196,7 @@ export const useRealtimeOrders = ({
             entity_id: orderId,
             field_name: 'customer_name',
             field_value_text: updates.customer_name,
-            smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.v1'
+            smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.V1'
           })
         }
 

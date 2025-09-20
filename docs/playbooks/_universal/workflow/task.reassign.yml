@@ -1,0 +1,88 @@
+smart_code: HERA.UNIV.TASK.REASSIGN.V1
+intent: Reassign a task to role or user.
+scope:
+  in_scope:
+    - change task assignment
+    - update assignee metadata
+    - maintain task state
+    - create audit trail
+  out_of_scope:
+    - task state changes
+    - notification sending
+    - permission validation
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or task owner
+  - task exists and is not COMPLETED
+  - new assignee (role or user) exists in organization
+invariants:
+  - task has exactly one assignee (role XOR user)
+  - task state remains unchanged
+  - org isolation maintained
+  - audit trail of reassignment
+inputs:
+  required:
+    - organization_id: uuid
+    - task_id: uuid                                # task to reassign
+  optional:
+    - assignee_role: string                        # assign to role (exclusive with assignee_user_id)
+    - assignee_user_id: uuid                       # assign to user (exclusive with assignee_role)
+    - reassigned_by: uuid                          # user who performed reassignment
+    - reason: string                               # reassignment reason
+happy_path:
+  - step: load task entity and current assignment from core_dynamic_data
+  - step: verify task is not in COMPLETED state
+  - step: validate exactly one of assignee_role or assignee_user_id is provided
+  - step: if assignee_role provided, call HERA.UNIV.WF.ROLE.RESOLVE.V1 to validate
+  - step: if assignee_user_id provided, verify user exists in organization
+  - step: store previous assignment for audit trail
+  - step: update core_dynamic_data('task') with new assignee fields
+  - step: if task was CLAIMED, reset to OPEN state (new assignee must claim)
+  - step: update task.reassigned_at = now()
+  - step: create audit record in task metadata
+outputs:
+  entities_updated:
+    - core_dynamic_data: 1                         # task assignment updated
+  response:
+    task_id: uuid
+    assignee_role: string
+    assignee_user_id: uuid
+    task_state: string
+    reassigned_at: timestamp
+    reassigned_by: uuid
+errors:
+  - code: TASK_NOT_FOUND
+    when: task_id doesn't exist in organization
+    action: return 404
+  - code: TASK_COMPLETED
+    when: task state is COMPLETED
+    action: return 409 with current state
+  - code: INVALID_ASSIGNEE
+    when: both or neither assignee fields provided
+    action: return 400 with validation error
+  - code: ROLE_NOT_FOUND
+    when: assignee_role doesn't exist in organization
+    action: return 400
+  - code: USER_NOT_FOUND
+    when: assignee_user_id doesn't exist in organization
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks required permissions
+    action: return 403
+observability:
+  logs:
+    - task_reassigned: { task_id, previous_assignee, new_assignee, reassigned_by }
+  audit_json: true
+  metrics:
+    - task_reassignment_count by workflow_definition
+    - task_assignee_change_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  task_id: "890e1234-e89b-12d3-a456-426614174000"
+  assignee_role: "senior_manager"
+  reassigned_by: "901e2345-e89b-12d3-a456-426614174000"
+  reason: "Escalating to senior management due to complexity"
+checks:
+  - description: validate exactly one assignee type provided
+  - description: ensure new assignee exists and is active
+  - description: verify reassignment authority
+  - description: maintain task state consistency

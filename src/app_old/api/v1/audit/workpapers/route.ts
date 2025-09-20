@@ -20,7 +20,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '1.0',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.PLANNING.MEMO.v1'
+    smart_code: 'HERA.AUD.WP.PLANNING.MEMO.V1'
   },
   {
     id: 'wp_002',
@@ -40,7 +40,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '2.1',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.REVENUE.v1'
+    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.REVENUE.V1'
   },
   {
     id: 'wp_003',
@@ -60,7 +60,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '1.3',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.CASH.v1'
+    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.CASH.V1'
   },
   {
     id: 'wp_004',
@@ -79,7 +79,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '0.5',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.CONTROLS.INVENTORY.v1'
+    smart_code: 'HERA.AUD.WP.CONTROLS.INVENTORY.V1'
   },
   {
     id: 'wp_005',
@@ -99,7 +99,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '1.2',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.RISK.ASSESSMENT.v1'
+    smart_code: 'HERA.AUD.WP.RISK.ASSESSMENT.V1'
   },
   {
     id: 'wp_006',
@@ -118,7 +118,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '0.8',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.COMPLETION.MGMT_LETTER.v1'
+    smart_code: 'HERA.AUD.WP.COMPLETION.MGMT_LETTER.V1'
   },
   {
     id: 'wp_007',
@@ -138,7 +138,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '1.1',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.PAYABLES.v1'
+    smart_code: 'HERA.AUD.WP.SUBSTANTIVE.PAYABLES.V1'
   },
   {
     id: 'wp_008',
@@ -158,7 +158,7 @@ const MOCK_WORKPAPERS = [
     engagement_year: '2025',
     version: '2.0',
     entity_type: 'audit_workpaper',
-    smart_code: 'HERA.AUD.WP.CONTROLS.DOCUMENTATION.v1'
+    smart_code: 'HERA.AUD.WP.CONTROLS.DOCUMENTATION.V1'
   }
 ]
 

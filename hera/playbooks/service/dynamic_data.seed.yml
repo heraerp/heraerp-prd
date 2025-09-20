@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.SERVICE.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Service
   - { entity_slug: service:INSTALL_BASIC, key_slug: service.category,              value: "installation", value_type: text }

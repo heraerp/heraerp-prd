@@ -4,7 +4,7 @@
  * Uses core_entities and core_dynamic_data for storage
  */
 
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface UCRTemplateEntry {
@@ -64,7 +64,7 @@ export class UCRTemplateIndexService {
         entity_type: 'ucr_template_index',
         entity_name: 'UCR Template Master Index',
         entity_code: 'UCR-TEMPLATE-INDEX-001',
-        smart_code: 'HERA.UCR.TEMPLATE.INDEX.MASTER.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.INDEX.MASTER.V1',
         organization_id: organizationId,
         metadata: {
           description: 'Central catalog of all UCR templates across industries',
@@ -97,7 +97,7 @@ export class UCRTemplateIndexService {
         description:
           'Comprehensive rule set for salon operations including booking, pricing, and notifications',
         rule_families: ['BOOKING', 'PRICING', 'NOTIFICATION', 'WORKFLOW', 'VALIDATION'],
-        smart_code: 'HERA.UCR.TEMPLATE.SALON.COMPLETE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.SALON.COMPLETE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -108,7 +108,7 @@ export class UCRTemplateIndexService {
         description:
           'Advanced booking rules with double-booking prevention and peak hour management',
         rule_families: ['BOOKING', 'VALIDATION'],
-        smart_code: 'HERA.UCR.TEMPLATE.SALON.BOOKING.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.SALON.BOOKING.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -121,7 +121,7 @@ export class UCRTemplateIndexService {
         description:
           'Full restaurant management rules including orders, pricing, and kitchen workflow',
         rule_families: ['ORDER', 'PRICING', 'INVENTORY', 'WORKFLOW', 'NOTIFICATION'],
-        smart_code: 'HERA.UCR.TEMPLATE.RESTAURANT.COMPLETE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.RESTAURANT.COMPLETE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -131,7 +131,7 @@ export class UCRTemplateIndexService {
         name: 'Restaurant Happy Hour Pricing',
         description: 'Dynamic pricing rules for happy hour and special promotions',
         rule_families: ['PRICING'],
-        smart_code: 'HERA.UCR.TEMPLATE.RESTAURANT.HAPPYHOUR.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.RESTAURANT.HAPPYHOUR.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -144,7 +144,7 @@ export class UCRTemplateIndexService {
         description:
           'Comprehensive healthcare rules including appointments, insurance, and compliance',
         rule_families: ['APPOINTMENT', 'INSURANCE', 'COMPLIANCE', 'WORKFLOW', 'NOTIFICATION'],
-        smart_code: 'HERA.UCR.TEMPLATE.HEALTHCARE.COMPLETE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.HEALTHCARE.COMPLETE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -154,7 +154,7 @@ export class UCRTemplateIndexService {
         name: 'Healthcare Insurance Processing',
         description: 'Insurance verification and pre-authorization workflow rules',
         rule_families: ['INSURANCE', 'WORKFLOW'],
-        smart_code: 'HERA.UCR.TEMPLATE.HEALTHCARE.INSURANCE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.HEALTHCARE.INSURANCE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -166,7 +166,7 @@ export class UCRTemplateIndexService {
         name: 'Retail Complete Business Rules',
         description: 'Full retail management including inventory, pricing, and loyalty programs',
         rule_families: ['INVENTORY', 'PRICING', 'LOYALTY', 'PROMOTION', 'NOTIFICATION'],
-        smart_code: 'HERA.UCR.TEMPLATE.RETAIL.COMPLETE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.RETAIL.COMPLETE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -176,7 +176,7 @@ export class UCRTemplateIndexService {
         name: 'Retail Loyalty Program',
         description: 'Customer loyalty tiers, points accumulation, and rewards',
         rule_families: ['LOYALTY', 'PRICING'],
-        smart_code: 'HERA.UCR.TEMPLATE.RETAIL.LOYALTY.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.RETAIL.LOYALTY.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -188,7 +188,7 @@ export class UCRTemplateIndexService {
         name: 'Manufacturing Complete Business Rules',
         description: 'Production planning, quality control, and supply chain management',
         rule_families: ['PRODUCTION', 'QUALITY', 'INVENTORY', 'SUPPLY_CHAIN', 'WORKFLOW'],
-        smart_code: 'HERA.UCR.TEMPLATE.MANUFACTURING.COMPLETE.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.MANUFACTURING.COMPLETE.V1',
         version: '1.0.0',
         status: 'active'
       },
@@ -198,7 +198,7 @@ export class UCRTemplateIndexService {
         name: 'Manufacturing Quality Control',
         description: 'Quality assurance rules, defect tracking, and compliance',
         rule_families: ['QUALITY', 'COMPLIANCE'],
-        smart_code: 'HERA.UCR.TEMPLATE.MANUFACTURING.QUALITY.v1',
+        smart_code: 'HERA.UCR.TEMPLATE.MANUFACTURING.QUALITY.V1',
         version: '1.0.0',
         status: 'active'
       }
@@ -225,7 +225,7 @@ export class UCRTemplateIndexService {
       field_name: 'template_index',
       field_value_text: JSON.stringify(index),
       field_type: 'json',
-      smart_code: 'HERA.UCR.TEMPLATE.INDEX.DATA.v1',
+      smart_code: 'HERA.UCR.TEMPLATE.INDEX.DATA.V1',
       organization_id: organizationId,
       metadata: {
         version: index.version,

@@ -5,11 +5,11 @@
 // ================================================================================
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { universalApi } from '@/src/lib/universal-api'
-import { PostingRule } from '@/src/lib/schemas/financeRules'
+import { universalApi } from '@/lib/universal-api'
+import { PostingRule } from '@/lib/schemas/financeRules'
 
 const RULE_KEY_PREFIX = 'FIN_DNA.RULES.'
-const RULE_SMART_CODE = 'HERA.FIN.DNA.RULES.CONFIG.v1'
+const RULE_SMART_CODE = 'HERA.FIN.DNA.RULES.CONFIG.V1'
 
 export function useFinanceRulesApi(organizationId: string) {
   const queryClient = useQueryClient()

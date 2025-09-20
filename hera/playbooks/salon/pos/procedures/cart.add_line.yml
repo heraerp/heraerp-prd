@@ -1,0 +1,37 @@
+smart_code: HERA.SALON.POS.CART.ADD_LINE.V1
+intent: Add a SERVICE/RETAIL/ADJUSTMENT line to an ACTIVE cart; price from server rules.
+preconditions:
+  - cart.smart_code == HERA.SALON.POS.CART.ACTIVE.V1
+  - has_permissions: [pos_operator, cart_write]
+  - line_type in [SERVICE, RETAIL, ADJUSTMENT]
+invariants:
+  - if line_type == SERVICE then sum(staff_split.pct) == 100
+  - unit_price derives from pricebook; client may not set it
+  - all writes include organization_id
+inputs:
+  required:
+    - organization_id: uuid
+    - cart_id: uuid
+    - line_type: enum
+    - entity_id: uuid|slug
+    - quantity: number
+  optional:
+    - staff_split: array[{staff_id, pct:number}]
+    - dynamic: object  # {source, appointment_line_id, target_line_id, scope, notes}
+outputs:
+  transactions_emitted:
+    - slug: pos_cart_line
+      line_rules:
+        - when line_type == SERVICE -> smart_code from catalog (e.g., HERA.SALON.SVC.COLOR.TONER.V1)
+        - when line_type == RETAIL  -> product smart_code (e.g., HERA.SALON.RETAIL.SHAMPOO.COLORSAFE.V1)
+        - when line_type == ADJUSTMENT -> choose one of HERA.SALON.POS.ADJUST.DISCOUNT.LINE.PCT.V1, HERA.SALON.POS.ADJUST.DISCOUNT.LINE.AMT.V1, HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1, HERA.SALON.POS.ADJUST.DISCOUNT.CART.AMT.V1, HERA.SALON.POS.ADJUST.PRICE.OVERRIDE.V1
+  side_effects:
+    - when line_type == RETAIL:
+        emit: HERA.SALON.INV.RESERVE.SOFT.V1
+        relationships:
+          - RESERVATION ─ASSOCIATED_WITH→ CART
+          - RESERVATION_LINE ─DERIVES_FROM→ CART_LINE
+errors:
+  - code: CART_NOT_ACTIVE
+  - code: INVALID_STAFF_SPLIT
+  - code: ENTITY_NOT_FOUND

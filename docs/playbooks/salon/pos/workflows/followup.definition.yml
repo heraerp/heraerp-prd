@@ -1,0 +1,22 @@
+smart_code: HERA.UNIV.WF.DEFINITION.V1
+intent: Appointment Follow-up workflow definition for salon POS to CRM
+definition:
+  code: APPT_FOLLOWUP
+  states: [COMPLETED, PENDING_SEND, SENT, DONE]
+  transitions:
+    - from: COMPLETED
+      to: PENDING_SEND
+      by: [system]
+    - from: PENDING_SEND
+      to: SENT
+      by: [system]
+      effects:
+        - HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1
+    - from: SENT
+      to: DONE
+      by: [system]
+  timers:
+    - on_enter: PENDING_SEND
+      minutes: 60                                  # send 1 hour after
+      on_fire: HERA.UNIV.WF.ADVANCE.V1
+      name: followup_delay

@@ -9,7 +9,7 @@
  * is indexed, searchable, and immediately retrievable for future AI interactions
  */
 
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // HERA System Organization ID - Sacred constant
 const HERA_SYSTEM_ORG = '719dfed1-09b4-4ca8-bfda-f682460de945'

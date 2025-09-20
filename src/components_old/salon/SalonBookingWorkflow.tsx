@@ -172,7 +172,7 @@ export function SalonBookingWorkflow({
         'Use sulfate-free products',
         'Deep conditioning weekly'
       ],
-      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1',
       popularity: 95,
       addons: [
         {
@@ -208,7 +208,7 @@ export function SalonBookingWorkflow({
         'Sleep on silk pillowcase',
         'Use keratin-safe products'
       ],
-      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1',
+      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.V1',
       popularity: 88
     },
     {
@@ -219,7 +219,7 @@ export function SalonBookingWorkflow({
       price: 280,
       category: 'color',
       skillLevel: 'senior',
-      smartCode: 'HERA.SALON.SERVICE.COLOR.BALAYAGE.v1',
+      smartCode: 'HERA.SALON.SERVICE.COLOR.BALAYAGE.V1',
       popularity: 92
     },
     {
@@ -230,7 +230,7 @@ export function SalonBookingWorkflow({
       price: 150,
       category: 'cut',
       skillLevel: 'senior',
-      smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1',
+      smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.V1',
       popularity: 85
     },
     {
@@ -241,7 +241,7 @@ export function SalonBookingWorkflow({
       price: 800,
       category: 'bridal',
       skillLevel: 'celebrity',
-      smartCode: 'HERA.SALON.SERVICE.BRIDAL.COMPLETE.v1',
+      smartCode: 'HERA.SALON.SERVICE.BRIDAL.COMPLETE.V1',
       popularity: 98
     }
   ]
@@ -264,7 +264,7 @@ export function SalonBookingWorkflow({
       reviews: 247,
       bio: '15+ years of experience with celebrity clients. Certified Brazilian Blowout specialist.',
       instagram: '@rocky_hair_artist',
-      smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1'
+      smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1'
     },
     {
       id: 'stylist-vinay-001',
@@ -277,7 +277,7 @@ export function SalonBookingWorkflow({
       rating: 4.7,
       reviews: 156,
       bio: 'Master of precision cuts and modern styling techniques.',
-      smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+      smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
     },
     {
       id: 'stylist-maya-001',
@@ -290,7 +290,7 @@ export function SalonBookingWorkflow({
       rating: 4.8,
       reviews: 189,
       bio: 'Award-winning colorist specializing in natural-looking highlights.',
-      smartCode: 'HERA.SALON.STAFF.COLOR.SPECIALIST.v1'
+      smartCode: 'HERA.SALON.STAFF.COLOR.SPECIALIST.V1'
     }
   ]
 

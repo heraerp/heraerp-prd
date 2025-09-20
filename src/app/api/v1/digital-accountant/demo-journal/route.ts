@@ -1,6 +1,6 @@
 /**
  * HERA Digital Accountant - Demo Journal Entry API
- * Smart Code: HERA.API.DIGITAL.ACCOUNTANT.DEMO.v1
+ * Smart Code: HERA.API.DIGITAL.ACCOUNTANT.DEMO.V1
  *
  * Demonstrates complete journal entry process from natural language to posted entries
  */
@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import {
   DigitalAccountantHelper,
   salonJournalExamples
-} from '@/src/lib/digital-accountant/journal-entry-helper'
+} from '@/lib/digital-accountant/journal-entry-helper'
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { ViewMetaService, ViewMetadata, Widget } from '@/src/lib/universal-ui/view-meta-service'
+import { ViewMetaService, ViewMetadata, Widget } from '@/lib/universal-ui/view-meta-service'
 import { FormWidget } from './widgets/FormWidget'
 import { GridWidget } from './widgets/GridWidget'
 import { TimelineWidget } from './widgets/TimelineWidget'
@@ -10,11 +10,11 @@ import { ChartWidget } from './widgets/ChartWidget'
 import { KanbanWidget } from './widgets/KanbanWidget'
 import { TreeWidget } from './widgets/TreeWidget'
 import { RelatedWidget } from './widgets/RelatedWidget'
-import { cn } from '@/src/lib/utils'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 
 interface UniversalRendererProps {
   smartCode: string

@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Calendar,
   Filter,
@@ -21,8 +21,8 @@ import {
   TrendingUp,
   TrendingDown
 } from 'lucide-react'
-import { WealthTransaction } from '@/src/lib/pwm/types'
-import { cn } from '@/src/lib/utils'
+import { WealthTransaction } from '@/lib/pwm/types'
+import { cn } from '@/lib/utils'
 
 interface TransactionHistoryProps {
   organizationId: string

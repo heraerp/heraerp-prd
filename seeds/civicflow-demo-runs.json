@@ -1,0 +1,1770 @@
+{
+  "runs": [
+    {
+      "id": "run_001",
+      "playbook_id": "pb_001",
+      "status": "in_progress",
+      "current_step": "step_002",
+      "smart_code": "HERA.GOV.INTAKE.RUN.HOUSING.V1",
+      "metadata": {
+        "constituent_name": "Maria Rodriguez",
+        "case_number": "CASE-2024-0142",
+        "program": "Emergency Housing Assistance",
+        "intake_date": "2024-01-15T09:30:00Z",
+        "caseworker": "Sarah Johnson"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-15T09:30:00Z",
+          "completed_at": "2024-01-15T09:45:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.REGISTRATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "intake_registration",
+              "smart_code": "HERA.GOV.INTAKE.TXN.REGISTRATION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "registration_type": "walk_in",
+                "language": "Spanish",
+                "interpreter_needed": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Constituent registration completed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.REG_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "in_progress",
+          "started_at": "2024-01-15T09:45:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.ASSESSMENT.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_002",
+      "playbook_id": "pb_002",
+      "status": "in_progress",
+      "current_step": "step_003",
+      "smart_code": "HERA.GOV.ELIGIBILITY.RUN.SNAP.V1",
+      "metadata": {
+        "constituent_name": "James Thompson",
+        "case_number": "CASE-2024-0089",
+        "program": "SNAP Benefits",
+        "assessment_date": "2024-01-14T14:00:00Z",
+        "eligibility_worker": "Michael Chen"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-14T14:00:00Z",
+          "completed_at": "2024-01-14T14:15:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.INCOME_VERIFY.V1",
+          "transactions": [
+            {
+              "transaction_type": "income_verification",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.INCOME_CHECK.V1",
+              "total_amount": 2850.00,
+              "metadata": {
+                "monthly_income": 2850.00,
+                "household_size": 4,
+                "verification_method": "paystub"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Employment income verified",
+                  "amount": 2850.00,
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.INCOME_VERIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-14T14:15:00Z",
+          "completed_at": "2024-01-14T14:30:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.ASSET_CHECK.V1",
+          "transactions": [
+            {
+              "transaction_type": "asset_verification",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.ASSET_CHECK.V1",
+              "total_amount": 1500.00,
+              "metadata": {
+                "total_assets": 1500.00,
+                "asset_limit": 5000.00,
+                "within_limit": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Bank account verified",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.ASSET_VERIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "in_progress",
+          "started_at": "2024-01-14T14:30:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.DETERMINATION.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_003",
+      "playbook_id": "pb_003",
+      "status": "in_progress",
+      "current_step": "step_002",
+      "smart_code": "HERA.GOV.GRANT.RUN.COMMUNITY.V1",
+      "metadata": {
+        "organization_name": "Riverside Community Center",
+        "grant_program": "Community Development Block Grant",
+        "requested_amount": 75000.00,
+        "project_name": "Youth Employment Initiative",
+        "grant_writer": "Lisa Martinez"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-12T10:00:00Z",
+          "completed_at": "2024-01-12T16:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.APPLICATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_application",
+              "smart_code": "HERA.GOV.GRANT.TXN.APPLICATION.V1",
+              "total_amount": 75000.00,
+              "metadata": {
+                "grant_type": "CDBG",
+                "project_duration_months": 12,
+                "beneficiaries_count": 150
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Personnel costs",
+                  "amount": 45000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.PERSONNEL.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Program materials",
+                  "amount": 15000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.MATERIALS.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Administrative overhead",
+                  "amount": 15000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.ADMIN.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "in_progress",
+          "started_at": "2024-01-13T09:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.REVIEW.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_004",
+      "playbook_id": "pb_004",
+      "status": "in_progress",
+      "current_step": "step_003",
+      "smart_code": "HERA.GOV.CASE.RUN.HOUSING_REPAIR.V1",
+      "metadata": {
+        "constituent_name": "Robert Wilson",
+        "case_number": "CASE-2024-0198",
+        "service_type": "Emergency Home Repair",
+        "priority": "high",
+        "assigned_to": "David Brown"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-13T08:00:00Z",
+          "completed_at": "2024-01-13T09:00:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.INTAKE.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_intake",
+              "smart_code": "HERA.GOV.CASE.TXN.INTAKE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "issue_type": "roof_damage",
+                "urgency": "emergency",
+                "household_elderly": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Emergency repair request logged",
+                  "smart_code": "HERA.GOV.CASE.LINE.REQUEST_LOGGED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-13T10:00:00Z",
+          "completed_at": "2024-01-13T11:30:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "site_assessment",
+              "smart_code": "HERA.GOV.CASE.TXN.ASSESSMENT.V1",
+              "total_amount": 4500.00,
+              "metadata": {
+                "damage_severity": "severe",
+                "repair_category": "structural",
+                "estimated_cost": 4500.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Roof repair estimate",
+                  "amount": 3500.00,
+                  "smart_code": "HERA.GOV.CASE.LINE.REPAIR_ESTIMATE.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Emergency tarping",
+                  "amount": 1000.00,
+                  "smart_code": "HERA.GOV.CASE.LINE.EMERGENCY_MEASURE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "in_progress",
+          "started_at": "2024-01-14T08:00:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.SERVICE_DELIVERY.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_005",
+      "playbook_id": "pb_005",
+      "status": "in_progress",
+      "current_step": "step_001",
+      "smart_code": "HERA.GOV.OUTREACH.RUN.SENIOR_SERVICES.V1",
+      "metadata": {
+        "campaign_name": "Senior Services Enrollment Drive",
+        "target_audience": "Seniors 65+",
+        "outreach_method": "community_event",
+        "coordinator": "Patricia Lee"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "in_progress",
+          "started_at": "2024-01-15T08:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.PLANNING.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_006",
+      "playbook_id": "pb_001",
+      "status": "in_progress",
+      "current_step": "step_003",
+      "smart_code": "HERA.GOV.INTAKE.RUN.FOODBANK.V1",
+      "metadata": {
+        "constituent_name": "Angela Davis",
+        "case_number": "CASE-2024-0211",
+        "program": "Emergency Food Assistance",
+        "intake_date": "2024-01-15T11:00:00Z",
+        "caseworker": "Jennifer White"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-15T11:00:00Z",
+          "completed_at": "2024-01-15T11:10:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.REGISTRATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "intake_registration",
+              "smart_code": "HERA.GOV.INTAKE.TXN.REGISTRATION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "registration_type": "phone",
+                "household_size": 3,
+                "children_count": 2
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Phone intake completed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.REG_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-15T11:10:00Z",
+          "completed_at": "2024-01-15T11:20:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "needs_assessment",
+              "smart_code": "HERA.GOV.INTAKE.TXN.NEEDS_ASSESS.V1",
+              "total_amount": 0,
+              "metadata": {
+                "food_insecurity_level": "severe",
+                "dietary_restrictions": ["gluten_free"],
+                "emergency_need": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Emergency food need identified",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.NEED_IDENTIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "in_progress",
+          "started_at": "2024-01-15T11:20:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.SERVICE_REFERRAL.V1",
+          "transactions": []
+        }
+      ]
+    },
+    {
+      "id": "run_007",
+      "playbook_id": "pb_001",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.INTAKE.RUN.UTILITIES.V1",
+      "metadata": {
+        "constituent_name": "Thomas Martinez",
+        "case_number": "CASE-2024-0087",
+        "program": "Utility Assistance Program",
+        "intake_date": "2024-01-10T13:00:00Z",
+        "caseworker": "Sarah Johnson"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-10T13:00:00Z",
+          "completed_at": "2024-01-10T13:15:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.REGISTRATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "intake_registration",
+              "smart_code": "HERA.GOV.INTAKE.TXN.REGISTRATION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "registration_type": "walk_in",
+                "utility_type": "electric",
+                "past_due_amount": 450.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Constituent registration completed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.REG_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-10T13:15:00Z",
+          "completed_at": "2024-01-10T13:30:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "needs_assessment",
+              "smart_code": "HERA.GOV.INTAKE.TXN.NEEDS_ASSESS.V1",
+              "total_amount": 450.00,
+              "metadata": {
+                "shutoff_notice": true,
+                "payment_plan_eligible": true,
+                "household_income": 2200.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Utility assistance need verified",
+                  "amount": 450.00,
+                  "smart_code": "HERA.GOV.INTAKE.LINE.NEED_VERIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-10T13:30:00Z",
+          "completed_at": "2024-01-10T13:45:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.SERVICE_REFERRAL.V1",
+          "transactions": [
+            {
+              "transaction_type": "service_referral",
+              "smart_code": "HERA.GOV.INTAKE.TXN.REFERRAL.V1",
+              "total_amount": 300.00,
+              "metadata": {
+                "referral_program": "LIHEAP",
+                "assistance_approved": true,
+                "payment_amount": 300.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "LIHEAP assistance approved",
+                  "amount": 300.00,
+                  "smart_code": "HERA.GOV.INTAKE.LINE.ASSISTANCE_APPROVED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-10T13:45:00Z",
+          "completed_at": "2024-01-10T14:00:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.COMPLETION.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_closure",
+              "smart_code": "HERA.GOV.INTAKE.TXN.CLOSURE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "outcome": "successful",
+                "payment_issued": true,
+                "follow_up_needed": false
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Case successfully closed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.CASE_CLOSED.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_008",
+      "playbook_id": "pb_002",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.ELIGIBILITY.RUN.MEDICAID.V1",
+      "metadata": {
+        "constituent_name": "Linda Johnson",
+        "case_number": "CASE-2024-0056",
+        "program": "Medicaid",
+        "assessment_date": "2024-01-08T10:00:00Z",
+        "eligibility_worker": "Michael Chen"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-08T10:00:00Z",
+          "completed_at": "2024-01-08T10:20:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.INCOME_VERIFY.V1",
+          "transactions": [
+            {
+              "transaction_type": "income_verification",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.INCOME_CHECK.V1",
+              "total_amount": 1800.00,
+              "metadata": {
+                "monthly_income": 1800.00,
+                "household_size": 2,
+                "verification_method": "employer_verification"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Income verified below threshold",
+                  "amount": 1800.00,
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.INCOME_QUALIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-08T10:20:00Z",
+          "completed_at": "2024-01-08T10:30:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.CITIZENSHIP.V1",
+          "transactions": [
+            {
+              "transaction_type": "citizenship_verification",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.CITIZENSHIP.V1",
+              "total_amount": 0,
+              "metadata": {
+                "citizenship_status": "US_citizen",
+                "verification_type": "birth_certificate",
+                "state_resident": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Citizenship verified",
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.CITIZEN_VERIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-08T10:30:00Z",
+          "completed_at": "2024-01-08T10:45:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.DETERMINATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "eligibility_determination",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.DETERMINATION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "determination": "eligible",
+                "coverage_type": "full_medicaid",
+                "effective_date": "2024-02-01"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Medicaid eligibility approved",
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.APPROVED.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_009",
+      "playbook_id": "pb_003",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.GRANT.RUN.INFRASTRUCTURE.V1",
+      "metadata": {
+        "organization_name": "City Public Works Department",
+        "grant_program": "Federal Infrastructure Grant",
+        "requested_amount": 250000.00,
+        "project_name": "Main Street Revitalization",
+        "grant_writer": "Lisa Martinez"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-05T09:00:00Z",
+          "completed_at": "2024-01-05T17:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.APPLICATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_application",
+              "smart_code": "HERA.GOV.GRANT.TXN.APPLICATION.V1",
+              "total_amount": 250000.00,
+              "metadata": {
+                "grant_type": "Infrastructure",
+                "project_duration_months": 18,
+                "matching_funds": 50000.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Construction costs",
+                  "amount": 180000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.CONSTRUCTION.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Engineering and design",
+                  "amount": 40000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.ENGINEERING.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Project management",
+                  "amount": 30000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.MANAGEMENT.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-08T09:00:00Z",
+          "completed_at": "2024-01-09T17:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.REVIEW.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_review",
+              "smart_code": "HERA.GOV.GRANT.TXN.REVIEW.V1",
+              "total_amount": 0,
+              "metadata": {
+                "review_score": 92,
+                "reviewer": "Federal Grant Committee",
+                "recommendation": "approve"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Technical review passed",
+                  "smart_code": "HERA.GOV.GRANT.LINE.REVIEW_PASSED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-10T10:00:00Z",
+          "completed_at": "2024-01-10T11:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.AWARD.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_award",
+              "smart_code": "HERA.GOV.GRANT.TXN.AWARD.V1",
+              "total_amount": 225000.00,
+              "metadata": {
+                "awarded_amount": 225000.00,
+                "award_date": "2024-01-10",
+                "grant_period_start": "2024-02-01",
+                "grant_period_end": "2025-07-31"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Grant awarded - reduced amount",
+                  "amount": 225000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.AWARDED.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_010",
+      "playbook_id": "pb_004",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.CASE.RUN.CHILDCARE.V1",
+      "metadata": {
+        "constituent_name": "Sarah Williams",
+        "case_number": "CASE-2024-0034",
+        "service_type": "Childcare Assistance",
+        "priority": "medium",
+        "assigned_to": "David Brown"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-03T09:00:00Z",
+          "completed_at": "2024-01-03T09:30:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.INTAKE.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_intake",
+              "smart_code": "HERA.GOV.CASE.TXN.INTAKE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "service_need": "childcare_subsidy",
+                "children_ages": [3, 5],
+                "working_parent": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Childcare assistance request logged",
+                  "smart_code": "HERA.GOV.CASE.LINE.REQUEST_LOGGED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-03T14:00:00Z",
+          "completed_at": "2024-01-03T15:00:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "eligibility_assessment",
+              "smart_code": "HERA.GOV.CASE.TXN.ASSESSMENT.V1",
+              "total_amount": 800.00,
+              "metadata": {
+                "monthly_childcare_cost": 800.00,
+                "subsidy_eligible": true,
+                "subsidy_percentage": 70
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Childcare subsidy calculation",
+                  "amount": 560.00,
+                  "smart_code": "HERA.GOV.CASE.LINE.SUBSIDY_CALC.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-04T10:00:00Z",
+          "completed_at": "2024-01-04T11:00:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.SERVICE_DELIVERY.V1",
+          "transactions": [
+            {
+              "transaction_type": "service_authorization",
+              "smart_code": "HERA.GOV.CASE.TXN.SERVICE_AUTH.V1",
+              "total_amount": 560.00,
+              "metadata": {
+                "provider": "Sunshine Daycare",
+                "authorization_period": "6_months",
+                "monthly_subsidy": 560.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Childcare subsidy authorized",
+                  "amount": 560.00,
+                  "smart_code": "HERA.GOV.CASE.LINE.SUBSIDY_AUTHORIZED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-04T11:00:00Z",
+          "completed_at": "2024-01-04T11:15:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.CLOSURE.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_closure",
+              "smart_code": "HERA.GOV.CASE.TXN.CLOSURE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "outcome": "successful",
+                "service_delivered": true,
+                "satisfaction_score": 5
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Case successfully resolved",
+                  "smart_code": "HERA.GOV.CASE.LINE.CASE_RESOLVED.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_011",
+      "playbook_id": "pb_005",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.OUTREACH.RUN.VETERAN.V1",
+      "metadata": {
+        "campaign_name": "Veterans Benefits Awareness Campaign",
+        "target_audience": "Military Veterans",
+        "outreach_method": "multi_channel",
+        "coordinator": "Patricia Lee"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-02T09:00:00Z",
+          "completed_at": "2024-01-02T17:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.PLANNING.V1",
+          "transactions": [
+            {
+              "transaction_type": "campaign_planning",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.PLANNING.V1",
+              "total_amount": 5000.00,
+              "metadata": {
+                "campaign_budget": 5000.00,
+                "target_reach": 500,
+                "channels": ["direct_mail", "social_media", "community_events"]
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Campaign materials design",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.MATERIALS.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Direct mail costs",
+                  "amount": 2000.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.MAILING.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Event coordination",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.EVENTS.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-05T08:00:00Z",
+          "completed_at": "2024-01-07T17:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.EXECUTION.V1",
+          "transactions": [
+            {
+              "transaction_type": "campaign_execution",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.EXECUTION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "mailings_sent": 450,
+                "social_posts": 12,
+                "events_held": 2
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Campaign activities executed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.EXECUTED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-10T09:00:00Z",
+          "completed_at": "2024-01-10T12:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.TRACKING.V1",
+          "transactions": [
+            {
+              "transaction_type": "response_tracking",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.TRACKING.V1",
+              "total_amount": 0,
+              "metadata": {
+                "responses_received": 87,
+                "appointments_scheduled": 45,
+                "benefits_applications": 32
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Campaign responses tracked",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.RESPONSES.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-12T09:00:00Z",
+          "completed_at": "2024-01-12T11:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.ANALYSIS.V1",
+          "transactions": [
+            {
+              "transaction_type": "campaign_analysis",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.ANALYSIS.V1",
+              "total_amount": 0,
+              "metadata": {
+                "response_rate": 19.3,
+                "conversion_rate": 10.0,
+                "roi": 2.8,
+                "success_rating": "high"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Campaign analysis completed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.ANALYSIS.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_012",
+      "playbook_id": "pb_002",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.ELIGIBILITY.RUN.TANF.V1",
+      "metadata": {
+        "constituent_name": "Michelle Brown",
+        "case_number": "CASE-2024-0102",
+        "program": "TANF",
+        "assessment_date": "2024-01-09T11:00:00Z",
+        "eligibility_worker": "Michael Chen"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-09T11:00:00Z",
+          "completed_at": "2024-01-09T11:30:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.INCOME_VERIFY.V1",
+          "transactions": [
+            {
+              "transaction_type": "income_verification",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.INCOME_CHECK.V1",
+              "total_amount": 800.00,
+              "metadata": {
+                "monthly_income": 800.00,
+                "household_size": 3,
+                "minor_children": 2
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Part-time employment income",
+                  "amount": 800.00,
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.INCOME_VERIFIED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-09T11:30:00Z",
+          "completed_at": "2024-01-09T11:45:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.TIME_LIMITS.V1",
+          "transactions": [
+            {
+              "transaction_type": "time_limit_check",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.TIME_CHECK.V1",
+              "total_amount": 0,
+              "metadata": {
+                "months_received": 12,
+                "lifetime_limit": 60,
+                "months_remaining": 48
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Time limits verified",
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.TIME_OK.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-09T11:45:00Z",
+          "completed_at": "2024-01-09T12:00:00Z",
+          "smart_code": "HERA.GOV.ELIGIBILITY.STEP.DETERMINATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "eligibility_determination",
+              "smart_code": "HERA.GOV.ELIGIBILITY.TXN.DETERMINATION.V1",
+              "total_amount": 450.00,
+              "metadata": {
+                "determination": "eligible",
+                "benefit_amount": 450.00,
+                "work_requirement": "20_hours_week"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "TANF benefits approved",
+                  "amount": 450.00,
+                  "smart_code": "HERA.GOV.ELIGIBILITY.LINE.TANF_APPROVED.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_013",
+      "playbook_id": "pb_003",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.GRANT.RUN.YOUTH.V1",
+      "metadata": {
+        "organization_name": "Boys and Girls Club",
+        "grant_program": "Youth Development Grant",
+        "requested_amount": 35000.00,
+        "project_name": "After School STEM Program",
+        "grant_writer": "Mark Thompson"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2023-12-28T09:00:00Z",
+          "completed_at": "2023-12-28T16:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.APPLICATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_application",
+              "smart_code": "HERA.GOV.GRANT.TXN.APPLICATION.V1",
+              "total_amount": 35000.00,
+              "metadata": {
+                "grant_type": "Youth_Development",
+                "beneficiaries": 75,
+                "age_range": "10-14"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "STEM instructors",
+                  "amount": 20000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.INSTRUCTORS.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Equipment and supplies",
+                  "amount": 10000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.EQUIPMENT.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Program coordination",
+                  "amount": 5000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.COORDINATION.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-02T10:00:00Z",
+          "completed_at": "2024-01-03T15:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.REVIEW.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_review",
+              "smart_code": "HERA.GOV.GRANT.TXN.REVIEW.V1",
+              "total_amount": 0,
+              "metadata": {
+                "review_score": 88,
+                "impact_assessment": "high",
+                "sustainability": "good"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Program review completed",
+                  "smart_code": "HERA.GOV.GRANT.LINE.REVIEW_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-05T14:00:00Z",
+          "completed_at": "2024-01-05T15:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.AWARD.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_award",
+              "smart_code": "HERA.GOV.GRANT.TXN.AWARD.V1",
+              "total_amount": 35000.00,
+              "metadata": {
+                "awarded_amount": 35000.00,
+                "award_date": "2024-01-05",
+                "reporting_requirements": "quarterly"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Full grant amount awarded",
+                  "amount": 35000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.FULL_AWARD.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_014",
+      "playbook_id": "pb_004",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.CASE.RUN.LEGAL_AID.V1",
+      "metadata": {
+        "constituent_name": "Carlos Mendez",
+        "case_number": "CASE-2024-0067",
+        "service_type": "Legal Aid - Housing",
+        "priority": "high",
+        "assigned_to": "Emily Garcia"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-04T14:00:00Z",
+          "completed_at": "2024-01-04T14:30:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.INTAKE.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_intake",
+              "smart_code": "HERA.GOV.CASE.TXN.INTAKE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "legal_issue": "eviction_prevention",
+                "court_date": "2024-01-20",
+                "language": "Spanish"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Legal aid request received",
+                  "smart_code": "HERA.GOV.CASE.LINE.LEGAL_REQUEST.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-05T09:00:00Z",
+          "completed_at": "2024-01-05T10:30:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "legal_assessment",
+              "smart_code": "HERA.GOV.CASE.TXN.ASSESSMENT.V1",
+              "total_amount": 0,
+              "metadata": {
+                "case_merit": "strong",
+                "representation_needed": true,
+                "estimated_hours": 20
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Legal merit assessed",
+                  "smart_code": "HERA.GOV.CASE.LINE.MERIT_ASSESSED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-05T11:00:00Z",
+          "completed_at": "2024-01-08T16:00:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.SERVICE_DELIVERY.V1",
+          "transactions": [
+            {
+              "transaction_type": "legal_services",
+              "smart_code": "HERA.GOV.CASE.TXN.LEGAL_SERVICES.V1",
+              "total_amount": 0,
+              "metadata": {
+                "services_provided": ["document_preparation", "court_representation", "negotiation"],
+                "hours_spent": 18,
+                "outcome": "eviction_prevented"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Legal representation provided",
+                  "smart_code": "HERA.GOV.CASE.LINE.REPRESENTATION.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-08T16:00:00Z",
+          "completed_at": "2024-01-08T16:30:00Z",
+          "smart_code": "HERA.GOV.CASE.STEP.CLOSURE.V1",
+          "transactions": [
+            {
+              "transaction_type": "case_closure",
+              "smart_code": "HERA.GOV.CASE.TXN.CLOSURE.V1",
+              "total_amount": 0,
+              "metadata": {
+                "outcome": "successful",
+                "client_retained_housing": true,
+                "follow_up_needed": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Case successfully resolved",
+                  "smart_code": "HERA.GOV.CASE.LINE.SUCCESS_CLOSURE.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_015",
+      "playbook_id": "pb_005",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.OUTREACH.RUN.HEALTHCARE.V1",
+      "metadata": {
+        "campaign_name": "Community Health Screening Day",
+        "target_audience": "Uninsured Residents",
+        "outreach_method": "community_event",
+        "coordinator": "Dr. Amanda White"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-06T08:00:00Z",
+          "completed_at": "2024-01-06T17:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.PLANNING.V1",
+          "transactions": [
+            {
+              "transaction_type": "campaign_planning",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.PLANNING.V1",
+              "total_amount": 3500.00,
+              "metadata": {
+                "event_type": "health_screening",
+                "expected_attendance": 200,
+                "services_offered": ["blood_pressure", "glucose", "cholesterol", "BMI"]
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Medical supplies",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.SUPPLIES.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Staff overtime",
+                  "amount": 1200.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.STAFFING.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Venue and logistics",
+                  "amount": 800.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.VENUE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-13T08:00:00Z",
+          "completed_at": "2024-01-13T16:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.EXECUTION.V1",
+          "transactions": [
+            {
+              "transaction_type": "event_execution",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.EXECUTION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "actual_attendance": 187,
+                "screenings_completed": 168,
+                "referrals_made": 42
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Health screening event completed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.EVENT_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-14T09:00:00Z",
+          "completed_at": "2024-01-14T11:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.TRACKING.V1",
+          "transactions": [
+            {
+              "transaction_type": "outcome_tracking",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.TRACKING.V1",
+              "total_amount": 0,
+              "metadata": {
+                "follow_up_appointments": 38,
+                "health_conditions_identified": 26,
+                "insurance_enrollments": 15
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Health outcomes tracked",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.OUTCOMES.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-14T14:00:00Z",
+          "completed_at": "2024-01-14T16:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.ANALYSIS.V1",
+          "transactions": [
+            {
+              "transaction_type": "impact_analysis",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.ANALYSIS.V1",
+              "total_amount": 0,
+              "metadata": {
+                "cost_per_screening": 20.83,
+                "health_impact_score": 8.5,
+                "community_satisfaction": 9.2
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Impact analysis completed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.IMPACT.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_016",
+      "playbook_id": "pb_001",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.INTAKE.RUN.SENIOR.V1",
+      "metadata": {
+        "constituent_name": "Eleanor Patterson",
+        "case_number": "CASE-2024-0023",
+        "program": "Senior Meal Delivery",
+        "intake_date": "2024-01-02T10:00:00Z",
+        "caseworker": "Jennifer White"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-02T10:00:00Z",
+          "completed_at": "2024-01-02T10:15:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.REGISTRATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "intake_registration",
+              "smart_code": "HERA.GOV.INTAKE.TXN.REGISTRATION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "age": 78,
+                "mobility_limited": true,
+                "lives_alone": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Senior registration completed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.SENIOR_REG.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-02T10:15:00Z",
+          "completed_at": "2024-01-02T10:30:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.ASSESSMENT.V1",
+          "transactions": [
+            {
+              "transaction_type": "needs_assessment",
+              "smart_code": "HERA.GOV.INTAKE.TXN.NEEDS_ASSESS.V1",
+              "total_amount": 0,
+              "metadata": {
+                "nutritional_risk": "high",
+                "meal_frequency_needed": "daily",
+                "special_diet": "diabetic"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Meal delivery need verified",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.MEAL_NEED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-02T10:30:00Z",
+          "completed_at": "2024-01-02T10:45:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.SERVICE_REFERRAL.V1",
+          "transactions": [
+            {
+              "transaction_type": "service_enrollment",
+              "smart_code": "HERA.GOV.INTAKE.TXN.ENROLLMENT.V1",
+              "total_amount": 150.00,
+              "metadata": {
+                "service": "meals_on_wheels",
+                "start_date": "2024-01-03",
+                "weekly_cost": 35.00,
+                "copay": 5.00
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Weekly meal delivery enrolled",
+                  "amount": 150.00,
+                  "smart_code": "HERA.GOV.INTAKE.LINE.MEAL_ENROLLED.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-02T10:45:00Z",
+          "completed_at": "2024-01-02T11:00:00Z",
+          "smart_code": "HERA.GOV.INTAKE.STEP.COMPLETION.V1",
+          "transactions": [
+            {
+              "transaction_type": "intake_completion",
+              "smart_code": "HERA.GOV.INTAKE.TXN.COMPLETION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "services_activated": true,
+                "follow_up_scheduled": "2024-02-02",
+                "emergency_contact_verified": true
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Intake process completed",
+                  "smart_code": "HERA.GOV.INTAKE.LINE.COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_017",
+      "playbook_id": "pb_003",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.GRANT.RUN.ARTS.V1",
+      "metadata": {
+        "organization_name": "Community Arts Council",
+        "grant_program": "Arts and Culture Grant",
+        "requested_amount": 25000.00,
+        "project_name": "Public Art Installation Project",
+        "grant_writer": "Mark Thompson"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2023-12-20T09:00:00Z",
+          "completed_at": "2023-12-20T17:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.APPLICATION.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_application",
+              "smart_code": "HERA.GOV.GRANT.TXN.APPLICATION.V1",
+              "total_amount": 25000.00,
+              "metadata": {
+                "grant_type": "Arts_Culture",
+                "installations_planned": 5,
+                "community_engagement_hours": 200
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Artist fees",
+                  "amount": 15000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.ARTIST_FEES.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Materials and fabrication",
+                  "amount": 8000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.MATERIALS.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Installation costs",
+                  "amount": 2000.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.INSTALLATION.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2023-12-27T10:00:00Z",
+          "completed_at": "2023-12-28T16:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.REVIEW.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_review",
+              "smart_code": "HERA.GOV.GRANT.TXN.REVIEW.V1",
+              "total_amount": 0,
+              "metadata": {
+                "artistic_merit": 9.0,
+                "community_benefit": 8.5,
+                "feasibility": 9.2
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Arts panel review completed",
+                  "smart_code": "HERA.GOV.GRANT.LINE.ARTS_REVIEW.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-03T11:00:00Z",
+          "completed_at": "2024-01-03T12:00:00Z",
+          "smart_code": "HERA.GOV.GRANT.STEP.AWARD.V1",
+          "transactions": [
+            {
+              "transaction_type": "grant_award",
+              "smart_code": "HERA.GOV.GRANT.TXN.AWARD.V1",
+              "total_amount": 22500.00,
+              "metadata": {
+                "awarded_amount": 22500.00,
+                "award_date": "2024-01-03",
+                "completion_deadline": "2024-06-30"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Partial grant awarded",
+                  "amount": 22500.00,
+                  "smart_code": "HERA.GOV.GRANT.LINE.PARTIAL_AWARD.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "run_018",
+      "playbook_id": "pb_005",
+      "status": "completed",
+      "current_step": null,
+      "smart_code": "HERA.GOV.OUTREACH.RUN.YOUTH_JOBS.V1",
+      "metadata": {
+        "campaign_name": "Summer Youth Employment Fair",
+        "target_audience": "Youth 16-24",
+        "outreach_method": "job_fair",
+        "coordinator": "Patricia Lee"
+      },
+      "steps": [
+        {
+          "step_id": "step_001",
+          "status": "completed",
+          "started_at": "2024-01-08T08:00:00Z",
+          "completed_at": "2024-01-08T17:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.PLANNING.V1",
+          "transactions": [
+            {
+              "transaction_type": "event_planning",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.PLANNING.V1",
+              "total_amount": 4000.00,
+              "metadata": {
+                "employers_confirmed": 25,
+                "expected_youth": 300,
+                "venue": "Community Center"
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Venue and setup",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.VENUE.V1"
+                },
+                {
+                  "line_number": 2,
+                  "description": "Marketing and promotion",
+                  "amount": 1000.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.MARKETING.V1"
+                },
+                {
+                  "line_number": 3,
+                  "description": "Event materials and resources",
+                  "amount": 1500.00,
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.RESOURCES.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_002",
+          "status": "completed",
+          "started_at": "2024-01-11T09:00:00Z",
+          "completed_at": "2024-01-11T16:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.EXECUTION.V1",
+          "transactions": [
+            {
+              "transaction_type": "job_fair_execution",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.EXECUTION.V1",
+              "total_amount": 0,
+              "metadata": {
+                "actual_attendance": 278,
+                "employers_present": 23,
+                "resumes_collected": 215
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Job fair successfully executed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.FAIR_COMPLETE.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_003",
+          "status": "completed",
+          "started_at": "2024-01-12T09:00:00Z",
+          "completed_at": "2024-01-12T12:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.TRACKING.V1",
+          "transactions": [
+            {
+              "transaction_type": "placement_tracking",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.TRACKING.V1",
+              "total_amount": 0,
+              "metadata": {
+                "interviews_scheduled": 142,
+                "job_offers_made": 67,
+                "placements_confirmed": 45
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Employment outcomes tracked",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.PLACEMENTS.V1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "step_id": "step_004",
+          "status": "completed",
+          "started_at": "2024-01-15T10:00:00Z",
+          "completed_at": "2024-01-15T12:00:00Z",
+          "smart_code": "HERA.GOV.OUTREACH.STEP.ANALYSIS.V1",
+          "transactions": [
+            {
+              "transaction_type": "outcome_analysis",
+              "smart_code": "HERA.GOV.OUTREACH.TXN.ANALYSIS.V1",
+              "total_amount": 0,
+              "metadata": {
+                "placement_rate": 16.2,
+                "cost_per_placement": 88.89,
+                "employer_satisfaction": 8.7
+              },
+              "lines": [
+                {
+                  "line_number": 1,
+                  "description": "Program effectiveness analyzed",
+                  "smart_code": "HERA.GOV.OUTREACH.LINE.EFFECTIVENESS.V1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

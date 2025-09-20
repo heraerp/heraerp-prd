@@ -7,12 +7,12 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   Calendar, 
   Lock,
@@ -26,13 +26,13 @@ import {
   Clock,
   Plus
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useFiscalApi } from '@/src/lib/api/fiscal'
-import { FiscalPeriodTable } from '@/src/components/fiscal/FiscalPeriodTable'
-import { FiscalCloseChecklist } from '@/src/components/fiscal/FiscalCloseChecklist'
-import { CloseActionsBar } from '@/src/components/fiscal/CloseActionsBar'
-import { FiscalConfig } from '@/src/lib/schemas/fiscal'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useFiscalApi } from '@/lib/api/fiscal'
+import { FiscalPeriodTable } from '@/components/fiscal/FiscalPeriodTable'
+import { FiscalCloseChecklist } from '@/components/fiscal/FiscalCloseChecklist'
+import { CloseActionsBar } from '@/components/fiscal/CloseActionsBar'
+import { FiscalConfig } from '@/lib/schemas/fiscal'
+import { useToast } from '@/components/ui/use-toast'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -343,10 +343,10 @@ export default function FiscalSettingsPage() {
                   Audit Trail
                 </div>
                 <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                  <div>• Config: HERA.FIN.FISCAL.CONFIG.UPDATE.v1</div>
-                  <div>• Lock: HERA.FIN.FISCAL.PERIOD.LOCK.v1</div>
-                  <div>• Close: HERA.FIN.FISCAL.PERIOD.CLOSE.v1</div>
-                  <div>• Year: HERA.FIN.FISCAL.YEAR.CLOSE.v1</div>
+                  <div>• Config: HERA.FIN.FISCAL.CONFIG.UPDATE.V1</div>
+                  <div>• Lock: HERA.FIN.FISCAL.PERIOD.LOCK.V1</div>
+                  <div>• Close: HERA.FIN.FISCAL.PERIOD.CLOSE.V1</div>
+                  <div>• Year: HERA.FIN.FISCAL.YEAR.CLOSE.V1</div>
                 </div>
               </div>
             </AlertDescription>

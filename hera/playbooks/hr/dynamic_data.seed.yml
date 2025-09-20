@@ -1,4 +1,4 @@
-smart_code: HERA.HCM.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.HCM.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Employee
   - { entity_slug: employee:EMP001, key_slug: employee.employee_code, value: "EMP001", value_type: text }

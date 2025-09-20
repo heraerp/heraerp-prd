@@ -1,0 +1,103 @@
+smart_code: HERA.SALON.TAX.UK.VAT.STANDARD.V1
+intent: >
+  Compute UK VAT at organization rate on taxable lines; tips are non-taxable by default.
+  Creates single summary tax line with proper rounding.
+
+scope:
+  in_scope:
+    - UK VAT calculation on services and retail
+    - Organization tax policy lookup
+    - Tips exclusion from tax base
+    - Proper tax rounding per org policy
+    - Single summary tax line creation
+  out_of_scope:
+    - Multiple VAT rates (future enhancement)
+    - Tax-inclusive pricing (future enhancement)
+    - International tax systems
+    - Product-specific tax overrides
+
+preconditions:
+  - cart.status == ACTIVE
+  - organization has valid tax policy configuration
+  - all cart lines properly classified with smart codes
+  - has_permissions: [pos_operator, tax_calculate]
+
+invariants:
+  - tips are never included in taxable base
+  - tax rate comes from organization policy only
+  - single tax line per cart (summary approach)
+  - tax rounding follows organization policy
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for tax policy lookup
+    - name: cart_id
+      type: uuid
+      where: payload
+      description: Cart to calculate tax for
+  optional:
+    - name: tax_smart_code
+      type: string
+      where: payload
+      default: "HERA.SALON.TAX.UK.VAT.STANDARD.V1"
+      description: Override tax calculation method
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: tax_line
+      description: Single summary tax line for cart
+      smart_code: HERA.SALON.TAX.UK.VAT.STANDARD.V1
+  side_effects:
+    - upsert tax line in cart
+    - remove any existing tax lines (single tax line policy)
+
+happy_path:
+  - step: Load organization tax policy (rate, rounding, tips_taxable flag)
+  - step: Query all lines in cart excluding existing tax lines
+  - step: Calculate taxable_base = sum(SERVICE + RETAIL + discounts, exclude TIPS)
+  - step: Apply tax rate from org policy (default 20%)
+  - step: Round tax amount per organization rounding policy
+  - step: Upsert single tax line with calculated amount
+  - step: Return tax details (rate_pct, tax_amount, taxable_base)
+
+errors:
+  - code: CART_NOT_FOUND
+    when: cart_id does not exist or not accessible
+    action: return error with valid cart requirements
+  - code: CART_NOT_ACTIVE
+    when: cart.status != ACTIVE
+    action: return error - only active carts can be taxed
+  - code: TAX_POLICY_NOT_CONFIGURED
+    when: organization lacks valid tax configuration
+    action: use default UK VAT 20% rate, log warning
+  - code: INVALID_TAX_RATE
+    when: org tax rate is negative or > 100%
+    action: use default 20% rate, log error
+  - code: ROUNDING_POLICY_INVALID
+    when: organization rounding policy is malformed
+    action: use BANKERS rounding at 2 decimal places
+  - code: TAX_LINE_CREATE_FAILED
+    when: cannot create or update tax line
+    action: return error with tax line requirements
+
+observability:
+  logs: [tax_calc_started, tax_policy_loaded, taxable_base_calculated, tax_line_created]
+  audit_json: true
+  metrics: [tax_calc_duration_ms, tax_rate_used, taxable_base_amount, tax_amount_calculated]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  cart_id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+  tax_smart_code: "HERA.SALON.TAX.UK.VAT.STANDARD.V1"
+
+checks:
+  - description: Tax rate loaded from organization policy (default 20%)
+  - description: Taxable base excludes all tip lines
+  - description: Tax amount properly rounded per org policy
+  - description: Single tax line created with correct smart code
+  - description: Previous tax lines removed (single tax line policy)
+  - description: Tax calculation matches expected formula

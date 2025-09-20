@@ -47,7 +47,7 @@ export const salonBookingSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['services'],
-    smartCode: 'HERA.SALON.BOOKING.SERVICE.SELECT.v1'
+    smartCode: 'HERA.SALON.BOOKING.SERVICE.SELECT.V1'
   },
   {
     id: 'staff-selection',
@@ -65,7 +65,7 @@ export const salonBookingSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['staffId'],
-    smartCode: 'HERA.SALON.BOOKING.STAFF.SELECT.v1'
+    smartCode: 'HERA.SALON.BOOKING.STAFF.SELECT.V1'
   },
   {
     id: 'datetime-selection',
@@ -94,7 +94,7 @@ export const salonBookingSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['date', 'time'],
-    smartCode: 'HERA.SALON.BOOKING.DATETIME.SELECT.v1'
+    smartCode: 'HERA.SALON.BOOKING.DATETIME.SELECT.V1'
   },
   {
     id: 'customer-info',
@@ -125,7 +125,7 @@ export const salonBookingSteps: TransactionStep[] = [
       }
     },
     requiredFields: ['customerName', 'customerPhone', 'customerEmail'],
-    smartCode: 'HERA.SALON.BOOKING.CUSTOMER.INFO.v1'
+    smartCode: 'HERA.SALON.BOOKING.CUSTOMER.INFO.V1'
   },
   {
     id: 'confirmation',
@@ -158,7 +158,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['orderType'],
-    smartCode: 'HERA.REST.ORDER.TYPE.SELECT.v1'
+    smartCode: 'HERA.REST.ORDER.TYPE.SELECT.V1'
   },
   {
     id: 'menu-items',
@@ -176,7 +176,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['items'],
-    smartCode: 'HERA.REST.ORDER.MENU.SELECT.v1'
+    smartCode: 'HERA.REST.ORDER.MENU.SELECT.V1'
   },
   {
     id: 'delivery-info',
@@ -197,7 +197,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
       }
     },
     requiredFields: ['deliveryAddress', 'deliveryPhone'],
-    smartCode: 'HERA.REST.ORDER.DELIVERY.INFO.v1'
+    smartCode: 'HERA.REST.ORDER.DELIVERY.INFO.V1'
   },
   {
     id: 'payment',
@@ -240,7 +240,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['appointmentType'],
-    smartCode: 'HERA.HLTH.APPT.TYPE.SELECT.v1'
+    smartCode: 'HERA.HLTH.APPT.TYPE.SELECT.V1'
   },
   {
     id: 'doctor-selection',
@@ -259,7 +259,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['doctorId'],
-    smartCode: 'HERA.HLTH.APPT.DOCTOR.SELECT.v1'
+    smartCode: 'HERA.HLTH.APPT.DOCTOR.SELECT.V1'
   },
   {
     id: 'symptoms',
@@ -542,13 +542,13 @@ export const transactionFlowRegistry = {
   // Salon flows
   'salon.booking': {
     steps: salonBookingSteps,
-    smartCode: 'HERA.SALON.TXN.FLOW.BOOKING.v1',
+    smartCode: 'HERA.SALON.TXN.FLOW.BOOKING.V1',
     name: 'Salon Appointment Booking',
     icon: Scissors
   },
   'salon.walkin': {
     steps: salonBookingSteps.filter(s => s.id !== 'datetime-selection'),
-    smartCode: 'HERA.SALON.TXN.FLOW.WALKIN.v1',
+    smartCode: 'HERA.SALON.TXN.FLOW.WALKIN.V1',
     name: 'Walk-in Service',
     icon: Clock
   },
@@ -556,13 +556,13 @@ export const transactionFlowRegistry = {
   // Restaurant flows
   'restaurant.order': {
     steps: restaurantOrderSteps,
-    smartCode: 'HERA.REST.TXN.FLOW.ORDER.v1',
+    smartCode: 'HERA.REST.TXN.FLOW.ORDER.V1',
     name: 'Restaurant Order',
     icon: UtensilsCrossed
   },
   'restaurant.reservation': {
     steps: [], // Different steps for reservation
-    smartCode: 'HERA.REST.TXN.FLOW.RESERVATION.v1',
+    smartCode: 'HERA.REST.TXN.FLOW.RESERVATION.V1',
     name: 'Table Reservation',
     icon: Calendar
   },
@@ -570,13 +570,13 @@ export const transactionFlowRegistry = {
   // Healthcare flows
   'healthcare.appointment': {
     steps: healthcareAppointmentSteps,
-    smartCode: 'HERA.HLTH.TXN.FLOW.APPOINTMENT.v1',
+    smartCode: 'HERA.HLTH.TXN.FLOW.APPOINTMENT.V1',
     name: 'Medical Appointment',
     icon: Heart
   },
   'healthcare.prescription': {
     steps: [], // Different steps for prescription
-    smartCode: 'HERA.HLTH.TXN.FLOW.PRESCRIPTION.v1',
+    smartCode: 'HERA.HLTH.TXN.FLOW.PRESCRIPTION.V1',
     name: 'Prescription Refill',
     icon: FileText
   },
@@ -584,13 +584,13 @@ export const transactionFlowRegistry = {
   // Retail flows
   'retail.purchase': {
     steps: retailPurchaseSteps,
-    smartCode: 'HERA.RETAIL.TXN.FLOW.PURCHASE.v1',
+    smartCode: 'HERA.RETAIL.TXN.FLOW.PURCHASE.V1',
     name: 'Retail Purchase',
     icon: ShoppingCart
   },
   'retail.return': {
     steps: [], // Different steps for returns
-    smartCode: 'HERA.RETAIL.TXN.FLOW.RETURN.v1',
+    smartCode: 'HERA.RETAIL.TXN.FLOW.RETURN.V1',
     name: 'Product Return',
     icon: Package
   }

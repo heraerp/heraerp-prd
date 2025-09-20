@@ -4,10 +4,10 @@
  * Enforces sacred 6-table architecture and prevents schema violations
  * Ensures multi-tenant isolation and data integrity for accounting operations
  *
- * Smart Code: HERA.FIN.ACCT.DIGITAL.GUARDRAILS.v1
+ * Smart Code: HERA.FIN.ACCT.DIGITAL.GUARDRAILS.V1
  */
 
-import { ValidationError, ValidationResult } from '@/src/types/digital-accountant.types'
+import { ValidationError, ValidationResult } from '@/types/digital-accountant.types'
 
 // ================================================================================
 // SACRED TABLES

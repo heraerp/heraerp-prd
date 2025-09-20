@@ -9,7 +9,7 @@
 import React from 'react'
 import { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useGlassEffect } from '@/src/lib/dna/design-system/glass-effects-2.0'
+import { useGlassEffect } from '@/lib/dna/design-system/glass-effects-2.0'
 
 interface StatsCardProps {
   title: string

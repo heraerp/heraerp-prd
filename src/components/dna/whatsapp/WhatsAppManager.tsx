@@ -6,21 +6,21 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   MessageCircle,
   Send,
@@ -43,9 +43,9 @@ import {
   Zap,
   Bot
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { WhatsAppDNA, WHATSAPP_SMART_CODES } from '@/src/lib/dna/whatsapp/whatsapp-dna'
+import { cn } from '@/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { WhatsAppDNA, WHATSAPP_SMART_CODES } from '@/lib/dna/whatsapp/whatsapp-dna'
 
 interface Conversation {
   id: string

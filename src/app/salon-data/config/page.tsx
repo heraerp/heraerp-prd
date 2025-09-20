@@ -4,14 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { RulesList, RuleEditor, RulePreview } from '@/src/components/admin/config'
-import { RulesListMCP } from '@/src/components/admin/config/RulesListMCP'
-import { TestingSummaryCard } from '@/src/components/salon/TestingSummaryCard'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { RulesList, RuleEditor, RulePreview } from '@/components/admin/config'
+import { RulesListMCP } from '@/components/admin/config/RulesListMCP'
+import { TestingSummaryCard } from '@/components/salon/TestingSummaryCard'
 import {
   Settings,
   Scale,

@@ -13,7 +13,7 @@
  * - Real-time analytics and dashboards
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface TenderMetrics {
   activeTenders: {
@@ -279,7 +279,7 @@ class TenderService {
       entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
       entity_name: tender.title,
       entity_code: tender.code,
-      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.v1'
+      smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.V1'
     })
 
     // Add dynamic fields
@@ -318,7 +318,7 @@ class TenderService {
       from_entity_id: entity.id,
       to_entity_id: statusEntity.id,
       relationship_type: 'has_status',
-      smart_code: 'HERA.FURNITURE.TENDER.STATUS.ACTIVE.v1'
+      smart_code: 'HERA.FURNITURE.TENDER.STATUS.ACTIVE.V1'
     })
 
     // Record the tender discovery transaction
@@ -357,7 +357,7 @@ class TenderService {
       transaction_type: 'bid_submission',
       reference_entity_id: tenderId,
       to_entity_id: tenderId,
-      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',
       total_amount: bid.amount,
       metadata: {
         margin_percentage: bid.margin_percentage,
@@ -373,7 +373,7 @@ class TenderService {
           quantity: 1,
           unit_price: bid.amount,
           line_amount: bid.amount,
-          smart_code: 'HERA.FURNITURE.TENDER.BID.AMOUNT.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.BID.AMOUNT.V1'
         }
       ]
     })
@@ -398,7 +398,7 @@ class TenderService {
       transaction_type: 'emd_payment',
       reference_entity_id: tenderId,
       to_entity_id: tenderId,
-      smart_code: 'HERA.FURNITURE.FIN.EMD.PAID.v1',
+      smart_code: 'HERA.FURNITURE.FIN.EMD.PAID.V1',
       total_amount: amount,
       metadata: {
         payment_method: paymentDetails.payment_method,
@@ -412,7 +412,7 @@ class TenderService {
           quantity: 1,
           unit_price: amount,
           line_amount: amount,
-          smart_code: 'HERA.FURNITURE.FIN.EMD.AMOUNT.v1',
+          smart_code: 'HERA.FURNITURE.FIN.EMD.AMOUNT.V1',
           metadata: {
             gl_account: '1510000', // EMD Deposits (Current Asset)
             cost_center: 'TENDER_MGMT'

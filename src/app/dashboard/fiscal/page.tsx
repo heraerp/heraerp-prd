@@ -4,19 +4,19 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+} from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CheckCircle2,
   Circle,
@@ -35,15 +35,15 @@ import {
   Lock,
   Unlock
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { fiscalDashboard } from '@/src/lib/fiscal/fiscal-dashboard-service'
-import { smartCodeReporting } from '@/src/lib/financial/smart-code-reporting'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { fiscalDashboard } from '@/lib/fiscal/fiscal-dashboard-service'
+import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
 import type {
   FiscalPeriod,
   ClosingStep,
   FinancialKPIs,
   BranchConsolidation
-} from '@/src/lib/fiscal/fiscal-dashboard-service'
+} from '@/lib/fiscal/fiscal-dashboard-service'
 import {
   LineChart,
   Line,

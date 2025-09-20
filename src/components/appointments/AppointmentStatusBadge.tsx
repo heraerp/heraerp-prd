@@ -1,12 +1,12 @@
 // ================================================================================
 // HERA APPOINTMENT STATUS BADGE
-// Smart Code: HERA.COMPONENTS.APPOINTMENT.STATUS.BADGE.v1
+// Smart Code: HERA.COMPONENTS.APPOINTMENT.STATUS.BADGE.V1
 // Status badge with color coding
 // ================================================================================
 
 import React from 'react'
-import { cn } from '@/src/lib/utils'
-import { STATUS_COLORS, type Appointment } from '@/src/lib/schemas/appointment'
+import { cn } from '@/lib/utils'
+import { STATUS_COLORS, type Appointment } from '@/lib/schemas/appointment'
 
 interface AppointmentStatusBadgeProps {
   status: Appointment['status']

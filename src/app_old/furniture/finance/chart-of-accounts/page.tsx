@@ -25,7 +25,7 @@ import {
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
-import { UniversalReportEngine } from '@/src/lib/dna/urp/report-engine'
+import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
 import type { GLAccountNode } from '@/lib/furniture/chart-of-accounts-service'
 import { cn } from '@/lib/utils'
 
@@ -85,10 +85,10 @@ const [searchTerm, setSearchTerm] = useState('')
         return
       }
 
-      console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.v1')
+      console.log('🚀 Executing URP Recipe: HERA.URP.RECIPE.FINANCE.COA.V1')
 
       // Execute Chart of Accounts recipe
-      const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.v1', {
+      const result = await reportEngine.executeRecipe('HERA.URP.RECIPE.FINANCE.COA.V1', {
         fiscalYear: new Date().getFullYear(),
         includeInactive: false,
         hierarchyDepth: 5
@@ -180,7 +180,7 @@ const [searchTerm, setSearchTerm] = useState('')
 
     try {
       const result = await reportEngine.executeRecipe(
-        'HERA.URP.RECIPE.FINANCE.COA.v1',
+        'HERA.URP.RECIPE.FINANCE.COA.V1',
         {
           fiscalYear: new Date().getFullYear(),
           includeInactive: false,
@@ -408,7 +408,7 @@ const [searchTerm, setSearchTerm] = useState('')
                 size="sm"
                 onClick={async () => {
                   if (reportEngine) {
-  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.v1')
+  await reportEngine.clearCache('HERA.URP.RECIPE.FINANCE.COA.V1')
                   }
                   loadChartOfAccounts()
                 }

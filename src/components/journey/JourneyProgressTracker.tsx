@@ -9,7 +9,7 @@
 
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { Search, CheckCircle2, Hammer, Rocket, ChevronRight, Check } from 'lucide-react'
 
 interface JourneyStep {

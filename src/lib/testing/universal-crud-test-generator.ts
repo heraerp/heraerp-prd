@@ -606,13 +606,13 @@ export function createTestConfig(
           name: 'email',
           type: 'text',
           testValue: 'test@example.com',
-          smartCode: 'HERA.CRM.CUSTOMER.FIELD.EMAIL.v1'
+          smartCode: 'HERA.CRM.CUSTOMER.FIELD.EMAIL.V1'
         },
         {
           name: 'credit_limit',
           type: 'number',
           testValue: 10000,
-          smartCode: 'HERA.CRM.CUSTOMER.FIELD.CREDIT.v1'
+          smartCode: 'HERA.CRM.CUSTOMER.FIELD.CREDIT.V1'
         }
       ]
     },
@@ -626,13 +626,13 @@ export function createTestConfig(
           name: 'price',
           type: 'number',
           testValue: 99.99,
-          smartCode: 'HERA.INV.PRODUCT.FIELD.PRICE.v1'
+          smartCode: 'HERA.INV.PRODUCT.FIELD.PRICE.V1'
         },
         {
           name: 'stock_quantity',
           type: 'number',
           testValue: 100,
-          smartCode: 'HERA.INV.PRODUCT.FIELD.STOCK.v1'
+          smartCode: 'HERA.INV.PRODUCT.FIELD.STOCK.V1'
         }
       ]
     },

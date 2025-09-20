@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic'
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { JourneyProgressTracker } from '@/src/components/journey/JourneyProgressTracker'
-import { cn } from '@/src/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { JourneyProgressTracker } from '@/components/journey/JourneyProgressTracker'
+import { cn } from '@/lib/utils'
 import {
   Scissors,
   Utensils,

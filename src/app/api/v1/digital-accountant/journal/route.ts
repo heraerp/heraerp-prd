@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client

@@ -3,11 +3,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { TrendingUp, ChevronRight } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts'
-import { useUniversalReports } from '@/src/lib/hooks/useUniversalReports'
+import { useUniversalReports } from '@/lib/hooks/useUniversalReports'
 
 interface RevenueSparklineProps {
   organizationId: string

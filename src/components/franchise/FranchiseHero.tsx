@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { ArrowRight, Play, Star, Users, TrendingUp } from 'lucide-react'
 
 interface FranchiseHeroProps {

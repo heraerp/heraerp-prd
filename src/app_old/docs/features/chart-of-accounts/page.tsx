@@ -209,14 +209,14 @@ export default function ChartOfAccountsDoc() {
   entity_type: 'gl_account',
   entity_code: '1000',
   entity_name: 'Cash - Operating Account',
-  smart_code: 'HERA.FIN.GL.ASSET.CASH.v1'
+  smart_code: 'HERA.FIN.GL.ASSET.CASH.V1'
 }
 
 // Account Properties via Dynamic Data
 {
   field_name: 'account_type',
   field_value_text: 'Asset',
-  smart_code: 'HERA.FIN.GL.PROP.TYPE.v1'
+  smart_code: 'HERA.FIN.GL.PROP.TYPE.V1'
 }`}
                   </pre>
                 </div>
@@ -329,7 +329,7 @@ await universalApi.createEntity({
   entity_type: 'gl_account',
   entity_code: '6150',
   entity_name: 'Digital Marketing Expense',
-  smart_code: 'HERA.FIN.GL.EXPENSE.MARKETING.v1',
+  smart_code: 'HERA.FIN.GL.EXPENSE.MARKETING.V1',
   organization_id: orgId
 })
 

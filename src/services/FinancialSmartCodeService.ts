@@ -7,11 +7,11 @@
  * Smart Code Pattern: HERA.FIN.{SUB}.{FUNCTION}.{TYPE}.{VERSION}
  */
 
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // Financial Smart Code Structure
 export interface FinancialSmartCode {
-  code: string // Full smart code (e.g., HERA.FIN.GL.ENT.ACC.v1)
+  code: string // Full smart code (e.g., HERA.FIN.GL.ENT.ACC.V1)
   module: 'FIN' // Always FIN for financial
   subModule: 'GL' | 'AR' | 'AP' | 'FA' | 'RPT' // Sub-modules
   functionType: 'ENT' | 'TXN' | 'RPT' | 'VAL' // Function types

@@ -1,0 +1,110 @@
+smart_code: HERA.SALON.POS.PRICING.EVAL.V1
+intent: >
+  Price SERVICE/RETAIL lines via pricebook; apply membership/package adjustments.
+  Server-side pricing only - no client-provided unit_price accepted.
+
+scope:
+  in_scope:
+    - Pricebook lookup for services and retail products
+    - Membership tier discounts and benefits
+    - Package entitlements and redemptions
+    - Server-side unit_price computation
+    - Strike-through pricing for display
+  out_of_scope:
+    - Client-provided pricing (explicitly rejected)
+    - Tax calculations (separate procedure)
+    - Cart-level discounts (handled in reprice)
+    - Payment processing
+
+preconditions:
+  - cart.status == ACTIVE
+  - organization has valid pricebook configuration
+  - membership and package data accessible
+  - has_permissions: [pos_operator, pricing_read]
+
+invariants:
+  - no client-provided unit_price is ever used
+  - all pricing comes from server-side pricebook
+  - membership discounts applied consistently
+  - package entitlements properly tracked
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for pricebook and policy lookup
+    - name: cart_id
+      type: uuid  
+      where: payload
+      description: Cart to price lines for
+  optional:
+    - name: force_refresh
+      type: boolean
+      where: payload
+      default: false
+      description: Force pricebook cache refresh
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: pricing_updates
+      description: Updates to cart line unit_price values
+  side_effects:
+    - update unit_price on SERVICE/RETAIL lines
+    - store original_unit_price in dynamic data for strike-through display
+    - track membership discounts applied
+    - record package entitlements used
+
+happy_path:
+  - step: Load organization pricebook configuration and cache
+  - step: Load customer membership tier and benefits
+  - step: Load active packages and remaining entitlements
+  - step: Query all SERVICE and RETAIL lines in cart
+  - step: For each line, lookup base price from pricebook
+  - step: Apply membership tier discounts to base price
+  - step: Apply package entitlements (free/discounted services)
+  - step: Update line unit_price with computed server price
+  - step: Store original pricebook price as dynamic.original_unit_price if different
+  - step: Return subtotal and list of priced line IDs
+
+errors:
+  - code: CART_NOT_FOUND
+    when: cart_id does not exist or not accessible
+    action: return error with valid cart requirements
+  - code: CART_NOT_ACTIVE
+    when: cart.status != ACTIVE
+    action: return error - only active carts can be priced
+  - code: PRICEBOOK_NOT_CONFIGURED
+    when: organization lacks valid pricebook setup
+    action: return error with configuration requirements
+  - code: SERVICE_NOT_IN_PRICEBOOK
+    when: service entity not found in active pricebook
+    action: use fallback pricing or return error
+  - code: MEMBERSHIP_LOOKUP_FAILED
+    when: customer membership data inaccessible
+    action: proceed without membership discounts, log warning
+  - code: PACKAGE_VALIDATION_FAILED
+    when: package entitlement rules cannot be validated
+    action: proceed without package benefits, log warning
+  - code: CLIENT_PRICE_REJECTED
+    when: client attempts to provide unit_price
+    action: reject with message about server-side pricing
+
+observability:
+  logs: [pricing_eval_started, pricebook_loaded, membership_applied, package_applied, pricing_completed]
+  audit_json: true
+  metrics: [pricing_eval_duration_ms, lines_priced_count, membership_discounts_applied, packages_redeemed]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  cart_id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+  force_refresh: false
+
+checks:
+  - description: All SERVICE lines have valid unit_price from pricebook
+  - description: All RETAIL lines have valid unit_price from product catalog
+  - description: Membership discounts properly calculated and applied
+  - description: Package entitlements correctly tracked and decremented
+  - description: No client-provided prices accepted or used
+  - description: Pricing calculation performance under 100ms for typical cart

@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { DocumentUpload } from './DocumentUpload'
 import {
   FileText,

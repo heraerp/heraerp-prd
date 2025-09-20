@@ -8,9 +8,9 @@
  * - Billing integration hooks
  */
 
-import { createClient } from '@/src/lib/supabase-server'
+import { createClient } from '@/lib/supabase-server'
 import { cookies } from 'next/headers'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface ModuleDefinition {
   id: string
@@ -120,7 +120,7 @@ const ADDON_MODULES: ModuleDefinition[] = [
   {
     id: 'auto-journal',
     name: 'Auto-Journal Engine',
-    smartCode: 'HERA.FIN.AUTO.JOURNAL.MODULE.v1',
+    smartCode: 'HERA.FIN.AUTO.JOURNAL.MODULE.V1',
     description: 'AI-powered automatic journal entry creation',
     features: ['85% automation', 'Smart classification', 'Batch processing'],
     pricing: { monthly: 49, yearly: 490, currency: 'USD' },

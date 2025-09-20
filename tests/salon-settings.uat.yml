@@ -1,0 +1,38 @@
+suite: SALON_SETTINGS
+cases:
+  - name: read_all_sections
+    steps:
+      - call: HERA.SALON.CONFIG.READ.V1
+        with: { organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0" }
+      - assert: $.sections.pos.keys.vat_profile == "UK_VAT_STANDARD"
+
+  - name: upsert_pos_debounce
+    steps:
+      - call: HERA.SALON.CONFIG.UPSERT.V1
+        with: { organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0", section: "pos", patch: { auto_reprice_debounce_ms: 220 } }
+      - call: HERA.SALON.CONFIG.READ.V1
+        with: { organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0", section: "pos" }
+      - assert: $.pos.keys.auto_reprice_debounce_ms == 220
+
+  - name: upsert_feature_flags
+    steps:
+      - call: HERA.SALON.CONFIG.UPSERT.V1
+        with: 
+          organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0"
+          section: "feature_flags"
+          patch: 
+            playbook_mode:
+              pos_cart: true
+              pos_lines: true
+              checkout: false
+      - call: HERA.SALON.CONFIG.READ.V1
+        with: { organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0", section: "feature_flags" }
+      - assert: $.feature_flags.keys.playbook_mode.pos_lines == true
+
+  - name: audit_trail_check
+    steps:
+      - call: HERA.SALON.CONFIG.UPSERT.V1
+        with: { organization_id: "0fd09e31-d257-4329-97eb-7d7f522ed6f0", section: "general", patch: { salon_name: "Hair Talkz Premium" } }
+      # Check that audit transaction was created
+      - query: "SELECT COUNT(*) FROM universal_transactions WHERE smart_code = 'HERA.UNIV.AUDIT.CONFIG.CHANGE.V1' AND organization_id = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'"
+      - assert: $[0].count >= 1

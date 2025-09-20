@@ -12,8 +12,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData } from '@/src/lib/dna/patterns/universal-api-loading-pattern'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-pattern'
 
 interface OrderLine {
   id: string

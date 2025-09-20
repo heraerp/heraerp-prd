@@ -80,7 +80,7 @@ const mockTenants: Tenant[] = [
     modules: [
       'HERA.SALON.POS.MODULE.v1',
       'HERA.FIN.ACCOUNTING.MODULE.v1',
-      'HERA.FIN.AUTO.JOURNAL.MODULE.v1'
+      'HERA.FIN.AUTO.JOURNAL.MODULE.V1'
     ],
     createdAt: '2024-01-15'
   },

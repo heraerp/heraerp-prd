@@ -1,0 +1,101 @@
+smart_code: HERA.UNIV.TXN.HEADER.VOID.V1
+intent: Void/unpost transaction according to profile rules.
+scope:
+  in_scope:
+    - void finalized transactions
+    - reverse posted entries
+    - create compensating transactions
+    - maintain complete audit trail
+  out_of_scope:
+    - delete transactions (always keep for audit)
+    - modify original transaction data
+    - partial voids (void entire transaction only)
+preconditions:
+  - permissions: [$PROFILE.required_role_void]
+  - transaction exists and is finalized
+  - void allowed per $PROFILE.void_time_window
+  - no dependent transactions exist (unless cascade)
+invariants:
+  - original transaction remains unchanged
+  - void creates audit trail and/or compensating transaction
+  - GL reversals maintain balance
+  - inventory restored if applicable
+inputs:
+  required:
+    - organization_id: uuid
+    - transaction_id: uuid
+    - void_reason: string                          # required for audit
+  optional:
+    - void_type: enum[cancel, reverse]             # per profile default
+    - cascade_dependents: boolean=false            # void related transactions
+    - void_metadata: object                        # additional context
+happy_path:
+  - step: verify transaction exists, is finalized, and belongs to organization_id
+  - step: validate permissions against $PROFILE.required_role_void
+  - step: check void allowed within $PROFILE.void_time_window
+  - step: if cascade_dependents, identify dependent transactions
+  - step: if void_type='cancel', update state to VOIDED
+  - step: if void_type='reverse', create compensating transaction per $PROFILE.reversal_rules
+  - step: call $PROFILE.void_compensations (restore inventory, reverse GL, etc.)
+  - step: if cascade_dependents, recursively void dependent transactions
+  - step: emit void event with complete audit trail
+outputs:
+  transactions_voided:
+    - universal_transactions: 1+                   # original + cascaded
+  compensating_transactions:
+    - universal_transactions: 0-n                  # if reversal type
+  compensations_executed: [$PROFILE.void_compensations]
+  response:
+    transaction_id: uuid
+    void_type: string
+    void_state: string
+    voided_at: timestamp
+    compensating_transaction_id: uuid              # if reversal
+    cascaded_voids: array                          # if cascade
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist or wrong organization
+    action: return 404
+  - code: TRANSACTION_NOT_FINALIZED
+    when: transaction is not in final state
+    action: return 409 with current state
+  - code: VOID_WINDOW_EXPIRED
+    when: current time > transaction_date + $PROFILE.void_time_window
+    action: return 400 with expiry details
+  - code: HAS_DEPENDENT_TRANSACTIONS
+    when: dependent transactions exist and cascade_dependents=false
+    action: return 409 with dependent transaction list
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_void
+    action: return 403 with required permissions
+  - code: COMPENSATION_FAILED
+    when: void compensation procedure fails
+    action: rollback and return 500 with failure details
+  - code: ALREADY_VOIDED
+    when: transaction already in voided state
+    action: return 409 conflict
+observability:
+  logs:
+    - transaction_voided: { transaction_id, void_type, reason, voided_by, organization_id }
+    - compensating_transaction_created: { original_id, compensating_id }
+    - cascade_void: { parent_id, dependent_ids }
+    - compensation_executed: { transaction_id, compensations, results }
+  audit_json: true
+  metrics:
+    - void_count by transaction_type
+    - void_type_distribution
+    - time_to_void_distribution
+    - compensation_failure_rate
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  transaction_id: "234e5678-e89b-12d3-a456-426614174000"
+  void_reason: "Customer returned all items"
+  void_type: "reverse"
+  void_metadata:
+    return_receipt_number: "RET-2024-001"
+    approved_by: "manager_user_id"
+checks:
+  - description: verify transaction is in voidable state
+  - description: check void time window not exceeded
+  - description: validate no unvoidable dependencies
+  - description: ensure compensations will succeed

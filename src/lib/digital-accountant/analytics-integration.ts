@@ -7,8 +7,8 @@
  * Smart Code: HERA.FIN.ACCT.ANALYTICS.v1
  */
 
-import { AnalyticsChatStorage, ChatMessage, CHAT_SMART_CODES } from '@/src/lib/analytics-chat-storage'
-import { universalApi } from '@/src/lib/universal-api'
+import { AnalyticsChatStorage, ChatMessage, CHAT_SMART_CODES } from '@/lib/analytics-chat-storage'
+import { universalApi } from '@/lib/universal-api'
 import {
   AccountingQuery,
   AccountingOperation,
@@ -16,7 +16,7 @@ import {
   JournalEntry,
   ValidationResult,
   ACCOUNTANT_SMART_CODES
-} from '@/src/types/digital-accountant.types'
+} from '@/types/digital-accountant.types'
 import { IDigitalAccountantService } from './contracts'
 import OpenAI from 'openai'
 
@@ -26,10 +26,10 @@ import OpenAI from 'openai'
 
 export const ACCOUNTING_CHAT_CODES = {
   ...CHAT_SMART_CODES,
-  ACCOUNTING_QUERY: 'HERA.FIN.ACCT.CHAT.QUERY.v1',
-  ACCOUNTING_REPORT: 'HERA.FIN.ACCT.CHAT.REPORT.v1',
-  ACCOUNTING_ACTION: 'HERA.FIN.ACCT.CHAT.ACTION.v1',
-  ACCOUNTING_VALIDATION: 'HERA.FIN.ACCT.CHAT.VALIDATE.v1'
+  ACCOUNTING_QUERY: 'HERA.FIN.ACCT.CHAT.QUERY.V1',
+  ACCOUNTING_REPORT: 'HERA.FIN.ACCT.CHAT.REPORT.V1',
+  ACCOUNTING_ACTION: 'HERA.FIN.ACCT.CHAT.ACTION.V1',
+  ACCOUNTING_VALIDATION: 'HERA.FIN.ACCT.CHAT.VALIDATE.V1'
 } as const
 
 // ================================================================================

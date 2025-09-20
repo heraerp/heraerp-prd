@@ -7,7 +7,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 interface UniversalTransactionLine {
   line_number: number
@@ -127,21 +127,21 @@ export function generateTransactionCode(type: string): string {
 // Smart code templates for common transactions
 export const SMART_CODES = {
   // POS Transactions
-  POS_SALE: 'HERA.SALON.POS.SALE.TXN.v1',
-  POS_PAYMENT: 'HERA.SALON.POS.PAYMENT.TXN.v1',
+  POS_SALE: 'HERA.SALON.POS.SALE.TXN.V1',
+  POS_PAYMENT: 'HERA.SALON.POS.PAYMENT.TXN.V1',
   
   // Services
-  SERVICE_APPOINTMENT: 'HERA.SALON.SVC.APPOINTMENT.TXN.v1',
-  SERVICE_COMPLETE: 'HERA.SALON.SVC.COMPLETE.TXN.v1',
+  SERVICE_APPOINTMENT: 'HERA.SALON.SVC.APPOINTMENT.TXN.V1',
+  SERVICE_COMPLETE: 'HERA.SALON.SVC.COMPLETE.TXN.V1',
   
   // Products
-  PRODUCT_SALE: 'HERA.SALON.PROD.SALE.TXN.v1',
-  INVENTORY_ADJUSTMENT: 'HERA.SALON.INV.ADJUSTMENT.TXN.v1',
+  PRODUCT_SALE: 'HERA.SALON.PROD.SALE.TXN.V1',
+  INVENTORY_ADJUSTMENT: 'HERA.SALON.INV.ADJUSTMENT.TXN.V1',
   
   // Payments
-  CASH_PAYMENT: 'HERA.SALON.PAY.CASH.TXN.v1',
-  CARD_PAYMENT: 'HERA.SALON.PAY.CARD.TXN.v1',
+  CASH_PAYMENT: 'HERA.SALON.PAY.CASH.TXN.V1',
+  CARD_PAYMENT: 'HERA.SALON.PAY.CARD.TXN.V1',
   
   // Commission and Staff
-  STAFF_COMMISSION: 'HERA.SALON.STAFF.COMMISSION.TXN.v1',
+  STAFF_COMMISSION: 'HERA.SALON.STAFF.COMMISSION.TXN.V1',
 } as const

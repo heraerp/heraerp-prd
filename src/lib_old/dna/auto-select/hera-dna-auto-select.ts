@@ -139,7 +139,7 @@ const COMPONENT_SELECTION_MATRIX = {
  */
 const CODE_TEMPLATES = {
   EnterpriseStatsCard: (props: any = {}) => `
-import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'
+import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'
 
 <EnterpriseStatsCard
   title="${props.title || 'Key Metric'}"
@@ -155,7 +155,7 @@ import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/Enterpr
 />`,
 
   EnterpriseCard: (props: any = {}) => `
-import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/src/lib/dna/components/enterprise/EnterpriseCard'
+import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'
 
 <EnterpriseCard
   className="mb-6"
@@ -179,7 +179,7 @@ import {
   ActivityItem, 
   MetricTile, 
   ProgressIndicator 
-} from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'
+} from '@/lib/dna/components/enterprise/EnterpriseDashboard'
 
 <div className="enterprise-dashboard space-y-6">
   {/* KPI Section */}
@@ -330,19 +330,19 @@ export class HeraDNAAutoSelector {
 
     if (config.primary === 'EnterpriseStatsCard') {
       imports.push(
-        "import { EnterpriseStatsCard, StatsGrid } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'"
+        "import { EnterpriseStatsCard, StatsGrid } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'"
       )
     }
 
     if (config.primary === 'EnterpriseCard') {
       imports.push(
-        "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/src/lib/dna/components/enterprise/EnterpriseCard'"
+        "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'"
       )
     }
 
     if (config.primary === 'EnterpriseDashboard') {
       imports.push(
-        "import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'"
+        "import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/lib/dna/components/enterprise/EnterpriseDashboard'"
       )
     }
 

@@ -9,15 +9,15 @@
 import { useEffect } from 'react'
 import { ArrowLeft, ShoppingCart, Code } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/src/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { CartDisplay } from '@/src/components/pos/CartDisplay'
-import { ServiceSelector } from '@/src/components/pos/ServiceSelector'
-import { ProductSelector } from '@/src/components/pos/ProductSelector'
-import { QuickActions } from '@/src/components/pos/QuickActions'
-import { CommissionSummary } from '@/src/components/analytics/CommissionSummary'
-import { useSession } from '@/src/lib/auth/session'
-import { PosApi } from '@/src/lib/api/pos'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { CartDisplay } from '@/components/pos/CartDisplay'
+import { ServiceSelector } from '@/components/pos/ServiceSelector'
+import { ProductSelector } from '@/components/pos/ProductSelector'
+import { QuickActions } from '@/components/pos/QuickActions'
+import { CommissionSummary } from '@/components/analytics/CommissionSummary'
+import { useSession } from '@/lib/auth/session'
+import { PosApi } from '@/lib/api/pos'
 import { 
   usePriceList, 
   useLoadAppointment, 
@@ -26,7 +26,7 @@ import {
   useCartSummary,
   useCartStore,
   usePosNavigation
-} from '@/src/lib/hooks/usePos'
+} from '@/lib/hooks/usePos'
 
 const posApi = new PosApi()
 
@@ -63,8 +63,8 @@ export default function POSSalePage() {
 
   const showSmartCode = () => {
     return cartStore.appointment_id 
-      ? 'HERA.SALON.POS.SALE.FROM_APPT.v1'
-      : 'HERA.SALON.POS.SALE.WALKIN.v1'
+      ? 'HERA.SALON.POS.SALE.FROM_APPT.V1'
+      : 'HERA.SALON.POS.SALE.WALKIN.V1'
   }
 
   if (isPriceListLoading || isAppointmentLoading) {

@@ -1,6 +1,6 @@
 /**
  * 🔐 HERA COA and Document Number Enforcement System
- * Smart Code: HERA.CORE.ENFORCEMENT.COA.DOCUMENT.v1
+ * Smart Code: HERA.CORE.ENFORCEMENT.COA.DOCUMENT.V1
  *
  * Ensures ALL transactions always use proper COA and document numbering
  */

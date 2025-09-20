@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
 import {
   TestTube,
   Calculator,
@@ -30,7 +30,7 @@ import {
   PieChart,
   Activity
 } from 'lucide-react'
-import type { AuditArea, ProcedureType } from '@/src/types/audit.types'
+import type { AuditArea, ProcedureType } from '@/types/audit.types'
 
 const AUDIT_AREAS: { value: AuditArea; label: string; color: string }[] = [
   { value: 'cash_bank', label: 'Cash & Bank', color: 'blue' },

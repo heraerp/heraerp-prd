@@ -4,8 +4,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
-import { useToast } from '@/src/components/ui/use-toast'
+import { cn } from '@/lib/utils'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Home,
   Calendar,
@@ -29,7 +29,8 @@ import {
   Box,
   TrendingUp,
   Grid3x3,
-  X
+  X,
+  ChevronRight
 } from 'lucide-react'
 
 interface SalonDashboardSidebarProps {
@@ -47,11 +48,11 @@ interface SidebarItem {
 // Main sidebar items (compact view)
 const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-  { title: 'Appointments', href: '/appointments', icon: Calendar, badge: '12', badgeColor: 'bg-violet-500' },
-  { title: 'POS', href: '/pos', icon: CreditCard },
-  { title: 'Customers', href: '/customers', icon: Users },
-  { title: 'WhatsApp', href: '/whatsapp', icon: MessageSquare, badge: '3', badgeColor: 'bg-emerald-500' },
-  { title: 'Settings', href: '/settings', icon: Settings }
+  { title: 'Appointments', href: '/salon/appointments', icon: Calendar, badge: '12', badgeColor: 'bg-violet-500' },
+  { title: 'POS', href: '/salon/pos', icon: CreditCard },
+  { title: 'Customers', href: '/salon/customers', icon: Users },
+  { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageSquare, badge: '3', badgeColor: 'bg-emerald-500' },
+  { title: 'Settings', href: '/salon/settings', icon: Settings }
 ]
 
 // All apps for the modal
@@ -59,11 +60,11 @@ const allApps: SidebarItem[] = [
   // Main Operations
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
   { title: 'Appointments', href: '/appointments', icon: Calendar },
-  { title: 'POS Terminal', href: '/pos', icon: CreditCard },
-  { title: 'Customer Management', href: '/customers', icon: Users },
+  { title: 'POS Terminal', href: '/salon/pos', icon: CreditCard },
+  { title: 'Customer Management', href: '/salon/customers', icon: Users },
   
   // Communication
-  { title: 'WhatsApp Hub', href: '/whatsapp', icon: MessageSquare },
+  { title: 'WhatsApp Hub', href: '/salon/whatsapp', icon: MessageSquare },
   { title: 'SMS Campaigns', href: '/marketing/sms', icon: Smartphone },
   { title: 'Email Marketing', href: '/marketing/email', icon: FileText },
   
@@ -96,9 +97,9 @@ const allApps: SidebarItem[] = [
   { title: 'Reviews', href: '/reviews', icon: Users },
   
   // System
-  { title: 'Settings', href: '/settings', icon: Settings },
-  { title: 'Branch Settings', href: '/settings/branch', icon: Grid3x3 },
-  { title: 'Integration', href: '/settings/integrations', icon: Shield }
+  { title: 'Settings', href: '/salon/settings', icon: Settings },
+  { title: 'Branch Settings', href: '/salon/settings/branch', icon: Grid3x3 },
+  { title: 'Integration', href: '/salon/settings/integrations', icon: Shield }
 ]
 
 const bottomItems: SidebarItem[] = []

@@ -1,6 +1,6 @@
-smart_code: HERA.PROJECTS.REPORTS.CORE.DEFS.v1
+smart_code: HERA.PROJECTS.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.PROJECTS.REPORT.TIME_BY_PROJECT.CORE.v1
+  - report_code: HERA.PROJECTS.REPORT.TIME_BY_PROJECT.CORE.V1
     description: "Total timesheet hours by project"
     params_schema:
       from: { type: date }
@@ -20,7 +20,7 @@ reports:
         GROUP BY p.entity_name
         ORDER BY hours DESC
 
-  - report_code: HERA.PROJECTS.REPORT.COST_BY_PROJECT.CORE.v1
+  - report_code: HERA.PROJECTS.REPORT.COST_BY_PROJECT.CORE.V1
     description: "Total expense/material cost by project"
     params_schema:
       from: { type: date }
@@ -38,7 +38,7 @@ reports:
         GROUP BY p.entity_name
         ORDER BY cost DESC
 
-  - report_code: HERA.PROJECTS.REPORT.PROGRESS_BY_PROJECT.CORE.v1
+  - report_code: HERA.PROJECTS.REPORT.PROGRESS_BY_PROJECT.CORE.V1
     description: "Task completion rate by project"
     params_schema:
       as_of: { type: date }

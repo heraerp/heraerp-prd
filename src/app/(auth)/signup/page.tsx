@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA SIGNUP PAGE - SALON THEME
-// Smart Code: HERA.AUTH.SIGNUP.PAGE.SALON.v1
+// Smart Code: HERA.AUTH.SIGNUP.PAGE.SALON.V1
 // User registration with organization creation flow
 // ================================================================================
 
@@ -11,8 +11,8 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, Loader2, Sparkles, ArrowRight } from 'lucide-react'
-import { useAuth } from '@/src/lib/auth/session'
-import { SignupRequest } from '@/src/lib/schemas/universal'
+import { useAuth } from '@/lib/auth/session'
+import { SignupRequest } from '@/lib/schemas/universal'
 import Link from 'next/link'
 
 export default function SignupPage() {

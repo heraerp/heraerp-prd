@@ -3,7 +3,7 @@
  * Modern TypeScript integration layer for automatic journal posting
  */
 
-import { supabase } from '@/src/lib/supabase/client'
+import { supabase } from '@/lib/supabase/client'
 
 // ============================================================================
 // TYPE DEFINITIONS

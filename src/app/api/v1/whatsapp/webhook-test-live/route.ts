@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 /**
  * Test endpoint to simulate a live WhatsApp webhook message
@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
       transaction_code: `LIVE-WA-${Date.now()}`,
       smart_code:
         direction === 'inbound'
-          ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.v1'
-          : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.v1',
+          ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.V1'
+          : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.V1',
       total_amount: 0,
       metadata: {
         direction,

@@ -1,0 +1,76 @@
+smart_code: HERA.UNIV.WF.TIMER.FIRE.V1
+intent: Called by worker; executes on_fire_smart_code (e.g., WF.ADVANCE or ESCALATE).
+scope:
+  in_scope:
+    - execute scheduled timer action
+    - update timer status
+    - pass context to target procedure
+    - handle execution errors
+  out_of_scope:
+    - timer scheduling/rescheduling
+    - retry logic (worker's responsibility)
+    - timer cancellation
+preconditions:
+  - permissions: [$PROFILE.required_role_timer] or system
+  - timer exists and status is PENDING
+  - current time >= timer.fire_at
+invariants:
+  - timer fires at most once
+  - execution errors don't leave timer in limbo
+  - audit trail of execution maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - timer_id: uuid                               # the timer to fire
+happy_path:
+  - step: load timer transaction and verify status = PENDING
+  - step: verify current time >= fire_at (allow small grace period)
+  - step: extract on_fire_smart_code and context from timer metadata
+  - step: atomically update timer status = FIRING (using entity_code for uniqueness constraint)
+  - step: if update affected 0 rows, return TIMER_ALREADY_FIRED (another worker got it)
+  - step: execute on_fire_smart_code with context + {timer_id, instance_id}
+  - step: if execution succeeds, update timer status = FIRED
+  - step: if execution fails, update timer status = FAILED with error details
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # timer status updated
+  procedures_executed:
+    - on_fire_smart_code: 1
+  response:
+    timer_id: uuid
+    status: string                                 # FIRED or FAILED
+    fired_at: timestamp
+    execution_result: object                       # from on_fire procedure
+errors:
+  - code: TIMER_NOT_FOUND
+    when: timer_id doesn't exist in organization
+    action: return 404
+  - code: TIMER_ALREADY_FIRED
+    when: timer status != PENDING
+    action: return 409 with current status
+  - code: TIMER_NOT_DUE
+    when: current time < fire_at (beyond grace period)
+    action: return 425 too early
+  - code: EXECUTION_FAILED
+    when: on_fire_smart_code execution fails
+    action: update status=FAILED, return 500 with details
+  - code: PERMISSION_DENIED
+    when: caller lacks permission and isn't system
+    action: return 403
+observability:
+  logs:
+    - timer_firing: { timer_id, on_fire_smart_code, instance_id }
+    - timer_fired: { timer_id, execution_result }
+    - timer_failed: { timer_id, error_details }
+  audit_json: true
+  metrics:
+    - timer_fire_count by on_fire_smart_code
+    - timer_execution_duration
+    - timer_failure_rate
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  timer_id: "890e1234-e89b-12d3-a456-426614174000"
+checks:
+  - description: verify timer hasn't been fired already
+  - description: ensure timer is due (with grace period)
+  - description: validate execution context is complete

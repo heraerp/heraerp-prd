@@ -1,7 +1,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import FINDashboard from '@/src/components/fin/FINDashboard'
+import FINDashboard from '@/components/fin/FINDashboard'
 
 export const metadata = {
   title: 'Financial Management | HERA',

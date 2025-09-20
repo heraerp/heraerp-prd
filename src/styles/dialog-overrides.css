@@ -1,0 +1,238 @@
+/* Dialog Overrides for Better Positioning and Scrolling */
+
+/* Center the dialog properly */
+[data-radix-dialog-content] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Ensure backdrop covers entire screen */
+[data-radix-dialog-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+}
+
+/* Make sure dialog content can scroll */
+.dialog-content-scrollable {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.dialog-content-scrollable > div:last-child {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+/* Better scrollbar styling for modals */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+}
+
+/* Always show scrollbar for modal content */
+[data-radix-dialog-content] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-radix-dialog-content] ::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+[data-radix-dialog-content] ::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 4px;
+}
+
+[data-radix-dialog-content] ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+.dark [data-radix-dialog-content] ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark [data-radix-dialog-content] ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark [data-radix-dialog-content] ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Modal scroll content specific styling */
+.modal-scroll-content {
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af #f3f4f6;
+}
+
+.dark .modal-scroll-content {
+  scrollbar-color: #6b7280 #1f2937;
+}
+
+.modal-scroll-content::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+.modal-scroll-content::-webkit-scrollbar-track {
+  background: #f3f4f6 !important;
+  border-radius: 5px;
+}
+
+.modal-scroll-content::-webkit-scrollbar-thumb {
+  background: #9ca3af !important;
+  border-radius: 5px;
+  border: 2px solid #f3f4f6;
+}
+
+.modal-scroll-content::-webkit-scrollbar-thumb:hover {
+  background: #6b7280 !important;
+}
+
+.dark .modal-scroll-content::-webkit-scrollbar-track {
+  background: #1f2937 !important;
+}
+
+.dark .modal-scroll-content::-webkit-scrollbar-thumb {
+  background: #6b7280 !important;
+  border: 2px solid #1f2937;
+}
+
+.dark .modal-scroll-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af !important;
+}
+
+/* Add subtle animation */
+@keyframes dialogShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+[data-state="open"][data-radix-dialog-content] {
+  animation: dialogShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Improve mobile experience */
+@media (max-width: 640px) {
+  [data-radix-dialog-content] {
+    width: calc(100vw - 2rem) !important;
+    max-width: none !important;
+    margin: 1rem !important;
+    height: calc(100vh - 2rem) !important;
+    max-height: calc(100vh - 2rem) !important;
+  }
+  
+  /* Ensure mobile modals can scroll properly */
+  .dialog-content-scrollable {
+    max-height: calc(100vh - 2rem) !important;
+  }
+}
+
+/* Salon POS Dialog and Select Overrides */
+
+/* Fix Select dropdown colors in glassmorphism dialogs */
+[role="listbox"] {
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Select items in dark mode */
+[role="option"] {
+  color: white !important;
+}
+
+[role="option"]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[role="option"][data-state="checked"] {
+  background: rgba(147, 51, 234, 0.3) !important;
+}
+
+/* Select trigger in glassmorphism context */
+.select-trigger-glass {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.select-trigger-glass:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.select-trigger-glass:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(147, 51, 234, 0.5) !important;
+}
+
+/* Dialog content styling */
+.dialog-content-glass {
+  background: rgba(17, 24, 39, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Status indicators */
+.status-indicator-available {
+  background-color: rgb(74, 222, 128);
+}
+
+.status-indicator-occupied {
+  background-color: rgb(248, 113, 113);
+}
+
+.status-indicator-maintenance {
+  background-color: rgb(250, 204, 21);
+}
+
+/* Dropdown section headers */
+.select-section-header {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.375rem 0.5rem;
+}
+
+/* Select content scrollbar */
+[role="listbox"]::-webkit-scrollbar {
+  width: 8px;
+}
+
+[role="listbox"]::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+[role="listbox"]::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+[role="listbox"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

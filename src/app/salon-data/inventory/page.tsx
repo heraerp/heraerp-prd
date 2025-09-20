@@ -11,16 +11,16 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalApi } from '@/src/lib/universal-api'
-import { handleError } from '@/src/lib/salon/error-handler'
-import type { Product, ProductFormData } from '@/src/types/salon.types'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/lib/universal-api'
+import { handleError } from '@/lib/salon/error-handler'
+import type { Product, ProductFormData } from '@/types/salon.types'
 import {
   Package,
   AlertCircle,
@@ -65,7 +65,7 @@ import {
   FileText,
   Palette
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 
@@ -156,7 +156,7 @@ const mockInventory: InventoryItem[] = [
     entity_type: 'product',
     entity_name: 'Aloe Vera Shampoo 250ml',
     entity_code: 'PRD-001',
-    smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.ALOE.v1',
+    smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.ALOE.V1',
     barcode: '6291234567890',
     sku: 'SH-ALOE-250',
     stock_on_hand: 24,
@@ -180,7 +180,7 @@ const mockInventory: InventoryItem[] = [
     entity_type: 'product',
     entity_name: 'Argan Oil Hair Mask 200ml',
     entity_code: 'PRD-002',
-    smart_code: 'HERA.SALON.PRODUCT.MASK.ARGAN.v1',
+    smart_code: 'HERA.SALON.PRODUCT.MASK.ARGAN.V1',
     barcode: '6291234567891',
     sku: 'HM-ARGAN-200',
     stock_on_hand: 8,
@@ -204,7 +204,7 @@ const mockInventory: InventoryItem[] = [
     entity_type: 'product',
     entity_name: 'Professional Hair Color Kit',
     entity_code: 'PRO-001',
-    smart_code: 'HERA.SALON.PRODUCT.COLOR.PRO.v1',
+    smart_code: 'HERA.SALON.PRODUCT.COLOR.PRO.V1',
     stock_on_hand: 45,
     reorder_point: 20,
     reorder_quantity: 100,
@@ -225,7 +225,7 @@ const mockInventory: InventoryItem[] = [
     entity_type: 'product',
     entity_name: 'Luxury Face Serum 30ml',
     entity_code: 'SPA-001',
-    smart_code: 'HERA.SALON.PRODUCT.SERUM.LUXURY.v1',
+    smart_code: 'HERA.SALON.PRODUCT.SERUM.LUXURY.V1',
     barcode: '6291234567892',
     sku: 'FS-LUX-30',
     stock_on_hand: 3,
@@ -250,7 +250,7 @@ const mockMovements: StockMovement[] = [
     id: '1',
     transaction_type: 'STOCK_IN',
     transaction_date: new Date('2024-03-01T10:00:00'),
-    smart_code: 'HERA.SALON.INVENTORY.MOVEMENT.PURCHASE.v1',
+    smart_code: 'HERA.SALON.INVENTORY.MOVEMENT.PURCHASE.V1',
     product_id: '1',
     product_name: 'Aloe Vera Shampoo 250ml',
     quantity: 50,
@@ -266,7 +266,7 @@ const mockMovements: StockMovement[] = [
     id: '2',
     transaction_type: 'SALE',
     transaction_date: new Date('2024-03-01T14:30:00'),
-    smart_code: 'HERA.SALON.INVENTORY.MOVEMENT.SALE.v1',
+    smart_code: 'HERA.SALON.INVENTORY.MOVEMENT.SALE.V1',
     product_id: '1',
     product_name: 'Aloe Vera Shampoo 250ml',
     quantity: 2,
@@ -422,7 +422,7 @@ export default function SalonInventoryManagement() {
       organization_id: organizationId,
       transaction_type: 'STOCK_ADJUSTMENT',
       transaction_date: new Date().toISOString(),
-      smart_code: 'HERA.SALON.INVENTORY.ADJUSTMENT.MANUAL.v1',
+      smart_code: 'HERA.SALON.INVENTORY.ADJUSTMENT.MANUAL.V1',
       metadata: {
         product_id: productId,
         quantity: adjustment,

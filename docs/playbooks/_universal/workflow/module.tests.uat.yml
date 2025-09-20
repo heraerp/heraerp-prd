@@ -1,0 +1,268 @@
+smart_code: HERA.UNIV.WF.MODULE.TESTS.UAT.V1
+suite: MODULE_WORKFLOWS
+description: UAT tests for all module workflow implementations
+setup:
+  - register_definitions:
+      - code: LEAVE_APPROVAL
+        file: /docs/playbooks/salon/hr/workflows/leave.definition.yml
+      - code: AP_BILL_APPROVAL
+        file: /docs/playbooks/finance/ap/workflows/bill.definition.yml
+      - code: MEMBERSHIP_RENEWAL
+        file: /docs/playbooks/salon/membership/workflows/renewal.definition.yml
+      - code: APPT_FOLLOWUP
+        file: /docs/playbooks/salon/pos/workflows/followup.definition.yml
+
+cases:
+  # HR Leave Approval Tests
+  - name: leave_approval_happy_path
+    description: Employee requests leave, manager approves
+    workflow: LEAVE_APPROVAL
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: LEAVE_APPROVAL
+          subject_ref:
+            entity_id: $EMPLOYEE_1
+            entity_type: leave_request
+          context:
+            employee_id: $EMPLOYEE_1
+            leave_type: annual
+            days_requested: 5
+            start_date: "2024-02-01"
+            end_date: "2024-02-05"
+        expect:
+          current_state: DRAFT
+          
+      - mock: HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1
+        returns: { passed: true, available_days: 15 }
+        
+      - mock: HERA.SALON.HR.LEAVE.OVERLAP.CHECK.V1
+        returns: { passed: true, has_overlap: false }
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $LEAVE_INSTANCE
+          to_state: SUBMITTED
+          actor_role: employee
+        expect:
+          from_state: DRAFT
+          to_state: SUBMITTED
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $LEAVE_INSTANCE
+          to_state: MANAGER_REVIEW
+          actor_role: system
+        expect:
+          from_state: SUBMITTED
+          to_state: MANAGER_REVIEW
+          guards_executed: 2
+          timers_set: 1
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $LEAVE_INSTANCE
+          to_state: APPROVED
+          actor_role: manager
+        expect:
+          from_state: MANAGER_REVIEW
+          to_state: APPROVED
+          effects_executed: 2
+          timers_cancelled: 1
+
+  - name: leave_approval_guard_failure
+    description: Leave request fails accrual check
+    workflow: LEAVE_APPROVAL
+    steps:
+      - mock: HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1
+        returns: { error: "INSUFFICIENT_BALANCE", available_days: 2 }
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $LEAVE_INSTANCE_2
+          to_state: MANAGER_REVIEW
+          actor_role: system
+        expect_error: GUARD_FAILED
+
+  # AP Bill Approval Tests
+  - name: ap_bill_happy_path
+    description: Bill ingested, matched, approved, posted, paid
+    workflow: AP_BILL_APPROVAL
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: AP_BILL_APPROVAL
+          subject_ref:
+            entity_id: $BILL_1
+            entity_type: ap_bill
+          context:
+            vendor_id: $VENDOR_1
+            po_number: "PO-2024-001"
+            bill_amount: 1485.00
+        expect:
+          current_state: INGESTED
+          
+      - mock: HERA.FIN.AP.BILL.VENDOR.VALIDATE.V1
+        returns: { passed: true, vendor_active: true }
+        
+      - mock: HERA.FIN.AP.BILL.MATCH.PO.V1
+        returns: { passed: true, within_tolerance: true }
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $BILL_INSTANCE
+          to_state: MATCH_2W
+          actor_role: system
+        expect:
+          to_state: MATCH_2W
+          guards_executed: 2
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $BILL_INSTANCE
+          to_state: REVIEW
+          actor_role: system
+        expect:
+          to_state: REVIEW
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $BILL_INSTANCE
+          to_state: APPROVED
+          actor_role: ap_manager
+        expect:
+          to_state: APPROVED
+
+  # Membership Renewal Tests
+  - name: membership_renewal_cycle
+    description: Membership due, notified, grace period, renewed
+    workflow: MEMBERSHIP_RENEWAL
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: MEMBERSHIP_RENEWAL
+          subject_ref:
+            entity_id: $CUSTOMER_1
+            entity_type: membership
+          context:
+            customer_id: $CUSTOMER_1
+            membership_type: gold
+            renewal_amount: 200.00
+        expect:
+          current_state: DUE
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $MEMBERSHIP_INSTANCE
+          to_state: NOTIFIED
+          actor_role: system
+        expect:
+          to_state: NOTIFIED
+          effects_executed: 1                       # WhatsApp message
+          timers_set: 1                             # grace period timer
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $MEMBERSHIP_INSTANCE
+          to_state: GRACE
+          actor_role: system
+        expect:
+          to_state: GRACE
+          timers_set: 1                             # expiry timer
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $MEMBERSHIP_INSTANCE
+          to_state: RENEWED
+          actor_role: payment
+        expect:
+          to_state: RENEWED
+          effects_executed: 1                       # membership grant
+
+  # Appointment Follow-up Tests
+  - name: appointment_followup_flow
+    description: Appointment completed, follow-up sent after delay
+    workflow: APPT_FOLLOWUP
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: APPT_FOLLOWUP
+          subject_ref:
+            entity_id: $APPOINTMENT_1
+            entity_type: appointment
+          context:
+            customer_id: $CUSTOMER_1
+            service: hair_cut
+            completed_at: "2024-01-15T14:00:00Z"
+        expect:
+          current_state: COMPLETED
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $FOLLOWUP_INSTANCE
+          to_state: PENDING_SEND
+          actor_role: system
+        expect:
+          to_state: PENDING_SEND
+          timers_set: 1                             # 1 hour delay
+          
+      - call: HERA.UNIV.WF.TIMER.FIRE.V1
+        with:
+          organization_id: $ORG
+          timer_id: $FOLLOWUP_TIMER
+        expect:
+          status: FIRED
+          instance_advanced: true
+          
+      - assert: instance.current_state == SENT
+      
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $FOLLOWUP_INSTANCE
+          to_state: DONE
+          actor_role: system
+        expect:
+          to_state: DONE
+
+cross_workflow_tests:
+  - name: workflow_isolation
+    description: Multiple workflows running simultaneously don't interfere
+    steps:
+      - start_workflows:
+          - LEAVE_APPROVAL
+          - AP_BILL_APPROVAL
+          - MEMBERSHIP_RENEWAL
+      - advance_all_workflows
+      - assert: no_cross_contamination
+      
+  - name: timer_accuracy
+    description: Timers fire at correct times and don't conflict
+    steps:
+      - start_workflows_with_timers
+      - fast_forward_time: 61_minutes
+      - verify: only_appropriate_timers_fired
+      
+assertions:
+  - all_definitions_registered: true
+  - all_procedures_callable: true
+  - guard_failures_handled: true
+  - effect_executions_logged: true
+  - timer_operations_working: true
+  - org_isolation_maintained: true
+  - no_new_tables_used: true

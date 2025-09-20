@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
+} from '@/components/ui/table'
 import {
   Search,
   Filter,
@@ -31,7 +31,7 @@ import {
   AlertCircle,
   CheckCircle
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface ConfigRule {
   id: string
@@ -86,7 +86,7 @@ export function RulesList({
       status: 'active',
       priority: 1,
       description: 'Validates customer credit limits against outstanding balance',
-      smart_code: 'HERA.CRM.CUST.VALIDATION.CREDIT.v1',
+      smart_code: 'HERA.CRM.CUST.VALIDATION.CREDIT.V1',
       created_at: '2024-01-15T10:00:00Z',
       updated_at: '2024-01-20T14:30:00Z',
       applied_count: 1247,
@@ -102,7 +102,7 @@ export function RulesList({
       status: 'active',
       priority: 2,
       description: 'Automatically creates GL journal entries for sales transactions',
-      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.v1',
+      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.V1',
       created_at: '2024-01-10T09:00:00Z',
       updated_at: '2024-01-22T16:45:00Z',
       applied_count: 2156,

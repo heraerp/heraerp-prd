@@ -6,17 +6,17 @@ export const dynamic = 'force-dynamic'
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Package, Edit, MoreVertical, Image as ImageIcon } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Skeleton } from '@/components/ui/skeleton'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
-} from '@/src/components/ui/dropdown-menu'
-import { universalApi } from '@/src/lib/universal-api'
-import { BOMExplorer } from '@/src/components/furniture/BOMExplorer'
-import { SupplierRelationships } from '@/src/components/furniture/SupplierRelationships'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+} from '@/components/ui/dropdown-menu'
+import { universalApi } from '@/lib/universal-api'
+import { BOMExplorer } from '@/components/furniture/BOMExplorer'
+import { SupplierRelationships } from '@/components/furniture/SupplierRelationships'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 
 export default function ProductDetailPage() {
@@ -128,7 +128,7 @@ if (!product) {
             <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] bg-[var(--color-body)]/50 border-[var(--color-border)]">
               <CardContent className="p-6">
                 <div className="aspect-square bg-muted-foreground/10 rounded-lg flex items-center justify-center">
-                  <ImageIcon className="h-24 w-24 text-[#37353E]" />
+                  <ImageIcon className="h-24 w-24 text-[var(--color-icon-secondary)]" />
                 </div>
               </CardContent>
             </Card>

@@ -1,0 +1,102 @@
+smart_code: HERA.UNIV.TXN.HEADER.FINALIZE.V1
+intent: Transition a header to FINALIZED/COMMITTED (e.g., cart→sale, order→invoice).
+scope:
+  in_scope:
+    - state transition to final state
+    - total validation and rounding
+    - execute pre/post finalization procedures
+    - create immutable transaction record
+  out_of_scope:
+    - line modifications after finalization
+    - void/reversal (use separate procedures)
+    - payment processing (use payment procedures)
+preconditions:
+  - permissions: [$PROFILE.required_role_finalize]
+  - header.state in $PROFILE.finalize_from_states
+  - all required fields populated
+  - business rules satisfied (e.g., minimum amount)
+invariants:
+  - sum(lines) equals header.total (or write rounding line)
+  - any required "post" procedures declared and succeed (inventory, GL, commissions)
+  - finalized transactions are immutable
+  - complete audit trail maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - transaction_id: uuid
+  optional:
+    - payment_method: string                        # if required by profile
+    - finalization_metadata: object                 # additional context
+    - force: boolean=false                          # bypass soft validations
+happy_path:
+  - step: verify transaction exists and belongs to organization_id
+  - step: check transaction state in $PROFILE.finalize_from_states
+  - step: validate permissions against $PROFILE.required_role_finalize
+  - step: call $PROFILE.pre_finalize procedures (e.g., reprice, tax calculation)
+  - step: validate sum(lines) = header.total, or create rounding adjustment
+  - step: check business rules (minimum amount, required fields, etc.)
+  - step: update transaction state to $PROFILE.final_state (e.g., FINALIZED)
+  - step: snapshot current totals and line items for immutability
+  - step: generate final transaction_code if pattern differs from draft
+  - step: call $PROFILE.post_finalize procedures (inventory commit, GL posting, commissions)
+  - step: emit finalization event for audit trail
+outputs:
+  transactions_finalized:
+    - universal_transactions: 1
+  procedures_executed:
+    pre: [$PROFILE.pre_finalize]
+    post: [$PROFILE.post_finalize]
+  response:
+    transaction_id: uuid
+    final_state: string
+    final_code: string
+    total_amount: decimal
+    finalized_at: timestamp
+    post_results: array                            # results from post procedures
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist or wrong organization
+    action: return 404
+  - code: INVALID_TRANSACTION_STATE
+    when: header.state not in $PROFILE.finalize_from_states
+    action: return 409 with current state and allowed states
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_finalize
+    action: return 403 with required permissions
+  - code: TOTAL_MISMATCH
+    when: sum(lines) != header.total and !$PROFILE.allow_rounding
+    action: return 400 with calculated vs expected totals
+  - code: MISSING_REQUIRED_FIELD
+    when: required field (e.g., payment_method) not provided
+    action: return 400 with missing fields
+  - code: BUSINESS_RULE_VIOLATION
+    when: minimum amount, time window, or other rule violated
+    action: return 400 with specific rule details
+  - code: POST_PROCEDURE_FAILED
+    when: critical post-finalize procedure fails
+    action: rollback and return 500 with procedure error
+observability:
+  logs:
+    - transaction_finalized: { transaction_id, state_transition, total_amount, organization_id }
+    - pre_procedures_executed: { transaction_id, procedures, results }
+    - post_procedures_executed: { transaction_id, procedures, results }
+    - finalization_failed: { transaction_id, reason, error_details }
+  audit_json: true
+  metrics:
+    - finalization_count by transaction_type
+    - average_transaction_amount
+    - finalization_duration
+    - post_procedure_failure_rate
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  transaction_id: "234e5678-e89b-12d3-a456-426614174000"
+  payment_method: "CARD"
+  finalization_metadata:
+    terminal_id: "POS-001"
+    cashier_id: "456e7890-e89b-12d3-a456-426614174000"
+    tip_amount: 15.00
+checks:
+  - description: verify all lines have valid prices and quantities
+  - description: ensure total matches sum of lines
+  - description: validate payment method if required
+  - description: check inventory availability before commit

@@ -7,13 +7,13 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   History, 
   Search, 
@@ -25,11 +25,11 @@ import {
   Download,
   Eye
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { HistoryTable } from '@/src/components/whatsapp/HistoryTable'
-import { SendMessageDialog } from '@/src/components/whatsapp/SendMessageDialog'
-import { MessageFilters } from '@/src/lib/schemas/whatsapp'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { HistoryTable } from '@/components/whatsapp/HistoryTable'
+import { SendMessageDialog } from '@/components/whatsapp/SendMessageDialog'
+import { MessageFilters } from '@/lib/schemas/whatsapp'
 
 export default function WhatsAppHistoryPage() {
   const { currentOrganization } = useOrganization()

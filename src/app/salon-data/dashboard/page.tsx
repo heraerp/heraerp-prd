@@ -4,14 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { KpiCards } from '@/src/components/dashboard/KpiCards'
-import { UpcomingAppointments } from '@/src/components/dashboard/UpcomingAppointments'
-import { LowStockList } from '@/src/components/dashboard/LowStockList'
-import { RevenueSparkline } from '@/src/components/dashboard/RevenueSparkline'
-import { StaffUtilization } from '@/src/components/dashboard/StaffUtilization'
-import { QuickActions } from '@/src/components/dashboard/QuickActions'
-import { AlertsStrip } from '@/src/components/dashboard/AlertsStrip'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { KpiCards } from '@/components/dashboard/KpiCards'
+import { UpcomingAppointments } from '@/components/dashboard/UpcomingAppointments'
+import { LowStockList } from '@/components/dashboard/LowStockList'
+import { RevenueSparkline } from '@/components/dashboard/RevenueSparkline'
+import { StaffUtilization } from '@/components/dashboard/StaffUtilization'
+import { QuickActions } from '@/components/dashboard/QuickActions'
+import { AlertsStrip } from '@/components/dashboard/AlertsStrip'
 
 // Default organization ID for salon demo - Hair Talkz Park Regis
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'

@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback, ReactNode } from 'react'
 import React from 'react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { RefreshCw, Loader2 } from 'lucide-react'
 
 // Types

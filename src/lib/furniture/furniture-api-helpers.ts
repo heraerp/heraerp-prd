@@ -1,6 +1,6 @@
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/src/types/hera-database.types'
+import type { Database } from '@/types/hera-database.types'
 
 // Helper to ensure Universal API has proper auth context
 export async function initializeFurnitureApi() {
@@ -57,7 +57,7 @@ export const furnitureApi = {
     return universalApi.createTransaction({
       transaction_type: 'bid',
       reference_entity_id: tenderId,
-      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',
       ...data
     })
   },

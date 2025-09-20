@@ -2,7 +2,7 @@
 // Provides industry-specific calendar configurations
 
 import { NextRequest, NextResponse } from 'next/server'
-import { IndustryCalendarConfig } from '@/src/types/calendar.types'
+import { IndustryCalendarConfig } from '@/types/calendar.types'
 
 // Industry configurations for different business types
 const INDUSTRY_CONFIGS: Record<string, IndustryCalendarConfig> = {

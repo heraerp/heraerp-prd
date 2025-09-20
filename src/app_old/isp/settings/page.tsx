@@ -601,7 +601,7 @@ export default function SettingsPage() {
           entity_type: 'system_settings',
           entity_name: 'India Vision System Settings',
           entity_code: 'SETTINGS-001',
-          smart_code: 'HERA.ISP.CONFIG.SYSTEM.SETTINGS.v1',
+          smart_code: 'HERA.ISP.CONFIG.SYSTEM.SETTINGS.V1',
           metadata: allSettings
         })
       }

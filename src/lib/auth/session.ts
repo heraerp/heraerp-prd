@@ -9,7 +9,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { createApiClient } from '../api/clientFactory'
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import type { User, LoginRequest, LoginResponse } from '../schemas/universal'
 
 // Session state interface

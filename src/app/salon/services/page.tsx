@@ -20,6 +20,11 @@ import {
 import { ServiceForm, ServiceWithDynamicData } from '@/schemas/service'
 import { Plus, Search, Scissors, Download, Building2, Filter, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { 
+  PageHeader, 
+  PageHeaderSearch, 
+  PageHeaderButton 
+} from '@/components/universal/PageHeader'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -31,7 +36,9 @@ const COLORS = {
   emerald: '#0F6F5C',
   plum: '#5A2A40',
   rose: '#E8B4B8',
-  lightText: '#E0E0E0'
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
 export default function SalonServicesPage() {
@@ -135,85 +142,62 @@ export default function SalonServicesPage() {
 
   return (
     <div className="min-h-[100dvh]" style={{ backgroundColor: COLORS.black }}>
-      {/* Header */}
-      <div
-        className="sticky top-0 z-20 border-b"
-        style={{ ...headerGradient, borderColor: COLORS.black }}
-      >
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            {/* Left: Title & Breadcrumb */}
-            <div>
-              <div className="flex items-center gap-3">
-                <div
-                  className="h-10 w-10 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: COLORS.charcoal, boxShadow: 'inset 0 0 0 1px #000' }}
-                >
-                  <Scissors className="h-5 w-5" style={{ color: COLORS.gold }} />
-                </div>
-                <div>
-                  <div
-                    className="text-xs uppercase tracking-wider"
-                    style={{ color: COLORS.bronze }}
-                  >
-                    HERA • SALON OS
-                  </div>
-                  <h1 className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
-                    Services
-                  </h1>
-                </div>
-              </div>
-            </div>
-
-            {/* Center: Branch Selector */}
-            {/* TODO: Add branch selector component */}
-
-            {/* Right: Actions */}
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search services..."
+      {/* Main content wrapper with charcoal background for depth */}
+      <div className="relative" style={{ minHeight: '100vh' }}>
+        {/* Subtle gradient overlay for depth */}
+        <div className="absolute inset-0 pointer-events-none"
+             style={{
+               background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
+                           radial-gradient(circle at 80% 20%, ${COLORS.bronze}05 0%, transparent 50%),
+                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`,
+             }} />
+        
+        {/* Content container */}
+        <div className="container mx-auto px-6 py-8 relative" 
+             style={{ 
+               backgroundColor: COLORS.charcoal,
+               minHeight: '100vh',
+               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
+             }}>
+          
+          <PageHeader
+            title="Services"
+            breadcrumbs={[
+              { label: 'HERA' },
+              { label: 'SALON OS' },
+              { label: 'Services', isActive: true }
+            ]}
+            actions={
+              <>
+                <PageHeaderSearch 
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-64 pl-10 bg-background/50 border-border"
-                  style={{ color: COLORS.lightText }}
+                  onChange={setSearchQuery}
+                  placeholder="Search services..."
                 />
-              </div>
+                <PageHeaderButton 
+                  variant="primary"
+                  icon={Plus}
+                  onClick={() => {
+                    setEditingService(null)
+                    setModalOpen(true)
+                  }}
+                >
+                  New Service
+                </PageHeaderButton>
+                <PageHeaderButton 
+                  variant="secondary"
+                  icon={Download}
+                  onClick={handleExport}
+                />
+              </>
+            }
+          />
 
-              <Button
-                onClick={() => {
-                  setEditingService(null)
-                  setModalOpen(true)
-                }}
-                className="font-semibold"
-                style={{
-                  backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black
-                }}
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                New Service
-              </Button>
-
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleExport}
-                className="border-border hover:bg-muted"
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div
-        className="px-6 py-4 border-b"
-        style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.black }}
-      >
+          {/* Filters */}
+          <div
+            className="py-4 border-b"
+            style={{ borderColor: `${COLORS.bronze}33` }}
+          >
         <div className="flex items-center gap-4">
           {/* Status Tabs */}
           <Tabs value={statusFilter} onValueChange={v => setStatusFilter(v as any)}>
@@ -278,8 +262,8 @@ export default function SalonServicesPage() {
         )}
       </div>
 
-      {/* Content */}
-      <div className="px-6 py-6">
+          {/* Content */}
+          <div className="py-6">
         <ServiceList
           services={services}
           loading={isLoading}
@@ -303,17 +287,19 @@ export default function SalonServicesPage() {
         showRestore={statusFilter === 'archived'}
       />
 
-      {/* Service Modal */}
-      <ServiceModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false)
-          setEditingService(null)
-        }}
-        service={editingService}
-        onSave={handleSave}
-        categories={categories}
-      />
+          {/* Service Modal */}
+          <ServiceModal
+            open={modalOpen}
+            onClose={() => {
+              setModalOpen(false)
+              setEditingService(null)
+            }}
+            service={editingService}
+            onSave={handleSave}
+            categories={categories}
+          />
+        </div>
+      </div>
     </div>
   )
 }

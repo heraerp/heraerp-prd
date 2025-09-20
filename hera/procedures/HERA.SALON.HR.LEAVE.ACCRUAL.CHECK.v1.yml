@@ -1,0 +1,68 @@
+smart_code: HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1
+intent: Check if employee has sufficient leave balance for the requested days.
+scope:
+  in_scope:
+    - validate leave balance
+    - check accrual rules
+    - enforce leave policies
+  out_of_scope:
+    - deduct balance (done on approval)
+    - calendar blocking
+preconditions:
+  - workflow instance exists
+  - employee entity exists
+  - leave request details in context
+invariants:
+  - balance check is non-destructive
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - employee_id: uuid
+      - leave_type: string                         # annual, sick, personal
+      - days_requested: number
+      - start_date: string
+      - end_date: string
+happy_path:
+  - step: load employee entity and leave balances from core_dynamic_data
+  - step: calculate current balance for leave_type
+  - step: check if days_requested <= available_balance
+  - step: validate leave type is allowed for employee
+  - step: check if request falls within policy limits (max consecutive days)
+outputs:
+  guard_result: 
+    passed: boolean
+    balance_sufficient: boolean
+    available_days: number
+    policy_compliant: boolean
+errors:
+  - code: INSUFFICIENT_BALANCE
+    when: days_requested > available_balance
+    action: return guard failure with balance details
+  - code: POLICY_VIOLATION
+    when: request violates leave policy (e.g., too many consecutive days)
+    action: return guard failure with policy details
+  - code: EMPLOYEE_NOT_FOUND
+    when: employee_id not found in organization
+    action: return guard failure
+  - code: INVALID_LEAVE_TYPE
+    when: leave_type not supported
+    action: return guard failure
+observability:
+  logs:
+    - leave_balance_checked: { employee_id, leave_type, requested_days, available_days, result }
+  audit_json: true
+  metrics:
+    - leave_balance_check_count by leave_type
+    - balance_insufficient_rate
+example_context:
+  employee_id: "emp-123e4567-e89b-12d3-a456-426614174000"
+  leave_type: "annual"
+  days_requested: 5
+  start_date: "2024-02-01"
+  end_date: "2024-02-05"
+checks:
+  - description: verify employee has leave entitlement
+  - description: calculate accurate balance including pending requests
+  - description: enforce company leave policies

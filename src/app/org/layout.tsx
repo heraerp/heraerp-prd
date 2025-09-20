@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Button } from '@/src/components/ui/button'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/src/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import {
   Building2,
   ChevronDown,

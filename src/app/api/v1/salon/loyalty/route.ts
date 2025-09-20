@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { withErrorHandler } from '@/src/lib/api-error-handler'
+import { withErrorHandler } from '@/lib/api-error-handler'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -674,7 +674,7 @@ async function addLoyaltyPoints(organizationId: string, data: any) {
       transaction_code: `LOYALTY-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SALON.LOYALTY.POINTS.EARNED.v1',
+      smart_code: 'HERA.SALON.LOYALTY.POINTS.EARNED.V1',
       metadata: {
         customer_id: customerId,
         transaction_type: 'earned',
@@ -730,7 +730,7 @@ async function redeemReward(organizationId: string, data: any) {
       transaction_code: `REDEEM-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SALON.LOYALTY.POINTS.REDEEMED.v1',
+      smart_code: 'HERA.SALON.LOYALTY.POINTS.REDEEMED.V1',
       metadata: {
         customer_id: customerId,
         transaction_type: 'redeemed',
@@ -830,7 +830,7 @@ async function adjustPoints(organizationId: string, data: any) {
       transaction_code: `ADJUST-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SALON.LOYALTY.POINTS.ADJUSTMENT.v1',
+      smart_code: 'HERA.SALON.LOYALTY.POINTS.ADJUSTMENT.V1',
       metadata: {
         customer_id: customerId,
         transaction_type: type,
@@ -878,7 +878,7 @@ async function enrollCustomer(organizationId: string, data: any) {
       transaction_code: `SIGNUP-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SALON.LOYALTY.SIGNUP.BONUS.v1',
+      smart_code: 'HERA.SALON.LOYALTY.SIGNUP.BONUS.V1',
       metadata: {
         customer_id: customerId,
         transaction_type: 'bonus',

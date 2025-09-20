@@ -7,9 +7,9 @@ import {
   EntityQuickViewBody,
   EntityQuickViewFooter,
   EntityQuickViewSkeleton
-} from '@/src/lib/dna/components/entity/EntityQuickView'
-import { universalApi } from '@/src/lib/universal-api'
-import { formatCurrency } from '@/src/lib/utils/format'
+} from '@/lib/dna/components/entity/EntityQuickView'
+import { universalApi } from '@/lib/universal-api'
+import { formatCurrency } from '@/lib/utils/format'
 import { 
   Package, 
   Users, 
@@ -24,7 +24,7 @@ import {
   CreditCard,
   Calendar
 } from 'lucide-react'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useToast } from '@/components/ui/use-toast'
 
 // Mock data for demo
 const DEMO_ENTITIES = [
@@ -33,7 +33,7 @@ const DEMO_ENTITIES = [
     entity_type: 'customer',
     entity_name: 'TechVantage Solutions Inc.',
     entity_code: 'CUST-001',
-    smart_code: 'HERA.CRM.CUST.ENT.PROF.v1',
+    smart_code: 'HERA.CRM.CUST.ENT.PROF.V1',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     metadata: {
@@ -60,7 +60,7 @@ const DEMO_ENTITIES = [
     entity_type: 'vendor',
     entity_name: 'Global Supplies Co.',
     entity_code: 'VEND-001',
-    smart_code: 'HERA.SCM.VEND.ENT.PROF.v1',
+    smart_code: 'HERA.SCM.VEND.ENT.PROF.V1',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     dynamic_fields: {
@@ -75,7 +75,7 @@ const DEMO_ENTITIES = [
     entity_type: 'product',
     entity_name: 'Premium Office Chair',
     entity_code: 'PROD-001',
-    smart_code: 'HERA.INV.PROD.ENT.FURN.v1',
+    smart_code: 'HERA.INV.PROD.ENT.FURN.V1',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     dynamic_fields: {
@@ -90,7 +90,7 @@ const DEMO_ENTITIES = [
     entity_type: 'gl_account',
     entity_name: 'Sales Revenue',
     entity_code: 'GL-4000',
-    smart_code: 'HERA.FIN.GL.ACC.REV.v1',
+    smart_code: 'HERA.FIN.GL.ACC.REV.V1',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     dynamic_fields: {

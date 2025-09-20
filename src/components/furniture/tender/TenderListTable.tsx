@@ -1,15 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Search, Filter, Download, Eye, DollarSign, Clock, FileText, Brain, Target, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 
 interface Tender {
@@ -135,7 +135,7 @@ const getStatusBadgeVariant = (status: string) => {
 const getStrategyIcon = (strategy?: string) => {
   switch (strategy) {
     case 'aggressive': return <Target className="h-4 w-4 text-red-400" />
-    case 'moderate': return <Brain className="h-4 w-4 text-[#37353E]" />
+    case 'moderate': return <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
     case 'conservative': return <TrendingUp className="h-4 w-4 text-green-400" />
     default: return null
   }
@@ -243,7 +243,7 @@ const getStrategyIcon = (strategy?: string) => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-[#37353E]" />
+                      <Clock className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                       <div>
                         <p className="text-sm text-[var(--color-text-primary)]">{tender.closingDate}</p>
                         <p className={cn(
@@ -260,7 +260,7 @@ const getStrategyIcon = (strategy?: string) => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <DollarSign className="h-3 w-3 text-[#37353E]" />
+                      <DollarSign className="h-3 w-3 text-[var(--color-icon-secondary)]" />
                       <span className="text-[var(--color-text-primary)]">{tender.emdAmount}</span>
                     </div>
                   </TableCell>
@@ -308,7 +308,7 @@ const getStrategyIcon = (strategy?: string) => {
                 {filteredTenders.filter(t => t.status === 'active').length}
               </p>
             </div>
-            <FileText className="h-5 w-5 text-[#37353E]" />
+            <FileText className="h-5 w-5 text-[var(--color-icon-secondary)]" />
           </div>
         </Card>
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
@@ -326,7 +326,7 @@ const getStrategyIcon = (strategy?: string) => {
               <p className="text-xs text-[var(--color-text-secondary)]">Win Rate</p>
               <p className="text-xl font-bold text-[var(--color-text-primary)]">42%</p>
             </div>
-            <Target className="h-5 w-5 text-[#37353E]" />
+            <Target className="h-5 w-5 text-[var(--color-icon-secondary)]" />
           </div>
         </Card>
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-4 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
@@ -335,7 +335,7 @@ const getStrategyIcon = (strategy?: string) => {
               <p className="text-xs text-[var(--color-text-secondary)]">Avg AI Score</p>
               <p className="text-xl font-bold text-[var(--color-text-primary)]">72%</p>
             </div>
-            <Brain className="h-5 w-5 text-[#37353E]" />
+            <Brain className="h-5 w-5 text-[var(--color-icon-secondary)]" />
           </div>
         </Card>
       </div>

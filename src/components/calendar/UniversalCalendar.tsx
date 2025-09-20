@@ -19,14 +19,14 @@ import {
   CalendarView,
   IndustryCalendarConfig,
   SchedulingConflict
-} from '@/src/types/calendar.types'
+} from '@/types/calendar.types'
 import { useCalendarAPI } from '@/services/calendarAPI'
 import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Calendar,
   Users,

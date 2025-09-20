@@ -269,7 +269,7 @@ async function createGLAccount(supabase: any, organizationId: string, data: any)
       entity_type: 'gl_account',
       entity_code: validated.accountCode,
       entity_name: validated.accountName,
-      smart_code: 'HERA.FIN.GL.ACCOUNT.CREATE.v1',
+      smart_code: 'HERA.FIN.GL.ACCOUNT.CREATE.V1',
       metadata: {
         account_type: validated.accountType,
         description: validated.description,
@@ -299,7 +299,7 @@ async function createGLAccount(supabase: any, organizationId: string, data: any)
         from_entity_id: parent.id,
         to_entity_id: account.id,
         relationship_type: 'parent_of',
-        smart_code: 'HERA.FIN.GL.ACCOUNT.HIERARCHY.v1',
+        smart_code: 'HERA.FIN.GL.ACCOUNT.HIERARCHY.V1',
         metadata: {
           hierarchy_type: 'gl_account'
         }
@@ -414,7 +414,7 @@ async function createJournalEntry(
       organization_id: organizationId,
       transaction_type: 'journal_entry',
       transaction_code: journalNumber,
-      smart_code: 'HERA.FIN.GL.JOURNAL.MANUAL.v1',
+      smart_code: 'HERA.FIN.GL.JOURNAL.MANUAL.V1',
       transaction_date: validated.date || new Date().toISOString(),
       total_amount: totalDebits,
       metadata: {
@@ -576,7 +576,7 @@ async function reverseJournalEntry(
       organization_id: organizationId,
       transaction_type: 'journal_reversal',
       transaction_code: reversalNumber,
-      smart_code: 'HERA.FIN.GL.JOURNAL.REVERSAL.v1',
+      smart_code: 'HERA.FIN.GL.JOURNAL.REVERSAL.V1',
       transaction_date: reversalDate || new Date().toISOString(),
       reference_entity_id: original.id,
       total_amount: original.total_amount,
@@ -1114,7 +1114,7 @@ async function allocateCosts(supabase: any, organizationId: string, data: any) {
       organization_id: organizationId,
       transaction_type: 'journal_entry',
       transaction_code: journalNumber,
-      smart_code: 'HERA.FIN.GL.POST.ALLOCATE.v1',
+      smart_code: 'HERA.FIN.GL.POST.ALLOCATE.V1',
       transaction_date: new Date().toISOString(),
       metadata: {
         description: `Cost allocation: ${rule.entity_name}`,

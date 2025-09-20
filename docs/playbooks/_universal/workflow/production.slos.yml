@@ -1,0 +1,265 @@
+smart_code: HERA.UNIV.WF.PRODUCTION.SLOS.V1
+intent: Production SLOs and alerting configuration for workflow engine monitoring.
+scope:
+  in_scope:
+    - define service level objectives
+    - alert thresholds and conditions
+    - monitoring queries
+    - escalation procedures
+  out_of_scope:
+    - actual monitoring implementation
+    - alerting infrastructure
+    - incident response
+
+# Production SLOs & Alert Configuration
+
+slos:
+  timer_fire_latency:
+    objective: "Timer fire latency p95 ≤ 60 seconds"
+    measurement: |
+      SELECT 
+        PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY 
+          EXTRACT(EPOCH FROM (fired_at::timestamp - fire_at::timestamp))
+        ) as p95_latency_seconds
+      FROM wf_timers_view 
+      WHERE timer_status = 'FIRED' 
+        AND fired_at >= NOW() - INTERVAL '1 hour'
+    threshold: 60
+    unit: seconds
+    alert_conditions:
+      warning: "> 60 seconds for 5 consecutive minutes"
+      critical: "> 120 seconds for 3 consecutive minutes"
+    
+  advance_success_rate:
+    objective: "Workflow advance success rate ≥ 99.5% rolling 1 hour"
+    measurement: |
+      SELECT 
+        (COUNT(*) FILTER (WHERE note != 'FAILED') * 100.0 / COUNT(*)) as success_rate_percent
+      FROM wf_steps_view 
+      WHERE created_at >= NOW() - INTERVAL '1 hour'
+        AND (from_state != to_state OR from_state IS NULL)
+    threshold: 99.5
+    unit: percent
+    alert_conditions:
+      warning: "< 99.5% rolling 1 hour"
+      critical: "< 98% rolling 1 hour"
+      page: "< 98% for 5 consecutive minutes"
+    
+  task_completion_sla:
+    objective: "Task claim→complete p95 SLA per profile (24h default)"
+    measurement: |
+      SELECT 
+        ce.entity_name as workflow_type,
+        PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY 
+          EXTRACT(EPOCH FROM (completed_at - created_at)) / 3600
+        ) as p95_completion_hours
+      FROM wf_tasks_view t
+      JOIN core_entities ce ON ce.id = t.instance_id
+      WHERE t.task_state = 'COMPLETED' 
+        AND t.completed_at >= NOW() - INTERVAL '24 hours'
+      GROUP BY ce.entity_name
+    threshold: 24
+    unit: hours
+    alert_conditions:
+      warning: "breach rate > 2% for any workflow type"
+      critical: "breach rate > 5% for any workflow type"
+    
+  timer_queue_backlog:
+    objective: "Timer processing keeps up with demand"
+    measurement: |
+      SELECT 
+        COUNT(*) as backlog_count
+      FROM wf_timers_view 
+      WHERE timer_status = 'PENDING' 
+        AND fire_at <= NOW() - INTERVAL '5 minutes'
+    threshold: 0
+    unit: count
+    alert_conditions:
+      warning: "> 0 for 10 consecutive minutes"
+      critical: "> 50 timers overdue"
+      
+  workflow_start_rate:
+    objective: "Workflow starts complete successfully"
+    measurement: |
+      SELECT 
+        COUNT(*) as starts_per_minute
+      FROM wf_instances_view 
+      WHERE created_at >= NOW() - INTERVAL '1 minute'
+    threshold: 1000
+    unit: starts_per_minute
+    alert_conditions:
+      warning: "> 1000 starts/minute sustained for 5 minutes"
+      critical: "> 5000 starts/minute"
+
+alerts:
+  timer_fire_latency_high:
+    query: |
+      SELECT 
+        organization_id,
+        PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY 
+          EXTRACT(EPOCH FROM (fired_at::timestamp - fire_at::timestamp))
+        ) as p95_latency_seconds,
+        COUNT(*) as timer_count
+      FROM wf_timers_view 
+      WHERE timer_status = 'FIRED' 
+        AND fired_at >= NOW() - INTERVAL '5 minutes'
+      GROUP BY organization_id
+      HAVING PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY 
+        EXTRACT(EPOCH FROM (fired_at::timestamp - fire_at::timestamp))
+      ) > 60
+    severity: warning
+    notification_channels: ["ops_team", "platform_team"]
+    
+  advance_failure_spike:
+    query: |
+      SELECT 
+        organization_id,
+        definition_code,
+        COUNT(*) FILTER (WHERE note = 'FAILED') as failures,
+        COUNT(*) as total_attempts,
+        (COUNT(*) FILTER (WHERE note = 'FAILED') * 100.0 / COUNT(*)) as failure_rate
+      FROM wf_steps_view s
+      JOIN wf_instances_view i ON i.instance_id = s.instance_id
+      WHERE s.created_at >= NOW() - INTERVAL '1 hour'
+        AND (s.from_state != s.to_state OR s.from_state IS NULL)
+      GROUP BY organization_id, definition_code
+      HAVING (COUNT(*) FILTER (WHERE note = 'FAILED') * 100.0 / COUNT(*)) < 98
+    severity: critical
+    notification_channels: ["ops_team", "oncall_engineer"]
+    auto_page: true
+    
+  task_sla_breach:
+    query: |
+      SELECT 
+        organization_id,
+        ce.entity_name as workflow_type,
+        COUNT(*) as overdue_tasks,
+        COUNT(*) FILTER (WHERE due_at < NOW() - INTERVAL '24 hours') as severely_overdue
+      FROM wf_tasks_view t
+      JOIN wf_instances_view i ON i.instance_id = t.instance_id
+      JOIN core_entities ce ON ce.id = t.instance_id
+      WHERE t.task_state IN ('OPEN', 'CLAIMED')
+        AND t.due_at < NOW()
+      GROUP BY organization_id, ce.entity_name
+      HAVING COUNT(*) FILTER (WHERE due_at < NOW() - INTERVAL '24 hours') > 0
+    severity: warning
+    notification_channels: ["ops_team", "business_team"]
+    
+  timer_backlog_growing:
+    query: |
+      SELECT 
+        organization_id,
+        COUNT(*) as overdue_timers,
+        MIN(fire_at) as oldest_overdue_timer,
+        EXTRACT(EPOCH FROM (NOW() - MIN(fire_at))) / 60 as minutes_overdue
+      FROM wf_timers_view 
+      WHERE timer_status = 'PENDING' 
+        AND fire_at <= NOW() - INTERVAL '5 minutes'
+      GROUP BY organization_id
+      HAVING COUNT(*) > 0
+    severity: warning
+    notification_channels: ["ops_team"]
+    escalation:
+      after_minutes: 10
+      to: ["platform_team", "oncall_engineer"]
+
+escalation_procedures:
+  timer_fire_latency:
+    level_1: "Check scheduler health, worker capacity"
+    level_2: "Scale timer workers, check database performance"
+    level_3: "Page oncall engineer, consider emergency scaling"
+    
+  advance_failures:
+    level_1: "Identify failing workflows, check for pattern"
+    level_2: "Pause affected workflow definitions if needed"
+    level_3: "Escalate to development team, prepare rollback"
+    
+  task_sla_breach:
+    level_1: "Notify business owners, check for resource constraints"
+    level_2: "Consider task reassignment, escalate to management"
+    level_3: "Business continuity procedures"
+    
+  timer_backlog:
+    level_1: "Restart scheduler, check for stuck processes"
+    level_2: "Scale processing capacity, manual timer intervention"
+    level_3: "Database investigation, consider emergency bypass"
+
+health_checks:
+  scheduler_heartbeat:
+    query: |
+      SELECT 
+        MAX(created_at) as last_run,
+        EXTRACT(EPOCH FROM (NOW() - MAX(created_at))) / 60 as minutes_since_last_run
+      FROM universal_transaction_lines
+      WHERE smart_code = 'HERA.UNIV.WF.SCHEDULER.V1'
+    threshold: 10  # minutes
+    alert_if: "> 10 minutes since last scheduler run"
+    
+  read_model_freshness:
+    query: |
+      SELECT 
+        COUNT(*) as view_count
+      FROM wf_instances_view
+      WHERE created_at >= NOW() - INTERVAL '1 minute'
+    alert_if: "View queries failing or returning stale data"
+    
+  feature_flag_coherence:
+    query: |
+      SELECT 
+        COUNT(*) as disabled_workflows
+      FROM core_dynamic_data
+      WHERE key_slug LIKE 'wf_%_enabled_%'
+        AND value_json::text = 'false'
+    alert_if: "Unexpected feature flag changes"
+
+dashboards:
+  operational_overview:
+    metrics:
+      - active_workflows_by_state
+      - timer_fire_latency_p95
+      - advance_success_rate
+      - task_completion_sla_p95
+      - scheduler_run_frequency
+    refresh_interval: 30_seconds
+    
+  business_health:
+    metrics:
+      - workflows_started_per_hour
+      - workflows_completed_per_hour
+      - average_workflow_duration
+      - task_escalation_rate
+      - sla_breach_rate_by_type
+    refresh_interval: 5_minutes
+    
+  system_performance:
+    metrics:
+      - database_query_performance
+      - read_model_query_latency
+      - procedure_execution_times
+      - timer_processing_throughput
+    refresh_interval: 1_minute
+
+notification_channels:
+  ops_team:
+    type: slack
+    channel: "#ops-workflows"
+    mention: "@workflow-ops"
+    
+  platform_team:
+    type: slack
+    channel: "#platform-alerts"
+    mention: "@platform-oncall"
+    
+  business_team:
+    type: email
+    recipients: ["business-ops@company.com"]
+    
+  oncall_engineer:
+    type: pagerduty
+    integration_key: "workflow_engine_critical"
+    
+monitoring_runbook_links:
+  timer_latency: "/runbooks/workflow-timer-latency"
+  advance_failures: "/runbooks/workflow-advance-failures"
+  task_sla_breach: "/runbooks/workflow-task-sla"
+  backlog_growth: "/runbooks/workflow-backlog"

@@ -202,7 +202,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       operations.push({
         entity: 'core_dynamic_data',
         operation: 'bulk_create',
-        smart_code: 'HERA.DYN.BULK.CREATE.WITH.ENTITY.v1',
+        smart_code: 'HERA.DYN.BULK.CREATE.WITH.ENTITY.V1',
         data: { items: dynamicData }
       })
     }
@@ -222,7 +222,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       operations.push({
         entity: 'core_relationships',
         operation: 'bulk_create',
-        smart_code: 'HERA.REL.BULK.CREATE.WITH.ENTITY.v1',
+        smart_code: 'HERA.REL.BULK.CREATE.WITH.ENTITY.V1',
         data: { items: relationshipData }
       })
     }
@@ -231,7 +231,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'core_entities',
       organization_id: request.organization_id,
-      smart_code: 'HERA.ENT.CREATE.COMPLETE.WORKFLOW.v1',
+      smart_code: 'HERA.ENT.CREATE.COMPLETE.WORKFLOW.V1',
       operation: 'transaction',
       operations,
       ai_requests: request.ai_processing
@@ -426,7 +426,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_entities',
           organization_id: organizationId,
-          smart_code: 'HERA.ENT.SMART.CODE.PROMOTE.v1',
+          smart_code: 'HERA.ENT.SMART.CODE.PROMOTE.V1',
           operation: 'update',
           data: {
             id: entityId,
@@ -470,7 +470,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_entities',
           organization_id: organizationId,
-          smart_code: 'HERA.ENT.BUSINESS.RULES.VALIDATE.v1',
+          smart_code: 'HERA.ENT.BUSINESS.RULES.VALIDATE.V1',
           operation: 'update',
           data: { id: entityId },
           ai_requests: {
@@ -486,7 +486,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.AUDIT.ENTITY.VERSIONS.v1',
+          smart_code: 'HERA.TXN.AUDIT.ENTITY.VERSIONS.V1',
           query: {
             filters: {
               transaction_type: 'entity_update',
@@ -502,7 +502,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_entities',
           organization_id: organizationId,
-          smart_code: 'HERA.ENT.AI.INSIGHTS.REFRESH.v1',
+          smart_code: 'HERA.ENT.AI.INSIGHTS.REFRESH.V1',
           operation: 'update',
           data: { id: entityId },
           ai_requests: {
@@ -542,7 +542,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'core_entities',
       organization_id: organizationId,
-      smart_code: 'HERA.ENT.BULK.CREATE.COMPLETE.v1',
+      smart_code: 'HERA.ENT.BULK.CREATE.COMPLETE.V1',
       operation: 'transaction',
       operations,
       ai_requests: {

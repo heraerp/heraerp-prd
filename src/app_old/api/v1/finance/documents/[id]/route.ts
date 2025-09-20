@@ -1,6 +1,6 @@
 /**
  * HERA Financial Document Details API
- * Smart Code: HERA.FIN.API.DOC.DETAIL.v1
+ * Smart Code: HERA.FIN.API.DOC.DETAIL.V1
  *
  * Retrieve detailed financial document with full audit trail
  */

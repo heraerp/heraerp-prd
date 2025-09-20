@@ -1,0 +1,72 @@
+smart_code: HERA.UNIV.ENTITY.ORCH.V1
+description: Universal entity CRUD orchestration - maps HTTP routes to procedures
+routes:
+  - http: POST /api/v1/:module/entities
+    handler: HERA.UNIV.ENTITY.CREATE.V1
+    description: Create new entity
+    
+  - http: GET /api/v1/:module/entities/:id
+    handler: HERA.UNIV.ENTITY.READ.V1
+    description: Read single entity
+    
+  - http: PATCH /api/v1/:module/entities/:id
+    handler: HERA.UNIV.ENTITY.UPDATE.V1
+    description: Update entity attributes
+    
+  - http: POST /api/v1/:module/entities/:id/archive
+    handler: HERA.UNIV.ENTITY.ARCHIVE.V1
+    description: Archive (soft-delete) entity
+    
+transaction_boundaries:
+  - name: entity_write
+    applies_to: 
+      - HERA.UNIV.ENTITY.CREATE.V1
+      - HERA.UNIV.ENTITY.UPDATE.V1
+      - HERA.UNIV.ENTITY.ARCHIVE.V1
+    isolation: READ_COMMITTED
+    timeout: 5000ms
+    
+  - name: entity_read
+    applies_to:
+      - HERA.UNIV.ENTITY.READ.V1
+    isolation: READ_COMMITTED
+    timeout: 1000ms
+    
+middleware:
+  - auth: verify_jwt
+  - org: extract_organization_id
+  - profile: load_module_profile
+  - validation: validate_request_schema
+  - audit: create_audit_context
+  
+after:
+  HERA.UNIV.ENTITY.CREATE.V1:
+    success: [$PROFILE.after_create]              # e.g., create default relationships
+    failure: [$PROFILE.on_create_error]
+    
+  HERA.UNIV.ENTITY.UPDATE.V1:
+    success: [$PROFILE.after_update]              # e.g., sync to search index
+    failure: [$PROFILE.on_update_error]
+    
+  HERA.UNIV.ENTITY.ARCHIVE.V1:
+    success: [$PROFILE.after_archive]             # e.g., cleanup relationships
+    failure: [$PROFILE.on_archive_error]
+    
+error_handling:
+  default_strategy: rollback_and_log
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    retryable_errors: [DEADLOCK, TIMEOUT]
+    
+observability:
+  traces: true
+  metrics: true
+  logs: structured_json
+  
+configuration:
+  max_request_size: 1MB
+  rate_limit: 1000/hour per organization
+  cache_ttl: 
+    read: 300s
+    write: 0s

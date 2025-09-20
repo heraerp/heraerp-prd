@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { FranchiseLayout } from '@/src/components/franchise/FranchiseLayout'
-import { FranchiseHero } from '@/src/components/franchise/FranchiseHero'
-import { Button } from '@/src/components/ui/button'
+import { FranchiseLayout } from '@/components/franchise/FranchiseLayout'
+import { FranchiseHero } from '@/components/franchise/FranchiseHero'
+import { Button } from '@/components/ui/button'
 import {
   ChevronDown,
   ChevronUp,

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   DollarSign,
   TrendingUp,
@@ -27,7 +27,7 @@ import {
   Minus,
   Equal
 } from 'lucide-react'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface BudgetSummary {
   budget_id: string
@@ -456,7 +456,7 @@ export default function UniversalBudgetDashboard({
                 <div className="pt-3 border-t">
                   <p className="text-xs text-muted-foreground mb-2">Powered by HERA AI</p>
                   <Badge variant="outline" className="text-xs">
-                    HERA.FIN.BUDGET.AI.INSIGHTS.v1
+                    HERA.FIN.BUDGET.AI.INSIGHTS.V1
                   </Badge>
                 </div>
               </div>

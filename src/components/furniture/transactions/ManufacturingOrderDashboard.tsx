@@ -3,27 +3,27 @@
 import React, { useState, useEffect }
 from 'react'
 import { Button }
-from '@/src/components/ui/button'
+from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 }
-from '@/src/components/ui/table'
+from '@/components/ui/table'
 import { Badge }
-from '@/src/components/ui/badge'
+from '@/components/ui/badge'
 import { Progress }
-from '@/src/components/ui/progress'
+from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger }
-from '@/src/components/ui/tabs'
+from '@/components/ui/tabs'
 import { Factory, Package, Clock, CheckCircle, AlertCircle, ChevronRight, Wrench, TrendingUp, Calendar
 }
 from 'lucide-react'
 import { universalApi }
-from '@/src/lib/universal-api'
+from '@/lib/universal-api'
 import { Alert, AlertDescription }
-from '@/src/components/ui/alert'
+from '@/components/ui/alert'
 import { formatDate }
-from '@/src/lib/date-utils'
+from '@/lib/date-utils'
 
 
 interface ManufacturingOrder {

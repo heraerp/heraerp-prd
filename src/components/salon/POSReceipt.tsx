@@ -1,5 +1,5 @@
 import React from 'react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 interface ReceiptProps {
   transaction: any

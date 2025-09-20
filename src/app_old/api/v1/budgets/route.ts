@@ -5,7 +5,7 @@ import { getHeraAPI } from '@/lib/hera-api'
 
 /**
  * HERA Financial Module - Budget Management API
- * Smart Code: HERA.FIN.GL.ENT.BUDGET.v1
+ * Smart Code: HERA.FIN.GL.ENT.BUDGET.V1
  *
  * Manages budget accounts, allocations, and variance analysis
  * Integrates with existing Mario demo and COA setup
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
           entity_type: 'budget_account',
           entity_name: `Budget - ${account.entity_name}`,
           entity_code: `BUD-${fiscalYear}-${account.entity_code}`,
-          smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+          smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
           gl_account_id: account.id,
           account_number: account.entity_code,
           account_name: account.entity_name,
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     // Format budgets with financial calculations
     const formattedBudgets = budgets.map(budget => ({
       ...budget,
-      smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+      smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
       budget_id: budget.entity_code,
       account_number: budget.account_number,
       account_name: budget.account_name,
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: formattedBudgets,
-      smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+      smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
       budget_summary: summary,
       fiscal_year: fiscalYear || new Date().getFullYear(),
       mario_demo_ready: true,
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: updatedBudgets,
         message: `${updatedBudgets.length} budgets updated successfully`,
-        smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+        smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
         fiscal_year
       })
     }
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
           entity_type: 'budget_account',
           entity_name: `Budget - ${sourceBudget.account_name}`,
           entity_code: `BUD-${target_year}-${sourceBudget.account_number}`,
-          smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+          smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
           gl_account_id: sourceBudget.gl_account_id,
           account_number: sourceBudget.account_number,
           account_name: sourceBudget.account_name,
@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: newBudgets,
         message: `Budget copied from ${source_year} to ${target_year}`,
-        smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+        smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
         budgets_created: newBudgets.length,
         adjustment_percent
       })
@@ -224,7 +224,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'budget_account',
         entity_name: budget_data.budget_name,
         entity_code: budget_data.budget_code,
-        smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+        smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
         gl_account_id: budget_data.gl_account_id,
         account_number: budget_data.account_number,
         account_name: budget_data.account_name,
@@ -240,7 +240,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: newBudget,
         message: 'Budget created successfully',
-        smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1'
+        smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1'
       })
     }
 
@@ -289,7 +289,7 @@ export async function PUT(request: NextRequest) {
         success: true,
         data: updatedBudget,
         message: 'Budget actual updated with variance calculation',
-        smart_code: 'HERA.FIN.GL.ENT.BUDGET.v1',
+        smart_code: 'HERA.FIN.GL.ENT.BUDGET.V1',
         variance_calculated: {
           variance,
           variance_percent: `${variancePercent}%`,

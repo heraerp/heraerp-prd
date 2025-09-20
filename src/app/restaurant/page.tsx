@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic'
 import React, { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { universalApi } from '@/src/lib/universal-api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
+import { universalApi } from '@/lib/universal-api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Coffee,
   ShoppingCart,
@@ -39,36 +39,36 @@ const LoadingSpinner = () => (
 )
 
 // Import restaurant components
-import { RestaurantDashboard } from '@/src/components/restaurant/RestaurantDashboard'
-import { POSTerminal } from '@/src/components/restaurant/POSTerminal'
-import { MenuManagement } from '@/src/components/restaurant/MenuManagement'
-import { TableManagement } from '@/src/components/restaurant/TableManagement'
-import { KitchenDisplay } from '@/src/components/restaurant/KitchenDisplay'
-import { PaymentProcessing } from '@/src/components/restaurant/PaymentProcessing'
-import { InventoryManagement } from '@/src/components/restaurant/InventoryManagement'
-import { SuppliersManagement } from '@/src/components/restaurant/SuppliersManagement'
-import { OrderManagement } from '@/src/components/restaurant/OrderManagement'
+import { RestaurantDashboard } from '@/components/restaurant/RestaurantDashboard'
+import { POSTerminal } from '@/components/restaurant/POSTerminal'
+import { MenuManagement } from '@/components/restaurant/MenuManagement'
+import { TableManagement } from '@/components/restaurant/TableManagement'
+import { KitchenDisplay } from '@/components/restaurant/KitchenDisplay'
+import { PaymentProcessing } from '@/components/restaurant/PaymentProcessing'
+import { InventoryManagement } from '@/components/restaurant/InventoryManagement'
+import { SuppliersManagement } from '@/components/restaurant/SuppliersManagement'
+import { OrderManagement } from '@/components/restaurant/OrderManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {
   organizationId: '6f591f1a-ea86-493e-8ae4-639d28a7e3c8', // Mario's Restaurant
   smartCodes: {
     // Entity smart codes
-    MENU_ITEM: 'HERA.RESTAURANT.FOH.MENU.ITEM.v1',
+    MENU_ITEM: 'HERA.RESTAURANT.FOH.MENU.ITEM.V1',
     TABLE: 'HERA.RESTAURANT.FOH.TABLE.v1',
-    KITCHEN_STATION: 'HERA.RESTAURANT.FOH.KITCHEN.STATION.v1',
+    KITCHEN_STATION: 'HERA.RESTAURANT.FOH.KITCHEN.STATION.V1',
 
     // Transaction smart codes
-    SALE: 'HERA.RESTAURANT.FOH.POS.SALE.v1',
-    REFUND: 'HERA.RESTAURANT.FOH.POS.REFUND.v1',
-    PREAUTH: 'HERA.RESTAURANT.FOH.POS.PREAUTH.v1',
+    SALE: 'HERA.RESTAURANT.FOH.POS.SALE.V1',
+    REFUND: 'HERA.RESTAURANT.FOH.POS.REFUND.V1',
+    PREAUTH: 'HERA.RESTAURANT.FOH.POS.PREAUTH.V1',
 
     // Line item smart codes
-    LINE_ITEM: 'HERA.RESTAURANT.FOH.POS.LINE.ITEM.v1',
-    LINE_MODIFIER: 'HERA.RESTAURANT.FOH.POS.LINE.MODIFIER.v1',
-    LINE_DISCOUNT: 'HERA.RESTAURANT.FOH.POS.LINE.DISCOUNT.v1',
-    LINE_TAX: 'HERA.RESTAURANT.FOH.POS.LINE.TAX.v1',
-    LINE_TIP: 'HERA.RESTAURANT.FOH.POS.LINE.TIP.v1',
+    LINE_ITEM: 'HERA.RESTAURANT.FOH.POS.LINE.ITEM.V1',
+    LINE_MODIFIER: 'HERA.RESTAURANT.FOH.POS.LINE.MODIFIER.V1',
+    LINE_DISCOUNT: 'HERA.RESTAURANT.FOH.POS.LINE.DISCOUNT.V1',
+    LINE_TAX: 'HERA.RESTAURANT.FOH.POS.LINE.TAX.V1',
+    LINE_TIP: 'HERA.RESTAURANT.FOH.POS.LINE.TIP.V1',
 
     // Inventory smart codes
     INVENTORY_ITEM: 'HERA.RESTAURANT.INV.ITEM.v1',

@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.INVENTORY.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   # Item
   - { slug: item.sku,              entity_type: ENTITY, name: "SKU",               metadata: { type: "text" } }

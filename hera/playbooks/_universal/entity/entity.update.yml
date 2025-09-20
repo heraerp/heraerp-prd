@@ -1,0 +1,93 @@
+smart_code: HERA.UNIV.ENTITY.UPDATE.V1
+intent: Patch entity attributes safely without history mutilation.
+scope:
+  in_scope:
+    - update entity name and code
+    - patch dynamic attributes (merge semantics)
+    - update metadata fields allowed by profile
+    - maintain audit trail of changes
+  out_of_scope:
+    - changing entity_type (immutable)
+    - changing organization_id (immutable)
+    - modifying created_at timestamps
+    - bulk updates
+preconditions:
+  - permissions: [$PROFILE.required_role_update]
+  - entity exists and belongs to organization_id
+  - entity is not archived (status != 'archived')
+invariants:
+  - immutable fields (created_at, entity_type, organization_id, original smart_code when flagged) not changed
+  - patch applies using JSON merge patch semantics
+  - audit trail maintained for all changes
+  - version tracking for optimistic locking
+inputs:
+  required:
+    - organization_id: uuid
+    - entity_id: uuid
+  optional:
+    - entity_name: string                           # update display name
+    - entity_code: string                           # update business code
+    - patch_dynamic: object                         # merge patch for dynamic attributes
+    - patch_metadata: object                        # allowed metadata updates per profile
+    - version: integer                              # for optimistic locking
+happy_path:
+  - step: verify entity exists and belongs to organization_id
+  - step: check entity status is not 'archived'
+  - step: validate permissions against $PROFILE.required_role_update
+  - step: if version provided, check against current version for optimistic locking
+  - step: if entity_name or entity_code provided, update core_entities
+  - step: if patch_dynamic provided, validate against $PROFILE.validation[entity_type].dynamic_json_schema
+  - step: merge_patch core_dynamic_data('attributes') with patch_dynamic using JSON merge patch
+  - step: if patch_metadata allowed by $PROFILE.metadata_update_allowed, update allowed fields
+  - step: increment version counter
+  - step: emit update event for audit trail
+outputs:
+  entities_updated:
+    - core_entities: 0-1                           # if name/code updated
+    - core_dynamic_data: 0-1                       # if dynamic updated
+  response:
+    entity_id: uuid
+    updated_fields: array
+    new_version: integer
+    updated_at: timestamp
+errors:
+  - code: ENTITY_NOT_FOUND
+    when: entity_id does not exist or wrong organization
+    action: return 404
+  - code: ENTITY_ARCHIVED
+    when: entity status is 'archived'
+    action: return 409 conflict
+  - code: IMMUTABLE_FIELD
+    when: attempt to change immutable field
+    action: return 400 with immutable fields list
+  - code: VERSION_CONFLICT
+    when: version does not match current
+    action: return 409 with current version
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_update
+    action: return 403 with required permissions
+  - code: DYNAMIC_VALIDATION_FAILED
+    when: patch_dynamic fails JSON schema validation
+    action: return schema validation errors
+observability:
+  logs:
+    - entity_updated: { entity_id, updated_fields, organization_id }
+    - version_conflict: { entity_id, expected_version, actual_version }
+  audit_json: true
+  metrics:
+    - entity_update_count by entity_type
+    - version_conflict_count
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  entity_id: "456e7890-e89b-12d3-a456-426614174000"
+  entity_name: "Premium Hair Cut & Style"
+  patch_dynamic:
+    duration_minutes: 60
+    base_price: 75.00
+    premium_service: true
+  version: 3
+checks:
+  - description: verify entity ownership by organization
+  - description: validate patch against JSON schema
+  - description: ensure no immutable fields in patch
+  - description: check version for optimistic locking

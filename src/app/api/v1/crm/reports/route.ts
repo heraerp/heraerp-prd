@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // GET /crm/reports - Fetch all crm items
 export async function GET(request: NextRequest) {

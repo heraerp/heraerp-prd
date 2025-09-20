@@ -205,7 +205,7 @@ export const FINANCE_DNA_POSTING_RULES: PostingRule[] = [
 
   // Restaurant-Specific Patterns
   {
-    smart_code: 'HERA.RESTAURANT.FOH.ORDER.POSTED.v1',
+    smart_code: 'HERA.RESTAURANT.FOH.ORDER.POSTED.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'dr|cr']

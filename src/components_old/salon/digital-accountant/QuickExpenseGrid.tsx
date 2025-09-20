@@ -1,7 +1,7 @@
 'use client'
 /**
  * Quick Expense Grid Component
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.EXPENSES.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.EXPENSES.V1
  */
 
 import React from 'react'

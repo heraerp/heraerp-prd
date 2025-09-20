@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
-import { supabase } from '@/src/lib/supabase'
+import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {

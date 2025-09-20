@@ -5,10 +5,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { leaveManagementApi } from '@/src/lib/salon/leave-management-api'
-import { calendarService } from '@/src/lib/salon/calendar-integration'
-import { toast } from '@/src/hooks/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { leaveManagementApi } from '@/lib/salon/leave-management-api'
+import { calendarService } from '@/lib/salon/calendar-integration'
+import { toast } from '@/hooks/use-toast'
 
 export interface UseLeaveManagementOptions {
   autoRefreshInterval?: number
@@ -17,7 +17,7 @@ export interface UseLeaveManagementOptions {
 }
 
 export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { organization, user } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
@@ -27,8 +27,8 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
   const [pendingApprovals, setPendingApprovals] = useState<any[]>([])
   const [teamOverview, setTeamOverview] = useState<any[]>([])
 
-  // Use provided organizationId or fallback to currentOrganization
-  const organizationId = options.organizationId || currentOrganization?.id
+  // Use provided organizationId or fallback to organization
+  const organizationId = options.organizationId || organization?.id
 
   // Submit a new leave request
   const submitLeaveRequest = useCallback(
@@ -337,7 +337,7 @@ export function useLeaveManagement(options: UseLeaveManagementOptions = {}) {
         const leaveRequests = requests.data.filter(
           r =>
             r.transaction_type === 'leave_request' &&
-            r.smart_code === 'HERA.SALON.HR.LEAVE.REQUEST.v1'
+            r.smart_code === 'HERA.SALON.HR.LEAVE.REQUEST.V1'
         )
 
         // Separate pending and all requests

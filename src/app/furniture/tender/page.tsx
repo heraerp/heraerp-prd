@@ -1,31 +1,45 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { FileText, Search, Filter, Plus, TrendingUp, AlertCircle, Clock, Trophy, Brain, Shield, DollarSign, Truck, Target, Eye, Sparkles
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import {
+  FileText,
+  Search,
+  Filter,
+  Plus,
+  TrendingUp,
+  AlertCircle,
+  Clock,
+  Trophy,
+  Brain,
+  Shield,
+  DollarSign,
+  Truck,
+  Target,
+  Eye,
+  Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
-import { useFurnitureOrg } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
-import { FurnitureStatCard } from '@/src/components/furniture/FurnitureStatCard'
-import { universalApi } from '@/src/lib/universal-api'
-import { tenderService } from '@/src/lib/services/tender-service'
-import type { CoreEntity } from '@/src/types/hera-database.types'
-import type { TenderMetrics, TenderListItem } from '@/src/lib/services/tender-service'
-import { useToast } from '@/src/hooks/use-toast'
-import TenderListTable from '@/src/components/furniture/tender/TenderListTable'
-import TenderWorkflowStatus from '@/src/components/furniture/tender/TenderWorkflowStatus'
-
+import { useFurnitureOrg } from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
+import { universalApi } from '@/lib/universal-api'
+import { tenderService } from '@/lib/services/tender-service'
+import type { CoreEntity } from '@/types/hera-database.types'
+import type { TenderMetrics, TenderListItem } from '@/lib/services/tender-service'
+import { useToast } from '@/hooks/use-toast'
+import TenderListTable from '@/components/furniture/tender/TenderListTable'
+import TenderWorkflowStatus from '@/components/furniture/tender/TenderWorkflowStatus'
 
 export const dynamic = 'force-dynamic'
 
 // Default stats for loading state
-  const defaultTenderStats = [
+const defaultTenderStats = [
   {
     label: 'Active Tenders',
     value: '12',
@@ -135,34 +149,34 @@ const mockCompetitors = [
 export default function TenderManagementPage() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 
-const { toast } = useToast()
+  const { toast } = useToast()
 
-const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
 
-const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState('overview')
 
-const [tenders, setTenders] = useState<TenderListItem[]>([])
+  const [tenders, setTenders] = useState<TenderListItem[]>([])
 
-const [metrics, setMetrics] = useState<TenderMetrics | null>(null)
+  const [metrics, setMetrics] = useState<TenderMetrics | null>(null)
 
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-const [tenderStats, setTenderStats] = useState(defaultTenderStats)
+  const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
   // Load tender data from API
   useEffect(() => {
     async function loadTenderData() {
       if (!organizationId) return
-      
+
       try {
         // Set organization context
         universalApi.setOrganizationId(organizationId)
-        
+
         // Try to load metrics, but continue with defaults if it fails
         try {
           const metricsData = await tenderService.getMetrics()
           setMetrics(metricsData)
-          
+
           // Update stats with real data
           setTenderStats([
             {
@@ -203,7 +217,7 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
           // Keep default stats if metrics API fails
         }
 
-// Try to load tender list
+        // Try to load tender list
         try {
           const { tenders: tenderList } = await tenderService.getTenderList({
             status: 'active',
@@ -221,10 +235,10 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
         setLoading(false)
       }
     }
-    
+
     loadTenderData()
   }, [organizationId])
-  
+
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-[var(--color-body)]">
@@ -277,7 +291,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
         {/* Key Metrics */}
         <div className="space-y-4">
-          <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)]">Tender Performance</h2>
+          <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)]">
+            Tender Performance
+          </h2>
           <StatCardGrid>
             {tenderStats.map(stat => (
               <FurnitureStatCard key={stat.label} {...stat} />
@@ -286,7 +302,11 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-[var(--color-body)] space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="bg-[var(--color-body)] space-y-4"
+        >
           <TabsList className="bg-[var(--color-body)]/50 backdrop-blur-sm">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="active">Active Tenders</TabsTrigger>
@@ -310,7 +330,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
             {/* Active Tenders List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">Active Tenders</h3>
+                <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
+                  Active Tenders
+                </h3>
                 <Button variant="outline" size="sm" className="gap-2 hover:bg-[var(--color-hover)]">
                   <Filter className="h-4 w-4" />
                   Filter
@@ -326,7 +348,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                   </Card>
                 ) : tenders.length === 0 ? (
                   <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
-                    <div className="text-center text-[var(--color-text-secondary)]">No active tenders found</div>
+                    <div className="text-center text-[var(--color-text-secondary)]">
+                      No active tenders found
+                    </div>
                   </Card>
                 ) : (
                   tenders.map(tender => (
@@ -338,7 +362,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-3">
-                              <h4 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">{tender.title}</h4>
+                              <h4 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)]">
+                                {tender.title}
+                              </h4>
                               <Badge variant={tender.status === 'active' ? 'default' : 'secondary'}>
                                 {tender.status}
                               </Badge>
@@ -348,7 +374,10 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                             </p>
                           </div>
                           <Link href={`/furniture/tender/${tender.id}`}>
-                            <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+                            <Button
+                              size="sm"
+                              className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+                            >
                               <Eye className="h-4 w-4" />
                               View Details
                             </Button>
@@ -358,24 +387,32 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                         <div className="bg-[var(--color-body)] grid grid-cols-2 md:grid-cols-4 gap-4">
                           <div>
                             <p className="text-xs text-[var(--color-text-secondary)]">Lots</p>
-                            <p className="text-sm font-medium text-[var(--color-text-primary)]">{tender.lots || 0}</p>
+                            <p className="text-sm font-medium text-[var(--color-text-primary)]">
+                              {tender.lots || 0}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Estimated Value</p>
+                            <p className="text-xs text-[var(--color-text-secondary)]">
+                              Estimated Value
+                            </p>
                             <p className="text-sm font-medium text-[var(--color-text-primary)]">
                               ₹{(tender.estimated_value / 100000).toFixed(1)}L
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">EMD Required</p>
+                            <p className="text-xs text-[var(--color-text-secondary)]">
+                              EMD Required
+                            </p>
                             <p className="text-sm font-medium text-[var(--color-text-primary)]">
                               ₹{(tender.emd_amount / 1000).toFixed(0)}K
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Closing Date</p>
+                            <p className="text-xs text-[var(--color-text-secondary)]">
+                              Closing Date
+                            </p>
                             <div className="bg-[var(--color-body)] flex items-center gap-1">
-                              <Clock className="h-3 w-3 text-[#37353E]" />
+                              <Clock className="h-3 w-3 text-[var(--color-icon-secondary)]" />
                               <p className="text-sm font-medium text-[var(--color-text-secondary)]">
                                 {tender.days_left} days left
                               </p>
@@ -385,7 +422,7 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
                         <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)]/50">
                           <div className="bg-[var(--color-body)] flex items-center gap-2">
-                            <Brain className="h-4 w-4 text-[#37353E]" />
+                            <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                             <span className="text-sm text-[var(--color-text-secondary)]">
                               AI Strategy:{' '}
                               <span className="text-[var(--color-text-primary)] font-medium">
@@ -403,13 +440,13 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                                     title: 'Calculating Bid',
                                     description: 'AI is analyzing the tender...'
                                   })
-                                  
+
                                   // Simulate AI analysis
                                   await new Promise(resolve => setTimeout(resolve, 2000))
-                                  
+
                                   toast({
                                     title: 'Bid Recommendation',
-                                    description: `Suggested bid: ₹${(tender.estimated_value * 0.92 / 100).toFixed(0)}/m³`
+                                    description: `Suggested bid: ₹${((tender.estimated_value * 0.92) / 100).toFixed(0)}/m³`
                                   })
                                 } catch (error) {
                                   toast({
@@ -424,7 +461,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                               AI Bid
                             </Button>
                             <Link href={`/furniture/tender/${tender.code}/bid/new`}>
-                              <Button variant="outline" size="sm">Submit Bid</Button>
+                              <Button variant="outline" size="sm">
+                                Submit Bid
+                              </Button>
                             </Link>
                           </div>
                         </div>
@@ -438,36 +477,49 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
           <TabsContent value="active" className="bg-[var(--color-body)] space-y-4">
             <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">Active Tender Pipeline</h3>
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                Active Tender Pipeline
+              </h3>
               <TenderListTable tenders={mockActiveTenders} />
             </Card>
           </TabsContent>
 
           <TabsContent value="bidding" className="bg-[var(--color-body)] space-y-4">
             <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">AI-Powered Bid Strategy</h3>
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                AI-Powered Bid Strategy
+              </h3>
               <div className="bg-[var(--color-body)] space-y-4">
                 <div className="bg-[var(--color-body)] grid grid-cols-1 md:grid-cols-3 gap-4">
                   {mockActiveTenders.map(tender => (
-                    <Card key={tender.id} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]/50">
-                      <h4 className="bg-[var(--color-body)] font-medium text-[var(--color-text-primary)] mb-2">{tender.code}</h4>
+                    <Card
+                      key={tender.id}
+                      className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)]/50"
+                    >
+                      <h4 className="bg-[var(--color-body)] font-medium text-[var(--color-text-primary)] mb-2">
+                        {tender.code}
+                      </h4>
                       <div className="bg-[var(--color-body)] space-y-2">
                         <div className="bg-[var(--color-body)] flex justify-between">
-                          <span className="text-sm text-[var(--color-text-secondary)]">Strategy</span>
+                          <span className="text-sm text-[var(--color-text-secondary)]">
+                            Strategy
+                          </span>
                           <Badge
                             variant={
                               tender.bidStrategy === 'aggressive'
                                 ? 'destructive'
                                 : tender.bidStrategy === 'conservative'
-                                ? 'secondary'
-                                : 'default'
+                                  ? 'secondary'
+                                  : 'default'
                             }
                           >
                             {tender.bidStrategy}
                           </Badge>
                         </div>
                         <div className="bg-[var(--color-body)] flex justify-between">
-                          <span className="text-sm text-[var(--color-text-secondary)]">Win Probability</span>
+                          <span className="text-sm text-[var(--color-text-secondary)]">
+                            Win Probability
+                          </span>
                           <span className="text-sm font-medium text-[var(--color-text-primary)]">
                             {tender.bidStrategy === 'aggressive' ? '75%' : '45%'}
                           </span>
@@ -482,7 +534,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
           <TabsContent value="competitors" className="bg-[var(--color-body)] space-y-4">
             <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">Competitor Analysis</h3>
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                Competitor Analysis
+              </h3>
               <div className="bg-[var(--color-body)] space-y-4">
                 {mockCompetitors.map(competitor => (
                   <div
@@ -490,13 +544,21 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                     className="bg-[var(--color-body)] flex items-center justify-between p-4 rounded-lg border border-[var(--color-border)]/50"
                   >
                     <div>
-                      <h4 className="bg-[var(--color-body)] font-medium text-[var(--color-text-primary)]">{competitor.name}</h4>
+                      <h4 className="bg-[var(--color-body)] font-medium text-[var(--color-text-primary)]">
+                        {competitor.name}
+                      </h4>
                       <div className="bg-[var(--color-body)] flex items-center gap-4 mt-1">
                         <span className="text-sm text-[var(--color-text-secondary)]">
-                          Win Rate: <span className="text-[var(--color-text-primary)]">{competitor.winRate}</span>
+                          Win Rate:{' '}
+                          <span className="text-[var(--color-text-primary)]">
+                            {competitor.winRate}
+                          </span>
                         </span>
                         <span className="text-sm text-[var(--color-text-secondary)]">
-                          Avg Margin: <span className="text-[var(--color-text-primary)]">{competitor.avgBidMargin}</span>
+                          Avg Margin:{' '}
+                          <span className="text-[var(--color-text-primary)]">
+                            {competitor.avgBidMargin}
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -505,8 +567,8 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
                         competitor.strengthLevel === 'high'
                           ? 'destructive'
                           : competitor.strengthLevel === 'medium'
-                          ? 'default'
-                          : 'secondary'
+                            ? 'default'
+                            : 'secondary'
                       }
                     >
                       {competitor.strengthLevel} threat
@@ -519,7 +581,9 @@ const [tenderStats, setTenderStats] = useState(defaultTenderStats)
 
           <TabsContent value="analytics" className="bg-[var(--color-body)] space-y-4">
             <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 backdrop-blur-sm border-[var(--color-border)]/50">
-              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">Performance Analytics</h3>
+              <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-4">
+                Performance Analytics
+              </h3>
               <TenderWorkflowStatus />
             </Card>
           </TabsContent>

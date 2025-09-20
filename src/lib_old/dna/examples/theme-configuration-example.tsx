@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA THEME CONFIGURATION EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.THEME.CONFIGURATION.v1
+// Smart Code: HERA.DNA.EXAMPLE.THEME.CONFIGURATION.V1
 // Complete example showing how to use the Universal Theme System
 // ================================================================================
 

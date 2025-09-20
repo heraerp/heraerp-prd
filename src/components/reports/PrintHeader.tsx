@@ -7,9 +7,9 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Separator } from '@/src/components/ui/separator'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
 import { Building2, Calendar, Globe, FileText } from 'lucide-react'
 
 interface PrintHeaderProps {

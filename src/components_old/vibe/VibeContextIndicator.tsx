@@ -1,7 +1,7 @@
 'use client'
 
 // HERA 100% Vibe Coding System - Context Indicator Component
-// Smart Code: HERA.VIBE.FRONTEND.INDICATOR.CONTEXT.v1
+// Smart Code: HERA.VIBE.FRONTEND.INDICATOR.CONTEXT.V1
 // Purpose: Visual indicator for vibe system status and context preservation
 
 import React, { useState, useEffect } from 'react'
@@ -48,7 +48,7 @@ export function VibeContextIndicator({
   } = useVibe()
 
   const { preserveCurrentContext } = useVibeContext(
-    'HERA.VIBE.FRONTEND.INDICATOR.CONTEXT.v1',
+    'HERA.VIBE.FRONTEND.INDICATOR.CONTEXT.V1',
     'Monitor vibe system status'
   )
 

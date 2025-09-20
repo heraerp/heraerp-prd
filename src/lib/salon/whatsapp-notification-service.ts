@@ -5,22 +5,22 @@
  * Uses the Sacred 6-Table architecture for storing notification logs
  */
 
-import { universalApi } from '@/src/lib/universal-api'
-import { formatDate } from '@/src/lib/date-utils'
+import { universalApi } from '@/lib/universal-api'
+import { formatDate } from '@/lib/date-utils'
 import { formatWhatsAppTemplate, validateTemplateParameters } from './whatsapp-templates'
 
 // Smart Code definitions for WhatsApp notifications
 export const WHATSAPP_SMART_CODES = {
   // Notification types
-  APPOINTMENT_CONFIRMATION: 'HERA.SALON.WHATSAPP.APPOINTMENT.CONFIRM.v1',
-  APPOINTMENT_REMINDER: 'HERA.SALON.WHATSAPP.APPOINTMENT.REMIND.v1',
-  APPOINTMENT_CANCELLATION: 'HERA.SALON.WHATSAPP.APPOINTMENT.CANCEL.v1',
-  APPOINTMENT_RESCHEDULED: 'HERA.SALON.WHATSAPP.APPOINTMENT.RESCHEDULE.v1',
+  APPOINTMENT_CONFIRMATION: 'HERA.SALON.WHATSAPP.APPOINTMENT.CONFIRM.V1',
+  APPOINTMENT_REMINDER: 'HERA.SALON.WHATSAPP.APPOINTMENT.REMIND.V1',
+  APPOINTMENT_CANCELLATION: 'HERA.SALON.WHATSAPP.APPOINTMENT.CANCEL.V1',
+  APPOINTMENT_RESCHEDULED: 'HERA.SALON.WHATSAPP.APPOINTMENT.RESCHEDULE.V1',
 
   // Notification status
-  NOTIFICATION_SENT: 'HERA.SALON.WHATSAPP.STATUS.SENT.v1',
-  NOTIFICATION_DELIVERED: 'HERA.SALON.WHATSAPP.STATUS.DELIVERED.v1',
-  NOTIFICATION_FAILED: 'HERA.SALON.WHATSAPP.STATUS.FAILED.v1'
+  NOTIFICATION_SENT: 'HERA.SALON.WHATSAPP.STATUS.SENT.V1',
+  NOTIFICATION_DELIVERED: 'HERA.SALON.WHATSAPP.STATUS.DELIVERED.V1',
+  NOTIFICATION_FAILED: 'HERA.SALON.WHATSAPP.STATUS.FAILED.V1'
 } as const
 
 export interface WhatsAppMessageData {
@@ -80,8 +80,8 @@ export class WhatsAppNotificationService {
           reference_entity_id: appointment.id,
           transaction_date: new Date().toISOString(),
           total_amount: 0, // Notifications don't have amounts
-          from_entity_id: appointment.to_entity_id, // From staff/salon
-          to_entity_id: appointment.from_entity_id, // To customer
+          source_entity_id: appointment.target_entity_id, // From staff/salon
+          target_entity_id: appointment.source_entity_id, // To customer
           metadata: {
             notification_type: 'appointment_confirmation',
             appointment_id: appointment.id,
@@ -114,8 +114,8 @@ export class WhatsAppNotificationService {
             reference_entity_id: appointment.id,
             transaction_date: new Date().toISOString(),
             total_amount: 0,
-            from_entity_id: appointment.to_entity_id,
-            to_entity_id: appointment.from_entity_id,
+            source_entity_id: appointment.target_entity_id,
+            target_entity_id: appointment.source_entity_id,
             metadata: {
               notification_type: 'appointment_confirmation',
               appointment_id: appointment.id,

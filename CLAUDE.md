@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🧬 HERA DNA SMART CODE RULES (MANDATORY - READ ALWAYS)
+
+**CRITICAL**: Every entity, transaction, and line MUST have a valid smart_code. See `/docs/playbooks/_shared/SMART_CODE_GUIDE.md` for the complete guide.
+
+### Quick Smart Code Rules:
+- Format: `HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.{VERSION}`
+- 6-10 segments, uppercase, ends with `.V1` (not `.v1`)
+- Use existing families - don't invent new ones
+- Validate with: `import { validateSmartCode } from '@/lib/dna/utils/smartCodeValidator'`
+
+### Common Salon Smart Codes:
+```typescript
+// Import pre-validated constants
+import { SALON_SMART_CODES } from '@/lib/dna/utils/smartCodeValidator'
+
+// Examples:
+SALON_SMART_CODES.CART_ACTIVE         // 'HERA.SALON.POS.CART.ACTIVE.V1'
+SALON_SMART_CODES.SERVICE_STANDARD    // 'HERA.SALON.SVC.LINE.STANDARD.V1'
+SALON_SMART_CODES.DISCOUNT_CART_PCT   // 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1'
+```
+
 ## 🎛️ HERA MASTER CONTROL CENTER - ALWAYS USE FIRST
 
 **The Control Center is your automatic co-pilot for HERA development. It ensures system health, enforces guardrails, and maintains quality standards.**
@@ -46,6 +67,18 @@ node hera-query.js transactions     # List transactions
 node hera-cli.js create-entity customer "Company Name"
 node hera-cli.js create-transaction sale 50000
 node hera-cli.js set-field <entity-id> email "test@example.com"
+
+# HERA DNA RLS POLICIES (PRODUCTION READY) 🛡️
+# These policies are now ACTIVE and resolve all app.current_org errors:
+# ✅ hera_dna_dynamic_data_access - Full CRUD on core_dynamic_data
+# ✅ hera_dna_entities_access - Full CRUD on core_entities  
+# ✅ hera_dna_relationships_access - Full CRUD on core_relationships
+# ✅ hera_dna_transactions_access - Full CRUD on universal_transactions
+# ✅ hera_dna_transaction_lines_access - Full CRUD on universal_transaction_lines
+# ✅ hera_dna_organizations_read - Read access on core_organizations
+# ✅ hera_dna_organizations_service - Service role access on core_organizations
+# JWT-based authentication with hera_can_access_org() organization isolation
+# Compatible with HERA Authorization DNA system and demo sessions
 
 # Status workflows (NEVER use status columns)
 node status-workflow-example.js     # Learn the pattern

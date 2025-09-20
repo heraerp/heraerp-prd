@@ -1,6 +1,6 @@
-smart_code: HERA.MFG.REPORTS.CORE.DEFS.v1
+smart_code: HERA.MFG.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.MFG.REPORT.YIELD_BY_BATCH.CORE.v1
+  - report_code: HERA.MFG.REPORT.YIELD_BY_BATCH.CORE.V1
     description: "Production yield by batch"
     params_schema:
       from: { type: date }
@@ -23,7 +23,7 @@ reports:
         GROUP BY batch_number, day
         ORDER BY day DESC, batch_number
 
-  - report_code: HERA.MFG.REPORT.CONSUMPTION_VS_STANDARD.CORE.v1
+  - report_code: HERA.MFG.REPORT.CONSUMPTION_VS_STANDARD.CORE.V1
     description: "Component consumption vs standard BOM"
     params_schema:
       from: { type: date }

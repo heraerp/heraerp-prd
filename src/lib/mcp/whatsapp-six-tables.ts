@@ -5,7 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { Database } from '@/src/types/database'
+import { Database } from '@/types/database'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!

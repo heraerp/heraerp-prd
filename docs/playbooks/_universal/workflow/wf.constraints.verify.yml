@@ -1,0 +1,250 @@
+smart_code: HERA.UNIV.WF.CONSTRAINTS.VERIFY.V1
+intent: Verify critical database constraints exist for workflow idempotency and deduplication.
+scope:
+  in_scope:
+    - check timer uniqueness constraints
+    - verify advance idempotency constraints
+    - validate organization isolation
+    - confirm index existence
+  out_of_scope:
+    - creating missing constraints
+    - data migration
+    - performance optimization
+preconditions:
+  - permissions: system or admin
+  - database access for constraint queries
+invariants:
+  - read-only operation
+  - comprehensive constraint verification
+  - detailed reporting on missing constraints
+inputs:
+  required:
+    - none (system verification)
+  optional:
+    - fix_missing: boolean                         # attempt to create missing constraints
+    - organization_id: uuid                        # test specific org isolation
+happy_path:
+  - step: verify timer uniqueness constraint exists
+  - step: verify advance idempotency constraints exist
+  - step: check organization isolation enforcement
+  - step: validate critical indexes exist
+  - step: test constraint effectiveness with sample data
+  - step: generate comprehensive verification report
+outputs:
+  response:
+    constraints_verified: array
+      - constraint_name: string
+        exists: boolean
+        description: string
+        sql_check: string
+        status: enum[PASS, FAIL, WARNING]
+    indexes_verified: array
+      - index_name: string
+        exists: boolean
+        table_name: string
+        columns: array
+        status: enum[PASS, FAIL]
+    org_isolation_test: object
+      test_passed: boolean
+      details: string
+    overall_status: enum[PASS, FAIL, WARNING]
+    recommendations: array
+
+constraint_checks:
+  timer_uniqueness:
+    name: "Timer Unique Fire Constraint"
+    description: "Prevents duplicate timer firing"
+    sql_check: |
+      SELECT 
+        COUNT(*) as constraint_count
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu 
+        ON tc.constraint_name = kcu.constraint_name
+      WHERE tc.table_name = 'universal_transactions'
+        AND tc.constraint_type = 'UNIQUE'
+        AND kcu.column_name IN ('organization_id', 'entity_code')
+        AND tc.constraint_name LIKE '%timer%'
+    expected_result: "> 0"
+    fix_sql: |
+      CREATE UNIQUE INDEX CONCURRENTLY idx_wf_timer_unique_fire 
+      ON universal_transactions (organization_id, entity_code) 
+      WHERE smart_code = 'HERA.UNIV.WF.TIMER.V1';
+      
+  advance_idempotency:
+    name: "Advance Idempotency Constraint"
+    description: "Prevents duplicate workflow step execution"
+    sql_check: |
+      SELECT 
+        COUNT(*) as constraint_count
+      FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu 
+        ON tc.constraint_name = kcu.constraint_name
+      WHERE tc.table_name = 'universal_transaction_lines'
+        AND tc.constraint_type = 'UNIQUE'
+        AND kcu.column_name IN ('organization_id', 'line_code')
+    expected_result: "> 0"
+    fix_sql: |
+      CREATE UNIQUE INDEX CONCURRENTLY idx_wf_advance_idempotency 
+      ON universal_transaction_lines (organization_id, line_code) 
+      WHERE smart_code = 'HERA.UNIV.WF.STEP.V1';
+      
+  org_isolation_rls:
+    name: "Organization Isolation RLS"
+    description: "Row Level Security enforces org boundaries"
+    sql_check: |
+      SELECT 
+        COUNT(*) as policy_count
+      FROM pg_policies 
+      WHERE tablename IN ('universal_transactions', 'universal_transaction_lines', 'core_entities', 'core_dynamic_data')
+        AND policyname LIKE '%org%'
+    expected_result: ">= 4"
+    fix_sql: "-- RLS policies should be managed by deployment scripts"
+
+index_checks:
+  wf_instances_org_state:
+    name: "Workflow Instances Org State Index"
+    table: "universal_transactions"
+    columns: ["organization_id", "(dynamic->>'current_state')"]
+    condition: "smart_code = 'HERA.UNIV.WF.INSTANCE.V1'"
+    
+  wf_instances_sla:
+    name: "Workflow Instances SLA Index"
+    table: "universal_transactions"
+    columns: ["organization_id", "((dynamic->>'sla_at')::timestamptz)"]
+    condition: "smart_code = 'HERA.UNIV.WF.INSTANCE.V1' AND (dynamic->>'sla_at') IS NOT NULL"
+    
+  wf_steps_instance:
+    name: "Workflow Steps Instance Index"
+    table: "universal_transaction_lines"
+    columns: ["transaction_id"]
+    condition: "smart_code = 'HERA.UNIV.WF.STEP.V1'"
+    
+  wf_timers_due:
+    name: "Workflow Timers Due Index"
+    table: "universal_transactions"
+    columns: ["organization_id", "((dynamic->>'fire_at')::timestamptz)", "(dynamic->>'status')"]
+    condition: "smart_code = 'HERA.UNIV.WF.TIMER.V1'"
+
+org_isolation_tests:
+  cross_org_query_test:
+    description: "Verify queries cannot access other org data"
+    test_sql: |
+      -- This should return 0 rows when executed with foreign org token
+      SELECT COUNT(*) as leaked_count
+      FROM wf_instances_view 
+      WHERE organization_id != current_setting('app.current_org_id', true)::uuid
+    expected_result: 0
+    
+  rls_policy_test:
+    description: "Verify RLS policies are active and enforcing"
+    test_sql: |
+      SELECT 
+        schemaname,
+        tablename,
+        rowsecurity,
+        COUNT(*) as policy_count
+      FROM pg_policies p
+      JOIN pg_tables t ON t.tablename = p.tablename
+      WHERE t.tablename IN ('universal_transactions', 'universal_transaction_lines', 'core_entities', 'core_dynamic_data')
+      GROUP BY schemaname, tablename, rowsecurity
+    expected_result: "rowsecurity = true AND policy_count > 0"
+
+performance_checks:
+  query_performance:
+    name: "Read Model Query Performance"
+    test_sql: |
+      EXPLAIN (ANALYZE, BUFFERS) 
+      SELECT * FROM wf_instances_view 
+      WHERE organization_id = $1 
+        AND current_state = 'ACTIVE' 
+      LIMIT 50
+    expected_result: "execution_time < 100ms"
+    
+  index_usage:
+    name: "Index Usage Verification"
+    test_sql: |
+      SELECT 
+        schemaname,
+        tablename,
+        indexname,
+        idx_scan,
+        idx_tup_read,
+        idx_tup_fetch
+      FROM pg_stat_user_indexes 
+      WHERE indexname LIKE 'idx_wf_%'
+        AND idx_scan > 0
+    expected_result: "Critical indexes showing usage"
+
+errors:
+  - code: CONSTRAINTS_MISSING
+    when: critical constraints not found
+    action: return list of missing constraints with fix SQL
+  - code: INDEXES_MISSING
+    when: performance indexes not found
+    action: return list of missing indexes
+  - code: ORG_ISOLATION_FAILED
+    when: organization isolation test fails
+    action: return security warning with details
+  - code: PERMISSION_DENIED
+    when: user lacks system/admin permissions
+    action: return 403
+
+observability:
+  logs:
+    - constraints_verified: { total_checks, passed, failed, warnings }
+    - org_isolation_tested: { test_results, security_status }
+  audit_json: true
+  metrics:
+    - constraint_verification_count
+    - constraints_missing_count
+    - org_isolation_test_success_rate
+
+remediation_actions:
+  missing_timer_constraint:
+    priority: critical
+    action: "Create unique index on timer entity_code to prevent double-firing"
+    impact: "Timer reliability, duplicate execution prevention"
+    
+  missing_advance_constraint:
+    priority: critical
+    action: "Create unique index on step line_code for idempotency"
+    impact: "Workflow consistency, duplicate step prevention"
+    
+  missing_performance_indexes:
+    priority: medium
+    action: "Create missing performance indexes for read models"
+    impact: "Query performance, system scalability"
+    
+  org_isolation_gaps:
+    priority: critical
+    action: "Fix RLS policies for complete organization isolation"
+    impact: "Security, data privacy, compliance"
+
+example_response:
+  constraints_verified:
+    - constraint_name: "Timer Unique Fire Constraint"
+      exists: true
+      description: "Prevents duplicate timer firing"
+      status: "PASS"
+    - constraint_name: "Advance Idempotency Constraint"
+      exists: false
+      description: "Prevents duplicate workflow step execution"
+      status: "FAIL"
+  indexes_verified:
+    - index_name: "idx_wf_instances_org_state"
+      exists: true
+      table_name: "universal_transactions"
+      status: "PASS"
+  org_isolation_test:
+    test_passed: true
+    details: "All cross-org queries returned 0 rows"
+  overall_status: "WARNING"
+  recommendations:
+    - "Create missing advance idempotency constraint"
+    - "Verify RLS policy coverage"
+
+checks:
+  - description: verify all critical constraints exist
+  - description: ensure organization isolation is enforced
+  - description: validate performance indexes are present
+  - description: test constraint effectiveness

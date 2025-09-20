@@ -1,7 +1,7 @@
 // ================================================================================
 // LIVE CONVERSION API - REAL MCP INTEGRATION
 // API endpoint that actually executes live production conversion via MCP
-// Smart Code: HERA.API.LIVE.CONVERSION.MCP.v1
+// Smart Code: HERA.API.LIVE.CONVERSION.MCP.V1
 // ================================================================================
 
 import { NextRequest, NextResponse } from 'next/server'

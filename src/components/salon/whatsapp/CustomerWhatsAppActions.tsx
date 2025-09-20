@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Dialog,
   DialogContent,
@@ -12,13 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import { Gift, MessageCircle, Users, Send, Calendar, AlertCircle, CheckCircle2 } from 'lucide-react'
-import { formatWhatsAppTemplate } from '@/src/lib/salon/whatsapp-templates'
-import { whatsAppCampaignService } from '@/src/lib/salon/whatsapp-campaign-service'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
+import { whatsAppCampaignService } from '@/lib/salon/whatsapp-campaign-service'
+import { formatDate } from '@/lib/date-utils'
 import { differenceInDays, addDays } from 'date-fns'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface CustomerWhatsAppActionsProps {
   customer: {

@@ -20,7 +20,7 @@ import {
   GlassmorphicStatCard,
   GlassmorphicInput,
   glassmorphicThemes
-} from '@/src/lib/dna/components/layouts/GlassmorphicDarkLayout'
+} from '@/lib/dna/components/layouts/GlassmorphicDarkLayout'
 
 export default function GlassmorphicDarkDemo() {
   const [selectedTheme, setSelectedTheme] = useState('isp')

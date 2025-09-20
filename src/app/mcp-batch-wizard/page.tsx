@@ -10,14 +10,14 @@ export const dynamic = 'force-dynamic'
 // ================================================================================
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Progress } from '@/src/components/ui/progress'
-import { Checkbox } from '@/src/components/ui/checkbox'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Progress } from '@/components/ui/progress'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Package,
   Wand2,
@@ -120,9 +120,9 @@ export default function MCPBatchWizard() {
   }
 
   const addUniversalImports = (code: string): string => {
-    const imports = `import { universalApi } from '@/src/lib/universal-api'
+    const imports = `import { universalApi } from '@/lib/universal-api'
 import { useEffect, useState } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 `

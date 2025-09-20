@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { ButtonHTMLAttributes } from 'react'
 
 interface HeraButtonDNAProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -8,11 +8,11 @@
 
 import React, { useState, useMemo } from 'react'
 import { ChevronLeft, ChevronRight, Calendar, Clock, User } from 'lucide-react'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card } from '@/src/components/ui/Card'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card } from '@/components/ui/card'
 import { AppointmentStatusBadge } from './AppointmentStatusBadge'
-import { cn, formatTime, isToday, isTomorrow } from '@/src/lib/utils'
-import type { Appointment } from '@/src/lib/schemas/appointment'
+import { cn, formatTime, isToday, isTomorrow } from '@/lib/utils'
+import type { Appointment } from '@/lib/schemas/appointment'
 
 interface AppointmentCalendarProps {
   appointments: Appointment[]

@@ -13,13 +13,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Separator } from '@/src/components/ui/separator'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { 
   MessageSquare, 
   Eye,
@@ -27,7 +27,7 @@ import {
   Clock,
   User
 } from 'lucide-react'
-import { WaTemplate, renderTemplate } from '@/src/lib/schemas/whatsapp'
+import { WaTemplate, renderTemplate } from '@/lib/schemas/whatsapp'
 
 interface TemplatePreviewProps {
   open: boolean

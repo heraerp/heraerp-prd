@@ -1,10 +1,10 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Separator } from '@/src/components/ui/separator'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import {
   History,
   Trash2,
@@ -15,7 +15,7 @@ import {
   Star,
   MoreVertical
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface ChatSession {
   id: string

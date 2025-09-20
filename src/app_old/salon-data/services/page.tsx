@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Services Management Page
- * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.PAGE.v1
+ * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.PAGE.V1
  *
  * Complete services management within salon-data dashboard
  */

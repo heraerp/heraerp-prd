@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 interface UserContext {
   user: {

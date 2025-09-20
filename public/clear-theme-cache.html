@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Theme Cache - HERA</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: #1e293b;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .success {
+            color: #10b981;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+        .info {
+            background: #1f2937;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌙 HERA Theme Manager</h1>
+        <p>Clear theme cache and set dark theme as default</p>
+        
+        <button onclick="clearTheme()">Clear Theme Cache</button>
+        <button onclick="setDarkTheme()">Force Dark Theme</button>
+        <button onclick="checkTheme()">Check Current Theme</button>
+        
+        <div id="message"></div>
+        <div id="info" class="info" style="display: none;"></div>
+    </div>
+
+    <script>
+        function clearTheme() {
+            // Clear all possible theme storage keys
+            const keysToRemove = ['hera-theme', 'theme', 'vite-ui-theme', 'app-theme'];
+            keysToRemove.forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+            
+            // Remove theme classes
+            document.documentElement.classList.remove('light', 'dark');
+            
+            showMessage('✅ Theme cache cleared! Refresh any HERA pages to apply dark theme.', true);
+            checkTheme();
+        }
+        
+        function setDarkTheme() {
+            // Set dark theme in all possible storage keys
+            const keysToSet = ['hera-theme', 'theme'];
+            keysToSet.forEach(key => {
+                localStorage.setItem(key, 'dark');
+            });
+            
+            // Apply dark theme class
+            document.documentElement.classList.remove('light');
+            document.documentElement.classList.add('dark');
+            
+            showMessage('🌙 Dark theme forced! All HERA pages will now use dark theme.', true);
+            checkTheme();
+        }
+        
+        function checkTheme() {
+            const info = document.getElementById('info');
+            const themes = {
+                'hera-theme': localStorage.getItem('hera-theme'),
+                'theme': localStorage.getItem('theme'),
+                'vite-ui-theme': localStorage.getItem('vite-ui-theme'),
+                'documentElement classes': document.documentElement.className
+            };
+            
+            info.innerHTML = '<strong>Current Theme Settings:</strong><br>' +
+                Object.entries(themes).map(([key, value]) => 
+                    `${key}: ${value || 'not set'}`
+                ).join('<br>');
+            info.style.display = 'block';
+        }
+        
+        function showMessage(text, success = false) {
+            const msg = document.getElementById('message');
+            msg.innerHTML = text;
+            msg.className = success ? 'success' : '';
+        }
+        
+        // Check theme on load
+        window.onload = () => {
+            checkTheme();
+        };
+    </script>
+</body>
+</html>

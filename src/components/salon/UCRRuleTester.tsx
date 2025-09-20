@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
-import { useToast } from '@/src/components/ui/use-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { useToast } from '@/components/ui/use-toast'
 import {
   TestTube,
   Play,
@@ -33,16 +33,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Separator } from '@/src/components/ui/separator'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+} from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger
-} from '@/src/components/ui/accordion'
+} from '@/components/ui/accordion'
 
 interface TestScenario {
   id: string

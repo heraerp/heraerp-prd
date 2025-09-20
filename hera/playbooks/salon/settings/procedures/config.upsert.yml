@@ -1,0 +1,14 @@
+smart_code: HERA.SALON.CONFIG.UPSERT.V1
+intent: Upsert one settings section atomically with validation.
+inputs:
+  required: [organization_id, section, patch]
+invariants:
+  - all writes include organization_id
+  - validate keys against allowed section schema
+happy_path:
+  - step: start txn_boundary 'CONFIG_UPSERT'
+  - step: resolve/lock org_config anchor entity
+  - step: upsert core_dynamic_data key_slug = "salon.settings.{section}" with JSON merge (deep)
+  - step: emit audit line HERA.UNIV.AUDIT.CONFIG.CHANGE.V1 (who/when/section/diff)
+observability:
+  logs: [config_upsert, config_audit]

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { MCPTools } from '@/src/lib/mcp/whatsapp-mcp-tools'
+import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
 import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {

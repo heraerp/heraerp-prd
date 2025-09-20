@@ -11,7 +11,7 @@ import {
   AlertCircle,
   XCircle
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface AppointmentStats {
   todayTotal: number

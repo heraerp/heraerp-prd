@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Metrics
- * Generated at: 2025-09-06T04:22:31.584Z
+ * Generated at: 2025-09-20T19:27:03.068Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.METRICS",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132551584';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396423069';
 
 describe('Metrics - Universal CRUD Operations', () => {
   let createdEntityId;

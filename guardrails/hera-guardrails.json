@@ -51,7 +51,7 @@
     },
 
     "smart_code": {
-      "pattern": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$",
+      "pattern": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.[vV][0-9]+$",
       "required_on_tables": [
         "core_entities",
         "core_dynamic_data",
@@ -66,7 +66,7 @@
           "applies_to": ["db.row","api.payload"],
           "validators": [
             { "type": "column_required", "value": "smart_code" },
-            { "type": "regex", "column": "smart_code", "value": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.v[0-9]+$" }
+            { "type": "regex", "column": "smart_code", "value": "^HERA\\.[A-Z0-9]{3,15}(?:\\.[A-Z0-9_]{2,30}){3,8}\\.[vV][0-9]+$" }
           ],
           "severity": "error"
         }

@@ -1,5 +1,5 @@
 // HERA 100% Vibe Coding System - Core Engine
-// Smart Code: HERA.VIBE.FOUNDATION.CORE.ENGINE.v1
+// Smart Code: HERA.VIBE.FOUNDATION.CORE.ENGINE.V1
 // Purpose: Main vibe coding engine for seamless continuity and manufacturing-grade integration
 
 import { VibeContext, VibeComponent, IntegrationWeave, VibeSession } from './types'
@@ -49,7 +49,7 @@ export class VibeEngine {
         organization_id: organizationId,
         session_id: sessionId,
         timestamp: new Date().toISOString(),
-        smart_code: 'HERA.VIBE.ENGINE.INIT.SUCCESS.v1'
+        smart_code: 'HERA.VIBE.ENGINE.INIT.SUCCESS.V1'
       })
     } catch (error) {
       console.error('❌ Failed to initialize HERA Vibe Engine:', error)
@@ -65,7 +65,7 @@ export class VibeEngine {
     }
 
     const contextId = await this.contextManager.preserveContext({
-      smart_code: context.smart_code || 'HERA.VIBE.CONTEXT.PRESERVE.AUTO.v1',
+      smart_code: context.smart_code || 'HERA.VIBE.CONTEXT.PRESERVE.AUTO.V1',
       session_id: context.session_id || this.contextManager.getCurrentSessionId(),
       conversation_state: context.conversation_state || {},
       task_lineage: context.task_lineage || [],
@@ -334,7 +334,7 @@ export class VibeEngine {
         switch (check.name) {
           case 'Smart Code Compliance':
             recommendations.push(
-              'Update smart code to follow HERA.VIBE.MODULE.FUNCTION.TYPE.v1 format'
+              'Update smart code to follow HERA.VIBE.MODULE.FUNCTION.TYPE.V1 format'
             )
             break
           case 'Integration Health':

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { verifyAuth } from '@/src/lib/auth/verify-auth'
+import { verifyAuth } from '@/lib/auth/verify-auth'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!

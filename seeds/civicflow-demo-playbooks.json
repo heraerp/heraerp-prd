@@ -1,0 +1,794 @@
+{
+  "entities": [
+    {
+      "id": "pb-001",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook",
+      "entity_name": "Constituents Intake Process",
+      "entity_code": "PB-CONST-INTAKE-V1",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.DEFINITION.CONSTITUENTS_INTAKE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook",
+      "entity_name": "Services Eligibility Assessment",
+      "entity_code": "PB-SVC-ELIG-V1",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.DEFINITION.SERVICES_ELIGIBILITY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook",
+      "entity_name": "Grants Intake and Processing",
+      "entity_code": "PB-GRANT-INTAKE-V1",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.DEFINITION.GRANTS_INTAKE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook",
+      "entity_name": "Case Lifecycle Management",
+      "entity_code": "PB-CASE-LIFECYCLE-V1",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.DEFINITION.CASE_LIFECYCLE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook",
+      "entity_name": "Outreach Notification Campaign",
+      "entity_code": "PB-OUTREACH-NOTIF-V1",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.DEFINITION.OUTREACH_NOTIFICATION.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-001-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Initial Contact Form",
+      "entity_code": "PB-CONST-INTAKE-STEP-01",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.FORM_COLLECTION.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-001-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Identity Verification",
+      "entity_code": "PB-CONST-INTAKE-STEP-02",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.IDENTITY_VERIFY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-001-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Duplicate Check",
+      "entity_code": "PB-CONST-INTAKE-STEP-03",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.DUPLICATE_CHECK.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-001-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Create Constituent Record",
+      "entity_code": "PB-CONST-INTAKE-STEP-04",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.CREATE_RECORD.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-001-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Send Welcome Communication",
+      "entity_code": "PB-CONST-INTAKE-STEP-05",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SEND_COMMUNICATION.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Collect Household Information",
+      "entity_code": "PB-SVC-ELIG-STEP-01",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.COLLECT_HOUSEHOLD.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Income Verification",
+      "entity_code": "PB-SVC-ELIG-STEP-02",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.VERIFY_INCOME.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Apply Eligibility Rules",
+      "entity_code": "PB-SVC-ELIG-STEP-03",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.APPLY_RULES.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Generate Eligibility Report",
+      "entity_code": "PB-SVC-ELIG-STEP-04",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.GENERATE_REPORT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Notify Constituent",
+      "entity_code": "PB-SVC-ELIG-STEP-05",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SEND_NOTIFICATION.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-002-step-06",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Schedule Follow-up",
+      "entity_code": "PB-SVC-ELIG-STEP-06",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SCHEDULE_FOLLOWUP.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Grant Application Submission",
+      "entity_code": "PB-GRANT-INTAKE-STEP-01",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.APPLICATION_SUBMIT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Completeness Check",
+      "entity_code": "PB-GRANT-INTAKE-STEP-02",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.COMPLETENESS_CHECK.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Eligibility Screening",
+      "entity_code": "PB-GRANT-INTAKE-STEP-03",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.ELIGIBILITY_SCREEN.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Assign to Reviewer",
+      "entity_code": "PB-GRANT-INTAKE-STEP-04",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.ASSIGN_REVIEWER.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-003-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Application Acknowledgment",
+      "entity_code": "PB-GRANT-INTAKE-STEP-05",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SEND_ACKNOWLEDGMENT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Case Creation",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-01",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.CREATE_CASE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Initial Assessment",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-02",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.INITIAL_ASSESSMENT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Service Plan Development",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-03",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.DEVELOP_PLAN.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Progress Monitoring",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-04",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.MONITOR_PROGRESS.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Case Review",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-05",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.CASE_REVIEW.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-004-step-06",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Case Closure",
+      "entity_code": "PB-CASE-LIFECYCLE-STEP-06",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.CLOSE_CASE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Define Target Audience",
+      "entity_code": "PB-OUTREACH-NOTIF-STEP-01",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.DEFINE_AUDIENCE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Select Communication Template",
+      "entity_code": "PB-OUTREACH-NOTIF-STEP-02",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SELECT_TEMPLATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Personalize Content",
+      "entity_code": "PB-OUTREACH-NOTIF-STEP-03",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.PERSONALIZE_CONTENT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Schedule Distribution",
+      "entity_code": "PB-OUTREACH-NOTIF-STEP-04",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.SCHEDULE_DISTRIBUTION.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "pb-005-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_type": "playbook_step",
+      "entity_name": "Track Engagement",
+      "entity_code": "PB-OUTREACH-NOTIF-STEP-05",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.STEPS.TRACK_ENGAGEMENT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-pb-001-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-001",
+      "to_entity_id": "pb-001-step-01",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 1
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-001-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-001",
+      "to_entity_id": "pb-001-step-02",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 2
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-001-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-001",
+      "to_entity_id": "pb-001-step-03",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 3
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-001-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-001",
+      "to_entity_id": "pb-001-step-04",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 4
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-001-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-001",
+      "to_entity_id": "pb-001-step-05",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 5
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-01",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 1
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-02",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 2
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-03",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 3
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-04",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 4
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-05",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 5
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-002-step-06",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-002",
+      "to_entity_id": "pb-002-step-06",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 6
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-003-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-003",
+      "to_entity_id": "pb-003-step-01",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 1
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-003-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-003",
+      "to_entity_id": "pb-003-step-02",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 2
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-003-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-003",
+      "to_entity_id": "pb-003-step-03",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 3
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-003-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-003",
+      "to_entity_id": "pb-003-step-04",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 4
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-003-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-003",
+      "to_entity_id": "pb-003-step-05",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 5
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-01",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 1
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-02",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 2
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-03",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 3
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-04",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 4
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-05",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 5
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-004-step-06",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-004",
+      "to_entity_id": "pb-004-step-06",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 6
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-005-step-01",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-005",
+      "to_entity_id": "pb-005-step-01",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 1
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-005-step-02",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-005",
+      "to_entity_id": "pb-005-step-02",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 2
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-005-step-03",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-005",
+      "to_entity_id": "pb-005-step-03",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 3
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-005-step-04",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-005",
+      "to_entity_id": "pb-005-step-04",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 4
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "rel-pb-005-step-05",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "from_entity_id": "pb-005",
+      "to_entity_id": "pb-005-step-05",
+      "relationship_type": "contains_step",
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.RELATIONSHIPS.CONTAINS_STEP.V1",
+      "metadata": {
+        "sequence_number": 5
+      },
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "dynamic_data": [
+    {
+      "id": "dd-pb-001-step-01-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-001-step-01",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "fields": [
+          {"name": "first_name", "type": "text", "required": true},
+          {"name": "last_name", "type": "text", "required": true},
+          {"name": "date_of_birth", "type": "date", "required": true},
+          {"name": "email", "type": "email", "required": false},
+          {"name": "phone", "type": "phone", "required": true}
+        ]
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-001-step-01-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-001-step-01",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "data": {
+          "form_id": "string",
+          "submitted_at": "datetime",
+          "form_data": "object"
+        }
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-001-step-02-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-001-step-02",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "ssn_last_four": "string",
+        "date_of_birth": "date",
+        "form_data": "object"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-001-step-02-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-001-step-02",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "verified": "boolean",
+        "verification_method": "string",
+        "confidence_score": "number"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-002-step-03-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-002-step-03",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "household_size": "number",
+        "annual_income": "number",
+        "veteran_status": "boolean",
+        "disability_status": "boolean"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-002-step-03-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-002-step-03",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "eligible_programs": [
+          {
+            "program_id": "string",
+            "program_name": "string",
+            "eligibility_score": "number",
+            "reasons": ["string"]
+          }
+        ]
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-003-step-01-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-003-step-01",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "grant_round_id": "string",
+        "applicant_id": "string",
+        "application_data": "object",
+        "attachments": ["object"]
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-003-step-01-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-003-step-01",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "application_id": "string",
+        "submission_timestamp": "datetime",
+        "status": "submitted"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-004-step-01-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-004-step-01",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "constituent_id": "string",
+        "case_type": "string",
+        "priority": "string",
+        "initial_notes": "string"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-004-step-01-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-004-step-01",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "case_id": "string",
+        "case_number": "string",
+        "created_at": "datetime",
+        "assigned_to": "string"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-005-step-01-input",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-005-step-01",
+      "field_name": "input_contract",
+      "field_value_json": {
+        "criteria": {
+          "age_range": {"min": "number", "max": "number"},
+          "location": "string",
+          "program_enrollment": ["string"],
+          "custom_filters": "object"
+        }
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.INPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-pb-005-step-01-output",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "pb-005-step-01",
+      "field_name": "output_contract",
+      "field_value_json": {
+        "audience_list": ["string"],
+        "total_count": "number",
+        "segment_id": "string"
+      },
+      "smart_code": "HERA.PUBLICSECTOR.PLAYBOOKS.FIELDS.OUTPUT_CONTRACT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

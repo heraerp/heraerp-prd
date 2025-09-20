@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/src/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface TotalWealthCardProps {
   totalWealth: number

@@ -8,12 +8,12 @@
 
 import { useState } from 'react'
 import { CreditCard, Banknote, Loader2 } from 'lucide-react'
-import { Payment } from '@/src/lib/schemas/pos'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { cn } from '@/src/lib/utils'
+import { Payment } from '@/lib/schemas/pos'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 interface PaymentMethodSelectorProps {
   amount: number

@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Label } from '@/src/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/src/components/ui/use-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Rocket,
   Shield,
@@ -39,13 +39,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
-import { Separator } from '@/src/components/ui/separator'
-import { Switch } from '@/src/components/ui/switch'
-import { Input } from '@/src/components/ui/input'
-import { Textarea } from '@/src/components/ui/textarea'
-import { formatDate } from '@/src/lib/date-utils'
+} from '@/components/ui/select'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { formatDate } from '@/lib/date-utils'
 import { addDays, addMonths } from 'date-fns'
 import {
   Dialog,
@@ -54,9 +54,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/src/components/ui/dialog'
-import { Progress } from '@/src/components/ui/progress'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/dialog'
+import { Progress } from '@/components/ui/progress'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface UCRDeploymentManagerProps {
   ruleId: string
@@ -85,7 +85,7 @@ export function UCRDeploymentManager({
   testResults,
   onClose
 }: UCRDeploymentManagerProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const { getRule, deployRule, validateRule, getAuditLog, simulateRule } = useUCRMCP()
   const { toast } = useToast()
   const [currentRule, setCurrentRule] = useState<any>(rule)
@@ -153,11 +153,11 @@ export function UCRDeploymentManager({
   }
 
   const handleApproval = () => {
-    if (!currentOrganization) return
+    if (!organization) return
 
     const approval: Approval = {
       user_id: 'current-user-id', // In real app, get from auth
-      user_name: currentOrganization.name || 'Manager',
+      user_name: organization.name || 'Manager',
       role: 'manager',
       approved_at: new Date().toISOString(),
       notes: deploymentNotes
@@ -174,7 +174,7 @@ export function UCRDeploymentManager({
   }
 
   const handleDeploy = async () => {
-    if (!currentOrganization || !currentRule) return
+    if (!organization || !currentRule) return
 
     // Validate checklist
     const checklistComplete = Object.values(checklist).every(v => v === true)
@@ -213,12 +213,12 @@ export function UCRDeploymentManager({
 
       // Validate rule one more time
       const validationResult = await validateRule({
-        organization_id: currentOrganization.id,
+        organization_id: organization.id,
         smart_code: currentRule.smart_code,
         title: currentRule.title,
         status: 'active',
         tags: (currentRule.metadata as any)?.tags || [],
-        owner: (currentRule.metadata as any)?.owner || currentOrganization.name,
+        owner: (currentRule.metadata as any)?.owner || organization.name,
         version: (currentRule.metadata as any)?.rule_version || 1,
         schema_version: (currentRule.metadata as any)?.schema_version || 1,
         rule_payload: currentRule.rule_payload

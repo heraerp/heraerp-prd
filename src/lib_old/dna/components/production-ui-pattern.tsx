@@ -615,8 +615,8 @@ export const INDUSTRY_UI_CONFIGS = {
 /*
 USAGE EXAMPLE 1: Basic Production Dashboard
 
-import { useProductionData } from '@/src/lib/dna/patterns/production-data-pattern'
-import { ProductionMetricsCards, ProductionOrderCard } from '@/src/lib/dna/components/production-ui-pattern'
+import { useProductionData } from '@/lib/dna/patterns/production-data-pattern'
+import { ProductionMetricsCards, ProductionOrderCard } from '@/lib/dna/components/production-ui-pattern'
 
 function ProductionDashboard() {
   const { organizationId } = useDemoOrganization()

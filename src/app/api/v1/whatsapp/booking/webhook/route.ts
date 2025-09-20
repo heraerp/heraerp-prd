@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { WhatsAppBookingService } from '@/src/lib/salon/whatsapp-booking-service'
+import { WhatsAppBookingService } from '@/lib/salon/whatsapp-booking-service'
 
 /**
  * WhatsApp Business API Webhook Handler

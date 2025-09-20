@@ -3,8 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
-import { Button } from '@/src/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   Menu,
   X,

@@ -4,10 +4,10 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { TeamsSidebar } from '@/src/components/ui/teams-sidebar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { TeamsSidebar } from '@/components/ui/teams-sidebar'
 import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, MapPin } from 'lucide-react'
 
 // Sample events data

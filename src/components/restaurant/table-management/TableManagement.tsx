@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import {
   LayoutGrid,
@@ -48,7 +48,7 @@ import { TableAnalytics } from './TableAnalytics'
 import { TableSettings } from './TableSettings'
 import { TableCombination } from './TableCombination'
 import { RealTimeStatus } from './RealTimeStatus'
-// import { useRealTimeTableUpdates, useConnectionStatus } from '@/src/hooks/useRealTimeTableUpdates'
+// import { useRealTimeTableUpdates, useConnectionStatus } from '@/hooks/useRealTimeTableUpdates'
 
 interface Table {
   id: string

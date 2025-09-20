@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   MetricCard,
   AnimatedCounter,
@@ -49,7 +49,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 // Steve Jobs: "Innovation distinguishes between a leader and a follower"
 

@@ -1,0 +1,115 @@
+smart_code: HERA.SALON.POS.SALE.COMMIT.V1
+intent: >
+  Convert CART -> SALE; copy lines; finalize totals; close cart.
+  Creates immutable sale record from checkout cart with full audit trail.
+
+scope:
+  in_scope:
+    - Cart to sale conversion
+    - Line copying and finalization
+    - Payment total verification
+    - Sale record creation
+    - Cart closure and status update
+  out_of_scope:
+    - Inventory commitment (separate procedure)
+    - Commission calculation (separate procedure)
+    - GL posting (separate procedure)
+    - Receipt generation (separate procedure)
+
+preconditions:
+  - checkout context exists and payments are captured
+  - payments_total == cart_total
+  - cart is locked and in CHECKOUT_IN_PROGRESS status
+  - has_permissions: [pos_operator, sale_commit]
+
+invariants:
+  - payments_total == sale_total (exact match required)
+  - sale lines are immutable copies of cart lines
+  - cart becomes CLOSED after sale creation
+  - sale record includes complete audit trail
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for sale record
+    - name: checkout_id
+      type: uuid
+      where: payload
+      description: Checkout context to commit
+  optional:
+    - name: sale_metadata
+      type: object
+      where: payload
+      default: {}
+      description: Additional sale metadata
+
+outputs:
+  entities_created:
+    - sale record entity
+  transactions_emitted:
+    - slug: sale_header
+      description: Sale transaction header
+      smart_code: HERA.SALON.POS.SALE.MIXED.V1
+    - slug: sale_lines
+      description: Immutable copy of all cart lines
+  side_effects:
+    - create sale record with all cart data
+    - copy all cart lines to sale (immutable)
+    - update cart status to CLOSED
+    - link sale to customer and appointment if applicable
+
+happy_path:
+  - step: Validate checkout context and payment completeness
+  - step: Verify payments_total == cart_total (exact match)
+  - step: Create sale header transaction with HERA.SALON.POS.SALE.MIXED.V1
+  - step: Copy all cart lines to sale as immutable records
+  - step: Set sale relationships (FULFILLS → appointment, BILLS_TO → customer)
+  - step: Update cart status to CLOSED
+  - step: Store sale completion timestamp and metadata
+  - step: Return sale_id and sale summary
+
+errors:
+  - code: CHECKOUT_NOT_FOUND
+    when: checkout_id does not exist
+    action: return error with valid checkout requirements
+  - code: CHECKOUT_NOT_READY
+    when: checkout is not in proper status for commit
+    action: return error with checkout status requirements
+  - code: PAYMENT_TOTAL_MISMATCH
+    when: sum of captured payments != cart total
+    action: return error with payment reconciliation details
+  - code: CART_NOT_LOCKED
+    when: cart is not properly locked for checkout
+    action: return error - cart must be locked during checkout
+  - code: SALE_CREATION_FAILED
+    when: cannot create sale transaction record
+    action: return error with sale creation requirements
+  - code: LINE_COPY_FAILED
+    when: cannot copy cart lines to sale
+    action: rollback sale creation and return error
+  - code: CART_CLOSE_FAILED
+    when: cannot update cart status to CLOSED
+    action: log warning but continue (sale is created)
+
+observability:
+  logs: [sale_commit_requested, payments_verified, sale_created, lines_copied, cart_closed]
+  audit_json: true
+  metrics: [sale_commit_duration_ms, sale_total_amount, sale_line_count, payment_method_breakdown]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  checkout_id: "checkout-123"
+  sale_metadata:
+    pos_terminal_id: "terminal-001"
+    cashier_id: "emp-456"
+    shift_id: "shift-789"
+
+checks:
+  - description: Payment total exactly matches cart total
+  - description: Sale record created with proper smart code
+  - description: All cart lines copied to sale immutably
+  - description: Cart status updated to CLOSED
+  - description: Sale relationships established correctly
+  - description: Complete audit trail for sale creation

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // Steve Jobs Principle: "Innovation distinguishes between a leader and a follower."
 // Universal table management that works for any restaurant layout

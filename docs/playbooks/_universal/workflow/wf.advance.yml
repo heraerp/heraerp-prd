@@ -1,0 +1,101 @@
+smart_code: HERA.UNIV.WF.ADVANCE.V1
+intent: Transition an instance from current_state to a target state if allowed.
+scope:
+  in_scope:
+    - validate state transition
+    - execute guard procedures
+    - update instance state
+    - execute effect procedures
+    - create step audit record
+    - manage timers for state changes
+  out_of_scope:
+    - workflow definition changes
+    - parallel state management
+    - compensation/rollback
+preconditions:
+  - permissions: [$PROFILE.required_role_advance]
+  - instance exists and is not finalized
+  - instance.header.smart_code == HERA.UNIV.WF.INSTANCE.V1
+invariants:
+  - idempotent by hash(instance_id, from_state, to_state, actor_role, attempt_nonce) on STEP line
+  - guards must all pass or transition fails
+  - effects run after state change committed
+  - timer management is atomic with state change
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+    - to_state: string                             # target state
+    - actor_role: string                           # role performing transition
+  optional:
+    - payload: object                              # transition-specific data
+    - attempt_nonce: string                        # unique attempt ID for retries
+happy_path:
+  - step: load instance header and current_state from metadata
+  - step: load definition from instance metadata.definition_version (pinned at start)
+  - step: find transition {from: current_state, to: to_state} in definition
+  - step: verify actor_role is in transition.by array
+  - step: if transition.guards exist, run each guard procedure; fail if any returns error
+  - step: create STEP line smart_code=HERA.UNIV.WF.STEP.V1 
+          metadata: {from: current_state, to: to_state, by: actor_role, payload, timestamp: now()}
+          line_code: hash(instance_id, from_state, to_state, actor_role, attempt_nonce)
+  - step: update instance header metadata.current_state = to_state
+  - step: if transition.effects exist, create effect execution records and queue via HERA.UNIV.WF.EFFECT.EXECUTE.V1
+  - step: cancel timers for old state via HERA.UNIV.WF.TIMER.CANCEL.V1
+  - step: set timers for new state via HERA.UNIV.WF.TIMER.SET.V1
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # instance state updated
+    - universal_transaction_lines: 1               # step record created
+  procedures_queued:
+    guards_executed: array
+    effects_queued: array
+    timers_set: array
+    timers_cancelled: array
+  response:
+    instance_id: uuid
+    from_state: string
+    to_state: string
+    transitioned_at: timestamp
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INVALID_TRANSITION
+    when: no transition found from current_state to to_state
+    action: return 400 with allowed transitions
+  - code: UNAUTHORIZED_ROLE
+    when: actor_role not in transition.by array
+    action: return 403 with allowed roles
+  - code: GUARD_FAILED
+    when: guard procedure returns error
+    action: return 400 with guard failure details
+  - code: INSTANCE_FINALIZED
+    when: instance is in terminal state
+    action: return 409 conflict
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_advance
+    action: return 403
+observability:
+  logs:
+    - workflow_advanced: { instance_id, from_state, to_state, actor_role }
+    - guard_executed: { instance_id, guard_code, result }
+    - effect_queued: { instance_id, effect_code }
+  audit_json: true
+  metrics:
+    - workflow_advance_count by definition_code, transition
+    - guard_failure_count by guard_code
+    - average_transition_time
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  to_state: "MANAGER_REVIEW"
+  actor_role: "system"
+  payload:
+    auto_advanced: true
+    reason: "All guards passed"
+checks:
+  - description: validate transition exists in definition
+  - description: verify actor has required role
+  - description: ensure idempotency on repeated calls
+  - description: confirm all guards pass before proceeding

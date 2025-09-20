@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SmartCodePicker, type SmartCode } from '@/src/lib/dna/components/smart-code/SmartCodePicker'
+import { SmartCodePicker, type SmartCode } from '@/lib/dna/components/smart-code/SmartCodePicker'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -269,10 +269,10 @@ export default function SmartCodePickerDemoPage() {
                   <p className="text-sm font-medium">Quick Examples:</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { code: 'HERA.CRM.CUST.ENT.PROF.v1', label: 'Customer' },
-                      { code: 'HERA.FIN.SALE.TXN.INV.v1', label: 'Invoice' },
-                      { code: 'HERA.REST.SALE.TXN.ORDER.v1', label: 'Restaurant Order' },
-                      { code: 'HERA.SALON.SVC.TXN.APPT.v1', label: 'Salon Appointment' }
+                      { code: 'HERA.CRM.CUST.ENT.PROF.V1', label: 'Customer' },
+                      { code: 'HERA.FIN.SALE.TXN.INV.V1', label: 'Invoice' },
+                      { code: 'HERA.REST.SALE.TXN.ORDER.V1', label: 'Restaurant Order' },
+                      { code: 'HERA.SALON.SVC.TXN.APPT.V1', label: 'Salon Appointment' }
                     ].map(example => (
                       <Button
                         key={example.code}
@@ -393,7 +393,7 @@ export default function SmartCodePickerDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { SmartCodePicker } from '@/src/lib/dna/components/smart-code'
+{`import { SmartCodePicker } from '@/lib/dna/components/smart-code'
 
 // Basic usage
 <SmartCodePicker
@@ -475,8 +475,8 @@ const MyForm = () => {
                 Business objects like customers, products, employees, and GL accounts
               </p>
               <div className="space-y-1">
-                <code className="text-xs block">HERA.CRM.CUST.ENT.PROF.v1</code>
-                <code className="text-xs block">HERA.INV.PROD.ENT.STD.v1</code>
+                <code className="text-xs block">HERA.CRM.CUST.ENT.PROF.V1</code>
+                <code className="text-xs block">HERA.INV.PROD.ENT.STD.V1</code>
               </div>
             </div>
             
@@ -489,8 +489,8 @@ const MyForm = () => {
                 Business transactions like sales, purchases, payments, and appointments
               </p>
               <div className="space-y-1">
-                <code className="text-xs block">HERA.FIN.SALE.TXN.INV.v1</code>
-                <code className="text-xs block">HERA.REST.SALE.TXN.ORDER.v1</code>
+                <code className="text-xs block">HERA.FIN.SALE.TXN.INV.V1</code>
+                <code className="text-xs block">HERA.REST.SALE.TXN.ORDER.V1</code>
               </div>
             </div>
             
@@ -530,11 +530,11 @@ const MyForm = () => {
                     {industry.id === 'restaurant' && (
                       <>
                         <div>
-                          <code className="text-xs">HERA.REST.SALE.TXN.ORDER.v1</code>
+                          <code className="text-xs">HERA.REST.SALE.TXN.ORDER.V1</code>
                           <p className="text-xs text-muted-foreground">Restaurant order transaction</p>
                         </div>
                         <div>
-                          <code className="text-xs">HERA.REST.INV.ENT.INGR.v1</code>
+                          <code className="text-xs">HERA.REST.INV.ENT.INGR.V1</code>
                           <p className="text-xs text-muted-foreground">Food ingredient entity</p>
                         </div>
                       </>
@@ -542,11 +542,11 @@ const MyForm = () => {
                     {industry.id === 'salon' && (
                       <>
                         <div>
-                          <code className="text-xs">HERA.SALON.SVC.TXN.APPT.v1</code>
+                          <code className="text-xs">HERA.SALON.SVC.TXN.APPT.V1</code>
                           <p className="text-xs text-muted-foreground">Service appointment</p>
                         </div>
                         <div>
-                          <code className="text-xs">HERA.SALON.HR.ENT.STYL.v1</code>
+                          <code className="text-xs">HERA.SALON.HR.ENT.STYL.V1</code>
                           <p className="text-xs text-muted-foreground">Stylist profile</p>
                         </div>
                       </>
@@ -554,11 +554,11 @@ const MyForm = () => {
                     {industry.id === 'healthcare' && (
                       <>
                         <div>
-                          <code className="text-xs">HERA.HLTH.PAT.ENT.PROF.v1</code>
+                          <code className="text-xs">HERA.HLTH.PAT.ENT.PROF.V1</code>
                           <p className="text-xs text-muted-foreground">Patient profile</p>
                         </div>
                         <div>
-                          <code className="text-xs">HERA.HLTH.SVC.TXN.VISIT.v1</code>
+                          <code className="text-xs">HERA.HLTH.SVC.TXN.VISIT.V1</code>
                           <p className="text-xs text-muted-foreground">Patient visit</p>
                         </div>
                       </>

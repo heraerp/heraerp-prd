@@ -3,8 +3,8 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { ArrowRight, Building2, Sparkles, Shield, Globe, Zap } from 'lucide-react'
 import Link from 'next/link'
 

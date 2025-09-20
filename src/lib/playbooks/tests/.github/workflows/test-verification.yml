@@ -1,0 +1,276 @@
+name: Playbook Test Verification
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/lib/playbooks/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/lib/playbooks/**'
+  workflow_dispatch:
+
+jobs:
+  verify-test-coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        cache-dependency-path: src/lib/playbooks/tests/package-lock.json
+
+    - name: Install dependencies
+      working-directory: src/lib/playbooks/tests
+      run: npm ci
+
+    - name: Run tests with coverage
+      working-directory: src/lib/playbooks/tests
+      run: |
+        npm run test:coverage -- --json --outputFile=jest-results.json || true
+        # Continue even if tests fail to generate report
+
+    - name: Verify checklist coverage
+      id: verify
+      working-directory: src/lib/playbooks/tests
+      run: |
+        npm run verify:ci
+        
+        # Extract coverage percentage for PR comment
+        COVERAGE=$(cat coverage-report.json | jq -r '.summary.overallCoverage')
+        echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+        
+        # Fail if coverage is below 80%
+        if [ $COVERAGE -lt 80 ]; then
+          echo "::error::Test coverage is below 80% threshold (current: $COVERAGE%)"
+          exit 1
+        fi
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage-report
+        path: |
+          src/lib/playbooks/tests/coverage-report.json
+          src/lib/playbooks/tests/coverage.svg
+          src/lib/playbooks/tests/verification-report.html
+        retention-days: 30
+
+    - name: Upload coverage badge
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-badge
+        path: src/lib/playbooks/tests/coverage.svg
+
+    - name: Comment PR with coverage report
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = 'src/lib/playbooks/tests/coverage-report.json';
+          
+          if (!fs.existsSync(reportPath)) {
+            console.log('Coverage report not found');
+            return;
+          }
+          
+          const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+          const coverage = report.summary.overallCoverage;
+          const emoji = coverage >= 80 ? '✅' : coverage >= 60 ? '⚠️' : '❌';
+          
+          // Find critical sections with low coverage
+          const criticalSections = report.sections
+            .filter(s => 
+              (s.name.includes('Security') || 
+               s.name.includes('Contract') || 
+               s.name.includes('Organization')) && 
+              s.coverage < 80
+            )
+            .map(s => `- ${s.name}: ${s.coverage}%`)
+            .join('\n');
+          
+          const comment = `## Playbook System Test Coverage Report ${emoji}
+          
+          **Overall Coverage**: ${coverage}% ${coverage >= 80 ? '(Passing ✅)' : '(Failing ❌)'}
+          
+          ### Summary
+          - Total checklist items: ${report.summary.totalItems}
+          - Items with tests: ${report.summary.itemsWithTests}
+          - Items missing tests: ${report.summary.itemsMissingTests}
+          - Test files found: ${Object.keys(report.testFiles).length}
+          
+          ### Coverage by Section
+          ${report.sections.slice(0, 5).map(s => 
+            `- ${s.name}: ${s.coverage}% ${s.coverage >= 80 ? '✅' : s.coverage >= 60 ? '⚠️' : '❌'}`
+          ).join('\n')}
+          
+          ${criticalSections ? `### ⚠️ Critical Sections Below 80%\n${criticalSections}` : ''}
+          
+          ### Coverage Trend
+          ![Coverage Badge](https://img.shields.io/badge/coverage-${coverage}%25-${
+            coverage >= 80 ? 'brightgreen' : coverage >= 60 ? 'yellow' : 'red'
+          })
+          
+          <details>
+          <summary>View detailed report</summary>
+          
+          \`\`\`json
+          ${JSON.stringify(report.summary, null, 2)}
+          \`\`\`
+          
+          </details>
+          
+          ---
+          📊 [Download full coverage report](${context.payload.pull_request.html_url}/checks)`;
+          
+          // Check if we already commented
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('Playbook System Test Coverage Report')
+          );
+          
+          if (botComment) {
+            // Update existing comment
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: comment,
+            });
+          } else {
+            // Create new comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment,
+            });
+          }
+
+    - name: Generate HTML report
+      if: always()
+      working-directory: src/lib/playbooks/tests
+      run: |
+        # Create a simple HTML report from JSON
+        cat > verification-report.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Playbook Test Coverage Report</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; }
+            .summary { background: #f6f8fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+            .coverage-bar { width: 100%; height: 20px; background: #e1e4e8; border-radius: 10px; overflow: hidden; }
+            .coverage-fill { height: 100%; transition: width 0.3s ease; }
+            .coverage-high { background: #28a745; }
+            .coverage-medium { background: #ffc107; }
+            .coverage-low { background: #dc3545; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e1e4e8; }
+            th { background: #f6f8fa; font-weight: 600; }
+            .section-name { font-weight: 500; }
+            .coverage-cell { text-align: right; }
+            .badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+            .badge-high { background: #d4edda; color: #155724; }
+            .badge-medium { background: #fff3cd; color: #856404; }
+            .badge-low { background: #f8d7da; color: #721c24; }
+          </style>
+        </head>
+        <body>
+          <h1>Playbook System Test Coverage Report</h1>
+          <div class="summary">
+            <h2>Summary</h2>
+            <div id="summary-content"></div>
+            <div class="coverage-bar">
+              <div class="coverage-fill" id="overall-coverage"></div>
+            </div>
+          </div>
+          <h2>Coverage by Section</h2>
+          <table id="sections-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Total Items</th>
+                <th>Checked</th>
+                <th>With Tests</th>
+                <th>Coverage</th>
+              </tr>
+            </thead>
+            <tbody id="sections-body"></tbody>
+          </table>
+          <script>
+            fetch('coverage-report.json')
+              .then(r => r.json())
+              .then(report => {
+                // Update summary
+                const summary = report.summary;
+                document.getElementById('summary-content').innerHTML = `
+                  <p><strong>Total Items:</strong> ${summary.totalItems}</p>
+                  <p><strong>Items with Tests:</strong> ${summary.itemsWithTests}</p>
+                  <p><strong>Overall Coverage:</strong> ${summary.overallCoverage}%</p>
+                  <p><strong>Generated:</strong> ${new Date(summary.timestamp).toLocaleString()}</p>
+                `;
+                
+                // Update coverage bar
+                const coverageBar = document.getElementById('overall-coverage');
+                coverageBar.style.width = summary.overallCoverage + '%';
+                coverageBar.className = 'coverage-fill ' + 
+                  (summary.overallCoverage >= 80 ? 'coverage-high' : 
+                   summary.overallCoverage >= 60 ? 'coverage-medium' : 'coverage-low');
+                
+                // Update sections table
+                const tbody = document.getElementById('sections-body');
+                report.sections.forEach(section => {
+                  const row = tbody.insertRow();
+                  row.innerHTML = `
+                    <td class="section-name">${section.name}</td>
+                    <td>${section.totalItems}</td>
+                    <td>${section.checkedItems}</td>
+                    <td>${section.itemsWithTests}</td>
+                    <td class="coverage-cell">
+                      <span class="badge ${
+                        section.coverage >= 80 ? 'badge-high' : 
+                        section.coverage >= 60 ? 'badge-medium' : 'badge-low'
+                      }">${section.coverage}%</span>
+                    </td>
+                  `;
+                });
+              });
+          </script>
+        </body>
+        </html>
+        EOF
+
+    - name: Check critical sections
+      if: always()
+      working-directory: src/lib/playbooks/tests
+      run: |
+        # Additional check for critical sections
+        CRITICAL_SECTIONS=("Organization Security" "Contract Enforcement" "Security and Permissions")
+        FAILED=0
+        
+        for section in "${CRITICAL_SECTIONS[@]}"; do
+          COVERAGE=$(cat coverage-report.json | jq -r --arg section "$section" '.sections[] | select(.name | contains($section)) | .coverage // 0')
+          if [ "$COVERAGE" -lt 80 ]; then
+            echo "::warning::Critical section '$section' has low coverage: $COVERAGE%"
+            FAILED=1
+          fi
+        done
+        
+        if [ $FAILED -eq 1 ]; then
+          echo "::error::One or more critical sections have coverage below 80%"
+        fi

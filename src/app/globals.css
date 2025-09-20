@@ -5,6 +5,120 @@
 /* Import Salon Theme Styles */
 @import '../styles/salon-theme.css';
 
+/* Import dialog overrides for better positioning */
+@import '../styles/dialog-overrides.css';
+
+/* HERA Luxury Theme Colors - Applied Globally */
+:root {
+  --hera-black: #0B0B0B;
+  --hera-charcoal: #1A1A1A;
+  --hera-gold: #D4AF37;
+  --hera-gold-dark: #B8860B;
+  --hera-champagne: #F5E6C8;
+  --hera-bronze: #8C7853;
+  --hera-emerald: #0F6F5C;
+  --hera-plum: #5A2A40;
+  --hera-rose: #E8B4B8;
+  --hera-light-text: #E0E0E0;
+}
+
+/* Dark theme with luxury colors */
+.dark {
+  --background: var(--hera-black);
+  --foreground: var(--hera-light-text);
+  
+  --card: var(--hera-charcoal);
+  --card-foreground: var(--hera-champagne);
+  
+  --popover: var(--hera-charcoal);
+  --popover-foreground: var(--hera-light-text);
+  
+  --primary: var(--hera-gold);
+  --primary-foreground: var(--hera-black);
+  
+  --secondary: var(--hera-bronze);
+  --secondary-foreground: var(--hera-champagne);
+  
+  --muted: var(--hera-charcoal);
+  --muted-foreground: var(--hera-bronze);
+  
+  --accent: var(--hera-gold);
+  --accent-foreground: var(--hera-black);
+  
+  --destructive: var(--hera-plum);
+  --destructive-foreground: var(--hera-light-text);
+  
+  --border: rgba(212, 175, 55, 0.2);
+  --input: var(--hera-charcoal);
+  --ring: var(--hera-gold);
+}
+
+/* Salon-specific luxury focus states - override blue with gold */
+.salon-luxury-focus input:focus,
+.salon-luxury-focus textarea:focus,
+.salon-luxury-focus select:focus,
+.salon-luxury-focus [role="combobox"]:focus,
+.salon-luxury-focus button:focus-visible,
+.salon-luxury-focus a:focus-visible {
+  --tw-ring-opacity: 1 !important;
+  --tw-ring-color: var(--hera-gold) !important;
+  border-color: var(--hera-gold) !important;
+  outline: none !important;
+}
+
+.salon-luxury-focus input:focus-visible,
+.salon-luxury-focus textarea:focus-visible,
+.salon-luxury-focus select:focus-visible {
+  outline: 2px solid var(--hera-gold) !important;
+  outline-offset: 2px !important;
+}
+
+/* Charcoal Gold UI Kit - Glassmorphism utilities */
+@layer utilities {
+  .glass-card { 
+    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.35)]; 
+  }
+  
+  .gold-btn { 
+    @apply inline-flex items-center gap-2 rounded-full font-semibold px-4 py-2 transition-all hover:scale-105;
+    background: linear-gradient(to bottom right, #D4AF37, #E3C75F);
+    box-shadow: 0 8px 30px rgba(212,175,55,0.35);
+    color: #0E0F11; /* charcoal-900 */
+  }
+  
+  .gold-btn:hover {
+    box-shadow: 0 12px 40px rgba(212,175,55,0.45);
+  }
+  
+  .ghost-btn { 
+    @apply inline-flex items-center gap-2 rounded-full font-semibold px-4 py-2 border bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors;
+    border-color: rgba(212, 175, 55, 0.4); /* gold-500 with 40% opacity */
+    color: #F5F7FA; /* text-100 */
+  }
+  
+  .glass-input {
+    @apply h-10 px-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all;
+    color: #F5F7FA; /* text-100 */
+  }
+  
+  .glass-input::placeholder {
+    color: #9AA3AE; /* text-500 */
+  }
+  
+  .glass-input:focus {
+    --tw-ring-color: #D4AF37; /* gold-500 */
+  }
+  
+  .glass-select {
+    @apply h-10 px-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all cursor-pointer;
+    color: #F5F7FA; /* text-100 */
+  }
+  
+  .glass-select:focus {
+    --tw-ring-color: #D4AF37; /* gold-500 */
+  }
+}
+
 /* Smooth scrolling for the entire app */
 @layer base {
   html {
@@ -43,6 +157,116 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Animated blob effect for glassmorphism backgrounds */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Enhanced scrollbar visibility for appointment pages */
+.appointment-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.appointment-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.appointment-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 6px;
+  border: 2px solid #f1f5f9;
+}
+
+.appointment-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.dark .appointment-scrollbar::-webkit-scrollbar-track {
+  background: var(--hera-charcoal);
+}
+
+.dark .appointment-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hera-bronze);
+  border: 2px solid var(--hera-charcoal);
+}
+
+.dark .appointment-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--hera-gold-dark);
+}
+
+/* Enhanced scrollbar for HERA DNA ScrollArea */
+.enhanced-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.enhanced-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+.enhanced-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 6px;
+  border: 2px solid #f1f5f9;
+  transition: background 0.2s;
+}
+
+.enhanced-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+.dark .enhanced-scrollbar::-webkit-scrollbar-track {
+  background: var(--hera-charcoal);
+  border: 1px solid var(--hera-gold-dark);
+  opacity: 0.3;
+}
+
+.dark .enhanced-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hera-bronze);
+  border: 2px solid var(--hera-charcoal);
+}
+
+.dark .enhanced-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--hera-gold-dark);
+}
+
+/* Firefox scrollbar support */
+.enhanced-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.dark .enhanced-scrollbar {
+  scrollbar-color: var(--hera-bronze) var(--hera-charcoal);
 }
 
 .animate-fadeIn {
@@ -432,6 +656,120 @@ html {
 
 /* Calendar styles will be handled by shadcn/ui components */
 
+/* HERA Luxury Theme Component Overrides */
+
+/* Luxury Button Styles */
+.hera-button-luxury {
+  background: linear-gradient(90deg, var(--hera-gold) 0%, var(--hera-gold-dark) 100%);
+  color: var(--hera-black);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+  transition: all 0.2s ease;
+}
+
+.hera-button-luxury:hover {
+  background: linear-gradient(90deg, var(--hera-gold-dark) 0%, var(--hera-bronze) 100%);
+  box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Luxury Card Styles */
+.hera-card-luxury {
+  background-color: var(--hera-charcoal);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: var(--hera-light-text);
+}
+
+.hera-card-luxury:hover {
+  border-color: var(--hera-gold);
+  box-shadow: 0 4px 6px rgba(212, 175, 55, 0.1);
+}
+
+/* Luxury Input Styles */
+.hera-input-luxury {
+  background-color: var(--hera-charcoal);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: var(--hera-light-text);
+}
+
+.hera-input-luxury:focus {
+  border-color: var(--hera-gold);
+  outline: 2px solid rgba(212, 175, 55, 0.3);
+  outline-offset: 2px;
+}
+
+.hera-input-luxury::placeholder {
+  color: var(--hera-bronze);
+}
+
+/* Luxury Badge Styles */
+.hera-badge-gold {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--hera-gold);
+  border: 1px solid var(--hera-gold);
+}
+
+.hera-badge-bronze {
+  background-color: rgba(140, 120, 83, 0.1);
+  color: var(--hera-bronze);
+  border: 1px solid var(--hera-bronze);
+}
+
+.hera-badge-emerald {
+  background-color: rgba(15, 111, 92, 0.1);
+  color: var(--hera-emerald);
+  border: 1px solid var(--hera-emerald);
+}
+
+.hera-badge-plum {
+  background-color: rgba(90, 42, 64, 0.1);
+  color: var(--hera-plum);
+  border: 1px solid var(--hera-plum);
+}
+
+/* Luxury Dropdown Styles */
+.hera-dropdown-luxury {
+  background-color: var(--hera-charcoal);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: var(--hera-light-text);
+}
+
+.hera-dropdown-item-luxury:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Luxury Scrollbar */
+.luxury-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-track {
+  background: var(--hera-charcoal);
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hera-bronze);
+  border-radius: 4px;
+}
+
+.luxury-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--hera-gold-dark);
+}
+
+/* Override text colors for luxury theme */
+.dark {
+  --foreground: var(--hera-light-text);
+  --card-foreground: var(--hera-champagne);
+  --popover-foreground: var(--hera-light-text);
+  --primary-foreground: var(--hera-black);
+  --secondary-foreground: var(--hera-champagne);
+  --muted-foreground: var(--hera-bronze);
+  --accent-foreground: var(--hera-black);
+  --destructive-foreground: var(--hera-light-text);
+}
+
 /* HERA Universal CSS Variables */
 :root {
   --radius: 0.625rem;
@@ -582,28 +920,28 @@ html {
 }
 
 .dark {
-  /* HERA Dark Theme - Enhanced Premium Experience */
-  --background: var(--dark-surface-1);
+  /* HERA Dark Theme - Enhanced Premium Experience with Purple Salon Colors */
+  --background: #4a0064; /* Darkest purple for main background */
   --foreground: oklch(0.98 0.005 250);
-  --card: var(--dark-surface-2);
+  --card: #59007f; /* Medium purple for cards */
   --card-foreground: oklch(0.95 0.01 250);
-  --popover: var(--dark-surface-elevated);
+  --popover: #59007f; /* Medium purple for popovers */
   --popover-foreground: oklch(0.95 0.01 250);
   
   /* HERA Primary in dark mode - Enhanced visibility */
   --primary: var(--hera-400);
   --primary-foreground: oklch(0.95 0 0);
   
-  /* HERA Dark surfaces with subtle brand tinting */
-  --secondary: var(--dark-surface-3);
+  /* HERA Dark surfaces with purple salon tinting */
+  --secondary: #680094; /* Lightest purple for secondary */
   --secondary-foreground: oklch(0.9 0.02 250);
-  --muted: var(--dark-surface-2);
+  --muted: #59007f; /* Medium purple for muted */
   --muted-foreground: oklch(0.6 0.03 250);
-  --accent: var(--dark-surface-3);
+  --accent: #680094; /* Lightest purple for accent */
   --accent-foreground: oklch(0.9 0.02 250);
   --destructive: oklch(0.65 0.2 25);
-  --border: oklch(0.25 0.02 250);
-  --input: oklch(0.15 0.03 250);
+  --border: rgba(104, 0, 148, 0.3); /* Lightest purple for borders */
+  --input: #59007f; /* Medium purple for inputs */
   --ring: var(--hera-400);
   
   /* HERA Dark chart colors - Vibrant but balanced */
@@ -613,14 +951,14 @@ html {
   --chart-4: var(--hera-amber-400);
   --chart-5: var(--hera-purple-400);
   
-  /* HERA Dark sidebar - Premium glass effect */
-  --sidebar: var(--dark-surface-2);
+  /* HERA Dark sidebar - Purple salon theme */
+  --sidebar: #59007f; /* Medium purple for sidebar */
   --sidebar-foreground: oklch(0.9 0.02 250);
   --sidebar-primary: var(--hera-400);
   --sidebar-primary-foreground: oklch(0.02 0.02 250);
-  --sidebar-accent: var(--dark-surface-3);
+  --sidebar-accent: #680094; /* Lightest purple for sidebar accent */
   --sidebar-accent-foreground: oklch(0.85 0.03 250);
-  --sidebar-border: oklch(0.22 0.02 250);
+  --sidebar-border: rgba(104, 0, 148, 0.3); /* Lightest purple for sidebar border */
   --sidebar-ring: var(--hera-400);
   
   /* HERA Dark glass effects - Enhanced depth */
@@ -735,12 +1073,13 @@ html {
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.2s;
-  background-color: var(--hera-500);
-  color: white;
+  background: linear-gradient(90deg, var(--hera-gold) 0%, var(--hera-gold-dark) 100%);
+  color: var(--hera-black);
   height: 2.5rem;
   padding: 0 1rem;
   border: none;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
 }
 
 .hera-button:hover {
@@ -2311,3 +2650,159 @@ html {
   background-color: rgb(55, 65, 81) !important;
   border-color: rgb(107, 114, 128) !important;
 }
+
+/* ===============================================
+   CIVICFLOW THEMING SYSTEM
+   =============================================== */
+
+/* Default theme: Civic Indigo */
+:root,
+[data-theme="civic-indigo"] {
+  --bg: 249 250 251;           /* gray-50 */
+  --panel: 255 255 255;        /* white */
+  --panel-alt: 243 244 246;    /* gray-100 */
+  --border: 229 231 235;       /* gray-200 */
+  
+  --text-100: 17 24 39;        /* gray-900 */
+  --text-300: 75 85 99;        /* gray-600 */
+  --text-500: 156 163 175;     /* gray-400 */
+  
+  --accent: 99 102 241;        /* indigo-500 */
+  --accent-soft: 224 231 255;  /* indigo-100 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 99 102 241;         /* indigo-500 */
+  --glow2: 139 92 246;         /* violet-500 */
+}
+
+[data-theme="civic-indigo"].dark,
+[data-theme="civic-indigo"] .dark {
+  --bg: 17 24 39;              /* gray-900 */
+  --panel: 31 41 55;           /* gray-800 */
+  --panel-alt: 55 65 81;       /* gray-700 */
+  --border: 75 85 99;          /* gray-600 */
+  
+  --text-100: 243 244 246;     /* gray-100 */
+  --text-300: 209 213 219;     /* gray-300 */
+  --text-500: 107 114 128;     /* gray-500 */
+  
+  --accent: 129 140 248;       /* indigo-400 */
+  --accent-soft: 67 56 202;    /* indigo-700 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 129 140 248;        /* indigo-400 */
+  --glow2: 167 139 250;        /* violet-400 */
+}
+
+/* Emerald Slate theme */
+[data-theme="emerald-slate"] {
+  --bg: 248 250 252;           /* slate-50 */
+  --panel: 255 255 255;        /* white */
+  --panel-alt: 241 245 249;    /* slate-100 */
+  --border: 226 232 240;       /* slate-200 */
+  
+  --text-100: 15 23 42;        /* slate-900 */
+  --text-300: 71 85 105;       /* slate-600 */
+  --text-500: 148 163 184;     /* slate-400 */
+  
+  --accent: 16 185 129;        /* emerald-500 */
+  --accent-soft: 209 250 229;  /* emerald-100 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 16 185 129;         /* emerald-500 */
+  --glow2: 20 184 166;         /* teal-500 */
+}
+
+[data-theme="emerald-slate"].dark,
+[data-theme="emerald-slate"] .dark {
+  --bg: 15 23 42;              /* slate-900 */
+  --panel: 30 41 59;           /* slate-800 */
+  --panel-alt: 51 65 85;       /* slate-700 */
+  --border: 71 85 105;         /* slate-600 */
+  
+  --text-100: 241 245 249;     /* slate-100 */
+  --text-300: 203 213 225;     /* slate-300 */
+  --text-500: 100 116 139;     /* slate-500 */
+  
+  --accent: 52 211 153;        /* emerald-400 */
+  --accent-soft: 4 120 87;     /* emerald-700 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 52 211 153;         /* emerald-400 */
+  --glow2: 45 212 191;         /* teal-400 */
+}
+
+/* Royal Iris theme */
+[data-theme="royal-iris"] {
+  --bg: 250 245 255;           /* purple-50 */
+  --panel: 255 255 255;        /* white */
+  --panel-alt: 243 232 255;    /* purple-100 */
+  --border: 233 213 255;       /* purple-200 */
+  
+  --text-100: 46 16 101;       /* purple-900 */
+  --text-300: 107 70 193;      /* purple-600 */
+  --text-500: 168 162 158;     /* purple-400 */
+  
+  --accent: 124 58 237;        /* violet-600 */
+  --accent-soft: 221 214 254;  /* violet-200 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 124 58 237;         /* violet-600 */
+  --glow2: 168 85 247;         /* purple-500 */
+}
+
+[data-theme="royal-iris"].dark,
+[data-theme="royal-iris"] .dark {
+  --bg: 17 24 39;              /* gray-900 - using gray for dark mode */
+  --panel: 31 41 55;           /* gray-800 */
+  --panel-alt: 55 65 81;       /* gray-700 */
+  --border: 75 85 99;          /* gray-600 */
+  
+  --text-100: 243 244 246;     /* gray-100 */
+  --text-300: 209 213 219;     /* gray-300 */
+  --text-500: 107 114 128;     /* gray-500 */
+  
+  --accent: 167 139 250;       /* violet-400 */
+  --accent-soft: 91 33 182;    /* violet-700 */
+  --accent-fg: 255 255 255;    /* white */
+  
+  --glow1: 167 139 250;        /* violet-400 */
+  --glow2: 196 181 253;        /* purple-400 */
+}
+
+/* Semantic color tokens for Tailwind */
+.bg-bg { background-color: rgb(var(--bg) / var(--tw-bg-opacity, 1)); }
+.bg-panel { background-color: rgb(var(--panel) / var(--tw-bg-opacity, 1)); }
+.bg-panel-alt { background-color: rgb(var(--panel-alt) / var(--tw-bg-opacity, 1)); }
+.bg-accent { background-color: rgb(var(--accent) / var(--tw-bg-opacity, 1)); }
+.bg-accent-soft { background-color: rgb(var(--accent-soft) / var(--tw-bg-opacity, 1)); }
+
+.text-text-100 { color: rgb(var(--text-100) / var(--tw-text-opacity, 1)); }
+.text-text-300 { color: rgb(var(--text-300) / var(--tw-text-opacity, 1)); }
+.text-text-500 { color: rgb(var(--text-500) / var(--tw-text-opacity, 1)); }
+.text-accent { color: rgb(var(--accent) / var(--tw-text-opacity, 1)); }
+.text-accent-fg { color: rgb(var(--accent-fg) / var(--tw-text-opacity, 1)); }
+
+.border-border { border-color: rgb(var(--border) / var(--tw-border-opacity, 1)); }
+.border-accent { border-color: rgb(var(--accent) / var(--tw-border-opacity, 1)); }
+
+/* Gradient utilities */
+.bg-gradient-glow {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--glow1)),
+    rgb(var(--glow2))
+  );
+}
+
+.bg-gradient-glow-soft {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--glow1) / 0.2),
+    rgb(var(--glow2) / 0.2)
+  );
+}
+
+/* ===============================================
+   END CIVICFLOW THEMING SYSTEM
+   =============================================== */

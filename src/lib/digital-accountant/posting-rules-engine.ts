@@ -4,10 +4,10 @@
  * Smart code-driven GL posting with intelligent rule evaluation
  * Replaces traditional posting configuration tables with dynamic rules
  *
- * Smart Code: HERA.FIN.ACCT.POSTING.ENGINE.v1
+ * Smart Code: HERA.FIN.ACCT.POSTING.ENGINE.V1
  */
 
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import {
   PostingRule,
   PostingCondition,
@@ -17,7 +17,7 @@ import {
   ValidationError,
   ValidationWarning,
   ACCOUNTANT_SMART_CODES
-} from '@/src/types/digital-accountant.types'
+} from '@/types/digital-accountant.types'
 import { IPostingRulesEngine, IPostingRulesRepository } from './contracts'
 import { SQLGuardrailValidator } from './sql-guardrails'
 
@@ -46,7 +46,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'debit',
         amount_formula: 'transaction.total_amount',
         description_template: 'Sales Order {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.SALE.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.SALE.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -54,7 +54,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'credit',
         amount_formula: 'transaction.total_amount / (1 + tax_rate)',
         description_template: 'Revenue from {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.REVENUE.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.REVENUE.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -62,7 +62,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'credit',
         amount_formula: 'transaction.total_amount - (transaction.total_amount / (1 + tax_rate))',
         description_template: 'Sales Tax on {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.TAX.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.TAX.V1'
       }
     ],
     smart_code_pattern: 'HERA.*.SALE.*',
@@ -92,7 +92,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'debit',
         amount_formula: 'transaction.total_amount / (1 + tax_rate)',
         description_template: 'Purchase {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.PURCHASE.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.PURCHASE.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -100,7 +100,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'debit',
         amount_formula: 'transaction.total_amount - (transaction.total_amount / (1 + tax_rate))',
         description_template: 'Input Tax on {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INPUT_TAX.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INPUT_TAX.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -108,7 +108,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'credit',
         amount_formula: 'transaction.total_amount',
         description_template: 'AP - {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.AP.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.AP.V1'
       }
     ],
     smart_code_pattern: 'HERA.*.PUR.*',
@@ -143,7 +143,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'debit',
         amount_formula: 'transaction.total_amount',
         description_template: 'Payment received {{transaction.reference_number}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.CASH_IN.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.CASH_IN.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -151,7 +151,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'credit',
         amount_formula: 'transaction.total_amount',
         description_template: 'AR reduction {{transaction.reference_number}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.AR_REDUCE.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.AR_REDUCE.V1'
       }
     ],
     smart_code_pattern: 'HERA.FIN.AR.TXN.RCP.*',
@@ -181,7 +181,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'debit',
         amount_formula: 'transaction.total_amount',
         description_template: 'Inventory receipt {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INV_IN.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INV_IN.V1'
       },
       {
         action_type: 'create_journal_line',
@@ -189,7 +189,7 @@ export const STANDARD_POSTING_RULES: PostingRule[] = [
         debit_credit: 'credit',
         amount_formula: 'transaction.total_amount',
         description_template: 'AP for inventory {{transaction.transaction_code}}',
-        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INV_AP.v1'
+        smart_code_template: 'HERA.FIN.GL.JE.AUTO.INV_AP.V1'
       }
     ],
     smart_code_pattern: 'HERA.INV.GR.*',

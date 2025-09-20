@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   Plus, 
   Search, 
@@ -24,11 +24,11 @@ import {
   AlertCircle,
   RefreshCw
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useOrgSettings } from '@/src/lib/api/orgSettings'
-import { BranchForm } from '@/src/components/settings/BranchForm'
-import { Branch } from '@/src/lib/schemas/settings'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useOrgSettings } from '@/lib/api/orgSettings'
+import { BranchForm } from '@/components/settings/BranchForm'
+import { Branch } from '@/lib/schemas/settings'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function BranchManagementPage() {
   const { currentOrganization } = useOrganization()

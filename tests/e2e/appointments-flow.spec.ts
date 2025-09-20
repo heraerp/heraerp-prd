@@ -51,7 +51,7 @@ test.describe('Appointments Flow', () => {
     
     // Check detail page elements
     await expect(page.locator('h1')).toContainText('APT-2024-001')
-    await expect(page.locator('text=Smart Code: HERA.SALON.APPT.BOOKING.CORE.v1')).toBeVisible()
+    await expect(page.locator('text=Smart Code: HERA.SALON.APPOINTMENT.BOOKING.v1')).toBeVisible()
     
     // Status badge should be visible
     await expect(page.locator('text=Confirmed')).toBeVisible()

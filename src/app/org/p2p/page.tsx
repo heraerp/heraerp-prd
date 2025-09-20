@@ -1,7 +1,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { P2PDashboard } from '@/src/components/p2p/P2PDashboard'
+import { P2PDashboard } from '@/components/p2p/P2PDashboard'
 
 export default function P2PPage() {
   return <P2PDashboard />

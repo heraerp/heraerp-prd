@@ -3,22 +3,22 @@
 import React, { useState, useRef }
 from 'react'
 import { Card, CardContent, CardHeader, CardTitle }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Button }
-from '@/src/components/ui/button'
+from '@/components/ui/button'
 import { Badge }
-from '@/src/components/ui/badge'
+from '@/components/ui/badge'
 import { Progress }
-from '@/src/components/ui/progress'
+from '@/components/ui/progress'
 import { Alert, AlertDescription }
-from '@/src/components/ui/alert'
+from '@/components/ui/alert'
 import { ScrollArea }
-from '@/src/components/ui/scroll-area'
+from '@/components/ui/scroll-area'
 import { Upload, FileText, Image, File, X, Check, AlertCircle, Download, Eye, Trash2, Plus, Receipt, Sparkles, Loader2, FileUp, Camera
 }
 from 'lucide-react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface DocumentFile {

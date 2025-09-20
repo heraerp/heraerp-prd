@@ -1,5 +1,5 @@
 // HERA 100% Vibe Coding System - Context Manager
-// Smart Code: HERA.VIBE.FOUNDATION.CONTEXT.MANAGER.v1
+// Smart Code: HERA.VIBE.FOUNDATION.CONTEXT.MANAGER.V1
 // Purpose: Context preservation and amnesia elimination system
 
 import { VibeContext, ContextPreservationRequest, ContextPreservationError } from './types'
@@ -277,7 +277,7 @@ export class ContextManager {
     this.autoPreserveInterval = setInterval(async () => {
       try {
         const sessionContext: VibeContext = {
-          smart_code: 'HERA.VIBE.CONTEXT.SESSION.AUTO.v1',
+          smart_code: 'HERA.VIBE.CONTEXT.SESSION.AUTO.V1',
           session_id: this.sessionId,
           conversation_state: this.getCurrentSessionContext(),
           task_lineage: [],
@@ -365,7 +365,7 @@ export class ContextManager {
           table: 'universal_transactions',
           data: {
             transaction_type: 'vibe_context_event',
-            smart_code: 'HERA.VIBE.CONTEXT.EVENT.LOG.v1',
+            smart_code: 'HERA.VIBE.CONTEXT.EVENT.LOG.V1',
             metadata: {
               event_type: eventType,
               session_id: this.sessionId,

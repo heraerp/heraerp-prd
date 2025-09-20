@@ -27,17 +27,17 @@ export async function GET(request: NextRequest) {
         WITH monthly_bids AS (
           SELECT 
             DATE_TRUNC('month', created_at) as month,
-            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1' THEN 1 ELSE 0 END) as submitted,
-            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1' THEN 1 ELSE 0 END) as won,
-            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.BID.LOST.v1' THEN 1 ELSE 0 END) as lost,
-            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1' THEN total_amount ELSE 0 END) as value
+            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1' THEN 1 ELSE 0 END) as submitted,
+            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1' THEN 1 ELSE 0 END) as won,
+            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.BID.LOST.V1' THEN 1 ELSE 0 END) as lost,
+            SUM(CASE WHEN smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1' THEN total_amount ELSE 0 END) as value
           FROM universal_transactions
           WHERE organization_id = $1
             AND created_at >= ${periodFilter}
             AND smart_code IN (
-              'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1',
-              'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1',
-              'HERA.FURNITURE.TENDER.BID.LOST.v1'
+              'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',
+              'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1',
+              'HERA.FURNITURE.TENDER.BID.LOST.V1'
             )
           GROUP BY DATE_TRUNC('month', created_at)
           ORDER BY month
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
               WHEN EXISTS (
                 SELECT 1 FROM universal_transactions ut2
                 WHERE ut2.reference_entity_id = t.reference_entity_id
-                  AND ut2.smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1'
+                  AND ut2.smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1'
                   AND ut2.organization_id = $1
               ) THEN t.reference_entity_id 
             END) as won_bids
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
             AND d.field_name = 'wood_type'
             AND d.organization_id = $1
           WHERE t.organization_id = $1
-            AND t.smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1'
+            AND t.smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1'
             AND t.created_at >= ${periodFilter}
           GROUP BY d.field_value_text
         )
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
           FROM universal_transactions ut
           JOIN core_entities ce ON ce.id = ut.from_entity_id
           WHERE ut.organization_id = $1
-            AND ut.smart_code = 'HERA.FURNITURE.TENDER.COMPETITOR.WIN.DETECTED.v1'
+            AND ut.smart_code = 'HERA.FURNITURE.TENDER.COMPETITOR.WIN.DETECTED.V1'
             AND ut.created_at >= ${periodFilter}
             AND ce.entity_type = 'HERA.FURNITURE.TENDER.COMPETITOR.v1'
           GROUP BY ce.entity_name
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
             SUM(total_amount) as total_value
           FROM universal_transactions
           WHERE organization_id = $1
-            AND smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1'
+            AND smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1'
             AND created_at >= ${periodFilter}
         ),
         all_competitors AS (
@@ -153,13 +153,13 @@ export async function GET(request: NextRequest) {
               WHEN EXISTS (
                 SELECT 1 FROM universal_transactions ut2
                 WHERE ut2.reference_entity_id = ut.reference_entity_id
-                  AND ut2.smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1'
+                  AND ut2.smart_code = 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1'
                   AND ut2.organization_id = $1
               ) THEN 1 ELSE 0 
             END as actual_won
           FROM universal_transactions ut
           WHERE ut.organization_id = $1
-            AND ut.smart_code = 'HERA.FURNITURE.TENDER.AI.STRATEGY.CALCULATED.v1'
+            AND ut.smart_code = 'HERA.FURNITURE.TENDER.AI.STRATEGY.CALCULATED.V1'
             AND ut.created_at >= ${periodFilter}
             AND ut.ai_confidence IS NOT NULL
         )
@@ -191,7 +191,7 @@ export async function GET(request: NextRequest) {
             AND d.field_name = 'estimated_value'
             AND d.organization_id = $1
           WHERE ut.organization_id = $1
-            AND ut.smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1'
+            AND ut.smart_code = 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1'
             AND ut.created_at >= ${periodFilter}
           GROUP BY DATE_TRUNC('month', ut.created_at)
           ORDER BY month
@@ -231,7 +231,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: analytics,
-        smart_code: 'HERA.FURNITURE.TENDER.ANALYTICS.RETRIEVED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.ANALYTICS.RETRIEVED.V1'
       })
     } catch (error) {
       console.error('Error fetching tender analytics:', error)
@@ -239,7 +239,7 @@ export async function GET(request: NextRequest) {
         {
           success: false,
           error: 'Failed to fetch tender analytics',
-          smart_code: 'HERA.FURNITURE.TENDER.ANALYTICS.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.ANALYTICS.ERROR.V1'
         },
         { status: 500 }
       )

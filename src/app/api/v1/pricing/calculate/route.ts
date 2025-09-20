@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 interface PricingCalculationRequest {
   organization_id: string
@@ -445,7 +445,7 @@ export async function POST(request: NextRequest) {
           reference_number: pricing_data.product_id,
           transaction_date: new Date().toISOString(),
           total_amount: calculationResult.final_price,
-          smart_code: 'HERA.SYSTEM.PRICING.TXN.CALCULATION.v1',
+          smart_code: 'HERA.SYSTEM.PRICING.TXN.CALCULATION.V1',
           business_context: {
             calculation_type: pricing_data.calculation_type,
             pricing_method: pricing_data.pricing_method,

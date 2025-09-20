@@ -1,0 +1,131 @@
+smart_code: HERA.SALON.INV.RETURN.RESTOCK.V1
+intent: >
+  Restock good condition items from returns back into inventory.
+  Creates inventory movement transaction and updates stock levels.
+
+scope:
+  in_scope:
+    - Restocking good condition returns
+    - Stock level increment
+    - Inventory movement tracking
+    - Location-based restocking
+  out_of_scope:
+    - Damaged item processing (separate procedure)
+    - Quality inspection workflows
+    - Vendor returns
+    - Cross-location transfers
+
+preconditions:
+  - return transaction exists with good condition items
+  - products are restockable (not expired/obsolete)
+  - inventory location is active
+  - has_permissions: [inventory_management, process_returns]
+
+invariants:
+  - stock movements are properly tracked
+  - inventory valuation is maintained
+  - location stock levels are accurate
+  - audit trail is complete
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing restock
+    - name: return_id
+      type: uuid
+      where: payload
+      description: Return transaction to restock from
+    - name: restock_lines
+      type: array
+      where: payload
+      description: Lines to restock
+      schema:
+        return_line_id: uuid
+        location_id: uuid
+        quantity: number
+  optional:
+    - name: override_location
+      type: uuid
+      where: payload
+      description: Override default restock location
+    - name: restock_notes
+      type: string
+      where: payload
+      description: Additional restock notes
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: inventory_restock
+      description: Inventory restock movement
+      smart_code: HERA.SALON.INV.RETURN.RESTOCK.V1
+  side_effects:
+    - increment product stock levels
+    - create inventory movement audit
+    - update location quantities
+    - record restock timestamp
+
+happy_path:
+  - step: Load return transaction and validate it exists
+  - step: Verify each restock line is marked as good condition
+  - step: Load product entities for restocked items
+  - step: Verify products are active and restockable
+  - step: Determine restock location (override or default)
+  - step: Create inventory movement transaction HERA.SALON.INV.RETURN.RESTOCK.V1
+  - step: For each restock line, create positive inventory movement
+  - step: Update product stock levels by incrementing quantity
+  - step: Update location-specific stock levels
+  - step: Link movements to return transaction
+  - step: Return restock confirmation and updated quantities
+
+errors:
+  - code: RETURN_NOT_FOUND
+    when: return_id does not exist
+    action: return error with valid return requirements
+  - code: RETURN_LINE_NOT_FOUND
+    when: return_line_id does not exist in return
+    action: return error with valid line requirements
+  - code: NOT_GOOD_CONDITION
+    when: attempting to restock damaged items
+    action: return error - use damaged write-off procedure
+  - code: PRODUCT_NOT_RESTOCKABLE
+    when: product is obsolete, expired, or inactive
+    action: return error with product status details
+  - code: LOCATION_NOT_FOUND
+    when: specified location doesn't exist
+    action: return error with valid locations
+  - code: LOCATION_INACTIVE
+    when: location is closed or inactive
+    action: return error with active locations
+  - code: QUANTITY_MISMATCH
+    when: restock quantity doesn't match return quantity
+    action: return error with quantity validation
+  - code: RESTOCK_FAILED
+    when: cannot update inventory levels
+    action: return error with inventory system details
+
+observability:
+  logs: [restock_requested, return_validated, products_verified, stock_updated]
+  audit_json: true
+  metrics: [restock_duration_ms, items_restocked, total_quantity_restocked]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  return_id: "ret-123"
+  restock_lines:
+    - return_line_id: "ret-ln-1"
+      location_id: "loc-main"
+      quantity: 1
+    - return_line_id: "ret-ln-2"
+      location_id: "loc-main"
+      quantity: 2
+
+checks:
+  - description: Return transaction properly validated
+  - description: Only good condition items restocked
+  - description: Products verified as restockable
+  - description: Stock levels correctly incremented
+  - description: Inventory movements properly tracked
+  - description: Complete audit trail maintained

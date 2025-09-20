@@ -2185,7 +2185,7 @@ export default function CALearningPlatform() {
                       <div className="text-sm">
                         <strong className="text-blue-700">🤖 Smart Code:</strong>
                         <code className="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">
-                          HERA.EDU.CA.FINAL.P8.INDIRECT_TAX.v1
+                          HERA.EDU.CA.FINAL.P8.INDIRECT_TAX.V1
                         </code>
                       </div>
                     </div>

@@ -4,7 +4,7 @@
  * Main service orchestrating all accounting operations
  * Implements sacred 6-table architecture with enterprise features
  *
- * Smart Code: HERA.FIN.ACCT.DIGITAL.SERVICE.v1
+ * Smart Code: HERA.FIN.ACCT.DIGITAL.SERVICE.V1
  */
 
 import { supabase } from '@/lib/supabase'

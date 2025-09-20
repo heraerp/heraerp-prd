@@ -1,6 +1,6 @@
-smart_code: HERA.SALES.REPORTS.CORE.DEFS.v1
+smart_code: HERA.SALES.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.SALES.REPORT.TOP_PRODUCTS.CORE.v1
+  - report_code: HERA.SALES.REPORT.TOP_PRODUCTS.CORE.V1
     description: "Top products by revenue"
     params_schema:
       from: { type: date }

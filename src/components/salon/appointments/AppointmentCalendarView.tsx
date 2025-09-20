@@ -9,9 +9,9 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { formatDate, isTodaySafe } from '@/src/lib/date-utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { formatDate, isTodaySafe } from '@/lib/date-utils'
 import {
   startOfMonth,
   endOfMonth,
@@ -21,7 +21,7 @@ import {
   addMonths,
   subMonths
 } from 'date-fns'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface Appointment {
   id: string

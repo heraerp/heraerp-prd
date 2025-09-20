@@ -4,11 +4,11 @@
  */
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { formatCurrency } from '@/src/lib/universal-helpers'
-import { formatDate } from '@/src/lib/date-utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { formatCurrency } from '@/lib/universal-helpers'
+import { formatDate } from '@/lib/date-utils'
 import { Clock, DollarSign, RefreshCw, ChevronRight, Loader2 } from 'lucide-react'
 
 export interface TransactionListItem {

@@ -8,14 +8,14 @@
 
 import { useState } from 'react'
 import { Search, Package, AlertCircle } from 'lucide-react'
-import { useCartStore } from '@/src/lib/hooks/usePos'
-import { ProductPrice } from '@/src/lib/schemas/pos'
-import { Input } from '@/src/components/ui/input'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { cn } from '@/src/lib/utils'
+import { useCartStore } from '@/lib/hooks/usePos'
+import { ProductPrice } from '@/lib/schemas/pos'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
 
 interface ProductSelectorProps {
   products: ProductPrice[]

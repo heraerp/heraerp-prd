@@ -138,7 +138,7 @@ export function generateAccessibleEnterpriseComponent(
 
   const templates = {
     card: `
-import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/src/lib/dna/components/enterprise/EnterpriseCard'
+import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'
 
 <EnterpriseCard
   className="mb-6"
@@ -160,7 +160,7 @@ import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/src/lib/dn
 </EnterpriseCard>`,
 
     stats: `
-import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'
+import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'
 
 <EnterpriseStatsCard
   title="Accessible Metric"
@@ -178,7 +178,7 @@ import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/Enterpr
 />`,
 
     dashboard: `
-import { DashboardSection, KPICard } from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'
+import { DashboardSection, KPICard } from '@/lib/dna/components/enterprise/EnterpriseDashboard'
 
 <DashboardSection 
   title="Accessible Dashboard"

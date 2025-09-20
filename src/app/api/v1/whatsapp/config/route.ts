@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { UniversalConfigService } from '@/src/lib/whatsapp/universal-config-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { UniversalConfigService } from '@/lib/whatsapp/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
 
 // Universal Configuration API for WhatsApp + MCP + AI
 // Customers have full control without hardcoding

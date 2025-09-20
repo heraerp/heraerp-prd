@@ -1,0 +1,84 @@
+smart_code: HERA.UNIV.WF.TIMER.SET.V1
+intent: Set a timer for an instance; worker will later call TIMER.FIRE.
+scope:
+  in_scope:
+    - create timer as transaction entity
+    - schedule for future execution
+    - link to workflow instance
+    - support multiple concurrent timers
+  out_of_scope:
+    - actual timer execution (worker responsibility)
+    - timer persistence beyond organization
+    - complex scheduling patterns (cron-style)
+preconditions:
+  - permissions: [$PROFILE.required_role_timer]
+  - instance exists and is active
+  - timer count below $PROFILE.timer_defaults.max_concurrent_per_instance
+invariants:
+  - timers are immutable once created
+  - org isolation maintained
+  - timer names unique per instance if provided
+  - unique constraint on (organization_id, instance_id, timer_name, scheduled_at) prevents duplicate firing
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+    - minutes: number                              # timer duration
+    - on_fire_smart_code: string                   # procedure to execute
+  optional:
+    - name: string                                 # for cancellation reference
+    - context: object                              # passed to on_fire procedure
+happy_path:
+  - step: verify instance exists and belongs to organization
+  - step: check timer count against max_concurrent_per_instance limit
+  - step: if name provided, check no existing timer with same name for instance
+  - step: calculate fire_at = now() + minutes
+  - step: create universal_transactions header with smart_code=HERA.UNIV.WF.TIMER.V1
+          metadata: { instance_id, fire_at, on_fire_smart_code, name, context, status: 'PENDING' }
+          entity_code: unique_timer_key(organization_id, instance_id, name || uuid(), fire_at)
+  - step: create relationship TIMER -> SCHEDULED_FOR -> INSTANCE
+outputs:
+  transactions_created:
+    - universal_transactions: 1                    # timer entity
+    - core_relationships: 1                        # timer->instance link
+  response:
+    timer_id: uuid
+    instance_id: uuid
+    fire_at: timestamp
+    on_fire_smart_code: string
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: TOO_MANY_TIMERS
+    when: instance has >= max_concurrent_per_instance timers
+    action: return 400 with current count
+  - code: DUPLICATE_TIMER_NAME
+    when: name already exists for instance
+    action: return 409 conflict
+  - code: INVALID_DURATION
+    when: minutes <= 0 or > max allowed
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_timer
+    action: return 403
+observability:
+  logs:
+    - timer_created: { timer_id, instance_id, fire_at, on_fire_smart_code }
+  audit_json: true
+  metrics:
+    - timer_creation_count by workflow_definition
+    - timer_duration_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  minutes: 1440                                    # 24 hours
+  on_fire_smart_code: "HERA.UNIV.TASK.ESCALATE.V1"
+  name: "manager_review_timeout"
+  context:
+    escalation_level: 1
+    notify_roles: ["senior_manager"]
+checks:
+  - description: validate timer duration is reasonable
+  - description: ensure instance is in active state
+  - description: verify on_fire_smart_code exists

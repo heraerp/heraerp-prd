@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { WhatsAppMessageRouter } from '@/src/lib/whatsapp/message-router'
-import { WhatsAppWebhookHandler } from '@/src/lib/whatsapp/webhook-handler'
-import { WhatsAppService } from '@/src/lib/whatsapp/whatsapp-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { WhatsAppMessageRouter } from '@/lib/whatsapp/message-router'
+import { WhatsAppWebhookHandler } from '@/lib/whatsapp/webhook-handler'
+import { WhatsAppService } from '@/lib/whatsapp/whatsapp-service'
+import { universalApi } from '@/lib/universal-api'
 
 // Webhook verification for WhatsApp Business API
 export async function GET(request: NextRequest) {

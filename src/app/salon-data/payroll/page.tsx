@@ -11,16 +11,16 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalApi } from '@/src/lib/universal-api'
-import { handleError } from '@/src/lib/salon/error-handler'
-import type { PayrollEmployee } from '@/src/types/salon.types'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/lib/universal-api'
+import { handleError } from '@/lib/salon/error-handler'
+import type { PayrollEmployee } from '@/types/salon.types'
 import {
   DollarSign,
   Users,
@@ -57,7 +57,7 @@ import {
   X,
   Info
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 // Employee type imported from @/types/salon.types
@@ -130,7 +130,7 @@ const mockEmployees: Employee[] = [
     entity_name: 'Michael Chen',
     entity_code: 'EMP-002',
     entity_type: 'employee',
-    smart_code: 'HERA.SALON.EMPLOYEE.SENIOR.STYLIST.v1',
+    smart_code: 'HERA.SALON.EMPLOYEE.SENIOR.STYLIST.V1',
     classification: 'employee',
     department: 'Hair Styling',
     pay_schedule: 'bi-weekly',

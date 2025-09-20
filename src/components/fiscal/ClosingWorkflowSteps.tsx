@@ -7,10 +7,10 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   CheckCircle,
   Clock,
@@ -26,7 +26,7 @@ import {
   Building,
   FileSpreadsheet
 } from 'lucide-react'
-import { ClosingWorkflow, WorkflowStep } from '@/src/lib/api/closing'
+import { ClosingWorkflow, WorkflowStep } from '@/lib/api/closing'
 
 interface ClosingWorkflowStepsProps {
   workflow?: ClosingWorkflow | null

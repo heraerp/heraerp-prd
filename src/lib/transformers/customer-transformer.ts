@@ -3,7 +3,7 @@
  * Transforms Universal API data to UI-friendly format
  */
 
-import { CustomerData } from '@/src/hooks/useCustomers'
+import { CustomerData } from '@/hooks/useCustomers'
 
 export interface UICustomer {
   id: string

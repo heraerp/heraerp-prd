@@ -1,0 +1,9 @@
+routes:
+  - http: GET /api/v1/salon/settings
+    handler: HERA.SALON.CONFIG.READ.V1
+  - http: PUT /api/v1/salon/settings/:section
+    handler: HERA.SALON.CONFIG.UPSERT.V1
+
+transaction_boundaries:
+  - name: CONFIG_UPSERT
+    applies_to: [HERA.SALON.CONFIG.UPSERT.V1]

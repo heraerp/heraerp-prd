@@ -1,0 +1,508 @@
+{
+  "dynamic_data": [
+    {
+      "id": "dd-const-001-addr",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "street_address",
+      "field_value_text": "123 Main Street",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.ADDRESS.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-city",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "city",
+      "field_value_text": "Springfield",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.CITY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-state",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "state",
+      "field_value_text": "IL",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.STATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-zip",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "zip_code",
+      "field_value_text": "62701",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.ZIP.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-phone",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "phone",
+      "field_value_text": "(217) 555-0123",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.PHONE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-email",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "email",
+      "field_value_text": "maria.garcia@email.com",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.EMAIL.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-dob",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "date_of_birth",
+      "field_value_date": "1985-03-15",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.DOB.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-ssn",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "ssn_last_four",
+      "field_value_text": "1234",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.SSN.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-income",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "annual_income",
+      "field_value_number": 32000,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.INCOME.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-household",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "household_size",
+      "field_value_number": 4,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.HOUSEHOLD_SIZE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-medicaid",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "medicaid_eligible",
+      "field_value_boolean": true,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.MEDICAID_ELIGIBLE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-snap",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "snap_eligible",
+      "field_value_boolean": true,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.SNAP_ELIGIBLE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-housing",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "housing_assistance_eligible",
+      "field_value_boolean": true,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.HOUSING_ELIGIBLE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-veteran",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "veteran_status",
+      "field_value_boolean": false,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.VETERAN.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-disability",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "disability_status",
+      "field_value_boolean": false,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.DISABILITY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-001-language",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-001",
+      "field_name": "preferred_language",
+      "field_value_text": "Spanish",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.LANGUAGE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-addr",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "street_address",
+      "field_value_text": "456 Oak Avenue",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.ADDRESS.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-city",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "city",
+      "field_value_text": "Springfield",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.CITY.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-state",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "state",
+      "field_value_text": "IL",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.STATE.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-zip",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "zip_code",
+      "field_value_text": "62702",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.ZIP.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-phone",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "phone",
+      "field_value_text": "(217) 555-0456",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.PHONE.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-email",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "email",
+      "field_value_text": "james.wilson@email.com",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.EMAIL.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-dob",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "date_of_birth",
+      "field_value_date": "1972-11-28",
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.DOB.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-veteran",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "veteran_status",
+      "field_value_boolean": true,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.VETERAN.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-income",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "annual_income",
+      "field_value_number": 45000,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.INCOME.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-const-002-household",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "const-002",
+      "field_name": "household_size",
+      "field_value_number": 2,
+      "smart_code": "HERA.PUBLICSECTOR.CONSTITUENTS.FIELDS.HOUSEHOLD_SIZE.V1",
+      "created_at": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-dir",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "director_name",
+      "field_value_text": "Dr. Sarah Martinez",
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.DIRECTOR.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-budget",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "annual_budget",
+      "field_value_number": 25000000,
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.BUDGET.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-staff",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "staff_count",
+      "field_value_number": 150,
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.STAFF_COUNT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-phone",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "main_phone",
+      "field_value_text": "(217) 555-1000",
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.PHONE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-email",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "contact_email",
+      "field_value_text": "socialservices@civicflow-demo.gov",
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.EMAIL.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-001-addr",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-001",
+      "field_name": "address",
+      "field_value_text": "100 Government Center, Springfield, IL 62701",
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.ADDRESS.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-002-dir",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-002",
+      "field_name": "director_name",
+      "field_value_text": "Dr. Michael Chen",
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.DIRECTOR.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-002-budget",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-002",
+      "field_name": "annual_budget",
+      "field_value_number": 35000000,
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.BUDGET.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-dept-002-staff",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "dept-002",
+      "field_name": "staff_count",
+      "field_value_number": 200,
+      "smart_code": "HERA.PUBLICSECTOR.ORGANIZATIONS.FIELDS.STAFF_COUNT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-budget",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "program_budget",
+      "field_value_number": 5000000,
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.BUDGET.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-start",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "start_date",
+      "field_value_date": "2024-01-01",
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.START_DATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-end",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "end_date",
+      "field_value_date": "2024-12-31",
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.END_DATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-eligible",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "eligibility_criteria",
+      "field_value_text": "Income below 200% of federal poverty level",
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.ELIGIBILITY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-beneficiaries",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "target_beneficiaries",
+      "field_value_number": 10000,
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.TARGET_BENEFICIARIES.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-001-manager",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-001",
+      "field_name": "program_manager",
+      "field_value_text": "Jennifer Davis",
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.MANAGER.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-002-budget",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-002",
+      "field_name": "program_budget",
+      "field_value_number": 15000000,
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.BUDGET.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-prog-002-units",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "prog-002",
+      "field_name": "housing_units_available",
+      "field_value_number": 500,
+      "smart_code": "HERA.PUBLICSECTOR.PROGRAMS.FIELDS.UNITS_AVAILABLE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-001-amount",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-001",
+      "field_name": "grant_amount",
+      "field_value_number": 1000000,
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.AMOUNT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-001-open",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-001",
+      "field_name": "application_open_date",
+      "field_value_date": "2024-01-01",
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.OPEN_DATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-001-close",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-001",
+      "field_name": "application_close_date",
+      "field_value_date": "2024-02-15",
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.CLOSE_DATE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-001-awards",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-001",
+      "field_name": "expected_awards",
+      "field_value_number": 20,
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.EXPECTED_AWARDS.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-001-max",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-001",
+      "field_name": "max_award_amount",
+      "field_value_number": 100000,
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.MAX_AWARD.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-grant-002-amount",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "grant-002",
+      "field_name": "grant_amount",
+      "field_value_number": 1500000,
+      "smart_code": "HERA.PUBLICSECTOR.GRANTS.FIELDS.AMOUNT.V1",
+      "created_at": "2024-03-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-001-subject",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-001",
+      "field_name": "subject",
+      "field_value_text": "Welcome to CivicFlow Services",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.SUBJECT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-001-body",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-001",
+      "field_name": "body_template",
+      "field_value_text": "Dear {{constituent_name}},\n\nWelcome to CivicFlow! We're here to help you access government services.\n\nYour constituent ID is: {{constituent_id}}\n\nVisit our website or call us at (217) 555-1000 for assistance.",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.BODY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-001-type",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-001",
+      "field_name": "communication_type",
+      "field_value_text": "email",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.TYPE.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-002-subject",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-002",
+      "field_name": "subject",
+      "field_value_text": "You May Be Eligible for Services",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.SUBJECT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-002-body",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-002",
+      "field_name": "body_template",
+      "field_value_text": "Dear {{constituent_name}},\n\nBased on your information, you may be eligible for the following services:\n\n{{eligible_services}}\n\nPlease contact us to apply or learn more.",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.BODY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-003-subject",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-003",
+      "field_name": "subject",
+      "field_value_text": "Grant Application Received - {{grant_name}}",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.SUBJECT.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "dd-tmpl-003-body",
+      "organization_id": "8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77",
+      "entity_id": "tmpl-003",
+      "field_name": "body_template",
+      "field_value_text": "Dear {{applicant_name}},\n\nWe have received your application for {{grant_name}}.\n\nApplication ID: {{application_id}}\nSubmitted: {{submission_date}}\n\nWe will review your application and notify you of our decision by {{decision_date}}.",
+      "smart_code": "HERA.PUBLICSECTOR.COMMUNICATIONS.FIELDS.BODY.V1",
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

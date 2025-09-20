@@ -1,4 +1,4 @@
-smart_code: HERA.PROJECTS.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.PROJECTS.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   # Project
   - { slug: project.code,          entity_type: ENTITY, name: "Project Code",      metadata: { type: "text" } }

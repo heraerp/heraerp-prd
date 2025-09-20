@@ -5,7 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { Database } from '@/src/types/database'
+import { Database } from '@/types/database'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -182,7 +182,7 @@ export async function createBookingFlow(
       title: service.charAt(0).toUpperCase() + service.slice(1),
       description: `Professional ${service} service`
     })),
-    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.SERVICE.v1'
+    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.SERVICE.V1'
   })
 
   // Step 2: Stylist Selection (if enabled)
@@ -198,7 +198,7 @@ export async function createBookingFlow(
         { id: 'stylist_2', title: 'Maria (Color Specialist)' },
         { id: 'any_available', title: 'Any Available Stylist' }
       ],
-      smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.STYLIST.v1'
+      smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.STYLIST.V1'
     })
   }
 
@@ -210,7 +210,7 @@ export async function createBookingFlow(
     ui_component: 'date_time_picker',
     title: 'Select your preferred date and time',
     booking_window: bookingWindowDays,
-    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.DATETIME.v1'
+    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.DATETIME.V1'
   })
 
   // Step 4: Confirmation
@@ -221,7 +221,7 @@ export async function createBookingFlow(
     ui_component: 'buttons',
     title: 'Booking Summary',
     confirmation: true,
-    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.CONFIRM.v1',
+    smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.CONFIRM.V1',
     payment_required: requireDeposit,
     payment_options: requireDeposit ? ['whatsapp_pay', 'payment_link'] : [],
     deposit_percentage: requireDeposit ? 20 : 0
@@ -250,7 +250,7 @@ export async function createBookingFlow(
 
     return {
       success: true,
-      component: 'HERA.WHATSAPP.BOOKING.FLOW.GENERATOR.v1',
+      component: 'HERA.WHATSAPP.BOOKING.FLOW.GENERATOR.V1',
       timestamp: new Date().toISOString(),
       organization_id: organizationId,
       flow_config: flow,

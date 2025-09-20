@@ -5,9 +5,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { appointmentApi } from '@/src/lib/salon/appointment-api'
-import { toast } from '@/src/hooks/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { appointmentApi } from '@/lib/salon/appointment-api'
+import { toast } from '@/hooks/use-toast'
 
 export interface Appointment {
   id: string
@@ -43,7 +43,7 @@ interface UseAppointmentsOptions {
 }
 
 export function useAppointments(options: UseAppointmentsOptions = {}) {
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { organization, user } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 

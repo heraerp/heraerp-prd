@@ -8,7 +8,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/src/lib/auth/session'
+import { useAuth } from '@/lib/auth/session'
 
 export interface Organization {
   id: string

@@ -1,17 +1,17 @@
 /**
  * Fiscal Close Operations Checklist Component
- * Smart Code: HERA.FIN.UI.CLOSE.CHECKLIST.v1
+ * Smart Code: HERA.FIN.UI.CLOSE.CHECKLIST.V1
  *
  * 15-item checklist for year-end closing operations
  */
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import {
   CheckCircle2,
   Circle,
@@ -29,7 +29,7 @@ import {
   RefreshCw,
   Archive
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 export interface ChecklistItem {
   id: string

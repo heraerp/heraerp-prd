@@ -35,7 +35,7 @@ const mockClients = [
     entity_type: 'audit_client',
     entity_code: 'CLI-2025-001',
     entity_name: 'XYZ Manufacturing Ltd',
-    smart_code: 'HERA.AUD.CLI.ENT.PROF.v1',
+    smart_code: 'HERA.AUD.CLI.ENT.PROF.V1',
     status: 'active',
     metadata: {
       client_type: 'private',
@@ -90,7 +90,7 @@ const mockClients = [
     entity_type: 'audit_client',
     entity_code: 'CLI-2025-002',
     entity_name: 'ABC Trading Co',
-    smart_code: 'HERA.AUD.CLI.ENT.PROF.v1',
+    smart_code: 'HERA.AUD.CLI.ENT.PROF.V1',
     status: 'active',
     metadata: {
       client_type: 'public',
@@ -144,7 +144,7 @@ const mockClients = [
     entity_type: 'audit_client',
     entity_code: 'CLI-2025-003',
     entity_name: 'Global Tech Solutions Ltd',
-    smart_code: 'HERA.AUD.CLI.ENT.PROF.v1',
+    smart_code: 'HERA.AUD.CLI.ENT.PROF.V1',
     status: 'prospective',
     metadata: {
       client_type: 'private',
@@ -363,7 +363,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'audit_client',
         entity_code: data.entity_code,
         entity_name: data.entity_name,
-        smart_code: 'HERA.AUD.CLI.ENT.PROF.v1',
+        smart_code: 'HERA.AUD.CLI.ENT.PROF.V1',
         status: 'prospective',
         metadata: {
           client_type: data.client_type,

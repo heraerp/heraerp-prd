@@ -5,7 +5,7 @@ import {
   BPOPriority,
   BPOComplexity,
   BPO_SMART_CODES
-} from '@/src/lib/bpo/bpo-entities'
+} from '@/lib/bpo/bpo-entities'
 
 // Mock invoice storage
 let mockInvoices: BPOInvoiceEntity[] = [

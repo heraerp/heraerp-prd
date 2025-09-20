@@ -1,6 +1,6 @@
 /**
  * HERA Universal Trial Balance DNA Service
- * Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.v1
+ * Smart Code: HERA.FIN.TRIAL.BALANCE.ENGINE.V1
  *
  * Factory service for creating industry-optimized trial balance services
  * that work with HERA's universal 6-table architecture.
@@ -10,7 +10,7 @@ import { UniversalAPIClient } from '@/lib/universal-api'
 
 // Core Trial Balance DNA Configuration
 export const TRIAL_BALANCE_DNA_CONFIG = {
-  component_id: 'HERA.FIN.TRIAL.BALANCE.ENGINE.v1',
+  component_id: 'HERA.FIN.TRIAL.BALANCE.ENGINE.V1',
   component_name: 'Universal Trial Balance Engine',
   version: '1.0.0',
 
@@ -37,9 +37,9 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       },
       critical_accounts: ['Cash', 'Inventory - Food', 'Food Sales', 'Cost of Food Sold'],
       smart_codes: {
-        revenue: 'HERA.REST.POS.TXN.SALE.v1',
+        revenue: 'HERA.REST.POS.TXN.SALE.V1',
         cogs: 'HERA.REST.INV.COGS.v1',
-        labor: 'HERA.REST.HR.PAY.STAFF.v1'
+        labor: 'HERA.REST.HR.PAY.STAFF.V1'
       }
     },
 
@@ -52,9 +52,9 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       },
       critical_accounts: ['Cash', 'Service Revenue', 'Product Sales', 'Staff Salaries'],
       smart_codes: {
-        service_revenue: 'HERA.SALON.SVC.TXN.SERVICE.v1',
-        product_revenue: 'HERA.SALON.SVC.TXN.PRODUCT.v1',
-        staff_costs: 'HERA.SALON.HR.PAY.STYLIST.v1'
+        service_revenue: 'HERA.SALON.SVC.TXN.SERVICE.V1',
+        product_revenue: 'HERA.SALON.SVC.TXN.PRODUCT.V1',
+        staff_costs: 'HERA.SALON.HR.PAY.STYLIST.V1'
       }
     },
 
@@ -88,8 +88,8 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       ],
       smart_codes: {
         sales: 'HERA.MFG.SALE.FINISHED.v1',
-        materials: 'HERA.MFG.PUR.RAW.MATERIALS.v1',
-        labor: 'HERA.MFG.HR.PAY.PRODUCTION.v1'
+        materials: 'HERA.MFG.PUR.RAW.MATERIALS.V1',
+        labor: 'HERA.MFG.HR.PAY.PRODUCTION.V1'
       }
     },
 
@@ -104,7 +104,7 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       smart_codes: {
         fees: 'HERA.PROF.TIME.BILLING.v1',
         expenses: 'HERA.PROF.EXP.OPERATING.v1',
-        salaries: 'HERA.PROF.HR.PAY.CONSULTANT.v1'
+        salaries: 'HERA.PROF.HR.PAY.CONSULTANT.V1'
       }
     },
 
@@ -122,8 +122,8 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
         'Cost of Goods Sold'
       ],
       smart_codes: {
-        sales: 'HERA.RETAIL.POS.TXN.SALE.v1',
-        inventory: 'HERA.RETAIL.INV.PUR.MERCHANDISE.v1',
+        sales: 'HERA.RETAIL.POS.TXN.SALE.V1',
+        inventory: 'HERA.RETAIL.INV.PUR.MERCHANDISE.V1',
         shrinkage: 'HERA.RETAIL.INV.SHRINKAGE.v1'
       }
     },

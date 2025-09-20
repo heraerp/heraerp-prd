@@ -1,0 +1,106 @@
+smart_code: HERA.UNIV.WF.INSTANCE.GET.V1
+intent: Get detailed workflow instance information.
+scope:
+  in_scope:
+    - retrieve instance details
+    - include related steps
+    - include active tasks
+    - include active timers
+  out_of_scope:
+    - instance modification
+    - state changes
+    - historical aggregations
+preconditions:
+  - permissions: [$PROFILE.required_role_read] or instance owner
+  - instance exists in organization
+invariants:
+  - read-only operation
+  - org isolation enforced
+  - complete instance data returned
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid
+  optional:
+    - include_steps: boolean                       # include step history (default true)
+    - include_tasks: boolean                       # include tasks (default true)
+    - include_timers: boolean                      # include timers (default true)
+    - steps_limit: number                          # limit step history (default 100)
+happy_path:
+  - step: query instance from wf_instances_view with org isolation
+  - step: if include_steps, query from wf_steps_view for this instance
+  - step: if include_tasks, query from wf_tasks_view for this instance
+  - step: if include_timers, query from wf_timers_view for this instance
+  - step: combine all data into comprehensive response
+outputs:
+  response:
+    instance:
+      instance_id: uuid
+      definition_code: string
+      definition_version: string
+      current_state: string
+      subject_ref: object
+      sla_at: timestamp
+      paused: boolean
+      owner_team: string
+      owner_user_id: uuid
+      status: string
+      created_at: timestamp
+      updated_at: timestamp
+    steps: array
+      - step_id: uuid
+        from_state: string
+        to_state: string
+        actor_role: string
+        actor_user_id: uuid
+        duration_ms: number
+        note: string
+        effects_failed: array
+        guards_executed: array
+        effects_queued: array
+        created_at: timestamp
+    tasks: array
+      - task_id: uuid
+        title: string
+        task_state: string
+        assignee_user_id: uuid
+        assignee_role: string
+        due_at: timestamp
+        sla_at: timestamp
+        priority: string
+        outcome: string
+        completed_at: timestamp
+        completed_by: uuid
+    timers: array
+      - timer_id: uuid
+        timer_name: string
+        fire_at: timestamp
+        on_fire_smart_code: string
+        timer_status: string
+        fired_at: timestamp
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: PERMISSION_DENIED
+    when: user lacks read permissions for this instance
+    action: return 403
+observability:
+  logs:
+    - instance_retrieved: { instance_id, organization_id, includes }
+  audit_json: false                                # read-only operation
+  metrics:
+    - instance_get_requests
+    - instance_get_duration
+    - instance_data_size
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  include_steps: true
+  include_tasks: true
+  include_timers: true
+  steps_limit: 50
+checks:
+  - description: ensure org isolation
+  - description: verify user has access to instance
+  - description: validate all related data is included

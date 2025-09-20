@@ -1,0 +1,371 @@
+smart_code: HERA.SALON.POS.CART.REPRICE.V1
+intent: Reprice salon POS cart with current pricing rules, membership discounts, and promotions
+scope:
+  in_scope:
+    - retrieve cart and line items
+    - apply current service pricing
+    - calculate membership discounts
+    - apply promotion codes
+    - update cart totals
+    - maintain audit trail
+  out_of_scope:
+    - payment processing
+    - inventory allocation
+    - appointment booking
+preconditions:
+  - cart exists and is active (not checked out)
+  - organization has valid pricing configuration
+  - auth: requires authenticated user
+  - organization_id required in context
+invariants:
+  - cart items remain unchanged (only prices updated)
+  - pricing follows configured rules
+  - audit trail preserved
+  - idempotent operation
+inputs:
+  required:
+    - cart_id: uuid
+    - organization_id: uuid
+  optional:
+    - promotion_codes: array                       # array of promotion codes
+    - membership_id: uuid                         # customer membership for discounts
+  context:
+    - user_id: uuid
+    - correlation_id: string
+    - idempotency_key: string
+happy_path:
+  - step: load cart and validate status
+  - step: load current pricing rules
+  - step: recalculate line item prices
+  - step: apply membership discounts
+  - step: apply promotion codes
+  - step: calculate taxes
+  - step: update cart totals
+  - step: return repriced cart
+outputs:
+  success: boolean
+  data:
+    cart_id: uuid
+    organization_id: uuid
+    status: string
+    customer_id: uuid
+    stylist_id: uuid
+    subtotal: number
+    discount_amount: number
+    discount_details: array
+      - type: string                              # membership, promotion, special
+      - amount: number
+      - description: string
+    tax_amount: number
+    total_amount: number
+    line_items: array
+      - line_id: uuid
+        service_id: uuid
+        service_name: string
+        quantity: number
+        unit_price: number
+        line_amount: number
+        discount_amount: number
+        metadata: object
+    metadata:
+      repriced_at: timestamp
+      reprice_count: number
+      applied_promotions: array
+      membership_discount_percent: number
+  metadata:
+    procedure_version: "1.0"
+    execution_time_ms: number
+
+procedure_steps:
+  load_and_validate_cart:
+    description: "Load cart and ensure it's eligible for repricing"
+    query: |
+      SELECT 
+        t.id as cart_id,
+        t.organization_id,
+        t.transaction_status as status,
+        t.from_entity_id as customer_id,
+        t.to_entity_id as stylist_id,
+        t.metadata,
+        json_agg(
+          json_build_object(
+            'line_id', tl.id,
+            'service_id', tl.line_entity_id,
+            'quantity', tl.quantity,
+            'unit_price', tl.unit_price,
+            'line_amount', tl.line_amount,
+            'metadata', tl.metadata
+          )
+        ) as line_items
+      FROM universal_transactions t
+      JOIN universal_transaction_lines tl ON tl.transaction_id = t.id
+      WHERE t.id = $1
+        AND t.organization_id = $2
+        AND t.transaction_type = 'cart'
+        AND t.smart_code = 'HERA.SALON.POS.CART.ACTIVE.V1'
+      GROUP BY t.id;
+    validation:
+      - cart must exist
+      - status must be 'active' (not 'checked_out' or 'cancelled')
+      - organization_id must match
+
+  load_pricing_rules:
+    description: "Load current service pricing and rules"
+    sources:
+      service_prices: |
+        SELECT 
+          e.id as service_id,
+          e.entity_name as service_name,
+          cd.field_value_number as base_price
+        FROM core_entities e
+        JOIN core_dynamic_data cd ON cd.entity_id = e.id
+        WHERE e.organization_id = $1
+          AND e.entity_type = 'service'
+          AND cd.field_name = 'price'
+          AND e.id = ANY($2);  -- service IDs from cart
+      
+      membership_discounts: |
+        SELECT 
+          e.id as membership_id,
+          cd.field_value_number as discount_percent
+        FROM core_entities e
+        JOIN core_dynamic_data cd ON cd.entity_id = e.id
+        WHERE e.organization_id = $1
+          AND e.entity_type = 'membership'
+          AND cd.field_name = 'discount_percent'
+          AND e.id = $2;  -- membership_id if provided
+          
+      promotion_rules: |
+        SELECT 
+          e.entity_code as promo_code,
+          e.metadata->>'discount_type' as discount_type,
+          (e.metadata->>'discount_value')::numeric as discount_value,
+          e.metadata->>'min_purchase' as min_purchase
+        FROM core_entities e
+        WHERE e.organization_id = $1
+          AND e.entity_type = 'promotion'
+          AND e.entity_code = ANY($2)  -- promotion_codes array
+          AND e.status = 'active'
+          AND (e.metadata->>'valid_from')::timestamp <= NOW()
+          AND (e.metadata->>'valid_to')::timestamp >= NOW();
+
+  recalculate_line_prices:
+    description: "Apply current pricing to each line item"
+    logic: |
+      FOR each line_item IN cart.line_items:
+        -- Get current service price
+        new_price = service_prices[line_item.service_id].base_price
+        
+        -- Apply any service-specific rules
+        IF line_item.metadata.special_pricing:
+          new_price = apply_special_pricing(new_price, line_item.metadata)
+        
+        -- Update line item
+        UPDATE universal_transaction_lines
+        SET 
+          unit_price = new_price,
+          line_amount = new_price * quantity,
+          updated_at = NOW()
+        WHERE id = line_item.line_id;
+
+  apply_membership_discount:
+    description: "Apply membership discount if customer has active membership"
+    logic: |
+      IF membership_id PROVIDED AND membership_discount EXISTS:
+        discount_percent = membership_discounts[membership_id].discount_percent
+        
+        FOR each line_item:
+          discount = line_item.line_amount * (discount_percent / 100)
+          total_membership_discount += discount
+          
+        ADD discount_detail:
+          type: 'membership'
+          amount: total_membership_discount
+          description: f'{discount_percent}% membership discount'
+
+  apply_promotion_codes:
+    description: "Apply valid promotion codes in order"
+    logic: |
+      subtotal = SUM(line_items.line_amount)
+      
+      FOR each promo IN valid_promotions ORDER BY precedence:
+        IF subtotal >= promo.min_purchase:
+          IF promo.discount_type == 'percentage':
+            discount = subtotal * (promo.discount_value / 100)
+          ELSE IF promo.discount_type == 'fixed':
+            discount = promo.discount_value
+          
+          total_promotion_discount += discount
+          applied_promotions.push(promo.promo_code)
+          
+          ADD discount_detail:
+            type: 'promotion'
+            amount: discount
+            description: f'{promo.promo_code}: {promo.discount_value}% off'
+
+  calculate_taxes:
+    description: "Calculate applicable taxes"
+    logic: |
+      taxable_amount = subtotal - total_discounts
+      
+      -- Get tax rate for organization location
+      tax_rate = get_tax_rate(organization.location, 'service')
+      
+      tax_amount = taxable_amount * (tax_rate / 100)
+
+  update_cart_totals:
+    description: "Update cart with new totals"
+    query: |
+      UPDATE universal_transactions
+      SET 
+        total_amount = $3,
+        metadata = jsonb_set(
+          jsonb_set(
+            jsonb_set(
+              jsonb_set(
+                COALESCE(metadata, '{}'::jsonb),
+                '{subtotal}', to_jsonb($4::numeric)
+              ),
+              '{discount_amount}', to_jsonb($5::numeric)
+            ),
+            '{tax_amount}', to_jsonb($6::numeric)
+          ),
+          '{repriced_at}', to_jsonb(NOW())
+        ),
+        updated_at = NOW()
+      WHERE id = $1
+        AND organization_id = $2
+      RETURNING *;
+
+  create_audit_record:
+    description: "Create audit trail for repricing"
+    query: |
+      INSERT INTO universal_transaction_lines (
+        transaction_id,
+        line_number,
+        smart_code,
+        metadata,
+        organization_id
+      ) VALUES (
+        $1,  -- cart_id
+        (SELECT COALESCE(MAX(line_number), 0) + 1 FROM universal_transaction_lines WHERE transaction_id = $1),
+        'HERA.SALON.POS.CART.REPRICE.AUDIT.V1',
+        jsonb_build_object(
+          'repriced_by', $2,  -- user_id
+          'repriced_at', NOW(),
+          'old_total', $3,
+          'new_total', $4,
+          'applied_promotions', $5,
+          'correlation_id', $6
+        ),
+        $7  -- organization_id
+      );
+
+errors:
+  - code: CART_NOT_FOUND
+    when: cart does not exist or wrong organization
+    action: return 404 with helpful message
+  - code: CART_ALREADY_CHECKED_OUT
+    when: cart status is not 'active'
+    action: return 400 indicating cart is finalized
+  - code: INVALID_PROMOTION_CODE
+    when: promotion code is invalid or expired
+    action: continue with warning, exclude invalid code
+  - code: SERVICE_PRICING_MISSING
+    when: service has no configured price
+    action: use last known price with warning
+  - code: PERMISSION_DENIED
+    when: user lacks permission to reprice
+    action: return 403 with permission error
+
+observability:
+  logs:
+    - cart_reprice_started: { cart_id, organization_id, user_id }
+    - pricing_rules_loaded: { service_count, promotion_count, has_membership }
+    - discounts_applied: { membership_discount, promotion_discount, total_discount }
+    - cart_reprice_completed: { cart_id, old_total, new_total, discount_amount }
+  audit_json: true
+  metrics:
+    - cart_reprice_count
+    - average_reprice_time_ms
+    - discount_amount_total
+    - promotion_usage_count by code
+
+idempotency:
+  key_components:
+    - cart_id
+    - organization_id
+    - promotion_codes (sorted)
+    - membership_id
+  behavior: "Return cached result if same reprice attempted within 5 minutes"
+  
+performance_notes:
+  - indexes_required:
+    - universal_transactions(id, organization_id, transaction_type, transaction_status)
+    - universal_transaction_lines(transaction_id)
+    - core_entities(organization_id, entity_type, status)
+    - core_dynamic_data(entity_id, field_name)
+  - expected_latency: "< 200ms for typical cart (5-10 items)"
+  - optimization_hints:
+    - "Cache service prices for 5 minutes"
+    - "Batch line item updates"
+    - "Pre-calculate common discounts"
+
+example_request:
+  cart_id: "550e8400-e29b-41d4-a716-446655440000"
+  organization_id: "hair-talkz-salon-uuid"
+  promotion_codes: ["SAVE10", "MEMBER20"]
+  membership_id: "gold-member-uuid"
+  _context:
+    user_id: "user-123"
+    correlation_id: "WF-20241215143022-a1b2c3d4-001"
+    idempotency_key: "reprice-550e8400"
+
+example_response:
+  success: true
+  data:
+    cart_id: "550e8400-e29b-41d4-a716-446655440000"
+    organization_id: "hair-talkz-salon-uuid"
+    status: "active"
+    customer_id: "customer-456"
+    stylist_id: "stylist-789"
+    subtotal: 250.00
+    discount_amount: 45.00
+    discount_details:
+      - type: "membership"
+        amount: 25.00
+        description: "10% Gold membership discount"
+      - type: "promotion"
+        amount: 20.00
+        description: "SAVE10: 10% off"
+    tax_amount: 10.25
+    total_amount: 215.25
+    line_items:
+      - line_id: "line-001"
+        service_id: "service-haircut"
+        service_name: "Premium Haircut"
+        quantity: 1
+        unit_price: 120.00
+        line_amount: 120.00
+        discount_amount: 12.00
+      - line_id: "line-002"
+        service_id: "service-color"
+        service_name: "Hair Color"
+        quantity: 1
+        unit_price: 130.00
+        line_amount: 130.00
+        discount_amount: 13.00
+    metadata:
+      repriced_at: "2024-12-15T14:30:22Z"
+      reprice_count: 2
+      applied_promotions: ["SAVE10"]
+      membership_discount_percent: 10
+  metadata:
+    procedure_version: "1.0"
+    execution_time_ms: 145
+
+checks:
+  - description: verify cart exists and is active
+  - description: ensure pricing rules are current
+  - description: validate promotion codes before applying
+  - description: confirm final total is positive

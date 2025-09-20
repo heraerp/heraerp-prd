@@ -1,0 +1,140 @@
+smart_code: HERA.SALON.SVC.ADJ.POSTSALE.V1
+intent: >
+  Process service price adjustments after sale completion.
+  Creates adjustment transaction for quality issues or goodwill gestures.
+
+scope:
+  in_scope:
+    - Service line price adjustments
+    - Quality issue documentation
+    - Goodwill adjustments
+    - Negative amount adjustments only
+    - Adjustment reason tracking
+  out_of_scope:
+    - Retail product returns (use return.retail)
+    - Full service refunds (use payment.refund)
+    - Pre-sale price changes (use cart operations)
+    - Positive price increases
+
+preconditions:
+  - original sale exists and is committed
+  - target line is a service (not retail)
+  - adjustment amount is negative
+  - has_permissions: [pos_operator, service_adjustments]
+
+invariants:
+  - original sale remains immutable
+  - adjustments create new transactions
+  - adjustment amounts are always negative
+  - complete audit trail maintained
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing adjustment
+    - name: sale_id
+      type: uuid
+      where: payload
+      description: Original sale containing service
+    - name: target_line_id
+      type: uuid
+      where: payload
+      description: Service line to adjust
+    - name: adjustment
+      type: object
+      where: payload
+      description: Adjustment details
+      schema:
+        type: enum[amount,percentage]
+        value: number
+        reason: string
+  optional:
+    - name: manager_approval
+      type: object
+      where: payload
+      description: Manager approval if required by policy
+      schema:
+        manager_id: uuid
+        approval_code: string
+    - name: adjustment_metadata
+      type: object
+      where: payload
+      default: {}
+      description: Additional adjustment context
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: adjustment_header
+      description: Service adjustment transaction
+      smart_code: HERA.SALON.SVC.ADJ.POSTSALE.V1
+  side_effects:
+    - create adjustment transaction
+    - link to original service line
+    - calculate tax implications
+    - prepare for refund processing
+
+happy_path:
+  - step: Load original sale and validate it exists and is committed
+  - step: Validate target line exists and is a service line
+  - step: Ensure adjustment value is negative (no price increases)
+  - step: Check if manager approval required based on amount/policy
+  - step: Create adjustment transaction header with HERA.SALON.SVC.ADJ.POSTSALE.V1
+  - step: Create adjustment line with negative amount
+  - step: Set relationship ADJUSTMENT DERIVES_FROM SERVICE_LINE
+  - step: Store target_line_id and reason in dynamic data
+  - step: Calculate proportional tax adjustment
+  - step: Return adjustment_id and adjustment details
+
+errors:
+  - code: SALE_NOT_FOUND
+    when: sale_id does not exist
+    action: return error with valid sale requirements
+  - code: SALE_NOT_COMMITTED
+    when: sale is not in committed status
+    action: return error - only committed sales can be adjusted
+  - code: SERVICE_LINE_NOT_FOUND
+    when: target_line_id does not exist or is not a service
+    action: return error with service line requirements
+  - code: POSITIVE_ADJUSTMENT_ATTEMPTED
+    when: adjustment value is positive
+    action: return error - only negative adjustments allowed
+  - code: MANAGER_APPROVAL_REQUIRED
+    when: adjustment exceeds threshold without approval
+    action: return error with approval requirements
+  - code: INVALID_APPROVAL_CODE
+    when: manager approval code is invalid
+    action: return error with approval validation
+  - code: ADJUSTMENT_LIMIT_EXCEEDED
+    when: adjustment exceeds service line amount
+    action: return error with maximum adjustment allowed
+  - code: DUPLICATE_ADJUSTMENT
+    when: service line already fully adjusted
+    action: return error with adjustment history
+
+observability:
+  logs: [adjustment_requested, sale_validated, service_validated, adjustment_created]
+  audit_json: true
+  metrics: [adjustment_duration_ms, adjustment_amount, approval_required]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  sale_id: "sale-123"
+  target_line_id: "ln_service_2"
+  adjustment:
+    type: "amount"
+    value: -15.00
+    reason: "quality_issue"
+  manager_approval:
+    manager_id: "emp-456"
+    approval_code: "MGR123"
+
+checks:
+  - description: Original sale and service line properly validated
+  - description: Adjustment amount is negative
+  - description: Manager approval verified if required
+  - description: Adjustment transaction created with proper smart code
+  - description: Tax implications calculated correctly
+  - description: Complete audit trail with relationships

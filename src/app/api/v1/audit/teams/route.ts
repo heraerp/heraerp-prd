@@ -52,7 +52,7 @@ const mockTeams = [
     entity_type: 'audit_team',
     entity_code: 'GSPU-ENG-001',
     entity_name: 'Senior Engagement Team Alpha',
-    smart_code: 'HERA.AUD.TEAM.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.TEAM.ENT.MASTER.V1',
     status: 'active',
     team_type: 'engagement',
     team_lead_id: 'partner_001',
@@ -79,7 +79,7 @@ const mockTeams = [
     entity_type: 'audit_team',
     entity_code: 'GSPU-QR-001',
     entity_name: 'Quality Review Team',
-    smart_code: 'HERA.AUD.TEAM.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.TEAM.ENT.MASTER.V1',
     status: 'active',
     team_type: 'quality_review',
     team_lead_id: 'partner_002',
@@ -334,7 +334,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'audit_team',
         entity_code: teamCode,
         entity_name: data.team_name,
-        smart_code: 'HERA.AUD.TEAM.ENT.MASTER.v1',
+        smart_code: 'HERA.AUD.TEAM.ENT.MASTER.V1',
         status: 'active',
         team_type: data.team_type,
         team_lead_id: data.team_lead_id,
@@ -376,7 +376,7 @@ export async function POST(request: NextRequest) {
       // Create universal transaction for team creation
       const transaction = {
         transaction_type: 'team_creation',
-        smart_code: 'HERA.AUD.TEAM.TXN.CREATE.v1',
+        smart_code: 'HERA.AUD.TEAM.TXN.CREATE.V1',
         reference_number: teamCode,
         total_amount: teamMembers.reduce((sum: number, m: any) => sum + (m.hourly_rate || 0), 0),
         metadata: {
@@ -423,7 +423,7 @@ export async function POST(request: NextRequest) {
       // Create transaction for member assignment
       const transaction = {
         transaction_type: 'team_member_assignment',
-        smart_code: 'HERA.AUD.TEAM.TXN.ASSIGN.v1',
+        smart_code: 'HERA.AUD.TEAM.TXN.ASSIGN.V1',
         reference_number: `${team_id}-${member_id}`,
         total_amount: 0,
         metadata: {
@@ -467,7 +467,7 @@ export async function POST(request: NextRequest) {
       // Create transaction for member removal
       const transaction = {
         transaction_type: 'team_member_removal',
-        smart_code: 'HERA.AUD.TEAM.TXN.REMOVE.v1',
+        smart_code: 'HERA.AUD.TEAM.TXN.REMOVE.V1',
         reference_number: `${team_id}-${member_id}`,
         total_amount: 0,
         metadata: {
@@ -538,7 +538,7 @@ export async function PUT(request: NextRequest) {
       // Create transaction for team update
       const transaction = {
         transaction_type: 'team_update',
-        smart_code: 'HERA.AUD.TEAM.TXN.UPDATE.v1',
+        smart_code: 'HERA.AUD.TEAM.TXN.UPDATE.V1',
         reference_number: updatedTeam.entity_code,
         total_amount: 0,
         metadata: {
@@ -647,7 +647,7 @@ export async function DELETE(request: NextRequest) {
     // Create transaction for team deletion
     const transaction = {
       transaction_type: 'team_deletion',
-      smart_code: 'HERA.AUD.TEAM.TXN.DELETE.v1',
+      smart_code: 'HERA.AUD.TEAM.TXN.DELETE.V1',
       reference_number: deletedTeam.entity_code,
       total_amount: 0,
       metadata: {

@@ -8,11 +8,11 @@
 
 import { useState } from 'react'
 import { Percent, Gift, Heart, DollarSign } from 'lucide-react'
-import { useQuickActions, useCartStore } from '@/src/lib/hooks/usePos'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { useQuickActions, useCartStore } from '@/lib/hooks/usePos'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Dialog,
   DialogContent,
@@ -21,8 +21,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/src/components/ui/dialog'
-import { RadioGroup, RadioGroupItem } from '@/src/components/ui/radio-group'
+} from '@/components/ui/dialog'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export function QuickActions() {
   const { applyPercentageDiscount, applyFixedDiscount, addQuickTip } = useQuickActions()

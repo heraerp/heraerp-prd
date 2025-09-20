@@ -3,9 +3,9 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Play, Download, File, FileText, X } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { Dialog, DialogContent } from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface MediaMessageProps {
   type: 'image' | 'video' | 'document' | 'audio'

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface SettingData {
   entity: any

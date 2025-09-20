@@ -1,4 +1,4 @@
-import { UniversalTransaction, UniversalTransactionLine } from '@/src/types/hera-database.types'
+import { UniversalTransaction, UniversalTransactionLine } from '@/types/hera-database.types'
 
 export interface ValidationResult {
   valid: boolean
@@ -61,7 +61,7 @@ export class SAPValidationService {
       errors.push({
         field: 'lines',
         message: `Document not balanced. Debits: ${totalDebits}, Credits: ${totalCredits}`,
-        code: 'HERA.ERP.FI.ERROR.BALANCE.v1'
+        code: 'HERA.ERP.FI.ERROR.BALANCE.V1'
       })
     }
   }
@@ -102,11 +102,11 @@ export class SAPValidationService {
     errors: ValidationError[]
   ): void {
     const validSmartCodes = [
-      'HERA.ERP.FI.JE.POST.v1',
-      'HERA.ERP.FI.AP.INVOICE.v1',
-      'HERA.ERP.FI.AR.INVOICE.v1',
-      'HERA.ERP.FI.AP.PAYMENT.v1',
-      'HERA.ERP.FI.AR.RECEIPT.v1'
+      'HERA.ERP.FI.JE.POST.V1',
+      'HERA.ERP.FI.AP.INVOICE.V1',
+      'HERA.ERP.FI.AR.INVOICE.V1',
+      'HERA.ERP.FI.AP.PAYMENT.V1',
+      'HERA.ERP.FI.AR.RECEIPT.V1'
     ]
 
     if (!validSmartCodes.includes(transaction.smart_code)) {
@@ -153,9 +153,9 @@ export class SAPValidationService {
   ): void {
     // Validate based on smart code
     const smartCodeToDocType: Record<string, string[]> = {
-      'HERA.ERP.FI.JE.POST.v1': ['SA', 'AB', 'DR'],
-      'HERA.ERP.FI.AP.INVOICE.v1': ['KR', 'RE'],
-      'HERA.ERP.FI.AR.INVOICE.v1': ['DR', 'RV']
+      'HERA.ERP.FI.JE.POST.V1': ['SA', 'AB', 'DR'],
+      'HERA.ERP.FI.AP.INVOICE.V1': ['KR', 'RE'],
+      'HERA.ERP.FI.AR.INVOICE.V1': ['DR', 'RV']
     }
 
     const allowedTypes = smartCodeToDocType[transaction.smart_code]

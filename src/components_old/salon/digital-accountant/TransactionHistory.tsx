@@ -1,7 +1,7 @@
 'use client'
 /**
  * Transaction History Component
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.HISTORY.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.HISTORY.V1
  */
 
 import React from 'react'

@@ -7,12 +7,12 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
 import {
   Clipboard,
   CheckCircle,
@@ -23,8 +23,8 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react'
-import { CloseChecklistItem } from '@/src/lib/schemas/fiscal'
-import { cn } from '@/src/lib/utils'
+import { CloseChecklistItem } from '@/lib/schemas/fiscal'
+import { cn } from '@/lib/utils'
 
 interface ClosingChecklistPanelProps {
   checklist: CloseChecklistItem[]
@@ -280,7 +280,7 @@ export function ClosingChecklistPanel({
               <Info className="h-3 w-3" />
               <AlertDescription className="text-xs">
                 <div className="font-medium text-blue-800 dark:text-blue-200">
-                  Smart Code: HERA.FIN.FISCAL.CLOSE.CHECKLIST.v1
+                  Smart Code: HERA.FIN.FISCAL.CLOSE.CHECKLIST.V1
                 </div>
                 <div className="text-blue-700 dark:text-blue-300 mt-1">
                   Checklist items are stored in core_dynamic_data and tracked via universal_transactions

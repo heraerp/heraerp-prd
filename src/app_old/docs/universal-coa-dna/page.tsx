@@ -254,7 +254,7 @@ const UniversalCOADNA = {
                       <div>
                         <strong>Smart Code Assignment:</strong> Intelligent business context
                         <div className="text-sm text-muted-foreground">
-                          HERA.FIN.GL.UAE.REST.FOOD_COST.v1
+                          HERA.FIN.GL.UAE.REST.FOOD_COST.V1
                         </div>
                       </div>
                     </li>

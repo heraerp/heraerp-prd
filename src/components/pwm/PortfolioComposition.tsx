@@ -6,12 +6,12 @@ import { TopHoldingsGrid } from './TopHoldingsGrid'
 import { GeographicMap } from './GeographicMap'
 import { SectorTrends } from './SectorTrends'
 import { PortfolioHoldings } from './PortfolioHoldings'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Card } from '@/src/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/components/ui/card'
 import { PieChart, Globe, TrendingUp, Grid3x3 } from 'lucide-react'
-import { AssetAllocation, WealthEntity } from '@/src/lib/pwm/types'
+import { AssetAllocation, WealthEntity } from '@/lib/pwm/types'
 import { useQuery } from '@tanstack/react-query'
-import { getWealthEntities, getCurrentValue } from '@/src/lib/pwm/api'
+import { getWealthEntities, getCurrentValue } from '@/lib/pwm/api'
 
 interface PortfolioCompositionProps {
   organizationId: string

@@ -47,6 +47,10 @@ export function HeraThemeProvider({
     const savedTheme = localStorage.getItem(storageKey) as Theme
     if (savedTheme) {
       setTheme(savedTheme)
+    } else {
+      // Ensure dark theme is set as default if nothing is saved
+      setTheme('dark')
+      localStorage.setItem(storageKey, 'dark')
     }
   }, [storageKey, mounted])
 

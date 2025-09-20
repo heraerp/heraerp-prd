@@ -1,0 +1,365 @@
+smart_code: HERA.UNIV.WF.TESTS.UAT.V1
+suite: WF_KERNEL
+description: Universal workflow kernel UAT test cases
+setup:
+  - register_definition:
+      code: LEAVE_APPROVAL
+      definition:
+        code: "LEAVE_APPROVAL"
+        states: ["DRAFT", "SUBMITTED", "MANAGER_REVIEW", "APPROVED", "REJECTED", "CANCELLED"]
+        transitions:
+          - from: "DRAFT"
+            to: "SUBMITTED"
+            by: ["employee"]
+          - from: "SUBMITTED"
+            to: "MANAGER_REVIEW"
+            by: ["system"]
+            guards: ["HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1"]
+          - from: "MANAGER_REVIEW"
+            to: "APPROVED"
+            by: ["manager"]
+            effects: ["HERA.SALON.HR.LEAVE.BLOCK.CALENDAR.V1"]
+          - from: "MANAGER_REVIEW"
+            to: "REJECTED"
+            by: ["manager"]
+          - from: "SUBMITTED"
+            to: "CANCELLED"
+            by: ["employee"]
+        timers:
+          - on_enter: "MANAGER_REVIEW"
+            minutes: 1440
+            on_fire: "HERA.UNIV.TASK.ESCALATE.V1"
+            name: "manager_review_timeout"
+cases:
+  - name: start + advance happy path
+    description: Complete workflow from start to approval
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with: 
+          organization_id: $ORG
+          definition_code: LEAVE_APPROVAL
+          subject_ref:
+            entity_id: "emp_1"
+            entity_type: "leave_request"
+        expect:
+          instance_id: $INSTANCE_1
+          current_state: "DRAFT"
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          to_state: "SUBMITTED"
+          actor_role: "employee"
+          payload:
+            reason: "Annual vacation"
+        expect:
+          from_state: "DRAFT"
+          to_state: "SUBMITTED"
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          to_state: "MANAGER_REVIEW"
+          actor_role: "system"
+        expect:
+          from_state: "SUBMITTED"
+          to_state: "MANAGER_REVIEW"
+          guards_executed: ["HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1"]
+          
+      - call: HERA.UNIV.WF.TIMER.SET.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          minutes: 1440
+          on_fire_smart_code: "HERA.UNIV.TASK.ESCALATE.V1"
+          name: "manager_review_timeout"
+        expect:
+          timer_id: $TIMER_1
+          
+      - assert: instance.current_state == "MANAGER_REVIEW"
+      
+  - name: guard blocks transition
+    description: Guard procedure prevents invalid transition
+    steps:
+      - mock: HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1
+        returns: { error: "INSUFFICIENT_BALANCE" }
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          to_state: "MANAGER_REVIEW"
+          actor_role: "system"
+        expect_error: GUARD_FAILED
+        
+  - name: unauthorized role blocked
+    description: User without required role cannot advance
+    steps:
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          to_state: "APPROVED"
+          actor_role: "employee"
+        expect_error: UNAUTHORIZED_ROLE
+        
+  - name: timer lifecycle
+    description: Timer creation, firing, and cancellation
+    steps:
+      - call: HERA.UNIV.WF.TIMER.SET.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          minutes: 60
+          on_fire_smart_code: "HERA.UNIV.TASK.CREATE.V1"
+          name: "reminder"
+        expect:
+          timer_id: $TIMER_2
+          
+      - call: HERA.UNIV.WF.TIMER.FIRE.V1
+        with:
+          organization_id: $ORG
+          timer_id: $TIMER_2
+        expect:
+          status: "FIRED"
+          
+      - call: HERA.UNIV.WF.TIMER.CANCEL.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          name: "manager_review_timeout"
+        expect:
+          cancelled_count: 1
+          
+  - name: task lifecycle
+    description: Task creation, claim, and completion
+    steps:
+      - call: HERA.UNIV.TASK.CREATE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_1
+          title: "Review Leave Request"
+          body: "Please review and approve/reject"
+          assignee_role: "manager"
+          priority: "high"
+        expect:
+          task_id: $TASK_1
+          state: "OPEN"
+          
+      - call: HERA.UNIV.TASK.CLAIM.V1
+        with:
+          organization_id: $ORG
+          task_id: $TASK_1
+          user_id: $MANAGER_USER
+        expect:
+          state: "CLAIMED"
+          
+      - call: HERA.UNIV.TASK.COMPLETE.V1
+        with:
+          organization_id: $ORG
+          task_id: $TASK_1
+          outcome: "approved"
+          advance_workflow:
+            to_state: "APPROVED"
+            payload:
+              approved_by: $MANAGER_USER
+        expect:
+          state: "COMPLETED"
+          workflow_advanced: true
+          
+  - name: idempotency check
+    description: Repeated advance calls are idempotent
+    steps:
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_2
+          to_state: "SUBMITTED"
+          actor_role: "employee"
+          idempotency_key: "test-idem-123"
+        expect:
+          success: true
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_2
+          to_state: "SUBMITTED"
+          actor_role: "employee"
+          idempotency_key: "test-idem-123"
+        expect:
+          success: true
+          note: "Should return same result without re-execution"
+          
+  # Surgical Fix Tests
+  - name: definition_version_pinning
+    description: Ensure running workflows use pinned definition version
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: TEST_WORKFLOW
+        expect:
+          instance_metadata_contains: definition_version
+          
+      - update: workflow definition TEST_WORKFLOW
+        change: add new state "UPDATED_STATE"
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          to_state: "NEXT_STATE"
+        expect:
+          success: true
+          note: "Should use original definition, not updated one"
+          
+  - name: improved_idempotency_scope
+    description: Test enhanced idempotency key scope
+    steps:
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          to_state: "TARGET"
+          actor_role: "user"
+          attempt_nonce: "attempt-1"
+        expect:
+          success: true
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          to_state: "TARGET"
+          actor_role: "user"
+          attempt_nonce: "attempt-1"
+        expect:
+          idempotent: true
+          note: "Same nonce should be idempotent"
+          
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          to_state: "TARGET"
+          actor_role: "user"
+          attempt_nonce: "attempt-2"
+        expect:
+          different_result: true
+          note: "Different nonce should allow new attempt"
+          
+  - name: timer_single_fire_protection
+    description: Test timer can only fire once even with concurrent workers
+    steps:
+      - call: HERA.UNIV.WF.TIMER.SET.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          minutes: 1
+          name: "test-timer"
+          on_fire_smart_code: "TEST.TIMER.FIRE"
+        expect:
+          timer_created: true
+          
+      - concurrent_call: HERA.UNIV.WF.TIMER.FIRE.V1
+        workers: 3
+        with:
+          organization_id: $ORG
+          timer_id: $TIMER_ID
+        expect:
+          one_success: true
+          two_failures: "TIMER_ALREADY_FIRED"
+          
+  - name: task_state_machine_hardening
+    description: Test atomic task state transitions
+    steps:
+      - call: HERA.UNIV.TASK.CREATE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE
+          title: "Test Task"
+          assignee_role: "user"
+        expect:
+          state: "OPEN"
+          
+      - concurrent_call: HERA.UNIV.TASK.CLAIM.V1
+        workers: 2
+        with:
+          organization_id: $ORG
+          task_id: $TASK_ID
+          user_id: [$USER_1, $USER_2]
+        expect:
+          one_success: true
+          one_failure: "TASK_NOT_OPEN"
+          
+  - name: effect_retry_semantics
+    description: Test effect execution with retry logic
+    steps:
+      - mock: TEST.EFFECT.SMART.CODE
+        behavior: fail_first_two_attempts
+        
+      - call: HERA.UNIV.WF.EFFECT.EXECUTE.V1
+        with:
+          organization_id: $ORG
+          effect_id: $EFFECT_ID
+        expect:
+          status: "FAILED"
+          retry_scheduled: true
+          
+      - advance_time: 30_seconds
+      
+      - call: HERA.UNIV.WF.EFFECT.EXECUTE.V1
+        with:
+          organization_id: $ORG
+          effect_id: $EFFECT_ID
+        expect:
+          status: "FAILED"
+          retry_scheduled: true
+          
+      - advance_time: 60_seconds
+      
+      - call: HERA.UNIV.WF.EFFECT.EXECUTE.V1
+        with:
+          organization_id: $ORG
+          effect_id: $EFFECT_ID
+        expect:
+          status: "COMPLETED"
+          
+  - name: role_resolution_caching
+    description: Test role resolution with caching
+    steps:
+      - call: HERA.UNIV.WF.ROLE.RESOLVE.V1
+        with:
+          organization_id: $ORG
+          role_name: "manager"
+        expect:
+          cache_hit: false
+          users_found: true
+          
+      - call: HERA.UNIV.WF.ROLE.RESOLVE.V1
+        with:
+          organization_id: $ORG
+          role_name: "manager"
+        expect:
+          cache_hit: true
+          same_users: true
+          
+      - call: HERA.UNIV.WF.ROLE.RESOLVE.V1
+        with:
+          organization_id: $ORG
+          role_name: "manager"
+          force_refresh: true
+        expect:
+          cache_hit: false
+          cache_refreshed: true
+
+assertions:
+  - all_procedures_registered: true
+  - smart_codes_valid: true
+  - org_isolation_enforced: true
+  - audit_trails_complete: true
+  - no_new_tables_created: true
+  - surgical_fixes_validated: true

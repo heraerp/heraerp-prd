@@ -10,9 +10,9 @@ import React, { useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
-import { useAuth } from '@/src/lib/auth/session'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { cn } from '@/lib/utils'
+import { useAuth } from '@/lib/auth/session'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 import {
   Building2,
   Grid3X3,

@@ -22,38 +22,38 @@ export class AppointmentsApi {
   // List appointments with filters
   async list(params: AppointmentFilters) {
     // In real API: /read-models/v_salon_appointments_upcoming
-    return this.api.get<Appointment[]>('/api/appointments', params)
+    return this.api.get<Appointment[]>('/api/v1/salon/appointments', params)
   }
 
   // Get single appointment
   async get(id: string) {
-    return this.api.get<Appointment>(`/api/appointments/${id}`)
+    return this.api.get<Appointment>(`/api/v1/salon/appointments/${id}`)
   }
 
   // Create new appointment
   async create(payload: AppointmentCreate) {
     // Maps to POST /universal_transactions
-    // smart_code: HERA.SALON.APPT.BOOKING.CORE.v1
-    return this.api.post<Appointment>('/api/appointments', {
+    // smart_code: HERA.SALON.APPOINTMENT.BOOKING.v1
+    return this.api.post<Appointment>('/api/v1/salon/appointments', {
       ...payload,
-      smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
     })
   }
 
   // Update appointment
   async update(id: string, data: Partial<AppointmentCreate>) {
-    return this.api.post<Appointment>(`/api/appointments/${id}`, data)
+    return this.api.post<Appointment>(`/api/v1/salon/appointments/${id}`, data)
   }
 
   // Transition appointment status
   async transition(id: string, body: AppointmentTransition) {
     // Maps to procedures like HERA.SALON.APPOINTMENT.CANCEL_OR_NOSHOW.v1
-    return this.api.post<Appointment>(`/api/appointments/${id}/transition`, body)
+    return this.api.post<Appointment>(`/api/v1/salon/appointments/${id}/transition`, body)
   }
 
   // Get appointment activity
   async getActivity(id: string) {
-    return this.api.get<ActivityEvent[]>(`/api/appointments/${id}/activity`)
+    return this.api.get<ActivityEvent[]>(`/api/v1/salon/appointments/${id}/activity`)
   }
 
   // Get available time slots
@@ -63,12 +63,12 @@ export class AppointmentsApi {
     date: string
     service_duration: number
   }) {
-    return this.api.get<Array<{ start: string; end: string }>>('/api/appointments/slots', params)
+    return this.api.get<Array<{ start: string; end: string }>>('/api/v1/salon/appointments/slots', params)
   }
 
   // Get upcoming appointments count
   async getUpcomingCount(organizationId: string) {
-    return this.api.get<{ count: number }>('/api/appointments/upcoming-count', {
+    return this.api.get<{ count: number }>('/api/v1/salon/appointments/upcoming-count', {
       organization_id: organizationId,
     })
   }
@@ -93,7 +93,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
       {
         id: 'appt-001',
         code: 'APT-2024-001',
-        organization_id: 'org-hairtalkz-001',
+        organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         customer: { id: 'cust-001', name: 'Emma Thompson', code: 'CUST-001' },
         stylist: { id: 'staff-001', name: 'Lisa Chen', code: 'STAFF-001' },
         branch_code: 'MAIN',
@@ -101,7 +101,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 10 * 60 * 60 * 1000).toISOString(), // 10am
         end_time: new Date(today.getTime() + 11 * 60 * 60 * 1000).toISOString(), // 11am
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-001', name: 'Hair Cut & Style', duration: 60, price: 150 }
         ],
@@ -111,7 +111,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
       {
         id: 'appt-002',
         code: 'APT-2024-002',
-        organization_id: 'org-hairtalkz-001',
+        organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         customer: { id: 'cust-002', name: 'Sarah Johnson', code: 'CUST-002' },
         stylist: { id: 'staff-002', name: 'Maria Rodriguez', code: 'STAFF-002' },
         branch_code: 'MAIN',
@@ -119,7 +119,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 9 * 60 * 60 * 1000).toISOString(), // 9am
         end_time: new Date(today.getTime() + 9.5 * 60 * 60 * 1000).toISOString(), // 9:30am
         status: 'in_progress',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-002', name: 'Hair Color', duration: 30, price: 200 }
         ],
@@ -129,14 +129,14 @@ export class MockAppointmentsApi extends AppointmentsApi {
       {
         id: 'appt-003',
         code: 'APT-2024-003',
-        organization_id: 'org-hairtalkz-001',
+        organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         customer: { id: 'cust-003', name: 'Michelle Davis', code: 'CUST-003' },
         stylist: { id: 'staff-001', name: 'Lisa Chen', code: 'STAFF-001' },
         branch_code: 'MAIN',
         start_time: new Date(today.getTime() + 14 * 60 * 60 * 1000).toISOString(), // 2pm
         end_time: new Date(today.getTime() + 15.5 * 60 * 60 * 1000).toISOString(), // 3:30pm
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-003', name: 'Hair Treatment', duration: 90, price: 300 }
         ],
@@ -147,14 +147,14 @@ export class MockAppointmentsApi extends AppointmentsApi {
       {
         id: 'appt-004',
         code: 'APT-2024-004',
-        organization_id: 'org-hairtalkz-001',
+        organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         customer: { id: 'cust-004', name: 'Jennifer Wilson', code: 'CUST-004' },
         stylist: { id: 'staff-003', name: 'Ahmed Hassan', code: 'STAFF-003' },
         branch_code: 'MAIN',
         start_time: new Date(today.getTime() + 34 * 60 * 60 * 1000).toISOString(), // Tomorrow 10am
         end_time: new Date(today.getTime() + 35 * 60 * 60 * 1000).toISOString(), // Tomorrow 11am
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-001', name: 'Hair Cut & Style', duration: 60, price: 150 }
         ],
@@ -165,14 +165,14 @@ export class MockAppointmentsApi extends AppointmentsApi {
       {
         id: 'appt-005',
         code: 'APT-2024-005',
-        organization_id: 'org-hairtalkz-001',
+        organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
         customer: { id: 'cust-005', name: 'Amanda Brown', code: 'CUST-005' },
         stylist: { id: 'staff-002', name: 'Maria Rodriguez', code: 'STAFF-002' },
         branch_code: 'MAIN',
         start_time: new Date(today.getTime() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
         end_time: new Date(today.getTime() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
         status: 'service_complete',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-004', name: 'Manicure & Pedicure', duration: 60, price: 100 }
         ],
@@ -192,7 +192,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         event_type: 'created',
         actor: { id: 'user-001', name: 'Sarah Johnson', type: 'user' },
         details: { initial_status: 'draft' },
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         transaction_id: 'txn-001',
       },
       {
@@ -285,7 +285,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
       start_time: payload.start_time,
       end_time: payload.end_time,
       status: 'confirmed',
-      smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
       services: [],
       notes: payload.notes,
       created_at: now,
@@ -302,7 +302,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
       event_type: 'created',
       actor: { id: 'user-001', name: 'Current User', type: 'user' },
       details: { initial_status: 'confirmed' },
-      smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
       transaction_id: `txn-${Date.now()}`,
     }])
 
@@ -470,14 +470,18 @@ export function createAppointmentsApi(api: ApiClient): AppointmentsApi {
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
+// Create a singleton API client to avoid re-renders
+const apiClientInstance = new ApiClient({
+  baseUrl: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
+})
+const appointmentsApiInstance = createAppointmentsApi(apiClientInstance)
+
 // Hook to get appointment stats
 export function useAppointmentStats({ organizationId, date }: { organizationId: string; date: string }) {
-  const api = createAppointmentsApi(new ApiClient())
-  
   return useQuery({
     queryKey: ['appointments', 'stats', organizationId, date],
     queryFn: async () => {
-      const appointments = await api.list({
+      const appointments = await appointmentsApiInstance.list({
         organization_id: organizationId,
         from: date + 'T00:00:00Z',
         to: date + 'T23:59:59Z'
@@ -502,7 +506,9 @@ export function useAppointmentsList({ organizationId, filters }: {
   organizationId: string
   filters: Partial<AppointmentFilters> 
 }) {
-  const api = createAppointmentsApi(new ApiClient())
+  const api = createAppointmentsApi(new ApiClient({
+    baseUrl: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'
+  }))
   
   return useQuery({
     queryKey: ['appointments', 'list', organizationId, filters],

@@ -20,10 +20,10 @@ type Tool = any
 type Server = any
 
 import { z } from 'zod'
-import { universalApi } from '@/src/lib/universal-api'
-import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import { v4 as uuidv4 } from 'uuid'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 import { parseISO, isAfter, isBefore } from 'date-fns'
 
 // Tool parameter schemas
@@ -152,7 +152,7 @@ const UCR_TEMPLATES = [
     template_id: 'T_APPT_CANCEL',
     industry: 'HOSPITALITY',
     module: 'SALON',
-    smart_code: 'HERA.HOSPITALITY.SALON.APPOINTMENT.CANCEL_POLICY.v1',
+    smart_code: 'HERA.HOSPITALITY.SALON.APPOINTMENT.CANCEL_POLICY.V1',
     title: 'Salon Appointment Cancellation Policy',
     rule_payload: {
       description: 'Standard salon cancellation policy with grace periods and fees',
@@ -173,7 +173,7 @@ const UCR_TEMPLATES = [
     template_id: 'T_POS_DISCOUNT',
     industry: 'HOSPITALITY',
     module: 'SALON',
-    smart_code: 'HERA.HOSPITALITY.SALON.POS.DISCOUNT_CAP.v1',
+    smart_code: 'HERA.HOSPITALITY.SALON.POS.DISCOUNT_CAP.V1',
     title: 'POS Discount Cap Rules',
     rule_payload: {
       description: 'Maximum discount limits for POS transactions',
@@ -192,7 +192,7 @@ const UCR_TEMPLATES = [
     template_id: 'T_BOOKING_WINDOW',
     industry: 'HOSPITALITY',
     module: 'RESTAURANT',
-    smart_code: 'HERA.HOSPITALITY.RESTAURANT.RESERVATION.BOOKING_WINDOW.v1',
+    smart_code: 'HERA.HOSPITALITY.RESTAURANT.RESERVATION.BOOKING_WINDOW.V1',
     title: 'Restaurant Booking Window Rules',
     rule_payload: {
       description: 'Advance booking windows by customer type',

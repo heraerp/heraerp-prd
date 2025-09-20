@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { smartCodeReporting } from '@/src/lib/financial/smart-code-reporting'
+import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
 
 /**
  * GET /api/v1/reports/:type

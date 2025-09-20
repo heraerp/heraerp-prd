@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Calendar,
   CalendarX,
@@ -24,8 +24,8 @@ import {
   ZoomIn,
   ZoomOut
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
+import { cn } from '@/lib/utils'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
 import { addDays, startOfWeek, endOfWeek, isWithinInterval, parseISO, isSameDay } from 'date-fns'
 
 interface Service {

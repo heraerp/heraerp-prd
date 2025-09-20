@@ -11,21 +11,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Users,
   Wrench,
@@ -39,7 +39,7 @@ import {
   Calendar
 } from 'lucide-react'
 
-import { UniversalResource } from '@/src/types/calendar.types'
+import { UniversalResource } from '@/types/calendar.types'
 import { calendarSmartCodeService } from '@/services/calendarSmartCodeService'
 
 interface ResourceCreateModalProps {

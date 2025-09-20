@@ -280,7 +280,7 @@ const account = await universalApi.createEntity({
   entity_type: 'gl_account',
   entity_code: '1510',
   entity_name: 'Trade Receivables',
-  smart_code: 'HERA.FIN.GL.ASSET.AR.v1'
+  smart_code: 'HERA.FIN.GL.ASSET.AR.V1'
 })
 
 // Add IFRS properties

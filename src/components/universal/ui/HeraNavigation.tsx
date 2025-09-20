@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { HeraThemeToggle } from './HeraThemeProvider'
 import {
   Home,
@@ -16,7 +16,7 @@ import {
   CreditCard,
   CircleDollarSign
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
 interface NavigationItem {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // POST /api/v1/seed-menu - Create sample menu items for Mario's Restaurant
 export async function POST(request: NextRequest) {

@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { Card } from '@/src/components/ui/card'
+import { Card } from '@/components/ui/card'
 import Link from 'next/link'
 import { Settings, Shield, Users, Building2, Code, Database, Bell, Key, Globe } from 'lucide-react'
 
@@ -83,13 +83,12 @@ const settingSections = [
 ]
 
 export default function FurnitureSettingsPage() {
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)] p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-900 dark:to-gray-300 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-100 to-white dark:from-gray-200 dark:to-gray-100 bg-clip-text text-transparent">
             Settings
           </h1>
           <p className="text-[var(--color-text-secondary)] mt-1">
@@ -100,7 +99,9 @@ export default function FurnitureSettingsPage() {
         {/* Setting Sections */}
         {settingSections.map(section => (
           <div key={section.title} className="bg-[var(--color-body)] space-y-4">
-            <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)]">{section.title}</h2>
+            <h2 className="bg-[var(--color-body)] text-xl font-semibold text-[var(--color-text-primary)]">
+              {section.title}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {section.items.map(item => (
                 <Link key={item.name} href={item.href}>
@@ -110,8 +111,12 @@ export default function FurnitureSettingsPage() {
                         <item.icon className="bg-[var(--color-body)] h-6 w-6" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="bg-[var(--color-body)] font-semibold text-[var(--color-text-primary)] mb-1">{item.name}</h3>
-                        <p className="text-sm text-[var(--color-text-secondary)]">{item.description}</p>
+                        <h3 className="bg-[var(--color-body)] font-semibold text-[var(--color-text-primary)] mb-1">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   </Card>
@@ -125,14 +130,15 @@ export default function FurnitureSettingsPage() {
         <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-gradient-to-r from-amber-500/20 to-orange-600/20 border-[var(--color-accent-teal)]/50 backdrop-blur-sm">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-lg bg-[var(--color-body)]/20">
-              <Code className="h-8 w-8 text-[#37353E]" />
+              <Code className="h-8 w-8 text-[var(--color-icon-secondary)]" />
             </div>
             <div className="flex-1">
               <h3 className="bg-[var(--color-body)] text-lg font-semibold text-[var(--color-text-primary)] mb-1">
                 Revolutionary: Universal Configuration Rules (UCR)
               </h3>
-              <p className="text-gray-300 mb-3">
-                Change business logic without touching code. Configure validation rules, pricing strategies, approval workflows, and more through a visual interface.
+              <p className="text-[var(--color-text-secondary)] mb-3">
+                Change business logic without touching code. Configure validation rules, pricing
+                strategies, approval workflows, and more through a visual interface.
               </p>
               <Link href="/furniture/settings/ucr">
                 <span className="text-[var(--color-text-primary)] hover:text-[var(--color-text-secondary)] font-medium">

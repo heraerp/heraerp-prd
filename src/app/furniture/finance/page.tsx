@@ -4,14 +4,20 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   DollarSign,
   TrendingUp,
@@ -30,22 +36,23 @@ import {
   Download,
   Plus
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { useFinanceData } from '@/src/lib/furniture/use-finance-data'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import {
+  useFurnitureOrg,
+  FurnitureOrgLoading
+} from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { useFinanceData } from '@/lib/furniture/use-finance-data'
+import { cn } from '@/lib/utils'
 
 // GL Account columns
-  const glAccountColumns = [
+const glAccountColumns = [
   {
     key: 'entity_code',
-    label: 'Account Code', 
+    label: 'Account Code',
     sortable: true,
     width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'entity_name',
@@ -55,17 +62,18 @@ import { cn } from '@/src/lib/utils'
       const depth = row.depth || 0
       const indent = depth * 24
       const isHeader = (row.metadata as any)?.account_type === 'header'
-      
+
       return (
-        <div style={{ paddingLeft: `${indent}px` }
-    } className="flex items-start gap-1">
+        <div style={{ paddingLeft: `${indent}px` }} className="flex items-start gap-1">
           {depth > 0 && <span className="text-[var(--color-text-secondary)] text-xs mt-1">└─</span>}
           <div>
-            <p className={cn(
-              'font-medium',
-              isHeader && 'text-primary dark:text-[var(--color-text-secondary)]',
-              !isHeader && depth > 0 && 'text-sm'
-            )}>
+            <p
+              className={cn(
+                'font-medium',
+                isHeader && 'text-primary dark:text-[var(--color-text-secondary)]',
+                !isHeader && depth > 0 && 'text-sm'
+              )}
+            >
               {value}
             </p>
             {(row.metadata as any)?.ifrs_classification && (
@@ -88,13 +96,9 @@ import { cn } from '@/src/lib/utils'
         header: 'bg-[var(--color-body)]/20 text-primary',
         detail: 'bg-gray-900/20 text-[var(--color-text-secondary)]'
       }
-      
-      
-    return (
-        <Badge variant="outline" className={cn(
-            'border-0',
-            colors[type]
-          )}>
+
+      return (
+        <Badge variant="outline" className={cn('border-0', colors[type])}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </Badge>
       )
@@ -116,11 +120,11 @@ export default function FurnitureFinance() {
     const hierarchy: any[] = []
     const accountMap: Record<string, any> = {}
 
-// Create a map for easy lookup
+    // Create a map for easy lookup
     glAccounts.forEach(account => {
       accountMap[account.entity_code] = { ...account, children: [] }
     })
-    
+
     // Build the tree
     glAccounts.forEach(account => {
       const parentCode = (account.metadata as any)?.parent_account
@@ -131,9 +135,9 @@ export default function FurnitureFinance() {
         hierarchy.push(accountMap[account.entity_code])
       }
     })
-    
+
     // Flatten the hierarchy for table display with proper ordering
-  const flattenHierarchy = (nodes: any[], depth = 0): any[] => {
+    const flattenHierarchy = (nodes: any[], depth = 0): any[] => {
       const result: any[] = []
       nodes.forEach(node => {
         result.push({ ...node, depth })
@@ -146,21 +150,25 @@ export default function FurnitureFinance() {
       return result
     }
 
-// Sort top level by code
+    // Sort top level by code
     hierarchy.sort((a, b) => a.entity_code.localeCompare(b.entity_code))
     return flattenHierarchy(hierarchy)
   }
 
   const hierarchicalAccounts = buildHierarchy()
-  
+
   // Filter hierarchical accounts
   const filteredAccounts = hierarchicalAccounts.filter(account => {
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       account.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       account.entity_code.includes(searchTerm)
 
-    const matchesType = selectedType === 'all' || (account.metadata as any)?.account_type === selectedType
-    const matchesLevel = selectedLevel === 'all' || (account.metadata as any)?.account_level?.toString() === selectedLevel
+    const matchesType =
+      selectedType === 'all' || (account.metadata as any)?.account_type === selectedType
+    const matchesLevel =
+      selectedLevel === 'all' ||
+      (account.metadata as any)?.account_level?.toString() === selectedLevel
     return matchesSearch && matchesType && matchesLevel
   })
 
@@ -169,7 +177,7 @@ export default function FurnitureFinance() {
     return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -224,8 +232,7 @@ export default function FurnitureFinance() {
     }
   ]
 
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
@@ -237,25 +244,28 @@ export default function FurnitureFinance() {
                 <Download className="h-4 w-4 mr-2" />
                 Export COA
               </Button>
-              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+              <Button
+                size="sm"
+                className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+              >
                 <Plus className="h-4 w-4" />
                 Journal Entry
               </Button>
             </>
           }
         />
-        
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {statCards.map((stat, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{stat.label}</p>
-                  <stat.icon className={cn(
-            'h-4 w-4',
-            stat.color
-          )} />
+                  <stat.icon className={cn('h-4 w-4', stat.color)} />
                 </div>
                 <p className="text-xl font-bold text-[var(--color-text-primary)]">{stat.value}</p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{stat.description}</p>
@@ -265,10 +275,12 @@ export default function FurnitureFinance() {
                   ) : (
                     <TrendingDown className="h-3 w-3 text-red-500" />
                   )}
-                  <span className={cn(
-                    'text-xs',
-                    stat.change.startsWith('+') ? 'text-green-500' : 'text-red-500'
-                  )}>
+                  <span
+                    className={cn(
+                      'text-xs',
+                      stat.change.startsWith('+') ? 'text-green-500' : 'text-red-500'
+                    )}
+                  >
                     {stat.change}
                   </span>
                 </div>
@@ -278,7 +290,9 @@ export default function FurnitureFinance() {
         </div>
 
         <div className="text-center p-8">
-          <p className="text-[var(--color-text-secondary)]">Finance management interface is being loaded...</p>
+          <p className="text-[var(--color-text-secondary)]">
+            Finance management interface is being loaded...
+          </p>
         </div>
       </div>
     </div>

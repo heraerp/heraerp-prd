@@ -1,0 +1,74 @@
+smart_code: HERA.UNIV.WF.INSTANCE.RESUME.V1
+intent: Resume a paused workflow instance.
+scope:
+  in_scope:
+    - resume instance execution
+    - restore timer processing
+    - create audit step
+    - update instance metadata
+  out_of_scope:
+    - processing overdue timers
+    - task notification
+    - state validation
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or system
+  - instance exists and is currently paused
+  - instance is not in terminal state
+invariants:
+  - resumed instances allow timer execution
+  - org isolation maintained
+  - audit trail of resume action
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance to resume
+  optional:
+    - resumed_by: uuid                             # user who resumed
+    - notes: string                                # resume notes
+happy_path:
+  - step: load instance header and verify is currently paused
+  - step: verify instance is not in terminal state
+  - step: update instance.dynamic.paused = false
+  - step: update instance.dynamic.resumed_at = now()
+  - step: if resumed_by provided, store in instance.dynamic.resumed_by
+  - step: clear pause-related fields (pause_reason, paused_by, paused_at)
+  - step: create STEP line smart_code=HERA.UNIV.WF.STEP.V1
+          metadata: {note: "RESUME", resumed_by, notes, timestamp: now()}
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # instance resumed
+    - universal_transaction_lines: 1               # audit step created
+  response:
+    instance_id: uuid
+    paused: boolean
+    resumed_at: timestamp
+    resumed_by: uuid
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INSTANCE_NOT_PAUSED
+    when: instance.dynamic.paused is not true
+    action: return 409 with current state
+  - code: INSTANCE_TERMINAL
+    when: instance is in terminal state
+    action: return 400 with current state
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_admin
+    action: return 403
+observability:
+  logs:
+    - instance_resumed: { instance_id, resumed_by, pause_duration_seconds }
+  audit_json: true
+  metrics:
+    - instance_resume_count by definition_code
+    - pause_duration_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  resumed_by: "901e2345-e89b-12d3-a456-426614174000"
+  notes: "Investigation completed, resuming normal workflow"
+checks:
+  - description: verify instance is currently paused
+  - description: ensure resume action is authorized
+  - description: validate audit trail is complete

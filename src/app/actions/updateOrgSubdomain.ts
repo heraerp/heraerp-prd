@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 // Server-side Supabase client for direct operations
 const supabase = createClient(
@@ -91,7 +91,7 @@ export async function updateOrgSubdomainAction(input: unknown) {
       {
         transaction_type: 'org_settings_update',
         reference_number: `SUBDOMAIN-${Date.now()}`,
-        smart_code: 'HERA.IDENTITY.ORG.SETTINGS.SUBDOMAIN.UPDATE.v1',
+        smart_code: 'HERA.IDENTITY.ORG.SETTINGS.SUBDOMAIN.UPDATE.V1',
         total_amount: 0,
         metadata: {
           action: 'subdomain_update',

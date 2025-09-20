@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Users } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { formatDate, isTodaySafe } from '@/src/lib/date-utils'
+import { Button } from '@/components/ui/button'
+import { formatDate, isTodaySafe } from '@/lib/date-utils'
 import {
   startOfMonth,
   endOfMonth,
@@ -15,63 +15,15 @@ import {
   subMonths
 } from 'date-fns'
 
-interface LeaveEvent {
-  id: string
-  employeeName: string
-  employeeInitials: string
-  leaveType: 'annual' | 'sick' | 'unpaid' | 'other'
-  startDate: Date
-  endDate: Date
-  isPartial?: boolean
-  department: string
-}
-
 interface LeaveCalendarProps {
-  organizationId?: string
+  requests: any[]
+  staff: any[]
+  branchId?: string
+  showAppointments?: boolean
 }
 
-export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
+export function LeaveCalendar({ requests, staff, branchId, showAppointments }: LeaveCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
-
-  // Mock data - will be replaced with universal API calls
-  const leaveEvents: LeaveEvent[] = [
-    {
-      id: '1',
-      employeeName: 'Emma Wilson',
-      employeeInitials: 'EW',
-      leaveType: 'annual',
-      startDate: new Date('2025-09-08'),
-      endDate: new Date('2025-09-09'),
-      department: 'Styling'
-    },
-    {
-      id: '2',
-      employeeName: 'James Taylor',
-      employeeInitials: 'JT',
-      leaveType: 'sick',
-      startDate: new Date('2025-09-08'),
-      endDate: new Date('2025-09-08'),
-      department: 'Front Desk'
-    },
-    {
-      id: '3',
-      employeeName: 'Lisa Park',
-      employeeInitials: 'LP',
-      leaveType: 'annual',
-      startDate: new Date('2025-09-12'),
-      endDate: new Date('2025-09-14'),
-      department: 'Nail Services'
-    },
-    {
-      id: '4',
-      employeeName: 'Sarah Johnson',
-      employeeInitials: 'SJ',
-      leaveType: 'annual',
-      startDate: new Date('2025-09-15'),
-      endDate: new Date('2025-09-17'),
-      department: 'Styling'
-    }
-  ]
 
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
@@ -87,24 +39,39 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
   const allDays = [...paddingDays, ...monthDays]
 
   const getEventsForDay = (date: Date) => {
-    return leaveEvents.filter(event => {
-      const eventStart = new Date(event.startDate)
-      const eventEnd = new Date(event.endDate)
-      return date >= eventStart && date <= eventEnd
+    return requests.filter(request => {
+      const from = request.metadata?.from ? new Date(request.metadata.from) : null
+      const to = request.metadata?.to ? new Date(request.metadata.to) : null
+      if (!from || !to) return false
+      
+      return date >= from && date <= to
     })
   }
 
   const getLeaveTypeColor = (type: string) => {
     switch (type) {
-      case 'annual':
+      case 'ANNUAL':
         return 'bg-blue-500 border-blue-600'
-      case 'sick':
+      case 'SICK':
         return 'bg-emerald-500 border-emerald-600'
-      case 'unpaid':
-        return 'bg-gray-9000 border-border'
+      case 'UNPAID':
+        return 'bg-gray-900 border-border'
       default:
         return 'bg-purple-500 border-purple-600'
     }
+  }
+  
+  // Get staff name by ID
+  const getStaffName = (staffId: string) => {
+    const staffMember = staff.find(s => s.id === staffId)
+    return staffMember?.entity_name || 'Unknown'
+  }
+  
+  const getStaffInitials = (staffId: string) => {
+    const staffMember = staff.find(s => s.id === staffId)
+    if (!staffMember) return '??'
+    const names = staffMember.entity_name.split(' ')
+    return names.map((n: string) => n[0]).join('').toUpperCase()
   }
 
   const goToPreviousMonth = () => setCurrentDate(subMonths(currentDate, 1))
@@ -160,7 +127,7 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
           <span className="text-muted-foreground dark:text-muted-foreground">Sick Leave</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-gray-9000 border border-border" />
+          <div className="w-3 h-3 rounded-sm bg-gray-900 border border-border" />
           <span className="text-muted-foreground dark:text-muted-foreground">Unpaid Leave</span>
         </div>
       </div>
@@ -212,12 +179,12 @@ export function LeaveCalendar({ organizationId }: LeaveCalendarProps) {
                 {dayEvents.slice(0, 3).map(event => (
                   <div
                     key={event.id}
-                    className={`px-1.5 py-0.5 text-xs rounded text-foreground font-medium ${getLeaveTypeColor(
-                      event.leaveType
+                    className={`px-1.5 py-0.5 text-xs rounded text-white font-medium ${getLeaveTypeColor(
+                      event.metadata?.type || 'ANNUAL'
                     )} cursor-pointer hover:opacity-90 transition-opacity`}
-                    title={`${event.employeeName} - ${event.department}`}
+                    title={`${getStaffName(event.source_entity_id)}`}
                   >
-                    {event.employeeInitials}
+                    {getStaffInitials(event.source_entity_id)}
                   </div>
                 ))}
                 {dayEvents.length > 3 && (

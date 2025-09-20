@@ -3,8 +3,8 @@
  * Comprehensive salon operations management using HERA Universal Architecture
  */
 
-import { supabase } from '@/src/lib/supabase'
-import { universalApi } from '@/src/lib/universal-api'
+import { supabase } from '@/lib/supabase'
+import { universalApi } from '@/lib/universal-api'
 import {
   ISalonManagerService,
   AppointmentRequest,

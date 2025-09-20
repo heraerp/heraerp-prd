@@ -1,7 +1,7 @@
 /**
  * HERA DNA Schema Administration Interface
  * Admin interface for managing system schema and organization configuration
- * Smart Code: HERA.DNA.ADMIN.SCHEMA.INTERFACE.v1
+ * Smart Code: HERA.DNA.ADMIN.SCHEMA.INTERFACE.V1
  */
 
 'use client'

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // Steve Jobs Principle: "Focus and simplicity"
 // Universal order synchronization that maintains consistency across all platforms

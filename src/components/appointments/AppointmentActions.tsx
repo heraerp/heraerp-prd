@@ -14,9 +14,9 @@ import {
   UserX,
   Calendar
 } from 'lucide-react'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { getAllowedTransitions, type Appointment, type AppointmentTransition } from '@/src/lib/schemas/appointment'
-import { cn } from '@/src/lib/utils'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { getAllowedTransitions, type Appointment, type AppointmentTransition } from '@/lib/schemas/appointment'
+import { cn } from '@/lib/utils'
 
 interface AppointmentActionsProps {
   appointment: Appointment

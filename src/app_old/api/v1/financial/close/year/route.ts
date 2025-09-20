@@ -1,12 +1,12 @@
 /**
  * HERA Fiscal Year Close API Endpoint
- * Smart Code: HERA.FIN.API.CLOSE.YEAR.v1
+ * Smart Code: HERA.FIN.API.CLOSE.YEAR.V1
  *
  * Handles year-end closing operations
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createFiscalCloseEngine } from '@/src/lib/dna/fiscal-year/fiscal-close-engine'
+import { createFiscalCloseEngine } from '@/lib/dna/fiscal-year/fiscal-close-engine'
 import { z } from 'zod'
 
 // Request validation schema

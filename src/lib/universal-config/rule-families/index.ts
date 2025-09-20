@@ -54,7 +54,7 @@ export const RuleFamilyRegistry = {
 
 // Helper to get family from smart code
 export function getRuleFamilyFromSmartCode(smartCode: string): string | null {
-  // Extract family prefix (e.g., HERA.UNIV.CONFIG.BOOKING from HERA.UNIV.CONFIG.BOOKING.GENERAL.v1)
+  // Extract family prefix (e.g., HERA.UNIV.CONFIG.BOOKING from HERA.UNIV.CONFIG.BOOKING.GENERAL.V1)
   const parts = smartCode.split('.')
   if (parts.length >= 4 && parts[0] === 'HERA' && parts[1] === 'UNIV' && parts[2] === 'CONFIG') {
     return parts.slice(0, 4).join('.')

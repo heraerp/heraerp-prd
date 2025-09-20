@@ -1,0 +1,101 @@
+smart_code: HERA.UNIV.TXN.LINE.ADD.V1
+intent: Add a line to a transaction (service/product/adjustment/etc.).
+scope:
+  in_scope:
+    - add service, product, adjustment, tax, tip lines
+    - quantity and pricing management
+    - line-level metadata and attributes
+    - staff assignment and splits
+  out_of_scope:
+    - header creation or modification
+    - line updates (use txn.line.update)
+    - pricing recalculation (use profile-specific procedures)
+preconditions:
+  - permissions: [$PROFILE.required_role_write]
+  - transaction header exists and belongs to organization
+  - header.state in $PROFILE.line_add_allowed_states
+  - referenced entity (if any) exists and is active
+invariants:
+  - line smart_code belongs to $PROFILE.line_families (e.g., SVC.*, RETAIL.*, ADJUST.*, TAX.*, TIP.*)
+  - org isolation maintained
+  - line numbers are sequential within transaction
+  - audit trail maintained for all line additions
+inputs:
+  required:
+    - organization_id: uuid
+    - transaction_id: uuid
+    - line_smart_code: string                       # from $PROFILE.line_families
+    - quantity: number
+  optional:
+    - entity_id: uuid                              # service/product being sold
+    - unit_price: number                           # if profile allows; otherwise computed
+    - dynamic: object                              # e.g., staff_split, discount_reason
+    - line_number: integer                         # auto-assigned if not provided
+    - target_line_id: uuid                         # for adjustments targeting specific lines
+happy_path:
+  - step: verify transaction exists and belongs to organization_id
+  - step: check transaction state in $PROFILE.line_add_allowed_states
+  - step: validate permissions against $PROFILE.required_role_write
+  - step: validate line_smart_code in $PROFILE.line_families
+  - step: if entity_id provided, verify entity exists and is active
+  - step: if unit_price not provided and required, fetch from pricing engine
+  - step: calculate line_amount = quantity * unit_price
+  - step: auto-assign line_number if not provided (max + 1)
+  - step: insert universal_transaction_lines row
+  - step: if $PROFILE.after_add, queue listed procedures (e.g., reprice, tax calc)
+  - step: emit line addition event for audit trail
+outputs:
+  lines_created:
+    - universal_transaction_lines: 1
+  queued_procedures: [$PROFILE.after_add]
+  response:
+    line_id: uuid
+    line_number: integer
+    line_amount: decimal
+    created_at: timestamp
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist or wrong organization
+    action: return 404
+  - code: INVALID_TRANSACTION_STATE
+    when: header.state not in $PROFILE.line_add_allowed_states
+    action: return 409 with allowed states
+  - code: INVALID_LINE_SMART_CODE
+    when: line_smart_code not in $PROFILE.line_families
+    action: return allowed line types
+  - code: ENTITY_NOT_FOUND
+    when: entity_id provided but not found or archived
+    action: return 400 with entity status
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_write
+    action: return 403 with required permissions
+  - code: PRICE_REQUIRED
+    when: unit_price required but not provided and no pricing rule found
+    action: return 400 requesting price
+  - code: TARGET_LINE_NOT_FOUND
+    when: target_line_id provided but not found in transaction
+    action: return 400 with valid line ids
+observability:
+  logs:
+    - line_added: { transaction_id, line_id, line_smart_code, quantity, amount, organization_id }
+    - after_procedures_queued: { transaction_id, procedures }
+  audit_json: true
+  metrics:
+    - line_addition_count by line_smart_code
+    - average_line_amount by transaction_type
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  transaction_id: "234e5678-e89b-12d3-a456-426614174000"
+  line_smart_code: "HERA.SALON.SVC.LINE.STANDARD.V1"
+  entity_id: "345e6789-e89b-12d3-a456-426614174000"
+  quantity: 1
+  unit_price: 75.00
+  dynamic:
+    staff_id: "456e7890-e89b-12d3-a456-426614174000"
+    commission_rate: 0.5
+    notes: "Extra conditioning treatment"
+checks:
+  - description: verify transaction ownership and state
+  - description: validate line type allowed for transaction
+  - description: ensure entity reference is valid
+  - description: check pricing rules if price not provided

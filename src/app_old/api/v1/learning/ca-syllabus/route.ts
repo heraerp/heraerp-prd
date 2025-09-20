@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
           success: true,
           action: 'complete_syllabus_retrieved',
           data: completeSyllabus,
-          smart_code: 'HERA.EDU.CA.SYLLABUS.COMPLETE.v1',
+          smart_code: 'HERA.EDU.CA.SYLLABUS.COMPLETE.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
             {
               success: false,
               error: 'Level parameter required (foundation/intermediate/final)',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.V1'
             },
             { status: 400 }
           )
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
             {
               success: false,
               error: 'Level parameter required for papers',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.V1'
             },
             { status: 400 }
           )
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
           success: true,
           action: 'paper8_details_retrieved',
           data: paper8Details,
-          smart_code: 'HERA.EDU.CA.FINAL.P8.DETAILS.v1',
+          smart_code: 'HERA.EDU.CA.FINAL.P8.DETAILS.V1',
           focus: 'Our specialization - Indirect Tax Laws',
           timestamp: new Date().toISOString()
         })
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
             {
               success: false,
               error: 'Level parameter required for exam schedule',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.V1'
             },
             { status: 400 }
           )
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
             {
               success: false,
               error: 'Search term required for topic search',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_SEARCH.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_SEARCH.V1'
             },
             { status: 400 }
           )
@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
           level: level || 'all',
           results_count: searchResults.length,
           data: { results: searchResults },
-          smart_code: 'HERA.EDU.CA.SEARCH.TOPICS.v1',
+          smart_code: 'HERA.EDU.CA.SEARCH.TOPICS.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
               'get_exam_schedule',
               'search_topics'
             ],
-            smart_code: 'HERA.EDU.CA.ERROR.UNKNOWN_ACTION.v1'
+            smart_code: 'HERA.EDU.CA.ERROR.UNKNOWN_ACTION.V1'
           },
           { status: 400 }
         )
@@ -159,7 +159,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.EDU.CA.ERROR.INTERNAL.v1',
+        smart_code: 'HERA.EDU.CA.ERROR.INTERNAL.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -183,7 +183,7 @@ export async function POST(request: NextRequest) {
             {
               success: false,
               error: 'student_level and target_paper are required',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_PARAMS.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_PARAMS.V1'
             },
             { status: 400 }
           )
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
           success: true,
           action: 'learning_path_generated',
           data: learningPath,
-          smart_code: 'HERA.EDU.CA.LEARNING_PATH.GENERATE.v1',
+          smart_code: 'HERA.EDU.CA.LEARNING_PATH.GENERATE.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
             {
               success: false,
               error: 'target_level is required',
-              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.v1'
+              smart_code: 'HERA.EDU.CA.ERROR.MISSING_LEVEL.V1'
             },
             { status: 400 }
           )
@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
           success: true,
           action: 'syllabus_coverage_analyzed',
           data: coverage,
-          smart_code: 'HERA.EDU.CA.COVERAGE.ANALYZE.v1',
+          smart_code: 'HERA.EDU.CA.COVERAGE.ANALYZE.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -237,7 +237,7 @@ export async function POST(request: NextRequest) {
           success: true,
           action: 'study_recommendations_generated',
           data: recommendations,
-          smart_code: 'HERA.EDU.CA.STUDY.RECOMMEND.v1',
+          smart_code: 'HERA.EDU.CA.STUDY.RECOMMEND.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -251,7 +251,7 @@ export async function POST(request: NextRequest) {
               'analyze_syllabus_coverage',
               'get_study_recommendations'
             ],
-            smart_code: 'HERA.EDU.CA.ERROR.UNKNOWN_POST_ACTION.v1'
+            smart_code: 'HERA.EDU.CA.ERROR.UNKNOWN_POST_ACTION.V1'
           },
           { status: 400 }
         )
@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.EDU.CA.ERROR.INTERNAL_POST.v1',
+        smart_code: 'HERA.EDU.CA.ERROR.INTERNAL_POST.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }

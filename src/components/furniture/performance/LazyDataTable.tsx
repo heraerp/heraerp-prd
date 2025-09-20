@@ -3,7 +3,7 @@ from 'react'
 import { ChevronDown, ChevronUp, Loader2, AlertCircle }
 from 'lucide-react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface Column<T> { key: keyof T header: string width?: string render?: (value: any, row: T) => React.ReactNode sortable?: boolean

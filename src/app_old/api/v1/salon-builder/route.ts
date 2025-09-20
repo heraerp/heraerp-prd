@@ -100,7 +100,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_type: 'employee',
         entity_name: stylist.name,
         entity_code: stylist.code,
-        smart_code: 'HERA.SALON.HR.EMPLOYEE.STYLIST.v1',
+        smart_code: 'HERA.SALON.HR.EMPLOYEE.STYLIST.V1',
         status: 'active',
         metadata: {
           specialization: stylist.specialization,
@@ -404,7 +404,7 @@ export async function POST(req: NextRequest) {
       organization_id: org.id,
       transaction_type: 'org_settings_update',
       transaction_code: `ORG-CREATE-${Date.now()}`,
-      smart_code: 'HERA.IDENTITY.ORG.CREATE.SALON.v1',
+      smart_code: 'HERA.IDENTITY.ORG.CREATE.SALON.V1',
       total_amount: 0,
       transaction_date: new Date().toISOString(),
       status: 'completed',

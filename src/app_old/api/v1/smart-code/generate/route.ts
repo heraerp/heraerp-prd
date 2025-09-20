@@ -150,16 +150,16 @@ function generateSuggestions(request: SmartCodeGenerationRequest, generatedCode:
   // Industry-specific suggestions
   switch (business_context.industry) {
     case 'restaurant':
-      suggestions.push('Consider using HERA.REST.INV.TXN.RCV.v1 for inventory receiving')
-      suggestions.push('Use HERA.REST.FIN.CALC.BOM.v1 for recipe costing')
+      suggestions.push('Consider using HERA.REST.INV.TXN.RCV.V1 for inventory receiving')
+      suggestions.push('Use HERA.REST.FIN.CALC.BOM.V1 for recipe costing')
       break
     case 'healthcare':
-      suggestions.push('Consider HERA.HLTH.CRM.ENT.PAT.v1 for patient records')
-      suggestions.push('Use HERA.HLTH.FIN.TXN.CLM.v1 for insurance claims')
+      suggestions.push('Consider HERA.HLTH.CRM.ENT.PAT.V1 for patient records')
+      suggestions.push('Use HERA.HLTH.FIN.TXN.CLM.V1 for insurance claims')
       break
     case 'manufacturing':
-      suggestions.push('Consider HERA.MFG.INV.ENT.BOM.v1 for bill of materials')
-      suggestions.push('Use HERA.MFG.FIN.CALC.COST.v1 for cost calculations')
+      suggestions.push('Consider HERA.MFG.INV.ENT.BOM.V1 for bill of materials')
+      suggestions.push('Use HERA.MFG.FIN.CALC.COST.V1 for cost calculations')
       break
     case 'system':
       suggestions.push(
@@ -303,7 +303,7 @@ export async function GET() {
       }
     },
     example_response: {
-      generated_smart_code: 'HERA.REST.CRM.TXN.ORDER.v1',
+      generated_smart_code: 'HERA.REST.CRM.TXN.ORDER.V1',
       is_valid: true,
       metadata: {
         industry: 'restaurant',
@@ -311,8 +311,8 @@ export async function GET() {
         generated_at: '2025-07-31T12:00:00Z'
       },
       suggestions: [
-        'Generated code: HERA.REST.CRM.TXN.ORDER.v1',
-        'Consider using HERA.REST.INV.TXN.RCV.v1 for inventory receiving'
+        'Generated code: HERA.REST.CRM.TXN.ORDER.V1',
+        'Consider using HERA.REST.INV.TXN.RCV.V1 for inventory receiving'
       ]
     }
   })

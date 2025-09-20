@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/src/lib/utils-hera-salon'
+import { cn } from '@/lib/utils-hera-salon'
 import { X } from 'lucide-react'
 
 const Modal = DialogPrimitive.Root

@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.SERVICE.BOM_CONSUMPTION.v1
+smart_code: HERA.SALON.SERVICE.BOM.CONSUMPTION.EMIT.V1
 intent: >
   When a service_line is posted (e.g., in a POS order), emit inventory_move_line issues for mapped BOM items proportional to service quantity.
 scope:

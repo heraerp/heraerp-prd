@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear HERA Cache & Service Workers</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+        .success {
+            background: #d1fae5;
+            border-color: #34d399;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            border-color: #f87171;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear HERA Cache & Service Workers</h1>
+        <p>Use this tool to clear all cached data and service workers that might be causing redirect issues.</p>
+        
+        <button onclick="clearEverything()">Clear All Cache & Service Workers</button>
+        <button onclick="checkServiceWorkers()">Check Service Workers</button>
+        <button onclick="window.location.href='/demo'">Go to Demo Page</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        
+        function log(message, isError = false) {
+            statusEl.textContent += message + '\n';
+            statusEl.className = 'status ' + (isError ? 'error' : '');
+        }
+        
+        async function clearEverything() {
+            statusEl.textContent = '';
+            log('🚀 Starting comprehensive cleanup...\n');
+            
+            try {
+                // 1. Clear all service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    log(`Found ${registrations.length} service worker(s)`);
+                    
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        log(`✅ Unregistered service worker: ${registration.scope}`);
+                    }
+                } else {
+                    log('Service workers not supported in this browser');
+                }
+                
+                // 2. Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    log(`\nFound ${cacheNames.length} cache(s)`);
+                    
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        log(`✅ Deleted cache: ${cacheName}`);
+                    }
+                }
+                
+                // 3. Clear localStorage
+                localStorage.clear();
+                log('\n✅ Cleared localStorage');
+                
+                // 4. Clear sessionStorage
+                sessionStorage.clear();
+                log('✅ Cleared sessionStorage');
+                
+                // 5. Clear cookies for this domain
+                document.cookie.split(";").forEach(function(c) { 
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+                });
+                log('✅ Cleared cookies');
+                
+                log('\n🎉 All cache and service workers cleared successfully!');
+                log('\n📍 You can now navigate to /demo without redirect issues.');
+                
+                statusEl.className = 'status success';
+                
+            } catch (error) {
+                log(`\n❌ Error: ${error.message}`, true);
+            }
+        }
+        
+        async function checkServiceWorkers() {
+            statusEl.textContent = '';
+            log('🔍 Checking service workers...\n');
+            
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                
+                if (registrations.length === 0) {
+                    log('✅ No service workers found!');
+                    statusEl.className = 'status success';
+                } else {
+                    log(`⚠️ Found ${registrations.length} service worker(s):\n`);
+                    registrations.forEach((reg, index) => {
+                        log(`${index + 1}. Scope: ${reg.scope}`);
+                        log(`   Active: ${reg.active ? 'Yes' : 'No'}`);
+                        log(`   Waiting: ${reg.waiting ? 'Yes' : 'No'}\n`);
+                    });
+                }
+            } else {
+                log('Service workers not supported in this browser');
+            }
+        }
+        
+        // Check on load
+        checkServiceWorkers();
+    </script>
+</body>
+</html>

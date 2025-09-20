@@ -7,7 +7,7 @@ import {
   upsertCustomerByPhone,
   registerTemplate,
   createCampaign
-} from '@/src/lib/mcp/whatsapp-six-tables-mcp'
+} from '@/lib/mcp/whatsapp-six-tables-mcp'
 
 export async function POST(request: NextRequest) {
   try {
@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       status: 'success',
       scenario,
-      component: 'HERA.WHATSAPP.DEMO.SIX.TABLES.v1',
+      component: 'HERA.WHATSAPP.DEMO.SIX.TABLES.V1',
       timestamp: new Date().toISOString(),
       results,
       summary: {

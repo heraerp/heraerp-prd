@@ -1,0 +1,17 @@
+smart_code: HERA.SALON.POS.CART.UPDATE_LINE.V1
+intent: Update qty / staff_split / notes; price overrides must be ADJUSTMENT lines.
+preconditions:
+  - line.belongs_to_cart == cart_id
+  - cart.smart_code == HERA.SALON.POS.CART.ACTIVE.V1
+invariants:
+  - reject if unit_price present in payload
+  - if RETAIL qty changes -> emit reservation delta txn
+inputs:
+  required: [organization_id, cart_id, line_id]
+  optional: [quantity, staff_split, dynamic]
+outputs:
+  transactions_emitted:
+    - when retail qty increases -> HERA.SALON.INV.RESERVE.SOFT.V1
+    - when retail qty decreases -> HERA.SALON.INV.RESERVE.RELEASE.V1
+errors:
+  - code: PRICE_OVERRIDE_ATTEMPT

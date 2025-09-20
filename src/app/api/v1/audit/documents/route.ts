@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auditDocumentService } from '@/src/lib/supabase/audit-documents'
-import { enhancedAuditDocumentService } from '@/src/lib/supabase/enhanced-audit-documents'
+import { auditDocumentService } from '@/lib/supabase/audit-documents'
+import { enhancedAuditDocumentService } from '@/lib/supabase/enhanced-audit-documents'
 
 // Mock document data - used when Supabase is not available
 const mockDocuments = [
@@ -19,7 +19,7 @@ const mockDocuments = [
     received_date: '2025-01-20',
     file_attachments: ['cyprus_incorporation_cert.pdf'],
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-15',
     metadata: {
       gspu_client_id: 'CLI-2025-001',
@@ -46,7 +46,7 @@ const mockDocuments = [
     received_date: '2025-01-22',
     file_attachments: ['cyprus_memorandum_articles.pdf'],
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-15',
     remarks: 'Need updated version with latest amendments',
     metadata: {
@@ -74,7 +74,7 @@ const mockDocuments = [
     received_date: '2025-01-25',
     file_attachments: ['cyprus_financials_2024.pdf'],
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-15',
     metadata: {
       gspu_client_id: 'CLI-2025-001',
@@ -100,7 +100,7 @@ const mockDocuments = [
     due_date: '2025-03-01',
     file_attachments: [],
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-15',
     metadata: {
       gspu_client_id: 'CLI-2025-001',
@@ -125,7 +125,7 @@ const mockDocuments = [
     due_date: '2025-02-25',
     file_attachments: [],
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-10',
     metadata: {
       gspu_client_id: 'CLI-2025-002',
@@ -148,7 +148,7 @@ const mockDocuments = [
     status: 'pending',
     due_date: '2025-08-16',
     entity_type: 'audit_document',
-    smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+    smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
     created_date: '2025-01-15',
     metadata: {
       gspu_client_id: 'client_001',
@@ -169,7 +169,7 @@ const mockRequisitions = [
     entity_type: 'document_requisition',
     entity_code: 'REQ-2025-001',
     entity_name: 'Cyprus Trading Ltd - Document Requisition',
-    smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+    smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
     status: 'sent',
     audit_year: '2025',
     due_date: '2025-02-28',
@@ -190,7 +190,7 @@ const mockRequisitions = [
     entity_type: 'document_requisition',
     entity_code: 'REQ-2025-002',
     entity_name: 'Mediterranean Shipping Co - Document Requisition',
-    smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+    smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
     status: 'draft',
     audit_year: '2025',
     due_date: '2025-03-15',
@@ -211,7 +211,7 @@ const mockRequisitions = [
     entity_type: 'document_requisition',
     entity_code: 'REQ-2025-003',
     entity_name: 'Nicosia Tech Solutions - Document Requisition',
-    smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+    smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
     status: 'sent',
     audit_year: '2025',
     due_date: '2025-02-20',
@@ -232,7 +232,7 @@ const mockRequisitions = [
     entity_type: 'document_requisition',
     entity_code: 'REQ-2025-999',
     entity_name: 'XYZ Manufacturing Ltd - Document Requisition',
-    smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+    smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
     status: 'draft',
     audit_year: '2025',
     due_date: '2025-08-16',
@@ -531,7 +531,7 @@ export async function POST(request: NextRequest) {
             data.entity_code ||
             `REQ-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`,
           entity_name: `${data.client_name} - Document Requisition`,
-          smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+          smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
           status: 'draft',
           audit_year: data.audit_year,
           due_date: data.due_date,
@@ -589,7 +589,7 @@ export async function POST(request: NextRequest) {
           status: 'pending',
           due_date: data.due_date,
           entity_type: 'audit_document',
-          smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+          smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
           created_date: new Date().toISOString(),
           file_attachments: [],
           metadata: {
@@ -688,7 +688,7 @@ export async function POST(request: NextRequest) {
       // Create universal transaction for status update
       const transaction = {
         transaction_type: 'document_status_update',
-        smart_code: 'HERA.AUD.DOC.TXN.STATUS.v1',
+        smart_code: 'HERA.AUD.DOC.TXN.STATUS.V1',
         reference_number: document_id,
         metadata: {
           previous_status: status,
@@ -730,7 +730,7 @@ export async function POST(request: NextRequest) {
       // Create universal transaction for requisition sending
       const transaction = {
         transaction_type: 'requisition_sent',
-        smart_code: 'HERA.AUD.DOC.TXN.SEND.v1',
+        smart_code: 'HERA.AUD.DOC.TXN.SEND.V1',
         reference_number: requisition_id,
         total_amount: 0, // No monetary value
         metadata: {

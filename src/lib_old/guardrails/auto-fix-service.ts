@@ -187,7 +187,7 @@ export class GuardrailAutoFixService {
         payment: 'HERA.FIN.TXN.PAYMENT.[SUBTYPE].v1',
         journal_entry: 'HERA.FIN.TXN.JOURNAL.[SUBTYPE].v1',
         appointment: 'HERA.SVC.TXN.APPOINTMENT.[SUBTYPE].v1',
-        'GL.CLOSE': 'HERA.FIN.TXN.PERIOD.CLOSE.v1'
+        'GL.CLOSE': 'HERA.FIN.TXN.PERIOD.CLOSE.V1'
       }
     }
 

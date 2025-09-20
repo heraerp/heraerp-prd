@@ -3,10 +3,10 @@
  * Policy-aware routing with cost optimization
  */
 
-import { MCPTools } from '@/src/lib/mcp/whatsapp-mcp-tools'
-import { ClaudeWhatsAppService } from '@/src/lib/ai/claude-whatsapp-service'
-import { UniversalWhatsAppAI } from '@/src/lib/ai/universal-whatsapp-ai'
-import { universalApi } from '@/src/lib/universal-api'
+import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
+import { ClaudeWhatsAppService } from '@/lib/ai/claude-whatsapp-service'
+import { UniversalWhatsAppAI } from '@/lib/ai/universal-whatsapp-ai'
+import { universalApi } from '@/lib/universal-api'
 
 export interface MessageContext {
   organizationId: string
@@ -123,7 +123,7 @@ export class WhatsAppMessageRouter {
       organization_id: organizationId,
       header: {
         transaction_type: 'WHATSAPP_MESSAGE_SEND',
-        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.v1',
+        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.V1',
         transaction_status: 'sent',
         metadata: {
           intent: intent.intent,
@@ -201,7 +201,7 @@ export class WhatsAppMessageRouter {
       organization_id: organizationId,
       header: {
         transaction_type: 'WHATSAPP_MESSAGE_SEND',
-        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.v1',
+        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.V1',
         transaction_status: sendResult.data!.delivered ? 'delivered' : 'pending',
         metadata: {
           intent: intent.intent,

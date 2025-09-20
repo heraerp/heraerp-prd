@@ -191,7 +191,7 @@ describe('Appointment Schemas', () => {
         start_time: '2024-01-15T10:00:00Z',
         end_time: '2024-01-15T11:00:00Z',
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         services: [
           { id: 'srv-001', name: 'Haircut', duration: 60, price: 50 }
         ],
@@ -214,7 +214,7 @@ describe('Appointment Schemas', () => {
         start_time: '2024-01-15T10:00:00Z',
         end_time: '2024-01-15T11:00:00Z',
         status: 'invalid_status', // Invalid
-        smart_code: 'HERA.SALON.APPT.BOOKING.CORE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
         created_at: '2024-01-14T12:00:00Z',
         updated_at: '2024-01-14T12:00:00Z',
       }

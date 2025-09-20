@@ -5,7 +5,7 @@
 // ================================================================================
 
 import { useQuery } from '@tanstack/react-query'
-import { useUniversalApi } from '@/src/hooks/useUniversalApi'
+import { useUniversalApi } from '@/hooks/useUniversalApi'
 import { 
   Product, 
   ProductWithInventory, 
@@ -20,7 +20,7 @@ import {
   calculateOnHand,
   isLowStock,
   calculateUsageMetrics
-} from '@/src/lib/schemas/inventory'
+} from '@/lib/schemas/inventory'
 
 // ================================================================================
 // INVENTORY API CLASS
@@ -188,7 +188,7 @@ export class InventoryApi {
             entity_id: updateData.entity_id,
             field_name: 'reorder_level',
             field_value_number: updateData.reorder_level,
-            smart_code: 'HERA.SALON.INVENTORY.POLICY.REORDER.v1'
+            smart_code: 'HERA.SALON.INVENTORY.POLICY.REORDER.V1'
           }
         })
       }
@@ -235,7 +235,7 @@ export class InventoryApi {
             entity_id: entityId,
             field_name: 'reorder_level',
             field_value_number: createData.reorder_level,
-            smart_code: 'HERA.SALON.INVENTORY.POLICY.REORDER.v1'
+            smart_code: 'HERA.SALON.INVENTORY.POLICY.REORDER.V1'
           }
         })
       }
@@ -250,7 +250,7 @@ export class InventoryApi {
             entity_id: entityId,
             field_name: 'costing_method',
             field_value_text: createData.costing_method,
-            smart_code: 'HERA.SALON.INVENTORY.POLICY.COSTING.v1'
+            smart_code: 'HERA.SALON.INVENTORY.POLICY.COSTING.V1'
           }
         })
       }
@@ -457,14 +457,14 @@ export class InventoryApi {
 // REACT HOOK WRAPPER
 // ================================================================================
 
-export function useInventoryApi() {
-  const universalApi = useUniversalApi()
+export function useInventoryApi(organizationId?: string) {
+  const universalApi = useUniversalApi(organizationId)
   return new InventoryApi(universalApi)
 }
 
 // Simple wrapper for dashboard
-export function useInventoryApiSimple() {
-  const api = useInventoryApi()
+export function useInventoryApiSimple(organizationId?: string) {
+  const api = useInventoryApi(organizationId)
   
   return {
     listLowStock: ({ organizationId, limit = 10 }: { organizationId: string; limit?: number }) => {

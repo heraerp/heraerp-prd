@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import { 
   Plus, 
   Edit, 
@@ -24,12 +24,12 @@ import {
   Clock,
   FileText
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { TemplateForm } from '@/src/components/whatsapp/TemplateForm'
-import { TemplatePreview } from '@/src/components/whatsapp/TemplatePreview'
-import { WaTemplate } from '@/src/lib/schemas/whatsapp'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { TemplateForm } from '@/components/whatsapp/TemplateForm'
+import { TemplatePreview } from '@/components/whatsapp/TemplatePreview'
+import { WaTemplate } from '@/lib/schemas/whatsapp'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function WhatsAppTemplatesPage() {
   const { currentOrganization } = useOrganization()

@@ -1,0 +1,91 @@
+smart_code: HERA.UNIV.ENTITY.CREATE.V1
+intent: Create a new business entity (service, product, employee, customer, etc.) in the current org.
+scope:
+  in_scope:
+    - entity master data via core_entities
+    - dynamic attributes via core_dynamic_data
+    - organization-based isolation
+    - smart code validation and normalization
+  out_of_scope:
+    - direct relationship creation (use separate procedures)
+    - transaction creation
+    - bulk imports
+preconditions:
+  - permissions: [$PROFILE.required_role_create]     # e.g., org_admin, catalog_admin, hr_admin
+  - organization_id present and valid
+  - entity_type in allowed list per profile
+invariants:
+  - smart_code for the created entity is valid and versioned (normalize to .Vn)
+  - uniqueness: ($PROFILE.unique_key) not duplicated within organization_id
+  - all writes include organization_id
+  - entity_type cannot be changed after creation
+  - created entities start in 'active' status
+inputs:
+  required:
+    - organization_id: uuid
+    - entity_type: enum[$PROFILE.entity_types]        # e.g., SERVICE|PRODUCT|EMPLOYEE|CUSTOMER
+    - entity_name: string
+  optional:
+    - entity_code: string                            # unique business code
+    - smart_code: string                             # if omitted, derive via profile
+    - dynamic: object                                # arbitrary JSON attributes (validated by profile)
+    - metadata: object                               # system metadata
+outputs:
+  entities_created:
+    - core_entities: 1
+    - core_dynamic_data: 0-1                        # if dynamic attributes provided
+  transactions_emitted: []                          # pure master-data write
+  response:
+    entity_id: uuid
+    entity_code: string
+    smart_code: string
+    created_at: timestamp
+happy_path:
+  - step: validate permissions against $PROFILE.required_role_create
+  - step: validate entity_type in $PROFILE.entity_types
+  - step: derive_smart_code_when_missing using $PROFILE.derivation_rules
+  - step: validate smart_code format and version
+  - step: check uniqueness constraint on ($PROFILE.unique_key) within org
+  - step: insert core_entities row { entity_type, entity_name, entity_code, smart_code, organization_id, status:'active', metadata }
+  - step: if dynamic provided, validate against $PROFILE.validation[entity_type].dynamic_json_schema
+  - step: write core_dynamic_data key_slug='attributes' value_json=dynamic (if provided)
+  - step: emit creation event for audit trail
+errors:
+  - code: DUPLICATE_KEY
+    when: entity with same ($PROFILE.unique_key) exists in org
+    action: return existing entity_id with conflict status
+  - code: INVALID_SMART_CODE
+    when: smart_code fails validation or version check
+    action: return validation errors
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_create
+    action: return 403 with required permissions
+  - code: INVALID_ENTITY_TYPE
+    when: entity_type not in $PROFILE.entity_types
+    action: return allowed entity types
+  - code: DYNAMIC_VALIDATION_FAILED
+    when: dynamic attributes fail JSON schema validation
+    action: return schema validation errors
+observability:
+  logs:
+    - entity_created: { entity_id, entity_type, smart_code, organization_id }
+    - duplicate_prevented: { entity_type, unique_key, existing_entity_id }
+  audit_json: true
+  metrics:
+    - entity_creation_count by entity_type
+    - duplicate_prevention_count by entity_type
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  entity_type: "SERVICE"
+  entity_name: "Hair Cut & Style"
+  entity_code: "SVC001"
+  dynamic:
+    duration_minutes: 45
+    base_price: 50.00
+    category: "HAIR"
+    requires_appointment: true
+checks:
+  - description: verify organization exists and is active
+  - description: validate smart code format matches HERA standards
+  - description: ensure dynamic attributes comply with profile schema
+  - description: check user has required permissions in organization

@@ -6,7 +6,7 @@
  * validation rules.
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '../supabase'
 import {
   STANDARD_ENTITY_TYPES,
   STANDARD_TRANSACTION_TYPES,
@@ -22,16 +22,13 @@ import {
 } from '../hera-standards'
 
 export class HeraValidationService {
-  private supabase
+  private supabase = supabase
   private standards: Map<string, StandardDefinition[]> = new Map()
   private lastCacheUpdate: Date | null = null
   private cacheTimeout = 5 * 60 * 1000 // 5 minutes
 
   constructor() {
-    this.supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    // Use the singleton supabase instance
   }
 
   /**

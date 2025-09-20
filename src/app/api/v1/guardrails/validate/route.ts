@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { guardrailAutoFix } from '@/src/lib/guardrails/auto-fix-service'
-import { heraMetrics } from '@/src/lib/observability/metrics'
-import { heraLogger } from '@/src/lib/observability/logger'
-import { normalizeSmartCode, isValidSmartCode } from '@/src/lib/guardrails/smart-code-normalizer'
-import { checkPeriodPostingAllowed } from '@/src/lib/guardrails/period-close-validator'
-import { validateGLBalance, normalizeGLAccount } from '@/src/lib/guardrails/gl-balance-validator'
+import { guardrailAutoFix } from '@/lib/guardrails/auto-fix-service'
+import { heraMetrics } from '@/lib/observability/metrics'
+import { heraLogger } from '@/lib/observability/logger'
+import { normalizeSmartCode, isValidSmartCode } from '@/lib/guardrails/smart-code-normalizer'
+import { checkPeriodPostingAllowed } from '@/lib/guardrails/period-close-validator'
+import { validateGLBalance, normalizeGLAccount } from '@/lib/guardrails/gl-balance-validator'
 
 /**
  * POST /api/v1/guardrails/validate

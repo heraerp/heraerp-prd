@@ -305,7 +305,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
-      smart_code: 'HERA.DYN.FIELD.BULK.UPSERT.v1',
+      smart_code: 'HERA.DYN.FIELD.BULK.UPSERT.V1',
       operation: 'bulk_create', // Will upsert based on entity_id + field_name
       batch: {
         items: fields,
@@ -464,7 +464,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
       operations.push({
         entity: 'universal_transaction_lines',
         operation: 'bulk_create',
-        smart_code: 'HERA.TXN.LINES.BULK.CREATE.v1',
+        smart_code: 'HERA.TXN.LINES.BULK.CREATE.V1',
         data: {
           lines: lines.map((line, index) => ({
             ...line,
@@ -479,7 +479,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'universal_transactions',
       organization_id: data.organization_id,
-      smart_code: 'HERA.TXN.CREATE.WITH.LINES.v1',
+      smart_code: 'HERA.TXN.CREATE.WITH.LINES.V1',
       operation: 'transaction',
       operations
     })
@@ -549,7 +549,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: organizationId,
-      smart_code: 'HERA.TXN.LINE.BULK.CREATE.v1',
+      smart_code: 'HERA.TXN.LINE.BULK.CREATE.V1',
       operation: 'bulk_create',
       batch: {
         items: lines,
@@ -646,7 +646,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
         this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.BY.ENTITY.QUERY.v1',
+          smart_code: 'HERA.TXN.BY.ENTITY.QUERY.V1',
           query: {
             filters: {
               $or: [{ from_entity_id: entityId }, { to_entity_id: entityId }]

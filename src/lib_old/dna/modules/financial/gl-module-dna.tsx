@@ -235,7 +235,7 @@ export function GLModule({
         organization_id: organizationId,
         description: journalForm.description,
         total_amount: totals.debit,
-        smart_code: 'HERA.FIN.GL.TXN.JE.v1',
+        smart_code: 'HERA.FIN.GL.TXN.JE.V1',
         metadata: {
           ...journalForm.metadata,
           period: currentPeriod,
@@ -916,7 +916,7 @@ export const GL_MODULE_DNA = {
   },
   dependencies: ['universalApi', 'Chart of Accounts setup', 'Organization context'],
   smartCodes: [
-    'HERA.FIN.GL.TXN.JE.v1',
+    'HERA.FIN.GL.TXN.JE.V1',
     'HERA.FIN.GL.ACC.*',
     'HERA.FIN.GL.RPT.*',
     'HERA.FIN.GL.VAL.*'

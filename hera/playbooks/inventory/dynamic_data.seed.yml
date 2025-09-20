@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.INVENTORY.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Item
   - { entity_slug: item:SKU-INV-001, key_slug: item.sku,            value: "SKU-INV-001", value_type: text }

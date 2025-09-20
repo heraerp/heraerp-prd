@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 
 import { Suspense } from 'react'
 import { BarChart, LineChart, PieChart, TrendingUp, Users, Clock, Eye } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface AnalyticsData {
   pageViews: {

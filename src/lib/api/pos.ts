@@ -18,7 +18,7 @@ import {
   PaymentResponse,
   calculateTotals,
   calculateCommission,
-} from '@/src/lib/schemas/pos'
+} from '@/lib/schemas/pos'
 
 // Mock price list data
 const MOCK_SERVICES: ServicePrice[] = [
@@ -92,7 +92,7 @@ export class PosApi {
               qty: line.qty,
               unit_price: line.unit_price,
               amount: line.qty * line.unit_price,
-              smart_code: 'HERA.SALON.POS.LINE.SERVICE.v1',
+              smart_code: 'HERA.SALON.POS.LINE.SERVICE.V1',
             }
           case 'item':
             return {
@@ -102,7 +102,7 @@ export class PosApi {
               qty: line.qty,
               unit_price: line.unit_price,
               amount: line.qty * line.unit_price,
-              smart_code: 'HERA.SALON.POS.LINE.PRODUCT.v1',
+              smart_code: 'HERA.SALON.POS.LINE.PRODUCT.V1',
             }
           case 'discount':
             return {
@@ -110,7 +110,7 @@ export class PosApi {
               line_type: 'discount' as const,
               description: `Discount${line.reason ? ` - ${line.reason}` : ''}`,
               amount: -line.amount,
-              smart_code: 'HERA.SALON.POS.LINE.DISCOUNT.v1',
+              smart_code: 'HERA.SALON.POS.LINE.DISCOUNT.V1',
             }
           case 'tip':
             return {
@@ -118,7 +118,7 @@ export class PosApi {
               line_type: 'tip' as const,
               description: 'Gratuity',
               amount: line.amount,
-              smart_code: 'HERA.SALON.POS.LINE.TIP.v1',
+              smart_code: 'HERA.SALON.POS.LINE.TIP.V1',
             }
         }
       })
@@ -130,7 +130,7 @@ export class PosApi {
           line_type: 'tax' as const,
           description: `VAT ${(cart.totals.tax_rate * 100).toFixed(0)}%`,
           amount: cart.totals.tax_total,
-          smart_code: 'HERA.SALON.POS.LINE.TAX.v1',
+          smart_code: 'HERA.SALON.POS.LINE.TAX.V1',
         })
       }
 

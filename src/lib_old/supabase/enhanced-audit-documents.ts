@@ -181,7 +181,7 @@ class EnhancedAuditDocumentService {
       entity_type: 'audit_document',
       entity_code: documentData.document_code!,
       entity_name: documentData.document_name!,
-      smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+      smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
       status: 'pending',
       document_code: documentData.document_code!,
       document_name: documentData.document_name!,
@@ -370,7 +370,7 @@ class EnhancedAuditDocumentService {
         transaction_type: 'document_status_update',
         entity_id: documentId,
         transaction_date: new Date().toISOString(),
-        smart_code: 'HERA.AUD.DOC.TXN.STATUS.v1',
+        smart_code: 'HERA.AUD.DOC.TXN.STATUS.V1',
         reference_number: documentId,
         description: `Document status updated to ${updates.status}`,
         metadata: {

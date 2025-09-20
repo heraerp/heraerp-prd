@@ -32,15 +32,15 @@ export interface SAPDocumentLine {
 export class SAPMappingService {
   // Document type mapping
   private static readonly DOC_TYPE_MAP: Record<string, string> = {
-    'HERA.ERP.FI.JE.POST.v1': 'SA',
-    'HERA.ERP.FI.JE.REVERSE.v1': 'SA',
-    'HERA.ERP.FI.JE.RECURRING.v1': 'SA',
-    'HERA.ERP.FI.AP.INVOICE.v1': 'KR',
-    'HERA.ERP.FI.AP.PAYMENT.v1': 'KZ',
-    'HERA.ERP.FI.AP.CREDIT.v1': 'KG',
-    'HERA.ERP.FI.AR.INVOICE.v1': 'DR',
-    'HERA.ERP.FI.AR.RECEIPT.v1': 'DZ',
-    'HERA.ERP.FI.AR.CREDIT.v1': 'DG'
+    'HERA.ERP.FI.JE.POST.V1': 'SA',
+    'HERA.ERP.FI.JE.REVERSE.V1': 'SA',
+    'HERA.ERP.FI.JE.RECURRING.V1': 'SA',
+    'HERA.ERP.FI.AP.INVOICE.V1': 'KR',
+    'HERA.ERP.FI.AP.PAYMENT.V1': 'KZ',
+    'HERA.ERP.FI.AP.CREDIT.V1': 'KG',
+    'HERA.ERP.FI.AR.INVOICE.V1': 'DR',
+    'HERA.ERP.FI.AR.RECEIPT.V1': 'DZ',
+    'HERA.ERP.FI.AR.CREDIT.V1': 'DG'
   }
 
   // Map HERA transaction to SAP format

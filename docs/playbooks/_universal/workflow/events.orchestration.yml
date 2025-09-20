@@ -1,0 +1,111 @@
+smart_code: HERA.UNIV.WF.EVENTS.ORCH.V1
+description: Event-driven workflow orchestration - triggers workflows based on business events
+event_triggers:
+  # Salon POS → Appointment Follow-up
+  - event: HERA.SALON.POS.SALE.COMMIT.V1
+    condition: transaction contains appointment services
+    action: 
+      workflow: APPT_FOLLOWUP
+      subject_ref:
+        entity_id: ${event.customer_id}
+        entity_type: appointment
+      context:
+        customer_id: ${event.customer_id}
+        service_names: ${event.service_line_items}
+        completed_at: ${event.transaction_date}
+        total_amount: ${event.total_amount}
+    delay: immediate
+    
+  # HR Leave Request → Leave Approval  
+  - event: HERA.SALON.HR.LEAVE.REQUEST.CREATE.V1
+    condition: leave request submitted by employee
+    action:
+      workflow: LEAVE_APPROVAL
+      subject_ref:
+        entity_id: ${event.leave_request_id}
+        entity_type: leave_request
+      context:
+        employee_id: ${event.employee_id}
+        leave_type: ${event.leave_type}
+        days_requested: ${event.days_requested}
+        start_date: ${event.start_date}
+        end_date: ${event.end_date}
+        reason: ${event.reason}
+    delay: immediate
+    
+  # Finance AP Bill → Bill Approval
+  - event: HERA.FIN.AP.BILL.INGEST.V1
+    condition: AP bill uploaded or received
+    action:
+      workflow: AP_BILL_APPROVAL
+      subject_ref:
+        entity_id: ${event.bill_id}
+        entity_type: ap_bill
+      context:
+        vendor_id: ${event.vendor_id}
+        vendor_code: ${event.vendor_code}
+        po_number: ${event.po_number}
+        bill_amount: ${event.bill_amount}
+        bill_lines: ${event.line_items}
+        tax_amount: ${event.tax_amount}
+    delay: immediate
+
+scheduled_triggers:
+  # Daily membership renewal check
+  - schedule: "0 9 * * *"                          # 9 AM daily
+    action: 
+      procedure: HERA.SALON.CRM.MEMBERSHIP.CHECK.DUE.V1
+      description: Check for memberships due for renewal
+    on_result:
+      for_each_due_membership:
+        workflow: MEMBERSHIP_RENEWAL
+        subject_ref:
+          entity_id: ${membership.customer_id}
+          entity_type: membership
+        context:
+          customer_id: ${membership.customer_id}
+          membership_type: ${membership.type}
+          expiry_date: ${membership.expiry_date}
+          renewal_amount: ${membership.renewal_fee}
+          
+  # Daily timer processing
+  - schedule: "*/5 * * * *"                        # Every 5 minutes
+    action:
+      procedure: HERA.UNIV.WF.TIMER.PROCESS.DUE.V1
+      description: Process all due timers
+      
+workflow_event_handlers:
+  # After workflow completion
+  - workflow_event: instance_completed
+    workflows: [LEAVE_APPROVAL, AP_BILL_APPROVAL]
+    action:
+      procedure: HERA.UNIV.WF.CLEANUP.COMPLETED.V1
+      description: Archive completed workflow instances
+      
+  # Timer escalation
+  - workflow_event: timer_fired
+    timer_type: escalation
+    action:
+      procedure: HERA.UNIV.TASK.AUTO.ESCALATE.V1
+      description: Auto-escalate overdue tasks
+      
+error_handling:
+  workflow_start_failure:
+    retry_attempts: 3
+    retry_delay: 300                               # 5 minutes
+    on_final_failure:
+      procedure: HERA.UNIV.WF.ERROR.LOG.V1
+      notification: admin_alert
+      
+  timer_fire_failure:
+    retry_attempts: 2
+    retry_delay: 60                                # 1 minute  
+    on_final_failure:
+      procedure: HERA.UNIV.WF.TIMER.MARK.FAILED.V1
+      
+configuration:
+  max_concurrent_workflows: 10000
+  max_workflows_per_definition: 1000
+  workflow_retention_days: 365
+  timer_precision_seconds: 30
+  event_processing_batch_size: 100

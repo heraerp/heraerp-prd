@@ -1,8 +1,8 @@
 import React from 'react'
 import { Card }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Skeleton }
-from '@/src/components/ui/skeleton'
+from '@/components/ui/skeleton'
 
 
 export function ProductsPageSkeleton() {

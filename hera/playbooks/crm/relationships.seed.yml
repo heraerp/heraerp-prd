@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.CRM.MDM.RELATIONSHIPS.SEED.V1
 rows:
   - from_slug: account:ACME
     to_slug:   contact:JANE_DOE

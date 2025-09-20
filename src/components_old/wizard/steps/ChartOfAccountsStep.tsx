@@ -204,7 +204,7 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
         allow_posting: true,
         natural_balance: 'DEBIT',
         ifrs_classification: 'CURRENT_ASSET',
-        smart_code: 'HERA.UNIVERSAL.COA.ACCOUNT.GL.ASSET.CURRENT.CASH.v1'
+        smart_code: 'HERA.UNIVERSAL.COA.ACCOUNT.GL.ASSET.CURRENT.CASH.V1'
       },
       {
         entity_code: '4100000',
@@ -215,7 +215,7 @@ export const ChartOfAccountsStep: React.FC<ChartOfAccountsStepProps> = ({
         allow_posting: true,
         natural_balance: 'CREDIT',
         ifrs_classification: 'REVENUE',
-        smart_code: 'HERA.UNIVERSAL.COA.ACCOUNT.GL.REV.OPERATING.SALES.v1'
+        smart_code: 'HERA.UNIVERSAL.COA.ACCOUNT.GL.REV.OPERATING.SALES.V1'
       }
     ]
 

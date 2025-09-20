@@ -3,7 +3,7 @@
  * Enforces balanced journal entries for GL transactions
  */
 
-import { UniversalTransactionLine } from '@/src/types/database'
+import { UniversalTransactionLine } from '@/types/database'
 
 interface BalanceValidationResult {
   is_balanced: boolean

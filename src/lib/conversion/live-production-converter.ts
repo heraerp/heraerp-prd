@@ -1,11 +1,11 @@
 // ================================================================================
 // LIVE PRODUCTION CONVERSION ENGINE
 // Real conversion system that actually connects to Supabase and processes real data
-// Smart Code: HERA.LIVE.PROD.CONVERSION.ENGINE.v1
+// Smart Code: HERA.LIVE.PROD.CONVERSION.ENGINE.V1
 // ================================================================================
 
-import { supabase } from '@/src/lib/supabase'
-import { universalApi } from '@/src/lib/universal-api'
+import { supabase } from '@/lib/supabase'
+import { universalApi } from '@/lib/universal-api'
 
 // ================================================================================
 // LIVE CONVERSION INTERFACES

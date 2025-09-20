@@ -4,12 +4,12 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Package,
   Factory,
@@ -24,10 +24,10 @@ import {
   Calendar
 } from 'lucide-react'
 import Link from 'next/link'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { cn } from '@/lib/utils'
 
 export default function FurnitureProduction() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
@@ -51,7 +51,7 @@ export default function FurnitureProduction() {
     )
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -114,8 +114,7 @@ export default function FurnitureProduction() {
     }
   ]
 
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
@@ -128,7 +127,10 @@ export default function FurnitureProduction() {
                 Settings
               </Button>
               <Link href="/furniture/production/orders/new">
-                <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+                <Button
+                  size="sm"
+                  className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+                >
                   <Plus className="h-4 w-4" />
                   New Order
                 </Button>
@@ -136,23 +138,27 @@ export default function FurnitureProduction() {
             </>
           }
         />
-        
+
         {/* Production Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {productionMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
-                  <metric.icon className={cn(
-            'h-4 w-4',
-            metric.color
-          )} />
+                  <metric.icon className={cn('h-4 w-4', metric.color)} />
                 </div>
-                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  {metric.value}
+                </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">
+                    Change: {metric.change}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -199,7 +205,9 @@ export default function FurnitureProduction() {
         </div>
 
         <div className="text-center p-8">
-          <p className="text-[var(--color-text-secondary)]">Production management interface is being loaded...</p>
+          <p className="text-[var(--color-text-secondary)]">
+            Production management interface is being loaded...
+          </p>
         </div>
       </div>
     </div>

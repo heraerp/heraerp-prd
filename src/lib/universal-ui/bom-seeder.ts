@@ -3,7 +3,7 @@
  * Demonstrates how complex manufacturing data fits in the 6-table schema
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface BOMSeedResult {
   products: any[]
@@ -160,7 +160,7 @@ export class BOMSeeder {
         entity_type: 'component',
         entity_name: material.name,
         entity_code: material.code,
-        smart_code: 'HERA.FURN.BOM.COMPONENT.RAW_MATERIAL.v1',
+        smart_code: 'HERA.FURN.BOM.COMPONENT.RAW_MATERIAL.V1',
         metadata: {
           unit_cost: material.unit_cost,
           unit_of_measure: material.unit_of_measure,
@@ -213,7 +213,7 @@ export class BOMSeeder {
         entity_type: 'component',
         entity_name: assembly.name,
         entity_code: assembly.code,
-        smart_code: 'HERA.FURN.BOM.COMPONENT.SUB_ASSEMBLY.v1',
+        smart_code: 'HERA.FURN.BOM.COMPONENT.SUB_ASSEMBLY.V1',
         metadata: {
           unit_cost: 0, // Will be calculated from components
           unit_of_measure: 'assembly',
@@ -232,7 +232,7 @@ export class BOMSeeder {
             from_entity_id: result.data.id,
             to_entity_id: material.id,
             relationship_type: 'has_component',
-            smart_code: 'HERA.FURN.BOM.REL.COMPONENT.v1',
+            smart_code: 'HERA.FURN.BOM.REL.COMPONENT.V1',
             metadata: {
               quantity: comp.quantity,
               unit_of_measure: material.metadata.unit_of_measure
@@ -299,7 +299,7 @@ export class BOMSeeder {
         entity_type: 'product',
         entity_name: product.name,
         entity_code: product.code,
-        smart_code: 'HERA.FURN.BOM.ITEM.PRODUCT.v1',
+        smart_code: 'HERA.FURN.BOM.ITEM.PRODUCT.V1',
         metadata: {
           description: product.description,
           revision: product.revision,
@@ -323,7 +323,7 @@ export class BOMSeeder {
             from_entity_id: result.data.id,
             to_entity_id: component.id,
             relationship_type: 'has_component',
-            smart_code: 'HERA.FURN.BOM.REL.COMPONENT.v1',
+            smart_code: 'HERA.FURN.BOM.REL.COMPONENT.V1',
             metadata: {
               quantity: comp.quantity,
               unit_of_measure: component.metadata.unit_of_measure,
@@ -363,7 +363,7 @@ export class BOMSeeder {
       const createTxn = await universalApi.createTransaction({
         transaction_type: 'bom_revision',
         reference_entity_id: product.id,
-        smart_code: 'HERA.FURN.BOM.TXN.CREATE.v1',
+        smart_code: 'HERA.FURN.BOM.TXN.CREATE.V1',
         transaction_code: `BOM-${Date.now()}-CREATE`,
         description: 'Initial BOM creation',
         metadata: {
@@ -380,7 +380,7 @@ export class BOMSeeder {
         const revisionTxn = await universalApi.createTransaction({
           transaction_type: 'bom_revision',
           reference_entity_id: product.id,
-          smart_code: 'HERA.FURN.BOM.TXN.REVISE.v1',
+          smart_code: 'HERA.FURN.BOM.TXN.REVISE.V1',
           transaction_code: `BOM-${Date.now()}-REVISE`,
           description: 'Updated component quantities',
           metadata: {
@@ -398,7 +398,7 @@ export class BOMSeeder {
       const releaseTxn = await universalApi.createTransaction({
         transaction_type: 'bom_revision',
         reference_entity_id: product.id,
-        smart_code: 'HERA.FURN.BOM.TXN.RELEASE.v1',
+        smart_code: 'HERA.FURN.BOM.TXN.RELEASE.V1',
         transaction_code: `BOM-${Date.now()}-RELEASE`,
         description: 'Released for production',
         metadata: {

@@ -1,0 +1,93 @@
+smart_code: HERA.UNIV.WF.EFFECT.EXECUTE.V1
+intent: Execute a workflow effect with retry semantics and failure handling.
+scope:
+  in_scope:
+    - execute effect procedure
+    - handle execution failures
+    - implement retry logic
+    - track attempt history
+    - update effect status
+  out_of_scope:
+    - effect scheduling
+    - effect cancellation
+    - workflow state changes
+preconditions:
+  - permissions: [$PROFILE.required_role_effect] or system
+  - effect exists and is in PENDING status
+  - instance exists and is active
+invariants:
+  - effects execute at most once successfully
+  - failed effects retry up to max_attempts
+  - execution history maintained for debugging
+  - effect status always reflects current state
+inputs:
+  required:
+    - organization_id: uuid
+    - effect_id: uuid                              # effect execution record
+  optional:
+    - force_retry: boolean                         # ignore retry limits
+    - context_override: object                     # override context data
+happy_path:
+  - step: load effect execution record and instance context
+  - step: verify effect status in [PENDING, FAILED] and retry count < max_attempts
+  - step: increment attempt_count and update status = EXECUTING
+  - step: extract effect_smart_code and context from effect metadata
+  - step: execute effect_smart_code with context + {effect_id, instance_id, attempt_number}
+  - step: if execution succeeds, update status = COMPLETED, completed_at = now()
+  - step: if execution fails:
+    - update status = FAILED, last_error = error_details
+    - if attempt_count < max_attempts, schedule retry with exponential backoff
+    - if attempt_count >= max_attempts, update status = PERMANENTLY_FAILED
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # effect status updated
+  procedures_executed:
+    - effect_smart_code: 1
+  response:
+    effect_id: uuid
+    status: string                                 # COMPLETED, FAILED, PERMANENTLY_FAILED
+    attempt_number: number
+    execution_result: object                       # from effect procedure
+    next_retry_at: timestamp                       # if scheduling retry
+errors:
+  - code: EFFECT_NOT_FOUND
+    when: effect_id doesn't exist in organization
+    action: return 404
+  - code: EFFECT_ALREADY_COMPLETED
+    when: effect status is COMPLETED
+    action: return 409 with current status
+  - code: RETRY_LIMIT_EXCEEDED
+    when: effect has reached max retry attempts
+    action: return 429 with retry count
+  - code: EXECUTION_FAILED
+    when: effect_smart_code execution fails
+    action: update status, schedule retry if attempts remain
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist
+    action: mark effect as PERMANENTLY_FAILED
+observability:
+  logs:
+    - effect_executing: { effect_id, effect_smart_code, instance_id, attempt_number }
+    - effect_completed: { effect_id, execution_result, attempt_number }
+    - effect_failed: { effect_id, error_details, attempt_number, next_retry_at }
+    - effect_permanently_failed: { effect_id, total_attempts }
+  audit_json: true
+  metrics:
+    - effect_execution_count by effect_smart_code
+    - effect_success_rate by effect_smart_code
+    - effect_retry_count
+    - effect_execution_duration
+retry_configuration:
+  max_attempts: 3
+  backoff_strategy: exponential
+  base_delay_seconds: 30
+  max_delay_seconds: 300
+  jitter: true
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  effect_id: "890e1234-e89b-12d3-a456-426614174000"
+  force_retry: false
+checks:
+  - description: verify effect hasn't exceeded retry limit
+  - description: ensure execution context is complete
+  - description: validate retry scheduling is correct

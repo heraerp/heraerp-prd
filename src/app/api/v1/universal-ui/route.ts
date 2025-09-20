@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { ViewMetaService } from '@/src/lib/universal-ui/view-meta-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { ViewMetaService } from '@/lib/universal-ui/view-meta-service'
+import { universalApi } from '@/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
 
 async function handleWorkflowAction(actionConfig: any, entityId: string, organizationId: string) {
   // Example: Release BOM workflow
-  if (actionConfig.smart_code === 'HERA.FURN.BOM.ACTION.RELEASE.v1') {
+  if (actionConfig.smart_code === 'HERA.FURN.BOM.ACTION.RELEASE.V1') {
     // 1. Update status via relationship
     const { data: statusEntity } = await supabase
       .from('core_entities')
@@ -174,7 +174,7 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
     await universalApi.createTransaction({
       transaction_type: 'bom_revision',
       reference_entity_id: entityId,
-      smart_code: 'HERA.FURN.BOM.TXN.RELEASE.v1',
+      smart_code: 'HERA.FURN.BOM.TXN.RELEASE.V1',
       description: 'BOM released for production',
       metadata: {
         action: 'release',

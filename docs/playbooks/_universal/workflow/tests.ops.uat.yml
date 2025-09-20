@@ -1,0 +1,408 @@
+smart_code: HERA.UNIV.WF.OPS.TESTS.UAT.V1
+suite: WF_OPS_MONITORING_ADMIN
+description: UAT tests for WF STEP 3 - Operations, Monitoring & Admin UX
+setup:
+  - create_test_organization: $ORG
+  - register_test_workflows:
+      - code: TEST_ADMIN_WORKFLOW
+        states: [DRAFT, ACTIVE, PAUSED, COMPLETED]
+        transitions:
+          - from: DRAFT, to: ACTIVE, by: [user]
+          - from: ACTIVE, to: PAUSED, by: [admin]
+          - from: PAUSED, to: ACTIVE, by: [admin]
+          - from: ACTIVE, to: COMPLETED, by: [user]
+  - create_test_users:
+      - role: admin, user_id: $ADMIN_USER
+      - role: user, user_id: $REGULAR_USER
+      - role: manager, user_id: $MANAGER_USER
+
+cases:
+  # Admin Operations Tests
+  - name: pause_resume_workflow
+    description: Test pause and resume workflow instance operations
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: TEST_ADMIN_WORKFLOW
+          subject_ref:
+            entity_id: $TEST_ENTITY
+            entity_type: test_object
+        store: instance_id as $INSTANCE_ID
+        
+      - call: HERA.UNIV.WF.ADVANCE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          to_state: ACTIVE
+          actor_role: user
+        expect:
+          current_state: ACTIVE
+          
+      - call: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          reason: "Testing pause functionality"
+          paused_by: $ADMIN_USER
+        expect:
+          paused: true
+          pause_reason: "Testing pause functionality"
+          
+      - assert: read_instance($INSTANCE_ID).paused == true
+      
+      - call: HERA.UNIV.WF.INSTANCE.RESUME.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          resumed_by: $ADMIN_USER
+          notes: "Testing resume functionality"
+        expect:
+          paused: false
+          
+      - assert: read_instance($INSTANCE_ID).paused == false
+
+  - name: instance_reassignment
+    description: Test workflow instance ownership reassignment
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: TEST_ADMIN_WORKFLOW
+        store: instance_id as $INSTANCE_ID
+        
+      - call: HERA.UNIV.WF.INSTANCE.REASSIGN.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          owner_team: "operations"
+          reassigned_by: $ADMIN_USER
+          reason: "Escalating to operations team"
+        expect:
+          owner_team: "operations"
+          
+      - call: HERA.UNIV.WF.INSTANCE.REASSIGN.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          owner_user_id: $MANAGER_USER
+          reassigned_by: $ADMIN_USER
+          reason: "Assigning to specific manager"
+        expect:
+          owner_user_id: $MANAGER_USER
+          owner_team: null
+
+  - name: effect_retry_mechanism
+    description: Test retry of failed effects from workflow steps
+    steps:
+      - setup: create workflow instance with failed effects
+      - mock: TEST.EFFECT.SMART.CODE
+        behavior: fail_first_attempt_then_succeed
+        
+      - call: HERA.UNIV.WF.EFFECT.RETRY.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          step_id: $STEP_WITH_FAILED_EFFECTS
+          retried_by: $ADMIN_USER
+        expect:
+          effects_successful: ["TEST.EFFECT.SMART.CODE"]
+          effects_still_failed: []
+          
+      - assert: read_step($STEP_WITH_FAILED_EFFECTS).effects_failed == []
+
+  - name: task_reassignment
+    description: Test task reassignment to different roles and users
+    steps:
+      - call: HERA.UNIV.TASK.CREATE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          title: "Test Task for Reassignment"
+          assignee_role: "user"
+        store: task_id as $TASK_ID
+        
+      - call: HERA.UNIV.TASK.REASSIGN.V1
+        with:
+          organization_id: $ORG
+          task_id: $TASK_ID
+          assignee_role: "manager"
+          reassigned_by: $ADMIN_USER
+          reason: "Escalating to management"
+        expect:
+          assignee_role: "manager"
+          assignee_user_id: null
+          
+      - call: HERA.UNIV.TASK.REASSIGN.V1
+        with:
+          organization_id: $ORG
+          task_id: $TASK_ID
+          assignee_user_id: $MANAGER_USER
+          reassigned_by: $ADMIN_USER
+        expect:
+          assignee_user_id: $MANAGER_USER
+          assignee_role: null
+
+  - name: sla_recalculation
+    description: Test SLA deadline recalculation with pause time consideration
+    steps:
+      - call: HERA.UNIV.WF.START.V1
+        with:
+          organization_id: $ORG
+          definition_code: TEST_ADMIN_WORKFLOW
+        store: instance_id as $INSTANCE_ID
+        
+      - call: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          reason: "Test pause for SLA calculation"
+        
+      - advance_time: 2_hours
+      
+      - call: HERA.UNIV.WF.INSTANCE.RESUME.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          
+      - call: HERA.UNIV.WF.INSTANCE.SLA.RECALC.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          sla_override_hours: 48
+          recalc_by: $ADMIN_USER
+        expect:
+          pause_time_hours: 2
+          new_sla_at: greater_than_previous
+          
+  # Read-Only Operations Tests
+  - name: instances_listing_and_filtering
+    description: Test workflow instances listing with various filters
+    steps:
+      - setup: create multiple workflow instances with different states
+      
+      - call: HERA.UNIV.WF.INSTANCES.LIST.V1
+        with:
+          organization_id: $ORG
+          current_state: "ACTIVE"
+          limit: 10
+        expect:
+          instances: array_with_only_active_state
+          pagination: valid_pagination_metadata
+          
+      - call: HERA.UNIV.WF.INSTANCES.LIST.V1
+        with:
+          organization_id: $ORG
+          overdue: true
+          sort_by: "sla_at"
+          sort_order: "asc"
+        expect:
+          instances: sorted_by_sla_ascending
+          
+      - call: HERA.UNIV.WF.INSTANCES.LIST.V1
+        with:
+          organization_id: $ORG
+          definition_code: "TEST_ADMIN_WORKFLOW"
+          paused: true
+        expect:
+          instances: only_paused_instances
+
+  - name: instance_detail_retrieval
+    description: Test detailed instance information retrieval
+    steps:
+      - call: HERA.UNIV.WF.INSTANCE.GET.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          include_steps: true
+          include_tasks: true
+          include_timers: true
+        expect:
+          instance: complete_instance_data
+          steps: array_of_workflow_steps
+          tasks: array_of_related_tasks
+          timers: array_of_active_timers
+
+  - name: tasks_listing_and_filtering
+    description: Test tasks listing with various filters
+    steps:
+      - setup: create multiple tasks with different states and assignments
+      
+      - call: HERA.UNIV.TASKS.LIST.V1
+        with:
+          organization_id: $ORG
+          task_state: "OPEN"
+          assignee_role: "manager"
+        expect:
+          tasks: only_open_manager_tasks
+          
+      - call: HERA.UNIV.TASKS.LIST.V1
+        with:
+          organization_id: $ORG
+          overdue: true
+          priority: "high"
+          sort_by: "due_at"
+        expect:
+          tasks: overdue_high_priority_sorted
+
+  # Scheduler Tests
+  - name: scheduler_sla_monitoring
+    description: Test scheduler identifies and escalates overdue instances
+    steps:
+      - setup: create overdue workflow instances (SLA breached)
+      - mock: notification procedures
+      
+      - call: HERA.UNIV.WF.SCHEDULER.V1
+        with:
+          dry_run: false
+          organization_filter: [$ORG]
+        expect:
+          instances_escalated: greater_than_zero
+          notifications_sent: matches_overdue_count
+          
+      - verify: notification procedures called with correct parameters
+      - assert: escalated instances have sla_escalated_at timestamp
+
+  - name: scheduler_timer_processing
+    description: Test scheduler processes due timers correctly
+    steps:
+      - setup: create due timers
+      - mock: timer fire procedures
+      
+      - call: HERA.UNIV.WF.SCHEDULER.V1
+        with:
+          dry_run: false
+        expect:
+          timers_fired: matches_due_timer_count
+          
+      - verify: HERA.UNIV.WF.TIMER.FIRE.V1 called for each due timer
+      - assert: fired timers have status updated to 'FIRED'
+
+  - name: scheduler_task_escalation
+    description: Test scheduler escalates overdue tasks
+    steps:
+      - setup: create overdue tasks
+      - mock: task escalation procedures
+      
+      - call: HERA.UNIV.WF.SCHEDULER.V1
+        with:
+          dry_run: false
+        expect:
+          tasks_escalated: matches_overdue_task_count
+          
+      - verify: HERA.UNIV.TASK.ESCALATE.V1 called for overdue tasks
+
+  # API Handler Tests (HTTP endpoints)
+  - name: admin_api_endpoints
+    description: Test all admin API endpoints work correctly
+    steps:
+      - http: POST /api/v1/workflows/$INSTANCE_ID/pause
+        body: { organization_id: $ORG, reason: "API test" }
+        expect:
+          status: 200
+          response: { paused: true }
+          
+      - http: POST /api/v1/workflows/$INSTANCE_ID/resume
+        body: { organization_id: $ORG }
+        expect:
+          status: 200
+          response: { paused: false }
+          
+      - http: POST /api/v1/workflows/$INSTANCE_ID/reassign
+        body: { organization_id: $ORG, owner_team: "operations" }
+        expect:
+          status: 200
+          response: { owner_team: "operations" }
+          
+      - http: POST /api/v1/tasks/$TASK_ID/reassign
+        body: { organization_id: $ORG, assignee_role: "manager" }
+        expect:
+          status: 200
+          response: { assignee_role: "manager" }
+
+  - name: readonly_api_endpoints
+    description: Test read-only API endpoints return correct data
+    steps:
+      - http: GET /api/v1/workflows?organization_id=$ORG&limit=5
+        expect:
+          status: 200
+          response: { instances: array, pagination: object }
+          
+      - http: GET /api/v1/workflows/$INSTANCE_ID?organization_id=$ORG
+        expect:
+          status: 200
+          response: { instance: object, steps: array }
+          
+      - http: GET /api/v1/tasks?organization_id=$ORG&task_state=OPEN
+        expect:
+          status: 200
+          response: { tasks: array, pagination: object }
+
+  # Error Handling Tests
+  - name: permission_enforcement
+    description: Ensure admin operations require proper permissions
+    steps:
+      - call: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+        as_user: $REGULAR_USER
+        expect_error: PERMISSION_DENIED
+        
+      - call: HERA.UNIV.TASK.REASSIGN.V1
+        with:
+          organization_id: $ORG
+          task_id: $TASK_ID
+          assignee_role: "admin"
+        as_user: $REGULAR_USER
+        expect_error: PERMISSION_DENIED
+
+  - name: org_isolation_enforcement
+    description: Ensure operations respect organization boundaries
+    steps:
+      - setup: create instance in different organization $OTHER_ORG
+      
+      - call: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+        with:
+          organization_id: $ORG
+          instance_id: $OTHER_ORG_INSTANCE_ID
+        expect_error: INSTANCE_NOT_FOUND
+        
+      - call: HERA.UNIV.WF.INSTANCES.LIST.V1
+        with:
+          organization_id: $ORG
+        expect:
+          instances: only_contain_own_org_instances
+
+  # Performance Tests
+  - name: read_model_performance
+    description: Ensure read models perform well with large datasets
+    steps:
+      - setup: create 1000 workflow instances
+      
+      - call: HERA.UNIV.WF.INSTANCES.LIST.V1
+        with:
+          organization_id: $ORG
+          limit: 100
+        expect:
+          response_time: less_than_1000ms
+          
+      - call: HERA.UNIV.WF.INSTANCE.GET.V1
+        with:
+          organization_id: $ORG
+          instance_id: $INSTANCE_ID
+          include_steps: true
+        expect:
+          response_time: less_than_500ms
+
+assertions:
+  - all_procedures_registered: true
+  - read_models_created: true
+  - indexes_created: true
+  - admin_operations_working: true
+  - scheduler_functioning: true
+  - api_endpoints_responding: true
+  - permission_enforcement_active: true
+  - org_isolation_maintained: true
+  - no_new_tables_created: true
+  - performance_requirements_met: true

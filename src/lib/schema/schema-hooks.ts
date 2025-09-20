@@ -5,12 +5,12 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { schemaManager, SchemaUtils } from './schema-manager'
 import {
   EnhancedSchemaManager,
   SelfGoverningIntegration
-} from '@/src/lib/governance/self-governing-integration'
+} from '@/lib/governance/self-governing-integration'
 import type {
   DNAComponent,
   DNATemplate,

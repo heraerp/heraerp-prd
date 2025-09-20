@@ -1,17 +1,17 @@
 'use client'
 
 import React from 'react'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+} from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { FileText } from 'lucide-react'
 import type { WizardData } from '../BusinessSetupWizard'
 

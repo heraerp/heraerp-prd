@@ -8,12 +8,12 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ArrowLeft, FileText, Code } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { PaymentMethodSelector } from '@/src/components/pos/PaymentMethodSelector'
-import { useSession } from '@/src/lib/auth/session'
-import { PosApi } from '@/src/lib/api/pos'
-import { useInvoice, usePayment, usePosNavigation } from '@/src/lib/hooks/usePos'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { PaymentMethodSelector } from '@/components/pos/PaymentMethodSelector'
+import { useSession } from '@/lib/auth/session'
+import { PosApi } from '@/lib/api/pos'
+import { useInvoice, usePayment, usePosNavigation } from '@/lib/hooks/usePos'
 
 const posApi = new PosApi()
 
@@ -86,7 +86,7 @@ return (
           <h1 className="text-3xl font-bold text-gray-800">Process Payment</h1>
           <div className="flex items-center gap-2 mt-2">
             <Code className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-500 font-mono">HERA.SALON.POS.PAYMENT.PROCESS.v1</span>
+            <span className="text-sm text-gray-500 font-mono">HERA.SALON.POS.PAYMENT.PROCESS.V1</span>
           </div>
         </div>
         <Button

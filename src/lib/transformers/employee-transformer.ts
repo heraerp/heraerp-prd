@@ -1,4 +1,4 @@
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 export interface UIEmployee {
   id: string

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         {
           success: false,
           error: 'Organization ID is required',
-          smartCode: 'HERA.SALON.API.ERROR.MISSING_ORG.v1'
+          smartCode: 'HERA.SALON.API.ERROR.MISSING_ORG.V1'
         },
         { status: 400 }
       )
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: dashboardData,
-          smartCode: 'HERA.SALON.API.DASHBOARD.SUCCESS.v1'
+          smartCode: 'HERA.SALON.API.DASHBOARD.SUCCESS.V1'
         })
 
       case 'customers':
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
           success: true,
           data: customers,
           count: customers.length,
-          smartCode: 'HERA.SALON.API.CUSTOMERS.SUCCESS.v1'
+          smartCode: 'HERA.SALON.API.CUSTOMERS.SUCCESS.V1'
         })
 
       case 'appointments':
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
           success: true,
           data: appointments,
           count: appointments.length,
-          smartCode: 'HERA.SALON.API.APPOINTMENTS.SUCCESS.v1'
+          smartCode: 'HERA.SALON.API.APPOINTMENTS.SUCCESS.V1'
         })
 
       case 'staff':
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
           success: true,
           data: staff,
           count: staff.length,
-          smartCode: 'HERA.SALON.API.STAFF.SUCCESS.v1'
+          smartCode: 'HERA.SALON.API.STAFF.SUCCESS.V1'
         })
 
       case 'services':
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
           success: true,
           data: services,
           count: services.length,
-          smartCode: 'HERA.SALON.API.SERVICES.SUCCESS.v1'
+          smartCode: 'HERA.SALON.API.SERVICES.SUCCESS.V1'
         })
 
       default:
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
           {
             success: false,
             error: `Unknown action: ${action}`,
-            smartCode: 'HERA.SALON.API.ERROR.UNKNOWN_ACTION.v1'
+            smartCode: 'HERA.SALON.API.ERROR.UNKNOWN_ACTION.V1'
           },
           { status: 400 }
         )
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
-        smartCode: 'HERA.SALON.API.ERROR.INTERNAL.v1'
+        smartCode: 'HERA.SALON.API.ERROR.INTERNAL.V1'
       },
       { status: 500 }
     )
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: 'Organization ID is required',
-          smartCode: 'HERA.SALON.API.ERROR.MISSING_ORG.v1'
+          smartCode: 'HERA.SALON.API.ERROR.MISSING_ORG.V1'
         },
         { status: 400 }
       )
@@ -126,14 +126,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: { id: appointmentId },
-          smartCode: 'HERA.SALON.API.APPOINTMENT.CREATED.v1'
+          smartCode: 'HERA.SALON.API.APPOINTMENT.CREATED.V1'
         })
 
       case 'update-appointment-status':
         await salonClient.updateAppointmentStatus(data.appointmentId, data.status)
         return NextResponse.json({
           success: true,
-          smartCode: 'HERA.SALON.API.APPOINTMENT.STATUS_UPDATED.v1'
+          smartCode: 'HERA.SALON.API.APPOINTMENT.STATUS_UPDATED.V1'
         })
 
       default:
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: `Unknown action: ${action}`,
-            smartCode: 'HERA.SALON.API.ERROR.UNKNOWN_ACTION.v1'
+            smartCode: 'HERA.SALON.API.ERROR.UNKNOWN_ACTION.V1'
           },
           { status: 400 }
         )
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
-        smartCode: 'HERA.SALON.API.ERROR.INTERNAL.v1'
+        smartCode: 'HERA.SALON.API.ERROR.INTERNAL.V1'
       },
       { status: 500 }
     )

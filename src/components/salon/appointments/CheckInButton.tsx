@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
-import { useToast } from '@/src/components/ui/use-toast'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/components/ui/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface CheckInButtonProps {
   appointmentId: string
@@ -22,7 +22,7 @@ export function CheckInButton({
   className
 }: CheckInButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { organization, user } = useHERAAuth()
   const { toast } = useToast()
 
   // Determine if check-in is allowed
@@ -30,7 +30,7 @@ export function CheckInButton({
   const isCheckedIn = currentStatusCode === 'STATUS-APPOINTMENT-CHECKED_IN'
 
   const handleCheckIn = async () => {
-    if (!currentOrganization) {
+    if (!organization) {
       toast({
         title: 'Error',
         description: 'No organization selected',
@@ -49,7 +49,7 @@ export function CheckInButton({
         },
         body: JSON.stringify({
           appointmentId,
-          organizationId: currentOrganization.id,
+          organizationId: organization.id,
           userId: user?.id
         })
       })

@@ -1,4 +1,4 @@
-smart_code: HERA.PROJECTS.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.PROJECTS.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Project
   - { entity_slug: project:ALPHA, key_slug: project.code,          value: "ALPHA", value_type: text }

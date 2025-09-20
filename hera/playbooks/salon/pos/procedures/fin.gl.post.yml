@@ -1,0 +1,123 @@
+smart_code: HERA.FIN.POSTING.GL.JOURNAL.V1
+intent: >
+  Post balanced journal from SALE & PAYMENTS according to Finance DNA mapping.
+  Creates proper GL entries for sale revenue, payments, and tax accounting.
+
+scope:
+  in_scope:
+    - GL journal entry creation from sale transactions
+    - Revenue recognition for services and retail
+    - Payment method accounting (cash, card, gift card, deposit)
+    - Tax liability recording
+    - Finance DNA smart code mapping
+  out_of_scope:
+    - Cost of goods sold posting (separate procedure)
+    - Commission expense recording (separate procedure) 
+    - Payment gateway fee accounting (configurable)
+    - Month-end accrual adjustments
+
+preconditions:
+  - sale record exists and is committed
+  - payment capture records exist
+  - Finance DNA integration is active for organization
+  - GL account mapping configured for smart codes
+  - has_permissions: [pos_operator, gl_post]
+
+invariants:
+  - journal entries are always balanced (debits = credits)
+  - posting follows Finance DNA smart code mappings
+  - each line maps to proper GL account
+  - journal references source sale transaction
+  - multi-currency handled with FX gain/loss
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for GL posting
+    - name: sale_id
+      type: uuid
+      where: payload
+      description: Sale to create GL entries for
+  optional:
+    - name: posting_date
+      type: date
+      where: payload
+      default: "current_date"
+      description: GL posting date (defaults to today)
+    - name: journal_memo
+      type: string
+      where: payload
+      default: "POS Sale Transaction"
+      description: Journal entry memo/description
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: gl_journal_entry
+      description: Balanced GL journal entry
+      smart_code: HERA.FIN.GL.JOURNAL.ENTRY.V1
+  side_effects:
+    - create balanced journal entry from sale
+    - post revenue to appropriate GL accounts
+    - record payment receipts by method
+    - post tax liability to tax accounts
+    - update GL account balances
+
+happy_path:
+  - step: Load sale record with all lines and payment captures
+  - step: Query Finance DNA for GL account mappings by smart code
+  - step: Create journal entry header with proper reference
+  - step: For each service line, post revenue to service revenue account
+  - step: For each retail line, post revenue to retail revenue account  
+  - step: For tax lines, post to tax liability account
+  - step: For each payment capture, post to payment method account
+  - step: Validate journal is balanced (total debits = total credits)
+  - step: Create journal transaction with all line details
+  - step: Return journal_entry_id and posting summary
+
+errors:
+  - code: SALE_NOT_FOUND
+    when: sale_id does not exist
+    action: return error with valid sale requirements
+  - code: SALE_NOT_COMMITTED
+    when: sale is not in committed status
+    action: return error - only committed sales can be posted
+  - code: FINANCE_DNA_NOT_ACTIVE
+    when: Finance DNA integration not configured for org
+    action: return error with Finance DNA activation requirements
+  - code: GL_MAPPING_NOT_FOUND
+    when: smart code lacks GL account mapping
+    action: return error with missing mapping details
+  - code: JOURNAL_NOT_BALANCED
+    when: total debits != total credits
+    action: return error with balance analysis
+  - code: GL_ACCOUNT_NOT_FOUND
+    when: mapped GL account doesn't exist
+    action: return error with account setup requirements
+  - code: POSTING_DATE_INVALID
+    when: posting date is in closed period
+    action: return error with valid date range
+  - code: JOURNAL_CREATION_FAILED
+    when: cannot create GL journal transaction
+    action: return error with GL system details
+
+observability:
+  logs: [gl_posting_requested, sale_analyzed, mappings_resolved, journal_balanced, posting_completed]
+  audit_json: true
+  metrics: [gl_posting_duration_ms, journal_balance_amount, line_count, account_count]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  sale_id: "sale-123"
+  posting_date: "2025-01-15"
+  journal_memo: "Hair Salon Services & Retail - Terminal 1"
+
+checks:
+  - description: Journal entry perfectly balanced (debits = credits)
+  - description: All sale lines mapped to correct GL accounts
+  - description: Payment methods posted to proper cash/receivable accounts
+  - description: Tax liability recorded correctly
+  - description: Journal references source sale transaction
+  - description: Finance DNA smart code mappings applied correctly

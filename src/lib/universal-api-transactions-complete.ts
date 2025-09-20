@@ -335,7 +335,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
       operations.push({
         entity: 'universal_transaction_lines',
         operation: 'bulk_create',
-        smart_code: 'HERA.TXN.LINES.BULK.CREATE.COMPLETE.v1',
+        smart_code: 'HERA.TXN.LINES.BULK.CREATE.COMPLETE.V1',
         data: { items: linesData }
       })
     }
@@ -343,7 +343,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'universal_transactions',
       organization_id: request.transaction.organization_id,
-      smart_code: 'HERA.TXN.CREATE.WITH.COMPLETE.AUDIT.v1',
+      smart_code: 'HERA.TXN.CREATE.WITH.COMPLETE.AUDIT.V1',
       operation: 'transaction',
       operations,
       ai_requests: request.ai_processing
@@ -579,7 +579,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
     return this.query({
       entity: 'universal_transactions',
       organization_id: organizationId,
-      smart_code: 'HERA.TXN.QUERY.COMPLETE.AUDIT.v1',
+      smart_code: 'HERA.TXN.QUERY.COMPLETE.AUDIT.V1',
       query: advancedQuery,
       performance: {
         cache_ttl: 300,
@@ -667,7 +667,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.ASSIGN.FISCAL.PERIOD.v1',
+          smart_code: 'HERA.TXN.ASSIGN.FISCAL.PERIOD.V1',
           operation: 'update',
           data: {
             id: transactionId,
@@ -699,7 +699,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.UPDATE.EXCHANGE.RATE.v1',
+          smart_code: 'HERA.TXN.UPDATE.EXCHANGE.RATE.V1',
           operation: 'update',
           data: {
             id: transactionId,
@@ -720,7 +720,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.LINK.EXTERNAL.REF.v1',
+          smart_code: 'HERA.TXN.LINK.EXTERNAL.REF.V1',
           operation: 'update',
           data: {
             id: transactionId,
@@ -747,7 +747,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.COMPREHENSIVE.AUDIT.REPORT.v1',
+          smart_code: 'HERA.TXN.COMPREHENSIVE.AUDIT.REPORT.V1',
           query: {
             filters: {
               transaction_date: options.date_range,
@@ -801,7 +801,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.AI.PATTERN.ANALYSIS.v1',
+          smart_code: 'HERA.TXN.AI.PATTERN.ANALYSIS.V1',
           query: {
             filters: entityId
               ? {
@@ -904,7 +904,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'universal_transactions',
       organization_id: organizationId,
-      smart_code: 'HERA.TXN.BULK.CREATE.COMPLETE.v1',
+      smart_code: 'HERA.TXN.BULK.CREATE.COMPLETE.V1',
       operation: 'transaction',
       operations,
       ai_requests: {

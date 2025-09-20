@@ -7,31 +7,31 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { SimpleCalendar } from '@/src/components/calendar/SimpleCalendar'
-import { CalendarEvent, CalendarResource } from '@/src/types/calendar-api.types'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { SimpleCalendar } from '@/components/calendar/SimpleCalendar'
+import { CalendarEvent, CalendarResource } from '@/types/calendar-api.types'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Separator } from '@/src/components/ui/separator'
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 import {
   Clock,
   User,
@@ -50,8 +50,8 @@ import {
   Timer,
   Users
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { toast } from '@/src/hooks/use-toast'
+import { cn } from '@/lib/utils'
+import { toast } from '@/hooks/use-toast'
 
 // Salon-specific types
 interface SalonService {
@@ -110,7 +110,7 @@ interface SalonCalendarProps {
 }
 
 export function SalonCalendar({ className }: SalonCalendarProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const [events, setEvents] = useState<SalonAppointment[]>([])
   const [resources, setResources] = useState<CalendarResource[]>([])
   const [services, setServices] = useState<SalonService[]>([])
@@ -187,7 +187,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 500,
         category: 'chemical',
         skillLevel: 'celebrity',
-        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1'
+        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1'
       },
       {
         id: 'srv-keratin-001',
@@ -196,7 +196,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 350,
         category: 'chemical',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1'
+        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.V1'
       },
       {
         id: 'srv-cut-premium-001',
@@ -205,7 +205,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 150,
         category: 'cut',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1'
+        smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.V1'
       },
       {
         id: 'srv-color-highlights-001',
@@ -214,7 +214,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 280,
         category: 'color',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.COLOR.HIGHLIGHTS.v1'
+        smartCode: 'HERA.SALON.SERVICE.COLOR.HIGHLIGHTS.V1'
       },
       {
         id: 'srv-bridal-package-001',
@@ -223,7 +223,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 800,
         category: 'bridal',
         skillLevel: 'celebrity',
-        smartCode: 'HERA.SALON.SERVICE.BRIDAL.PREMIUM.v1'
+        smartCode: 'HERA.SALON.SERVICE.BRIDAL.PREMIUM.V1'
       }
     ]
 
@@ -243,7 +243,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         hourlyRate: 200,
         commissionRate: 0.4,
         instagram: '@rocky_hair_artist',
-        smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1'
       },
       {
         id: 'stylist-vinay-001',
@@ -253,7 +253,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         level: 'senior',
         hourlyRate: 150,
         commissionRate: 0.35,
-        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
       },
       {
         id: 'stylist-maya-001',
@@ -263,7 +263,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         level: 'senior',
         hourlyRate: 140,
         commissionRate: 0.3,
-        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
       }
     ]
 
@@ -310,7 +310,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
       extendedProps: {
         entity_id: stylist.id,
         smart_code: stylist.smartCode,
-        organization_id: currentOrganization?.id || 'demo-salon',
+        organization_id: organization?.id || 'demo-salon',
         resource_type: 'staff' as const,
         capacity: 1,
         skills: stylist.specializations,
@@ -340,8 +340,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         textColor: '#ffffff',
         extendedProps: {
           entity_id: 'apt-001',
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.CHEMICAL.v1',
-          organization_id: currentOrganization?.id || 'demo-salon',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.CHEMICAL.V1',
+          organization_id: organization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,
           customer_id: 'client-sarah-001',
@@ -370,8 +370,8 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         textColor: '#ffffff',
         extendedProps: {
           entity_id: 'apt-002',
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.v1',
-          organization_id: currentOrganization?.id || 'demo-salon',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.V1',
+          organization_id: organization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,
           customer_id: 'client-emma-001',

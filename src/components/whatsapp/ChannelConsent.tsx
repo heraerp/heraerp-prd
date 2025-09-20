@@ -14,16 +14,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Switch } from '@/src/components/ui/switch'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Separator } from '@/src/components/ui/separator'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { 
   Shield, 
   UserCheck, 
@@ -38,8 +38,8 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { useToast } from '@/components/ui/use-toast'
 
 const ConsentFormSchema = z.object({
   customer_code: z.string().min(1, 'Customer code is required'),

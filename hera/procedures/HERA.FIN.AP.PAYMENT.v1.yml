@@ -1,0 +1,79 @@
+smart_code: HERA.FIN.AP.PAYMENT.V1
+intent: Process payment for posted AP bill.
+scope:
+  in_scope:
+    - create payment transaction
+    - update bill status
+    - record bank transaction
+    - clear AP balance
+  out_of_scope:
+    - bank file generation
+    - payment approval workflow
+preconditions:
+  - bill is posted to GL
+  - payment method configured
+  - sufficient bank balance (if checked)
+invariants:
+  - payment amount matches bill amount
+  - AP balance is cleared
+  - bank transaction recorded
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - bill_id: uuid
+      - payment_method: string                     # check, eft, wire
+      - payment_date: string
+      - bank_account_id: uuid
+  optional:
+    - payment_reference: string
+    - payment_notes: string
+happy_path:
+  - step: load bill transaction and verify posted status
+  - step: verify payment amount matches outstanding balance
+  - step: create universal_transactions header with smart_code=HERA.FIN.AP.PAYMENT.V1
+  - step: create payment transaction lines
+  - step: update AP balance to zero
+  - step: record bank transaction (debit bank, credit AP)
+  - step: update bill status to PAID
+outputs:
+  transactions_created:
+    - universal_transactions: 2                    # payment + bank
+    - universal_transaction_lines: 4               # payment lines + bank lines
+  response:
+    payment_id: uuid
+    payment_number: string
+    payment_amount: number
+    payment_date: timestamp
+    bank_reference: string
+errors:
+  - code: BILL_NOT_POSTED
+    when: bill status is not POSTED
+    action: return error with current status
+  - code: PAYMENT_AMOUNT_MISMATCH
+    when: payment amount != outstanding balance
+    action: return error with amounts
+  - code: BANK_ACCOUNT_NOT_FOUND
+    when: bank_account_id doesn't exist
+    action: return error
+  - code: DUPLICATE_PAYMENT
+    when: bill already paid
+    action: return error with existing payment
+observability:
+  logs:
+    - ap_payment_processed: { bill_id, payment_id, amount, payment_method }
+  audit_json: true
+  metrics:
+    - payment_count by payment_method
+    - average_payment_amount
+    - payment_processing_time
+example_context:
+  bill_id: "bill-123e4567-e89b-12d3-a456-426614174000"
+  payment_method: "eft"
+  payment_date: "2024-01-20"
+  bank_account_id: "bank-789e0123-e89b-12d3-a456-426614174000"
+  payment_reference: "EFT-2024-001"
+checks:
+  - description: verify bill is ready for payment
+  - description: ensure payment amount is correct
+  - description: record complete audit trail

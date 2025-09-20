@@ -6,8 +6,8 @@ import {
   useUniversalTour,
   checkAutoStartTour,
   markTourCompleted
-} from '@/src/lib/guided-tours/universal-tour'
-import { Button } from '@/src/components/ui/button'
+} from '@/lib/guided-tours/universal-tour'
+import { Button } from '@/components/ui/button'
 import { HelpCircle, X, Play } from 'lucide-react'
 
 interface TourContextType {

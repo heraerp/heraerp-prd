@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import SalonDarkSidebar from './SalonDarkSidebar'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 
 interface SalonDarkLayoutProps {
   children: React.ReactNode

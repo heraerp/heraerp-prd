@@ -1,6 +1,6 @@
 /**
  * Fiscal Close Operations Checklist Component
- * Smart Code: HERA.FIN.UI.CLOSE.CHECKLIST.v1
+ * Smart Code: HERA.FIN.UI.CLOSE.CHECKLIST.V1
  *
  * 15-item checklist for year-end closing operations
  */

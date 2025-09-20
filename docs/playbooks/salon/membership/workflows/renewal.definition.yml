@@ -1,0 +1,31 @@
+smart_code: HERA.UNIV.WF.DEFINITION.V1
+intent: Membership Renewal workflow definition for salon CRM
+definition:
+  code: MEMBERSHIP_RENEWAL
+  states: [DUE, NOTIFIED, GRACE, RENEWED, EXPIRED]
+  transitions:
+    - from: DUE
+      to: NOTIFIED
+      by: [system]
+      effects:
+        - HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1
+    - from: NOTIFIED
+      to: GRACE
+      by: [system]
+    - from: GRACE
+      to: RENEWED
+      by: [payment]
+      effects:
+        - HERA.SALON.CRM.MEMBERSHIP.GRANT.V1
+    - from: GRACE
+      to: EXPIRED
+      by: [system]
+  timers:
+    - on_enter: NOTIFIED
+      minutes: 4320                                # 3 days
+      on_fire: HERA.UNIV.WF.ADVANCE.V1
+      name: grace_period_start
+    - on_enter: GRACE
+      minutes: 10080                               # 7 days
+      on_fire: HERA.UNIV.WF.ADVANCE.V1
+      name: expiry_timer

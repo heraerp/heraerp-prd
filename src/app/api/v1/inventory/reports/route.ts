@@ -1,7 +1,7 @@
 'use server'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getHeraAPI } from '@/src/lib/hera-api'
+import { getHeraAPI } from '@/lib/hera-api'
 
 /**
  * Universal inventory management module - reports API

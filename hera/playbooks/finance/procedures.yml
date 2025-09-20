@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.PROCEDURES.CORE.DEFS.v1
+smart_code: HERA.FINANCE.PROCEDURES.CORE.DEFS.V1
 preconditions:
   - "TRANSACTION_TYPE::pos_order"
   - "LINE_TYPE::tax_line"

@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { universalApi, ApiResponse } from '@/src/lib/universal-api'
-import { extractData } from '@/src/lib/universal-helpers'
+import { universalApi, ApiResponse } from '@/lib/universal-api'
+import { extractData } from '@/lib/universal-helpers'
 
 interface UseUniversalDataOptions {
   organizationId?: string

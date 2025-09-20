@@ -6,7 +6,7 @@
  * All workflow state is stored in universal tables with smart codes
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import {
   WorkflowDefinition,
   WorkflowInstance,

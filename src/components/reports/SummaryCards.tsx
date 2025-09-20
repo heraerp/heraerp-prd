@@ -7,9 +7,9 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -22,8 +22,8 @@ import {
   Eye,
   ArrowUpRight
 } from 'lucide-react'
-import { ReportCalculations } from '@/src/lib/schemas/reports'
-import { cn } from '@/src/lib/utils'
+import { ReportCalculations } from '@/lib/schemas/reports'
+import { cn } from '@/lib/utils'
 
 interface SummaryCardProps {
   title: string

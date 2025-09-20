@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.MFG.MDM.RELATIONSHIPS.SEED.V1
 rows:
   # Product master data
   - from_slug: product:FG-001

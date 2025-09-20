@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Customer Master & CRM
- * Smart Code: HERA.SALON.CRM.CUSTOMER.PROFILE.v1
+ * Smart Code: HERA.SALON.CRM.CUSTOMER.PROFILE.V1
  *
  * Complete customer management with preferences, loyalty, memberships,
  * gift cards, deposits, and full activity history - all on 6 tables
@@ -281,7 +281,7 @@ const generateMockCustomers = (): Customer[] => {
       entity_type: 'customer' as const,
       entity_name: `${firstName} ${lastName}`,
       entity_code: `CUS-${String(1000 + i).padStart(5, '0')}`,
-      smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.v1',
+      smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.V1',
       status: Math.random() > 0.02 ? 'active' : Math.random() > 0.5 ? 'inactive' : 'blacklisted',
       created_at: new Date(
         Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000 * 2
@@ -456,7 +456,7 @@ const CustomerDetailModal = ({
             id: '1',
             transaction_type: 'APPOINTMENT',
             transaction_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            smart_code: 'HERA.SALON.CUSTOMER.EVENT.APPOINTMENT.v1',
+            smart_code: 'HERA.SALON.CUSTOMER.EVENT.APPOINTMENT.V1',
             description: 'Hair Color & Highlights with Rocky',
             amount: 280,
             type: 'completed'
@@ -465,7 +465,7 @@ const CustomerDetailModal = ({
             id: '2',
             transaction_type: 'PURCHASE',
             transaction_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            smart_code: 'HERA.SALON.CUSTOMER.EVENT.PURCHASE.v1',
+            smart_code: 'HERA.SALON.CUSTOMER.EVENT.PURCHASE.V1',
             description: 'Kerastase Shampoo & Conditioner',
             amount: 180,
             type: 'product'
@@ -1441,7 +1441,7 @@ export default function SalonCustomersPage() {
         entity_type: 'customer',
         entity_name: formData.entity_name,
         entity_code: `CUS-${String(Date.now()).slice(-6)}`, // Generate unique code
-        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.v1',
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.V1',
         status: 'active',
         organization_id: organizationId,
         metadata: {
@@ -1526,7 +1526,7 @@ export default function SalonCustomersPage() {
           field_name: field.field_name,
           field_type: field.field_type,
           field_label: field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.v1',
+          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.V1',
           organization_id: organizationId
         }
 
@@ -1561,7 +1561,7 @@ export default function SalonCustomersPage() {
         entity_type: 'customer',
         entity_name: formData.entity_name,
         entity_code: entityResponse.data.entity_code,
-        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.v1',
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.V1',
         status: 'active',
         created_at: entityResponse.data.created_at,
         updated_at: entityResponse.data.updated_at,
@@ -1739,7 +1739,7 @@ export default function SalonCustomersPage() {
           field_name: field.field_name,
           field_type: field.field_type,
           field_label: field.field_name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.v1',
+          smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.V1',
           organization_id: organizationId
         }
 

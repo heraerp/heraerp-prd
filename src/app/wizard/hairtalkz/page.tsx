@@ -1,7 +1,7 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { HairTalkzBusinessWizard } from '@/src/components/wizard/HairTalkzBusinessWizard'
+import { HairTalkzBusinessWizard } from '@/components/wizard/HairTalkzBusinessWizard'
 
 export default function HairTalkzWizardPage() {
   return <HairTalkzBusinessWizard />

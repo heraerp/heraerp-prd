@@ -1,0 +1,71 @@
+smart_code: HERA.SALON.CRM.MEMBERSHIP.GRANT.V1
+intent: Grant or renew customer membership after payment.
+scope:
+  in_scope:
+    - extend membership expiry
+    - activate membership benefits
+    - update customer tier
+    - record renewal transaction
+  out_of_scope:
+    - payment processing
+    - reward point calculation
+preconditions:
+  - payment received and confirmed
+  - customer exists
+  - membership type defined
+invariants:
+  - membership dates are accurate
+  - benefits are activated
+  - audit trail maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - customer_id: uuid
+      - membership_type: string
+      - payment_amount: number
+      - renewal_period: number                     # months
+happy_path:
+  - step: load customer entity and current membership data
+  - step: calculate new expiry date (current + renewal_period)
+  - step: update customer membership in core_dynamic_data
+  - step: activate membership benefits
+  - step: create renewal transaction record
+  - step: update customer tier if applicable
+outputs:
+  entities_updated:
+    - core_dynamic_data: 1                         # customer membership
+  transactions_created:
+    - universal_transactions: 1                    # renewal record
+  response:
+    membership_id: uuid
+    new_expiry_date: timestamp
+    membership_tier: string
+    benefits_activated: array
+errors:
+  - code: CUSTOMER_NOT_FOUND
+    when: customer_id doesn't exist in organization
+    action: return error
+  - code: INVALID_MEMBERSHIP_TYPE
+    when: membership_type not supported
+    action: return error with valid types
+  - code: PAYMENT_AMOUNT_INSUFFICIENT
+    when: payment_amount < required renewal fee
+    action: return error with required amount
+observability:
+  logs:
+    - membership_granted: { customer_id, membership_type, expiry_date, payment_amount }
+  audit_json: true
+  metrics:
+    - membership_renewal_count by type
+    - renewal_revenue
+    - customer_tier_distribution
+example_context:
+  customer_id: "cust-123e4567-e89b-12d3-a456-426614174000"
+  membership_type: "gold"
+  payment_amount: 200.00
+  renewal_period: 12
+checks:
+  - description: verify payment amount matches membership fee
+  - description: ensure expiry date calculation is correct
+  - description: activate all applicable benefits

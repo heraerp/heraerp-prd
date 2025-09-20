@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA MCP UAT TESTING FRAMEWORK
 // Comprehensive User Acceptance Testing via Model Context Protocol
-// Smart Code: HERA.MCP.UAT.TESTING.ENGINE.v1
+// Smart Code: HERA.MCP.UAT.TESTING.ENGINE.V1
 // ================================================================================
 
 import { supabase } from '@/lib/supabase'

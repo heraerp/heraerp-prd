@@ -15,8 +15,8 @@ import {
   DEFAULT_ROLE_PERMISSIONS,
   SETTINGS_SMART_CODES,
   SETTINGS_DYNAMIC_DATA_KEYS
-} from '@/src/lib/schemas/settings'
-import { universalApi } from '@/src/lib/universal-api'
+} from '@/lib/schemas/settings'
+import { universalApi } from '@/lib/universal-api'
 
 export function useOrgSettings(organizationId: string) {
   const queryClient = useQueryClient()
@@ -36,9 +36,19 @@ export function useOrgSettings(organizationId: string) {
   const getSalesPolicy = useQuery({
     queryKey: keys.salesPolicy,
     queryFn: async (): Promise<SalesPolicy> => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('💰 Getting sales policy:', {
+          organizationId,
+          key: SETTINGS_DYNAMIC_DATA_KEYS.SALES_POLICY,
+          timestamp: new Date().toISOString()
+        })
+      }
       try {
         const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SALES_POLICY)
-        return result ? SalesPolicy.parse(result) : SalesPolicy.parse({})
+        if (result.success && result.data && result.data.field_value_json) {
+          return SalesPolicy.parse(result.data.field_value_json)
+        }
+        return SalesPolicy.parse({}) // Return defaults
       } catch (error) {
         console.error('Failed to get sales policy:', error)
         return SalesPolicy.parse({}) // Return defaults
@@ -75,22 +85,25 @@ export function useOrgSettings(organizationId: string) {
     queryFn: async (): Promise<Branch[]> => {
       try {
         const results = await universalApi.getEntities({
-          organization_id: organizationId,
-          entity_type: 'branch'
+          organizationId: organizationId,
+          filters: { entity_type: 'branch' }
         })
 
-        return results.map(entity => Branch.parse({
-          organization_id: entity.organization_id,
-          entity_type: entity.entity_type,
-          entity_code: entity.entity_code,
-          entity_name: entity.entity_name,
-          smart_code: entity.smart_code,
-          created_at: entity.created_at,
-          updated_at: entity.updated_at,
-          // Parse metadata for branch details
-          ...entity.metadata,
-          is_active: entity.metadata?.is_active ?? true
-        }))
+        if (results.success && results.data) {
+          return results.data.map(entity => Branch.parse({
+            organization_id: entity.organization_id,
+            entity_type: entity.entity_type,
+            entity_code: entity.entity_code,
+            entity_name: entity.entity_name,
+            smart_code: entity.smart_code,
+            created_at: entity.created_at,
+            updated_at: entity.updated_at,
+            // Parse metadata for branch details
+            ...entity.metadata,
+            is_active: entity.metadata?.is_active ?? true
+          }))
+        }
+        return []
       } catch (error) {
         console.error('Failed to get branches:', error)
         return []
@@ -175,7 +188,7 @@ export function useOrgSettings(organizationId: string) {
     queryFn: async (): Promise<RoleGrant[]> => {
       try {
         const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.ROLE_GRANTS)
-        const grants = result || []
+        const grants = (result.success && result.data && result.data.field_value_json) ? result.data.field_value_json : []
         return Array.isArray(grants) ? grants.map(g => RoleGrant.parse(g)) : []
       } catch (error) {
         console.error('Failed to get role grants:', error)
@@ -243,7 +256,10 @@ export function useOrgSettings(organizationId: string) {
     queryFn: async (): Promise<NotificationPolicy> => {
       try {
         const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.NOTIFICATION_POLICY)
-        return result ? NotificationPolicy.parse(result) : NotificationPolicy.parse({})
+        if (result.success && result.data && result.data.field_value_json) {
+          return NotificationPolicy.parse(result.data.field_value_json)
+        }
+        return NotificationPolicy.parse({}) // Return defaults
       } catch (error) {
         console.error('Failed to get notification policy:', error)
         return NotificationPolicy.parse({}) // Return defaults
@@ -281,22 +297,23 @@ export function useOrgSettings(organizationId: string) {
       try {
         const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS)
         
-        // Get organization info from core_entities
-        const orgEntity = await universalApi.getEntity(organizationId, organizationId)
+        // Get organization info from core_organizations
+        const orgEntity = await universalApi.getOrganization(organizationId)
         
-        const systemSettings = result ? SystemSettings.parse(result) : SystemSettings.parse({})
+        const settingsData = (result.success && result.data && result.data.field_value_json) ? result.data.field_value_json : {}
+        const systemSettings = SystemSettings.parse(settingsData)
         
         // Merge with organization info
-        if (orgEntity) {
+        if (orgEntity.success && orgEntity.data) {
           systemSettings.organization_info = {
-            name: orgEntity.entity_name,
-            code: orgEntity.entity_code,
-            registration_number: orgEntity.metadata?.registration_number,
-            tax_number: orgEntity.metadata?.tax_number,
-            industry: orgEntity.metadata?.industry,
-            established_date: orgEntity.created_at,
-            website: orgEntity.metadata?.website,
-            logo_url: orgEntity.metadata?.logo_url
+            name: orgEntity.data.organization_name,
+            code: orgEntity.data.organization_code,
+            registration_number: orgEntity.data.settings?.registration_number,
+            tax_number: orgEntity.data.settings?.tax_number,
+            industry: orgEntity.data.industry,
+            established_date: orgEntity.data.created_at,
+            website: orgEntity.data.settings?.website,
+            logo_url: orgEntity.data.settings?.logo_url
           }
         }
 
@@ -336,8 +353,12 @@ export function useOrgSettings(organizationId: string) {
     queryKey: keys.featureFlags,
     queryFn: async (): Promise<SystemSettings['feature_flags']> => {
       try {
-        const systemSettings = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS)
-        return systemSettings?.feature_flags || SystemSettings.parse({}).feature_flags
+        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS)
+        if (result.success && result.data && result.data.field_value_json) {
+          const systemSettings = SystemSettings.parse(result.data.field_value_json)
+          return systemSettings.feature_flags
+        }
+        return SystemSettings.parse({}).feature_flags
       } catch (error) {
         console.error('Failed to get feature flags:', error)
         return SystemSettings.parse({}).feature_flags

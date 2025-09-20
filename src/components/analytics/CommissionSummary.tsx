@@ -7,9 +7,9 @@
 'use client'
 
 import { TrendingUp, User, DollarSign } from 'lucide-react'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { CommissionInfo } from '@/src/lib/schemas/pos'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { CommissionInfo } from '@/lib/schemas/pos'
 
 interface CommissionSummaryProps {
   commission: CommissionInfo

@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import {
   Activity,
   TrendingUp,
@@ -13,7 +13,7 @@ import {
   ArrowUp,
   ArrowDown
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface Metric {
   icon: React.ComponentType<{ className?: string }>

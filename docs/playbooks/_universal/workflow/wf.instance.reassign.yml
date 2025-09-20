@@ -1,0 +1,82 @@
+smart_code: HERA.UNIV.WF.INSTANCE.REASSIGN.V1
+intent: Reassign instance ownership (teams or users).
+scope:
+  in_scope:
+    - change instance ownership
+    - update owner metadata
+    - create audit step
+    - validate new owner exists
+  out_of_scope:
+    - task reassignment
+    - permission transfer
+    - notification sending
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or system
+  - instance exists and is active
+  - new owner (team or user) exists in organization
+invariants:
+  - instance has exactly one owner (team XOR user)
+  - org isolation maintained
+  - audit trail of reassignment
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance to reassign
+  optional:
+    - owner_team: string                           # assign to team (exclusive with owner_user_id)
+    - owner_user_id: uuid                          # assign to user (exclusive with owner_team)
+    - reassigned_by: uuid                          # user who performed reassignment
+    - reason: string                               # reassignment reason
+happy_path:
+  - step: load instance header and current ownership
+  - step: validate exactly one of owner_team or owner_user_id is provided
+  - step: if owner_team provided, verify team exists in organization
+  - step: if owner_user_id provided, verify user exists in organization
+  - step: store previous ownership in step metadata for audit
+  - step: update instance.dynamic.owner_team or owner_user_id (clear the other)
+  - step: update instance.dynamic.reassigned_at = now()
+  - step: create STEP line smart_code=HERA.UNIV.WF.STEP.V1
+          metadata: {note: "REASSIGN", previous_owner, new_owner, reassigned_by, reason, timestamp: now()}
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # instance ownership updated
+    - universal_transaction_lines: 1               # audit step created
+  response:
+    instance_id: uuid
+    owner_team: string
+    owner_user_id: uuid
+    reassigned_at: timestamp
+    reassigned_by: uuid
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INVALID_OWNER_ASSIGNMENT
+    when: both or neither owner fields provided
+    action: return 400 with validation error
+  - code: TEAM_NOT_FOUND
+    when: owner_team doesn't exist in organization
+    action: return 400
+  - code: USER_NOT_FOUND
+    when: owner_user_id doesn't exist in organization
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_admin
+    action: return 403
+observability:
+  logs:
+    - instance_reassigned: { instance_id, previous_owner, new_owner, reassigned_by }
+  audit_json: true
+  metrics:
+    - instance_reassignment_count by definition_code
+    - owner_change_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  owner_team: "operations"
+  reassigned_by: "901e2345-e89b-12d3-a456-426614174000"
+  reason: "Escalating to operations team for specialized handling"
+checks:
+  - description: validate exactly one owner type assigned
+  - description: ensure new owner exists and is active
+  - description: verify reassignment authority

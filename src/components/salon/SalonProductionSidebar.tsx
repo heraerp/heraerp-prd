@@ -39,16 +39,16 @@ import {
   Activity,
   MessageCircle
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 
 interface SidebarItem {
   id: string

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 export interface HeraCardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'glass' | 'wealth' | 'metric' | 'elevated'

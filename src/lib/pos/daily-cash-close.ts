@@ -1,12 +1,12 @@
 /**
  * HERA POS Daily Cash Close Implementation
- * Smart Code: HERA.POS.DAILY.CASH.CLOSE.IMPL.v1
+ * Smart Code: HERA.POS.DAILY.CASH.CLOSE.IMPL.V1
  *
  * Complete POS daily cash close with card authorization capture
  * using only HERA's six sacred tables
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 
@@ -137,7 +137,7 @@ export async function openShift(organizationId: string, data: ShiftOpenData): Pr
     from_entity_id: shiftEntity.id,
     to_entity_id: data.registerId,
     relationship_type: 'assigned_to',
-    smart_code: 'HERA.POS.REL.SHIFT.REGISTER.v1',
+    smart_code: 'HERA.POS.REL.SHIFT.REGISTER.V1',
     organization_id: organizationId
   })
 
@@ -146,7 +146,7 @@ export async function openShift(organizationId: string, data: ShiftOpenData): Pr
     from_entity_id: shiftEntity.id,
     to_entity_id: data.operatorId,
     relationship_type: 'operated_by',
-    smart_code: 'HERA.POS.REL.SHIFT.OPERATOR.v1',
+    smart_code: 'HERA.POS.REL.SHIFT.OPERATOR.V1',
     organization_id: organizationId
   })
 
@@ -219,7 +219,7 @@ export async function processSale(
       quantity: item.quantity,
       unit_amount: item.unitPrice,
       line_amount: item.unitPrice * item.quantity,
-      smart_code: 'HERA.POS.SALE.LINE.ITEM.v1',
+      smart_code: 'HERA.POS.SALE.LINE.ITEM.V1',
       line_data: {
         product_id: item.productId,
         product_code: item.productCode,
@@ -238,7 +238,7 @@ export async function processSale(
         quantity: 1,
         unit_amount: -item.discount,
         line_amount: -item.discount,
-        smart_code: 'HERA.POS.SALE.LINE.DISCOUNT.v1',
+        smart_code: 'HERA.POS.SALE.LINE.DISCOUNT.V1',
         line_data: {
           discount_type: 'amount',
           product_id: item.productId
@@ -258,7 +258,7 @@ export async function processSale(
       quantity: 1,
       unit_amount: taxAmount,
       line_amount: taxAmount,
-      smart_code: 'HERA.POS.SALE.LINE.TAX.VAT.v1',
+      smart_code: 'HERA.POS.SALE.LINE.TAX.VAT.V1',
       line_data: {
         tax_rate: data.taxRate / 100,
         tax_code: 'UAE-VAT-5',
@@ -293,7 +293,7 @@ export async function processSale(
         entity_type: 'payment_intent',
         entity_name: `Card Auth ${paymentIntentCode}`,
         entity_code: paymentIntentCode,
-        smart_code: 'HERA.POS.PAYMENT.INTENT.CARD.v1',
+        smart_code: 'HERA.POS.PAYMENT.INTENT.CARD.V1',
         organization_id: organizationId
       })
 
@@ -302,14 +302,14 @@ export async function processSale(
         paymentIntent.id,
         'status',
         'authorized',
-        'HERA.POS.DYN.PAYMENT.STATUS.v1'
+        'HERA.POS.DYN.PAYMENT.STATUS.V1'
       )
 
       await universalApi.setDynamicField(
         paymentIntent.id,
         'auth_id',
         payment.cardDetails.authorizationId,
-        'HERA.POS.DYN.AUTH.ID.v1'
+        'HERA.POS.DYN.AUTH.ID.V1'
       )
 
       // Link sale to payment intent
@@ -317,7 +317,7 @@ export async function processSale(
         from_entity_id: saleTransaction.id,
         to_entity_id: paymentIntent.id,
         relationship_type: 'has_payment',
-        smart_code: 'HERA.POS.REL.SALE.PAYMENT.v1',
+        smart_code: 'HERA.POS.REL.SALE.PAYMENT.V1',
         organization_id: organizationId
       })
 
@@ -337,7 +337,7 @@ export async function processSale(
       quantity: 1,
       unit_amount: -(totalPaid - totalAmount),
       line_amount: -(totalPaid - totalAmount),
-      smart_code: 'HERA.POS.SALE.LINE.CHANGE.v1'
+      smart_code: 'HERA.POS.SALE.LINE.CHANGE.V1'
     })
   }
 
@@ -457,7 +457,7 @@ export async function closeShift(
     quantity: 1,
     unit_amount: expectedCash,
     line_amount: expectedCash,
-    smart_code: 'HERA.POS.SHIFT.LINE.CASH.EXPECTED.v1',
+    smart_code: 'HERA.POS.SHIFT.LINE.CASH.EXPECTED.V1',
     line_data: {
       calculation: 'opening_float + cash_sales - drops + pickups',
       opening_float: openingFloat,
@@ -477,7 +477,7 @@ export async function closeShift(
     quantity: 1,
     unit_amount: data.cashCounted,
     line_amount: data.cashCounted,
-    smart_code: 'HERA.POS.SHIFT.LINE.CASH.COUNTED.v1',
+    smart_code: 'HERA.POS.SHIFT.LINE.CASH.COUNTED.V1',
     line_data: {
       denomination_breakdown: data.denominationBreakdown,
       counted_by: data.countedBy,
@@ -496,7 +496,7 @@ export async function closeShift(
       quantity: 1,
       unit_amount: variance,
       line_amount: variance,
-      smart_code: variance > 0 ? 'HERA.POS.SHIFT.LINE.OVER.v1' : 'HERA.POS.SHIFT.LINE.SHORT.v1',
+      smart_code: variance > 0 ? 'HERA.POS.SHIFT.LINE.OVER.V1' : 'HERA.POS.SHIFT.LINE.SHORT.V1',
       line_data: {
         variance_type: varianceType,
         variance_percentage: ((Math.abs(variance) / expectedCash) * 100).toFixed(2),
@@ -570,7 +570,7 @@ export async function createCardBatch(
       from_entity_id: batchTransaction.id,
       to_entity_id: auth.paymentIntentId,
       relationship_type: 'includes_auth',
-      smart_code: 'HERA.POS.REL.BATCH.AUTH.v1',
+      smart_code: 'HERA.POS.REL.BATCH.AUTH.V1',
       organization_id: organizationId
     })
 
@@ -579,7 +579,7 @@ export async function createCardBatch(
       auth.paymentIntentId,
       'status',
       'batched',
-      'HERA.POS.DYN.PAYMENT.STATUS.v1'
+      'HERA.POS.DYN.PAYMENT.STATUS.V1'
     )
   }
 
@@ -682,14 +682,14 @@ export async function runEndOfDay(
       registerId,
       'last_eod_date',
       businessDate.toISOString(),
-      'HERA.POS.DYN.REGISTER.EOD.DATE.v1'
+      'HERA.POS.DYN.REGISTER.EOD.DATE.V1'
     )
 
     await universalApi.setDynamicField(
       registerId,
       'eod_status',
       'completed',
-      'HERA.POS.DYN.REGISTER.EOD.STATUS.v1'
+      'HERA.POS.DYN.REGISTER.EOD.STATUS.V1'
     )
 
     return {
@@ -866,19 +866,19 @@ async function createEODSummaryLines(
       line_type: 'SALES_GROSS',
       description: 'Gross Sales',
       line_amount: totals.totalSales,
-      smart_code: 'HERA.POS.EOD.LINE.SALES.GROSS.v1'
+      smart_code: 'HERA.POS.EOD.LINE.SALES.GROSS.V1'
     },
     {
       line_type: 'TAX_COLLECTED',
       description: 'VAT Collected',
       line_amount: totals.totalVAT,
-      smart_code: 'HERA.POS.EOD.LINE.TAX.VAT.v1'
+      smart_code: 'HERA.POS.EOD.LINE.TAX.VAT.V1'
     },
     {
       line_type: 'PAYMENT_CASH',
       description: 'Cash Payments',
       line_amount: totals.cashFinal,
-      smart_code: 'HERA.POS.EOD.LINE.PAYMENT.CASH.v1'
+      smart_code: 'HERA.POS.EOD.LINE.PAYMENT.CASH.V1'
     }
   ]
 

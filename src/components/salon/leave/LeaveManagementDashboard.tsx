@@ -14,16 +14,16 @@ import {
   Briefcase,
   Sun
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { LeaveRequestForm } from './LeaveRequestForm'
 import { LeaveCalendar } from './LeaveCalendar'
 import { LeaveBalanceCard } from './LeaveBalanceCard'
 import { TeamLeaveOverview } from './TeamLeaveOverview'
 import { PendingApprovals } from './PendingApprovals'
 import { AnnualLeaveReport } from './AnnualLeaveReport'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { cn } from '@/src/lib/utils'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { cn } from '@/lib/utils'
 
 interface LeaveManagementDashboardProps {
   organizationId?: string
@@ -32,12 +32,12 @@ interface LeaveManagementDashboardProps {
 export function LeaveManagementDashboard({ organizationId }: LeaveManagementDashboardProps) {
   const [showRequestForm, setShowRequestForm] = useState(false)
   const [activeView, setActiveView] = useState<'dashboard' | 'calendar' | 'reports'>('dashboard')
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Use provided organizationId or fallback to currentOrganization
-  const effectiveOrgId = organizationId || currentOrganization?.id
+  const effectiveOrgId = organizationId || organization?.id
 
   // These will be populated from the hook
   const leaveStats = {
@@ -173,7 +173,7 @@ export function LeaveManagementDashboard({ organizationId }: LeaveManagementDash
             Leave Management
           </h1>
           <p className="!text-muted-foreground dark:!text-muted-foreground mt-2">
-            Manage time off requests, balances, and team coverage for {currentOrganization?.name}
+            Manage time off requests, balances, and team coverage for {organization?.name}
           </p>
         </div>
 

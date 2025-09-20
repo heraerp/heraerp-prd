@@ -344,11 +344,11 @@ export class S4HANACloudConnector extends BaseSAPConnector {
   // Helper methods
   private getDocumentType(smartCode: string): string {
     const mapping: Record<string, string> = {
-      'HERA.ERP.FI.JE.POST.v1': 'SA',
-      'HERA.ERP.FI.AP.INVOICE.v1': 'KR',
-      'HERA.ERP.FI.AR.INVOICE.v1': 'DR',
-      'HERA.ERP.FI.AP.PAYMENT.v1': 'KZ',
-      'HERA.ERP.FI.AR.RECEIPT.v1': 'DZ'
+      'HERA.ERP.FI.JE.POST.V1': 'SA',
+      'HERA.ERP.FI.AP.INVOICE.V1': 'KR',
+      'HERA.ERP.FI.AR.INVOICE.V1': 'DR',
+      'HERA.ERP.FI.AP.PAYMENT.V1': 'KZ',
+      'HERA.ERP.FI.AR.RECEIPT.V1': 'DZ'
     }
     return mapping[smartCode] || 'SA'
   }

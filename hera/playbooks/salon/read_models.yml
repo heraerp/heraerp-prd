@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.READ_MODELS.CORE.DEFS.v1
+smart_code: HERA.SALON.READ_MODELS.CORE.DEFS.V1
 views:
   - name: v_salon_appointments_upcoming
     description: "Upcoming appointments with stylist and customer context"
@@ -48,7 +48,7 @@ views:
         SUM(
           CASE 
             WHEN l.line_type = 'service_line' THEN l.line_amount * COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0)
-            WHEN l.line_type = 'tip' AND t.smart_code LIKE 'HERA.SALON.POS.TXN.SALE.INCL_TIP.v1' THEN l.line_amount * COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0)
+            WHEN l.line_type = 'tip' AND t.smart_code LIKE 'HERA.SALON.POS.TXN.SALE.INCL_TIP.V1' THEN l.line_amount * COALESCE((SELECT value_number FROM core_dynamic_data d WHERE d.organization_id = t.organization_id AND d.entity_id = t.reference_entity_id AND d.key = 'stylist.commission_pct' LIMIT 1), 0)
             ELSE 0
           END
         ) AS commission_aed

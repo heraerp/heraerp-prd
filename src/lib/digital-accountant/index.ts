@@ -4,11 +4,11 @@
  * Main service orchestrating all accounting operations
  * Implements sacred 6-table architecture with enterprise features
  *
- * Smart Code: HERA.FIN.ACCT.DIGITAL.SERVICE.v1
+ * Smart Code: HERA.FIN.ACCT.DIGITAL.SERVICE.V1
  */
 
-import { supabase } from '@/src/lib/supabase'
-import { universalApi } from '@/src/lib/universal-api'
+import { supabase } from '@/lib/supabase'
+import { universalApi } from '@/lib/universal-api'
 import {
   JournalEntry,
   JournalLine,
@@ -21,7 +21,7 @@ import {
   AccountingQuery,
   ValidationResult,
   ACCOUNTANT_SMART_CODES
-} from '@/src/types/digital-accountant.types'
+} from '@/types/digital-accountant.types'
 import {
   IDigitalAccountantService,
   IJournalRepository,

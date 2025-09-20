@@ -4,7 +4,7 @@
  */
 
 import crypto from 'crypto'
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface EncryptionKey {
@@ -193,7 +193,7 @@ export class KMSProvider {
         field_name: 'encrypted_key',
         field_value_text: encryptedKey,
         field_type: 'encrypted_binary',
-        smart_code: 'HERA.SECURITY.CRYPTO.DEK.ENCRYPTED.v1',
+        smart_code: 'HERA.SECURITY.CRYPTO.DEK.ENCRYPTED.V1',
         organization_id: organizationId
       })
 
@@ -308,7 +308,7 @@ export class KMSProvider {
       field_name: 'encrypted_key',
       field_value_text: encryptedKey,
       field_type: 'encrypted_binary',
-      smart_code: 'HERA.SECURITY.CRYPTO.DEK.ENCRYPTED.v1',
+      smart_code: 'HERA.SECURITY.CRYPTO.DEK.ENCRYPTED.V1',
       organization_id: organizationId
     })
 
@@ -391,7 +391,7 @@ export class KMSProvider {
       transaction_type: 'reencryption_required',
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SECURITY.CRYPTO.REENCRYPT.PENDING.v1',
+      smart_code: 'HERA.SECURITY.CRYPTO.REENCRYPT.PENDING.V1',
       organization_id: organizationId,
       metadata: {
         old_key_id: oldKeyId,

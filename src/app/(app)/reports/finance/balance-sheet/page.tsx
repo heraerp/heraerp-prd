@@ -7,19 +7,19 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { Building2, TrendingUp, AlertCircle, CheckCircle, Scale } from 'lucide-react'
-import { FiltersBar, useReportFilters } from '@/src/components/reports/FiltersBar'
-import { FinancialSummaryCards } from '@/src/components/reports/SummaryCards'
-import { BalanceSheetTable } from '@/src/components/reports/BalanceSheetTable'
-import { DrilldownDrawer } from '@/src/components/reports/DrilldownDrawer'
-import { ExportButtons } from '@/src/components/reports/ExportButtons'
-import { PrintHeader, PrintLayout } from '@/src/components/reports/PrintHeader'
-import { useUniversalReports } from '@/src/hooks/useUniversalReports'
-import { FinancialFilters, BalanceRow, DrillDownResponse, TransactionDetail } from '@/src/lib/schemas/reports'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { FiltersBar, useReportFilters } from '@/components/reports/FiltersBar'
+import { FinancialSummaryCards } from '@/components/reports/SummaryCards'
+import { BalanceSheetTable } from '@/components/reports/BalanceSheetTable'
+import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
+import { ExportButtons } from '@/components/reports/ExportButtons'
+import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
+import { useUniversalReports } from '@/hooks/useUniversalReports'
+import { FinancialFilters, BalanceRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 export default function BalanceSheetPage() {
   const { currentOrganization } = useOrganization()
@@ -157,7 +157,7 @@ export default function BalanceSheetPage() {
           transaction_date: filters.from_date || new Date().toISOString().split('T')[0],
           transaction_code: 'JE-2024-015',
           transaction_type: 'journal_entry',
-          smart_code: 'HERA.FIN.GL.BALANCE.ADJUSTMENT.v1',
+          smart_code: 'HERA.FIN.GL.BALANCE.ADJUSTMENT.V1',
           customer_name: undefined,
           staff_name: 'System Generated',
           total_amount: Math.abs(row.amount),
@@ -204,7 +204,7 @@ export default function BalanceSheetPage() {
           transaction_date: filters.from_date || new Date().toISOString().split('T')[0],
           transaction_code: 'JE-2024-015',
           transaction_type: 'journal_entry',
-          smart_code: 'HERA.FIN.GL.BALANCE.ADJUSTMENT.v1',
+          smart_code: 'HERA.FIN.GL.BALANCE.ADJUSTMENT.V1',
           total_amount: 0, // Journal entries balance to zero
           source_entity_id: undefined,
           target_entity_id: undefined,
@@ -225,7 +225,7 @@ export default function BalanceSheetPage() {
             quantity: undefined,
             unit_amount: undefined,
             line_amount: 1500.00,
-            smart_code: 'HERA.FIN.GL.CASH.ADJ.v1'
+            smart_code: 'HERA.FIN.GL.CASH.ADJ.V1'
           },
           {
             line_number: 2,
@@ -236,7 +236,7 @@ export default function BalanceSheetPage() {
             quantity: undefined,
             unit_amount: undefined,
             line_amount: -1500.00,
-            smart_code: 'HERA.FIN.GL.EQUITY.ADJ.v1'
+            smart_code: 'HERA.FIN.GL.EQUITY.ADJ.V1'
           }
         ],
         related_entities: [

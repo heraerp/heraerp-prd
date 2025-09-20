@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA AUTO-JOURNAL POSTING ENGINE
 // Intelligent journal entry automation with OpenAI integration
-// Smart Code: HERA.FIN.GL.AUTO.JOURNAL.ENGINE.v1
+// Smart Code: HERA.FIN.GL.AUTO.JOURNAL.ENGINE.V1
 // ================================================================================
 
 import { supabase } from './supabase'
@@ -719,7 +719,7 @@ class BatchJournalProcessor {
         transaction_date: journalEntry.journal_date,
         reference_number: journalEntry.reference,
         total_amount: journalEntry.lines.reduce((sum, line) => sum + line.debit_amount, 0),
-        smart_code: 'HERA.FIN.GL.TXN.JE.AUTO.v1',
+        smart_code: 'HERA.FIN.GL.TXN.JE.AUTO.V1',
         status: 'completed',
         metadata: {
           auto_generated: journalEntry.auto_generated,
@@ -961,7 +961,7 @@ export class TransactionPostingHandler {
       field_type: 'json',
       field_value_json: result,
       ai_enhanced_value: `Journal processing: ${result.processing_mode}, AI used: ${result.ai_used}`,
-      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.LOG.v1'
+      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.LOG.V1'
     })
   }
 
@@ -972,7 +972,7 @@ export class TransactionPostingHandler {
       field_name: 'journal_processing_error',
       field_type: 'json',
       field_value_json: { error: error.message, timestamp: new Date().toISOString() },
-      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.ERROR.v1'
+      smart_code: 'HERA.FIN.GL.AUTO.JOURNAL.ERROR.V1'
     })
   }
 }
@@ -1027,24 +1027,24 @@ export async function generateJournalEntry(transaction: Transaction) {
 JOURNAL-RELEVANT SMART CODES:
 
 ✅ ALWAYS CREATE JOURNAL:
-HERA.FIN.GL.TXN.JE.v1         - Direct journal entry
-HERA.FIN.AP.TXN.PAY.v1        - Vendor payment
-HERA.FIN.AR.TXN.RCP.v1        - Customer payment
-HERA.INV.ADJ.TXN.WRITE.v1     - Inventory write-off
-HERA.FIN.AA.TXN.DEPR.v1       - Asset depreciation
+HERA.FIN.GL.TXN.JE.V1         - Direct journal entry
+HERA.FIN.AP.TXN.PAY.V1        - Vendor payment
+HERA.FIN.AR.TXN.RCP.V1        - Customer payment
+HERA.INV.ADJ.TXN.WRITE.V1     - Inventory write-off
+HERA.FIN.AA.TXN.DEPR.V1       - Asset depreciation
 
 🔄 CONDITIONAL JOURNAL (Based on Amount/Rules):
-HERA.REST.POS.TXN.SALE.v1     - Restaurant sale (batch if small)
-HERA.INV.RCV.TXN.IN.v1        - Inventory receipt (immediate if large)
+HERA.REST.POS.TXN.SALE.V1     - Restaurant sale (batch if small)
+HERA.INV.RCV.TXN.IN.V1        - Inventory receipt (immediate if large)
 HERA.HR.EXP.TXN.REIM.v1       - Expense reimbursement (batch if small)
 
 ❌ NEVER CREATE JOURNAL:
 HERA.CRM.CUS.ENT.PROF.DRAFT   - Draft customer profile
-HERA.SCM.PUR.TXN.QUOTE.v1     - Purchase quote (no commitment)
-HERA.REST.RES.TXN.BOOK.v1     - Table reservation (no financial impact)
+HERA.SCM.PUR.TXN.QUOTE.V1     - Purchase quote (no commitment)
+HERA.REST.RES.TXN.BOOK.V1     - Table reservation (no financial impact)
 
 🤖 AI ANALYSIS REQUIRED:
-HERA.PROJ.TIME.TXN.LOG.v1     - Time logging (depends on billing method)
-HERA.MFG.WIP.TXN.MOVE.v1      - WIP movement (depends on costing method)
-HERA.SVC.FLD.TXN.VISIT.v1     - Field service (depends on service type)
+HERA.PROJ.TIME.TXN.LOG.V1     - Time logging (depends on billing method)
+HERA.MFG.WIP.TXN.MOVE.V1      - WIP movement (depends on costing method)
+HERA.SVC.FLD.TXN.VISIT.V1     - Field service (depends on service type)
 */

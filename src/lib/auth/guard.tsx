@@ -9,8 +9,8 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Loader2, ShieldX } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Card } from '@/src/components/ui/card'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Card } from '@/components/ui/card'
 import { landingForRole, isAllowed, getUnauthorizedRedirect, Role as RBACRole } from './rbac'
 
 export interface GuardProps {
@@ -54,7 +54,8 @@ export function Guard({
 }: GuardProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { user, isAuthenticated, isLoading, isLoadingOrgs } = useMultiOrgAuth()
+  const contextLoading = isLoading || isLoadingOrgs
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {

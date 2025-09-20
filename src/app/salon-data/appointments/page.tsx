@@ -5,13 +5,13 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import dynamicImport from 'next/dynamic'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import type { Organization } from '@/src/types/salon.types'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import type { Organization } from '@/types/salon.types'
 
 // Dynamically import the AppointmentManagementDashboard to avoid SSR issues
 const AppointmentManagementDashboard = dynamicImport(
   () =>
-    import('@/src/components/salon/appointments/AppointmentManagementDashboard').then(
+    import('@/components/salon/appointments/AppointmentManagementDashboard').then(
       mod => mod.AppointmentManagementDashboard
     ),
   {

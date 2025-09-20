@@ -12,18 +12,18 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
-import { QuickExpenseGrid } from '@/src/components/salon/digital-accountant/QuickExpenseGrid'
-import { TransactionHistory } from '@/src/components/salon/digital-accountant/TransactionHistory'
-import { DailyInsights } from '@/src/components/salon/digital-accountant/DailyInsights'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import { QuickExpenseGrid } from '@/components/salon/digital-accountant/QuickExpenseGrid'
+import { TransactionHistory } from '@/components/salon/digital-accountant/TransactionHistory'
+import { DailyInsights } from '@/components/salon/digital-accountant/DailyInsights'
 import {
   Brain,
   Send,
@@ -63,7 +63,7 @@ import {
   ArrowDown,
   ChevronDown
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface SalonMessage {
   id: string

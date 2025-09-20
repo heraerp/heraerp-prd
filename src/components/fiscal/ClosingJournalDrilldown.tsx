@@ -7,13 +7,13 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/src/components/ui/dialog'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import {
   FileText,
   AlertCircle,
@@ -28,11 +28,11 @@ import {
   Eye,
   DollarSign
 } from 'lucide-react'
-import { JournalEntrySummary } from '@/src/lib/api/closing'
-import { universalApi } from '@/src/lib/universal-api'
+import { JournalEntrySummary } from '@/lib/api/closing'
+import { universalApi } from '@/lib/universal-api'
 import { useQuery } from '@tanstack/react-query'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { cn } from '@/src/lib/utils'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { cn } from '@/lib/utils'
 
 interface ClosingJournalDrilldownProps {
   journals: JournalEntrySummary[]
@@ -391,9 +391,9 @@ export function ClosingJournalDrilldown({
               </div>
               <div className="grid grid-cols-2 gap-2 text-blue-700 dark:text-blue-300">
                 <div>• HERA.FIN.FISCAL.CLOSING.*.CALC.v1</div>
-                <div>• HERA.FIN.FISCAL.CLOSE.JE.v1</div>
-                <div>• HERA.FIN.FISCAL.CLOSING.RE.TRANSFER.v1</div>
-                <div>• HERA.FIN.FISCAL.CLOSING.CONSOLIDATE.v1</div>
+                <div>• HERA.FIN.FISCAL.CLOSE.JE.V1</div>
+                <div>• HERA.FIN.FISCAL.CLOSING.RE.TRANSFER.V1</div>
+                <div>• HERA.FIN.FISCAL.CLOSING.CONSOLIDATE.V1</div>
               </div>
             </AlertDescription>
           </Alert>

@@ -1,11 +1,11 @@
-smart_code: HERA.TEST.SCOPE.FINANCE.MINI.v1
+smart_code: HERA.TEST.SCOPE.FINANCE.MINI.V1
 setup: []
 teardown: []
 
 cases:
   - name: "POS order posts to GL"
     execute:
-      procedure_code: HERA.FINANCE.PROCEDURE.POST.POS_ORDER_TO_GL.v1
+      procedure_code: HERA.FINANCE.PROCEDURE.POST.POS_ORDER_TO_GL.V1
       inputs:
         source_transaction_id: "{{ created_pos_order_id }}"
     arrange:

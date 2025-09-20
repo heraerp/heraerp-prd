@@ -1,0 +1,84 @@
+smart_code: HERA.UNIV.WF.START.V1
+intent: Instantiate a workflow instance from a registered definition.
+scope:
+  in_scope:
+    - create workflow instance header
+    - initialize with first state
+    - create initial step line
+    - store context and subject reference
+  out_of_scope:
+    - workflow execution
+    - timer scheduling
+    - task creation
+preconditions:
+  - permissions: [$PROFILE.required_role_start]
+  - definition exists for (organization_id or platform)
+  - subject_ref entity exists
+invariants:
+  - org isolation maintained
+  - instance starts in DRAFT or first defined state
+  - audit trail created
+inputs:
+  required:
+    - organization_id: uuid
+    - definition_code: string                      # e.g., LEAVE_APPROVAL
+    - subject_ref: object                          # entity reference this workflow is about
+  optional:
+    - context: object                              # free-form JSON context
+    - initial_state: string                        # override default DRAFT
+happy_path:
+  - step: check feature flags via HERA.UNIV.WF.FEATURE.FLAGS.V1 (action: check, definition_code, organization_id)
+  - step: if workflow disabled by feature flag, return WORKFLOW_DISABLED error
+  - step: load definition JSON from core_dynamic_data where entity_code = definition_code
+  - step: validate definition against schema
+  - step: determine initial_state (input or definition.states[0] or "DRAFT")
+  - step: create universal_transactions header with smart_code=HERA.UNIV.WF.INSTANCE.V1
+          metadata: { definition_code, definition_version: definition.version, current_state: initial_state, context, subject_ref }
+  - step: create universal_transaction_lines line smart_code=HERA.UNIV.WF.STEP.V1
+          metadata: { state_entered: initial_state, timestamp: now() }
+  - step: if definition has timers for initial_state, queue timer creation
+outputs:
+  transactions_created:
+    - universal_transactions: 1                    # workflow instance
+    - universal_transaction_lines: 1               # initial step
+  response:
+    instance_id: uuid
+    definition_code: string
+    current_state: string
+    created_at: timestamp
+errors:
+  - code: WORKFLOW_DISABLED
+    when: feature flag disables workflow for definition_code/org
+    action: return 423 locked
+  - code: DEFINITION_NOT_FOUND
+    when: definition_code not found in organization
+    action: return 404
+  - code: INVALID_DEFINITION
+    when: definition fails schema validation
+    action: return 400 with validation errors
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_start
+    action: return 403
+  - code: SUBJECT_NOT_FOUND
+    when: subject_ref entity doesn't exist
+    action: return 400
+observability:
+  logs:
+    - workflow_started: { instance_id, definition_code, initial_state, subject_ref }
+  audit_json: true
+  metrics:
+    - workflow_start_count by definition_code
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  definition_code: "LEAVE_APPROVAL"
+  subject_ref:
+    entity_id: "emp-456e7890-e89b-12d3-a456-426614174000"
+    entity_type: "leave_request"
+  context:
+    leave_type: "annual"
+    days_requested: 5
+    start_date: "2024-02-01"
+checks:
+  - description: verify definition exists and is valid
+  - description: ensure subject entity exists
+  - description: validate initial state is in definition.states

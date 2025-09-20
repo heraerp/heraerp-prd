@@ -1,0 +1,74 @@
+smart_code: HERA.UNIV.TASK.CLAIM.V1
+intent: Claim a task assigned to a role, assigning it to specific user.
+scope:
+  in_scope:
+    - claim task from role pool
+    - assign to claiming user
+    - update task state
+    - prevent double-claiming
+  out_of_scope:
+    - task completion
+    - unclaim/release
+    - task delegation
+preconditions:
+  - permissions: [$PROFILE.required_role_task_claim]
+  - task exists and is OPEN
+  - task assigned to role (not specific user)
+  - user has the assigned role
+invariants:
+  - state machine: OPEN → CLAIMED (only valid transition)
+  - atomic claim operation prevents double-claiming
+  - claimed tasks get specific user assignment
+  - audit trail maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - task_id: uuid                                # task to claim
+    - user_id: uuid                                # user claiming the task
+happy_path:
+  - step: load task entity and dynamic data
+  - step: atomically update task state from OPEN to CLAIMED (with WHERE clause)
+  - step: if update affected 0 rows, reload and return appropriate error
+  - step: verify task.assignee.type = 'role' (not already assigned to user)
+  - step: verify user has role matching task.assignee.role
+  - step: update task.assignee = { type: 'user', user_id }
+  - step: update task.claimed_at = now()
+outputs:
+  entities_updated:
+    - core_dynamic_data: 1                         # task state and assignee
+  response:
+    task_id: uuid
+    state: string                                  # CLAIMED
+    assignee_user_id: uuid
+    claimed_at: timestamp
+errors:
+  - code: TASK_NOT_FOUND
+    when: task_id doesn't exist in organization
+    action: return 404
+  - code: TASK_NOT_OPEN
+    when: task state != OPEN
+    action: return 409 with current state
+  - code: TASK_ALREADY_ASSIGNED
+    when: task already assigned to specific user
+    action: return 409 with current assignee
+  - code: UNAUTHORIZED_ROLE
+    when: user doesn't have the required role
+    action: return 403
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_task_claim
+    action: return 403
+observability:
+  logs:
+    - task_claimed: { task_id, user_id, role, claimed_at }
+  audit_json: true
+  metrics:
+    - task_claim_count by role
+    - time_to_claim_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  task_id: "890e1234-e89b-12d3-a456-426614174000"
+  user_id: "901e2345-e89b-12d3-a456-426614174000"
+checks:
+  - description: verify task is claimable
+  - description: ensure user has required role
+  - description: prevent concurrent claims

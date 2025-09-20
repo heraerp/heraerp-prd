@@ -121,7 +121,7 @@ export default function APIDocsPage() {
         example: `curl -X POST "http://localhost:3001/api/v1/smart-code/validate" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "smart_code": "HERA.REST.FIN.TXN.SALE.v1",
+    "smart_code": "HERA.REST.FIN.TXN.SALE.V1",
     "validation_level": "L2_SEMANTIC",
     "organization_id": "719dfed1-09b4-4ca8-bfda-f682460de945"
   }'`
@@ -194,7 +194,7 @@ export default function APIDocsPage() {
     "validation_target": {
       "type": "smart_code",
       "target_id": "test-001",
-      "smart_code": "HERA.REST.FIN.TXN.SALE.v1"
+      "smart_code": "HERA.REST.FIN.TXN.SALE.V1"
     },
     "validation_levels": ["L1_SYNTAX", "L2_SEMANTIC"]
   }'`

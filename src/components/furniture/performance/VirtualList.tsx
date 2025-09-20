@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback }
 from 'react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface VirtualListProps<T> { items: T[] itemHeight: number | ((index: number) => number) renderItem: (item: T, index: number) => React.ReactNode className?: string overscan?: number // Number of items to render outside viewport onEndReached?: () => void endReachedThreshold?: number // Pixels from bottom loading?: boolean emptyMessage?: string

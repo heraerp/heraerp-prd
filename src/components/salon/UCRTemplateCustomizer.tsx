@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Switch } from '@/src/components/ui/switch'
-import { Slider } from '@/src/components/ui/slider'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/src/components/ui/use-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Slider } from '@/components/ui/slider'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Sparkles,
   Save,
@@ -37,10 +37,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Separator } from '@/src/components/ui/separator'
+} from '@/components/ui/select'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Textarea } from '@/components/ui/textarea'
+import { Separator } from '@/components/ui/separator'
 
 interface UCRTemplateCustomizerProps {
   template: any
@@ -49,7 +49,7 @@ interface UCRTemplateCustomizerProps {
 }
 
 export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplateCustomizerProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const { validateRule, simulateRule } = useUCRMCP()
   const { toast } = useToast()
   const [customizedRule, setCustomizedRule] = useState<any>(null)
@@ -62,22 +62,22 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
     if (template) {
       const customSmartCode = template.smart_code.replace(
         '.v1',
-        `.${currentOrganization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.v1`
+        `.${organization?.name.toUpperCase().replace(/\s+/g, '_') || 'CUSTOM'}.v1`
       )
 
       setCustomizedRule({
         ...template,
         smart_code: customSmartCode,
-        title: `${template.title} - ${currentOrganization?.name || 'Custom'}`,
+        title: `${template.title} - ${organization?.name || 'Custom'}`,
         rule_payload: JSON.parse(JSON.stringify(template.rule_payload)), // Deep clone
         metadata: {
           cloned_from: template.template_id,
           customized_at: new Date().toISOString(),
-          organization_name: currentOrganization?.name
+          organization_name: organization?.name
         }
       })
     }
-  }, [template, currentOrganization])
+  }, [template, organization])
 
   const updateDefinition = (key: string, value: any) => {
     setCustomizedRule((prev: any) => ({
@@ -140,16 +140,16 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
   }
 
   const handleValidate = async () => {
-    if (!customizedRule || !currentOrganization) return
+    if (!customizedRule || !organization) return
 
     try {
       const result = await validateRule({
-        organization_id: currentOrganization.id,
+        organization_id: organization.id,
         smart_code: customizedRule.smart_code,
         title: customizedRule.title,
         status: 'draft',
         tags: ['customized', template.module?.toLowerCase()],
-        owner: currentOrganization.name,
+        owner: organization.name,
         version: 1,
         schema_version: 1,
         rule_payload: customizedRule.rule_payload

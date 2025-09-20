@@ -1,14 +1,14 @@
 'use client'
 /**
  * Simple Services Management Component
- * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.SIMPLE.v1
+ * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.SIMPLE.V1
  */
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { Plus, Search, Edit, Trash2, Scissors, DollarSign, Clock } from 'lucide-react'
 
 interface Service {

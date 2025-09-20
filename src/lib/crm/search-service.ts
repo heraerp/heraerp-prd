@@ -5,12 +5,12 @@
  * Project Manager Task: Advanced Search and Filtering Capabilities (Task #7)
  */
 
-import { heraApi } from '@/src/lib/hera-api'
+import { heraApi } from '@/lib/hera-api'
 import type {
   SearchFilters,
   SortOptions,
   SearchResult
-} from '@/src/components/crm/AdvancedSearchFilter'
+} from '@/components/crm/AdvancedSearchFilter'
 
 // Types for search results
 export interface CRMContact {

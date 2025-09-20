@@ -1,0 +1,456 @@
+smart_code: HERA.UNIV.WF.CANARY.ROLLOUT.V1
+intent: Canary rollout plan for Hair Talkz to validate workflow engine in production environment.
+scope:
+  in_scope:
+    - enable workflows for Hair Talkz organization only
+    - run scripted workflow flows
+    - monitor dashboards for 24 hours
+    - validate business process automation
+    - collect performance metrics
+  out_of_scope:
+    - other organization workflows
+    - infrastructure changes
+    - schema modifications
+preconditions:
+  - Hair Talkz organization configured and active
+  - workflow definitions deployed and tested
+  - monitoring dashboards operational
+  - rollback procedures prepared
+invariants:
+  - only Hair Talkz affected during canary
+  - other organizations continue normal operations
+  - complete rollback capability maintained
+inputs:
+  required:
+    - hair_talkz_org_id: uuid                      # Hair Talkz organization ID
+    - rollout_phase: enum[prepare, enable, monitor, validate, rollback]
+  optional:
+    - test_scenarios: array                        # specific scenarios to test
+    - monitoring_duration_hours: number            # monitoring period (default 24)
+    - auto_rollback_threshold: object             # automatic rollback triggers
+happy_path:
+  - if rollout_phase == 'prepare':
+    - step: verify Hair Talkz organization setup
+    - step: validate workflow definitions
+    - step: prepare test data and scenarios
+    - step: configure monitoring alerts
+    
+  - if rollout_phase == 'enable':
+    - step: enable feature flags for Hair Talkz workflows
+    - step: start scripted workflow flows
+    - step: begin continuous monitoring
+    
+  - if rollout_phase == 'monitor':
+    - step: collect real-time metrics
+    - step: validate workflow executions
+    - step: check for anomalies or errors
+    
+  - if rollout_phase == 'validate':
+    - step: run comprehensive validation tests
+    - step: verify business outcomes
+    - step: generate rollout success report
+    
+  - if rollout_phase == 'rollback':
+    - step: disable Hair Talkz workflows
+    - step: handle in-flight workflows gracefully
+    - step: restore previous state
+
+hair_talkz_organization:
+  organization_id: "hair-talkz-salon-org-uuid"
+  business_type: "salon"
+  location: "Dubai, UAE"
+  services: ["hair_cut", "hair_color", "hair_treatment", "nail_service"]
+  staff_count: 8
+  daily_appointments: "25-35"
+  peak_hours: "10:00-18:00"
+  existing_systems:
+    - pos_system: "HERA Salon POS"
+    - customer_management: "HERA CRM"
+    - appointment_booking: "HERA Appointments"
+
+workflow_scenarios:
+  leave_approval:
+    scenario: "Employee leave request approval"
+    description: "Stylist requests 2 days annual leave"
+    happy_path:
+      - step: "Employee submits leave request via mobile app"
+      - step: "System validates leave balance and availability"
+      - step: "Manager receives task for approval"
+      - step: "Manager approves with note about coverage arrangement"
+      - step: "Calendar system blocks stylist availability"
+      - step: "Employee receives WhatsApp confirmation"
+    expected_duration: "< 30 minutes for approval"
+    success_criteria:
+      - leave_request_created: true
+      - manager_task_assigned: true
+      - approval_processed: true
+      - calendar_updated: true
+      - notification_sent: true
+    test_data:
+      employee: "Aisha (Senior Stylist)"
+      leave_type: "annual"
+      dates: "2024-12-20 to 2024-12-21"
+      manager: "Fatima (Salon Manager)"
+      
+  membership_renewal:
+    scenario: "VIP membership auto-renewal"
+    description: "Gold membership due for renewal"
+    timer_path:
+      - step: "Scheduler detects membership expiring in 30 days"
+      - step: "System creates renewal workflow"
+      - step: "Customer receives WhatsApp reminder with payment link"
+      - step: "Customer pays via link"
+      - step: "System extends membership and activates benefits"
+      - step: "Confirmation sent to customer and salon"
+    expected_duration: "Immediate payment processing"
+    success_criteria:
+      - renewal_workflow_started: true
+      - payment_link_sent: true
+      - payment_processed: true
+      - membership_extended: true
+      - benefits_activated: true
+    test_data:
+      customer: "Layla Ahmed (Gold Member)"
+      membership_type: "gold"
+      current_expiry: "2024-12-31"
+      renewal_amount: 500
+      
+  ap_bill_approval:
+    scenario: "Beauty supply vendor bill approval"
+    description: "Monthly supply invoice processing"
+    gl_post_path:
+      - step: "Vendor bill uploaded to system"
+      - step: "System validates against purchase order"
+      - step: "Manager reviews and approves"
+      - step: "GL journal entries created automatically"
+      - step: "Payment processed to vendor"
+      - step: "Inventory levels updated"
+    expected_duration: "< 2 hours for approval"
+    success_criteria:
+      - bill_ingested: true
+      - po_matched: true
+      - approval_completed: true
+      - gl_posted: true
+      - payment_initiated: true
+    test_data:
+      vendor: "Beauty Supply Co."
+      bill_amount: 2850
+      po_number: "PO-2024-156"
+      approval_manager: "Fatima (Salon Manager)"
+      
+  pos_sale_followup:
+    scenario: "Post-service customer follow-up"
+    description: "Automated follow-up after hair service"
+    timer_comms_path:
+      - step: "Customer completes hair cut service"
+      - step: "POS sale transaction triggers workflow"
+      - step: "1-hour timer set for follow-up message"
+      - step: "Timer fires, WhatsApp message sent to customer"
+      - step: "Message includes service rating link and booking reminder"
+      - step: "Workflow marked complete"
+    expected_duration: "1 hour delay + immediate delivery"
+    success_criteria:
+      - sale_completed: true
+      - workflow_triggered: true
+      - timer_set_correctly: true
+      - followup_sent: true
+      - customer_engagement: true
+    test_data:
+      customer: "Sarah Hassan"
+      service: "Hair Cut & Style"
+      stylist: "Aisha"
+      service_amount: 120
+      phone: "+971501234567"
+
+monitoring_configuration:
+  dashboards:
+    hair_talkz_specific:
+      url: "/dashboards/hair-talkz-workflows"
+      metrics:
+        - active_workflows_count
+        - workflow_completion_rate
+        - average_processing_time
+        - task_completion_sla
+        - timer_fire_accuracy
+        - customer_satisfaction_score
+      refresh_interval: "30 seconds"
+      
+  alerts:
+    workflow_failure:
+      condition: "workflow_failure_rate > 5% in 15 minutes"
+      severity: "critical"
+      action: "immediate investigation"
+      
+    timer_latency:
+      condition: "timer_fire_latency > 120 seconds"
+      severity: "warning"
+      action: "check scheduler health"
+      
+    task_sla_breach:
+      condition: "task overdue > 2 hours"
+      severity: "warning"
+      action: "escalate to management"
+      
+    customer_complaint:
+      condition: "negative feedback on automation"
+      severity: "high"
+      action: "review customer experience"
+
+feature_flag_configuration:
+  enable_hair_talkz_workflows:
+    global_flags:
+      - "wf_global_enabled_LEAVE_APPROVAL = true"
+      - "wf_global_enabled_MEMBERSHIP_RENEWAL = true"
+      - "wf_global_enabled_AP_BILL_APPROVAL = true"
+      - "wf_global_enabled_APPT_FOLLOWUP = true"
+    org_specific_flags:
+      - "wf_org_enabled_hair-talkz_LEAVE_APPROVAL = true"
+      - "wf_org_enabled_hair-talkz_MEMBERSHIP_RENEWAL = true"
+      - "wf_org_enabled_hair-talkz_AP_BILL_APPROVAL = true"
+      - "wf_org_enabled_hair-talkz_APPT_FOLLOWUP = true"
+    emergency_stop:
+      - "wf_emergency_stop_all = false"
+      
+  other_orgs_disabled:
+    action: "Ensure other organizations have workflows disabled during canary"
+    verification: |
+      SELECT 
+        organization_id,
+        COUNT(*) as enabled_workflows
+      FROM core_dynamic_data 
+      WHERE key_slug LIKE 'wf_org_enabled_%'
+        AND value_json::text = 'true'
+        AND organization_id != 'hair-talkz-salon-org-uuid'
+      GROUP BY organization_id;
+    expected_result: "0 rows (no other orgs have workflows enabled)"
+
+test_execution_schedule:
+  day_1_morning:
+    time: "09:00 - 12:00"
+    scenarios: ["leave_approval", "membership_renewal"]
+    focus: "Happy path execution and basic functionality"
+    
+  day_1_afternoon:
+    time: "13:00 - 17:00"
+    scenarios: ["ap_bill_approval", "pos_sale_followup"]
+    focus: "Integration with existing systems"
+    
+  day_1_evening:
+    time: "18:00 - 22:00"
+    scenarios: ["timer_accuracy_test", "notification_delivery"]
+    focus: "Scheduler and communication systems"
+    
+  overnight_monitoring:
+    time: "22:00 - 08:00"
+    scenarios: ["automated_processing", "error_handling"]
+    focus: "Unattended operation and error recovery"
+
+success_metrics:
+  workflow_reliability:
+    target: "> 99% completion rate"
+    measurement: "workflows completed / workflows started"
+    
+  performance:
+    target: "< 30 seconds average processing time"
+    measurement: "time from start to completion"
+    
+  timer_accuracy:
+    target: "< 60 seconds latency"
+    measurement: "timer fire time - scheduled time"
+    
+  customer_satisfaction:
+    target: "> 90% positive feedback"
+    measurement: "customer survey responses"
+    
+  business_integration:
+    target: "100% data consistency"
+    measurement: "cross-system data validation"
+    
+  error_rate:
+    target: "< 1% error rate"
+    measurement: "failed operations / total operations"
+
+rollback_triggers:
+  automatic_rollback:
+    conditions:
+      - "workflow_failure_rate > 10% sustained for 30 minutes"
+      - "timer_latency > 300 seconds for 15 minutes"
+      - "customer_complaint_rate > 20%"
+      - "system_error_rate > 5%"
+      - "data_inconsistency_detected"
+    action: "immediate workflow disable for Hair Talkz"
+    
+  manual_rollback:
+    triggers:
+      - "business_owner_request"
+      - "operational_team_decision"
+      - "customer_experience_issues"
+      - "integration_problems"
+    procedure: |
+      1. Disable feature flags for Hair Talkz
+      2. Allow in-flight workflows to complete
+      3. Restore manual processes
+      4. Document issues and lessons learned
+
+rollback_procedure:
+  immediate_actions:
+    - step: "Set wf_org_enabled_hair-talkz_* = false for all workflow types"
+    - step: "Pause any active workflow instances (don't cancel)"
+    - step: "Stop scheduler for Hair Talkz organization"
+    - step: "Notify Hair Talkz management of temporary suspension"
+    
+  graceful_handling:
+    - step: "Allow current workflows to complete naturally"
+    - step: "Convert tasks back to manual processes"
+    - step: "Ensure no customer communications disrupted"
+    - step: "Maintain data integrity during transition"
+    
+  restoration:
+    - step: "Restore manual appointment booking"
+    - step: "Resume manual approval processes"
+    - step: "Revert to previous notification methods"
+    - step: "Validate all systems operating normally"
+
+validation_checklist:
+  business_processes:
+    - leave_approvals_working: "Staff can request and get leave approved"
+    - membership_renewals_automated: "VIP members receive renewal reminders"
+    - bill_approvals_efficient: "Vendor bills processed within SLA"
+    - customer_followups_sent: "Post-service messages delivered"
+    
+  technical_systems:
+    - workflows_completing: "All workflows reach terminal states"
+    - timers_firing_accurately: "Scheduled events execute on time"
+    - notifications_delivered: "WhatsApp messages reach customers"
+    - gl_posting_correct: "Financial transactions properly recorded"
+    
+  customer_experience:
+    - seamless_automation: "Customers unaware of backend automation"
+    - timely_notifications: "Messages sent at appropriate times"
+    - accurate_information: "All automated communications correct"
+    - service_quality_maintained: "No degradation in service delivery"
+
+post_canary_analysis:
+  metrics_collection:
+    duration: "24 hours continuous monitoring"
+    data_points:
+      - workflow_execution_logs
+      - performance_metrics
+      - error_rates_and_types
+      - customer_feedback
+      - staff_feedback
+      - system_resource_usage
+      
+  success_evaluation:
+    criteria:
+      - all_test_scenarios_passed: true
+      - performance_targets_met: true
+      - zero_customer_complaints: true
+      - staff_satisfaction_positive: true
+      - system_stability_maintained: true
+      
+  go_no_go_decision:
+    go_criteria: "All success metrics achieved, no critical issues"
+    no_go_criteria: "Any critical failure or customer dissatisfaction"
+    
+  broad_rollout_recommendation:
+    if_successful: "Proceed with phased rollout to other organizations"
+    if_failed: "Analyze issues, implement fixes, repeat canary"
+
+documentation_required:
+  pre_rollout:
+    - canary_rollout_plan: "This document"
+    - hair_talkz_specific_configuration: "Organization setup details"
+    - test_scenario_scripts: "Detailed test execution steps"
+    - monitoring_dashboard_setup: "Dashboard configuration"
+    
+  during_rollout:
+    - real_time_monitoring_log: "Continuous observation notes"
+    - issue_tracking_log: "Any problems encountered"
+    - customer_interaction_log: "All customer touchpoints"
+    - staff_feedback_collection: "Hair Talkz team feedback"
+    
+  post_rollout:
+    - canary_results_report: "Complete analysis of 24-hour period"
+    - lessons_learned_document: "Insights for future rollouts"
+    - recommendation_report: "Go/no-go decision and rationale"
+    - broad_rollout_plan: "Next phase strategy if successful"
+
+example_execution:
+  timeline: "Monday 09:00 - Tuesday 09:00"
+  
+  monday_09_00:
+    action: "Enable Hair Talkz workflow feature flags"
+    validation: "Verify only Hair Talkz can start workflows"
+    
+  monday_09_30:
+    action: "Execute leave approval scenario"
+    expected: "Aisha's leave request reaches Fatima for approval"
+    
+  monday_10_15:
+    action: "Execute membership renewal scenario"
+    expected: "Layla receives renewal reminder via WhatsApp"
+    
+  monday_11_00:
+    action: "Execute AP bill approval scenario"
+    expected: "Beauty Supply bill moves through approval workflow"
+    
+  monday_14_30:
+    action: "Execute POS followup scenario"
+    expected: "Sarah receives post-service message after 1-hour delay"
+    
+  monday_continuous:
+    action: "Monitor dashboards and metrics"
+    validation: "All metrics within acceptable ranges"
+    
+  tuesday_09_00:
+    action: "Complete 24-hour validation"
+    decision: "Go/no-go for broader rollout"
+
+success_criteria_summary:
+  must_achieve:
+    - "99%+ workflow completion rate"
+    - "< 60 second timer latency"
+    - "100% customer notification delivery"
+    - "Zero data corruption or loss"
+    - "Positive staff feedback"
+    - "No customer complaints about automation"
+    
+  nice_to_have:
+    - "< 30 second average processing time"
+    - "> 95% customer satisfaction"
+    - "Improved operational efficiency metrics"
+    - "Reduced manual workload for staff"
+
+errors:
+  - code: CANARY_SETUP_FAILED
+    when: Hair Talkz organization setup incomplete
+    action: complete setup before proceeding
+  - code: WORKFLOW_FAILURE_RATE_HIGH
+    when: > 10% workflow failures
+    action: immediate rollback and investigation
+  - code: CUSTOMER_DISSATISFACTION
+    when: negative customer feedback received
+    action: review automation impact on customer experience
+  - code: STAFF_RESISTANCE
+    when: Hair Talkz staff report issues
+    action: provide additional training and support
+
+observability:
+  logs:
+    - canary_rollout_started: { hair_talkz_org_id, scenarios_enabled }
+    - workflow_scenario_executed: { scenario_name, status, duration }
+    - metric_threshold_breached: { metric_name, threshold, current_value }
+    - canary_rollout_completed: { success, issues_found, recommendation }
+  audit_json: true
+  metrics:
+    - canary_rollout_success_rate
+    - workflow_reliability_during_canary
+    - customer_satisfaction_score
+    - staff_adoption_rate
+
+checks:
+  - description: verify Hair Talkz isolation from other organizations
+  - description: ensure all test scenarios execute successfully
+  - description: validate monitoring captures all relevant metrics
+  - description: confirm rollback procedures work correctly

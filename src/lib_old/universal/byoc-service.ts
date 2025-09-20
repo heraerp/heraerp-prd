@@ -646,7 +646,7 @@ export class BYOCService {
           details: { configName: fullConfig.name, provider: fullConfig.provider },
           success: true,
           timestamp: new Date().toISOString(),
-          heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.SAVED.v1'
+          heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.SAVED.V1'
         })
 
         return { success: true, data: result.data }
@@ -663,7 +663,7 @@ export class BYOCService {
         details: { error: error instanceof Error ? error.message : 'Unknown error' },
         success: false,
         timestamp: new Date().toISOString(),
-        heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ERROR.v1'
+        heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ERROR.V1'
       })
 
       return {
@@ -850,7 +850,7 @@ export class BYOCService {
           details: { configId },
           success: true,
           timestamp: new Date().toISOString(),
-          heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ACTIVATED.v1'
+          heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ACTIVATED.V1'
         })
       }
 

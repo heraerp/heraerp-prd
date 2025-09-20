@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface UseUniversalReportsParams {
   organizationId: string
@@ -18,18 +18,29 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
     queryFn: async () => {
       // For daily sales report
       if (reportType === 'daily_sales') {
-        // Fetch transactions for the date range
-        const transactions = await universalApi.read({
-          table: 'universal_transactions',
+        // Set organization ID once before the query
+        if (organizationId) {
+          universalApi.setOrganizationId(organizationId)
+        }
+        
+        const transactionsResult = await universalApi.getTransactions({
+          organizationId: organizationId,
           filters: {
-            organization_id: organizationId,
-            transaction_type: 'sale',
-            transaction_date: {
-              gte: dateRange.start,
-              lte: dateRange.end
-            }
+            transaction_type: 'sale'
+            // Note: Supabase date filtering will be done in JavaScript below
           },
-          orderBy: { transaction_date: 'desc' }
+          orderBy: 'transaction_date',
+          orderDirection: 'desc'
+        })
+
+        if (!transactionsResult.success || !transactionsResult.data) {
+          console.log('No transactions found or error:', transactionsResult.error)
+          return { summary: { total_gross: 0, transaction_count: 0, average_daily: 0 }, daily_breakdown: [] }
+        }
+
+        const transactions = transactionsResult.data.filter(txn => {
+          const txnDate = txn.transaction_date?.split('T')[0]
+          return txnDate >= dateRange.start && txnDate <= dateRange.end
         })
 
         // Calculate daily breakdown

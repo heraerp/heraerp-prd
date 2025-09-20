@@ -1,25 +1,25 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { Dialog, DialogContent } from '@/src/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Badge } from '@/src/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Calendar,
   Clock,
@@ -50,14 +50,14 @@ import {
   Phone,
   Mail
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { format, addMinutes, parseISO, isWithinInterval } from 'date-fns'
-import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
 import { SchedulingAssistant } from './SchedulingAssistant'
-import { useToast } from '@/src/hooks/use-toast'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { useToast } from '@/hooks/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
 
 interface Service {
   id: string
@@ -117,10 +117,10 @@ export function BookAppointmentModalModern({
   preSelectedService
 }: BookAppointmentModalModernProps) {
   console.log('BookAppointmentModalModern rendering - Modern Glassmorphism Version')
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const { toast } = useToast()
   const modalRef = useRef<HTMLDivElement>(null)
-  const organizationId = currentOrganization?.id || 'demo-salon'
+  const organizationId = organization?.id || 'demo-salon'
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
 
   // Form state - Default to assistant tab when pre-selected time is provided

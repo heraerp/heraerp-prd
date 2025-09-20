@@ -11,7 +11,7 @@ import {
   CalendarAnalytics,
   IndustryCalendarConfig,
   CalendarSecurityContext
-} from '@/src/types/calendar.types'
+} from '@/types/calendar.types'
 import { calendarSmartCodeService } from './calendarSmartCodeService'
 
 export class CalendarAPI {

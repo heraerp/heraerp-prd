@@ -456,7 +456,7 @@ export default function UniversalBudgetDashboard({
                 <div className="pt-3 border-t">
                   <p className="text-xs text-muted-foreground mb-2">Powered by HERA AI</p>
                   <Badge variant="outline" className="text-xs">
-                    HERA.FIN.BUDGET.AI.INSIGHTS.v1
+                    HERA.FIN.BUDGET.AI.INSIGHTS.V1
                   </Badge>
                 </div>
               </div>

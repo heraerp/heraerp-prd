@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 interface DAGExecutionRequest {
   organization_id: string
@@ -603,7 +603,7 @@ class DAGExecutionEngine {
           reference_number: request.dag_definition.dag_id,
           transaction_date: new Date().toISOString(),
           total_amount: totalTime, // Store execution time as amount for reporting
-          smart_code: 'HERA.SYSTEM.DAG.TXN.EXECUTION.v1',
+          smart_code: 'HERA.SYSTEM.DAG.TXN.EXECUTION.V1',
           business_context: {
             dag_name: request.dag_definition.dag_name,
             trigger_event: request.execution_context.trigger_event,

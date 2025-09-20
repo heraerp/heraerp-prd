@@ -321,7 +321,7 @@ export const HERA_SIDEBAR_DNA = {
     'Header content customization'
   ],
   usage: `
-import { HeraSidebar } from '@/src/lib/dna/components/layout/hera-sidebar-dna'
+import { HeraSidebar } from '@/lib/dna/components/layout/hera-sidebar-dna'
 import { LayoutDashboard, Package, DollarSign } from 'lucide-react'
 
 const navigation = [

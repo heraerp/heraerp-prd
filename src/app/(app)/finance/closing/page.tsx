@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import { 
   Calendar,
   Play,
@@ -25,13 +25,13 @@ import {
   DollarSign,
   Info
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useClosingApi } from '@/src/lib/api/closing'
-import { useFiscalApi } from '@/src/lib/api/fiscal'
-import { ClosingWorkflowSteps } from '@/src/components/fiscal/ClosingWorkflowSteps'
-import { ClosingChecklistPanel } from '@/src/components/fiscal/ClosingChecklistPanel'
-import { ClosingJournalDrilldown } from '@/src/components/fiscal/ClosingJournalDrilldown'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useClosingApi } from '@/lib/api/closing'
+import { useFiscalApi } from '@/lib/api/fiscal'
+import { ClosingWorkflowSteps } from '@/components/fiscal/ClosingWorkflowSteps'
+import { ClosingChecklistPanel } from '@/components/fiscal/ClosingChecklistPanel'
+import { ClosingJournalDrilldown } from '@/components/fiscal/ClosingJournalDrilldown'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function ClosingDashboardPage() {
   const { currentOrganization } = useOrganization()
@@ -390,10 +390,10 @@ export default function ClosingDashboardPage() {
                   Finance DNA Integration
                 </div>
                 <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                  <div>• Revenue: HERA.FIN.FISCAL.CLOSING.REVENUE.CALC.v1</div>
-                  <div>• Expense: HERA.FIN.FISCAL.CLOSING.EXPENSE.CALC.v1</div>
-                  <div>• RE Transfer: HERA.FIN.FISCAL.CLOSING.RE.TRANSFER.v1</div>
-                  <div>• Consolidation: HERA.FIN.FISCAL.CLOSING.CONSOLIDATE.v1</div>
+                  <div>• Revenue: HERA.FIN.FISCAL.CLOSING.REVENUE.CALC.V1</div>
+                  <div>• Expense: HERA.FIN.FISCAL.CLOSING.EXPENSE.CALC.V1</div>
+                  <div>• RE Transfer: HERA.FIN.FISCAL.CLOSING.RE.TRANSFER.V1</div>
+                  <div>• Consolidation: HERA.FIN.FISCAL.CLOSING.CONSOLIDATE.V1</div>
                 </div>
               </div>
             </AlertDescription>

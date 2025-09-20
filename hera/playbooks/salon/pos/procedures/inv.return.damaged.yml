@@ -1,0 +1,130 @@
+smart_code: HERA.SALON.INV.RETURN.DAMAGED.V1
+intent: >
+  Process damaged returns as inventory write-offs.
+  Creates write-off transaction without restocking to sellable inventory.
+
+scope:
+  in_scope:
+    - Damaged item write-offs
+    - Inventory valuation adjustment
+    - Damaged goods tracking
+    - Write-off reason documentation
+  out_of_scope:
+    - Good condition restocking (use inv.return.restock)
+    - Vendor claim processing
+    - Repair workflows
+    - Salvage value recovery
+
+preconditions:
+  - return transaction exists with damaged condition items
+  - write-off policy is configured
+  - has_permissions: [inventory_management, process_write_offs]
+
+invariants:
+  - damaged items never increase sellable stock
+  - write-off value is properly recorded
+  - inventory valuation is adjusted
+  - audit trail is complete
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing write-off
+    - name: return_id
+      type: uuid
+      where: payload
+      description: Return transaction with damaged items
+    - name: damaged_lines
+      type: array
+      where: payload
+      description: Damaged lines to write off
+      schema:
+        return_line_id: uuid
+        quantity: number
+        write_off_reason: string
+  optional:
+    - name: valuation_method
+      type: enum[cost,average,policy]
+      where: payload
+      default: "average"
+      description: Method to value write-offs
+    - name: inspection_notes
+      type: string
+      where: payload
+      description: Damage inspection details
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: inventory_write_off
+      description: Damaged inventory write-off
+      smart_code: HERA.SALON.INV.RETURN.DAMAGED.V1
+  side_effects:
+    - record inventory write-off
+    - adjust inventory valuation
+    - track damaged goods statistics
+    - prepare GL impact
+
+happy_path:
+  - step: Load return transaction and validate it exists
+  - step: Verify each damaged line is marked as damaged condition
+  - step: Load product entities and current valuations
+  - step: Determine write-off value based on valuation method
+  - step: Create write-off transaction HERA.SALON.INV.RETURN.DAMAGED.V1
+  - step: For each damaged line, create write-off movement
+  - step: Record write-off value and reason in transaction
+  - step: Do NOT increment sellable stock levels
+  - step: Track damaged goods in separate ledger if configured
+  - step: Link write-off to return transaction
+  - step: Return write-off confirmation and valuation impact
+
+errors:
+  - code: RETURN_NOT_FOUND
+    when: return_id does not exist
+    action: return error with valid return requirements
+  - code: RETURN_LINE_NOT_FOUND
+    when: return_line_id does not exist in return
+    action: return error with valid line requirements
+  - code: NOT_DAMAGED_CONDITION
+    when: attempting to write off good condition items
+    action: return error - use restock procedure instead
+  - code: PRODUCT_NOT_FOUND
+    when: product entity cannot be loaded
+    action: return error with product details
+  - code: VALUATION_NOT_AVAILABLE
+    when: cannot determine write-off value
+    action: return error with valuation requirements
+  - code: WRITE_OFF_LIMIT_EXCEEDED
+    when: write-off exceeds policy limits
+    action: return error requiring additional approval
+  - code: WRITE_OFF_FAILED
+    when: cannot create write-off transaction
+    action: return error with system details
+
+observability:
+  logs: [write_off_requested, return_validated, valuation_calculated, write_off_recorded]
+  audit_json: true
+  metrics: [write_off_duration_ms, items_written_off, total_write_off_value]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  return_id: "ret-123"
+  damaged_lines:
+    - return_line_id: "ret-ln-3"
+      quantity: 1
+      write_off_reason: "broken_seal"
+    - return_line_id: "ret-ln-4"
+      quantity: 1
+      write_off_reason: "expired_product"
+  valuation_method: "average"
+  inspection_notes: "Customer reported product leaked in bag"
+
+checks:
+  - description: Return transaction properly validated
+  - description: Only damaged condition items processed
+  - description: Write-off valuation correctly calculated
+  - description: No increment to sellable stock
+  - description: Write-off properly tracked and valued
+  - description: Complete audit trail maintained

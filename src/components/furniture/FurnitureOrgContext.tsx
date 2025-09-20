@@ -1,8 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { getDemoOrganizationInfo } from '@/src/lib/demo-org-resolver'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
 interface FurnitureOrgContextType {
@@ -19,7 +19,7 @@ export const FurnitureOrgProvider = React.memo(function FurnitureOrgProvider({
   children: ReactNode
 }) {
   const pathname = usePathname()
-  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const { organization: currentOrganization, isLoading: isLoadingOrgs, isAuthenticated } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 
   // Always use the furniture organization when in furniture module

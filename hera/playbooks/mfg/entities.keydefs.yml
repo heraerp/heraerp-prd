@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.MFG.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   # Product/Component
   - { slug: product.sku,             entity_type: ENTITY, name: "Product SKU",      metadata: { type: "text" } }

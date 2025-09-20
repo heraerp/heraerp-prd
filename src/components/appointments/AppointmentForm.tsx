@@ -10,10 +10,10 @@ import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Calendar, Clock, User, Scissors, MapPin, Loader2 } from 'lucide-react'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card } from '@/src/components/ui/Card'
-import { AppointmentCreate } from '@/src/lib/schemas/appointment'
-import { formatTime, formatDate, cn } from '@/src/lib/utils'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card } from '@/components/ui/card'
+import { AppointmentCreate } from '@/lib/schemas/appointment'
+import { formatTime, formatDate, cn } from '@/lib/utils'
 import type { z } from 'zod'
 
 // Mock data for dropdowns
@@ -262,8 +262,8 @@ export function AppointmentForm({
                   <p className="text-xs text-gray-500">{service.duration} minutes</p>
                 </div>
               </div>
-              <span className="text-sm font-medium text-gray-900">
-                AED {service.price}
+              <span className="text-sm font-medium text-foreground">
+                {service.price} AED
               </span>
             </label>
           ))}

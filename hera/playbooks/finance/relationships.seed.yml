@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.FINANCE.MDM.RELATIONSHIPS.SEED.V1
 rows:
   # Group account
   - from_slug: ledger_account:1000

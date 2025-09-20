@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA MOBILE COMPONENTS - UNIFIED EXPORTS
-// Smart Code: HERA.DNA.MOBILE.EXPORT.SYSTEM.v1
+// Smart Code: HERA.DNA.MOBILE.EXPORT.SYSTEM.V1
 // ================================================================================
 
 // Mobile Interaction Components

@@ -1,7 +1,7 @@
 'use client'
 
 // HERA 100% Vibe Coding System - Dashboard Component
-// Smart Code: HERA.VIBE.FRONTEND.DASHBOARD.MAIN.v1
+// Smart Code: HERA.VIBE.FRONTEND.DASHBOARD.MAIN.V1
 // Purpose: Main dashboard for vibe coding system monitoring and control
 
 import React, { useState, useEffect } from 'react'
@@ -13,14 +13,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Brain,
   Zap,
@@ -87,7 +87,7 @@ export function VibeDashboard() {
   useEffect(() => {
     if (isVibeInitialized) {
       preserveContext({
-        smart_code: 'HERA.VIBE.FRONTEND.DASHBOARD.ACCESS.v1',
+        smart_code: 'HERA.VIBE.FRONTEND.DASHBOARD.ACCESS.V1',
         user_intent: 'Access HERA Vibe Coding Dashboard',
         business_context: {
           dashboard_tab: activeTab,
@@ -125,7 +125,7 @@ export function VibeDashboard() {
 
   const handleTestQuality = async () => {
     try {
-      const report = await validateQuality('HERA.VIBE.FRONTEND.DASHBOARD.MAIN.v1')
+      const report = await validateQuality('HERA.VIBE.FRONTEND.DASHBOARD.MAIN.V1')
       console.log('Quality Report:', report)
     } catch (error) {
       console.error('Quality test failed:', error)
@@ -135,8 +135,8 @@ export function VibeDashboard() {
   const handleCreateTestIntegration = async () => {
     try {
       const integration = await createIntegration(
-        'HERA.VIBE.FRONTEND.DASHBOARD.MAIN.v1',
-        'HERA.VIBE.FRONTEND.PROVIDER.REACT.v1',
+        'HERA.VIBE.FRONTEND.DASHBOARD.MAIN.V1',
+        'HERA.VIBE.FRONTEND.PROVIDER.REACT.V1',
         'seamless_bidirectional'
       )
       console.log('Test Integration:', integration)

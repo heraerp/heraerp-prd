@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { UniversalWorkflow } from '@/src/lib/universal-workflow'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { UniversalWorkflow } from '@/lib/universal-workflow'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel
-} from '@/src/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import {
   Dialog,
   DialogContent,
@@ -20,10 +20,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Label } from '@/src/components/ui/label'
-import { useToast } from '@/src/components/ui/use-toast'
+} from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Clock,
   CheckCircle,
@@ -33,7 +33,7 @@ import {
   ArrowRight,
   History
 } from 'lucide-react'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface WorkflowTrackerProps {
   transactionId: string

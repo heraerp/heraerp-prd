@@ -5,8 +5,8 @@
 // ================================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/src/lib/supabase/server'
-import { SignupRequest } from '@/src/lib/schemas/universal'
+import { createServerClient } from '@/lib/supabase/server'
+import { SignupRequest } from '@/lib/schemas/universal'
 
 export async function POST(request: NextRequest) {
   try {

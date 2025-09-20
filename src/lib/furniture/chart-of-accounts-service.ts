@@ -3,7 +3,7 @@
  * Handles loading and building hierarchical GL account structure
  */
 
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export interface GLAccountNode {
   id: string

@@ -3,7 +3,7 @@ from 'react'
 import { Loader2, CheckCircle, AlertCircle }
 from 'lucide-react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface LoadingStage {

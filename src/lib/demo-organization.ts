@@ -1,5 +1,5 @@
-import { supabase } from '@/src/lib/supabase'
-import { universalApi } from '@/src/lib/universal-api'
+import { supabase } from '@/lib/supabase'
+import { universalApi } from '@/lib/universal-api'
 
 export interface DemoOrgConfig {
   userId: string

@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Live_conversion
- * Generated at: 2025-09-06T04:22:27.826Z
+ * Generated at: 2025-09-20T19:27:02.081Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.LIVE_CONVERSION",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132547827';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396422082';
 
 describe('Live_conversion - Universal CRUD Operations', () => {
   let createdEntityId;

@@ -1,11 +1,11 @@
 /**
  * HERA Digital Accountant - Journal Entry Helper
- * Smart Code: HERA.DIGITAL.ACCOUNTANT.JOURNAL.HELPER.v1
+ * Smart Code: HERA.DIGITAL.ACCOUNTANT.JOURNAL.HELPER.V1
  *
  * Demonstrates how natural language transforms into complete journal entries
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface UniversalFinanceEvent {
   organization_id: string
@@ -238,7 +238,7 @@ export class DigitalAccountantHelper {
           entity_id: accounts.service_revenue.id,
           description: event.lines[0].description,
           line_amount: revenueAmount,
-          smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.SERVICE.v1'
+          smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.SERVICE.V1'
         })
 
         // Credit: VAT Output Tax (if applicable)
@@ -251,7 +251,7 @@ export class DigitalAccountantHelper {
             entity_id: accounts.vat_output_tax.id,
             description: `VAT ${event.amounts.tax_code} on ${event.document.reference}`,
             line_amount: event.amounts.tax_amount,
-            smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.TAX.OUTPUT.VAT.v1'
+            smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.TAX.OUTPUT.VAT.V1'
           })
         }
         break
@@ -266,7 +266,7 @@ export class DigitalAccountantHelper {
           entity_id: accounts.operating_expenses.id,
           description: event.lines[0].description,
           line_amount: event.amounts.gross_amount,
-          smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.OPERATING.v1'
+          smart_code: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.OPERATING.V1'
         })
 
         // Credit: Cash/Accounts Payable
@@ -366,23 +366,23 @@ export class DigitalAccountantHelper {
 
   private getJournalSmartCode(eventType: string): string {
     const codeMap = {
-      SALE: 'HERA.ACCOUNTING.GL.JOURNAL.SALES.v1',
-      PURCHASE: 'HERA.ACCOUNTING.GL.JOURNAL.PURCHASE.v1',
-      EXPENSE: 'HERA.ACCOUNTING.GL.JOURNAL.EXPENSE.v1',
-      PAYMENT: 'HERA.ACCOUNTING.GL.JOURNAL.PAYMENT.v1'
+      SALE: 'HERA.ACCOUNTING.GL.JOURNAL.SALES.V1',
+      PURCHASE: 'HERA.ACCOUNTING.GL.JOURNAL.PURCHASE.V1',
+      EXPENSE: 'HERA.ACCOUNTING.GL.JOURNAL.EXPENSE.V1',
+      PAYMENT: 'HERA.ACCOUNTING.GL.JOURNAL.PAYMENT.V1'
     }
-    return codeMap[eventType as keyof typeof codeMap] || 'HERA.ACCOUNTING.GL.JOURNAL.GENERAL.v1'
+    return codeMap[eventType as keyof typeof codeMap] || 'HERA.ACCOUNTING.GL.JOURNAL.GENERAL.V1'
   }
 
   private getAccountSmartCode(accountType: string): string {
     const codeMap = {
-      asset: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.v1',
-      liability: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.v1',
-      revenue: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.v1',
-      expense: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.v1'
+      asset: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.ASSET.V1',
+      liability: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.LIABILITY.V1',
+      revenue: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.REVENUE.V1',
+      expense: 'HERA.ACCOUNTING.COA.ACCOUNT.GL.EXPENSE.V1'
     }
     return (
-      codeMap[accountType as keyof typeof codeMap] || 'HERA.ACCOUNTING.COA.ACCOUNT.GL.GENERAL.v1'
+      codeMap[accountType as keyof typeof codeMap] || 'HERA.ACCOUNTING.COA.ACCOUNT.GL.GENERAL.V1'
     )
   }
 

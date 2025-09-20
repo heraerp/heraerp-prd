@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import { Building2, Package, Clock, DollarSign, TrendingUp, AlertCircle } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { universalApi } from '@/src/lib/universal-api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
+import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 interface SupplierInfo {
   id: string
@@ -188,7 +188,7 @@ export function SupplierRelationships({ organizationId, className, productId }: 
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-[#37353E]" />
+                  <Building2 className="h-5 w-5 text-[var(--color-icon-secondary)]" />
                   <div>
                     <h4 className="font-medium text-[var(--color-text-primary)]">{supplier.name}</h4>
                     <p className="text-xs text-[var(--color-text-secondary)]">{supplier.code}</p>
@@ -266,7 +266,7 @@ export function SupplierRelationships({ organizationId, className, productId }: 
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-[#37353E]" />
+                          <Clock className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                           <span className={getLeadTimeColor(product.leadTime)}>
                             {product.leadTime} days
                           </span>
@@ -274,7 +274,7 @@ export function SupplierRelationships({ organizationId, className, productId }: 
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4 text-[#37353E]" />
+                          <DollarSign className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                           <span>
                             ₹{product.unitPrice.toLocaleString()}/{product.priceUnit}
                           </span>

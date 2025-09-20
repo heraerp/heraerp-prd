@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Universal_email
- * Generated at: 2025-09-06T04:22:41.047Z
+ * Generated at: 2025-09-20T19:27:06.475Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.UNIVERSAL_EMAIL",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132561047';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396426476';
 
 describe('Universal_email - Universal CRUD Operations', () => {
   let createdEntityId;

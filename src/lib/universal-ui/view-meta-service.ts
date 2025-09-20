@@ -6,7 +6,7 @@
  * in core_dynamic_data and defines widgets, fields, actions, and behaviors.
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { industryConfigurations } from './industry-configurations'
 
 export interface ViewMetadata {
@@ -352,7 +352,7 @@ export class ViewMetaService {
             id: 'bom-stats',
             type: 'stats',
             title: 'BOM Overview',
-            smart_code: 'HERA.FURN.BOM.STATS.OVERVIEW.v1',
+            smart_code: 'HERA.FURN.BOM.STATS.OVERVIEW.V1',
             config: {
               metric: 'total_cost',
               aggregation: 'sum'
@@ -377,7 +377,7 @@ export class ViewMetaService {
             id: 'bom-form',
             type: 'form',
             title: 'Product Information',
-            smart_code: 'HERA.FURN.BOM.FORM.PRODUCT.v1',
+            smart_code: 'HERA.FURN.BOM.FORM.PRODUCT.V1',
             config: {
               fields: [
                 {
@@ -439,7 +439,7 @@ export class ViewMetaService {
             id: 'bom-components',
             type: 'grid',
             title: 'Components',
-            smart_code: 'HERA.FURN.BOM.GRID.COMPONENTS.v1',
+            smart_code: 'HERA.FURN.BOM.GRID.COMPONENTS.V1',
             config: {
               columns: [
                 {
@@ -496,14 +496,14 @@ export class ViewMetaService {
                   label: 'Edit',
                   icon: 'edit',
                   type: 'edit',
-                  smart_code: 'HERA.FURN.BOM.ACTION.EDIT_COMPONENT.v1'
+                  smart_code: 'HERA.FURN.BOM.ACTION.EDIT_COMPONENT.V1'
                 },
                 {
                   id: 'remove-component',
                   label: 'Remove',
                   icon: 'trash',
                   type: 'delete',
-                  smart_code: 'HERA.FURN.BOM.ACTION.REMOVE_COMPONENT.v1',
+                  smart_code: 'HERA.FURN.BOM.ACTION.REMOVE_COMPONENT.V1',
                   confirmation: {
                     title: 'Remove Component',
                     message: 'Are you sure you want to remove this component?',
@@ -517,7 +517,7 @@ export class ViewMetaService {
                   label: 'Add Component',
                   icon: 'plus',
                   type: 'create',
-                  smart_code: 'HERA.FURN.BOM.ACTION.ADD_COMPONENT.v1'
+                  smart_code: 'HERA.FURN.BOM.ACTION.ADD_COMPONENT.V1'
                 }
               ]
             },
@@ -542,7 +542,7 @@ export class ViewMetaService {
             id: 'cost-breakdown',
             type: 'chart',
             title: 'Cost Breakdown',
-            smart_code: 'HERA.FURN.BOM.CHART.COST_BREAKDOWN.v1',
+            smart_code: 'HERA.FURN.BOM.CHART.COST_BREAKDOWN.V1',
             config: {
               chart_type: 'pie',
               series: [
@@ -574,7 +574,7 @@ export class ViewMetaService {
             id: 'bom-timeline',
             type: 'timeline',
             title: 'Revision History',
-            smart_code: 'HERA.FURN.BOM.TIMELINE.REVISIONS.v1',
+            smart_code: 'HERA.FURN.BOM.TIMELINE.REVISIONS.V1',
             config: {
               time_field: 'created_at',
               event_template: '{{user_name}} {{action}} - {{description}}'
@@ -601,7 +601,7 @@ export class ViewMetaService {
             label: 'Save',
             icon: 'save',
             type: 'custom',
-            smart_code: 'HERA.FURN.BOM.ACTION.SAVE.v1',
+            smart_code: 'HERA.FURN.BOM.ACTION.SAVE.V1',
             api_endpoint: '/api/v1/universal',
             success_message: 'BOM saved successfully',
             refresh_after: true
@@ -611,7 +611,7 @@ export class ViewMetaService {
             label: 'Release',
             icon: 'check-circle',
             type: 'workflow',
-            smart_code: 'HERA.FURN.BOM.ACTION.RELEASE.v1',
+            smart_code: 'HERA.FURN.BOM.ACTION.RELEASE.V1',
             confirmation: {
               title: 'Release BOM',
               message: 'Releasing will lock this BOM for production. Continue?',
@@ -623,14 +623,14 @@ export class ViewMetaService {
             label: 'Copy',
             icon: 'copy',
             type: 'custom',
-            smart_code: 'HERA.FURN.BOM.ACTION.COPY.v1'
+            smart_code: 'HERA.FURN.BOM.ACTION.COPY.V1'
           },
           {
             id: 'export-bom',
             label: 'Export',
             icon: 'download',
             type: 'custom',
-            smart_code: 'HERA.FURN.BOM.ACTION.EXPORT.v1'
+            smart_code: 'HERA.FURN.BOM.ACTION.EXPORT.V1'
           }
         ]
       }
@@ -661,7 +661,7 @@ export class ViewMetaService {
           id: 'bom-list',
           type: 'grid',
           title: 'Products',
-          smart_code: 'HERA.FURN.BOM.GRID.PRODUCTS.v1',
+          smart_code: 'HERA.FURN.BOM.GRID.PRODUCTS.V1',
           config: {
             columns: [
               {
@@ -716,7 +716,7 @@ export class ViewMetaService {
                 label: 'View',
                 icon: 'eye',
                 type: 'navigate',
-                smart_code: 'HERA.FURN.BOM.ACTION.VIEW.v1',
+                smart_code: 'HERA.FURN.BOM.ACTION.VIEW.V1',
                 navigation: {
                   target: '/bom/{{id}}'
                 }
@@ -726,7 +726,7 @@ export class ViewMetaService {
                 label: 'Edit',
                 icon: 'edit',
                 type: 'navigate',
-                smart_code: 'HERA.FURN.BOM.ACTION.EDIT.v1',
+                smart_code: 'HERA.FURN.BOM.ACTION.EDIT.V1',
                 navigation: {
                   target: '/bom/{{id}}/edit'
                 }
@@ -738,7 +738,7 @@ export class ViewMetaService {
                 label: 'Create New BOM',
                 icon: 'plus',
                 type: 'navigate',
-                smart_code: 'HERA.FURN.BOM.ACTION.CREATE.v1',
+                smart_code: 'HERA.FURN.BOM.ACTION.CREATE.V1',
                 navigation: {
                   target: '/bom/new'
                 }
@@ -805,7 +805,7 @@ export class ViewMetaService {
           id: 'kpi-stats',
           type: 'stats',
           title: 'Key Metrics',
-          smart_code: 'HERA.FURN.BOM.STATS.KPI.v1',
+          smart_code: 'HERA.FURN.BOM.STATS.KPI.V1',
           layout: {
             position: { row: 0, col: 0 },
             size: { width: 12, height: 1 }
@@ -827,7 +827,7 @@ export class ViewMetaService {
           id: 'cost-trend',
           type: 'chart',
           title: 'Cost Trends',
-          smart_code: 'HERA.FURN.BOM.CHART.COST_TREND.v1',
+          smart_code: 'HERA.FURN.BOM.CHART.COST_TREND.V1',
           config: {
             chart_type: 'line',
             x_axis: 'month',
@@ -854,7 +854,7 @@ export class ViewMetaService {
           id: 'top-products',
           type: 'grid',
           title: 'Top Products by Cost',
-          smart_code: 'HERA.FURN.BOM.GRID.TOP_COST.v1',
+          smart_code: 'HERA.FURN.BOM.GRID.TOP_COST.V1',
           config: {
             columns: [
               {

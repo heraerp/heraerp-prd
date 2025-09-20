@@ -7,9 +7,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Search, Filter, Settings, ChevronRight } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
+} from '@/components/ui/table'
 import {
   Dialog,
   DialogContent,
@@ -25,18 +25,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Badge } from '@/src/components/ui/badge'
-import { useToast } from '@/src/components/ui/use-toast'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Switch } from '@/src/components/ui/switch'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { ConfigType } from '@/src/lib/universal-config/config-types'
-import { CurrencyInput, CurrencyDisplay } from '@/src/components/ui/currency-input'
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/components/ui/use-toast'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Switch } from '@/components/ui/switch'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { ConfigType } from '@/lib/universal-config/config-types'
+import { CurrencyInput, CurrencyDisplay } from '@/components/ui/currency-input'
 
 interface UniversalConfigManagerProps {
   config: ConfigType

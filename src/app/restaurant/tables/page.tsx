@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { TableManagement } from '@/src/components/restaurant/TableManagement'
+import { TableManagement } from '@/components/restaurant/TableManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {
@@ -24,10 +24,10 @@ const RESTAURANT_CONFIG = {
     RESERVATION_BOOKING: 'HERA.RESTAURANT.TABLE.BOOKING.v1',
 
     // Relationships
-    REL_TABLE_SECTION: 'HERA.RESTAURANT.TABLE.REL.SECTION.v1',
-    REL_TABLE_ORDER: 'HERA.RESTAURANT.TABLE.REL.ORDER.v1',
-    REL_TABLE_SERVER: 'HERA.RESTAURANT.TABLE.REL.SERVER.v1',
-    REL_TABLE_RESERVATION: 'HERA.RESTAURANT.TABLE.REL.RESERVATION.v1'
+    REL_TABLE_SECTION: 'HERA.RESTAURANT.TABLE.REL.SECTION.V1',
+    REL_TABLE_ORDER: 'HERA.RESTAURANT.TABLE.REL.ORDER.V1',
+    REL_TABLE_SERVER: 'HERA.RESTAURANT.TABLE.REL.SERVER.V1',
+    REL_TABLE_RESERVATION: 'HERA.RESTAURANT.TABLE.REL.RESERVATION.V1'
   }
 }
 

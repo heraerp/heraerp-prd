@@ -8,21 +8,27 @@
 
 import React from 'react'
 import { Loader2 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { salonClasses } from '@/src/lib/theme/salon-theme'
-import { Guard } from '@/src/lib/auth/guard'
-import { KpiCards } from '@/src/components/dashboard/KpiCards'
-import { AlertsStrip } from '@/src/components/dashboard/AlertsStrip'
-import { RevenueSparkline } from '@/src/components/dashboard/RevenueSparkline'
-import { UpcomingAppointments } from '@/src/components/dashboard/UpcomingAppointments'
-import { LowStockList } from '@/src/components/dashboard/LowStockList'
-import { StaffUtilization } from '@/src/components/dashboard/StaffUtilization'
-import { QuickActions } from '@/src/components/dashboard/QuickActions'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { salonClasses } from '@/lib/theme/salon-theme'
+import { Guard } from '@/lib/auth/guard'
+import { KpiCards } from '@/components/dashboard/KpiCards'
+import { AlertsStrip } from '@/components/dashboard/AlertsStrip'
+import { RevenueSparkline } from '@/components/dashboard/RevenueSparkline'
+import { UpcomingAppointments } from '@/components/dashboard/UpcomingAppointments'
+import { LowStockList } from '@/components/dashboard/LowStockList'
+import { StaffUtilization } from '@/components/dashboard/StaffUtilization'
+import { QuickActions } from '@/components/dashboard/QuickActions'
+import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
+import { DataDebugger } from '@/components/debug/DataDebugger'
 
 
 export default function SalonDashboard() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isLoading, isLoadingOrgs } = useMultiOrgAuth()
+  const contextLoading = isLoading || isLoadingOrgs
 
+  // Use the current organization or fallback to the demo salon org
+  const organizationId = currentOrganization?.id || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
+  
   return (
     <Guard allowedRoles={['owner', 'manager']}>
       <div className={`min-h-screen ${salonClasses.pageGradient}`}>
@@ -47,34 +53,38 @@ export default function SalonDashboard() {
             </div>
 
             {/* Alerts Strip */}
-            <AlertsStrip organizationId={currentOrganization?.id} />
+            <AlertsStrip organizationId={organizationId} />
 
             {/* KPI Cards */}
-            <KpiCards organizationId={currentOrganization?.id} />
+            <KpiCards organizationId={organizationId} />
 
             {/* Revenue Sparkline */}
-            <RevenueSparkline organizationId={currentOrganization?.id} />
+            <RevenueSparkline organizationId={organizationId} />
 
             {/* Main Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Upcoming Appointments */}
               <div className="lg:col-span-2">
-                <UpcomingAppointments organizationId={currentOrganization?.id} />
+                <UpcomingAppointments organizationId={organizationId} />
               </div>
 
               {/* Low Stock List */}
               <div>
-                <LowStockList organizationId={currentOrganization?.id} />
+                <LowStockList organizationId={organizationId} />
               </div>
             </div>
 
             {/* Staff Utilization */}
-            <StaffUtilization organizationId={currentOrganization?.id} />
+            <StaffUtilization organizationId={organizationId} />
 
             {/* Quick Actions */}
-            <QuickActions organizationId={currentOrganization?.id} />
+            <QuickActions organizationId={organizationId} />
           </div>
         )}
+        
+        {/* Debug components - only show in development */}
+        <DemoOrgDebug />
+        <DataDebugger organizationId={organizationId} />
       </div>
     </Guard>
   )

@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA INDUSTRY DASHBOARD EXAMPLES - UNIFIED EXPORTS
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARDS.EXPORT.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARDS.EXPORT.V1
 // ================================================================================
 
 // Industry-specific dashboard examples
@@ -41,21 +41,21 @@ export const DASHBOARD_INFO = {
   restaurant: {
     name: 'Restaurant Dashboard',
     description: 'Complete restaurant operations dashboard with real-time metrics',
-    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.v1',
+    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.V1',
     features: ['Daily Sales', 'Order Management', 'Menu Performance', 'Kitchen Status'],
     industry: 'restaurant'
   },
   salon: {
     name: 'Salon Dashboard',
     description: 'Complete salon & spa operations dashboard with appointment management',
-    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.SALON.v1',
+    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.SALON.V1',
     features: ['Appointment Scheduling', 'Staff Management', 'Service Performance', 'Client Satisfaction'],
     industry: 'salon'
   },
   healthcare: {
     name: 'Healthcare Dashboard',
     description: 'Complete healthcare practice dashboard with patient management',
-    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.HEALTHCARE.v1',
+    smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.HEALTHCARE.V1',
     features: ['Patient Management', 'Doctor Scheduling', 'Medical Records', 'Emergency Alerts'],
     industry: 'healthcare'
   }

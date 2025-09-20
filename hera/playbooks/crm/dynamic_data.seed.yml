@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.CRM.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Account
   - { entity_slug: account:ACME, key_slug: account.industry, value: "software", value_type: text }

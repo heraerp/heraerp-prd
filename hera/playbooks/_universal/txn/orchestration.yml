@@ -1,0 +1,100 @@
+smart_code: HERA.UNIV.TXN.ORCH.V1
+description: Universal transaction CRUD orchestration - maps HTTP routes to procedures
+routes:
+  - http: POST /api/v1/:module/txns
+    handler: HERA.UNIV.TXN.HEADER.CREATE.V1
+    description: Create transaction header
+    
+  - http: POST /api/v1/:module/txns/:id/lines
+    handler: HERA.UNIV.TXN.LINE.ADD.V1
+    description: Add line to transaction
+    
+  - http: PATCH /api/v1/:module/txns/:id/lines/:lineId
+    handler: HERA.UNIV.TXN.LINE.UPDATE.V1
+    description: Update transaction line
+    
+  - http: DELETE /api/v1/:module/txns/:id/lines/:lineId
+    handler: HERA.UNIV.TXN.LINE.REMOVE.V1
+    description: Remove transaction line
+    
+  - http: POST /api/v1/:module/txns/:id/finalize
+    handler: HERA.UNIV.TXN.HEADER.FINALIZE.V1
+    description: Finalize transaction
+    
+  - http: POST /api/v1/:module/txns/:id/void
+    handler: HERA.UNIV.TXN.HEADER.VOID.V1
+    description: Void transaction
+    
+transaction_boundaries:
+  - name: header_create
+    applies_to: [HERA.UNIV.TXN.HEADER.CREATE.V1]
+    isolation: READ_COMMITTED
+    timeout: 5000ms
+    
+  - name: line_mutation
+    applies_to: 
+      - HERA.UNIV.TXN.LINE.ADD.V1
+      - HERA.UNIV.TXN.LINE.UPDATE.V1
+      - HERA.UNIV.TXN.LINE.REMOVE.V1
+    isolation: READ_COMMITTED
+    timeout: 3000ms
+    
+  - name: finalize_commit
+    applies_to: [HERA.UNIV.TXN.HEADER.FINALIZE.V1]
+    isolation: SERIALIZABLE
+    timeout: 10000ms
+    
+  - name: void_transaction
+    applies_to: [HERA.UNIV.TXN.HEADER.VOID.V1]
+    isolation: SERIALIZABLE
+    timeout: 8000ms
+    
+middleware:
+  - auth: verify_jwt
+  - org: extract_organization_id
+  - profile: load_module_profile
+  - validation: validate_request_schema
+  - audit: create_audit_context
+  - locking: acquire_transaction_lock    # for concurrent modifications
+  
+after:
+  HERA.UNIV.TXN.LINE.ADD.V1:
+    success: [$PROFILE.after_add]        # e.g., REPRICE, TAX_CALC
+    failure: [$PROFILE.on_add_error]
+    
+  HERA.UNIV.TXN.LINE.UPDATE.V1:
+    success: [$PROFILE.after_update]     # e.g., REPRICE
+    failure: [$PROFILE.on_update_error]
+    
+  HERA.UNIV.TXN.LINE.REMOVE.V1:
+    success: [$PROFILE.after_remove]     # e.g., RELEASE_RESERVATION, REPRICE
+    failure: [$PROFILE.on_remove_error]
+    
+  HERA.UNIV.TXN.HEADER.FINALIZE.V1:
+    pre: [$PROFILE.pre_finalize]         # e.g., FINAL_REPRICE, VALIDATE_INVENTORY
+    post: [$PROFILE.post_finalize]       # e.g., COMMIT_INVENTORY, POST_GL, CALC_COMMISSION
+    
+  HERA.UNIV.TXN.HEADER.VOID.V1:
+    success: [$PROFILE.void_compensations] # e.g., RESTORE_INVENTORY, REVERSE_GL
+    
+error_handling:
+  default_strategy: rollback_and_log
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    retryable_errors: [DEADLOCK, TIMEOUT, LOCK_NOT_AVAILABLE]
+    
+observability:
+  traces: true
+  metrics: true
+  logs: structured_json
+  
+configuration:
+  max_request_size: 10MB                 # for large orders
+  rate_limit:
+    header_create: 100/hour per user
+    line_mutations: 1000/hour per user
+    finalize: 50/hour per user
+  cache_ttl:
+    transaction_state: 0s                # no caching for state
+    pricing: 300s                        # cache pricing calculations

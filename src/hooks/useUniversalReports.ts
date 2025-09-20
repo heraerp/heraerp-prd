@@ -7,7 +7,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 interface ReportFilters {
   start_date?: string

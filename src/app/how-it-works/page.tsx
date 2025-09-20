@@ -15,10 +15,10 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 // Removed framer-motion import - not needed
 import {
   Scissors,
@@ -51,7 +51,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 // Demo businesses with live links
 const LIVE_DEMOS = [

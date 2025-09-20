@@ -1,0 +1,118 @@
+smart_code: HERA.SALON.TAX.ADJ.REVERSE.V1
+intent: >
+  Reverse VAT/tax proportionally for returns and adjustments.
+  Creates tax adjustment transaction maintaining audit compliance.
+
+scope:
+  in_scope:
+    - VAT/tax reversal calculations
+    - Proportional tax adjustments
+    - Multi-rate tax handling
+    - Tax audit trail maintenance
+  out_of_scope:
+    - Tax rate configuration
+    - Tax reporting/filing
+    - Cross-border tax rules
+    - Tax exemption processing
+
+preconditions:
+  - return or adjustment transaction exists
+  - original sale had tax applied
+  - tax reversal amount calculable
+  - has_permissions: [pos_operator, tax_adjustments]
+
+invariants:
+  - tax reversals are proportional to amounts
+  - original tax rates are preserved
+  - tax audit trail is complete
+  - reversals never exceed original tax
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing tax reversal
+    - name: source_transaction_id
+      type: uuid
+      where: payload
+      description: Return or adjustment transaction
+    - name: source_type
+      type: enum[return,adjustment]
+      where: payload
+      description: Type of source transaction
+  optional:
+    - name: tax_override
+      type: object
+      where: payload
+      description: Override calculated tax if needed
+      schema:
+        amount: number
+        reason: string
+        approval_code: string
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: tax_reversal
+      description: Tax reversal transaction
+      smart_code: HERA.SALON.TAX.ADJ.REVERSE.V1
+  side_effects:
+    - create tax reversal transaction
+    - link to source return/adjustment
+    - update tax liability tracking
+    - maintain audit compliance
+
+happy_path:
+  - step: Load source transaction (return or adjustment)
+  - step: Load original sale and tax lines
+  - step: Calculate tax rates from original sale
+  - step: For returns, calculate proportional tax on returned items
+  - step: For adjustments, calculate proportional tax on adjustment amount
+  - step: Handle multiple tax rates if applicable (VAT, local tax)
+  - step: Create tax reversal transaction HERA.SALON.TAX.ADJ.REVERSE.V1
+  - step: Create reversal lines for each tax type
+  - step: Link reversal to source and original sale
+  - step: Store tax calculation details in audit data
+  - step: Return tax_reversal_id and reversal amounts
+
+errors:
+  - code: SOURCE_TRANSACTION_NOT_FOUND
+    when: source_transaction_id does not exist
+    action: return error with valid transaction requirements
+  - code: INVALID_SOURCE_TYPE
+    when: source is not a return or adjustment
+    action: return error with supported types
+  - code: ORIGINAL_SALE_NOT_FOUND
+    when: cannot find original sale for tax data
+    action: return error with sale linkage requirements
+  - code: NO_TAX_TO_REVERSE
+    when: original sale had no tax applied
+    action: return success with zero reversal
+  - code: TAX_CALCULATION_ERROR
+    when: cannot calculate proportional tax
+    action: return error with calculation details
+  - code: REVERSAL_EXCEEDS_ORIGINAL
+    when: calculated reversal > original tax
+    action: return error with maximum reversal amount
+  - code: TAX_OVERRIDE_NOT_AUTHORIZED
+    when: override attempted without proper approval
+    action: return error with authorization requirements
+
+observability:
+  logs: [tax_reversal_requested, source_validated, tax_calculated, reversal_created]
+  audit_json: true
+  metrics: [tax_reversal_duration_ms, reversal_amount, tax_rate_count]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  source_transaction_id: "ret-123"
+  source_type: "return"
+
+checks:
+  - description: Source transaction properly validated
+  - description: Original tax data retrieved correctly
+  - description: Proportional calculations accurate
+  - description: Tax reversal within allowed limits
+  - description: Reversal transaction properly linked
+  - description: Complete audit trail for compliance

@@ -8,14 +8,14 @@
 
 import React from 'react'
 import { Calendar, Building2, DollarSign, Sliders3, Filter } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { SalesFilters, FinancialFilters } from '@/src/lib/schemas/reports'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { SalesFilters, FinancialFilters } from '@/lib/schemas/reports'
 
 interface FiltersBarProps {
   filters: SalesFilters | FinancialFilters

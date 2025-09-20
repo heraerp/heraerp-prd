@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA INDUSTRY-SPECIFIC CASHFLOW TEMPLATES
 // Predefined cashflow patterns and configurations for different business types
-// Smart Code: HERA.FIN.CF.INDUSTRY.TEMPLATES.v1
+// Smart Code: HERA.FIN.CF.INDUSTRY.TEMPLATES.V1
 // ================================================================================
 
 export interface IndustryCashflowTemplate {
@@ -86,27 +86,27 @@ export const RestaurantCashflowTemplate: IndustryCashflowTemplate = {
   },
 
   smart_code_mappings: {
-    'HERA.REST.POS.TXN.SALE.v1': {
+    'HERA.REST.POS.TXN.SALE.V1': {
       category: 'operating',
       classification: 'receipts_from_customers',
       typical_amount_range: [10, 200]
     },
-    'HERA.REST.INV.PUR.FOOD.v1': {
+    'HERA.REST.INV.PUR.FOOD.V1': {
       category: 'operating',
       classification: 'payments_to_suppliers',
       typical_amount_range: [100, 2000]
     },
-    'HERA.REST.HR.PAY.SALARY.v1': {
+    'HERA.REST.HR.PAY.SALARY.V1': {
       category: 'operating',
       classification: 'payments_to_employees',
       typical_amount_range: [2000, 15000]
     },
-    'HERA.REST.FAC.PAY.RENT.v1': {
+    'HERA.REST.FAC.PAY.RENT.V1': {
       category: 'operating',
       classification: 'rent_payments',
       typical_amount_range: [5000, 25000]
     },
-    'HERA.REST.EQP.PUR.KITCHEN.v1': {
+    'HERA.REST.EQP.PUR.KITCHEN.V1': {
       category: 'investing',
       classification: 'kitchen_equipment_purchases',
       typical_amount_range: [1000, 50000]
@@ -165,42 +165,42 @@ export const HairSalonCashflowTemplate: IndustryCashflowTemplate = {
   },
 
   smart_code_mappings: {
-    'HERA.SALON.SVC.TXN.HAIRCUT.v1': {
+    'HERA.SALON.SVC.TXN.HAIRCUT.V1': {
       category: 'operating',
       classification: 'service_revenue_receipts',
       typical_amount_range: [25, 150]
     },
-    'HERA.SALON.SVC.TXN.COLOR.v1': {
+    'HERA.SALON.SVC.TXN.COLOR.V1': {
       category: 'operating',
       classification: 'service_revenue_receipts',
       typical_amount_range: [80, 300]
     },
-    'HERA.SALON.PRD.TXN.SALE.v1': {
+    'HERA.SALON.PRD.TXN.SALE.V1': {
       category: 'operating',
       classification: 'product_sales_receipts',
       typical_amount_range: [15, 100]
     },
-    'HERA.SALON.INV.PUR.SUPPLY.v1': {
+    'HERA.SALON.INV.PUR.SUPPLY.V1': {
       category: 'operating',
       classification: 'supply_payments',
       typical_amount_range: [200, 1500]
     },
-    'HERA.SALON.HR.PAY.STYLIST.v1': {
+    'HERA.SALON.HR.PAY.STYLIST.V1': {
       category: 'operating',
       classification: 'staff_payments',
       typical_amount_range: [1500, 6000]
     },
-    'HERA.SALON.FAC.PAY.RENT.v1': {
+    'HERA.SALON.FAC.PAY.RENT.V1': {
       category: 'operating',
       classification: 'rent_payments',
       typical_amount_range: [2500, 8000]
     },
-    'HERA.SALON.EQP.PUR.CHAIR.v1': {
+    'HERA.SALON.EQP.PUR.CHAIR.V1': {
       category: 'investing',
       classification: 'equipment_purchases',
       typical_amount_range: [500, 5000]
     },
-    'HERA.SALON.CAP.INV.RENO.v1': {
+    'HERA.SALON.CAP.INV.RENO.V1': {
       category: 'investing',
       classification: 'renovation_investments',
       typical_amount_range: [5000, 50000]
@@ -262,22 +262,22 @@ export const HealthcareCashflowTemplate: IndustryCashflowTemplate = {
   },
 
   smart_code_mappings: {
-    'HERA.HLTH.PAT.TXN.CONSULT.v1': {
+    'HERA.HLTH.PAT.TXN.CONSULT.V1': {
       category: 'operating',
       classification: 'patient_service_receipts',
       typical_amount_range: [100, 500]
     },
-    'HERA.HLTH.INS.TXN.CLAIM.v1': {
+    'HERA.HLTH.INS.TXN.CLAIM.V1': {
       category: 'operating',
       classification: 'insurance_receipts',
       typical_amount_range: [200, 2000]
     },
-    'HERA.HLTH.SUP.PUR.MEDICAL.v1': {
+    'HERA.HLTH.SUP.PUR.MEDICAL.V1': {
       category: 'operating',
       classification: 'medical_supply_payments',
       typical_amount_range: [500, 5000]
     },
-    'HERA.HLTH.EQP.PUR.MEDICAL.v1': {
+    'HERA.HLTH.EQP.PUR.MEDICAL.V1': {
       category: 'investing',
       classification: 'medical_equipment_purchases',
       typical_amount_range: [2000, 100000]
@@ -334,17 +334,17 @@ export const RetailCashflowTemplate: IndustryCashflowTemplate = {
   },
 
   smart_code_mappings: {
-    'HERA.RTL.POS.TXN.SALE.v1': {
+    'HERA.RTL.POS.TXN.SALE.V1': {
       category: 'operating',
       classification: 'sales_receipts',
       typical_amount_range: [20, 500]
     },
-    'HERA.RTL.INV.PUR.MERCH.v1': {
+    'HERA.RTL.INV.PUR.MERCH.V1': {
       category: 'operating',
       classification: 'inventory_payments',
       typical_amount_range: [1000, 25000]
     },
-    'HERA.RTL.STR.PUR.EQUIP.v1': {
+    'HERA.RTL.STR.PUR.EQUIP.V1': {
       category: 'investing',
       classification: 'store_equipment_purchases',
       typical_amount_range: [500, 15000]
@@ -411,17 +411,17 @@ export const ManufacturingCashflowTemplate: IndustryCashflowTemplate = {
   },
 
   smart_code_mappings: {
-    'HERA.MFG.SAL.TXN.PRODUCT.v1': {
+    'HERA.MFG.SAL.TXN.PRODUCT.V1': {
       category: 'operating',
       classification: 'product_sales_receipts',
       typical_amount_range: [1000, 50000]
     },
-    'HERA.MFG.PUR.TXN.RAWMAT.v1': {
+    'HERA.MFG.PUR.TXN.RAWMAT.V1': {
       category: 'operating',
       classification: 'raw_material_payments',
       typical_amount_range: [500, 20000]
     },
-    'HERA.MFG.EQP.PUR.MACHINE.v1': {
+    'HERA.MFG.EQP.PUR.MACHINE.V1': {
       category: 'investing',
       classification: 'machinery_purchases',
       typical_amount_range: [10000, 500000]

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { HERAJWTService } from '@/src/lib/auth/jwt-service'
+import { HERAJWTService } from '@/lib/auth/jwt-service'
 
 const jwtService = new HERAJWTService()
 
@@ -245,7 +245,7 @@ async function createPurchaseOrder(data: P2PRequestData, organizationId: string)
     from_entity_id: pr_id,
     to_entity_id: po.id,
     relationship_type: 'converted_to',
-    smart_code: 'HERA.P2P.PR.TO.PO.v1'
+    smart_code: 'HERA.P2P.PR.TO.PO.V1'
   })
 
   return NextResponse.json({

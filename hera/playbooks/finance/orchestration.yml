@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.PLAYBOOK.FINANCE.SEED.v1
+smart_code: HERA.SYSTEM.PLAYBOOK.FINANCE.SEED.DATA.V1
 
 contracts:
   - entities.core.yml

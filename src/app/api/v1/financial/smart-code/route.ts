@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { financialSmartCode } from '@/src/services/FinancialSmartCodeService'
+import { financialSmartCode } from '@/services/FinancialSmartCodeService'
 
 /**
  * Financial Smart Code API - HERA Smart Code Integration for Financial Module

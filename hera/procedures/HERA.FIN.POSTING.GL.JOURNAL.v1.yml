@@ -1,0 +1,80 @@
+smart_code: HERA.FIN.POSTING.GL.JOURNAL.V1
+intent: Post approved AP bill to General Ledger with appropriate journal entries.
+scope:
+  in_scope:
+    - create GL journal transaction
+    - debit expense accounts
+    - credit accounts payable
+    - apply tax accounting
+  out_of_scope:
+    - payment processing
+    - bank reconciliation
+preconditions:
+  - bill is approved
+  - GL accounts are configured
+  - posting period is open
+invariants:
+  - journal must balance (debits = credits)
+  - org isolation maintained
+  - audit trail complete
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - bill_id: uuid
+      - vendor_id: uuid
+      - bill_amount: number
+      - expense_lines: array
+      - tax_amount: number
+happy_path:
+  - step: load GL account mapping for organization
+  - step: create universal_transactions header with smart_code=HERA.FIN.GL.JOURNAL.V1
+  - step: create debit lines for expense accounts
+  - step: create debit line for tax recoverable (if applicable)
+  - step: create credit line for accounts payable
+  - step: verify debits equal credits
+  - step: post transaction to GL
+outputs:
+  transactions_created:
+    - universal_transactions: 1                    # GL journal
+    - universal_transaction_lines: n               # journal lines
+  response:
+    journal_id: uuid
+    journal_number: string
+    total_debits: number
+    total_credits: number
+    posted_at: timestamp
+errors:
+  - code: GL_ACCOUNTS_NOT_CONFIGURED
+    when: required GL accounts not found
+    action: return error with missing accounts
+  - code: JOURNAL_IMBALANCE
+    when: debits != credits
+    action: return error with variance details
+  - code: POSTING_PERIOD_CLOSED
+    when: accounting period is closed
+    action: return error with period status
+  - code: DUPLICATE_POSTING
+    when: bill already posted to GL
+    action: return error with existing journal reference
+observability:
+  logs:
+    - gl_journal_posted: { bill_id, journal_id, amount, posted_at }
+  audit_json: true
+  metrics:
+    - gl_posting_count by month
+    - average_posting_amount
+    - posting_error_rate
+example_context:
+  bill_id: "bill-123e4567-e89b-12d3-a456-426614174000"
+  vendor_id: "vnd-456e7890-e89b-12d3-a456-426614174000"
+  bill_amount: 1485.00
+  expense_lines:
+    - account: "6100"
+      amount: 1350.00
+      description: "Office supplies"
+  tax_amount: 135.00
+checks:
+  - description: ensure journal balances
+  - description: verify GL accounts exist
+  - description: prevent duplicate posting

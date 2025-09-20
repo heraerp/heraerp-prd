@@ -1,0 +1,91 @@
+smart_code: HERA.UNIV.TXN.LINE.ADD.V1
+name: Universal Transaction Line Add
+description: Adds a line item to any transaction with dynamic pricing and metadata
+version: 1
+status: active
+tags:
+  - universal
+  - transaction
+  - line
+  - add
+
+input:
+  organization_id:
+    type: string
+    required: true
+    description: Organization ID for multi-tenant isolation
+  
+  transaction_id:
+    type: string
+    required: true
+    description: Parent transaction ID (cart, order, etc.)
+  
+  line_smart_code:
+    type: string
+    required: true
+    description: Smart code for the line (e.g., HERA.SALON.SVC.LINE.STANDARD.V1)
+  
+  entity_id:
+    type: string
+    required: true
+    description: Entity ID being added (product, service, etc.)
+  
+  qty:
+    type: number
+    required: false
+    default: 1
+    description: Quantity to add
+  
+  unit_price:
+    type: number
+    required: false
+    description: Unit price (optional, may be derived from entity)
+  
+  dynamic:
+    type: object
+    required: false
+    description: Dynamic metadata for the line item
+
+steps:
+  - id: create_line
+    type: database.create
+    config:
+      table: universal_transaction_lines
+      data:
+        organization_id: "{{ input.organization_id }}"
+        transaction_id: "{{ input.transaction_id }}"
+        line_entity_id: "{{ input.entity_id }}"
+        line_number: "{{ generateLineNumber() }}"
+        quantity: "{{ input.qty }}"
+        unit_price: "{{ input.unit_price || 0 }}"
+        line_amount: "{{ (input.qty || 1) * (input.unit_price || 0) }}"
+        smart_code: "{{ input.line_smart_code }}"
+        metadata:
+          _merge: "{{ input.dynamic || {} }}"
+          created_via: "HERA.UNIV.TXN.LINE.ADD.V1"
+          created_at: "{{ now() }}"
+    output:
+      line: "{{ result }}"
+
+  - id: trigger_reprice
+    type: event
+    config:
+      name: transaction.lines.changed
+      data:
+        transaction_id: "{{ input.transaction_id }}"
+        action: "line_added"
+        line_id: "{{ steps.create_line.output.line.id }}"
+
+output:
+  success: true
+  line: "{{ steps.create_line.output.line }}"
+  line_id: "{{ steps.create_line.output.line.id }}"
+  transaction_id: "{{ input.transaction_id }}"
+
+on_error:
+  - type: log
+    message: "Failed to add line to transaction: {{ error.message }}"
+  - type: return
+    data:
+      success: false
+      error: "{{ error.message }}"

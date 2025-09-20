@@ -17,11 +17,11 @@ import {
   Clock,
   XCircle
 } from 'lucide-react'
-import type { UniversalTransaction, UniversalTransactionLine } from '@/src/lib/types/factory'
+import type { UniversalTransaction, UniversalTransactionLine } from '@/lib/types/factory'
 import { GuardrailBadge } from './GuardrailBadge'
 import { ArtifactLinks } from './ArtifactLinks'
-import { summarize, getOverallSeverity } from '@/src/lib/metrics/guardrail'
-import { Button } from '@/src/components/ui/button'
+import { summarize, getOverallSeverity } from '@/lib/metrics/guardrail'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -29,10 +29,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface TransactionsTableProps {
   transactions: UniversalTransaction[]

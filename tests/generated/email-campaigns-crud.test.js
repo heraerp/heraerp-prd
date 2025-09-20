@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Email_campaigns
- * Generated at: 2025-09-06T04:22:24.048Z
+ * Generated at: 2025-09-20T19:27:01.147Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.EMAIL_CAMPAIGNS",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132544049';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396421148';
 
 describe('Email_campaigns - Universal CRUD Operations', () => {
   let createdEntityId;

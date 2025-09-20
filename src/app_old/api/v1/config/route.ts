@@ -548,7 +548,7 @@ function getConfigurationSchema() {
       create_rule: {
         entity_type: 'configuration_rule',
         entity_name: 'Restaurant Auto-Journal Threshold',
-        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.RESTAURANT.v1',
+        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.RESTAURANT.V1',
         organization_id: 'org-uuid',
         dynamic_fields: [
           { field_name: 'config_key', field_value: 'auto_journal.batch_threshold' },
@@ -610,7 +610,7 @@ function getMockRulesList() {
       {
         id: 'mock-rule-001',
         name: 'Default Auto-Journal Threshold',
-        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.DEFAULT.v1',
+        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.DEFAULT.V1',
         config_key: 'auto_journal.batch_threshold',
         rule_type: 'default',
         priority: 0,
@@ -620,7 +620,7 @@ function getMockRulesList() {
       {
         id: 'mock-rule-002',
         name: 'Restaurant Auto-Journal Threshold',
-        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.RESTAURANT.v1',
+        smart_code: 'HERA.CONFIG.AUTO_JOURNAL.THRESHOLD.RESTAURANT.V1',
         config_key: 'auto_journal.batch_threshold',
         rule_type: 'conditional',
         priority: 100,

@@ -1,248 +1,182 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { universalApi } from '@/lib/universal-api-v2'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-// GET single appointment
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const { id: appointmentId } = await params
-
-    const { data: appointment, error } = await supabase
-      .from('universal_transactions')
-      .select('*')
-      .eq('id', appointmentId)
-      .eq('transaction_type', 'appointment')
-      .single()
-
-    if (error) {
-      console.error('Error fetching appointment:', error)
+    const { searchParams } = new URL(request.url)
+    const organizationId = searchParams.get('organization_id')
+    const expand = searchParams.get('expand')?.split(',') || []
+    
+    if (!organizationId) {
       return NextResponse.json(
-        {
-          success: false,
-          error: error.message
-        },
+        { error: 'organization_id is required' },
+        { status: 400 }
+      )
+    }
+
+    // Set organization context
+    universalApi.setOrganizationId(organizationId)
+
+    // Fetch appointment from universal_transactions
+    const appointmentResult = await universalApi.read('universal_transactions', {
+      id: params.id,
+      organization_id: organizationId,
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1'
+    })
+
+    if (!appointmentResult.success || !appointmentResult.data?.length) {
+      return NextResponse.json(
+        { error: 'Appointment not found' },
         { status: 404 }
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      appointment
+    const appointmentTxn = appointmentResult.data[0]
+    
+    // Fetch appointment lines (services)
+    const linesResult = await universalApi.read('universal_transaction_lines', {
+      transaction_id: appointmentTxn.id,
+      organization_id: organizationId
     })
-  } catch (error) {
-    console.error('Error in appointment GET:', error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Internal server error'
-      },
-      { status: 500 }
-    )
-  }
-}
 
-// UPDATE appointment
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id: appointmentId } = await params
-    const body = await request.json()
+    const lines = linesResult.data || []
 
-    console.log('Updating appointment:', appointmentId, body)
+    // Build response with expanded data
+    const response: any = {
+      appointment: {
+        id: appointmentTxn.id,
+        smart_code: appointmentTxn.smart_code || 'HERA.SALON.APPT.STANDARD.V1',
+        organization_id: appointmentTxn.organization_id,
+        code: appointmentTxn.transaction_code,
+        status: appointmentTxn.metadata?.status || 'SCHEDULED',
+        start_time: appointmentTxn.metadata?.start_time,
+        end_time: appointmentTxn.metadata?.end_time,
+        planned_services: []
+      }
+    }
 
-    const {
-      clientName,
-      clientPhone,
-      clientEmail,
-      serviceId,
-      serviceName,
-      servicePrice,
-      stylistId,
-      stylistName,
-      date,
-      time,
-      duration,
-      notes
-    } = body
-
-    // Update the appointment
-    const { data: appointment, error } = await supabase
-      .from('universal_transactions')
-      .update({
-        transaction_date: date,
-        total_amount: servicePrice || 0,
-        metadata: {
-          customer_name: clientName,
-          customer_phone: clientPhone,
-          customer_email: clientEmail,
-          service_id: serviceId,
-          service_name: serviceName,
-          stylist_id: stylistId,
-          stylist_name: stylistName,
-          appointment_time: time,
-          duration: duration,
-          notes: notes,
-          status: 'confirmed',
-          updated_at: new Date().toISOString()
+    // Expand customer data
+    if (expand.includes('customer') && appointmentTxn.from_entity_id) {
+      const customerResult = await universalApi.read('core_entities', {
+        id: appointmentTxn.from_entity_id,
+        organization_id: organizationId
+      })
+      if (customerResult.data?.length) {
+        const customer = customerResult.data[0]
+        response.appointment.customer = {
+          id: customer.id,
+          name: customer.entity_name,
+          code: customer.entity_code,
+          phone: customer.metadata?.phone,
+          email: customer.metadata?.email
         }
-      })
-      .eq('id', appointmentId)
-      .select()
-      .single()
+      }
+    }
 
-    if (error) {
-      console.error('Error updating appointment:', error)
-      return NextResponse.json(
-        {
-          success: false,
-          error: error.message
-        },
-        { status: 500 }
+    // Expand staff data
+    if (expand.includes('staff') && appointmentTxn.metadata?.stylist_id) {
+      const staffResult = await universalApi.read('core_entities', {
+        id: appointmentTxn.metadata.stylist_id,
+        organization_id: organizationId,
+        entity_type: 'employee'
+      })
+      if (staffResult.data?.length) {
+        const staff = staffResult.data[0]
+        response.appointment.staff = [{
+          id: staff.id,
+          name: staff.entity_name
+        }]
+      }
+    }
+
+    // Expand resources (chair/station)
+    if (appointmentTxn.metadata?.chair_id) {
+      response.appointment.resources = [{
+        id: appointmentTxn.metadata.chair_id,
+        slug: appointmentTxn.metadata.chair_slug || `chair-${appointmentTxn.metadata.chair_id}`
+      }]
+    }
+
+    // Expand deposits
+    if (expand.includes('deposits')) {
+      // Check for deposit transactions linked to this appointment
+      const depositResult = await universalApi.read('universal_transactions', {
+        organization_id: organizationId,
+        transaction_type: 'deposit',
+        metadata: { appointment_id: appointmentTxn.id }
+      })
+      if (depositResult.data?.length) {
+        response.appointment.deposits = depositResult.data.map(dep => ({
+          id: dep.id,
+          amount: dep.total_amount,
+          currency: dep.currency || 'AED'
+        }))
+      }
+    }
+
+    // Expand packages
+    if (expand.includes('packages') && appointmentTxn.metadata?.package_id) {
+      const packageResult = await universalApi.read('core_entities', {
+        id: appointmentTxn.metadata.package_id,
+        organization_id: organizationId,
+        entity_type: 'package'
+      })
+      if (packageResult.data?.length) {
+        const pkg = packageResult.data[0]
+        response.appointment.packages = [{
+          id: pkg.id,
+          name: pkg.entity_name,
+          remaining_uses: pkg.metadata?.remaining_uses || 0
+        }]
+      }
+    }
+
+    // Map service lines to planned_services
+    if (expand.includes('planned_services') && lines.length > 0) {
+      response.appointment.planned_services = await Promise.all(
+        lines.map(async (line) => {
+          // Fetch service entity details
+          let serviceName = 'Service'
+          let duration = 30
+          let staffSplit = [{ staff_id: appointmentTxn.metadata?.stylist_id, pct: 100 }]
+          
+          if (line.line_entity_id) {
+            const serviceResult = await universalApi.read('core_entities', {
+              id: line.line_entity_id,
+              organization_id: organizationId
+            })
+            if (serviceResult.data?.length) {
+              const service = serviceResult.data[0]
+              serviceName = service.entity_name
+              duration = service.metadata?.duration || 30
+            }
+          }
+
+          // Check for staff split in line metadata
+          if (line.metadata?.staff_split) {
+            staffSplit = line.metadata.staff_split
+          }
+
+          return {
+            appointment_line_id: line.id,
+            entity_id: line.line_entity_id,
+            name: line.metadata?.service_name || serviceName,
+            duration_min: line.metadata?.duration || duration,
+            price: line.unit_price || 0,
+            assigned_staff: staffSplit
+          }
+        })
       )
     }
 
-    // Update transaction line if it exists
-    await supabase
-      .from('universal_transaction_lines')
-      .update({
-        description: `${serviceName} with ${stylistName}`,
-        unit_amount: servicePrice || 0,
-        line_amount: servicePrice || 0,
-        line_data: {
-          service_id: serviceId,
-          service_name: serviceName,
-          stylist_id: stylistId,
-          stylist_name: stylistName,
-          duration: duration
-        }
-      })
-      .eq('transaction_id', appointmentId)
-
-    return NextResponse.json({
-      success: true,
-      appointment,
-      message: 'Appointment updated successfully'
-    })
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Error in appointment PUT:', error)
+    console.error('Error fetching appointment:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Internal server error'
-      },
-      { status: 500 }
-    )
-  }
-}
-
-// CANCEL appointment (soft delete)
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id: appointmentId } = await params
-    const { searchParams } = new URL(request.url)
-    const reason = searchParams.get('reason') || 'Customer request'
-
-    console.log('Cancelling appointment:', appointmentId, 'Reason:', reason)
-
-    // Update appointment status to cancelled
-    const { data: appointment, error } = await supabase
-      .from('universal_transactions')
-      .update({
-        transaction_status: 'cancelled',
-        metadata: supabase.sql`
-          metadata || jsonb_build_object(
-            'status', 'cancelled',
-            'cancelled_at', '${new Date().toISOString()}',
-            'cancellation_reason', '${reason}'
-          )
-        `
-      })
-      .eq('id', appointmentId)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error cancelling appointment:', error)
-      return NextResponse.json(
-        {
-          success: false,
-          error: error.message
-        },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      appointment,
-      message: 'Appointment cancelled successfully'
-    })
-  } catch (error) {
-    console.error('Error in appointment DELETE:', error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Internal server error'
-      },
-      { status: 500 }
-    )
-  }
-}
-
-// RESCHEDULE appointment
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id: appointmentId } = await params
-    const body = await request.json()
-    const { date, time } = body
-
-    console.log('Rescheduling appointment:', appointmentId, 'to', date, time)
-
-    // Update appointment date and time only
-    const { data: appointment, error } = await supabase
-      .from('universal_transactions')
-      .update({
-        transaction_date: date,
-        metadata: supabase.sql`
-          metadata || jsonb_build_object(
-            'appointment_time', '${time}',
-            'rescheduled_at', '${new Date().toISOString()}',
-            'status', 'rescheduled'
-          )
-        `
-      })
-      .eq('id', appointmentId)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error rescheduling appointment:', error)
-      return NextResponse.json(
-        {
-          success: false,
-          error: error.message
-        },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      appointment,
-      message: 'Appointment rescheduled successfully'
-    })
-  } catch (error) {
-    console.error('Error in appointment PATCH:', error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: 'Internal server error'
-      },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

@@ -7,16 +7,16 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -24,9 +24,9 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
+} from '@/components/ui/table'
 import { Plus, Trash2, AlertCircle } from 'lucide-react'
-import { Mapping } from '@/src/lib/schemas/financeRules'
+import { Mapping } from '@/lib/schemas/financeRules'
 
 interface RuleMappingsTableProps {
   mappings: Mapping[]

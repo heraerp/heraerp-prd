@@ -3,7 +3,7 @@
  * Enforces closed period protection at write time
  */
 
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 
 interface PeriodStatus {
   is_closed: boolean

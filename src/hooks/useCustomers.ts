@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface CustomerData {
   entity: any
@@ -31,10 +31,17 @@ export function useCustomers(organizationId?: string) {
     vipCount: 0
   })
 
+  // Set the organization ID in the universal API when it's available
+  useEffect(() => {
+    if (organizationId) {
+      universalApi.setOrganizationId(organizationId)
+    }
+  }, [organizationId])
+
   // Fetch all customer data with relationships and transactions
   const fetchCustomers = useCallback(async () => {
     if (!organizationId) {
-      setError('No organization ID provided')
+      console.log('useCustomers: No organization ID provided yet')
       setLoading(false)
       return
     }
@@ -44,7 +51,12 @@ export function useCustomers(organizationId?: string) {
       setError(null)
 
       // 1. Get all customer entities
-      const entitiesRes = await universalApi.getEntities('customer', organizationId)
+      const entitiesRes = await universalApi.getEntities({
+        organizationId,
+        filters: {
+          entity_type: 'customer'
+        }
+      })
 
       if (!entitiesRes.success) {
         throw new Error(entitiesRes.error || 'Failed to fetch customers')
@@ -57,14 +69,15 @@ export function useCustomers(organizationId?: string) {
         customerEntities.map(async entity => {
           try {
             // Get dynamic fields
-            const dynamicRes = await universalApi.getDynamicData(entity.id, organizationId)
+            const dynamicRes = await universalApi.getDynamicData({
+              entityId: entity.id,
+              organizationId
+            })
 
             // Get all transactions for the organization
-            const transRes = await universalApi.read(
-              'universal_transactions',
-              undefined,
+            const transRes = await universalApi.getTransactions({
               organizationId
-            )
+            })
 
             // Filter transactions related to this customer
             const customerTransactions =
@@ -76,7 +89,12 @@ export function useCustomers(organizationId?: string) {
               ) || []
 
             // Get relationships (loyalty tier, favorite services)
-            const relRes = await universalApi.getRelationships(entity.id, organizationId)
+            const relRes = await universalApi.getRelationships({
+              filters: {
+                from_entity_id: entity.id
+              },
+              organizationId
+            })
 
             // Build dynamic fields map
             const fieldsMap: Record<string, any> = {}
@@ -163,16 +181,14 @@ export function useCustomers(organizationId?: string) {
 
     try {
       // 1. Create customer entity
-      const entityRes = await universalApi.createEntity(
-        {
-          entity_type: 'customer',
-          entity_name: customerData.name,
-          entity_code: `CUST-${Date.now()}`,
-          status: 'active',
-          smart_code: 'HERA.SALON.CUSTOMER.CREATE.v1'
-        },
+      const entityRes = await universalApi.createEntity({
+        entity_type: 'customer',
+        entity_name: customerData.name,
+        entity_code: `CUST-${Date.now()}`,
+        status: 'active',
+        smart_code: 'HERA.SALON.CUSTOMER.CREATE.v1',
         organizationId
-      )
+      })
 
       if (!entityRes.success) {
         throw new Error(entityRes.error || 'Failed to create customer')
@@ -183,14 +199,15 @@ export function useCustomers(organizationId?: string) {
       // 2. Add dynamic fields in parallel
       const fieldPromises = []
 
+      // Set organization ID for dynamic field operations
+      universalApi.setOrganizationId(organizationId)
+
       if (customerData.email) {
         fieldPromises.push(
           universalApi.setDynamicField(
             customerId,
             'email',
-            customerData.email,
-            'text',
-            organizationId
+            customerData.email
           )
         )
       }
@@ -200,9 +217,7 @@ export function useCustomers(organizationId?: string) {
           universalApi.setDynamicField(
             customerId,
             'phone',
-            customerData.phone,
-            'text',
-            organizationId
+            customerData.phone
           )
         )
       }
@@ -212,9 +227,7 @@ export function useCustomers(organizationId?: string) {
           universalApi.setDynamicField(
             customerId,
             'address',
-            customerData.address,
-            'text',
-            organizationId
+            customerData.address
           )
         )
       }
@@ -224,9 +237,7 @@ export function useCustomers(organizationId?: string) {
           universalApi.setDynamicField(
             customerId,
             'date_of_birth',
-            customerData.dateOfBirth,
-            'date',
-            organizationId
+            customerData.dateOfBirth
           )
         )
       }
@@ -236,9 +247,7 @@ export function useCustomers(organizationId?: string) {
           universalApi.setDynamicField(
             customerId,
             'preferences',
-            customerData.preferences,
-            'text',
-            organizationId
+            customerData.preferences
           )
         )
       }
@@ -248,9 +257,7 @@ export function useCustomers(organizationId?: string) {
           universalApi.setDynamicField(
             customerId,
             'notes',
-            customerData.notes,
-            'text',
-            organizationId
+            customerData.notes
           )
         )
       }
@@ -279,13 +286,10 @@ export function useCustomers(organizationId?: string) {
     try {
       // Update entity name if provided
       if (updates.name) {
-        await universalApi.updateEntity(
-          customerId,
-          {
-            entity_name: updates.name
-          },
-          organizationId
-        )
+        await universalApi.updateEntity(customerId, {
+          entity_name: updates.name,
+          organization_id: organizationId
+        })
       }
 
       // Update dynamic fields
@@ -331,26 +335,11 @@ export function useCustomers(organizationId?: string) {
     try {
       // Delete in order: relationships, dynamic data, then entity
 
-      // 1. Get and delete all relationships
-      const relRes = await universalApi.getRelationships(customerId, organizationId)
-      if (relRes.success && relRes.data) {
-        await Promise.all(
-          relRes.data.map(rel => universalApi.delete('core_relationships', rel.id, organizationId))
-        )
-      }
-
-      // 2. Get and delete all dynamic data
-      const dynamicRes = await universalApi.getDynamicData(customerId, organizationId)
-      if (dynamicRes.success && dynamicRes.data) {
-        await Promise.all(
-          dynamicRes.data.map(field =>
-            universalApi.delete('core_dynamic_data', field.id, organizationId)
-          )
-        )
-      }
+      // Relationships and dynamic data will be cascade deleted with the entity
+      // No need to delete them separately
 
       // 3. Delete the entity
-      await universalApi.deleteEntity(customerId, organizationId)
+      await universalApi.deleteEntity(customerId)
 
       // Refresh data
       await fetchCustomers()
@@ -371,68 +360,57 @@ export function useCustomers(organizationId?: string) {
     fieldType: string = 'text'
   ) => {
     // Check if field exists
-    const existingFields = await universalApi.getDynamicData(entityId, orgId)
-    const existingField = existingFields.data?.find(f => f.field_name === fieldName)
+    const existingFields = await universalApi.getDynamicData({
+      entityId,
+      organizationId: orgId
+    })
+    const existingField = existingFields.data?.find((f: any) => f.field_name === fieldName)
 
-    if (existingField) {
-      // Update existing field
-      return universalApi.update(
-        'core_dynamic_data',
-        existingField.id,
-        {
-          field_value: fieldType === 'text' ? value : undefined,
-          field_value_text: fieldType === 'text' ? value : undefined,
-          field_value_date: fieldType === 'date' ? value : undefined,
-          field_value_number: fieldType === 'number' ? value : undefined
-        },
-        orgId
-      )
-    } else {
-      // Create new field
-      return universalApi.setDynamicField(entityId, fieldName, value, fieldType, orgId)
-    }
+    // For now, always set the field (it will update if exists)
+    return universalApi.setDynamicField(entityId, fieldName, value)
   }
 
   // Helper: Assign loyalty tier
   const assignLoyaltyTier = async (customerId: string, tier: string, orgId: string) => {
     // First, create or find the loyalty status entity
-    const statusEntities = await universalApi.getEntities('workflow_status', orgId)
+    const statusEntities = await universalApi.getEntities({
+      organizationId: orgId,
+      filters: {
+        entity_type: 'workflow_status'
+      }
+    })
     let statusEntity = statusEntities.data?.find(
-      e => e.entity_code === `LOYALTY-${tier.toUpperCase()}`
+      (e: any) => e.entity_code === `LOYALTY-${tier.toUpperCase()}`
     )
 
     if (!statusEntity) {
       // Create loyalty status entity
-      const statusRes = await universalApi.createEntity(
-        {
-          entity_type: 'workflow_status',
-          entity_name: `${tier} Loyalty Status`,
-          entity_code: `LOYALTY-${tier.toUpperCase()}`,
-          smart_code: 'HERA.SALON.LOYALTY.STATUS.v1',
-          metadata: {
-            tier_name: tier,
-            color_code: getTierColor(tier)
-          }
+      const statusRes = await universalApi.createEntity({
+        entity_type: 'workflow_status',
+        entity_name: `${tier} Loyalty Status`,
+        entity_code: `LOYALTY-${tier.toUpperCase()}`,
+        smart_code: 'HERA.SALON.LOYALTY.STATUS.v1',
+        metadata: {
+          tier_name: tier,
+          color_code: getTierColor(tier)
         },
-        orgId
-      )
+        organization_id: orgId
+      })
       statusEntity = statusRes.data
     }
 
     // Create relationship
-    return universalApi.createRelationship(
-      {
-        from_entity_id: customerId,
-        to_entity_id: statusEntity.id,
-        relationship_type: 'has_status',
-        relationship_metadata: {
-          status_type: 'loyalty_tier',
-          status_name: tier,
-          assigned_at: new Date().toISOString()
-        }
+    return universalApi.createRelationship({
+      from_entity_id: customerId,
+      to_entity_id: statusEntity.id,
+      relationship_type: 'has_status',
+      relationship_metadata: {
+        status_type: 'loyalty_tier',
+        status_name: tier,
+        assigned_at: new Date().toISOString()
       },
-      orgId
-    )
+      organization_id: orgId
+    })
   }
 
   const getTierColor = (tier: string) => {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { enterpriseMiddleware } from '@/src/lib/middleware/enterprise-middleware'
+import { enterpriseMiddleware } from '@/lib/middleware/enterprise-middleware'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         .from('universal_transactions')
         .select('*')
         .eq('reference_entity_id', tenderId)
-        .eq('smart_code', 'HERA.FURNITURE.TENDER.AI.STRATEGY.CALCULATED.v1')
+        .eq('smart_code', 'HERA.FURNITURE.TENDER.AI.STRATEGY.CALCULATED.V1')
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false })
         .limit(1)
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         `
         )
         .eq('reference_entity_id', tenderId)
-        .eq('smart_code', 'HERA.FURNITURE.TENDER.COMPETITOR.BID.DETECTED.v1')
+        .eq('smart_code', 'HERA.FURNITURE.TENDER.COMPETITOR.BID.DETECTED.V1')
         .eq('organization_id', organizationId)
 
       // Format dynamic data
@@ -191,7 +191,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({
         success: true,
         data: response,
-        smart_code: 'HERA.FURNITURE.TENDER.DETAIL.RETRIEVED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.DETAIL.RETRIEVED.V1'
       })
     } catch (error) {
       console.error('Error fetching tender detail:', error)
@@ -199,7 +199,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         {
           success: false,
           error: 'Failed to fetch tender detail',
-          smart_code: 'HERA.FURNITURE.TENDER.DETAIL.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.DETAIL.ERROR.V1'
         },
         { status: 500 }
       )
@@ -243,7 +243,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         organization_id: organizationId,
         from_entity_id: userId,
         reference_entity_id: tenderId,
-        smart_code: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.REQUESTED.v1',
+        smart_code: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.REQUESTED.V1',
         total_amount: 0,
         metadata: {
           inputs: {
@@ -253,7 +253,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             competitor_analysis: body.include_competitors || true
           }
         },
-        ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.v1',
+        ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.V1',
         ai_confidence: null,
         ai_insights: null
       }
@@ -277,7 +277,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         from_entity_id: organizationId, // Org is the bidder
         to_entity_id: tenderId,
         reference_entity_id: tenderId,
-        smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.v1',
+        smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',
         total_amount: body.estimated_amount || 0,
         metadata: {
           tender_code: tender.entity_code,
@@ -287,7 +287,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           transport_cost: body.costs?.transport_mt || 3200,
           handling_cost: body.costs?.handling_mt || 900
         },
-        ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.v1',
+        ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.V1',
         ai_confidence: 78,
         ai_insights: {
           recommendation: 'Moderate bid strategy recommended based on competitor analysis',
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           draft_bid_id: bidTransaction.id,
           ...bidTransaction
         },
-        smart_code: 'HERA.FURNITURE.TENDER.BID.CALCULATION.INITIATED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.BID.CALCULATION.INITIATED.V1'
       })
     } catch (error) {
       console.error('Error calculating bid:', error)
@@ -321,7 +321,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         {
           success: false,
           error: 'Failed to calculate bid',
-          smart_code: 'HERA.FURNITURE.TENDER.BID.CALCULATION.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.BID.CALCULATION.ERROR.V1'
         },
         { status: 500 }
       )

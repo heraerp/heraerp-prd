@@ -123,7 +123,7 @@ export class WhatsAppMessageRouter {
       organization_id: organizationId,
       header: {
         transaction_type: 'WHATSAPP_MESSAGE_SEND',
-        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.v1',
+        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.V1',
         transaction_status: 'sent',
         metadata: {
           intent: intent.intent,
@@ -201,7 +201,7 @@ export class WhatsAppMessageRouter {
       organization_id: organizationId,
       header: {
         transaction_type: 'WHATSAPP_MESSAGE_SEND',
-        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.v1',
+        smart_code: 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.V1',
         transaction_status: sendResult.data!.delivered ? 'delivered' : 'pending',
         metadata: {
           intent: intent.intent,

@@ -1,0 +1,63 @@
+smart_code: HERA.FIN.AP.BILL.VENDOR.VALIDATE.V1
+intent: Validate vendor exists and is active for AP bill processing.
+scope:
+  in_scope:
+    - vendor existence check
+    - vendor status validation
+    - payment terms verification
+  out_of_scope:
+    - vendor registration
+    - credit limit checks
+preconditions:
+  - bill contains vendor information
+  - organization context available
+invariants:
+  - validation is non-destructive
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - vendor_id: uuid
+      - vendor_code: string
+      - bill_amount: number
+happy_path:
+  - step: load vendor entity from core_entities
+  - step: verify vendor belongs to organization
+  - step: check vendor status is 'active'
+  - step: validate vendor payment terms are defined
+  - step: verify vendor is not on hold
+outputs:
+  guard_result:
+    passed: boolean
+    vendor_active: boolean
+    payment_terms: string
+    vendor_status: string
+errors:
+  - code: VENDOR_NOT_FOUND
+    when: vendor_id doesn't exist in organization
+    action: return guard failure
+  - code: VENDOR_INACTIVE
+    when: vendor status is not 'active'
+    action: return guard failure with status
+  - code: VENDOR_ON_HOLD
+    when: vendor has payment hold flag
+    action: return guard failure with hold reason
+  - code: NO_PAYMENT_TERMS
+    when: vendor has no defined payment terms
+    action: return guard failure
+observability:
+  logs:
+    - vendor_validated: { vendor_id, vendor_code, status, result }
+  audit_json: true
+  metrics:
+    - vendor_validation_count
+    - vendor_validation_failure_rate
+example_context:
+  vendor_id: "vnd-123e4567-e89b-12d3-a456-426614174000"
+  vendor_code: "VND001"
+  bill_amount: 1500.00
+checks:
+  - description: verify vendor is in good standing
+  - description: ensure payment terms are configured
+  - description: check for any vendor holds

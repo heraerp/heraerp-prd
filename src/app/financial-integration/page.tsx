@@ -4,18 +4,18 @@
 export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   ConfigurationPanel,
   PostingQueue,
   GLBalanceViewer,
   DuplicateAlert
-} from '@/src/components/financial-integration'
+} from '@/components/financial-integration'
 import { Settings, Send, BarChart3, Shield, Zap, Globe, Brain, CheckCircle2 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export default function FinancialIntegrationPage() {
   const { currentOrganization } = useMultiOrgAuth()

@@ -7,14 +7,14 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Switch } from '@/src/components/ui/switch'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   MessageCircle, 
   Settings, 
@@ -29,10 +29,10 @@ import {
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { WaConfig, HERA_MSP_CONFIG } from '@/src/lib/schemas/whatsapp'
-import { SendTestMessageDialog } from '@/src/components/whatsapp/SendTestMessageDialog'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { WaConfig, HERA_MSP_CONFIG } from '@/lib/schemas/whatsapp'
+import { SendTestMessageDialog } from '@/components/whatsapp/SendTestMessageDialog'
 
 export default function WhatsAppConfigPage() {
   const { currentOrganization } = useOrganization()

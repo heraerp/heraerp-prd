@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { BarChart3, TrendingUp, TrendingDown } from 'lucide-react'
 import {
   BarChart,

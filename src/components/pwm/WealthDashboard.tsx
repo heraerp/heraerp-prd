@@ -6,10 +6,10 @@ import { PerformanceVisualization } from './PerformanceVisualization'
 import { AIInsightsFeed } from './AIInsightsFeed'
 import { QuickActions } from './QuickActions'
 import { MarketDataWidget } from './MarketDataWidget'
-import { getWealthOverview, getAIInsights, subscribeToWealthUpdates } from '@/src/lib/pwm/api'
-import { WealthOverview, AIInsight } from '@/src/lib/pwm/types'
+import { getWealthOverview, getAIInsights, subscribeToWealthUpdates } from '@/lib/pwm/api'
+import { WealthOverview, AIInsight } from '@/lib/pwm/types'
 import { useQuery } from '@tanstack/react-query'
-import { Skeleton } from '@/src/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface WealthDashboardProps {
   organizationId: string

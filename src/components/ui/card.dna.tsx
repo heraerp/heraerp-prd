@@ -5,8 +5,8 @@
  */
 
 import * as React from 'react'
-import { cn } from '@/src/lib/utils'
-import { useGlassEffect } from '@/src/lib/dna/design-system/glass-effects-2.0'
+import { cn } from '@/lib/utils'
+import { useGlassEffect } from '@/lib/dna/design-system/glass-effects-2.0'
 
 const Card = React.forwardRef<
   HTMLDivElement,

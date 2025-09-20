@@ -1,5 +1,5 @@
 // HERA 100% Vibe Coding System - Smart Code Registry
-// Smart Code: HERA.VIBE.FOUNDATION.SMART.REGISTRY.v1
+// Smart Code: HERA.VIBE.FOUNDATION.SMART.REGISTRY.V1
 // Purpose: Universal smart code registration and management system
 
 import { VibeComponent, SmartCodeEntry, VibeError } from './types'
@@ -29,7 +29,7 @@ export class SmartCodeRegistry {
       const errorMessage = error instanceof Error ? error.message : String(error)
       throw new VibeError(
         `Failed to initialize Smart Code Registry: ${errorMessage}`,
-        'HERA.VIBE.REGISTRY.INIT.FAILURE.v1',
+        'HERA.VIBE.REGISTRY.INIT.FAILURE.V1',
         { organization_id: organizationId, error: errorMessage }
       )
     }
@@ -40,7 +40,7 @@ export class SmartCodeRegistry {
     if (!this.isInitialized) {
       throw new VibeError(
         'Smart Code Registry not initialized',
-        'HERA.VIBE.REGISTRY.NOT.INITIALIZED.v1'
+        'HERA.VIBE.REGISTRY.NOT.INITIALIZED.V1'
       )
     }
 
@@ -88,7 +88,7 @@ export class SmartCodeRegistry {
     if (!this.isInitialized) {
       throw new VibeError(
         'Smart Code Registry not initialized',
-        'HERA.VIBE.REGISTRY.NOT.INITIALIZED.v1'
+        'HERA.VIBE.REGISTRY.NOT.INITIALIZED.V1'
       )
     }
 
@@ -178,8 +178,8 @@ export class SmartCodeRegistry {
 
     if (!heraVibePattern.test(smartCode) && !heraGeneralPattern.test(smartCode)) {
       throw new VibeError(
-        `Invalid smart code format: ${smartCode}. Expected: HERA.MODULE.FUNCTION.TYPE.CONTEXT.v1`,
-        'HERA.VIBE.REGISTRY.INVALID.SMARTCODE.v1',
+        `Invalid smart code format: ${smartCode}. Expected: HERA.MODULE.FUNCTION.TYPE.CONTEXT.V1`,
+        'HERA.VIBE.REGISTRY.INVALID.SMARTCODE.V1',
         { smart_code: smartCode }
       )
     }
@@ -215,9 +215,9 @@ export class SmartCodeRegistry {
       {
         id: 'vibe-engine',
         name: 'Vibe Engine Core',
-        smart_code: 'HERA.VIBE.FOUNDATION.CORE.ENGINE.v1',
+        smart_code: 'HERA.VIBE.FOUNDATION.CORE.ENGINE.V1',
         purpose: 'Main vibe coding engine for seamless continuity',
-        relationships: ['HERA.VIBE.FOUNDATION.SMART.REGISTRY.v1'],
+        relationships: ['HERA.VIBE.FOUNDATION.SMART.REGISTRY.V1'],
         evolution_history: [],
         usage_patterns: [],
         maintenance_notes: ['Core component - handle with care'],
@@ -231,9 +231,9 @@ export class SmartCodeRegistry {
       {
         id: 'smart-registry',
         name: 'Smart Code Registry',
-        smart_code: 'HERA.VIBE.FOUNDATION.SMART.REGISTRY.v1',
+        smart_code: 'HERA.VIBE.FOUNDATION.SMART.REGISTRY.V1',
         purpose: 'Universal smart code registration and management',
-        relationships: ['HERA.VIBE.FOUNDATION.CORE.ENGINE.v1'],
+        relationships: ['HERA.VIBE.FOUNDATION.CORE.ENGINE.V1'],
         evolution_history: [],
         usage_patterns: [],
         maintenance_notes: ['Manages all smart code registrations'],
@@ -308,7 +308,7 @@ export class SmartCodeRegistry {
             field_name: 'registry_entry',
             field_type: 'json',
             field_value_json: entry,
-            smart_code: 'HERA.VIBE.REGISTRY.ENTRY.DATA.v1'
+            smart_code: 'HERA.VIBE.REGISTRY.ENTRY.DATA.V1'
           }
         })
       })

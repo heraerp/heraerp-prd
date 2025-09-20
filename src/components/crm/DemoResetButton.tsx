@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '@/src/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
 import { RotateCcw, Zap } from 'lucide-react'
 
 interface DemoResetButtonProps {

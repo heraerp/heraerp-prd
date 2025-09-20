@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       from_entity_id: organizationId,
       to_entity_id: tenderId,
       reference_entity_id: tenderId,
-      smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',
       total_amount: Math.round(bidAmount),
       metadata: {
         tender_code: tender.entity_code,
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         base_cost: totalCost,
         overheads: overheads
       },
-      ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.v1',
+      ai_agent_id: 'HERA.FURNITURE.TENDER.AI.BIDSTRAT.V1',
       ai_confidence:
         marginPreference === 'aggressive' ? 65 : marginPreference === 'conservative' ? 85 : 78,
       ai_insights: {

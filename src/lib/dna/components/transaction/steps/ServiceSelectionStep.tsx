@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Search,
   Clock,
@@ -16,7 +16,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import type { TransactionStepProps } from '../UniversalTransactionFlow'
 
 interface Service {

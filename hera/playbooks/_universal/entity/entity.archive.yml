@@ -1,0 +1,91 @@
+smart_code: HERA.UNIV.ENTITY.ARCHIVE.V1
+intent: Archive (soft-delete) an entity with dependency checks.
+scope:
+  in_scope:
+    - soft delete by setting status to 'archived'
+    - dependency validation before archival
+    - cascade archival options per profile
+    - audit trail of archival action
+  out_of_scope:
+    - hard delete (data remains for audit)
+    - unarchive/restore (separate procedure)
+    - bulk archival operations
+preconditions:
+  - permissions: [$PROFILE.required_role_archive]
+  - entity exists and belongs to organization_id
+  - entity is not already archived
+invariants:
+  - if $PROFILE.must_have_no_dependents then no active relationships
+  - archived entities cannot be referenced by new transactions
+  - archive operation is logged with reason and timestamp
+  - related data handling follows $PROFILE.cascade_policy
+inputs:
+  required:
+    - organization_id: uuid
+    - entity_id: uuid
+    - reason: string                                 # required audit trail
+  optional:
+    - cascade: boolean                              # cascade archive to dependents if allowed
+    - archive_metadata: object                      # additional context for audit
+happy_path:
+  - step: verify entity exists and belongs to organization_id
+  - step: check entity status is not already 'archived'
+  - step: validate permissions against $PROFILE.required_role_archive
+  - step: if $PROFILE.must_have_no_dependents, check for active relationships
+  - step: if cascade and $PROFILE.cascade_allowed, identify dependent entities
+  - step: set core_entities.status='archived'
+  - step: write audit event to core_dynamic_data key_slug='archive_event'
+  - step: if cascade, recursively archive dependent entities per $PROFILE.cascade_policy
+  - step: emit archive event for audit trail
+outputs:
+  entities_archived:
+    - core_entities: 1+                             # main entity + cascaded
+    - core_dynamic_data: 1+                         # archive audit events
+  response:
+    entity_id: uuid
+    archived_at: timestamp
+    archived_by: uuid
+    cascaded_entities: array                        # if cascade applied
+    archive_reason: string
+errors:
+  - code: ENTITY_NOT_FOUND
+    when: entity_id does not exist or wrong organization
+    action: return 404
+  - code: ALREADY_ARCHIVED
+    when: entity status is already 'archived'
+    action: return 409 conflict
+  - code: HAS_ACTIVE_DEPENDENTS
+    when: $PROFILE.must_have_no_dependents and active relationships exist
+    action: return 409 with dependent entities list
+  - code: CASCADE_NOT_ALLOWED
+    when: cascade requested but $PROFILE.cascade_allowed is false
+    action: return 400 bad request
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_archive
+    action: return 403 with required permissions
+  - code: IN_USE_BY_TRANSACTION
+    when: entity is referenced by active transactions
+    action: return 409 with transaction references
+observability:
+  logs:
+    - entity_archived: { entity_id, reason, archived_by, organization_id }
+    - cascade_archive: { parent_id, dependent_ids, policy }
+    - archive_blocked: { entity_id, blocker_type, blocker_ids }
+  audit_json: true
+  metrics:
+    - entity_archive_count by entity_type
+    - cascade_archive_count
+    - archive_blocked_count by reason
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  entity_id: "456e7890-e89b-12d3-a456-426614174000"
+  reason: "Service discontinued - replaced by new premium service"
+  cascade: false
+  archive_metadata:
+    replacement_entity_id: "789e0123-e89b-12d3-a456-426614174000"
+    approved_by: "admin_user_id"
+checks:
+  - description: verify no active transactions reference this entity
+  - description: check dependent entities if cascade not requested
+  - description: validate archive doesn't break referential integrity
+  - description: ensure proper audit trail is created

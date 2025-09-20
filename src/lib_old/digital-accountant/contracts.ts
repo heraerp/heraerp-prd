@@ -4,7 +4,7 @@
  * Repository and service contracts for enterprise accounting operations
  * Enforces sacred 6-table architecture with multi-tenant isolation
  *
- * Smart Code: HERA.FIN.ACCT.DIGITAL.CONTRACTS.v1
+ * Smart Code: HERA.FIN.ACCT.DIGITAL.CONTRACTS.V1
  */
 
 import {

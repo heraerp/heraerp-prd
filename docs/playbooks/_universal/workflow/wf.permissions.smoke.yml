@@ -1,0 +1,342 @@
+smart_code: HERA.UNIV.WF.PERMISSIONS.SMOKE.V1
+intent: Smoke test RLS and permissions to ensure org isolation and admin role enforcement.
+scope:
+  in_scope:
+    - test organization isolation
+    - verify admin permission requirements
+    - validate read model security
+    - confirm negative permission tests
+  out_of_scope:
+    - fixing permission issues
+    - creating test data
+    - performance testing
+preconditions:
+  - permissions: system or admin
+  - test organizations exist
+  - test users with different roles exist
+invariants:
+  - read-only testing (no data modification)
+  - comprehensive security validation
+  - detailed failure reporting
+inputs:
+  required:
+    - test_organization_id: uuid                   # primary test org
+    - foreign_organization_id: uuid                # foreign org for isolation test
+  optional:
+    - admin_user_id: uuid                          # admin user for privilege tests
+    - regular_user_id: uuid                        # regular user for negative tests
+    - create_test_data: boolean                    # create test data if needed
+happy_path:
+  - step: setup test data in both organizations
+  - step: test organization isolation with foreign org token
+  - step: test admin permission requirements
+  - step: test read model security
+  - step: test negative permission scenarios
+  - step: generate comprehensive security report
+outputs:
+  response:
+    test_results: array
+      - test_name: string
+        status: enum[PASS, FAIL, WARNING]
+        description: string
+        details: object
+        security_impact: enum[CRITICAL, HIGH, MEDIUM, LOW]
+    org_isolation_score: number                    # 0-100 percentage
+    permission_enforcement_score: number           # 0-100 percentage
+    overall_security_status: enum[SECURE, WARNING, VULNERABLE]
+    recommendations: array
+
+security_tests:
+  org_isolation_read_models:
+    name: "Organization Isolation - Read Models"
+    description: "Verify read models enforce org boundaries"
+    test_steps:
+      - step: "Set JWT context to foreign organization"
+      - step: "Query wf_instances_view with test_organization_id filter"
+      - step: "Verify 0 rows returned (should not see other org data)"
+    sql_test: |
+      -- Set foreign org context
+      SET app.current_org_id = '$foreign_organization_id';
+      
+      -- This should return 0 rows
+      SELECT COUNT(*) as leaked_rows
+      FROM wf_instances_view 
+      WHERE organization_id = '$test_organization_id';
+    expected_result: 0
+    security_impact: CRITICAL
+    
+  org_isolation_direct_tables:
+    name: "Organization Isolation - Direct Tables"
+    description: "Verify RLS on base tables prevents cross-org access"
+    test_steps:
+      - step: "Set JWT context to foreign organization"
+      - step: "Query universal_transactions directly"
+      - step: "Verify RLS blocks access to other org data"
+    sql_test: |
+      -- Set foreign org context
+      SET app.current_org_id = '$foreign_organization_id';
+      
+      -- This should return 0 rows due to RLS
+      SELECT COUNT(*) as leaked_rows
+      FROM universal_transactions 
+      WHERE organization_id = '$test_organization_id';
+    expected_result: 0
+    security_impact: CRITICAL
+    
+  admin_permission_pause:
+    name: "Admin Permission - Pause Workflow"
+    description: "Verify admin operations require elevated permissions"
+    test_steps:
+      - step: "Call pause procedure as regular user"
+      - step: "Verify PERMISSION_DENIED error"
+      - step: "Call pause procedure as admin user"
+      - step: "Verify success"
+    negative_test: |
+      -- This should fail with PERMISSION_DENIED
+      CALL HERA.UNIV.WF.INSTANCE.PAUSE.V1(
+        organization_id => '$test_organization_id',
+        instance_id => '$test_instance_id',
+        reason => 'Smoke test'
+      ) AS regular_user;
+    positive_test: |
+      -- This should succeed
+      CALL HERA.UNIV.WF.INSTANCE.PAUSE.V1(
+        organization_id => '$test_organization_id',
+        instance_id => '$test_instance_id',
+        reason => 'Smoke test'
+      ) AS admin_user;
+    expected_result: "negative fails, positive succeeds"
+    security_impact: HIGH
+    
+  admin_permission_reassign:
+    name: "Admin Permission - Reassign Workflow"
+    description: "Verify reassignment requires admin role"
+    test_steps:
+      - step: "Call reassign procedure as regular user"
+      - step: "Verify PERMISSION_DENIED error"
+    negative_test: |
+      CALL HERA.UNIV.WF.INSTANCE.REASSIGN.V1(
+        organization_id => '$test_organization_id',
+        instance_id => '$test_instance_id',
+        owner_team => 'operations'
+      ) AS regular_user;
+    expected_result: "PERMISSION_DENIED"
+    security_impact: HIGH
+    
+  read_model_parameter_injection:
+    name: "Read Model Parameter Safety"
+    description: "Verify read models safe from parameter injection"
+    test_steps:
+      - step: "Call list procedures with malicious parameters"
+      - step: "Verify no data leakage or errors"
+    sql_test: |
+      -- Test with SQL injection attempts
+      SELECT COUNT(*) FROM wf_instances_view 
+      WHERE organization_id = '$test_organization_id'
+        AND definition_code = ''' OR 1=1 --'
+    expected_result: "query executes safely, no injection"
+    security_impact: MEDIUM
+    
+  task_assignee_isolation:
+    name: "Task Assignee Isolation"
+    description: "Verify users only see tasks they can access"
+    test_steps:
+      - step: "Query tasks as user from foreign org"
+      - step: "Verify no tasks returned"
+    sql_test: |
+      -- Set foreign org context
+      SET app.current_org_id = '$foreign_organization_id';
+      
+      -- Should return 0 tasks
+      SELECT COUNT(*) as leaked_tasks
+      FROM wf_tasks_view 
+      WHERE instance_id IN (
+        SELECT instance_id FROM wf_instances_view 
+        WHERE organization_id = '$test_organization_id'
+      );
+    expected_result: 0
+    security_impact: HIGH
+
+permission_matrix_tests:
+  workflow_operations:
+    operations:
+      - name: "start_workflow"
+        admin_required: false
+        user_allowed: true
+      - name: "pause_workflow"
+        admin_required: true
+        user_allowed: false
+      - name: "resume_workflow"
+        admin_required: true
+        user_allowed: false
+      - name: "reassign_workflow"
+        admin_required: true
+        user_allowed: false
+      - name: "retry_effects"
+        admin_required: true
+        user_allowed: false
+      - name: "recalc_sla"
+        admin_required: true
+        user_allowed: false
+    
+  task_operations:
+    operations:
+      - name: "claim_task"
+        admin_required: false
+        user_allowed: true
+      - name: "complete_task"
+        admin_required: false
+        user_allowed: true
+      - name: "reassign_task"
+        admin_required: true
+        user_allowed: false
+    
+  read_operations:
+    operations:
+      - name: "list_workflows"
+        admin_required: false
+        user_allowed: true
+      - name: "get_workflow"
+        admin_required: false
+        user_allowed: true
+      - name: "list_tasks"
+        admin_required: false
+        user_allowed: true
+
+rls_policy_verification:
+  check_policies_exist:
+    sql: |
+      SELECT 
+        tablename,
+        policyname,
+        roles,
+        cmd,
+        qual
+      FROM pg_policies 
+      WHERE tablename IN ('universal_transactions', 'universal_transaction_lines', 'core_entities', 'core_dynamic_data')
+      ORDER BY tablename, policyname;
+    expected: "All tables have org isolation policies"
+    
+  check_rls_enabled:
+    sql: |
+      SELECT 
+        tablename,
+        rowsecurity
+      FROM pg_tables 
+      WHERE tablename IN ('universal_transactions', 'universal_transaction_lines', 'core_entities', 'core_dynamic_data')
+        AND schemaname = 'public';
+    expected: "rowsecurity = true for all tables"
+    
+  test_policy_effectiveness:
+    sql: |
+      -- Test with different org contexts
+      SELECT 
+        current_setting('app.current_org_id', true) as current_org,
+        COUNT(*) as visible_workflows
+      FROM universal_transactions 
+      WHERE smart_code = 'HERA.UNIV.WF.INSTANCE.V1';
+    expected: "Row counts change with org context"
+
+jwt_context_tests:
+  validate_org_context:
+    description: "Verify JWT org context is properly set and used"
+    test_sql: |
+      SELECT 
+        current_setting('app.current_org_id', true) as jwt_org_id,
+        current_setting('app.current_user_id', true) as jwt_user_id,
+        current_setting('app.current_user_role', true) as jwt_user_role;
+    expected: "All context variables properly set"
+    
+  test_context_switching:
+    description: "Verify org context affects query results"
+    test_steps:
+      - step: "Set org context to test_organization_id"
+      - step: "Count visible workflows"
+      - step: "Set org context to foreign_organization_id"
+      - step: "Count visible workflows"
+      - step: "Verify counts are different"
+
+errors:
+  - code: ORG_ISOLATION_FAILED
+    when: cross-org data leakage detected
+    action: return critical security alert
+  - code: PERMISSION_BYPASS
+    when: regular user can perform admin operations
+    action: return high security alert
+  - code: RLS_NOT_ENFORCED
+    when: RLS policies not working
+    action: return critical security alert
+  - code: TEST_DATA_MISSING
+    when: required test data not found
+    action: create test data or skip tests
+
+observability:
+  logs:
+    - security_test_started: { test_organization_id, foreign_organization_id }
+    - org_isolation_test: { test_name, status, leaked_rows }
+    - permission_test: { operation, user_role, access_granted }
+    - security_test_completed: { overall_status, critical_failures }
+  audit_json: true
+  metrics:
+    - security_test_runs
+    - org_isolation_failures
+    - permission_bypass_attempts
+    - rls_policy_violations
+
+test_data_setup:
+  create_test_instances:
+    - organization: test_organization_id
+      instances: 2
+      states: ["ACTIVE", "COMPLETED"]
+    - organization: foreign_organization_id
+      instances: 1
+      states: ["ACTIVE"]
+      
+  create_test_tasks:
+    - organization: test_organization_id
+      tasks: 3
+      states: ["OPEN", "CLAIMED", "COMPLETED"]
+    - organization: foreign_organization_id
+      tasks: 1
+      states: ["OPEN"]
+
+remediation_guidance:
+  org_isolation_failure:
+    immediate_action: "Disable affected endpoints immediately"
+    investigation: "Check RLS policies and JWT context handling"
+    fix_priority: "CRITICAL - Security vulnerability"
+    
+  permission_bypass:
+    immediate_action: "Review admin operation access controls"
+    investigation: "Audit permission checking logic"
+    fix_priority: "HIGH - Access control violation"
+    
+  rls_not_enforced:
+    immediate_action: "Enable RLS on affected tables"
+    investigation: "Verify policy definitions and activation"
+    fix_priority: "CRITICAL - Data exposure risk"
+
+example_response:
+  test_results:
+    - test_name: "Organization Isolation - Read Models"
+      status: "PASS"
+      description: "Read models properly enforce org boundaries"
+      details: { leaked_rows: 0, test_queries: 5 }
+      security_impact: "CRITICAL"
+    - test_name: "Admin Permission - Pause Workflow"
+      status: "FAIL"
+      description: "Regular user was able to pause workflow"
+      details: { operation: "pause", user_role: "user", access_granted: true }
+      security_impact: "HIGH"
+  org_isolation_score: 95
+  permission_enforcement_score: 85
+  overall_security_status: "WARNING"
+  recommendations:
+    - "Fix admin permission bypass in pause operation"
+    - "Review JWT role validation logic"
+
+checks:
+  - description: verify organization isolation prevents cross-org access
+  - description: ensure admin operations require proper permissions
+  - description: validate RLS policies are active and effective
+  - description: confirm read models respect security boundaries

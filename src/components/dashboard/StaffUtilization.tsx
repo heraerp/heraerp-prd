@@ -3,11 +3,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { Users, ChevronRight } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Progress } from '@/src/components/ui/progress'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { useStaffUtilization } from '@/src/lib/api/staff'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useStaffUtilization } from '@/lib/api/staff'
 
 interface StaffUtilizationProps {
   organizationId: string

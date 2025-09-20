@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { HeraNavigation, HeraBreadcrumb } from '@/src/components/universal/ui/HeraNavigation'
+import { HeraNavigation, HeraBreadcrumb } from '@/components/universal/ui/HeraNavigation'
 import {
   HeraLayout,
   HeraGrid,
@@ -18,7 +18,7 @@ import {
   HeraWealthMetric,
   HeraProgress,
   HeraThemeToggle
-} from '@/src/components/universal/ui'
+} from '@/components/universal/ui'
 import {
   DollarSign,
   TrendingUp,
@@ -31,7 +31,7 @@ import {
   Code,
   Database
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export default function HowItWorks() {

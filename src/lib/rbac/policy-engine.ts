@@ -3,7 +3,7 @@
  * Role-based access control with smart code family permissions
  */
 
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 import yaml from 'js-yaml'
 import { minimatch } from 'minimatch'
@@ -484,7 +484,7 @@ export class RBACPolicyEngine {
         field_name: 'policy_yaml',
         field_value_text: policyYaml,
         field_type: 'yaml',
-        smart_code: 'HERA.SECURITY.RBAC.POLICY.CONTENT.v1',
+        smart_code: 'HERA.SECURITY.RBAC.POLICY.CONTENT.V1',
         organization_id: organizationId
       })
     }
@@ -498,7 +498,7 @@ export class RBACPolicyEngine {
       transaction_type: 'policy_update',
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SECURITY.AUDIT.POLICY.UPDATE.v1',
+      smart_code: 'HERA.SECURITY.AUDIT.POLICY.UPDATE.V1',
       organization_id: organizationId,
       metadata: {
         policy_id: policyId,

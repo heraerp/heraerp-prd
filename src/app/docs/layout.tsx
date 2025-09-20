@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google'
 import './docs.css'
-import { DocsThemeToggle } from '@/src/components/docs/DocsThemeToggle'
+import { DocsThemeToggle } from '@/components/docs/DocsThemeToggle'
 
 const inter = Inter({ subsets: ['latin'] })
 

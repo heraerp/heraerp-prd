@@ -1,0 +1,180 @@
+smart_code: HERA.UNIV.WF.ORCH.V1
+description: Universal workflow orchestration - maps HTTP routes to procedures
+routes:
+  # Workflow instance management
+  - http: POST /api/v1/workflows/:code/start
+    handler: HERA.UNIV.WF.START.V1
+    description: Start new workflow instance
+    
+  - http: POST /api/v1/workflows/:id/advance
+    handler: HERA.UNIV.WF.ADVANCE.V1
+    description: Advance workflow to next state
+    
+  # Timer management
+  - http: POST /api/v1/workflows/:id/timers/set
+    handler: HERA.UNIV.WF.TIMER.SET.V1
+    description: Set workflow timer
+    
+  - http: POST /api/v1/workflows/:id/timers/fire
+    handler: HERA.UNIV.WF.TIMER.FIRE.V1
+    description: Fire workflow timer (worker endpoint)
+    
+  - http: POST /api/v1/workflows/:id/timers/cancel
+    handler: HERA.UNIV.WF.TIMER.CANCEL.V1
+    description: Cancel workflow timer(s)
+    
+  # Task management
+  - http: POST /api/v1/workflows/:id/tasks/create
+    handler: HERA.UNIV.TASK.CREATE.V1
+    description: Create task for workflow
+    
+  - http: POST /api/v1/tasks/:task_id/claim
+    handler: HERA.UNIV.TASK.CLAIM.V1
+    description: Claim task from role pool
+    
+  - http: POST /api/v1/tasks/:task_id/complete
+    handler: HERA.UNIV.TASK.COMPLETE.V1
+    description: Complete task with outcome
+    
+  - http: POST /api/v1/tasks/:task_id/escalate
+    handler: HERA.UNIV.TASK.ESCALATE.V1
+    description: Escalate task to higher authority
+    
+  # Admin Operations (WF STEP 3)
+  - http: POST /api/v1/workflows/:id/pause
+    handler: HERA.UNIV.WF.INSTANCE.PAUSE.V1
+    description: Pause workflow instance execution
+    
+  - http: POST /api/v1/workflows/:id/resume
+    handler: HERA.UNIV.WF.INSTANCE.RESUME.V1
+    description: Resume paused workflow instance
+    
+  - http: POST /api/v1/workflows/:id/reassign
+    handler: HERA.UNIV.WF.INSTANCE.REASSIGN.V1
+    description: Reassign workflow instance ownership
+    
+  - http: POST /api/v1/workflows/:id/retry-effects
+    handler: HERA.UNIV.WF.EFFECT.RETRY.V1
+    description: Retry failed effects from specific step
+    
+  - http: POST /api/v1/workflows/:id/sla-recalc
+    handler: HERA.UNIV.WF.INSTANCE.SLA.RECALC.V1
+    description: Recalculate SLA deadline for instance
+    
+  - http: POST /api/v1/tasks/:task_id/reassign
+    handler: HERA.UNIV.TASK.REASSIGN.V1
+    description: Reassign task to different role or user
+    
+  # Read-only Operations (WF STEP 3)
+  - http: GET /api/v1/workflows
+    handler: HERA.UNIV.WF.INSTANCES.LIST.V1
+    description: List workflow instances with filtering
+    
+  - http: GET /api/v1/workflows/:id
+    handler: HERA.UNIV.WF.INSTANCE.GET.V1
+    description: Get workflow instance details
+    
+  - http: GET /api/v1/workflows/:id/steps
+    handler: HERA.UNIV.WF.STEPS.LIST.V1
+    description: List workflow steps and transitions
+    
+  - http: GET /api/v1/tasks
+    handler: HERA.UNIV.TASKS.LIST.V1
+    description: List tasks with filtering
+    
+  - http: GET /api/v1/tasks/:task_id
+    handler: HERA.UNIV.TASK.GET.V1
+    description: Get task details
+    
+transaction_boundaries:
+  - name: wf_start
+    applies_to: [HERA.UNIV.WF.START.V1]
+    isolation: READ_COMMITTED
+    timeout: 5000ms
+    
+  - name: wf_advance
+    applies_to: [HERA.UNIV.WF.ADVANCE.V1]
+    isolation: SERIALIZABLE
+    timeout: 10000ms
+    note: Higher isolation for state machine consistency
+    
+  - name: wf_timers
+    applies_to: 
+      - HERA.UNIV.WF.TIMER.SET.V1
+      - HERA.UNIV.WF.TIMER.FIRE.V1
+      - HERA.UNIV.WF.TIMER.CANCEL.V1
+    isolation: READ_COMMITTED
+    timeout: 3000ms
+    
+  - name: wf_tasks
+    applies_to:
+      - HERA.UNIV.TASK.CREATE.V1
+      - HERA.UNIV.TASK.CLAIM.V1
+      - HERA.UNIV.TASK.COMPLETE.V1
+      - HERA.UNIV.TASK.ESCALATE.V1
+    isolation: READ_COMMITTED
+    timeout: 5000ms
+    
+  - name: wf_admin
+    applies_to:
+      - HERA.UNIV.WF.INSTANCE.PAUSE.V1
+      - HERA.UNIV.WF.INSTANCE.RESUME.V1
+      - HERA.UNIV.WF.INSTANCE.REASSIGN.V1
+      - HERA.UNIV.WF.EFFECT.RETRY.V1
+      - HERA.UNIV.WF.INSTANCE.SLA.RECALC.V1
+      - HERA.UNIV.TASK.REASSIGN.V1
+    isolation: READ_COMMITTED
+    timeout: 10000ms
+    note: Admin operations may require longer execution time
+    
+middleware:
+  - auth: verify_jwt
+  - org: extract_organization_id
+  - profile: load_workflow_profile
+  - validation: validate_request_schema
+  - audit: create_audit_context
+  - idempotency: check_idempotency_key       # for advance operations
+  
+after:
+  HERA.UNIV.WF.START.V1:
+    success: [$PROFILE.after_start]          # e.g., create initial tasks
+    
+  HERA.UNIV.WF.ADVANCE.V1:
+    guards: [dynamic]                        # from definition
+    effects: [dynamic]                       # from definition
+    
+  HERA.UNIV.WF.TIMER.FIRE.V1:
+    success: [dynamic]                       # from timer.on_fire_smart_code
+    
+  HERA.UNIV.TASK.COMPLETE.V1:
+    success: [$PROFILE.after_task_complete]  # e.g., check if all tasks done
+    
+error_handling:
+  default_strategy: rollback_and_log
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
+    retryable_errors: [DEADLOCK, TIMEOUT]
+  special_handling:
+    GUARD_FAILED: no_retry                   # don't retry failed guards
+    
+observability:
+  traces: true
+  metrics: true
+  logs: structured_json
+  special_metrics:
+    - workflow_duration by definition_code
+    - state_transition_time
+    - task_completion_rate
+    - timer_accuracy
+    
+configuration:
+  max_request_size: 1MB
+  rate_limit:
+    workflow_start: 100/hour per user
+    workflow_advance: 500/hour per user
+    timer_operations: 1000/hour per organization
+  special_limits:
+    max_active_workflows_per_user: 50
+    max_timers_per_instance: 10
+    max_tasks_per_instance: 100

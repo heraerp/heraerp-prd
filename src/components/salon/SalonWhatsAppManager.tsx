@@ -7,10 +7,10 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   MessageCircle,
   Calendar,
@@ -29,9 +29,9 @@ import {
   Crown,
   Scissors
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { WhatsAppManager } from '@/src/components/dna/whatsapp/WhatsAppManager'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/lib/utils'
+import { WhatsAppManager } from '@/components/dna/whatsapp/WhatsAppManager'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface SalonWhatsAppManagerProps {
   className?: string
@@ -54,7 +54,7 @@ interface SalonTemplate {
 }
 
 export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const [selectedTab, setSelectedTab] = useState('messages')
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState({
@@ -196,7 +196,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
   ]
 
   const setupSalonIntegration = async () => {
-    if (!currentOrganization?.id) return
+    if (!organization?.id) return
 
     setLoading(true)
     try {
@@ -206,7 +206,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'setup_integration',
-          organizationId: currentOrganization.id
+          organizationId: organization.id
         })
       })
 
@@ -218,7 +218,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'setup_salon_templates',
-          organizationId: currentOrganization.id
+          organizationId: organization.id
         })
       })
 
@@ -262,7 +262,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'create_automation',
-            organizationId: currentOrganization.id,
+            organizationId: organization.id,
             automation
           })
         })
@@ -281,7 +281,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
     customerPhone: string,
     parameters: Record<string, string>
   ) => {
-    if (!currentOrganization?.id) return
+    if (!organization?.id) return
 
     const template = salonTemplates.find(t => t.id === templateId)
     if (!template) return
@@ -292,7 +292,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'send_template',
-          organizationId: currentOrganization.id,
+          organizationId: organization.id,
           to: customerPhone,
           templateName: template.template.name,
           language: template.template.language,
@@ -314,11 +314,11 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
   }
 
   useEffect(() => {
-    if (currentOrganization?.id) {
+    if (organization?.id) {
       // Load salon WhatsApp stats
-      console.log('Loading WhatsApp stats for salon:', currentOrganization.id)
+      console.log('Loading WhatsApp stats for salon:', organization.id)
     }
-  }, [currentOrganization])
+  }, [organization])
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -466,11 +466,11 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
           </Card>
 
           {/* WhatsApp Manager */}
-          {currentOrganization?.id && (
+          {organization?.id && (
             <Card>
               <CardContent className="p-0">
                 <WhatsAppManager
-                  organizationId={currentOrganization.id}
+                  organizationId={organization.id}
                   industryType="salon"
                   className="min-h-[600px]"
                 />

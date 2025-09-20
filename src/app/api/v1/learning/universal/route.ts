@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { heraRouter, LearningRequest } from '@/src/lib/universal-learning/HERAUniversalLearningRouter'
+import { heraRouter, LearningRequest } from '@/lib/universal-learning/HERAUniversalLearningRouter'
 
 export async function POST(request: NextRequest) {
   try {

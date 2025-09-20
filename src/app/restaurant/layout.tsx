@@ -1,6 +1,6 @@
 'use client'
 
-import { UniversalLayout } from '@/src/components/layout/UniversalLayout'
+import { UniversalLayout } from '@/components/layout/UniversalLayout'
 import {
   UtensilsCrossed,
   ShoppingCart,
@@ -14,7 +14,7 @@ import {
   Coffee,
   CreditCard
 } from 'lucide-react'
-import { getModuleTheme } from '@/src/lib/theme/module-themes'
+import { getModuleTheme } from '@/lib/theme/module-themes'
 
 const theme = getModuleTheme('restaurant')
 

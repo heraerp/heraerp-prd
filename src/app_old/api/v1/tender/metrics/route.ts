@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
         .from('universal_transactions')
         .select('reference_entity_id')
         .eq('organization_id', organizationId)
-        .eq('smart_code', 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.v1')
+        .eq('smart_code', 'HERA.FURNITURE.TENDER.AWARD.RECEIVED.V1')
         .gte('created_at', quarterStart.toISOString())
 
       const uniqueSubmitted = new Set(submittedTenders?.map(t => t.reference_entity_id) || [])
@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
         `
         )
         .eq('organization_id', organizationId)
-        .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.PAID.v1')
+        .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.PAID.V1')
 
       const { data: emdRefundedTxns } = await supabase
         .from('universal_transactions')
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
         `
         )
         .eq('organization_id', organizationId)
-        .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.REFUND_RECEIVED.v1')
+        .eq('smart_code', 'HERA.FURNITURE.FIN.EMD.REFUND_RECEIVED.V1')
 
       const totalEmdPaid =
         emdPaidTxns?.reduce((sum, txn) => {
@@ -225,7 +225,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: metrics,
-        smart_code: 'HERA.FURNITURE.TENDER.METRICS.RETRIEVED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.METRICS.RETRIEVED.V1'
       })
     } catch (error) {
       console.error('Error fetching tender metrics:', error)
@@ -233,7 +233,7 @@ export async function GET(request: NextRequest) {
         {
           success: false,
           error: 'Failed to fetch tender metrics',
-          smart_code: 'HERA.FURNITURE.TENDER.METRICS.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.METRICS.ERROR.V1'
         },
         { status: 500 }
       )

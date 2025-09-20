@@ -5,11 +5,11 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useRef, useEffect } from 'react'
 import './digital-accountant.css'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Brain,
   Send,
@@ -36,13 +36,13 @@ import {
   Database,
   MessageSquare
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { Badge } from '@/src/components/ui/badge'
-import { Separator } from '@/src/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { JournalEntryForm } from '@/src/components/digital-accountant/JournalEntryForm'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { JournalEntryForm } from '@/components/digital-accountant/JournalEntryForm'
 
 interface Message {
   id: string

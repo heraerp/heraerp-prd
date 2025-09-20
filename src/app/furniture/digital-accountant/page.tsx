@@ -5,17 +5,20 @@ export const dynamic = 'force-dynamic'
 /** * HERA Furniture Digital Accountant Integration * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.v1 * * Simplified accounting interface for furniture manufacturers * Natural language processing for non-accountants */
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import {
+  useFurnitureOrg,
+  FurnitureOrgLoading
+} from '@/components/furniture/FurnitureOrgContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import {
   Brain,
   Send,
@@ -59,8 +62,8 @@ import {
   Sofa,
   Hammer
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { FurnitureDocumentUpload } from '@/src/components/furniture/FurnitureDocumentUpload'
+import { cn } from '@/lib/utils'
+import { FurnitureDocumentUpload } from '@/components/furniture/FurnitureDocumentUpload'
 
 interface FurnitureMessage {
   id: string
@@ -72,8 +75,8 @@ interface FurnitureMessage {
   status?: 'success' | 'pending' | 'error'
   actions?: QuickAction[]
   journalEntry?: {
-    debits: Array<{ account: string; amount: number }>;
-    credits: Array<{ account: string; amount: number }>;
+    debits: Array<{ account: string; amount: number }>
+    credits: Array<{ account: string; amount: number }>
   }
 }
 
@@ -90,11 +93,11 @@ interface QuickPrompt {
   label: string
   prompt: string
   color: string
-  category: string;
+  category: string
 }
 
 // Furniture-specific quick prompts
-  const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
+const FURNITURE_QUICK_PROMPTS: QuickPrompt[] = [
   {
     icon: DollarSign,
     label: 'Cash Sale',
@@ -138,7 +141,7 @@ interface QuickPrompt {
     category: 'summary'
   }
 ] // Furniture-specific quick expenses
-  const FURNITURE_QUICK_EXPENSES = [
+const FURNITURE_QUICK_EXPENSES = [
   { icon: Package, label: 'Wood/Timber', amount: 5000, category: 'materials' },
   { icon: Wrench, label: 'Hardware', amount: 1000, category: 'materials' },
   { icon: Factory, label: 'Labor', amount: 2000, category: 'production' },
@@ -192,9 +195,9 @@ export default function FurnitureDigitalAccountantPage() {
   useEffect(() => {
     const scrollToBottom = () => {
       if (scrollAreaRef.current) {
-  const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
+        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
         if (viewport) {
-  viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+          viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
         }
       }
     }
@@ -219,7 +222,7 @@ export default function FurnitureDigitalAccountantPage() {
 
     try {
       // Call the furniture digital accountant API
-  const response = await fetch('/api/v1/furniture/digital-accountant', {
+      const response = await fetch('/api/v1/furniture/digital-accountant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -230,7 +233,7 @@ export default function FurnitureDigitalAccountantPage() {
       })
 
       if (!response.ok) {
-  throw new Error('Failed to process transaction')
+        throw new Error('Failed to process transaction')
       }
 
       const data = await response.json()
@@ -248,7 +251,7 @@ export default function FurnitureDigitalAccountantPage() {
       }
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
-  const errorMessage: FurnitureMessage = {
+      const errorMessage: FurnitureMessage = {
         id: Date.now().toString(),
         type: 'assistant',
         content: 'Sorry, I had trouble processing that. Please try again.',
@@ -282,11 +285,11 @@ export default function FurnitureDigitalAccountantPage() {
   const handleDocumentAnalyzed = (result: any) => {
     // Auto-populate input with suggested message
     if (result.suggestedMessage) {
-  setInput(result.suggestedMessage)
+      setInput(result.suggestedMessage)
       inputRef.current?.focus()
 
       // Add system message about document analysis
-  const systemMessage: FurnitureMessage = {
+      const systemMessage: FurnitureMessage = {
         id: Date.now().toString(),
         type: 'system',
         content: `📄 Document analyzed! I've extracted the following information:
@@ -303,14 +306,14 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
     }
   }
 
-// Show loading state
+  // Show loading state
   if (orgLoading) {
-  return <FurnitureOrgLoading />
+    return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (isAuthenticated && contextLoading) {
-  return (
+    return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
@@ -321,10 +324,12 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
   }
 
   return (
-    <div className={cn(
-            'min-h-screen',
-            isDarkMode ? 'bg-[var(--color-body)]' : 'bg-[var(--color-body)]'
-          )}>
+    <div
+      className={cn(
+        'min-h-screen',
+        isDarkMode ? 'bg-[var(--color-body)]' : 'bg-[var(--color-body)]'
+      )}
+    >
       {' '}
       <div className="p-6 space-y-6">
         {' '}
@@ -339,16 +344,10 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                 variant="outline"
                 size="sm"
                 onClick={() => setUseMCP(!useMCP)}
-                className={cn(
-            'gap-2',
-            useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : ''
-          )}
+                className={cn('gap-2', useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : '')}
               >
                 {' '}
-                <Zap className={cn(
-            'h-4 w-4',
-            useMCP && 'text-green-500'
-          )} />{' '}
+                <Zap className={cn('h-4 w-4', useMCP && 'text-green-500')} />{' '}
                 {useMCP ? 'MCP Mode' : 'API Mode'}{' '}
               </Button>{' '}
               <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
@@ -367,7 +366,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
             <Card
               className={cn(
                 'h-[600px] flex flex-col',
-                isDarkMode ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]' : 'bg-[var(--color-body)]'
+                isDarkMode
+                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
+                  : 'bg-[var(--color-body)]'
               )}
             >
               {' '}
@@ -393,7 +394,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                           )}
                         >
                           {' '}
-                          <Brain className="h-4 w-4 text-[#37353E]" />{' '}
+                          <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />{' '}
                         </div>
                       )}{' '}
                       <div
@@ -434,7 +435,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         {message.journalEntry && (
                           <div className="mt-3 p-2 bg-background/20 rounded text-xs font-mono">
                             {' '}
-                            <p className="text-[var(--color-text-secondary)] mb-1">Journal Entry:</p>{' '}
+                            <p className="text-[var(--color-text-secondary)] mb-1">
+                              Journal Entry:
+                            </p>{' '}
                             {message.journalEntry.debits.map((debit, i) => (
                               <p key={i} className="bg-[var(--color-body)] text-green-400">
                                 {' '}
@@ -490,7 +493,7 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         )}
                       >
                         {' '}
-                        <Brain className="h-4 w-4 text-[#37353E]" />{' '}
+                        <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />{' '}
                       </div>{' '}
                       <div
                         className={cn(
@@ -523,21 +526,23 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                         onClick={() => handleQuickPrompt(prompt.prompt)}
                         className={cn(
                           'gap-2',
-                          isDarkMode ? 'hover:bg-[var(--color-sidebar)]/30' : 'hover:bg-[var(--color-body)]'
+                          isDarkMode
+                            ? 'hover:bg-[var(--color-sidebar)]/30'
+                            : 'hover:bg-[var(--color-body)]'
                         )}
                       >
                         {' '}
-                        <prompt.icon className={cn(
-            'h-4 w-4',
-            prompt.color
-          )} /> {prompt.label}{' '}
+                        <prompt.icon className={cn('h-4 w-4', prompt.color)} /> {prompt.label}{' '}
                       </Button>
                     ))}{' '}
                   </div>{' '}
                 </div>
               )}{' '}
               {/* Input Area */}{' '}
-              <form onSubmit={handleSubmit} className="bg-[var(--color-body)] p-4 border-t border-[var(--color-border)]">
+              <form
+                onSubmit={handleSubmit}
+                className="bg-[var(--color-body)] p-4 border-t border-[var(--color-border)]"
+              >
                 {' '}
                 <div className="flex gap-2">
                   {' '}
@@ -549,7 +554,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                     disabled={loading}
                     className={cn(
                       'flex-1',
-                      isDarkMode ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]' : 'bg-[var(--color-body)] border-[var(--color-border)]'
+                      isDarkMode
+                        ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
+                        : 'bg-[var(--color-body)] border-[var(--color-border)]'
                     )}
                   />{' '}
                   <Button type="submit" disabled={loading || !input.trim()}>
@@ -568,7 +575,13 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
           <div className="space-y-4">
             {' '}
             {/* Quick Expenses */}{' '}
-            <Card className={cn(isDarkMode ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]' : 'bg-[var(--color-body)]')}>
+            <Card
+              className={cn(
+                isDarkMode
+                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
+                  : 'bg-[var(--color-body)]'
+              )}
+            >
               {' '}
               <CardHeader className="pb-3">
                 {' '}
@@ -586,7 +599,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                       onClick={() => handleQuickExpense(expense)}
                       className={cn(
                         'h-auto flex-col py-3 gap-1',
-                        isDarkMode ? 'hover:bg-[var(--color-sidebar)]/30' : 'hover:bg-[var(--color-body)]'
+                        isDarkMode
+                          ? 'hover:bg-[var(--color-sidebar)]/30'
+                          : 'hover:bg-[var(--color-body)]'
                       )}
                     >
                       {' '}
@@ -599,7 +614,13 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
               </CardContent>{' '}
             </Card>{' '}
             {/* Today's Summary */}{' '}
-            <Card className={cn(isDarkMode ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]' : 'bg-[var(--color-body)]')}>
+            <Card
+              className={cn(
+                isDarkMode
+                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
+                  : 'bg-[var(--color-body)]'
+              )}
+            >
               {' '}
               <CardHeader className="pb-3">
                 {' '}
@@ -616,7 +637,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                   </div>{' '}
                   <div className="flex justify-between items-center">
                     {' '}
-                    <span className="text-sm text-[var(--color-text-secondary)]">Expenses</span>{' '}
+                    <span className="text-sm text-[var(--color-text-secondary)]">
+                      Expenses
+                    </span>{' '}
                     <span className="text-sm font-bold text-red-500">₹48,500</span>{' '}
                   </div>{' '}
                   <div className="pt-2 border-t border-[var(--color-border)]">
@@ -624,7 +647,9 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
                     <div className="bg-[var(--color-body)] flex justify-between items-center">
                       {' '}
                       <span className="text-sm font-medium">Net Profit</span>{' '}
-                      <span className="text-lg font-bold text-[var(--color-text-primary)]">₹76,500</span>{' '}
+                      <span className="text-lg font-bold text-[var(--color-text-primary)]">
+                        ₹76,500
+                      </span>{' '}
                     </div>{' '}
                   </div>{' '}
                 </div>{' '}
@@ -637,7 +662,13 @@ I've prepared a transaction entry for you. Just click send or modify as needed!`
               isDarkMode={isDarkMode}
             />{' '}
             {/* Help Tips */}{' '}
-            <Card className={cn(isDarkMode ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]' : 'bg-[var(--color-body)]')}>
+            <Card
+              className={cn(
+                isDarkMode
+                  ? 'bg-[var(--color-body)]/50 border-[var(--color-border)]'
+                  : 'bg-[var(--color-body)]'
+              )}
+            >
               {' '}
               <CardHeader className="pb-3">
                 {' '}

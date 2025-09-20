@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, lazy, Suspense } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { useToast } from '@/src/hooks/use-toast'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useToast } from '@/hooks/use-toast'
 import {
   Package,
   Download,
@@ -33,18 +33,18 @@ import {
   getComponentMetadata,
   getComponentsByCategory,
   HERA_DNA_SMART_CODES
-} from '@/src/lib/dna'
+} from '@/lib/dna'
 
 // Import some example components to show they work
 import {
   StatCardDNA,
   BottomSheet,
   useBottomSheet
-} from '@/src/lib/dna'
+} from '@/lib/dna'
 
 // Example lazy loading
 const LazyStatCard = lazy(() => 
-  import('@/src/lib/dna').then(module => ({ 
+  import('@/lib/dna').then(module => ({ 
     default: module.StatCardDNA 
   }))
 )
@@ -348,13 +348,13 @@ export default function ExportSystemDemoPage() {
                         <p className="text-sm font-medium mb-2">Named Import (Recommended)</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { ${selectedComponent} } from '@/src/lib/dna'`}
+{`import { ${selectedComponent} } from '@/lib/dna'`}
                           </pre>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`import { ${selectedComponent} } from '@/src/lib/dna'`)}
+                            onClick={() => copyToClipboard(`import { ${selectedComponent} } from '@/lib/dna'`)}
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
@@ -365,13 +365,13 @@ export default function ExportSystemDemoPage() {
                         <p className="text-sm font-medium mb-2">With Types</p>
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/src/lib/dna'`}
+{`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`}
                           </pre>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="absolute top-1 right-1"
-                            onClick={() => copyToClipboard(`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/src/lib/dna'`)}
+                            onClick={() => copyToClipboard(`import { ${selectedComponent}, type ${selectedComponent}Props } from '@/lib/dna'`)}
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
@@ -383,7 +383,7 @@ export default function ExportSystemDemoPage() {
                         <div className="relative">
                           <pre className="p-3 bg-muted rounded text-xs overflow-auto">
 {`const Lazy${selectedComponent} = lazy(() => 
-  import('@/src/lib/dna').then(module => ({ 
+  import('@/lib/dna').then(module => ({ 
     default: module.${selectedComponent} 
   }))
 )`}
@@ -404,7 +404,7 @@ export default function ExportSystemDemoPage() {
                         <div className="space-y-2">
                           <div className="relative">
                             <pre className="p-3 bg-muted rounded text-xs overflow-auto">
-{`import { loadDNAComponent } from '@/src/lib/dna'
+{`import { loadDNAComponent } from '@/lib/dna'
 
 const component = await loadDNAComponent('${selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1)}')`}
                             </pre>
@@ -412,7 +412,7 @@ const component = await loadDNAComponent('${selectedComponent.toLowerCase().repl
                               size="sm"
                               variant="ghost"
                               className="absolute top-1 right-1"
-                              onClick={() => copyToClipboard(`import { loadDNAComponent } from '@/src/lib/dna'\n\nconst component = await loadDNAComponent('${selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1)}')`)}
+                              onClick={() => copyToClipboard(`import { loadDNAComponent } from '@/lib/dna'\n\nconst component = await loadDNAComponent('${selectedComponent.toLowerCase().replace(/([A-Z])/g, '-$1').substring(1)}')`)}
                             >
                               <Copy className="w-3 h-3" />
                             </Button>

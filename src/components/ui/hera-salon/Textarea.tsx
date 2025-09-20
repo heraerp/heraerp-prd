@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cn } from '@/src/lib/utils-hera-salon'
+import { cn } from '@/lib/utils-hera-salon'
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean

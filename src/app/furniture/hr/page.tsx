@@ -4,15 +4,21 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { EnterpriseDataTable } from '@/src/lib/dna/components/organisms/EnterpriseDataTable'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
+import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Users,
   UserCheck,
@@ -34,13 +40,16 @@ import {
   TrendingUp,
   Building
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import {
+  useFurnitureOrg,
+  FurnitureOrgLoading
+} from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { cn } from '@/lib/utils'
 
 // Employee table columns
-  const employeeColumns = [
+const employeeColumns = [
   {
     id: 'entity_code',
     key: 'entity_code',
@@ -49,9 +58,7 @@ import { cn } from '@/src/lib/utils'
     accessor: 'entity_code',
     sortable: true,
     width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     id: 'entity_name',
@@ -95,12 +102,12 @@ import { cn } from '@/src/lib/utils'
         Sales: 'bg-orange-500/20 text-orange-400',
         Administration: 'bg-pink-500/20 text-pink-400'
       }
-      
+
       return (
-        <Badge variant="outline" className={cn(
-            'border-0',
-            deptColors[dept] || 'bg-gray-500/20 text-gray-400'
-          )}>
+        <Badge
+          variant="outline"
+          className={cn('border-0', deptColors[dept] || 'bg-gray-500/20 text-gray-400')}
+        >
           {dept}
         </Badge>
       )
@@ -109,7 +116,7 @@ import { cn } from '@/src/lib/utils'
 ]
 
 // Attendance summary columns
-  const attendanceColumns = [
+const attendanceColumns = [
   {
     id: 'transaction_code',
     key: 'transaction_code',
@@ -119,8 +126,8 @@ import { cn } from '@/src/lib/utils'
     sortable: true,
     render: (value: string, row: any) => {
       const date = (row.metadata as any)?.attendance_date || row.transaction_date
-      
-    return (
+
+      return (
         <div>
           <p className="font-medium">
             {new Date(date).toLocaleDateString('en-IN', {
@@ -164,7 +171,9 @@ import { cn } from '@/src/lib/utils'
     accessor: (row: any) => (row.metadata as any)?.total_leave || 0,
     align: 'center' as const,
     render: (_: any, row: any) => (
-      <span className="font-mono text-[var(--color-text-secondary)]">{(row.metadata as any)?.total_leave || 0}</span>
+      <span className="font-mono text-[var(--color-text-secondary)]">
+        {(row.metadata as any)?.total_leave || 0}
+      </span>
     )
   }
 ]
@@ -172,12 +181,12 @@ import { cn } from '@/src/lib/utils'
 export default function FurnitureHR() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
-  
+
   // Mock data for demonstration
   const employees = []
   const attendanceData = []
   const loading = false
-  
+
   const [activeTab, setActiveTab] = useState('employees')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDepartment, setSelectedDepartment] = useState('all')
@@ -187,7 +196,7 @@ export default function FurnitureHR() {
     return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -250,8 +259,7 @@ export default function FurnitureHR() {
     }
   ]
 
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
@@ -263,30 +271,37 @@ export default function FurnitureHR() {
                 <Download className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
-              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+              <Button
+                size="sm"
+                className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+              >
                 <UserPlus className="h-4 w-4" />
                 Add Employee
               </Button>
             </>
           }
         />
-        
+
         {/* HR Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {hrMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
-                  <metric.icon className={cn(
-            'h-4 w-4',
-            metric.color
-          )} />
+                  <metric.icon className={cn('h-4 w-4', metric.color)} />
                 </div>
-                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  {metric.value}
+                </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">
+                    Change: {metric.change}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -294,7 +309,9 @@ export default function FurnitureHR() {
         </div>
 
         <div className="text-center p-8">
-          <p className="text-[var(--color-text-secondary)]">HR management interface is being loaded...</p>
+          <p className="text-[var(--color-text-secondary)]">
+            HR management interface is being loaded...
+          </p>
         </div>
       </div>
     </div>

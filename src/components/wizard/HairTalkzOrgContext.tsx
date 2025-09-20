@@ -1,8 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { getDemoOrganizationInfo } from '@/src/lib/demo-org-resolver'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
 interface HairTalkzOrgContextType {

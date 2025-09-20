@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DOCUMENT_CATEGORIES } from '@/src/types/audit.types'
+import { DOCUMENT_CATEGORIES } from '@/types/audit.types'
 
 /**
  * HERA Audit Document Requisition API
  *
  * Manages document requisitions using universal architecture:
- * - Document requisitions as universal_transactions with smart_code='HERA.AUD.DOC.TXN.REQ.v1'
+ * - Document requisitions as universal_transactions with smart_code='HERA.AUD.DOC.TXN.REQ.V1'
  * - Document line items as universal_transaction_lines
  * - Document metadata in core_dynamic_data
  * - Status tracking and workflow management
@@ -19,7 +19,7 @@ const mockRequisitions = [
     id: 'req_001',
     organization_id: AUDIT_FIRM_ORG_ID,
     transaction_type: 'document_requisition',
-    smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+    smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
     reference_number: 'DOC-REQ-2025-001',
     transaction_date: '2025-01-10',
     entity_from: AUDIT_FIRM_ORG_ID,
@@ -264,7 +264,7 @@ export async function POST(request: NextRequest) {
         id: `req_${Date.now()}`,
         organization_id: AUDIT_FIRM_ORG_ID,
         transaction_type: 'document_requisition',
-        smart_code: 'HERA.AUD.DOC.TXN.REQ.v1',
+        smart_code: 'HERA.AUD.DOC.TXN.REQ.V1',
         reference_number: `DOC-REQ-${data.audit_year}-${String(mockRequisitions.length + 1).padStart(3, '0')}`,
         transaction_date: new Date().toISOString().split('T')[0],
         entity_from: AUDIT_FIRM_ORG_ID,

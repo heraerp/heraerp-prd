@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   Building2,
@@ -35,9 +35,9 @@ import {
   BookOpen,
   Download
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 // Removed tooltip imports for simpler implementation
-import { Badge } from '@/src/components/ui/badge'
+import { Badge } from '@/components/ui/badge'
 
 interface NavItem {
   id: string

@@ -7,15 +7,15 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Switch } from '@/src/components/ui/switch'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Separator } from '@/src/components/ui/separator'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import { 
   Bell, 
   Save,
@@ -33,7 +33,7 @@ import {
 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { NotificationPolicy } from '@/src/lib/schemas/settings'
+import { NotificationPolicy } from '@/lib/schemas/settings'
 
 interface NotificationFormProps {
   policy?: NotificationPolicy | null
@@ -474,7 +474,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               Changes will be logged with Smart Code:
             </span>
             <Badge variant="outline" className="font-mono text-xs">
-              HERA.ORG.SETTINGS.NOTIFICATION_POLICY.UPDATE.v1
+              HERA.ORG.SETTINGS.NOTIFICATION_POLICY.UPDATE.V1
             </Badge>
           </div>
         </AlertDescription>

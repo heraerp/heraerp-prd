@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Building2,
   ArrowRight,
@@ -21,7 +21,7 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 const roleIcons = {
   owner: Crown,

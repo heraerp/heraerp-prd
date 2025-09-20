@@ -8,14 +8,14 @@
 
 import React from 'react'
 import { Loader2, TrendingUp, DollarSign, FileText, Calendar, AlertTriangle, ChevronRight, Download } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Guard } from '@/src/lib/auth/guard'
-import { useDashboardMetrics } from '@/src/lib/api/dashboard'
-import { useFinancialReports } from '@/src/lib/api/reports'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Guard } from '@/lib/auth/guard'
+import { useDashboardMetrics } from '@/lib/api/dashboard'
+import { useFinancialReports } from '@/lib/api/reports'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { formatCurrency } from '@/src/lib/utils/format'
+import { formatCurrency } from '@/lib/utils/format'
 
 export default function AccountantDashboard() {
   const { currentOrganization, contextLoading } = useMultiOrgAuth()

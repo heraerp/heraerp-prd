@@ -4,13 +4,13 @@ import React, { useState, useEffect, useCallback }
 from 'react'
 import FurnitureDarkSidebar from './FurnitureDarkSidebar'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 import { Menu, X, Armchair, Home, ShoppingCart, Factory, Grid3x3 }
 from 'lucide-react'
 import { Button }
-from '@/src/components/ui/button'
+from '@/components/ui/button'
 import { NavigationLoadingProvider }
-from '@/src/components/navigation/NavigationLoadingProvider'
+from '@/components/navigation/NavigationLoadingProvider'
 
 
 interface FurnitureDarkLayoutProps {

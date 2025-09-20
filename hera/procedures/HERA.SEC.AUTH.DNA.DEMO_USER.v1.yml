@@ -1,0 +1,91 @@
+smart_code: HERA.SEC.AUTH.DNA.DEMO_USER.V1
+intent: >
+  Create and authenticate demo users following HERA Authorization DNA pattern with proper identity bridge and multi-tenant isolation.
+scope:
+  in_scope:
+    - Platform organization setup
+    - Demo user entity creation with identity bridge
+    - Organization anchor and membership relationships
+    - Session management with JWT-like tokens
+    - Cookie-based authentication for demos
+  out_of_scope:
+    - Real user authentication (Supabase auth)
+    - Payment processing
+    - Long-term session storage
+preconditions:
+  - catalog contains ENTITY_TYPE: [user, organization_anchor]
+  - catalog contains REL_TYPE: [membership]
+  - Platform organization exists (00000000-0000-0000-0000-000000000000)
+  - permissions: [platform_admin]
+invariants:
+  - all demo users belong to Platform organization
+  - all memberships have expiration dates
+  - identity bridge via metadata.supabase_user_id
+  - smart codes follow HERA.SEC.* pattern
+inputs:
+  required:
+    - name: demo_type
+      type: enum[salon-receptionist,restaurant-manager,healthcare-provider]
+      where: payload
+      description: Type of demo user to create/authenticate
+    - name: target_organization_id
+      type: uuid
+      where: catalog/config
+      description: Organization the demo user will access
+  optional:
+    - name: session_duration_minutes
+      type: number
+      where: payload
+      default: 30
+      description: Demo session duration
+    - name: auto_extend
+      type: boolean
+      where: payload
+      default: true
+      description: Automatically extend expired sessions
+outputs:
+  entities_created:
+    - user entity in Platform org
+    - organization anchor (if not exists)
+  transactions_emitted:
+    - HERA.SEC.DEMO.SESSION.START.V1 (audit trail)
+  cookies_set:
+    - hera-demo-session (JWT-like structure)
+  redirects:
+    - to industry-specific dashboard
+happy_path:
+  - step: Check if Platform org exists, create if needed
+  - step: Create/find demo user entity with identity bridge metadata
+  - step: Create/find organization anchor entity
+  - step: Create/update membership relationship with expiration
+  - step: Generate session token with scopes
+  - step: Set secure session cookie
+  - step: Log session start transaction
+  - step: Redirect to appropriate dashboard
+errors:
+  - code: PLATFORM_ORG_MISSING
+    when: Platform organization not found and cannot create
+    action: fail with setup instructions
+  - code: INVALID_DEMO_TYPE
+    when: demo_type not in allowed list
+    action: fail with available options
+  - code: TARGET_ORG_NOT_FOUND
+    when: target organization doesn't exist
+    action: fail with organization list
+  - code: MEMBERSHIP_CREATE_FAILED
+    when: cannot create membership relationship
+    action: retry with service role
+observability:
+  logs: [demo_user_created, session_started, membership_extended, auth_redirected]
+  audit_json: true
+  metrics: [demo_sessions_created, demo_sessions_extended]
+example_payload:
+  demo_type: salon-receptionist
+  session_duration_minutes: 30
+  auto_extend: true
+checks:
+  - description: Demo user has proper identity bridge
+  - description: Membership expires after session duration
+  - description: Cookie contains all required fields
+  - description: Audit trail transaction created
+  - description: Redirect works to correct dashboard

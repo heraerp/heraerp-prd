@@ -146,7 +146,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: tax_amount,
           line_amount: tax_amount,
-          smart_code: 'HERA.SALON.TAX.VAT.TXN.v1'
+          smart_code: 'HERA.SALON.TAX.VAT.TXN.V1'
         })
       }
 

@@ -63,7 +63,7 @@ export async function createFurnitureDemoData(organizationId: string) {
         entity_type: 'product',
         entity_name: product.name,
         entity_code: product.code,
-        smart_code: 'HERA.FURNITURE.MASTER.PRODUCT.FINISHED_GOOD.v1',
+        smart_code: 'HERA.FURNITURE.MASTER.PRODUCT.FINISHED_GOOD.V1',
         metadata: {
           product_type: 'FINISHED_GOOD',
           hsn_code: product.hsn,
@@ -134,7 +134,7 @@ export async function createFurnitureDemoData(organizationId: string) {
         entity_type: 'product',
         entity_name: material.name,
         entity_code: material.code,
-        smart_code: 'HERA.FURNITURE.MASTER.PRODUCT.RAW_MATERIAL.v1',
+        smart_code: 'HERA.FURNITURE.MASTER.PRODUCT.RAW_MATERIAL.V1',
         metadata: {
           product_type: 'RAW_MATERIAL',
           hsn_code: material.hsn,

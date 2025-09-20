@@ -1,4 +1,4 @@
-smart_code: HERA.CRM.MDM.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.CRM.MDM.ENTITY_CATALOG.CORE.V1
 items:
   # ---- TYPES (governance) ----
   - { slug: account,           entity_type: ENTITY_TYPE,      name: "Account" }

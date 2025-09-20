@@ -642,7 +642,7 @@ export class UniversalConfigService {
     try {
       await universalApi.createTransaction({
         transaction_type: 'config_decision',
-        smart_code: 'HERA.UNIV.CONFIG.DECISION.AUDIT.v1',
+        smart_code: 'HERA.UNIV.CONFIG.DECISION.AUDIT.V1',
         organization_id: this.organizationId!,
         total_amount: 0,
         metadata: {

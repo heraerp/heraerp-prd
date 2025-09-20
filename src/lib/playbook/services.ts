@@ -2,6 +2,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_PLAYBOOK_BASE_URL
 const API_KEY = process.env.NEXT_PUBLIC_PLAYBOOK_API_KEY
 const hasEnv = Boolean(BASE_URL && API_KEY)
 
+// In-memory store for mock data persistence
+const mockDataStore: {
+  services: Map<string, any[]> // organizationId -> services array
+} = {
+  services: new Map()
+}
+
 function withParams(path: string, params: Record<string, any>) {
   const url = new URL(path, BASE_URL || 'http://mock.local/')
   Object.entries(params).forEach(([k, v]) => {
@@ -43,6 +50,7 @@ function generateMockServices(count: number, organizationId: string) {
     name: svc.name,
     code: `SVC${String(i + 1).padStart(3, '0')}`,
     status: i % 10 === 0 ? 'archived' : 'active',
+    price: svc.price, // Include the price from the service data
     duration_mins: svc.duration,
     category: categories[Math.floor(Math.random() * categories.length)],
     created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
@@ -65,48 +73,9 @@ export async function listServices(params: {
   offset?: number
 }) {
   if (!hasEnv) {
-    console.log('📦 Services: Using mock data (no Playbook env)')
-    const allServices = generateMockServices(25, params.organization_id)
-
-    // Filter by status
-    let filtered = allServices
-    if (params.status && params.status !== 'all') {
-      filtered = filtered.filter(s => s.status === params.status)
-    }
-
-    // Search
-    if (params.q) {
-      const query = params.q.toLowerCase()
-      filtered = filtered.filter(
-        s =>
-          s.name.toLowerCase().includes(query) ||
-          s.code?.toLowerCase().includes(query) ||
-          s.category?.toLowerCase().includes(query)
-      )
-    }
-
-    // Category filter
-    if (params.category_id) {
-      filtered = filtered.filter(s => s.category === params.category_id)
-    }
-
-    // Sort
-    if (params.sort) {
-      const [field, order] = params.sort.split(':')
-      filtered.sort((a, b) => {
-        const aVal = a[field as keyof typeof a]
-        const bVal = b[field as keyof typeof b]
-        if (order === 'desc') return bVal > aVal ? 1 : -1
-        return aVal > bVal ? 1 : -1
-      })
-    }
-
-    // Paginate
-    const offset = params.offset || 0
-    const limit = params.limit || 25
-    const items = filtered.slice(offset, offset + limit)
-
-    return { items, total: filtered.length }
+    console.error('❌ Playbook API environment variables not configured')
+    console.error('Please set NEXT_PUBLIC_PLAYBOOK_BASE_URL and NEXT_PUBLIC_PLAYBOOK_API_KEY')
+    throw new Error('Playbook API not configured for production use')
   }
 
   try {
@@ -153,15 +122,7 @@ export async function createService(payload: {
   metadata?: any
 }) {
   if (!hasEnv) {
-    console.log('✏️ CreateService: Mock mode', payload)
-    return {
-      id: `SRV-${Date.now()}`,
-      ...payload,
-      smart_code: 'HERA.SALON.SERVICE.V1',
-      status: payload.status || 'active',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
+    throw new Error('Playbook API not configured for production use')
   }
 
   try {
@@ -201,8 +162,7 @@ export async function updateService(
   }>
 ) {
   if (!hasEnv) {
-    console.log('✏️ UpdateService: Mock mode', id, patch)
-    return { id, ...patch, updated_at: new Date().toISOString() }
+    throw new Error('Playbook API not configured for production use')
   }
 
   try {
@@ -230,8 +190,7 @@ export async function archiveService(id: string, archived = true) {
 
 export async function upsertDynamicData(entity_id: string, smart_code: string, data: any) {
   if (!hasEnv) {
-    console.log('✏️ UpsertDynamicData: Mock mode', { entity_id, smart_code, data })
-    return { success: true }
+    throw new Error('Playbook API not configured for production use')
   }
 
   try {
@@ -259,19 +218,7 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
 
 export async function getDynamicData(entity_ids: string[], smart_code: string) {
   if (!hasEnv) {
-    console.log('📦 GetDynamicData: Mock mode', { entity_ids, smart_code })
-    // Return mock dynamic data
-    const mockData: Record<string, any> = {}
-    entity_ids.forEach((id, i) => {
-      if (smart_code === 'HERA.SALON.SERVICE.PRICE.V1') {
-        mockData[id] = { value: 50 + i * 25, currency: 'AED', effective_from: '2024-01-01' }
-      } else if (smart_code === 'HERA.SALON.SERVICE.TAX.V1') {
-        mockData[id] = { rate: 5 }
-      } else if (smart_code === 'HERA.SALON.SERVICE.COMMISSION.V1') {
-        mockData[id] = { type: i % 2 === 0 ? 'percent' : 'flat', value: i % 2 === 0 ? 20 : 15 }
-      }
-    })
-    return mockData
+    throw new Error('Playbook API not configured for production use')
   }
 
   try {

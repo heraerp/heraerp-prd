@@ -1,0 +1,110 @@
+smart_code: HERA.UNIV.WF.FEATURE.FLAGS.V1
+intent: Feature flags and kill-switches for workflow definitions (production safety).
+scope:
+  in_scope:
+    - global pause per definition_code
+    - per-org workflow enabling/disabling
+    - emergency stop functionality
+    - feature flag validation
+  out_of_scope:
+    - instance state changes
+    - data migration
+    - complex business logic
+preconditions:
+  - permissions: system or admin
+  - feature flags stored in core_dynamic_data
+invariants:
+  - feature flags apply before workflow start
+  - existing instances not affected by flags
+  - org-specific overrides take precedence
+inputs:
+  required:
+    - action: enum[check, set, get, list]
+  conditional:
+    - definition_code: string                      # required for check/set/get
+    - organization_id: uuid                        # required for per-org flags
+    - enabled: boolean                             # required for set action
+  optional:
+    - global: boolean                              # global vs org-specific flag
+    - reason: string                               # reason for flag change
+    - set_by: uuid                                 # user setting the flag
+happy_path:
+  # Check if workflow is enabled
+  - if action == 'check':
+    - step: load global flag for definition_code (key: wf_global_enabled_{code})
+    - step: if organization_id provided, load org flag (key: wf_org_enabled_{org}_{code})
+    - step: return enabled status (org overrides global)
+    
+  # Set feature flag
+  - if action == 'set':
+    - step: determine flag key based on global/org scope
+    - step: create/update core_dynamic_data with enabled value
+    - step: log flag change with reason and set_by
+    
+  # Get current flag value
+  - if action == 'get':
+    - step: load flag value for definition_code/org combination
+    - step: return current status with metadata
+    
+  # List all flags
+  - if action == 'list':
+    - step: query all workflow feature flags
+    - step: return organized by global/org scope
+outputs:
+  response:
+    action: string
+    enabled: boolean
+    scope: enum[global, organization]
+    definition_code: string
+    organization_id: uuid
+    set_at: timestamp
+    set_by: uuid
+    reason: string
+errors:
+  - code: INVALID_ACTION
+    when: action not in allowed values
+    action: return 400
+  - code: MISSING_REQUIRED_PARAMS
+    when: required parameters not provided
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks admin permissions
+    action: return 403
+observability:
+  logs:
+    - feature_flag_checked: { definition_code, organization_id, enabled }
+    - feature_flag_set: { definition_code, organization_id, enabled, set_by, reason }
+  audit_json: true
+  metrics:
+    - feature_flag_checks_count by definition_code
+    - feature_flag_changes_count by definition_code
+flag_keys:
+  global: "wf_global_enabled_{definition_code}"
+  organization: "wf_org_enabled_{organization_id}_{definition_code}"
+  emergency_stop: "wf_emergency_stop_all"
+precedence_rules:
+  - emergency_stop overrides all other flags
+  - organization flags override global flags
+  - default enabled if no flags set
+example_payloads:
+  check_global:
+    action: "check"
+    definition_code: "LEAVE_APPROVAL"
+    global: true
+  set_org_disable:
+    action: "set"
+    definition_code: "MEMBERSHIP_RENEWAL"
+    organization_id: "123e4567-e89b-12d3-a456-426614174000"
+    enabled: false
+    reason: "Maintenance window for system upgrade"
+    set_by: "admin-user-id"
+  emergency_stop:
+    action: "set"
+    definition_code: "ALL"
+    enabled: false
+    global: true
+    reason: "Emergency system-wide stop"
+checks:
+  - description: verify feature flags are checked before workflow start
+  - description: ensure org-specific flags override global settings
+  - description: validate emergency stop affects all workflows

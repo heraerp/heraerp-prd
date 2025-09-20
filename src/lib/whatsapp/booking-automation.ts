@@ -1,5 +1,5 @@
-import { MCPTools } from '@/src/lib/mcp/whatsapp-mcp-tools'
-import { ClaudeWhatsAppService } from '@/src/lib/ai/claude-whatsapp-service'
+import { MCPTools } from '@/lib/mcp/whatsapp-mcp-tools'
+import { ClaudeWhatsAppService } from '@/lib/ai/claude-whatsapp-service'
 
 export interface BookingScenario {
   id: string

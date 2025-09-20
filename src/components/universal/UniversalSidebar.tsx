@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { X, Grid3x3, Menu } from 'lucide-react'
 
 interface SidebarItem {

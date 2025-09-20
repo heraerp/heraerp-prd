@@ -7,10 +7,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { Command, Activity, AlertTriangle, CheckCircle, X } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
 interface HealthStatus {

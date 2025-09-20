@@ -1,5 +1,7 @@
 import { supabase } from './supabase'
+import { getSupabaseWithOrg } from './supabase-with-org'
 import { heraValidationService } from './services/hera-validation-service'
+import { wrapRLSQuery } from './supabase-rls-handler'
 
 /**
  * 🧬 HERA Universal API v2 - Enterprise Grade
@@ -202,7 +204,7 @@ class UniversalAPIv2 {
   }
 
   private applyQueryOptions(query: any, options: QueryOptions) {
-    // Organization filter
+    // Organization filter - HERA Rule 3: Always enforce org isolation
     if (options.organizationId || this.organizationId) {
       query = query.eq('organization_id', options.organizationId || this.organizationId)
     }
@@ -210,12 +212,22 @@ class UniversalAPIv2 {
     // Additional filters
     if (options.filters) {
       Object.entries(options.filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            query = query.in(key, value)
-          } else {
-            query = query.eq(key, value)
+        if (value === undefined || value === null) {
+          // Skip undefined/null values
+          return
+        }
+        
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            // Empty array: no records can match, short-circuit
+            // Setting an impossible condition to return empty result
+            query = query.eq('id', 'IMPOSSIBLE_ID_MATCH')
+            return
           }
+          // Use PostgREST .in() for array filters
+          query = query.in(key, value)
+        } else {
+          query = query.eq(key, value)
         }
       })
     }
@@ -425,7 +437,9 @@ class UniversalAPIv2 {
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
-        let query = supabase.from('core_entities').select('*')
+        // Use organization-aware Supabase client for RLS
+        const orgSupabase = getSupabaseWithOrg(orgId)
+        let query = orgSupabase.from('core_entities').select('*')
 
         // Apply standard query options
         query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
@@ -1364,6 +1378,64 @@ class UniversalAPIv2 {
     }
   }
 
+  async getDynamicData(organizationId: string, fieldName: string): Promise<UniversalResponse<DynamicData>> {
+    try {
+      const orgId = organizationId || this.ensureOrganizationId()
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Universal API - getDynamicData:', {
+          fieldName,
+          orgId,
+          timestamp: new Date().toISOString(),
+          caller: new Error().stack?.split('\n')[2]
+        })
+      }
+
+      if (this.mockMode) {
+        return { success: true, data: null, error: null }
+      }
+
+      const { result, executionTime } = await this.executeWithTiming(async () => {
+        // Always use the organization-aware client
+        const client = getSupabaseWithOrg(orgId)
+        
+        // Use RLS-safe query wrapper
+        const data = await wrapRLSQuery(
+          () => client
+            .from('core_dynamic_data')
+            .select('*')
+            .eq('organization_id', orgId)
+            .eq('field_name', fieldName)
+            .maybeSingle(),
+          { table: 'core_dynamic_data', field: fieldName }
+        )
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('📊 getDynamicData result:', {
+            fieldName,
+            found: !!data,
+            recordId: data?.id
+          })
+        }
+
+        return data
+      })
+
+      return {
+        success: true,
+        data: result,
+        error: null,
+        metadata: { executionTime }
+      }
+    } catch (error) {
+      return {
+        success: false,
+        data: null,
+        error: this.standardizeError(error)
+      }
+    }
+  }
+
   // ==================== CRUD Operations for core_organizations ====================
 
   async getOrganization(id: string): Promise<UniversalResponse<Organization>> {
@@ -1373,13 +1445,25 @@ class UniversalAPIv2 {
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
-        const { data, error } = await supabase
+        // Use organization-aware Supabase client for RLS
+        const orgSupabase = getSupabaseWithOrg(id)
+        
+        const { data, error } = await orgSupabase
           .from('core_organizations')
           .select('*')
           .eq('id', id)
-          .single()
+          .maybeSingle() // Use maybeSingle to handle missing records
 
-        if (error) throw error
+        // Don't throw error if no record found or RLS issue - just return null
+        if (error) {
+          // Handle app.current_org RLS errors gracefully
+          if (error.message?.includes('app.current_org') || error.message?.includes('unrecognized configuration parameter')) {
+            console.warn('⚠️ RLS policy issue detected, returning null. Please update RLS policies in Supabase Dashboard.')
+            return null
+          }
+          // PGRST116 = no rows found
+          if (error.code !== 'PGRST116') throw error
+        }
         return data
       })
 
@@ -1894,6 +1978,16 @@ class UniversalAPIv2 {
     organizationId?: string
   ): Promise<UniversalResponse<any[]>> {
     try {
+      // Check for empty array filters early
+      if (filter && typeof filter === 'object') {
+        for (const [key, value] of Object.entries(filter)) {
+          if (Array.isArray(value) && value.length === 0) {
+            // Empty array filter - return empty result immediately
+            return { success: true, data: [], error: null }
+          }
+        }
+      }
+
       const options: QueryOptions = {
         organizationId: organizationId || this.organizationId || undefined,
         filters: filter
@@ -1911,7 +2005,15 @@ class UniversalAPIv2 {
         case 'core_dynamic_data':
           // Special handling for dynamic data
           if (filter?.entity_id) {
-            return await this.getDynamicFields(filter.entity_id)
+            // Check if entity_id is array and empty
+            if (Array.isArray(filter.entity_id) && filter.entity_id.length === 0) {
+              return { success: true, data: [], error: null }
+            }
+            // If it's a single ID and not an array, use getDynamicFields for backwards compatibility
+            if (!Array.isArray(filter.entity_id)) {
+              return await this.getDynamicFields(filter.entity_id)
+            }
+            // For arrays, fall through to generic query handling below
           }
         // Fall through to generic query
         default:
@@ -1920,10 +2022,27 @@ class UniversalAPIv2 {
             return { success: true, data: [], error: null }
           }
 
-          const { data, error } = await supabase
-            .from(table)
-            .select('*')
-            .eq('organization_id', options.organizationId || this.organizationId)
+          let query = supabase.from(table).select('*')
+          
+          // Always apply organization filter first (HERA Rule 3)
+          query = query.eq('organization_id', options.organizationId || this.organizationId)
+          
+          // Apply additional filters
+          if (filter) {
+            Object.entries(filter).forEach(([key, value]) => {
+              if (value !== undefined && value !== null && key !== 'organization_id') {
+                if (Array.isArray(value)) {
+                  if (value.length > 0) {
+                    query = query.in(key, value)
+                  }
+                } else {
+                  query = query.eq(key, value)
+                }
+              }
+            })
+          }
+
+          const { data, error } = await query
 
           if (error) throw error
           return { success: true, data: data || [], error: null }

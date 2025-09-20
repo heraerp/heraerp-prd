@@ -4,47 +4,70 @@ import { createClient } from '@supabase/supabase-js'
 const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
-// Create a singleton instance that can be initialized later
-let supabaseInstance: ReturnType<typeof createClient> | null = null
+// Use global singleton to prevent multiple instances across hot reloads
+const globalForSupabase = globalThis as unknown as {
+  supabaseInstance?: ReturnType<typeof createClient>
+}
 
 // Initialize Supabase client only when needed
 export const getSupabase = () => {
-  if (!supabaseInstance) {
-    const url = getSupabaseUrl()
-    const key = getSupabaseAnonKey()
-
-    // Only create client if we have valid configuration
-    if (url && key && !url.includes('placeholder')) {
-      supabaseInstance = createClient(url, key, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        }
-      })
-
-      // Log configuration status (not the actual values)
-      if (typeof window !== 'undefined') {
-        console.log('Supabase client configuration:', {
-          hasUrl: !!url,
-          hasKey: !!key,
-          projectId: url.includes('supabase.co')
-            ? url.split('.')[0].replace('https://', '')
-            : 'unknown'
-        })
-      }
-    } else {
-      // For build time, create a no-op client
-      const noop = () => Promise.reject(new Error('Supabase not configured'))
-      supabaseInstance = {
-        from: () => ({ select: noop, insert: noop, update: noop, delete: noop }),
-        auth: { getSession: noop, signIn: noop, signOut: noop },
-        storage: { from: () => ({ upload: noop, download: noop }) },
-        rpc: noop
-      } as any
-    }
+  // If already initialized globally, return the instance
+  if (globalForSupabase.supabaseInstance) {
+    return globalForSupabase.supabaseInstance
   }
-  return supabaseInstance
+  
+  
+  const url = getSupabaseUrl()
+  const key = getSupabaseAnonKey()
+
+  // Only create client if we have valid configuration
+  if (url && key && !url.includes('placeholder')) {
+    globalForSupabase.supabaseInstance = createClient(url, key, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storageKey: 'hera-supabase-auth', // Consistent storage key
+        flowType: 'implicit' // Disable automatic session recovery
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'hera-erp'
+        }
+      },
+      db: {
+        schema: 'public'
+      }
+    })
+
+    // Log configuration status (not the actual values)
+    if (typeof window !== 'undefined') {
+      console.log('🔧 Supabase client configuration:', {
+        hasUrl: !!url,
+        hasKey: !!key,
+        projectId: url.includes('supabase.co')
+          ? url.split('.')[0].replace('https://', '')
+          : 'unknown',
+        storageKey: 'hera-supabase-auth',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV
+      })
+      
+      // Debug: Check if this is being called multiple times
+      console.log('📍 Supabase client created from:', new Error().stack?.split('\n')[2])
+    }
+  } else {
+    // For build time, create a no-op client
+    const noop = () => Promise.reject(new Error('Supabase not configured'))
+    globalForSupabase.supabaseInstance = {
+      from: () => ({ select: noop, insert: noop, update: noop, delete: noop }),
+      auth: { getSession: noop, signIn: noop, signOut: noop },
+      storage: { from: () => ({ upload: noop, download: noop }) },
+      rpc: noop
+    } as any
+  }
+  
+  return globalForSupabase.supabaseInstance
 }
 
 // Export a proxy that initializes on first use

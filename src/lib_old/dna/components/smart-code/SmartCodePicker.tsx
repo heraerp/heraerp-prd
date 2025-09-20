@@ -130,7 +130,7 @@ const industries = [
 const smartCodes: SmartCode[] = [
   // Entity codes
   {
-    code: 'HERA.CRM.CUST.ENT.PROF.v1',
+    code: 'HERA.CRM.CUST.ENT.PROF.V1',
     name: 'Customer Profile Entity',
     description: 'Professional customer profile with full details',
     category: categories[0],
@@ -139,7 +139,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.CRM.VEND.ENT.PROF.v1',
+    code: 'HERA.CRM.VEND.ENT.PROF.V1',
     name: 'Vendor Profile Entity',
     description: 'Vendor/supplier profile with payment terms',
     category: categories[0],
@@ -148,7 +148,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.INV.PROD.ENT.STD.v1',
+    code: 'HERA.INV.PROD.ENT.STD.V1',
     name: 'Product Entity',
     description: 'Standard product with inventory tracking',
     category: categories[0],
@@ -159,7 +159,7 @@ const smartCodes: SmartCode[] = [
   
   // Transaction codes
   {
-    code: 'HERA.FIN.SALE.TXN.INV.v1',
+    code: 'HERA.FIN.SALE.TXN.INV.V1',
     name: 'Sales Invoice Transaction',
     description: 'Customer sales invoice with line items',
     category: categories[1],
@@ -168,7 +168,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.FIN.PUR.TXN.PO.v1',
+    code: 'HERA.FIN.PUR.TXN.PO.V1',
     name: 'Purchase Order Transaction',
     description: 'Purchase order to vendor',
     category: categories[1],
@@ -177,7 +177,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.FIN.PAY.TXN.RCP.v1',
+    code: 'HERA.FIN.PAY.TXN.RCP.V1',
     name: 'Payment Receipt Transaction',
     description: 'Customer payment receipt',
     category: categories[1],
@@ -188,7 +188,7 @@ const smartCodes: SmartCode[] = [
   
   // Restaurant specific
   {
-    code: 'HERA.REST.SALE.TXN.ORDER.v1',
+    code: 'HERA.REST.SALE.TXN.ORDER.V1',
     name: 'Restaurant Order',
     description: 'Dine-in or takeout order',
     category: categories[1],
@@ -197,7 +197,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.REST.INV.ENT.INGR.v1',
+    code: 'HERA.REST.INV.ENT.INGR.V1',
     name: 'Food Ingredient',
     description: 'Restaurant ingredient with units',
     category: categories[0],
@@ -208,7 +208,7 @@ const smartCodes: SmartCode[] = [
   
   // Salon specific
   {
-    code: 'HERA.SALON.SVC.TXN.APPT.v1',
+    code: 'HERA.SALON.SVC.TXN.APPT.V1',
     name: 'Salon Appointment',
     description: 'Service appointment booking',
     category: categories[1],
@@ -217,7 +217,7 @@ const smartCodes: SmartCode[] = [
     version: 1
   },
   {
-    code: 'HERA.SALON.HR.ENT.STYL.v1',
+    code: 'HERA.SALON.HR.ENT.STYL.V1',
     name: 'Stylist Profile',
     description: 'Hair stylist employee profile',
     category: categories[0],
@@ -630,7 +630,7 @@ export function SmartCodePicker({
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            Format: HERA.INDUSTRY.MODULE.FUNCTION.TYPE.VARIANT.v1
+            Format: HERA.INDUSTRY.MODULE.FUNCTION.TYPE.VARIANT.V1
           </p>
         </div>
       )}

@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
             entity_type: 'audit_client',
             entity_code: 'DEMO-001',
             entity_name: 'Demo Manufacturing Ltd',
-            smart_code: 'HERA.AUD.CLI.ENT.DEMO.v1',
+            smart_code: 'HERA.AUD.CLI.ENT.DEMO.V1',
             status: 'active',
             metadata: {
               client_type: 'private',
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
             entity_type: 'audit_client',
             entity_code: 'DEMO-002',
             entity_name: 'Demo Trading Co',
-            smart_code: 'HERA.AUD.CLI.ENT.DEMO.v1',
+            smart_code: 'HERA.AUD.CLI.ENT.DEMO.V1',
             status: 'prospective',
             metadata: {
               client_type: 'private',

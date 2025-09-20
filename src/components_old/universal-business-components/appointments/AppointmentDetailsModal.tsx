@@ -36,7 +36,7 @@ import {
 } from '@/lib/universal-business-systems/appointments/universal-appointment-system'
 
 // HERA Universal Business Component - Appointment Details Modal
-// Smart Code: HERA.UNIV.CRM.APT.MODAL.v1
+// Smart Code: HERA.UNIV.CRM.APT.MODAL.V1
 // Industry Agnostic - Works for ANY business type
 
 interface AppointmentDetailsModalProps {

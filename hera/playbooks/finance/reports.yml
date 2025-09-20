@@ -1,6 +1,6 @@
-smart_code: HERA.FINANCE.REPORTS.CORE.DEFS.v1
+smart_code: HERA.FINANCE.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.FINANCE.REPORT.REVENUE_BY_DAY.CORE.v1
+  - report_code: HERA.FINANCE.REPORT.REVENUE_BY_DAY.CORE.V1
     description: "Daily revenue by currency"
     params_schema:
       from: { type: date }

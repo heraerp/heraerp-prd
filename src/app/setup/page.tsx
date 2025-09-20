@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import {
   ArrowRight,
   Store,

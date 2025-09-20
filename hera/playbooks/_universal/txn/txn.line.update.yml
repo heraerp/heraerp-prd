@@ -1,0 +1,100 @@
+smart_code: HERA.UNIV.TXN.LINE.UPDATE.V1
+intent: Update line quantity/dynamic attributes safely.
+scope:
+  in_scope:
+    - update line quantity
+    - patch dynamic attributes (merge semantics)
+    - update staff assignments
+    - modify line metadata
+  out_of_scope:
+    - changing line type (smart_code immutable)
+    - changing entity reference
+    - direct price override (use adjustments unless profile allows)
+    - line deletion (use txn.line.remove)
+preconditions:
+  - permissions: [$PROFILE.required_role_write]
+  - transaction header exists and belongs to organization
+  - header.state in $PROFILE.line_update_allowed_states
+  - line exists in transaction
+invariants:
+  - no unit_price override unless $PROFILE.allows_price_override == true
+  - if price override needed -> require ADJUSTMENT line according to profile
+  - line smart_code and entity_id are immutable
+  - audit trail maintained for all updates
+inputs:
+  required:
+    - organization_id: uuid
+    - transaction_id: uuid
+    - line_id: uuid
+    - patch: object                                # fields to update
+  optional:
+    - version: integer                             # for optimistic locking
+happy_path:
+  - step: verify transaction and line exist and belong to organization_id
+  - step: check transaction state in $PROFILE.line_update_allowed_states
+  - step: validate permissions against $PROFILE.required_role_write
+  - step: if version provided, check against current line version
+  - step: validate patch fields against allowed updates
+  - step: if patch.unit_price and !$PROFILE.allows_price_override, reject
+  - step: if patch.quantity, recalculate line_amount
+  - step: apply allowed patch to universal_transaction_lines
+  - step: if $PROFILE.after_update, queue listed procedures (e.g., reprice)
+  - step: increment line version
+  - step: emit update event for audit trail
+outputs:
+  lines_updated:
+    - universal_transaction_lines: 1
+  queued_procedures: [$PROFILE.after_update]
+  response:
+    line_id: uuid
+    updated_fields: array
+    new_amount: decimal
+    new_version: integer
+    updated_at: timestamp
+errors:
+  - code: TRANSACTION_NOT_FOUND
+    when: transaction_id does not exist or wrong organization
+    action: return 404
+  - code: LINE_NOT_FOUND
+    when: line_id does not exist in transaction
+    action: return 404
+  - code: INVALID_TRANSACTION_STATE
+    when: header.state not in $PROFILE.line_update_allowed_states
+    action: return 409 with allowed states
+  - code: PRICE_OVERRIDE_NOT_ALLOWED
+    when: patch.unit_price and !$PROFILE.allows_price_override
+    action: return 400 suggesting adjustment line
+  - code: IMMUTABLE_FIELD
+    when: attempt to change immutable field (smart_code, entity_id)
+    action: return 400 with immutable fields list
+  - code: VERSION_CONFLICT
+    when: version does not match current
+    action: return 409 with current version
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_write
+    action: return 403 with required permissions
+observability:
+  logs:
+    - line_updated: { transaction_id, line_id, updated_fields, organization_id }
+    - price_override_rejected: { transaction_id, line_id, reason }
+    - after_procedures_queued: { transaction_id, procedures }
+  audit_json: true
+  metrics:
+    - line_update_count by field
+    - price_override_attempt_count
+    - version_conflict_count
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  transaction_id: "234e5678-e89b-12d3-a456-426614174000"
+  line_id: "345e6789-e89b-12d3-a456-426614174000"
+  patch:
+    quantity: 2
+    dynamic:
+      staff_id: "567e8901-e89b-12d3-a456-426614174000"
+      notes: "Customer requested double service time"
+  version: 1
+checks:
+  - description: verify line ownership by transaction
+  - description: validate patch contains only allowed fields
+  - description: ensure quantity updates trigger amount recalculation
+  - description: check version for optimistic locking

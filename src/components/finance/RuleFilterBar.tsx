@@ -7,18 +7,18 @@
 'use client'
 
 import React from 'react'
-import { Input } from '@/src/components/ui/input'
-import { Button } from '@/src/components/ui/button'
-import { Switch } from '@/src/components/ui/switch'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import { Search, Filter, RefreshCw } from 'lucide-react'
 
 export type CategoryFilter = 'all' | 'pos' | 'payments' | 'inventory' | 'commissions' | 'fiscal' | 'other'

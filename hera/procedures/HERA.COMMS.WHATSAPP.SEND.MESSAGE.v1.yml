@@ -1,0 +1,75 @@
+smart_code: HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1
+intent: Send WhatsApp message to employee about leave status.
+scope:
+  in_scope:
+    - send WhatsApp notification
+    - template-based messaging
+    - delivery tracking
+  out_of_scope:
+    - SMS fallback
+    - email notifications
+    - rich media messages
+preconditions:
+  - employee has valid phone number
+  - WhatsApp service configured
+  - message template exists
+invariants:
+  - message delivery is tracked
+  - org isolation maintained
+  - communication preferences respected
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - employee_id: uuid
+      - message_type: string                       # approved, rejected, reminder
+      - leave_details: object
+  optional:
+    - template_override: string
+    - custom_message: string
+happy_path:
+  - step: load employee entity and phone number from core_dynamic_data
+  - step: check employee communication preferences
+  - step: select message template based on message_type
+  - step: render template with leave_details
+  - step: send message via WhatsApp API
+  - step: create communication transaction for tracking
+  - step: log delivery status
+outputs:
+  transactions_created:
+    - universal_transactions: 1                    # communication record
+  response:
+    message_id: uuid
+    phone_number: string
+    delivered: boolean
+    delivery_timestamp: timestamp
+errors:
+  - code: EMPLOYEE_NO_PHONE
+    when: employee has no phone number
+    action: log error and continue workflow
+  - code: WHATSAPP_SERVICE_ERROR
+    when: WhatsApp API failure
+    action: retry once, then log failure
+  - code: COMMUNICATION_BLOCKED
+    when: employee opted out of notifications
+    action: log opt-out and skip sending
+observability:
+  logs:
+    - whatsapp_message_sent: { employee_id, message_type, phone_number, delivery_status }
+  audit_json: true
+  metrics:
+    - whatsapp_message_count by message_type
+    - delivery_success_rate
+    - opt_out_rate
+example_context:
+  employee_id: "emp-123e4567-e89b-12d3-a456-426614174000"
+  message_type: "approved"
+  leave_details:
+    leave_type: "annual"
+    start_date: "2024-02-01"
+    end_date: "2024-02-05"
+    days: 5
+checks:
+  - description: verify employee phone number is valid
+  - description: respect communication preferences
+  - description: track delivery for audit

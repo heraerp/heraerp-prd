@@ -1,0 +1,126 @@
+smart_code: HERA.SALON.PAYMENT.INTENT.CREATE.V1
+intent: >
+  Create a payment intent for checkout; no money moves yet.
+  Supports card, cash, gift card, and deposit payment methods.
+
+scope:
+  in_scope:
+    - Payment intent creation and tracking
+    - Method-specific intent handling
+    - Idempotency key management
+    - Intent amount validation
+  out_of_scope:
+    - Actual payment capture (separate procedure)
+    - Payment gateway integration details
+    - Refund processing
+    - Payment reconciliation
+
+preconditions:
+  - checkout context exists and is OPEN
+  - payment amount > 0
+  - payment method is supported
+  - has_permissions: [pos_operator, payment_create]
+
+invariants:
+  - payment intents are idempotent by Idempotency-Key
+  - intent amount matches requested amount
+  - intent is linked to checkout context
+  - no money moves during intent creation
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for payment processing
+    - name: checkout_id
+      type: uuid
+      where: payload
+      description: Checkout context for this payment
+    - name: method
+      type: enum[card,cash,giftcard,deposit]
+      where: payload
+      description: Payment method for this intent
+    - name: amount
+      type: number
+      where: payload
+      description: Payment amount (must be positive)
+  optional:
+    - name: metadata
+      type: object
+      where: payload
+      default: {}
+      description: Payment-specific metadata
+    - name: idempotency_key
+      type: string
+      where: headers
+      description: Idempotency key for safe retries
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: payment_intent
+      description: Payment intent transaction
+      smart_codes:
+        - HERA.SALON.PAYMENT.INTENT.CARD.V1
+        - HERA.SALON.PAYMENT.INTENT.CASH.V1
+        - HERA.SALON.PAYMENT.INTENT.GIFTCARD.V1
+        - HERA.SALON.PAYMENT.INTENT.DEPOSIT.V1
+  side_effects:
+    - create payment gateway intent (for card payments)
+    - store intent in payment tracking
+    - link intent to checkout context
+
+happy_path:
+  - step: Validate checkout context exists and is OPEN
+  - step: Validate payment method and amount
+  - step: Check idempotency key for duplicate requests
+  - step: Create method-specific payment intent
+  - step: For card payments, create gateway intent and get client_secret
+  - step: Store intent transaction with proper smart code
+  - step: Link intent to checkout context
+  - step: Return payment_intent_id and client_secret (if applicable)
+
+errors:
+  - code: CHECKOUT_NOT_FOUND
+    when: checkout_id does not exist
+    action: return error with valid checkout requirements
+  - code: CHECKOUT_NOT_OPEN
+    when: checkout context is not in OPEN status
+    action: return error - checkout may be completed or cancelled
+  - code: INVALID_PAYMENT_METHOD
+    when: payment method not in supported list
+    action: return error with supported methods
+  - code: INVALID_PAYMENT_AMOUNT
+    when: amount <= 0 or exceeds reasonable limits
+    action: return error with amount validation rules
+  - code: PAYMENT_GATEWAY_ERROR
+    when: external payment gateway fails to create intent
+    action: return error with gateway details
+  - code: IDEMPOTENCY_CONFLICT
+    when: same key used with different parameters
+    action: return error - same key requires same parameters
+  - code: DUPLICATE_INTENT
+    when: idempotency key matches existing successful intent
+    action: return existing intent details
+
+observability:
+  logs: [payment_intent_requested, method_validated, gateway_called, intent_created]
+  audit_json: true
+  metrics: [payment_intent_duration_ms, payment_method_usage, intent_amount]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  checkout_id: "checkout-123"
+  method: "card"
+  amount: 116.00
+  metadata:
+    gateway_provider: "stripe"
+    customer_id: "cus_123"
+
+checks:
+  - description: Payment intent created with correct method and amount
+  - description: Intent properly linked to checkout context
+  - description: Idempotency key prevents duplicate intents
+  - description: Client secret returned for card payments
+  - description: No money movement during intent creation

@@ -7,7 +7,7 @@
 'use client'
 
 import React from 'react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 import { Building2, Plus, Settings, Users, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 

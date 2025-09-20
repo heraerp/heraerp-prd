@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { universalApi } from '@/src/lib/universal-api'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { universalApi } from '@/lib/universal-api'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   TrendingUp,
   Clock,

@@ -1,7 +1,7 @@
 'use client'
 /**
  * HERA POS Daily Cash Close UI Component
- * Smart Code: HERA.POS.DAILY.CASH.CLOSE.UI.v1
+ * Smart Code: HERA.POS.DAILY.CASH.CLOSE.UI.V1
  *
  * Complete UI for POS daily cash close operations
  */

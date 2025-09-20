@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useRef } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
-import { Button } from '@/src/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
 import { Paperclip, Image, FileText, User, MapPin, Camera, Mic, Sticker } from 'lucide-react'
 
 interface AttachmentMenuProps {

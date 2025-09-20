@@ -2,7 +2,7 @@
 // HERA AUTO-JOURNAL DNA SERVICE
 // Universal auto-journal service that works with any business type
 // Integrates with HERA DNA system for configuration-driven behavior
-// Smart Code: HERA.FIN.AUTO.JOURNAL.DNA.SERVICE.v1
+// Smart Code: HERA.FIN.AUTO.JOURNAL.DNA.SERVICE.V1
 // ================================================================================
 
 import { supabase } from '@/lib/supabase'
@@ -146,7 +146,7 @@ export class AutoJournalDNAService {
     const { data } = await supabase
       .from('core_dynamic_data')
       .select('field_value_json')
-      .eq('smart_code', 'HERA.DNA.AUTO.JOURNAL.BATCH.STRATEGIES.v1')
+      .eq('smart_code', 'HERA.DNA.AUTO.JOURNAL.BATCH.STRATEGIES.V1')
       .single()
 
     if (data?.field_value_json?.strategies) {
@@ -163,7 +163,7 @@ export class AutoJournalDNAService {
     const { data } = await supabase
       .from('core_dynamic_data')
       .select('field_value_json')
-      .eq('smart_code', 'HERA.DNA.AUTO.JOURNAL.AI.PATTERNS.v1')
+      .eq('smart_code', 'HERA.DNA.AUTO.JOURNAL.AI.PATTERNS.V1')
       .single()
 
     return data?.field_value_json || {}

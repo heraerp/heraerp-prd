@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useSupabaseClient } from '@/hooks/useSupabaseWithOrg'
 import {
   UserPlus,
   Plus,
@@ -60,7 +60,7 @@ export default function LeadsPage() {
   const [leadDynamicData, setLeadDynamicData] = useState<Record<string, DynamicData[]>>({})
   const [isLoading, setIsLoading] = useState(true)
 
-  const supabase = createClientComponentClient()
+  const supabase = useSupabaseClient()
 
   useEffect(() => {
     loadLeads()

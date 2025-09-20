@@ -2,21 +2,21 @@
 
 import React, { useState } from 'react'
 import { X, Calendar, Clock, FileText, AlertCircle } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Textarea } from '@/src/components/ui/textarea'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { formatDate } from '@/src/lib/date-utils'
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { formatDate } from '@/lib/date-utils'
 import { differenceInBusinessDays, addDays, isWeekend } from 'date-fns'
-import { useLeaveManagement } from '@/src/hooks/useLeaveManagement'
+import { useLeaveManagement } from '@/hooks/useLeaveManagement'
 
 interface LeaveRequestFormProps {
   onClose: () => void
@@ -24,7 +24,7 @@ interface LeaveRequestFormProps {
 }
 
 export function LeaveRequestForm({ onClose, organizationId }: LeaveRequestFormProps) {
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { organization, user } = useHERAAuth()
   const { submitLeaveRequest, loading } = useLeaveManagement({ organizationId })
   const [formData, setFormData] = useState({
     leaveType: '',

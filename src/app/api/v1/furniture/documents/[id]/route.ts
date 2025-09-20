@@ -94,7 +94,7 @@ export async function DELETE(
       transaction_code: `DEL-${Date.now()}`,
       transaction_date: new Date().toISOString(),
       reference_entity_id: documentId,
-      smart_code: 'HERA.FURNITURE.DOCUMENT.DELETE.TXN.v1',
+      smart_code: 'HERA.FURNITURE.DOCUMENT.DELETE.TXN.V1',
       metadata: {
         document_name: document.entity_name,
         deleted_at: new Date().toISOString(),

@@ -13,6 +13,39 @@ const config: Config = {
     extend: {
       // HERA Universal Brand Colors - AI + ERP + Modern Fusion
       colors: {
+        // CivicFlow Theme System - CSS Variable Based
+        bg: 'rgb(var(--bg) / <alpha-value>)',
+        panel: 'rgb(var(--panel) / <alpha-value>)',
+        'panel-alt': 'rgb(var(--panel-alt) / <alpha-value>)',
+        border: 'rgb(var(--border) / <alpha-value>)',
+        'text-100': 'rgb(var(--text-100) / <alpha-value>)',
+        'text-300': 'rgb(var(--text-300) / <alpha-value>)',
+        'text-500': 'rgb(var(--text-500) / <alpha-value>)',
+        accent: 'rgb(var(--accent) / <alpha-value>)',
+        'accent-soft': 'rgb(var(--accent-soft) / <alpha-value>)',
+        'accent-fg': 'rgb(var(--accent-fg) / <alpha-value>)',
+        glow1: 'rgb(var(--glow1) / <alpha-value>)',
+        glow2: 'rgb(var(--glow2) / <alpha-value>)',
+        
+        // Charcoal Gold UI Kit Colors
+        charcoal: { 
+          900: '#0E0F11', 
+          800: '#14161A', 
+          700: '#1B1E23',
+          600: '#252932' 
+        },
+        gold: { 
+          500: '#D4AF37', 
+          400: '#E3C75F',
+          300: '#F0D584' 
+        },
+        text: { 
+          100: '#F5F7FA', 
+          300: '#C7CCD4', 
+          500: '#9AA3AE' 
+        },
+        focus: '#8AB4FF',
+        
         // Primary Sage Green - Wellness & Growth
         sage: {
           50: '#f6f8f6',

@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Switch } from '@/src/components/ui/switch'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Shield,
   Lock,
@@ -22,7 +22,7 @@ import {
   Upload,
   RefreshCw
 } from 'lucide-react'
-import { validateEncryptionSetup, generateMasterKey } from '@/src/lib/pwm/encryption'
+import { validateEncryptionSetup, generateMasterKey } from '@/lib/pwm/encryption'
 import CustomerKeyManagement from './CustomerKeyManagement'
 
 interface EncryptionControlsProps {

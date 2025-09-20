@@ -3,7 +3,7 @@
  * Handles dynamic currency formatting based on organization and transaction settings
  */
 
-import { Organization } from '@/src/types/organization'
+import { Organization } from '@/types/organization'
 
 // Currency configuration type
 export interface CurrencyConfig {

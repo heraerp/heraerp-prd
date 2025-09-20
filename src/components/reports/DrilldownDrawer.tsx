@@ -7,13 +7,13 @@
 'use client'
 
 import React from 'react'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/src/components/ui/sheet'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
-import { Separator } from '@/src/components/ui/separator'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { 
   X, 
   FileText, 
@@ -28,8 +28,8 @@ import {
   MoreHorizontal,
   Building
 } from 'lucide-react'
-import { TransactionSummary, TransactionDetail, DrillDownResponse, ReportCalculations } from '@/src/lib/schemas/reports'
-import { cn } from '@/src/lib/utils'
+import { TransactionSummary, TransactionDetail, DrillDownResponse, ReportCalculations } from '@/lib/schemas/reports'
+import { cn } from '@/lib/utils'
 
 interface DrilldownDrawerProps {
   isOpen: boolean

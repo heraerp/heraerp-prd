@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // Steve Jobs Principle: "Design is not just what it looks like and feels like. Design is how it works."
 // Universal driver management that scales from single location to enterprise fleet

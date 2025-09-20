@@ -2,16 +2,16 @@
 
 // ================================================================================
 // HERA DNA RESTAURANT DASHBOARD EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.V1
 // Complete restaurant operations dashboard with real-time metrics
 // ================================================================================
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Progress } from '@/src/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   UtensilsCrossed,
   DollarSign,

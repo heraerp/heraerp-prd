@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       status: 'success',
       scenario,
-      component: 'HERA.WHATSAPP.DEMO.SIX.TABLES.v1',
+      component: 'HERA.WHATSAPP.DEMO.SIX.TABLES.V1',
       timestamp: new Date().toISOString(),
       results,
       summary: {

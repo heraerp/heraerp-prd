@@ -119,7 +119,7 @@ export default function APITestingPage() {
         method: 'POST',
         description: '4-Level validation system with performance benchmarks',
         defaultPayload: {
-          smart_code: 'HERA.REST.FIN.TXN.SALE.v1',
+          smart_code: 'HERA.REST.FIN.TXN.SALE.V1',
           validation_level: 'L2_SEMANTIC',
           organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945'
         }
@@ -160,7 +160,7 @@ export default function APITestingPage() {
           validation_target: {
             type: 'smart_code',
             target_id: 'test-validation-001',
-            smart_code: 'HERA.REST.FIN.TXN.SALE.v1'
+            smart_code: 'HERA.REST.FIN.TXN.SALE.V1'
           },
           validation_levels: ['L1_SYNTAX', 'L2_SEMANTIC', 'L3_PERFORMANCE'],
           options: {

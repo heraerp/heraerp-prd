@@ -691,7 +691,7 @@ export class HERALegacyCRMConverter {
         line_total: record.amount,
         currency: 'INR',
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.TXN.LINE.PROJECT.VALUE.v1'
+        smart_code: 'HERA.TXN.LINE.PROJECT.VALUE.V1'
       })
 
       // Service fee line (if applicable)
@@ -708,7 +708,7 @@ export class HERALegacyCRMConverter {
           line_total: 0,
           currency: 'INR',
           created_at: new Date(record.created_at),
-          smart_code: 'HERA.TXN.LINE.SERVICE.FEE.v1'
+          smart_code: 'HERA.TXN.LINE.SERVICE.FEE.V1'
         })
       }
     }

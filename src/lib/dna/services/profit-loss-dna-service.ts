@@ -6,7 +6,7 @@
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/src/lib/universal-api'
+import { UniversalAPIClient } from '@/lib/universal-api'
 
 // Core P&L DNA Configuration
 export const PROFIT_LOSS_DNA_CONFIG = {
@@ -114,9 +114,9 @@ export const PROFIT_LOSS_DNA_CONFIG = {
         negative_profit: true
       },
       smart_codes: {
-        daily_pl: 'HERA.SALON.PL.DAILY.REPORT.v1',
-        margin_analysis: 'HERA.SALON.PL.MARGIN.ANALYSIS.v1',
-        expense_breakdown: 'HERA.SALON.PL.EXPENSE.BREAKDOWN.v1'
+        daily_pl: 'HERA.SALON.PL.DAILY.REPORT.V1',
+        margin_analysis: 'HERA.SALON.PL.MARGIN.ANALYSIS.V1',
+        expense_breakdown: 'HERA.SALON.PL.EXPENSE.BREAKDOWN.V1'
       }
     },
 
@@ -163,8 +163,8 @@ export const PROFIT_LOSS_DNA_CONFIG = {
         operating_margin_target: 15
       },
       smart_codes: {
-        daily_pl: 'HERA.REST.PL.DAILY.REPORT.v1',
-        food_cost_analysis: 'HERA.REST.PL.FOOD.COST.v1'
+        daily_pl: 'HERA.REST.PL.DAILY.REPORT.V1',
+        food_cost_analysis: 'HERA.REST.PL.FOOD.COST.V1'
       }
     },
 
@@ -208,8 +208,8 @@ export const PROFIT_LOSS_DNA_CONFIG = {
         operating_margin_target: 20
       },
       smart_codes: {
-        daily_pl: 'HERA.HEALTH.PL.DAILY.REPORT.v1',
-        patient_revenue_analysis: 'HERA.HEALTH.PL.PATIENT.REV.v1'
+        daily_pl: 'HERA.HEALTH.PL.DAILY.REPORT.V1',
+        patient_revenue_analysis: 'HERA.HEALTH.PL.PATIENT.REV.V1'
       }
     }
   }

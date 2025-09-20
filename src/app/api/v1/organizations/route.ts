@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       // Return pre-configured demo organizations
       const demoOrgs = [
         {
-          id: '519d9c67-6fa4-4c73-9c56-6d132a6649c1',
+          id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
           name: 'Bella Beauty Salon (Demo)',
           type: 'salon',
           subdomain: 'demo-salon',

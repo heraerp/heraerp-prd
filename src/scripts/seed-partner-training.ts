@@ -1,12 +1,12 @@
 /**
  * HERA Partner Training System Seed Data
- * Smart Code: HERA.PAR.TRN.SEED.SETUP.v1
+ * Smart Code: HERA.PAR.TRN.SEED.SETUP.V1
  *
  * META BREAKTHROUGH: Seeding training system using HERA's own universal architecture
  * Training modules as entities, content as dynamic data, assessments as relationships
  */
 
-import { getHeraAPI } from '@/src/lib/hera-api'
+import { getHeraAPI } from '@/lib/hera-api'
 
 export async function seedPartnerTrainingSystem() {
   const heraApi = getHeraAPI()
@@ -328,7 +328,7 @@ export async function seedPartnerTrainingSystem() {
         entity_type: 'training_module',
         entity_name: module.entity_name,
         entity_code: module.entity_code,
-        smart_code: 'HERA.PAR.TRN.ENT.MODULE.v1',
+        smart_code: 'HERA.PAR.TRN.ENT.MODULE.V1',
         status: 'active',
         metadata: module.metadata
       })
@@ -443,7 +443,7 @@ export async function seedPartnerTrainingSystem() {
         entity_type: 'certification',
         entity_name: cert.entity_name,
         entity_code: cert.entity_code,
-        smart_code: 'HERA.PAR.CRT.ENT.CERT.v1',
+        smart_code: 'HERA.PAR.CRT.ENT.CERT.V1',
         status: 'active',
         metadata: cert.metadata
       })
@@ -466,7 +466,7 @@ export async function seedPartnerTrainingSystem() {
               required: true,
               min_score: 80
             },
-            smart_code: 'HERA.PAR.TRN.REL.PREREQ.v1'
+            smart_code: 'HERA.PAR.TRN.REL.PREREQ.V1'
           })
           console.log(`✅ Created prerequisite: ${prereqCode} → ${module.entity_code}`)
         }
@@ -485,7 +485,7 @@ export async function seedPartnerTrainingSystem() {
         system_version: '1.0.0',
         meta_breakthrough: 'Training system created using HERA universal architecture'
       },
-      smart_code: 'HERA.PAR.TRN.TXN.SETUP.v1'
+      smart_code: 'HERA.PAR.TRN.TXN.SETUP.V1'
     })
 
     console.log('🎉 Modern Partner Sales Training System seed completed successfully!')

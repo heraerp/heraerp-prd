@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Clock, User, Scissors } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
-import { formatDate } from '@/src/lib/date-utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { formatDate } from '@/lib/date-utils'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // Lazy initialization to handle build-time issues
 let supabase: ReturnType<typeof createClient> | null = null
@@ -38,10 +38,10 @@ interface CheckedInAppointment {
 export function WaitingRoomDisplay() {
   const [checkedInAppointments, setCheckedInAppointments] = useState<CheckedInAppointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
 
   useEffect(() => {
-    if (!currentOrganization) return
+    if (!organization) return
 
     const db = getSupabase()
     if (!db) return
@@ -57,7 +57,7 @@ export function WaitingRoomDisplay() {
           event: '*',
           schema: 'public',
           table: 'universal_transactions',
-          filter: `organization_id=eq.${currentOrganization.id}`
+          filter: `organization_id=eq.${organization.id}`
         },
         () => {
           // Refresh when any appointment changes
@@ -73,10 +73,10 @@ export function WaitingRoomDisplay() {
       subscription.unsubscribe()
       clearInterval(interval)
     }
-  }, [currentOrganization])
+  }, [organization])
 
   const fetchCheckedInAppointments = async () => {
-    if (!currentOrganization) return
+    if (!organization) return
 
     const db = getSupabase()
     if (!db) {
@@ -100,7 +100,7 @@ export function WaitingRoomDisplay() {
           )
         `
         )
-        .eq('organization_id', currentOrganization.id)
+        .eq('organization_id', organization.id)
         .eq('transaction_type', 'appointment')
         .eq('transaction_date', new Date().toISOString().split('T')[0])
         .eq('status_relationships.relationship_type', 'has_workflow_status')

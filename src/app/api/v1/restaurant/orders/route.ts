@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 // GET /api/v1/restaurant/orders - Fetch orders using HERA universal_transactions
 export async function GET(request: NextRequest) {

@@ -1,0 +1,69 @@
+smart_code: HERA.UNIV.WF.PROFILE.V1
+description: Universal workflow profile - default permissions and policies
+# Basic permissions
+required_role_start: 'user'                        # who can start workflows
+required_role_advance: 'manager|system'            # who can advance workflows
+required_role_timer: 'system'                      # who can manage timers
+required_role_task_create: 'manager|system'        # who can create tasks
+required_role_task_claim: 'user'                   # who can claim tasks
+required_role_task_complete: 'user'                # who can complete tasks
+required_role_task_escalate: 'manager|system'      # who can escalate tasks
+
+# Timer configuration
+timer_defaults:
+  max_concurrent_per_instance: 5                   # max timers per workflow
+  min_duration_minutes: 1                          # minimum timer duration
+  max_duration_minutes: 43200                      # max 30 days
+  grace_period_seconds: 60                         # firing grace period
+
+# Task configuration  
+task_defaults:
+  sla_minutes: 1440                                # default 24 hour SLA
+  auto_escalate: true                              # escalate on SLA breach
+  escalation_hierarchy:                            # default escalation chain
+    - manager
+    - senior_manager
+    - director
+  priority_levels:
+    - low
+    - medium
+    - high
+    - urgent
+
+# Workflow configuration
+workflow_defaults:
+  max_instances_per_definition: 1000               # per organization
+  instance_retention_days: 365                     # keep completed for 1 year
+  allow_parallel_instances: true                   # multiple active instances
+  require_guards: false                            # guards optional by default
+  
+# State machine configuration
+state_machine:
+  terminal_states:                                 # workflows end here
+    - COMPLETED
+    - CANCELLED
+    - REJECTED
+    - FAILED
+  initial_state_required: true                     # must define initial state
+  
+# Audit configuration
+audit:
+  log_all_transitions: true                        # comprehensive audit
+  log_guard_executions: true                       # guard success/failure
+  log_effect_executions: true                      # effect results
+  log_timer_operations: true                       # timer lifecycle
+  log_task_operations: true                        # task lifecycle
+  
+# Module overrides
+# Specific modules can override these defaults by providing their own profiles
+module_overrides:
+  HR:
+    required_role_start: 'employee'                # any employee can request leave
+    required_role_advance: 'manager|hr_admin'      # managers or HR can approve
+  AP:
+    required_role_start: 'ap_clerk'                # AP clerk creates invoices
+    required_role_advance: 'ap_manager|cfo'        # managers approve payments
+  MEMBERSHIP:
+    required_role_start: 'system'                  # system auto-creates renewal workflows
+    timer_defaults:
+      max_concurrent_per_instance: 10              # more timers for reminders

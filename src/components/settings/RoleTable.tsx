@@ -7,8 +7,8 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   Edit, 
   Trash2,
@@ -20,7 +20,7 @@ import {
   XCircle,
   Calendar
 } from 'lucide-react'
-import { RoleGrant, UserRole } from '@/src/lib/schemas/settings'
+import { RoleGrant, UserRole } from '@/lib/schemas/settings'
 
 interface RoleTableProps {
   grants: RoleGrant[]

@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Budgets
- * Generated at: 2025-09-06T04:22:18.350Z
+ * Generated at: 2025-09-20T19:26:59.083Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.BUDGETS",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132538351';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396419084';
 
 describe('Budgets - Universal CRUD Operations', () => {
   let createdEntityId;

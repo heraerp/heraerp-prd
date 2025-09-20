@@ -4,9 +4,9 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { HeraGradientBackgroundDNA } from '@/src/lib/dna/components/ui/hera-gradient-background-dna'
-import { HeraButtonDNA } from '@/src/lib/dna/components/ui/hera-button-dna'
-import { HeraInputDNA } from '@/src/lib/dna/components/ui/hera-input-dna'
+import { HeraGradientBackgroundDNA } from '@/lib/dna/components/ui/hera-gradient-background-dna'
+import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'
+import { HeraInputDNA } from '@/lib/dna/components/ui/hera-input-dna'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {

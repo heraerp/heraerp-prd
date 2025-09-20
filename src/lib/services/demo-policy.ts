@@ -4,7 +4,7 @@
 // Controls what can be modified in demo mode
 // ================================================================================
 
-import { createApiClient } from '@/src/lib/api/client'
+import { createApiClient } from '@/lib/api/client'
 
 export interface DemoWriteCheck {
   allowed: boolean

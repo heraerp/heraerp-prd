@@ -1,5 +1,5 @@
 # Sales Order to Invoice - Finance DNA Handshake
-smart_code: HERA.SALES.SALES_ORDER.TO_INVOICE.v1
+smart_code: HERA.SALES.ORDER.TO.INVOICE.V1
 intent: >
   Convert a confirmed sales_order to an ar invoice and post GL.
 scope:
@@ -41,13 +41,13 @@ outputs:
   entities_created: []
   transactions_emitted:
     - slug: invoice_ar
-      header_rules: reference SO, smart_code HERA.FIN.AR.TXN.INVOICE.v1
+      header_rules: reference SO, smart_code HERA.FIN.AR.TXN.INVOICE.V1
       line_rules:
         - sales_line per SO line (billable qty)
         - tax_line calculated
         - discount_line if applicable
     - slug: journal_entry
-      header_rules: auto-post flag, smart_code HERA.FIN.GL.TXN.JOURNAL.v1
+      header_rules: auto-post flag, smart_code HERA.FIN.GL.TXN.JOURNAL.V1
       line_rules:
         - gl_debit_line (AR account)
         - gl_credit_line (Revenue accounts)

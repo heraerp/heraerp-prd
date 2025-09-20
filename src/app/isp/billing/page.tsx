@@ -33,9 +33,9 @@ import {
   BarChart,
   Bar
 } from 'recharts'
-import { ISPModal } from '@/src/components/isp/ISPModal'
-import { ISPTable } from '@/src/components/isp/ISPTable'
-import { ISPInput, ISPSelect, ISPButton } from '@/src/components/isp/ISPForm'
+import { ISPModal } from '@/components/isp/ISPModal'
+import { ISPTable } from '@/components/isp/ISPTable'
+import { ISPInput, ISPSelect, ISPButton } from '@/components/isp/ISPForm'
 
 const billingData = [
   { month: 'Jan', billed: 3800000, collected: 3650000, pending: 150000 },

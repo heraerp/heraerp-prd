@@ -153,7 +153,7 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
  */
 export const FINANCIAL_COMPONENT_REGISTRY = {
   // Fiscal Close System
-  'HERA.FIN.FISCAL.CLOSE.ENGINE.v1': {
+  'HERA.FIN.FISCAL.CLOSE.ENGINE.V1': {
     name: 'Fiscal Year Close DNA',
     location: '/src/lib/dna/fiscal-year/fiscal-close-engine.ts',
     cli: '/mcp-server/fiscal-close-dna-cli.js',
@@ -177,21 +177,21 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
   },
 
   // Auto-Journal Engine
-  'HERA.FIN.AUTO.JOURNAL.ENGINE.v1': {
+  'HERA.FIN.AUTO.JOURNAL.ENGINE.V1': {
     name: 'Auto-Journal Engine',
     documentation: '/src/app/docs/features/auto-journal/page.tsx',
     description: '85% automation rate for journal entry creation, $34,560 annual savings'
   },
 
   // Daily Operations
-  'HERA.FIN.DAILY.CASH.CLOSE.v1': {
+  'HERA.FIN.DAILY.CASH.CLOSE.V1': {
     name: 'Daily Cash Close',
     location: '/src/components/pos/DailyCashClose.tsx',
     description: 'POS reconciliation and daily closing procedures'
   },
 
   // Period Management
-  'HERA.FIN.YEAR.END.CLOSE.v1': {
+  'HERA.FIN.YEAR.END.CLOSE.V1': {
     name: 'Year-End Closing Wizard',
     location: '/src/components/accounting/YearEndClosingWizard.tsx',
     checklist: '/src/components/accounting/FiscalCloseChecklist.tsx',

@@ -5,7 +5,7 @@
 // ================================================================================
 
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 export interface FinancialReport {
   id: string

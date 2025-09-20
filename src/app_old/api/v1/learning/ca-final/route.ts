@@ -4,17 +4,17 @@ import { NextRequest, NextResponse } from 'next/server'
 const SMART_CODES = {
   // === CORE UNIVERSAL ENTITIES ===
   // Foundation entities that work across ALL domains
-  STUDENT: 'HERA.UNI.EDU.ENT.STUDENT.v1',
-  TOPIC: 'HERA.UNI.EDU.ENT.TOPIC.v1',
-  QUESTION: 'HERA.UNI.EDU.ENT.QUESTION.v1',
-  ACHIEVEMENT: 'HERA.UNI.EDU.ENT.ACHIEVEMENT.v1',
-  CONTENT: 'HERA.UNI.EDU.ENT.CONTENT.v1',
+  STUDENT: 'HERA.UNI.EDU.ENT.STUDENT.V1',
+  TOPIC: 'HERA.UNI.EDU.ENT.TOPIC.V1',
+  QUESTION: 'HERA.UNI.EDU.ENT.QUESTION.V1',
+  ACHIEVEMENT: 'HERA.UNI.EDU.ENT.ACHIEVEMENT.V1',
+  CONTENT: 'HERA.UNI.EDU.ENT.CONTENT.V1',
 
   // === UNIVERSAL LEARNING TRANSACTIONS ===
-  STUDY_SESSION: 'HERA.UNI.EDU.TXN.STUDY.v1',
-  QUIZ_ATTEMPT: 'HERA.UNI.EDU.TXN.QUIZ.v1',
-  MOCK_TEST: 'HERA.UNI.EDU.TXN.MOCK.v1',
-  CONTENT_SAVE: 'HERA.UNI.EDU.TXN.SAVE_CONTENT.v1',
+  STUDY_SESSION: 'HERA.UNI.EDU.TXN.STUDY.V1',
+  QUIZ_ATTEMPT: 'HERA.UNI.EDU.TXN.QUIZ.V1',
+  MOCK_TEST: 'HERA.UNI.EDU.TXN.MOCK.V1',
+  CONTENT_SAVE: 'HERA.UNI.EDU.TXN.SAVE_CONTENT.V1',
 
   // === EDUCATIONAL CONTEXTS ===
   // K-12 Education
@@ -47,9 +47,9 @@ const SMART_CODES = {
 
   // === SUBJECT DOMAINS ===
   // Business & Finance (Current strength)
-  CA_ACCOUNTING: 'HERA.PROF.FIN.CA.ACCOUNTING.v1',
-  MBA_FINANCE: 'HERA.UNI.BUS.MBA.FINANCE.v1',
-  CPA_ACCOUNTING: 'HERA.PROF.FIN.CPA.ACCOUNTING.v1',
+  CA_ACCOUNTING: 'HERA.PROF.FIN.CA.ACCOUNTING.V1',
+  MBA_FINANCE: 'HERA.UNI.BUS.MBA.FINANCE.V1',
+  CPA_ACCOUNTING: 'HERA.PROF.FIN.CPA.ACCOUNTING.V1',
 
   // STEM Fields
   MATHEMATICS: 'HERA.UNI.MATH.v1',
@@ -130,13 +130,13 @@ const SMART_CODES = {
   REGION_AUSTRALIA: 'HERA.REGION.AUSTRALIA.v1',
 
   // === CONTENT STORAGE WITH UNIVERSAL CLASSIFICATION ===
-  SAVED_CONTENT: 'HERA.UNI.EDU.CONTENT.SAVED.v1',
-  REUSABLE_QUESTION: 'HERA.UNI.EDU.QUESTION.REUSABLE.v1',
+  SAVED_CONTENT: 'HERA.UNI.EDU.CONTENT.SAVED.V1',
+  REUSABLE_QUESTION: 'HERA.UNI.EDU.QUESTION.REUSABLE.V1',
   UNIVERSAL_CONCEPT: 'HERA.UNI.EDU.CONCEPT.v1',
 
   // Dynamic Updates
-  DYNAMIC_UPDATE: 'HERA.UNI.EDU.TOPIC.DYNAMIC.v1',
-  REGULATORY_CHANGE: 'HERA.UNI.EDU.TOPIC.REGULATORY.v1'
+  DYNAMIC_UPDATE: 'HERA.UNI.EDU.TOPIC.DYNAMIC.V1',
+  REGULATORY_CHANGE: 'HERA.UNI.EDU.TOPIC.REGULATORY.V1'
 }
 
 // Mock Learning Data with HERA Universal Architecture
@@ -2304,7 +2304,7 @@ function generateMockTestQuestions(config: any) {
       difficulty: 'easy',
       topic: 'gst_exemptions',
       subject_domain: 'CA',
-      smart_code: 'HERA.PROF.CA.TAX.GST.EXEMPTIONS.EASY.v1',
+      smart_code: 'HERA.PROF.CA.TAX.GST.EXEMPTIONS.EASY.V1',
       cross_subject_applicable: false
     },
 
@@ -2550,7 +2550,7 @@ function generateMockTestQuestions(config: any) {
         difficulty: 'medium',
         topic: 'gst_basics',
         subject_domain: 'CA',
-        smart_code: 'HERA.PROF.CA.TAX.GST.BASIC.MEDIUM.v1',
+        smart_code: 'HERA.PROF.CA.TAX.GST.BASIC.MEDIUM.V1',
         cross_subject_applicable: false
       },
       {
@@ -2562,7 +2562,7 @@ function generateMockTestQuestions(config: any) {
         difficulty: 'medium',
         topic: 'gst_returns',
         subject_domain: 'CA',
-        smart_code: 'HERA.PROF.CA.TAX.GST.RETURNS.MEDIUM.v1',
+        smart_code: 'HERA.PROF.CA.TAX.GST.RETURNS.MEDIUM.V1',
         cross_subject_applicable: false
       },
       {
@@ -2575,7 +2575,7 @@ function generateMockTestQuestions(config: any) {
         difficulty: 'medium',
         topic: 'gst_rates',
         subject_domain: 'CA',
-        smart_code: 'HERA.PROF.CA.TAX.GST.RATES.MEDIUM.v1',
+        smart_code: 'HERA.PROF.CA.TAX.GST.RATES.MEDIUM.V1',
         cross_subject_applicable: false
       },
       {
@@ -2587,7 +2587,7 @@ function generateMockTestQuestions(config: any) {
         difficulty: 'hard',
         topic: 'gst_constitution',
         subject_domain: 'CA',
-        smart_code: 'HERA.PROF.CA.TAX.GST.CONSTITUTION.HARD.v1',
+        smart_code: 'HERA.PROF.CA.TAX.GST.CONSTITUTION.HARD.V1',
         cross_subject_applicable: false
       },
       {
@@ -2600,7 +2600,7 @@ function generateMockTestQuestions(config: any) {
         difficulty: 'easy',
         topic: 'gst_registration',
         subject_domain: 'CA',
-        smart_code: 'HERA.PROF.CA.TAX.GST.REGISTRATION.EASY.v1',
+        smart_code: 'HERA.PROF.CA.TAX.GST.REGISTRATION.EASY.V1',
         cross_subject_applicable: false
       }
     ].slice(0, config.total_questions || 5)

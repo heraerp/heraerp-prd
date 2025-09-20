@@ -9,8 +9,8 @@
  * - universal_transaction_lines: Service line items
  */
 
-import { universalApi } from '@/src/lib/universal-api'
-import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
+import { universalApi } from '@/lib/universal-api'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
 import { parseISO } from 'date-fns'
 import { whatsAppService } from './whatsapp-notification-service'
 
@@ -28,9 +28,9 @@ export const APPOINTMENT_SMART_CODES = {
   APPOINTMENT_COMPLETION: 'HERA.SALON.APPOINTMENT.COMPLETE.v1',
 
   // Relationship smart codes
-  CUSTOMER_APPOINTMENT: 'HERA.SALON.REL.CUSTOMER.APPOINTMENT.v1',
-  STAFF_APPOINTMENT: 'HERA.SALON.REL.STAFF.APPOINTMENT.v1',
-  SERVICE_APPOINTMENT: 'HERA.SALON.REL.SERVICE.APPOINTMENT.v1',
+  CUSTOMER_APPOINTMENT: 'HERA.SALON.REL.CUSTOMER.APPOINTMENT.V1',
+  STAFF_APPOINTMENT: 'HERA.SALON.REL.STAFF.APPOINTMENT.V1',
+  SERVICE_APPOINTMENT: 'HERA.SALON.REL.SERVICE.APPOINTMENT.V1',
 
   // Dynamic field smart codes
   SERVICE_DETAILS: 'HERA.SALON.SERVICE.DETAILS.v1',
@@ -81,8 +81,8 @@ export class AppointmentApi {
         reference_number: `APT-${Date.now()}`,
         transaction_date: new Date().toISOString(),
         total_amount: data.price || service?.metadata?.price || 0,
-        from_entity_id: data.customerId,
-        to_entity_id: data.staffId,
+        source_entity_id: data.customerId,
+        target_entity_id: data.staffId,
         metadata: {
           appointment_date: data.appointmentDate,
           appointment_time: data.appointmentTime,
@@ -181,7 +181,7 @@ export class AppointmentApi {
     const appointments = await this.getAppointments(organizationId)
 
     return appointments.filter(
-      (apt: any) => apt.to_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
+      (apt: any) => apt.target_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
     )
   }
 
@@ -193,7 +193,7 @@ export class AppointmentApi {
 
     return appointments.filter(
       (apt: any) =>
-        apt.from_entity_id === customerId || (apt.metadata as any)?.customer_id === customerId
+        apt.source_entity_id === customerId || (apt.metadata as any)?.customer_id === customerId
     )
   }
 
@@ -246,8 +246,8 @@ export class AppointmentApi {
         reference_entity_id: appointmentId,
         transaction_date: new Date().toISOString(),
         total_amount: appointment.total_amount,
-        from_entity_id: appointment.from_entity_id,
-        to_entity_id: appointment.to_entity_id,
+        source_entity_id: appointment.source_entity_id,
+        target_entity_id: appointment.target_entity_id,
         metadata: {
           original_appointment_id: appointmentId,
           status_change: status,
@@ -262,7 +262,7 @@ export class AppointmentApi {
     // Send WhatsApp notification for status changes
     try {
       const customerPhone = await whatsAppService.getCustomerPhone(
-        appointment.from_entity_id,
+        appointment.source_entity_id,
         organizationId
       )
 
@@ -288,7 +288,7 @@ export class AppointmentApi {
           )
         }
       } else {
-        console.log(`⚠️ No phone number found for customer ${appointment.from_entity_id}`)
+        console.log(`⚠️ No phone number found for customer ${appointment.source_entity_id}`)
       }
     } catch (whatsAppError) {
       // Don't fail the appointment update if WhatsApp fails
@@ -353,7 +353,7 @@ export class AppointmentApi {
     // Get all appointments for the staff on that date
     const appointments = await this.getAppointmentsByDate(date, organizationId)
     const staffAppointments = appointments.filter(
-      (apt: any) => apt.to_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
+      (apt: any) => apt.target_entity_id === staffId || (apt.metadata as any)?.staff_id === staffId
     )
 
     // Define business hours (this could come from configuration)

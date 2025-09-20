@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { UniversalSearch, type SearchResult } from '@/src/lib/dna/components/search/UniversalSearch'
+import { UniversalSearch, type SearchResult } from '@/lib/dna/components/search/UniversalSearch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -43,7 +43,7 @@ const mockSearchData: SearchResult[] = [
     subtitle: 'Technology company - San Francisco',
     description: 'Premium customer since 2020',
     url: '/customers/acme-corp',
-    smartCode: 'HERA.CRM.CUST.ENT.PROF.v1',
+    smartCode: 'HERA.CRM.CUST.ENT.PROF.V1',
     metadata: { isPopular: true }
   },
   {
@@ -53,7 +53,7 @@ const mockSearchData: SearchResult[] = [
     title: 'John Smith',
     subtitle: 'Individual customer - New York',
     url: '/customers/john-smith',
-    smartCode: 'HERA.CRM.CUST.ENT.IND.v1',
+    smartCode: 'HERA.CRM.CUST.ENT.IND.V1',
     metadata: { isRecent: true }
   },
   {
@@ -63,7 +63,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Global Enterprises LLC',
     subtitle: 'Manufacturing - Dubai',
     url: '/customers/global-enterprises',
-    smartCode: 'HERA.CRM.CUST.ENT.CORP.v1'
+    smartCode: 'HERA.CRM.CUST.ENT.CORP.V1'
   },
   
   // Products
@@ -74,7 +74,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Premium Shampoo',
     subtitle: 'Hair care product - 250ml',
     url: '/products/premium-shampoo',
-    smartCode: 'HERA.INV.PROD.ENT.SALON.v1'
+    smartCode: 'HERA.INV.PROD.ENT.SALON.V1'
   },
   {
     id: 'prod-2',
@@ -83,7 +83,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Facial Treatment Kit',
     subtitle: 'Skincare bundle - 5 items',
     url: '/products/facial-kit',
-    smartCode: 'HERA.INV.PROD.ENT.SPA.v1',
+    smartCode: 'HERA.INV.PROD.ENT.SPA.V1',
     metadata: { isPopular: true }
   },
   
@@ -95,7 +95,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Invoice #INV-2024-001',
     subtitle: '$1,250.00 - Acme Corporation',
     url: '/transactions/inv-2024-001',
-    smartCode: 'HERA.FIN.SALE.TXN.INV.v1',
+    smartCode: 'HERA.FIN.SALE.TXN.INV.V1',
     metadata: { isRecent: true }
   },
   {
@@ -105,7 +105,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Payment #PAY-2024-050',
     subtitle: '$500.00 - John Smith',
     url: '/transactions/pay-2024-050',
-    smartCode: 'HERA.FIN.PAY.TXN.RCP.v1'
+    smartCode: 'HERA.FIN.PAY.TXN.RCP.V1'
   },
   {
     id: 'txn-3',
@@ -114,7 +114,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Booking #APT-2024-123',
     subtitle: 'Hair Color - Tomorrow 2:00 PM',
     url: '/appointments/apt-2024-123',
-    smartCode: 'HERA.SALON.APPT.TXN.BOOK.v1'
+    smartCode: 'HERA.SALON.APPT.TXN.BOOK.V1'
   },
   
   // Reports
@@ -484,7 +484,7 @@ export default function UniversalSearchDemoPage() {
                 </CardHeader>
                 <CardContent>
                   <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs">
-{`import { UniversalSearch } from '@/src/lib/dna/components/search'
+{`import { UniversalSearch } from '@/lib/dna/components/search'
 
 // Basic usage
 <UniversalSearch

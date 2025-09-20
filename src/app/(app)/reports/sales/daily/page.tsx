@@ -7,19 +7,19 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { Calendar, TrendingUp, AlertCircle } from 'lucide-react'
-import { FiltersBar, useReportFilters } from '@/src/components/reports/FiltersBar'
-import { SalesSummaryCards } from '@/src/components/reports/SummaryCards'
-import { SalesTable } from '@/src/components/reports/SalesTable'
-import { DrilldownDrawer } from '@/src/components/reports/DrilldownDrawer'
-import { ExportButtons } from '@/src/components/reports/ExportButtons'
-import { PrintHeader, PrintLayout } from '@/src/components/reports/PrintHeader'
-import { useUniversalReports } from '@/src/hooks/useUniversalReports'
-import { SalesFilters, SalesRow, DrillDownResponse, TransactionDetail } from '@/src/lib/schemas/reports'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { FiltersBar, useReportFilters } from '@/components/reports/FiltersBar'
+import { SalesSummaryCards } from '@/components/reports/SummaryCards'
+import { SalesTable } from '@/components/reports/SalesTable'
+import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
+import { ExportButtons } from '@/components/reports/ExportButtons'
+import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
+import { useUniversalReports } from '@/hooks/useUniversalReports'
+import { SalesFilters, SalesRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 export default function DailySalesReportPage() {
   const { currentOrganization } = useOrganization()
@@ -114,7 +114,7 @@ export default function DailySalesReportPage() {
           transaction_date: filters.date || new Date().toISOString().split('T')[0],
           transaction_code: 'POS-2024-001',
           transaction_type: 'pos_sale',
-          smart_code: 'HERA.SALON.POS.SALE.TXN.v1',
+          smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Sarah Johnson',
           staff_name: 'Maria Rodriguez',
           total_amount: 275.00,
@@ -126,7 +126,7 @@ export default function DailySalesReportPage() {
           transaction_date: filters.date || new Date().toISOString().split('T')[0],
           transaction_code: 'POS-2024-002', 
           transaction_type: 'pos_sale',
-          smart_code: 'HERA.SALON.POS.SALE.TXN.v1',
+          smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           customer_name: 'Emily Chen',
           staff_name: 'Lisa Thompson',
           total_amount: 185.00,
@@ -175,7 +175,7 @@ export default function DailySalesReportPage() {
           transaction_date: filters.date || new Date().toISOString().split('T')[0],
           transaction_code: 'POS-2024-001',
           transaction_type: 'pos_sale',
-          smart_code: 'HERA.SALON.POS.SALE.TXN.v1',
+          smart_code: 'HERA.SALON.POS.SALE.TXN.V1',
           total_amount: 275.00,
           source_entity_id: 'customer-123',
           target_entity_id: 'salon-location-1',
@@ -227,11 +227,11 @@ export default function DailySalesReportPage() {
           { entity_id: 'salon-location-1', entity_type: 'location', entity_name: 'Main Salon', role: 'location' }
         ],
         auto_journal_entries: [
-          { account_code: '1100', account_name: 'Cash in Hand', debit_amount: 275.00, smart_code: 'HERA.FIN.GL.CASH.RECEIPT.v1' },
-          { account_code: '4100', account_name: 'Service Revenue', credit_amount: 250.00, smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.v1' },
-          { account_code: '2100', account_name: 'VAT Payable', credit_amount: 12.50, smart_code: 'HERA.FIN.GL.VAT.PAYABLE.v1' },
+          { account_code: '1100', account_name: 'Cash in Hand', debit_amount: 275.00, smart_code: 'HERA.FIN.GL.CASH.RECEIPT.V1' },
+          { account_code: '4100', account_name: 'Service Revenue', credit_amount: 250.00, smart_code: 'HERA.FIN.GL.REVENUE.SERVICE.V1' },
+          { account_code: '2100', account_name: 'VAT Payable', credit_amount: 12.50, smart_code: 'HERA.FIN.GL.VAT.PAYABLE.V1' },
           { account_code: '6500', account_name: 'Staff Commission', debit_amount: 100.00, smart_code: 'HERA.FIN.GL.COMMISSION.v1' },
-          { account_code: '2200', account_name: 'Commission Payable', credit_amount: 100.00, smart_code: 'HERA.FIN.GL.COMMISSION.PAYABLE.v1' }
+          { account_code: '2200', account_name: 'Commission Payable', credit_amount: 100.00, smart_code: 'HERA.FIN.GL.COMMISSION.PAYABLE.V1' }
         ]
       }
 

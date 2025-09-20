@@ -7,9 +7,9 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   Settings, 
   Server,
@@ -30,8 +30,8 @@ import {
   Cpu,
   Activity
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useOrgSettings } from '@/src/lib/api/orgSettings'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useOrgSettings } from '@/lib/api/orgSettings'
 
 export default function SystemSettingsPage() {
   const { currentOrganization } = useOrganization()

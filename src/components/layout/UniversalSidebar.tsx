@@ -15,10 +15,10 @@ import {
   X,
   LucideIcon
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export interface SidebarItem {
   id: string

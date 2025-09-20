@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { SuppliersManagement } from '@/src/components/restaurant/SuppliersManagement'
+import { SuppliersManagement } from '@/components/restaurant/SuppliersManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {
@@ -23,13 +23,13 @@ const RESTAURANT_CONFIG = {
     SUPPLIER_RETURN: 'HERA.RESTAURANT.SUP.RETURN.v1',
 
     // Purchase order lines
-    PO_LINE: 'HERA.RESTAURANT.SUP.PO.LINE.v1',
-    RECEIPT_LINE: 'HERA.RESTAURANT.SUP.RECEIPT.LINE.v1',
+    PO_LINE: 'HERA.RESTAURANT.SUP.PO.LINE.V1',
+    RECEIPT_LINE: 'HERA.RESTAURANT.SUP.RECEIPT.LINE.V1',
 
     // Relationships
-    REL_SUPPLIER_ITEM: 'HERA.RESTAURANT.SUP.REL.SUPPLIER.ITEM.v1',
-    REL_SUPPLIER_CATEGORY: 'HERA.RESTAURANT.SUP.REL.SUPPLIER.CATEGORY.v1',
-    REL_PO_RECEIPT: 'HERA.RESTAURANT.SUP.REL.PO.RECEIPT.v1'
+    REL_SUPPLIER_ITEM: 'HERA.RESTAURANT.SUP.REL.SUPPLIER.ITEM.V1',
+    REL_SUPPLIER_CATEGORY: 'HERA.RESTAURANT.SUP.REL.SUPPLIER.CATEGORY.V1',
+    REL_PO_RECEIPT: 'HERA.RESTAURANT.SUP.REL.PO.RECEIPT.V1'
   }
 }
 

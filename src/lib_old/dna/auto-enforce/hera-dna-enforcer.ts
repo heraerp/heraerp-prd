@@ -288,9 +288,9 @@ MANDATORY DNA COMPONENTS TO USE:
 ${recommendedComponents.map(comp => `- ${comp}`).join('\n')}
 
 SACRED DNA IMPORTS (ALWAYS USE THESE):
-import { EnterpriseCard, CardHeader, CardTitle } from '@/src/lib/dna/components/enterprise/EnterpriseCard'
-import { EnterpriseStatsCard, StatsGrid } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard' 
-import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'
+import { EnterpriseCard, CardHeader, CardTitle } from '@/lib/dna/components/enterprise/EnterpriseCard'
+import { EnterpriseStatsCard, StatsGrid } from '@/lib/dna/components/enterprise/EnterpriseStatsCard' 
+import { DashboardSection, KPICard, ActivityItem, MetricTile, ProgressIndicator } from '@/lib/dna/components/enterprise/EnterpriseDashboard'
 
 ENFORCEMENT LEVEL: ${context.urgency === 'firefight' ? 'CRITICAL' : 'MANDATORY'}
 REASON: Professional enterprise-grade components with glassmorphism, animations, and accessibility built-in.

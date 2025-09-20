@@ -3,8 +3,8 @@
  * Processes incoming messages and manages appointment bookings via WhatsApp
  */
 
-import { universalApi } from '@/src/lib/universal-api'
-import { formatDate, parseDateSafe } from '@/src/lib/date-utils'
+import { universalApi } from '@/lib/universal-api'
+import { formatDate, parseDateSafe } from '@/lib/date-utils'
 import { addDays, isValid } from 'date-fns'
 
 export interface WhatsAppMessage {

@@ -238,10 +238,10 @@ async function handleBatchRecord(body: any) {
           '4-level validation system'
         ],
         smartCodesGenerated: [
-          'HERA.FIN.GL.ENT.ACC.v1 - GL Accounts',
-          'HERA.FIN.AR.TXN.SAL.v1 - Sales Transactions',
-          'HERA.FIN.AP.TXN.PUR.v1 - Purchase Transactions',
-          'HERA.FIN.GL.TXN.PAY.v1 - Payroll Transactions'
+          'HERA.FIN.GL.ENT.ACC.V1 - GL Accounts',
+          'HERA.FIN.AR.TXN.SAL.V1 - Sales Transactions',
+          'HERA.FIN.AP.TXN.PUR.V1 - Purchase Transactions',
+          'HERA.FIN.GL.TXN.PAY.V1 - Payroll Transactions'
         ]
       },
       businessValue:

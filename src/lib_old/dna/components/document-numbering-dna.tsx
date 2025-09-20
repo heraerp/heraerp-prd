@@ -2,7 +2,7 @@
  * HERA DNA Component: Document Numbering System
  * Universal document number generation for all industries
  *
- * DNA Component ID: HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.v1
+ * DNA Component ID: HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.V1
  *
  * Features:
  * - Universal cross-industry support
@@ -176,7 +176,7 @@ export async function generateHeraDocumentNumber(
   documentType: string,
   industry?: HeraIndustryType
 ): Promise<string> {
-  const dnaSmartCode = 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.v1'
+  const dnaSmartCode = 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.V1'
 
   try {
     // Auto-detect industry if not provided
@@ -268,7 +268,7 @@ async function trackDocumentNumberGeneration(
         document_number: documentNumber,
         industry: industry,
         generated_at: new Date().toISOString(),
-        smart_code: 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.v1'
+        smart_code: 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.V1'
       }),
       {
         smart_code: 'HERA.DNA.DOCUMENT.TRACKING.v1',

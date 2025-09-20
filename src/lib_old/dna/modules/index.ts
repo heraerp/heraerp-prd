@@ -1,7 +1,7 @@
 /**
  * HERA DNA Modules Master Index
  * Central registry for all DNA modules across the system
- * Smart Code: HERA.DNA.MODULE.MASTER.INDEX.v1
+ * Smart Code: HERA.DNA.MODULE.MASTER.INDEX.V1
  *
  * This master index provides unified discovery and access to all HERA DNA modules
  */
@@ -68,8 +68,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   },
 
   // Financial Components
-  'HERA.FIN.AUTO.JOURNAL.ENGINE.v1': {
-    id: 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1',
+  'HERA.FIN.AUTO.JOURNAL.ENGINE.V1': {
+    id: 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1',
     name: 'Auto-Journal Engine',
     category: 'financial',
     type: 'component',
@@ -244,8 +244,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // DEVELOPMENT TOOLS
   // ============================================
-  'HERA.DEV.MCP.SQL.CONVERTER.v1': {
-    id: 'HERA.DEV.MCP.SQL.CONVERTER.v1',
+  'HERA.DEV.MCP.SQL.CONVERTER.V1': {
+    id: 'HERA.DEV.MCP.SQL.CONVERTER.V1',
     name: 'MCP SQL Converter',
     category: 'development',
     type: 'component',

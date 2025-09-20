@@ -187,7 +187,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 500,
         category: 'chemical',
         skillLevel: 'celebrity',
-        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1'
+        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1'
       },
       {
         id: 'srv-keratin-001',
@@ -196,7 +196,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 350,
         category: 'chemical',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1'
+        smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.V1'
       },
       {
         id: 'srv-cut-premium-001',
@@ -205,7 +205,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 150,
         category: 'cut',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1'
+        smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.V1'
       },
       {
         id: 'srv-color-highlights-001',
@@ -214,7 +214,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 280,
         category: 'color',
         skillLevel: 'senior',
-        smartCode: 'HERA.SALON.SERVICE.COLOR.HIGHLIGHTS.v1'
+        smartCode: 'HERA.SALON.SERVICE.COLOR.HIGHLIGHTS.V1'
       },
       {
         id: 'srv-bridal-package-001',
@@ -223,7 +223,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         price: 800,
         category: 'bridal',
         skillLevel: 'celebrity',
-        smartCode: 'HERA.SALON.SERVICE.BRIDAL.PREMIUM.v1'
+        smartCode: 'HERA.SALON.SERVICE.BRIDAL.PREMIUM.V1'
       }
     ]
 
@@ -243,7 +243,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         hourlyRate: 200,
         commissionRate: 0.4,
         instagram: '@rocky_hair_artist',
-        smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1'
       },
       {
         id: 'stylist-vinay-001',
@@ -253,7 +253,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         level: 'senior',
         hourlyRate: 150,
         commissionRate: 0.35,
-        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
       },
       {
         id: 'stylist-maya-001',
@@ -263,7 +263,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         level: 'senior',
         hourlyRate: 140,
         commissionRate: 0.3,
-        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+        smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
       }
     ]
 
@@ -340,7 +340,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         textColor: '#ffffff',
         extendedProps: {
           entity_id: 'apt-001',
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.CHEMICAL.v1',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.CHEMICAL.V1',
           organization_id: currentOrganization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,
@@ -370,7 +370,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         textColor: '#ffffff',
         extendedProps: {
           entity_id: 'apt-002',
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.v1',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.PREMIUM.V1',
           organization_id: currentOrganization?.id || 'demo-salon',
           event_type: 'appointment' as const,
           status: 'confirmed' as const,

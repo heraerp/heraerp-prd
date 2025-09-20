@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA RESTAURANT DASHBOARD EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.RESTAURANT.V1
 // Complete restaurant operations dashboard with real-time metrics
 // ================================================================================
 

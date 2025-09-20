@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.SALON.MDM.RELATIONSHIPS.SEED.V1
 rows:
   # Service requires Product (consumables)
   - from_slug: service:HAIR_COLOR

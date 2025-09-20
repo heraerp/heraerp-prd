@@ -2,15 +2,15 @@
 
 // ================================================================================
 // HERA DNA THEME CONFIGURATION EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.THEME.CONFIGURATION.v1
+// Smart Code: HERA.DNA.EXAMPLE.THEME.CONFIGURATION.V1
 // Complete example showing how to use the Universal Theme System
 // ================================================================================
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Palette, 
   Settings, 

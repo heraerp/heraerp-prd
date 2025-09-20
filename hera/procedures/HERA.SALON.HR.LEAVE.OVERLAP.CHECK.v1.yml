@@ -1,0 +1,60 @@
+smart_code: HERA.SALON.HR.LEAVE.OVERLAP.CHECK.V1
+intent: Check if requested leave dates overlap with existing approved leave.
+scope:
+  in_scope:
+    - validate date overlap
+    - check existing leave records
+    - enforce scheduling constraints
+  out_of_scope:
+    - calendar availability
+    - shift scheduling
+preconditions:
+  - workflow instance exists
+  - leave request dates provided
+invariants:
+  - check is non-destructive
+  - considers only APPROVED leave
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - employee_id: uuid
+      - start_date: string
+      - end_date: string
+happy_path:
+  - step: load all APPROVED leave records for employee
+  - step: check for date overlap with requested period
+  - step: validate against minimum gap policy (e.g., no leave within 2 weeks)
+  - step: check team coverage constraints if applicable
+outputs:
+  guard_result:
+    passed: boolean
+    has_overlap: boolean
+    overlapping_leaves: array
+    coverage_adequate: boolean
+errors:
+  - code: LEAVE_OVERLAP
+    when: requested dates overlap with approved leave
+    action: return guard failure with overlapping periods
+  - code: INSUFFICIENT_GAP
+    when: leave request too close to existing leave
+    action: return guard failure with policy details
+  - code: INADEQUATE_COVERAGE
+    when: too many team members on leave same period
+    action: return guard failure with coverage details
+observability:
+  logs:
+    - leave_overlap_checked: { employee_id, start_date, end_date, overlap_found, result }
+  audit_json: true
+  metrics:
+    - leave_overlap_check_count
+    - overlap_conflict_rate
+example_context:
+  employee_id: "emp-123e4567-e89b-12d3-a456-426614174000"
+  start_date: "2024-02-01"
+  end_date: "2024-02-05"
+checks:
+  - description: verify no overlap with approved leave
+  - description: check team coverage requirements
+  - description: enforce minimum gap policies

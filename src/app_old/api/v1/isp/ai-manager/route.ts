@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-// Smart Code: HERA.ISP.AI.MANAGER.API.v1
+// Smart Code: HERA.ISP.AI.MANAGER.API.V1
 // Minimal, deterministic AI-like responder for ISP domain without external dependencies
 
 export async function POST(req: Request) {
@@ -97,7 +97,7 @@ export async function POST(req: Request) {
       recommendations,
       insights,
       visualData: { type: 'chart', data: { ts: now, series: [] } },
-      smart_code: 'HERA.ISP.AI.MANAGER.API.v1',
+      smart_code: 'HERA.ISP.AI.MANAGER.API.V1',
       organizationId
     })
   } catch (err: any) {

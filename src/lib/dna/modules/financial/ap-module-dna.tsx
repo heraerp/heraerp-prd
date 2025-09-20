@@ -1,23 +1,23 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Separator } from '@/src/components/ui/separator'
-import { Progress } from '@/src/components/ui/progress'
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Progress } from '@/components/ui/progress'
 import {
   Receipt,
   Users,
@@ -40,8 +40,8 @@ import {
   Snowflake,
   Award
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { universalApi } from '@/src/lib/universal-api'
+import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
 
 // Types
 export interface APModuleProps {
@@ -250,7 +250,7 @@ export function APModule({
         from_entity_id: selectedVendor,
         transaction_code: invoiceForm.invoiceNumber,
         total_amount: calculateTotal(),
-        smart_code: 'HERA.FIN.AP.TXN.INV.v1',
+        smart_code: 'HERA.FIN.AP.TXN.INV.V1',
         metadata: {
           ...invoiceForm.metadata,
           due_date: invoiceForm.dueDate,
@@ -948,9 +948,9 @@ export const AP_MODULE_DNA = {
   },
   dependencies: ['universalApi', 'Vendor master data', 'GL account setup', 'Organization context'],
   smartCodes: [
-    'HERA.FIN.AP.ENT.VEN.v1',
-    'HERA.FIN.AP.TXN.INV.v1',
-    'HERA.FIN.AP.TXN.PAY.v1',
+    'HERA.FIN.AP.ENT.VEN.V1',
+    'HERA.FIN.AP.TXN.INV.V1',
+    'HERA.FIN.AP.TXN.PAY.V1',
     'HERA.FIN.AP.VAL.*'
   ]
 }

@@ -59,7 +59,7 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
           entity_type: 'customer',
           entity_name: bookingData.clientName,
           entity_code: `CLIENT-${Date.now()}`,
-          smart_code: 'HERA.SALON.CLIENT.v1',
+          smart_code: 'HERA.SALON.CUS.ENT.PROF.V1',
           metadata: {
             source: 'appointment_booking'
           }
@@ -81,7 +81,7 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
           entity_id: clientId,
           field_name: 'phone',
           field_value_text: bookingData.clientPhone,
-          smart_code: 'HERA.SALON.CLIENT.PHONE.v1'
+          smart_code: 'HERA.SALON.CUS.DYN.PHONE.V1'
         })
       }
 
@@ -91,7 +91,7 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
           entity_id: clientId,
           field_name: 'email',
           field_value_text: bookingData.clientEmail,
-          smart_code: 'HERA.SALON.CLIENT.EMAIL.v1'
+          smart_code: 'HERA.SALON.CUS.DYN.EMAIL.V1'
         })
       }
 
@@ -115,7 +115,7 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
         source_entity_id: clientId, // Link to actual client entity!
         target_entity_id: isStylistUUID ? bookingData.stylistId : null, // Only set if valid UUID
         total_amount: bookingData.servicePrice,
-        smart_code: 'HERA.SALON.APPOINTMENT.v1',
+        smart_code: 'HERA.SALON.APT.TXN.BOOKING.V1',
         metadata: {
           service_id: bookingData.serviceId,
           service_name: bookingData.serviceName,
@@ -174,7 +174,7 @@ export async function createIntegratedAppointment(bookingData: BookingData) {
         quantity: 1,
         unit_price: bookingData.servicePrice,
         line_amount: bookingData.servicePrice,
-        smart_code: 'HERA.SALON.APPOINTMENT.SERVICE.v1',
+        smart_code: 'HERA.SALON.APT.LINE.SERVICE.V1',
         metadata: {
           service_name: bookingData.serviceName,
           duration_minutes: bookingData.duration

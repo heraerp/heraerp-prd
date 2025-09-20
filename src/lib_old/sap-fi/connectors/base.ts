@@ -113,11 +113,11 @@ export abstract class BaseSAPConnector implements ISAPConnector {
 
     // Map based on Smart Code
     const docTypeMapping: Record<string, string> = {
-      'HERA.ERP.FI.JE.POST.v1': 'SA',
-      'HERA.ERP.FI.AP.INVOICE.v1': 'KR',
-      'HERA.ERP.FI.AR.INVOICE.v1': 'DR',
-      'HERA.ERP.FI.AP.PAYMENT.v1': 'KZ',
-      'HERA.ERP.FI.AR.RECEIPT.v1': 'DZ'
+      'HERA.ERP.FI.JE.POST.V1': 'SA',
+      'HERA.ERP.FI.AP.INVOICE.V1': 'KR',
+      'HERA.ERP.FI.AR.INVOICE.V1': 'DR',
+      'HERA.ERP.FI.AP.PAYMENT.V1': 'KZ',
+      'HERA.ERP.FI.AR.RECEIPT.V1': 'DZ'
     }
 
     sapDoc.DocumentType = docTypeMapping[transaction.smart_code] || 'SA'

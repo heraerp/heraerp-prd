@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Accounting_periods
- * Generated at: 2025-09-06T04:22:16.457Z
+ * Generated at: 2025-09-20T19:26:58.519Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.ACCOUNTING_PERIODS",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132536458';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396418519';
 
 describe('Accounting_periods - Universal CRUD Operations', () => {
   let createdEntityId;

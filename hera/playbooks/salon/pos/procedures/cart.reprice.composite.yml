@@ -1,0 +1,147 @@
+smart_code: HERA.SALON.POS.CART.REPRICE.V1
+intent: >
+  Complete cart repricing workflow: emit discount/tip lines, run pricing evaluation + tax calculation, persist pricing summary.
+  Orchestrates all pricing components for idempotent cart repricing.
+
+scope:
+  in_scope:
+    - Cart-level discount line creation/update
+    - Tip line creation/update
+    - Pricing evaluation via pricebook
+    - Tax calculation
+    - Pricing summary computation and persistence
+    - Idempotent operation support
+  out_of_scope:
+    - Individual line pricing (delegated to pricing.eval)
+    - Complex tax scenarios (delegated to tax procedures)
+    - Payment processing
+    - Inventory reservations
+
+preconditions:
+  - cart.status == ACTIVE
+  - cart belongs to requesting organization
+  - has_permissions: [pos_operator, cart_write, pricing_update]
+
+invariants:
+  - header.total_amount == pricing_summary.total
+  - sum(all_lines) == pricing_summary.total (within rounding tolerance)
+  - operation is idempotent with same inputs
+  - discount/tip lines are upserted, not duplicated
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for policy and permissions
+    - name: cart_id
+      type: uuid
+      where: payload
+      description: Cart to reprice
+  optional:
+    - name: discount
+      type: object
+      where: payload
+      description: "Cart discount: {type: 'percent'|'amount', value: number, reason: string}"
+    - name: tip
+      type: object
+      where: payload  
+      description: "Tip: {method: 'card'|'cash', amount: number}"
+    - name: options
+      type: object
+      where: payload
+      description: "Pricing options: {tax_smart_code: string, force_refresh: boolean}"
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: discount_line
+      description: Cart-level discount line (if discount provided)
+      smart_codes: 
+        - HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1
+        - HERA.SALON.POS.ADJUST.DISCOUNT.CART.AMT.V1
+    - slug: tip_line
+      description: Tip line (if tip provided)
+      smart_codes:
+        - HERA.SALON.TIP.CARD.V1
+        - HERA.SALON.TIP.CASH.V1
+    - slug: tax_line
+      description: Tax summary line
+      smart_codes:
+        - HERA.SALON.TAX.UK.VAT.STANDARD.V1
+  side_effects:
+    - update cart header with pricing_summary
+    - update last_reprice_at timestamp
+    - store idempotency key for duplicate detection
+
+happy_path:
+  - step: Validate cart exists and is active
+  - step: Check idempotency key to prevent duplicate processing
+  - step: Call HERA.SALON.POS.PRICING.EVAL.V1 for base line pricing
+  - step: Upsert cart discount line if discount provided
+    details: |
+      - percent discount → HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1
+      - amount discount → HERA.SALON.POS.ADJUST.DISCOUNT.CART.AMT.V1
+      - validate against org discount policy max_pct
+  - step: Upsert tip line if tip provided
+    details: |
+      - card tip → HERA.SALON.TIP.CARD.V1  
+      - cash tip → HERA.SALON.TIP.CASH.V1
+  - step: Call HERA.SALON.TAX.UK.VAT.STANDARD.V1 for tax calculation
+  - step: Compute pricing_summary from sum of all lines
+  - step: Update cart header with pricing_summary and timestamps
+  - step: Return pricing_summary and changed line IDs
+
+errors:
+  - code: CART_NOT_FOUND
+    when: cart_id does not exist or not accessible
+    action: return error with cart requirements
+  - code: CART_NOT_ACTIVE  
+    when: cart.status != ACTIVE
+    action: return error - only active carts can be repriced
+  - code: DISCOUNT_EXCEEDS_POLICY
+    when: discount.value > org.discount.policy.max_pct
+    action: return error with policy limits
+  - code: INVALID_TIP_AMOUNT
+    when: tip.amount <= 0 or unreasonably large
+    action: return error with tip validation rules
+  - code: PRICING_EVAL_FAILED
+    when: base pricing evaluation fails
+    action: return error from pricing evaluation
+  - code: TAX_CALC_FAILED
+    when: tax calculation fails
+    action: return error from tax calculation
+  - code: SUMMARY_MISMATCH
+    when: computed summary doesn't match sum of lines
+    action: return error with calculation details
+  - code: IDEMPOTENCY_CONFLICT
+    when: idempotency key reused with different payload
+    action: return error - same key requires same payload
+
+observability:
+  logs: [reprice_started, pricing_eval_called, discount_applied, tip_applied, tax_calculated, summary_computed, reprice_completed]
+  audit_json: true
+  metrics: [reprice_duration_ms, lines_changed_count, discount_amount, tip_amount, tax_amount, total_amount]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  cart_id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+  discount:
+    type: "percent"
+    value: 10
+    reason: "LOYALTY"
+  tip:
+    method: "card"
+    amount: 8.00
+  options:
+    tax_smart_code: "HERA.SALON.TAX.UK.VAT.STANDARD.V1"
+    force_refresh: false
+
+checks:
+  - description: Pricing summary matches sum of all lines
+  - description: Discount line created with correct smart code and amount
+  - description: Tip line created with correct method and amount
+  - description: Tax line calculated correctly on taxable base
+  - description: Cart header updated with complete pricing summary
+  - description: Operation completes within 150ms target
+  - description: Idempotency key prevents duplicate processing

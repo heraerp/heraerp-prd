@@ -299,7 +299,7 @@ export class SelfGoverningIntegration {
         entity_type: 'organization_system_config',
         entity_name: `System Configuration`,
         entity_code: `SYSCONFIG-${organizationId}`,
-        smart_code: 'HERA.SYS.CONFIG.ORG.SETTINGS.v1',
+        smart_code: 'HERA.SYS.CONFIG.ORG.SETTINGS.V1',
         metadata: {
           ...config,
           configured_by: userId,

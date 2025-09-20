@@ -11,10 +11,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@/src/components/ui/dropdown-menu'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Bell,
   X,
@@ -27,7 +27,7 @@ import {
   Settings,
   BellOff
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 // date-fns import - using a simple alternative for now
 const formatDistanceToNow = (date: Date, options?: { addSuffix?: boolean }) => {

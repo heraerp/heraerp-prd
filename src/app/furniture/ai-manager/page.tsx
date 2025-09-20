@@ -5,17 +5,20 @@ export const dynamic = 'force-dynamic'
 /** * HERA Furniture AI Manager * Smart Code: HERA.FURNITURE.AI.MANAGER.v1 * * AI-powered business intelligence and management system * Natural language business operations for furniture manufacturers */
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Progress } from '@/src/components/ui/progress'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import {
+  useFurnitureOrg,
+  FurnitureOrgLoading
+} from '@/components/furniture/FurnitureOrgContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import {
   Brain,
   Send,
@@ -62,10 +65,10 @@ import {
   Calculator,
   ListChecks,
   Gauge,
-  ChartBar,
+  BarChart,
   Workflow
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface AIMessage {
   id: string
@@ -76,10 +79,10 @@ interface AIMessage {
   priority?: 'high' | 'medium' | 'low'
   actionable?: boolean
   metrics?: {
-    label: string;
-    value: string | number;
-    trend?: 'up' | 'down' | 'stable';
-    change?: number;
+    label: string
+    value: string | number
+    trend?: 'up' | 'down' | 'stable'
+    change?: number
   }[]
   recommendations?: {
     title: string
@@ -109,11 +112,11 @@ interface QuickInsight {
   label: string
   query: string
   color: string
-  category: string;
+  category: string
 }
 
 // Real-time business metrics
-  const BUSINESS_METRICS: BusinessMetric[] = [
+const BUSINESS_METRICS: BusinessMetric[] = [
   {
     id: 'revenue',
     label: 'Monthly Revenue',
@@ -175,7 +178,7 @@ interface QuickInsight {
     category: 'finance'
   }
 ] // AI-powered quick insights
-  const QUICK_INSIGHTS: QuickInsight[] = [
+const QUICK_INSIGHTS: QuickInsight[] = [
   {
     icon: TrendUp,
     label: 'Revenue Analysis',
@@ -219,7 +222,7 @@ interface QuickInsight {
     category: 'strategy'
   }
 ] // Management categories
-  const MANAGEMENT_CATEGORIES = [
+const MANAGEMENT_CATEGORIES = [
   { id: 'overview', label: 'Overview', icon: Gauge },
   { id: 'operations', label: 'Operations', icon: Factory },
   { id: 'sales', label: 'Sales', icon: ShoppingCart },
@@ -272,9 +275,9 @@ export default function FurnitureAIManagerPage() {
   useEffect(() => {
     const scrollToBottom = () => {
       if (scrollAreaRef.current) {
-  const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
+        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]')
         if (viewport) {
-  viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
+          viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' })
         }
       }
     }
@@ -292,7 +295,7 @@ export default function FurnitureAIManagerPage() {
       // In production, this would fetch real data
       // For now, we'll just slightly modify the metrics
     }, 30000)
-          // Update every 30 seconds
+    // Update every 30 seconds
 
     return () => clearInterval(interval)
   }, [])
@@ -310,7 +313,7 @@ export default function FurnitureAIManagerPage() {
 
     try {
       // Call the AI manager API
-  const response = await fetch('/api/v1/furniture/ai-manager', {
+      const response = await fetch('/api/v1/furniture/ai-manager', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -326,7 +329,7 @@ export default function FurnitureAIManagerPage() {
       })
 
       if (!response.ok) {
-  throw new Error('Failed to process query')
+        throw new Error('Failed to process query')
       }
 
       const data = await response.json()
@@ -347,7 +350,7 @@ export default function FurnitureAIManagerPage() {
 
       // If there are critical insights, add them as separate messages
       if (data.insights && data.insights.length > 0) {
-  data.insights.forEach((insight: any, index: number) => {
+        data.insights.forEach((insight: any, index: number) => {
           setTimeout(
             () => {
               const insightMessage: AIMessage = {
@@ -366,7 +369,7 @@ export default function FurnitureAIManagerPage() {
         })
       }
     } catch (error) {
-  const errorMessage: AIMessage = {
+      const errorMessage: AIMessage = {
         id: Date.now().toString(),
         type: 'assistant',
         content: 'I had trouble analyzing that. Please try rephrasing your question.',
@@ -392,7 +395,10 @@ export default function FurnitureAIManagerPage() {
   }
 
   const renderMetricCard = (metric: BusinessMetric) => (
-    <Card key={metric.id} className="bg-[var(--color-body)]/50 border-[var(--color-border)] hover:border-[var(--color-border)] transition-all">
+    <Card
+      key={metric.id}
+      className="bg-[var(--color-body)]/50 border-[var(--color-border)] hover:border-[var(--color-border)] transition-all"
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
@@ -424,10 +430,7 @@ export default function FurnitureAIManagerPage() {
               metric.color.replace('text', 'bg').replace('500', '500/20')
             )}
           >
-            <metric.icon className={cn(
-            'h-5 w-5',
-            metric.color
-          )} />
+            <metric.icon className={cn('h-5 w-5', metric.color)} />
           </div>
         </div>
       </CardContent>
@@ -440,10 +443,7 @@ export default function FurnitureAIManagerPage() {
     const isSystem = message.type === 'system'
 
     return (
-      <div key={message.id} className={cn(
-            'flex gap-3',
-            isUser ? 'justify-end' : 'justify-start'
-          )}>
+      <div key={message.id} className={cn('flex gap-3', isUser ? 'justify-end' : 'justify-start')}>
         {!isUser && (
           <div
             className={cn(
@@ -454,7 +454,7 @@ export default function FurnitureAIManagerPage() {
             {isInsight ? (
               <Lightbulb className="h-4 w-4 text-yellow-500" />
             ) : (
-              <Brain className="h-4 w-4 text-[#37353E]" />
+              <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
             )}
           </div>
         )}
@@ -485,10 +485,7 @@ export default function FurnitureAIManagerPage() {
               {message.priority.toUpperCase()} PRIORITY
             </Badge>
           )}
-          <p className={cn(
-            'whitespace-pre-wrap',
-            isInsight && 'font-medium'
-          )}>{message.content}</p>
+          <p className={cn('whitespace-pre-wrap', isInsight && 'font-medium')}>{message.content}</p>
         </div>
         {isUser && (
           <div className="w-8 h-8 rounded-full bg-muted-foreground/10 flex items-center justify-center flex-shrink-0">
@@ -499,14 +496,14 @@ export default function FurnitureAIManagerPage() {
     )
   }
 
-// Show loading state
+  // Show loading state
   if (orgLoading) {
-  return <FurnitureOrgLoading />
+    return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (isAuthenticated && contextLoading) {
-  return (
+    return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
@@ -538,15 +535,9 @@ export default function FurnitureAIManagerPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setUseMCP(!useMCP)}
-                className={cn(
-            'gap-2',
-            useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : ''
-          )}
+                className={cn('gap-2', useMCP ? 'bg-green-500/10 hover:bg-green-500/20' : '')}
               >
-                <Zap className={cn(
-            'h-4 w-4',
-            useMCP && 'text-green-500'
-          )} />
+                <Zap className={cn('h-4 w-4', useMCP && 'text-green-500')} />
                 {useMCP ? 'MCP Mode' : 'API Mode'}
               </Button>
             </>
@@ -590,7 +581,7 @@ export default function FurnitureAIManagerPage() {
                   {loading && (
                     <div className="flex gap-3 justify-start">
                       <div className="w-8 h-8 rounded-full bg-[var(--color-body)]/20 flex items-center justify-center">
-                        <Brain className="h-4 w-4 text-[#37353E]" />
+                        <Brain className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                       </div>
                       <div className="rounded-lg p-4 bg-muted-foreground/10">
                         <div className="flex items-center gap-2">
@@ -604,7 +595,10 @@ export default function FurnitureAIManagerPage() {
               </ScrollArea>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="bg-[var(--color-body)] p-4 border-t border-[var(--color-border)]">
+              <form
+                onSubmit={handleSubmit}
+                className="bg-[var(--color-body)] p-4 border-t border-[var(--color-border)]"
+              >
                 <div className="flex gap-2">
                   <Input
                     ref={inputRef}
@@ -645,10 +639,7 @@ export default function FurnitureAIManagerPage() {
                     onClick={() => handleQuickInsight(insight.query)}
                     className="w-full justify-start gap-2 hover:bg-[var(--color-sidebar)]/30"
                   >
-                    <insight.icon className={cn(
-            'h-4 w-4',
-            insight.color
-          )} />
+                    <insight.icon className={cn('h-4 w-4', insight.color)} />
                     <span className="text-xs">{insight.label}</span>
                   </Button>
                 ))}

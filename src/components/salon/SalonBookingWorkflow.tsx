@@ -7,23 +7,23 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Separator } from '@/src/components/ui/separator'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Calendar,
   Clock,
@@ -47,8 +47,8 @@ import {
   Heart,
   Crown
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { toast } from '@/src/hooks/use-toast'
+import { cn } from '@/lib/utils'
+import { toast } from '@/hooks/use-toast'
 
 // Types for salon booking workflow
 interface SalonService {
@@ -172,7 +172,7 @@ export function SalonBookingWorkflow({
         'Use sulfate-free products',
         'Deep conditioning weekly'
       ],
-      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1',
       popularity: 95,
       addons: [
         {
@@ -208,7 +208,7 @@ export function SalonBookingWorkflow({
         'Sleep on silk pillowcase',
         'Use keratin-safe products'
       ],
-      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.v1',
+      smartCode: 'HERA.SALON.SERVICE.CHEMICAL.KERATIN.V1',
       popularity: 88
     },
     {
@@ -219,7 +219,7 @@ export function SalonBookingWorkflow({
       price: 280,
       category: 'color',
       skillLevel: 'senior',
-      smartCode: 'HERA.SALON.SERVICE.COLOR.BALAYAGE.v1',
+      smartCode: 'HERA.SALON.SERVICE.COLOR.BALAYAGE.V1',
       popularity: 92
     },
     {
@@ -230,7 +230,7 @@ export function SalonBookingWorkflow({
       price: 150,
       category: 'cut',
       skillLevel: 'senior',
-      smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1',
+      smartCode: 'HERA.SALON.SERVICE.CUT.PREMIUM.V1',
       popularity: 85
     },
     {
@@ -241,7 +241,7 @@ export function SalonBookingWorkflow({
       price: 800,
       category: 'bridal',
       skillLevel: 'celebrity',
-      smartCode: 'HERA.SALON.SERVICE.BRIDAL.COMPLETE.v1',
+      smartCode: 'HERA.SALON.SERVICE.BRIDAL.COMPLETE.V1',
       popularity: 98
     }
   ]
@@ -264,7 +264,7 @@ export function SalonBookingWorkflow({
       reviews: 247,
       bio: '15+ years of experience with celebrity clients. Certified Brazilian Blowout specialist.',
       instagram: '@rocky_hair_artist',
-      smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.v1'
+      smartCode: 'HERA.SALON.STAFF.CELEBRITY.STYLIST.V1'
     },
     {
       id: 'stylist-vinay-001',
@@ -277,7 +277,7 @@ export function SalonBookingWorkflow({
       rating: 4.7,
       reviews: 156,
       bio: 'Master of precision cuts and modern styling techniques.',
-      smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.v1'
+      smartCode: 'HERA.SALON.STAFF.SENIOR.STYLIST.V1'
     },
     {
       id: 'stylist-maya-001',
@@ -290,7 +290,7 @@ export function SalonBookingWorkflow({
       rating: 4.8,
       reviews: 189,
       bio: 'Award-winning colorist specializing in natural-looking highlights.',
-      smartCode: 'HERA.SALON.STAFF.COLOR.SPECIALIST.v1'
+      smartCode: 'HERA.SALON.STAFF.COLOR.SPECIALIST.V1'
     }
   ]
 

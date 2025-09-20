@@ -10,7 +10,7 @@ export interface AuditClient {
   entity_type: 'audit_client'
   entity_code: string
   entity_name: string
-  smart_code: 'HERA.AUD.CLI.ENT.PROF.v1'
+  smart_code: 'HERA.AUD.CLI.ENT.PROF.V1'
   status: 'active' | 'inactive' | 'prospective'
   metadata: {
     client_type: 'public' | 'private' | 'non_profit' | 'government'
@@ -49,7 +49,7 @@ export interface DocumentRequisition {
   id: string
   organization_id: string // Audit firm's organization
   transaction_type: 'document_requisition'
-  smart_code: 'HERA.AUD.DOC.TXN.REQ.v1'
+  smart_code: 'HERA.AUD.DOC.TXN.REQ.V1'
   reference_number: string
   client_id: string
   audit_year: string
@@ -120,7 +120,7 @@ export interface AuditProcedure {
   id: string
   organization_id: string
   transaction_type: 'audit_procedure'
-  smart_code: 'HERA.AUD.PROC.TXN.TEST.v1'
+  smart_code: 'HERA.AUD.PROC.TXN.TEST.V1'
   reference_number: string
   client_id: string
   audit_area: AuditArea
@@ -178,7 +178,7 @@ export interface WorkingPaper {
   id: string
   organization_id: string
   entity_type: 'working_paper'
-  smart_code: 'HERA.AUD.WP.ENT.MASTER.v1'
+  smart_code: 'HERA.AUD.WP.ENT.MASTER.V1'
   paper_reference: string // e.g., "A.1.1", "B.2.3"
   paper_title: string
   audit_area: AuditArea
@@ -236,9 +236,9 @@ export interface AuditReview {
   organization_id: string
   transaction_type: 'audit_review'
   smart_code:
-    | 'HERA.AUD.REV.TXN.MANAGER.v1'
-    | 'HERA.AUD.REV.TXN.PARTNER.v1'
-    | 'HERA.AUD.REV.TXN.EQCR.v1'
+    | 'HERA.AUD.REV.TXN.MANAGER.V1'
+    | 'HERA.AUD.REV.TXN.PARTNER.V1'
+    | 'HERA.AUD.REV.TXN.EQCR.V1'
   reference_number: string
   review_level: ReviewLevel
   reviewer_id: string
@@ -297,7 +297,7 @@ export interface AuditReport {
   id: string
   organization_id: string
   entity_type: 'audit_report'
-  smart_code: 'HERA.AUD.RPT.ENT.REPORT.v1'
+  smart_code: 'HERA.AUD.RPT.ENT.REPORT.V1'
   report_type: 'audit_opinion' | 'management_letter' | 'internal_control' | 'agreed_upon_procedures'
   client_id: string
   audit_year: string

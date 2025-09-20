@@ -1,0 +1,14 @@
+smart_code: HERA.SALON.CONFIG.READ.V1
+intent: Read merged salon settings for an organization (all sections or one).
+inputs:
+  required: [organization_id]
+  optional: [section]
+outputs:
+  transactions_emitted: []
+  entities_created: []
+happy_path:
+  - step: resolve org_config anchor entity (entity_type='org_config', name='Salon Settings'); create if missing
+  - step: load core_dynamic_data rows for this anchor; build merged JSON { sections:{...} }
+  - step: if section specified, return only that section
+observability:
+  logs: [config_anchor_resolved, sections_loaded]

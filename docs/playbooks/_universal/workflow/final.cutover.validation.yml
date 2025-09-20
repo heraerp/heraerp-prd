@@ -1,0 +1,458 @@
+smart_code: HERA.UNIV.WF.FINAL.CUTOVER.VALIDATION.V1
+intent: Final production cutover validation - green-light gates for go-live.
+scope:
+  in_scope:
+    - validate all feature flags functional
+    - verify auth/RLS security enforcement
+    - confirm idempotency constraints
+    - validate backup/DR procedures
+    - check SLOs monitoring active
+    - verify PII/correlation tracking
+    - confirm API v1 freeze compliance
+  out_of_scope:
+    - performance optimization
+    - new feature development
+    - infrastructure provisioning
+preconditions:
+  - all workflow components deployed
+  - monitoring infrastructure operational
+  - test environments available
+invariants:
+  - production data safety maintained
+  - comprehensive validation coverage
+  - clear go/no-go decision criteria
+inputs:
+  required:
+    - validation_environment: enum[staging, pre_prod, production]
+    - hair_talkz_org_id: uuid
+    - test_foreign_org_id: uuid
+  optional:
+    - run_full_suite: boolean                      # complete vs quick validation
+    - fix_issues: boolean                          # auto-fix minor issues
+    - generate_report: boolean                     # detailed validation report
+happy_path:
+  - step: execute feature flags validation
+  - step: run auth/RLS security tests
+  - step: verify idempotency constraints
+  - step: validate backup/DR procedures
+  - step: confirm SLOs monitoring setup
+  - step: check PII/correlation compliance
+  - step: verify API v1 freeze status
+  - step: generate go/no-go recommendation
+outputs:
+  response:
+    validation_results: array
+      - gate_name: string
+        status: enum[PASS, FAIL, WARNING]
+        description: string
+        test_count: number
+        pass_count: number
+        fail_count: number
+        critical_issues: array
+        recommendations: array
+    overall_status: enum[GO, NO_GO, CONDITIONAL_GO]
+    cutover_readiness_score: number                # 0-100 percentage
+    critical_blockers: array
+    recommended_actions: array
+    sign_off_requirements: array
+
+validation_gates:
+  # Gate 1: Feature Flags & Kill-Switches
+  feature_flags_validation:
+    gate_name: "Feature Flags & Kill-Switches"
+    priority: critical
+    tests:
+      global_pause_test:
+        description: "Test global workflow pause functionality"
+        procedure: |
+          1. Set global flag: wf_global_enabled_LEAVE_APPROVAL = false
+          2. Attempt to start LEAVE_APPROVAL workflow
+          3. Verify receives WORKFLOW_DISABLED error
+          4. Re-enable flag and verify workflow starts successfully
+        success_criteria: "Global pause prevents starts, resume allows starts"
+        
+      per_org_override_test:
+        description: "Test per-organization override functionality"
+        procedure: |
+          1. Set global flag enabled for MEMBERSHIP_RENEWAL
+          2. Set Hair Talkz org flag disabled: wf_org_enabled_{hair_talkz}_MEMBERSHIP_RENEWAL = false
+          3. Attempt start from Hair Talkz org
+          4. Verify WORKFLOW_DISABLED error
+          5. Attempt start from different org
+          6. Verify successful start (org override works)
+        success_criteria: "Org-specific flags override global settings"
+        
+      emergency_stop_test:
+        description: "Test emergency stop functionality"
+        procedure: |
+          1. Set emergency stop: wf_emergency_stop_all = true
+          2. Attempt to start any workflow type
+          3. Verify all workflow starts blocked
+          4. Disable emergency stop
+          5. Verify normal operation resumes
+        success_criteria: "Emergency stop blocks all workflows regardless of other flags"
+        
+      pause_resume_functionality:
+        description: "Test workflow pause/resume operations"
+        procedure: |
+          1. Start test workflow
+          2. Pause workflow instance
+          3. Verify timers skip while paused
+          4. Resume workflow instance
+          5. Verify timers resume processing
+        success_criteria: "Pause/resume works correctly with timer handling"
+
+  # Gate 2: Auth/RLS Security
+  auth_rls_validation:
+    gate_name: "Auth/RLS Security Enforcement"
+    priority: critical
+    tests:
+      cross_org_write_block:
+        description: "Verify cross-org write operations blocked"
+        procedure: |
+          1. Set JWT context to foreign org
+          2. Attempt to pause Hair Talkz workflow
+          3. Verify 403 PERMISSION_DENIED
+          4. Attempt to reassign Hair Talkz task
+          5. Verify 403 PERMISSION_DENIED
+          6. Attempt to retry Hair Talkz effects
+          7. Verify 403 PERMISSION_DENIED
+        success_criteria: "All cross-org write operations return 403"
+        
+      admin_permission_enforcement:
+        description: "Verify admin operations require proper permissions"
+        procedure: |
+          1. Call pause procedure as regular user
+          2. Verify PERMISSION_DENIED
+          3. Call reassign procedure as regular user
+          4. Verify PERMISSION_DENIED
+          5. Call admin procedures as admin user
+          6. Verify success
+        success_criteria: "Admin operations blocked for non-admin users"
+        
+      read_model_isolation:
+        description: "Verify read models enforce org boundaries"
+        procedure: |
+          1. Set foreign org JWT context
+          2. Query wf_instances_view for Hair Talkz data
+          3. Verify 0 rows returned
+          4. Query wf_tasks_view for Hair Talkz data
+          5. Verify 0 rows returned
+        success_criteria: "Read models return 0 rows for foreign org data"
+        
+      rls_policy_effectiveness:
+        description: "Verify RLS policies active on all tables"
+        procedure: |
+          1. Check RLS enabled on universal_transactions
+          2. Check RLS enabled on universal_transaction_lines
+          3. Check RLS enabled on core_entities
+          4. Check RLS enabled on core_dynamic_data
+          5. Verify policies exist and are enforcing
+        success_criteria: "RLS active with policies on all critical tables"
+
+  # Gate 3: Idempotency & Dedupe
+  idempotency_validation:
+    gate_name: "Idempotency & Dedupe Constraints"
+    priority: critical
+    tests:
+      timer_uniqueness_constraint:
+        description: "Verify timer uniqueness prevents duplicate firing"
+        procedure: |
+          1. Check unique constraint exists on (org_id, instance_id, timer_name, scheduled_at)
+          2. Attempt to create duplicate timer
+          3. Verify constraint violation prevents duplicate
+          4. Test concurrent timer fire attempts
+          5. Verify only one succeeds
+        success_criteria: "Timer uniqueness constraint prevents duplicates"
+        
+      advance_idempotency_constraint:
+        description: "Verify advance idempotency prevents duplicate steps"
+        procedure: |
+          1. Check unique constraint on (org_id, instance_id, from, to, actor_role, attempt_nonce) hash
+          2. Attempt duplicate advance with same nonce
+          3. Verify constraint prevents duplicate
+          4. Attempt advance with different nonce
+          5. Verify new attempt allowed
+        success_criteria: "Advance idempotency works with attempt nonce scoping"
+        
+      payment_idempotency:
+        description: "Verify payment operations are idempotent"
+        procedure: |
+          1. Process payment with Idempotency-Key
+          2. Retry same payment with same key
+          3. Verify idempotent response (no duplicate charge)
+          4. Process payment with different key
+          5. Verify new payment processed
+        success_criteria: "Payment idempotency prevents double charging"
+
+  # Gate 4: Backup/DR Procedures  
+  backup_dr_validation:
+    gate_name: "Backup/DR Procedures"
+    priority: critical
+    tests:
+      backup_restore_rehearsal:
+        description: "Execute complete backup/restore rehearsal"
+        procedure: |
+          1. Create database snapshot
+          2. Restore to staging environment
+          3. Verify data integrity post-restore
+          4. Replay timer fires from backup timestamp
+          5. Verify state convergence with no duplicates
+        success_criteria: "Backup/restore/replay completes successfully"
+        
+      registry_rehydration:
+        description: "Verify workflow registry rehydration"
+        procedure: |
+          1. Export workflow definitions
+          2. Clear registry in staging
+          3. Rehydrate from backup/export
+          4. Verify all definitions functional
+          5. Test workflow starts work correctly
+        success_criteria: "Registry rehydration restores full functionality"
+        
+      dr_state_consistency:
+        description: "Verify DR maintains state consistency"
+        procedure: |
+          1. Compare pre-backup state snapshot
+          2. Compare post-replay state
+          3. Verify only expected state changes
+          4. Check referential integrity maintained
+          5. Validate organization isolation preserved
+        success_criteria: "DR maintains complete state consistency"
+
+  # Gate 5: SLOs & Monitoring
+  slos_monitoring_validation:
+    gate_name: "SLOs & Monitoring Live"
+    priority: critical
+    tests:
+      timer_latency_monitoring:
+        description: "Verify timer latency p95 ≤ 60s monitoring"
+        procedure: |
+          1. Check monitoring query returns valid data
+          2. Verify alert triggers at >60s for 5 minutes
+          3. Test alert escalation paths
+          4. Confirm metrics collection working
+        success_criteria: "Timer latency monitoring active with correct thresholds"
+        
+      advance_success_monitoring:
+        description: "Verify advance success rate ≥ 99.5% monitoring"
+        procedure: |
+          1. Check success rate calculation query
+          2. Verify alert triggers below 99.5%
+          3. Test paging at <98% for 5 minutes
+          4. Confirm rolling window calculation
+        success_criteria: "Advance success monitoring with paging configured"
+        
+      queue_backlog_monitoring:
+        description: "Verify timer queue backlog alerts"
+        procedure: |
+          1. Check backlog detection query
+          2. Verify alert triggers at >0 for 10 minutes
+          3. Test escalation after sustained backlog
+          4. Confirm resolution procedures documented
+        success_criteria: "Backlog monitoring with escalation procedures"
+        
+      dashboard_functionality:
+        description: "Verify monitoring dashboards operational"
+        procedure: |
+          1. Check all dashboard metrics populate
+          2. Verify real-time data refresh
+          3. Test alert integration
+          4. Confirm access controls working
+        success_criteria: "Dashboards functional with real-time data"
+
+  # Gate 6: PII/Logs & Correlation
+  pii_correlation_validation:
+    gate_name: "PII/Logs & Correlation Tracking"
+    priority: high
+    tests:
+      correlation_id_propagation:
+        description: "Verify correlation IDs flow through all operations"
+        procedure: |
+          1. Start workflow with correlation ID
+          2. Trace through procedure calls
+          3. Verify effect executions include correlation
+          4. Check GL posting includes correlation
+          5. Validate communication logs include correlation
+        success_criteria: "Correlation IDs present in all operation logs"
+        
+      sensitive_field_redaction:
+        description: "Verify sensitive fields properly redacted"
+        procedure: |
+          1. Check customer phone numbers redacted in logs
+          2. Verify payment details not logged in clear text
+          3. Confirm PII redaction in error messages
+          4. Validate correlation doesn't expose sensitive data
+        success_criteria: "Sensitive fields redacted throughout system"
+        
+      audit_trail_completeness:
+        description: "Verify complete audit trail with correlation"
+        procedure: |
+          1. Execute end-to-end workflow
+          2. Extract complete audit trail
+          3. Verify all operations logged with correlation
+          4. Check timeline consistency
+          5. Validate organization isolation in logs
+        success_criteria: "Complete, correlated audit trail for all operations"
+
+  # Gate 7: API v1 Freeze
+  api_v1_freeze_validation:
+    gate_name: "API v1 Freeze & Versioning"
+    priority: medium
+    tests:
+      api_versioning_compliance:
+        description: "Verify API v1 freeze and versioning"
+        procedure: |
+          1. Check all endpoints include version in path
+          2. Verify backward compatibility maintained
+          3. Check deprecation documentation published
+          4. Validate version negotiation working
+        success_criteria: "API v1 frozen with proper versioning"
+        
+      deprecation_policy:
+        description: "Verify deprecation policy documented"
+        procedure: |
+          1. Check deprecation timeline published
+          2. Verify migration guide available
+          3. Confirm breaking change policy documented
+          4. Validate support commitment clear
+        success_criteria: "Deprecation policy clearly documented"
+
+validation_scoring:
+  critical_gates: 6                                # Must pass all critical gates
+  high_gates: 1                                    # Must pass ≥80% of high gates
+  medium_gates: 1                                  # Must pass ≥70% of medium gates
+  
+  scoring_formula: |
+    score = (critical_pass / critical_total * 60) +
+            (high_pass / high_total * 25) +
+            (medium_pass / medium_total * 15)
+    
+  go_criteria:
+    overall_score: ≥ 95
+    critical_failures: 0
+    high_failures: ≤ 1
+    
+  conditional_go_criteria:
+    overall_score: ≥ 90
+    critical_failures: 0
+    high_failures: ≤ 2
+    mitigation_plan: required
+    
+  no_go_criteria:
+    overall_score: < 90
+    critical_failures: > 0
+    high_failures: > 2
+
+critical_blockers:
+  feature_flag_failure:
+    impact: "Cannot safely enable/disable workflows"
+    resolution: "Fix feature flag implementation"
+    blocker_level: "CRITICAL"
+    
+  security_breach:
+    impact: "Cross-org data access possible"
+    resolution: "Fix RLS policies and authentication"
+    blocker_level: "CRITICAL"
+    
+  idempotency_failure:
+    impact: "Duplicate operations possible"
+    resolution: "Create missing constraints"
+    blocker_level: "CRITICAL"
+    
+  dr_failure:
+    impact: "Cannot recover from data loss"
+    resolution: "Fix backup/restore procedures"
+    blocker_level: "CRITICAL"
+    
+  monitoring_blind_spot:
+    impact: "Cannot detect production issues"
+    resolution: "Fix SLO monitoring setup"
+    blocker_level: "HIGH"
+
+sign_off_requirements:
+  technical_validation:
+    required_by: "Platform Engineering Lead"
+    criteria: "All critical and high gates pass"
+    documentation: "Technical validation report"
+    
+  security_validation:
+    required_by: "Security Team Lead"
+    criteria: "All auth/RLS tests pass"
+    documentation: "Security assessment report"
+    
+  operational_validation:
+    required_by: "Operations Manager"
+    criteria: "All monitoring and runbooks validated"
+    documentation: "Operational readiness checklist"
+    
+  business_validation:
+    required_by: "Hair Talkz Business Owner"
+    criteria: "Business processes validated in staging"
+    documentation: "Business acceptance sign-off"
+
+example_execution:
+  command: |
+    curl -X POST "/api/v1/admin/cutover-validation" \
+      -H "Authorization: Bearer $ADMIN_TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "validation_environment": "staging",
+        "hair_talkz_org_id": "hair-talkz-uuid",
+        "test_foreign_org_id": "foreign-org-uuid",
+        "run_full_suite": true,
+        "generate_report": true
+      }'
+      
+  expected_response: |
+    {
+      "validation_results": [
+        {
+          "gate_name": "Feature Flags & Kill-Switches",
+          "status": "PASS",
+          "test_count": 4,
+          "pass_count": 4,
+          "fail_count": 0
+        }
+      ],
+      "overall_status": "GO",
+      "cutover_readiness_score": 98,
+      "critical_blockers": [],
+      "sign_off_requirements": [
+        {
+          "role": "Platform Engineering Lead",
+          "status": "PENDING",
+          "criteria_met": true
+        }
+      ]
+    }
+
+errors:
+  - code: CRITICAL_GATE_FAILED
+    when: any critical gate fails
+    action: return NO_GO with detailed failure analysis
+  - code: INSUFFICIENT_TEST_COVERAGE
+    when: not enough tests executed
+    action: run full validation suite
+  - code: VALIDATION_ENVIRONMENT_UNAVAILABLE
+    when: staging/test environment not accessible
+    action: provision validation environment
+
+observability:
+  logs:
+    - cutover_validation_started: { environment, test_scope }
+    - gate_validation_completed: { gate_name, status, test_results }
+    - critical_blocker_detected: { blocker_type, impact, resolution_required }
+    - cutover_validation_completed: { overall_status, readiness_score }
+  audit_json: true
+  metrics:
+    - cutover_validation_runs
+    - gate_pass_rate by gate_name
+    - cutover_readiness_score_trend
+    - critical_blocker_count
+
+checks:
+  - description: verify all critical security gates pass
+  - description: ensure idempotency constraints functional
+  - description: validate backup/DR procedures work
+  - description: confirm monitoring and alerts operational

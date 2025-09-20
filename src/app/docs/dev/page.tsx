@@ -2,10 +2,10 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Code, Database, Cpu, TestTube, Upload, GitBranch, Settings, Users } from 'lucide-react'
-import DocLayout from '@/src/components/docs/DocLayout'
-import { getDocNavigation } from '@/src/lib/hera-docs'
+import DocLayout from '@/components/docs/DocLayout'
+import { getDocNavigation } from '@/lib/hera-docs'
 
 const sections = [
   {

@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { LucideIcon } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 /**
  * HERA DNA Stat Card Component

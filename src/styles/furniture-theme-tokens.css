@@ -1,39 +1,101 @@
 /* ================================
-   FURNITURE MODULE - DARK THEME COLOR TOKENS
+   FURNITURE MODULE - ENTERPRISE DARK THEME COLOR TOKENS
    ================================ */
 
 /* ---- Base Layout ---- */
 :root {
-  /* Core surfaces */
-  --color-body: #2A282F;          /* App background - darker for depth */
-  --color-sidebar: #4A4854;       /* Sidebar - lighter shade */
-  --color-sidebar-border: #5A5864; /* Sidebar border - lighter than sidebar */
-  --color-surface-raised: #42404B; /* Cards, modals, components - no change */
-  --color-border: #504E59;        /* Subtle separators */
+  /* Core surfaces - Enhanced depth layers */
+  --color-body: #1A1820;          /* App background - deeper for maximum depth */
+  --color-body-lighter: #201E28;  /* Slightly lighter variant */
+  --color-sidebar: #252330;       /* Sidebar - distinct from body */
+  --color-sidebar-hover: #2A2836; /* Sidebar hover state */
+  --color-sidebar-border: #35334A; /* Sidebar border - subtle contrast */
+  --color-surface: #2A2838;       /* Base surface level */
+  --color-surface-raised: #322F40; /* Cards, modals - elevated surfaces */
+  --color-surface-raised-hover: #3A3648; /* Hover on raised surfaces */
+  --color-surface-highest: #403C50; /* Highest elevation */
+  --color-border: #403D52;        /* Standard borders */
+  --color-border-subtle: #35334A; /* Subtle borders */
+  --color-border-strong: #4A465E; /* Strong emphasis borders */
 
-  /* Text & Icons */
-  --color-text-primary: #E6E6EB;   /* Main text, headings, icons */
-  --color-text-secondary: #BAB9CA; /* Muted text */
-  --color-text-disabled: #8A889C;  /* Disabled/placeholder text */
+  /* Text & Icons - Enhanced contrast */
+  --color-text-primary: #FAFAFE;   /* Main text - maximum contrast */
+  --color-text-secondary: #D0CFD8; /* Secondary text - improved readability */
+  --color-text-tertiary: #A5A4B8;  /* Tertiary text */
+  --color-text-disabled: #7A788E;  /* Disabled/placeholder - still readable */
+  --color-text-inverse: #1A1820;   /* Text on light backgrounds */
 
-  /* Buttons */
-  --color-button-bg: #575463;     /* Neutral solid button background */
-  --color-button-text: #FFFFFF;   /* Button text/icons */
-  --color-button-hover: #6B6975;  /* Hover state background */
+  /* Icon contrast */
+  --color-icon-primary: #FAFAFE;   /* Primary icons - match text */
+  --color-icon-secondary: #B5B3C8; /* Secondary icons */
+  --color-icon-disabled: #65637A;  /* Disabled icons */
+  --color-icon-accent: #FFB366;    /* Accent colored icons */
 
-  /* Interactive States */
-  --color-hover: #403E4A;         /* General hover for backgrounds - darker than sidebar */
-  --color-active: #2F2D36;        /* Pressed state */
-  --color-focus-ring: #BAB9CA;    /* Focus outline */
+  /* Buttons - Professional depth */
+  --color-button-bg: #3A3648;     /* Neutral button background */
+  --color-button-bg-hover: #454256; /* Hover state */
+  --color-button-bg-active: #504C62; /* Active/pressed state */
+  --color-button-text: #FAFAFE;   /* Button text - high contrast */
+  --color-button-border: #4A465E;  /* Button borders */
 
-  /* Accent Colors */
-  --color-accent-teal: #14B8A6;        /* Teal accent */
-  --color-accent-teal-hover: #0D9488;  /* Teal hover */
-  --color-accent-indigo: #6366F1;      /* Indigo accent */
-  --color-accent-indigo-hover: #4F46E5; /* Indigo hover */
-  --color-accent: #6366F1;             /* Primary accent (Indigo) */
+  /* Interactive States - Clear feedback */
+  --color-hover: #35334A;         /* General hover backgrounds */
+  --color-hover-strong: #403C50;  /* Strong hover state */
+  --color-active: #252330;        /* Pressed/active state */
+  --color-selected: #3A3648;      /* Selected items */
+  --color-focus-ring: #FFB366;    /* Focus outline - accent color */
+  --color-focus-ring-subtle: rgba(255, 179, 102, 0.3); /* Subtle focus */
+
+  /* Brand Colors - Enterprise palette */
+  --color-brand-orange: #FF9A4D;      /* Primary brand - vibrant orange */
+  --color-brand-orange-dark: #E67A2E;  /* Darker variant */
+  --color-brand-orange-light: #FFB366; /* Lighter variant */
+  --color-brand-orange-pale: rgba(255, 154, 77, 0.1); /* Very subtle */
+
+  /* Accent Colors - Professional depth */
+  --color-accent-teal: #14D4C4;        /* Teal - more vibrant */
+  --color-accent-teal-hover: #0FB8A8;  
+  --color-accent-teal-pale: rgba(20, 212, 196, 0.1);
+  
+  --color-accent-indigo: #7C7FF4;      /* Indigo - softer for dark theme */
+  --color-accent-indigo-hover: #6366E5;
+  --color-accent-indigo-pale: rgba(124, 127, 244, 0.1);
+  
+  --color-accent-purple: #A855F7;      /* Purple accent */
+  --color-accent-purple-hover: #9333EA;
+  --color-accent-purple-pale: rgba(168, 85, 247, 0.1);
+  
+  --color-accent-emerald: #10B981;     /* Success green */
+  --color-accent-emerald-hover: #059669;
+  --color-accent-emerald-pale: rgba(16, 185, 129, 0.1);
+
+  /* Primary accent */
+  --color-accent: #FF9A4D;             /* Orange as primary */
   --color-accent-text: #FFFFFF;
-  --color-accent-hover: #4F46E5;
+  --color-accent-hover: #E67A2E;
+
+  /* Status Colors - Enterprise grade */
+  --color-status-success: #10B981;
+  --color-status-success-bg: rgba(16, 185, 129, 0.1);
+  --color-status-warning: #F59E0B;
+  --color-status-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-status-error: #EF4444;
+  --color-status-error-bg: rgba(239, 68, 68, 0.1);
+  --color-status-info: #3B82F6;
+  --color-status-info-bg: rgba(59, 130, 246, 0.1);
+
+  /* Shadows - Multi-layered depth */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-2xl: 0 24px 48px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.4);
+
+  /* Glow effects */
+  --glow-orange: 0 0 20px rgba(255, 154, 77, 0.3);
+  --glow-teal: 0 0 20px rgba(20, 212, 196, 0.3);
+  --glow-purple: 0 0 20px rgba(168, 85, 247, 0.3);
 }
 
 /* Furniture-specific overrides */

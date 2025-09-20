@@ -1,11 +1,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Switch } from '@/src/components/ui/switch'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle, Lock, Unlock, Calendar } from 'lucide-react'
 import type { WizardData } from '../BusinessSetupWizard'
 

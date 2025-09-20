@@ -4,14 +4,20 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Package,
   Package2,
@@ -32,21 +38,24 @@ import {
   Minus,
   AlertCircle
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { useInventoryData } from '@/src/lib/furniture/use-inventory-data'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import {
+  useFurnitureOrg,
+  FurnitureOrgLoading
+} from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { useInventoryData } from '@/lib/furniture/use-inventory-data'
+import { cn } from '@/lib/utils'
 
 // Stock level thresholds
-  const STOCK_LEVELS = {
+const STOCK_LEVELS = {
   CRITICAL: 10,
   LOW: 25,
   NORMAL: 50
 }
 
 // Movement types configuration
-  const movementTypes = {
+const movementTypes = {
   purchase_receipt: {
     label: 'Purchase Receipt',
     icon: Truck,
@@ -80,15 +89,13 @@ import { cn } from '@/src/lib/utils'
 }
 
 // Stock overview columns
-  const stockColumns = [
+const stockColumns = [
   {
     key: 'entity_code',
     label: 'SKU',
     sortable: true,
     width: '120px',
-    render: (value: string) => (
-      <span className="font-mono text-sm">{value}</span>
-    )
+    render: (value: string) => <span className="font-mono text-sm">{value}</span>
   },
   {
     key: 'entity_name',
@@ -97,7 +104,9 @@ import { cn } from '@/src/lib/utils'
     render: (value: string, row: any) => (
       <div>
         <p className="font-medium text-[var(--color-text-primary)]">{value}</p>
-        <p className="text-sm text-[var(--color-text-secondary)]">{row.category || 'Uncategorized'}</p>
+        <p className="text-sm text-[var(--color-text-secondary)]">
+          {row.category || 'Uncategorized'}
+        </p>
       </div>
     )
   },
@@ -107,7 +116,7 @@ import { cn } from '@/src/lib/utils'
     sortable: true,
     render: (value: string) => (
       <div className="flex items-center gap-2">
-        <Building className="h-4 w-4 text-[#37353E]" />
+        <Building className="h-4 w-4 text-[var(--color-icon-secondary)]" />
         <span>{value || 'Main Warehouse'}</span>
       </div>
     )
@@ -119,17 +128,15 @@ import { cn } from '@/src/lib/utils'
     align: 'right' as const,
     render: (value: number) => {
       const qty = value || 0
-      const level = qty <= STOCK_LEVELS.CRITICAL ? 'critical' : qty <= STOCK_LEVELS.LOW ? 'low' : 'normal'
+      const level =
+        qty <= STOCK_LEVELS.CRITICAL ? 'critical' : qty <= STOCK_LEVELS.LOW ? 'low' : 'normal'
       const colors = {
         critical: 'text-red-600 dark:text-red-400',
         low: 'text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]',
         normal: 'text-green-600 dark:text-green-400'
       }
-      
-    return <span className={cn(
-            'font-mono font-medium',
-            colors[level]
-          )}>{qty}</span>
+
+      return <span className={cn('font-mono font-medium', colors[level])}>{qty}</span>
     }
   }
 ]
@@ -138,7 +145,7 @@ export default function FurnitureInventory() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const { stockData, movements, metrics, loading, refresh } = useInventoryData(organizationId)
-  
+
   const [activeTab, setActiveTab] = useState('stock-overview')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedLocation, setSelectedLocation] = useState('all')
@@ -149,7 +156,7 @@ export default function FurnitureInventory() {
     return <FurnitureOrgLoading />
   }
 
-// Authorization checks
+  // Authorization checks
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--color-body)] flex items-center justify-center p-6">
@@ -212,8 +219,7 @@ export default function FurnitureInventory() {
     }
   ]
 
-  
-    return (
+  return (
     <div className="min-h-screen bg-[var(--color-body)]">
       <div className="p-6 space-y-6">
         <FurniturePageHeader
@@ -229,30 +235,37 @@ export default function FurnitureInventory() {
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
-              <Button size="sm" className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2">
+              <Button
+                size="sm"
+                className="bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:bg-[var(--color-button-hover)] gap-2"
+              >
                 <Plus className="h-4 w-4" />
                 New Item
               </Button>
             </>
           }
         />
-        
+
         {/* Inventory Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {inventoryMetrics.map((metric, index) => (
-            <Card key={index} className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors">
+            <Card
+              key={index}
+              className="p-4 bg-[var(--color-body)]/50 border-[var(--color-border)] hover:bg-[var(--color-body)]/70 transition-colors"
+            >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-[var(--color-text-secondary)]">{metric.label}</p>
-                  <metric.icon className={cn(
-            'h-4 w-4',
-            metric.color
-          )} />
+                  <metric.icon className={cn('h-4 w-4', metric.color)} />
                 </div>
-                <p className="text-2xl font-bold text-[var(--color-text-primary)]">{metric.value}</p>
+                <p className="text-2xl font-bold text-[var(--color-text-primary)]">
+                  {metric.value}
+                </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">{metric.description}</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-[var(--color-text-secondary)]">Change: {metric.change}</span>
+                  <span className="text-xs text-[var(--color-text-secondary)]">
+                    Change: {metric.change}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -260,7 +273,9 @@ export default function FurnitureInventory() {
         </div>
 
         <div className="text-center p-8">
-          <p className="text-[var(--color-text-secondary)]">Inventory management interface is being loaded...</p>
+          <p className="text-[var(--color-text-secondary)]">
+            Inventory management interface is being loaded...
+          </p>
         </div>
       </div>
     </div>

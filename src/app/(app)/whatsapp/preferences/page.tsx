@@ -7,13 +7,13 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
-import { Switch } from '@/src/components/ui/switch'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 import { 
   Shield, 
   UserCheck, 
@@ -31,10 +31,10 @@ import {
   Download,
   Upload
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useWhatsappApi } from '@/src/lib/api/whatsapp'
-import { ChannelConsent } from '@/src/components/whatsapp/ChannelConsent'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useWhatsappApi } from '@/lib/api/whatsapp'
+import { ChannelConsent } from '@/components/whatsapp/ChannelConsent'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function WhatsAppPreferencesPage() {
   const { currentOrganization } = useOrganization()

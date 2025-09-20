@@ -6,7 +6,7 @@ import {
   createBookingFlow,
   getCustomerJourneyAnalytics,
   MCP_WHATSAPP_TOOLS
-} from '@/src/lib/mcp/whatsapp-tools'
+} from '@/lib/mcp/whatsapp-tools'
 
 export async function POST(request: NextRequest) {
   try {

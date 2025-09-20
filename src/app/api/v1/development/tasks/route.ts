@@ -18,7 +18,7 @@ const mockTasks = [
     entity_type: 'development_task',
     entity_code: 'TASK-2024-001',
     entity_name: 'Implement Development Dashboard',
-    smart_code: 'HERA.DEV.TASK.UI.DASH.v1',
+    smart_code: 'HERA.DEV.TASK.UI.DASH.V1',
     status: 'in_progress',
     metadata: {
       priority: 'high',
@@ -44,7 +44,7 @@ const mockTasks = [
     entity_type: 'development_task',
     entity_code: 'TASK-2024-002',
     entity_name: 'Complete Smart Code System',
-    smart_code: 'HERA.DEV.TASK.CORE.SMART.v1',
+    smart_code: 'HERA.DEV.TASK.CORE.SMART.V1',
     status: 'completed',
     metadata: {
       priority: 'critical',
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'development_task',
         entity_code: `TASK-2024-${String(mockTasks.length + 1).padStart(3, '0')}`,
         entity_name: data.name,
-        smart_code: data.smart_code || 'HERA.DEV.TASK.GEN.NEW.v1',
+        smart_code: data.smart_code || 'HERA.DEV.TASK.GEN.NEW.V1',
         status: 'not_started',
         metadata: {
           priority: data.priority || 'medium',

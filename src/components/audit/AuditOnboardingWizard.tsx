@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Shield,
   ArrowRight,
@@ -24,7 +24,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react'
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 interface OnboardingStep {
   id: number

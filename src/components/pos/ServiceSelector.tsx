@@ -8,13 +8,13 @@
 
 import { useState } from 'react'
 import { Search, Clock } from 'lucide-react'
-import { useCartStore } from '@/src/lib/hooks/usePos'
-import { ServicePrice } from '@/src/lib/schemas/pos'
-import { Input } from '@/src/components/ui/input'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { useCartStore } from '@/lib/hooks/usePos'
+import { ServicePrice } from '@/lib/schemas/pos'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface ServiceSelectorProps {
   services: ServicePrice[]

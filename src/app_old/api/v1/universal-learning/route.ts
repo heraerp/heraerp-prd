@@ -759,7 +759,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Universal
           error_name: error.name,
           timestamp: new Date().toISOString()
         },
-        smart_code: `HERA.EDU.UNIVERSAL.API.ERROR.v1`
+        smart_code: `HERA.EDU.UNIVERSAL.API.ERROR.V1`
       },
       { status: 500 }
     )
@@ -788,7 +788,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'Complete Pipeline Processing'
           ],
           supported_domains: ['CA', 'MED', 'LAW', 'ENG', 'LANG', 'GENERAL'],
-          smart_code: 'HERA.EDU.UNIVERSAL.API.HEALTH.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.HEALTH.V1'
         })
 
       case 'capabilities':
@@ -811,7 +811,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'GET /api/v1/universal-learning?action=capabilities': 'API capabilities documentation',
             'GET /api/v1/universal-learning?action=domains': 'Supported domain information'
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.CAPABILITIES.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.CAPABILITIES.V1'
         })
 
       case 'domains':
@@ -891,7 +891,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
               ]
             }
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.DOMAINS.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.DOMAINS.V1'
         })
 
       default:
@@ -907,7 +907,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'GET /?action=capabilities': 'API documentation',
             'GET /?action=domains': 'Supported domains'
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.INFO.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.INFO.V1'
         })
     }
   } catch (error: any) {
@@ -915,7 +915,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       {
         success: false,
         error: error.message || 'Internal server error',
-        smart_code: 'HERA.EDU.UNIVERSAL.API.ERROR.v1'
+        smart_code: 'HERA.EDU.UNIVERSAL.API.ERROR.V1'
       },
       { status: 500 }
     )

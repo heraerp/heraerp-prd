@@ -9,13 +9,13 @@
 import React from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/src/lib/auth/session'
-import { apiClient } from '@/src/lib/auth/session'
-import { createAppointmentsApi } from '@/src/lib/api/appointments'
-import { useCreateAppointment } from '@/src/lib/hooks/useAppointment'
-import { AppointmentForm } from '@/src/components/appointments/AppointmentForm'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card } from '@/src/components/ui/Card'
+import { useAuth } from '@/lib/auth/session'
+import { apiClient } from '@/lib/auth/session'
+import { createAppointmentsApi } from '@/lib/api/appointments'
+import { useCreateAppointment } from '@/lib/hooks/useAppointment'
+import { AppointmentForm } from '@/components/appointments/AppointmentForm'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card } from '@/components/ui/card'
 
 export default function NewAppointmentPage() {
   const router = useRouter()

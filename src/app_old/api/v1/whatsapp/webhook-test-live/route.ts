@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
       transaction_code: `LIVE-WA-${Date.now()}`,
       smart_code:
         direction === 'inbound'
-          ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.v1'
-          : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.v1',
+          ? 'HERA.COMMS.WHATSAPP.MSG.INBOUND.V1'
+          : 'HERA.COMMS.WHATSAPP.MSG.OUTBOUND.V1',
       total_amount: 0,
       metadata: {
         direction,

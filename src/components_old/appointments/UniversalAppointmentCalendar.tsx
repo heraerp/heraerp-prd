@@ -33,7 +33,7 @@ import {
 } from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Appointment Calendar with FullCalendar Integration
-// Smart Code: HERA.UNIV.CRM.APT.CAL.v1
+// Smart Code: HERA.UNIV.CRM.APT.CAL.V1
 
 interface AppointmentEvent {
   id: string
@@ -367,7 +367,7 @@ export function UniversalAppointmentCalendar({
             Calendar
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            HERA Universal Appointment System • Smart Code: HERA.UNIV.CRM.APT.CAL.v1
+            HERA Universal Appointment System • Smart Code: HERA.UNIV.CRM.APT.CAL.V1
           </p>
         </div>
 

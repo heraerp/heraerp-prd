@@ -19,7 +19,7 @@ import {
   Lock,
   FileText
 } from 'lucide-react'
-import { Role, ROLE_NAVIGATION } from '@/src/lib/auth/rbac'
+import { Role, ROLE_NAVIGATION } from '@/lib/auth/rbac'
 
 export interface NavItem {
   title: string

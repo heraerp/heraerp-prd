@@ -3,34 +3,34 @@
 import React, { useState, useEffect }
 from 'react'
 import { Button }
-from '@/src/components/ui/button'
+from '@/components/ui/button'
 import { Input }
-from '@/src/components/ui/input'
+from '@/components/ui/input'
 import { Label }
-from '@/src/components/ui/label'
+from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle }
-from '@/src/components/ui/card'
+from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 }
-from '@/src/components/ui/select'
+from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 }
-from '@/src/components/ui/table'
+from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger }
-from '@/src/components/ui/tabs'
+from '@/components/ui/tabs'
 import { Badge }
-from '@/src/components/ui/badge'
+from '@/components/ui/badge'
 import { Package, ArrowRight, Warehouse, TruckIcon, AlertCircle, CheckCircle, Plus, Minus, History, BarChart
 }
 from 'lucide-react'
 import { universalApi }
-from '@/src/lib/universal-api'
+from '@/lib/universal-api'
 import { Alert, AlertDescription }
-from '@/src/components/ui/alert'
+from '@/components/ui/alert'
 import { Progress }
-from '@/src/components/ui/progress'
+from '@/components/ui/progress'
 import { formatDate }
-from '@/src/lib/date-utils'
+from '@/lib/date-utils'
 
 
 interface InventoryLevel {

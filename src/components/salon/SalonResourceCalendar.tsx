@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import '@/src/styles/microsoft-calendar.css'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import '@/styles/microsoft-calendar.css'
 import {
   Calendar,
   ChevronLeft,
@@ -37,21 +37,24 @@ import {
   Columns,
   Square,
   CheckSquare,
-  Building2
+  Building2,
+  Loader2,
+  AlertCircle
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/lib/utils'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useCalendarPlaybook } from '@/hooks/useCalendarPlaybook'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { BookAppointmentModal } from '@/src/components/salon/BookAppointmentModal'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/select'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BookAppointmentModal } from '@/components/salon/BookAppointmentModal'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface SalonResourceCalendarProps {
   className?: string
@@ -100,13 +103,24 @@ interface Appointment {
   icon: React.ReactNode
   station?: string
   branchId: string
-  branchName?: string
 }
 
 const BUSINESS_HOURS = {
   start: 9,
   end: 21,
   slotDuration: 30 // minutes
+}
+
+// Helper to assert UUID format
+function assertUuid(id: string) {
+  if (!/^[0-9a-fA-F-]{36}$/.test(id)) throw new Error(`Invalid organization_id: ${id}`);
+}
+
+// Helper to check if component is mounted
+function useIsMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
 }
 
 export function SalonResourceCalendar({
@@ -116,7 +130,12 @@ export function SalonResourceCalendar({
   currentOrganizationId,
   canViewAllBranches = false
 }: SalonResourceCalendarProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization, user } = useHERAAuth()
+  const organizationId = organization?.id || ''
+  const branchId = organization?.metadata?.branch_id as string | undefined
+  const mounted = useIsMounted()
+  
+  // All hooks must be called before any conditional returns
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
   const [viewMode, setViewMode] = useState<'single' | 'resource'>('resource')
@@ -137,78 +156,114 @@ export function SalonResourceCalendar({
     stylistId: string
   } | null>(null)
 
-  // Sample stylists with business hours and branch assignments
-  const allStylists: (Stylist & { branchId: string })[] = [
-    // Karama Branch stylists
-    {
-      id: 'rocky',
-      name: 'Rocky',
-      title: 'Celebrity Hair Artist',
-      avatar: 'R',
-      color: 'bg-purple-600',
-      available: true,
-      status: 'available',
-      businessHours: { start: 9, end: 19 },
-      branchId: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-    },
-    {
-      id: 'vinay',
-      name: 'Vinay',
-      title: 'Senior Stylist',
-      avatar: 'V',
-      color: 'bg-blue-600',
-      available: true,
-      status: 'busy',
-      businessHours: { start: 10, end: 20 },
-      branchId: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-    },
-    // Al Mina Rd Branch stylists
-    {
-      id: 'maya',
-      name: 'Maya',
-      title: 'Color Specialist',
-      avatar: 'M',
-      color: 'bg-pink-600',
-      available: false,
-      status: 'away',
-      businessHours: { start: 11, end: 21 },
-      branchId: '0b1b37cd-4096-4718-8cd4-e370f234005b'
-    },
-    {
-      id: 'sophia',
-      name: 'Sophia',
-      title: 'Bridal Specialist',
-      avatar: 'S',
-      color: 'bg-amber-600',
-      available: true,
-      status: 'available',
-      businessHours: { start: 9, end: 18 },
-      branchId: '0b1b37cd-4096-4718-8cd4-e370f234005b'
-    },
-    // Additional stylists for both branches
-    {
-      id: 'layla',
-      name: 'Layla',
-      title: 'Hair Stylist',
-      avatar: 'L',
-      color: 'bg-teal-600',
-      available: true,
-      status: 'available',
-      businessHours: { start: 10, end: 19 },
-      branchId: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
-    },
-    {
-      id: 'zara',
-      name: 'Zara',
-      title: 'Nail Artist',
-      avatar: 'Z',
-      color: 'bg-rose-600',
-      available: true,
-      status: 'available',
-      businessHours: { start: 11, end: 20 },
-      branchId: '0b1b37cd-4096-4718-8cd4-e370f234005b'
+  // Calculate date range based on selected view
+  const dateRange = useMemo(() => {
+    const start = new Date(selectedDate)
+    const end = new Date(selectedDate)
+    
+    switch (selectedView) {
+      case 'day':
+        // Just the selected day
+        break
+      case 'week':
+        // Get start and end of week
+        const dayOfWeek = start.getDay()
+        start.setDate(start.getDate() - dayOfWeek)
+        end.setDate(start.getDate() + 6)
+        break
+      case 'month':
+        // Get start and end of month
+        start.setDate(1)
+        end.setMonth(end.getMonth() + 1)
+        end.setDate(0)
+        break
     }
-  ]
+    
+    start.setHours(0, 0, 0, 0)
+    end.setHours(23, 59, 59, 999)
+    
+    return {
+      fromISO: start.toISOString(),
+      toISO: end.toISOString()
+    }
+  }, [selectedDate, selectedView])
+
+  // Use calendar playbook hook to fetch data
+  const {
+    loading,
+    error,
+    appointments,
+    staff,
+    services,
+    customers,
+    staffById,
+    svcById,
+    custById
+  } = useCalendarPlaybook({
+    organization_id: organizationId,
+    branch_id: canViewAllBranches ? undefined : branchId,
+    fromISO: dateRange.fromISO,
+    toISO: dateRange.toISO
+  })
+
+  // Assert valid UUID after all hooks
+  useEffect(() => {
+    if (organizationId) {
+      try {
+        assertUuid(organizationId)
+      } catch (error) {
+        console.error('Invalid organization ID:', organizationId, error)
+      }
+    }
+  }, [organizationId])
+  
+  // Don't render calendar if no organization ID
+  if (!organizationId && mounted) {
+    return (
+      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+        <div className="text-center">
+          <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">No organization selected</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Transform staff data from Playbook API to Stylist format
+  const allStylists: (Stylist & { branchId: string })[] = useMemo(() => {
+    if (!staff.length && !mounted) {
+      // Return hardcoded data for initial render to prevent hydration mismatch
+      return []
+    }
+    
+    // Map staff data from Playbook to Stylist format
+    return staff.map((s, index) => ({
+      id: s.id,
+      name: s.entity_name || 'Staff Member',
+      title: s.role || 'Stylist',
+      avatar: s.entity_name?.charAt(0).toUpperCase() || 'S',
+      color: getColorForIndex(index),
+      available: s.available !== false,
+      status: s.available === false ? 'away' : 'available',
+      businessHours: { start: 9, end: 19 }, // Default hours
+      branchId: s.branch_id || branchId || ''
+    }))
+  }, [staff, mounted, branchId])
+
+  // Helper function to get consistent colors for stylists
+  const getColorForIndex = (index: number): string => {
+    const colors = [
+      'bg-purple-600',
+      'bg-blue-600', 
+      'bg-pink-600',
+      'bg-amber-600',
+      'bg-teal-600',
+      'bg-rose-600',
+      'bg-indigo-600',
+      'bg-emerald-600'
+    ]
+    return colors[index % colors.length]
+  }
 
   // Filter stylists based on selected branches
   const stylists = useMemo(() => {
@@ -248,127 +303,63 @@ export function SalonResourceCalendar({
     return slots
   }, [])
 
-  // Generate salon appointments across multiple days
-  const generateSalonAppointments = (): Appointment[] => {
-    const appointments: Appointment[] = []
-    const today = new Date()
-
-    const services = [
-      {
-        title: 'Brazilian Blowout',
-        service: 'brazilian',
-        color: '#8B5CF6',
-        icon: <Zap className="w-3 h-3" />,
-        duration: 240,
-        price: 'AED 500'
-      },
-      {
-        title: 'Premium Cut & Style',
-        service: 'cut',
-        color: '#3B82F6',
-        icon: <Scissors className="w-3 h-3" />,
-        duration: 90,
-        price: 'AED 150'
-      },
-      {
-        title: 'Hair Color & Highlights',
-        service: 'color',
-        color: '#EC4899',
-        icon: <Palette className="w-3 h-3" />,
-        duration: 180,
-        price: 'AED 280'
-      },
-      {
-        title: 'Bridal Package',
-        service: 'bridal',
-        color: '#F59E0B',
-        icon: <Crown className="w-3 h-3" />,
-        duration: 360,
-        price: 'AED 800'
-      },
-      {
-        title: 'Luxury Manicure',
-        service: 'nails',
-        color: '#10B981',
-        icon: <Sparkles className="w-3 h-3" />,
-        duration: 60,
-        price: 'AED 120'
-      },
-      {
-        title: 'Keratin Treatment',
-        service: 'keratin',
-        color: '#8B5CF6',
-        icon: <Star className="w-3 h-3" />,
-        duration: 210,
-        price: 'AED 350'
-      }
-    ]
-
-    const clients = [
-      'Sarah Johnson',
-      'Emma Davis',
-      'Aisha Khan',
-      'Fatima Al-Rashid',
-      'Lisa Chen',
-      'Maya Patel',
-      'Sophie Wilson',
-      'Jennifer Ali'
-    ]
-    const stylists = ['rocky', 'vinay', 'maya', 'sophia', 'layla', 'zara']
-    const statuses = ['confirmed', 'tentative', 'completed']
-
-    // Generate appointments for the next 14 days
-    for (let dayOffset = 0; dayOffset < 14; dayOffset++) {
-      const appointmentDate = new Date(today.getTime() + dayOffset * 24 * 60 * 60 * 1000)
-
-      // Generate 3-6 appointments per day
-      const dailyAppointmentCount = Math.floor(Math.random() * 4) + 3 // 3-6 appointments
-
-      for (let i = 0; i < dailyAppointmentCount; i++) {
-        const service = services[Math.floor(Math.random() * services.length)]
-        const stylist = stylists[Math.floor(Math.random() * stylists.length)]
-        const client = clients[Math.floor(Math.random() * clients.length)]
-        const status = statuses[Math.floor(Math.random() * statuses.length)]
-
-        // Generate random time between 9 AM and 6 PM
-        const hour = Math.floor(Math.random() * 9) + 9 // 9-17 (9 AM to 5 PM)
-        const minute = Math.random() > 0.5 ? '00' : '30'
-        const time = `${hour.toString().padStart(2, '0')}:${minute}`
-
-        // Assign branch based on stylist
-        let branchId = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258' // Karama (default)
-        let branchName = 'Karama'
-
-        if (['maya', 'sophia', 'zara'].includes(stylist)) {
-          branchId = '0b1b37cd-4096-4718-8cd4-e370f234005b' // Al Mina Rd
-          branchName = 'Al Mina Rd'
-        }
-
-        appointments.push({
-          id: `${dayOffset}-${i}`,
-          title: service.title,
-          client,
-          stylist,
-          time,
-          date: appointmentDate,
-          duration: service.duration,
-          service: service.service,
-          status,
-          price: service.price,
-          color: service.color,
-          icon: service.icon,
-          station: `station-${(i % 4) + 1}`,
-          branchId,
-          branchName
-        })
-      }
+  // Transform appointments data from Playbook API to local Appointment format
+  const transformedAppointments = useMemo(() => {
+    if (!appointments.length || !mounted) {
+      // Return empty array for initial render to prevent hydration mismatch
+      return []
     }
 
-    return appointments
-  }
+    // Service icons and colors mapping
+    const serviceIconMap: Record<string, { icon: React.ReactNode; color: string }> = {
+      'brazilian': { icon: <Zap className="w-3 h-3" />, color: '#8B5CF6' },
+      'cut': { icon: <Scissors className="w-3 h-3" />, color: '#3B82F6' },
+      'color': { icon: <Palette className="w-3 h-3" />, color: '#EC4899' },
+      'bridal': { icon: <Crown className="w-3 h-3" />, color: '#F59E0B' },
+      'nails': { icon: <Sparkles className="w-3 h-3" />, color: '#10B981' },
+      'keratin': { icon: <Star className="w-3 h-3" />, color: '#8B5CF6' },
+      'default': { icon: <Scissors className="w-3 h-3" />, color: '#6B7280' }
+    }
 
-  // Sample appointments with branch info spanning multiple days
-  const [appointments, setAppointments] = useState<Appointment[]>(generateSalonAppointments())
+    return appointments.map((apt) => {
+      const startDate = new Date(apt.start_time)
+      const time = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`
+      
+      // Get service info from services
+      const service = apt.service_ids?.[0] ? svcById.get(apt.service_ids[0]) : null
+      const serviceType = service?.category || 'default'
+      const serviceInfo = serviceIconMap[serviceType] || serviceIconMap.default
+      
+      // Get customer info
+      const customer = apt.customer_id ? custById.get(apt.customer_id) : null
+      const customerName = customer?.entity_name || 'Walk-in Customer'
+      
+      // Get stylist info
+      const stylist = apt.stylist_id ? staffById.get(apt.stylist_id) : null
+      const stylistId = stylist?.id || apt.stylist_id || ''
+      
+      // Get branch info - now comes from entity data
+      const appointmentBranchId = apt.branch_id || branchId || ''
+      
+      return {
+        id: apt.id,
+        title: service?.entity_name || apt.entity_name || 'Appointment',
+        client: customerName,
+        stylist: stylistId,
+        time,
+        date: startDate,
+        duration: service?.duration_minutes || 60,
+        service: serviceType,
+        status: apt.status === 'completed' ? 'completed' : 
+                apt.status === 'cancelled' ? 'tentative' : 'confirmed',
+        price: `AED ${apt.price || service?.price || 0}`,
+        color: serviceInfo.color,
+        icon: serviceInfo.icon,
+        station: `station-1`,
+        branchId: appointmentBranchId
+      }
+    })
+  }, [appointments, mounted, staffById, svcById, custById, branchId])
 
   // Get dates based on selected view
   const getViewDates = () => {
@@ -458,23 +449,19 @@ export function SalonResourceCalendar({
     e.preventDefault()
     if (!draggedAppointment) return
 
-    // Update appointment with new time and stylist
-    setAppointments(prev =>
-      prev.map(apt =>
-        apt.id === draggedAppointment.id ? { ...apt, date, time, stylist: stylistId } : apt
-      )
-    )
-
     setDraggedAppointment(null)
     setDropTarget(null)
 
-    // Here you would make an API call to update the appointment
+    // TODO: Call Playbook API to update the appointment
     console.log('Moved appointment:', {
       appointmentId: draggedAppointment.id,
       newDate: date,
       newTime: time,
       newStylist: stylistId
     })
+    
+    // After API call succeeds, the useCalendarPlaybook hook will automatically
+    // refresh the data and update the UI
   }
 
   // Handle keyboard navigation
@@ -546,6 +533,31 @@ export function SalonResourceCalendar({
     window.addEventListener('keydown', handleKeyNavigation)
     return () => window.removeEventListener('keydown', handleKeyNavigation)
   }, [handleKeyNavigation])
+
+  // Show loading state
+  if (loading && !mounted) {
+    return (
+      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading calendar...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error && !transformedAppointments.length && !staff.length) {
+    return (
+      <div className={cn('flex h-[800px] bg-background dark:bg-background rounded-lg overflow-hidden items-center justify-center', className)}>
+        <div className="text-center">
+          <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-4" />
+          <p className="text-destructive font-semibold mb-2">Failed to load calendar data</p>
+          <p className="text-sm text-muted-foreground">{error.message}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -1004,7 +1016,7 @@ export function SalonResourceCalendar({
                             {/* Time Slots */}
                             <div>
                               {timeSlots.map((slot, slotIdx) => {
-                                const slotAppointments = appointments.filter(
+                                const slotAppointments = transformedAppointments.filter(
                                   apt =>
                                     apt.time === slot.time &&
                                     apt.date.toDateString() === date.toDateString() &&
@@ -1145,7 +1157,7 @@ export function SalonResourceCalendar({
                           {/* Time Slots for this stylist */}
                           <div>
                             {timeSlots.map((slot, slotIdx) => {
-                              const slotAppointments = appointments.filter(
+                              const slotAppointments = transformedAppointments.filter(
                                 apt =>
                                   apt.time === slot.time &&
                                   apt.stylist === stylist.id &&
@@ -1256,23 +1268,10 @@ export function SalonResourceCalendar({
         }}
         onBookingComplete={booking => {
           console.log('Booking completed:', booking)
-          // Add the new appointment to the list
-          const newAppointment: Appointment = {
-            id: Date.now().toString(),
-            title: booking.service,
-            client: booking.clientName,
-            stylist: booking.stylistId || bookingSlot?.stylistId || 'rocky',
-            time: bookingSlot?.time || booking.time,
-            date: bookingSlot?.date || new Date(booking.date),
-            duration: 90, // Default duration, should come from service
-            service: 'cut',
-            status: 'confirmed',
-            price: 'AED 150',
-            color: '#3B82F6',
-            icon: <Scissors className="w-3 h-3" />,
-            station: 'station-1'
-          }
-          setAppointments(prev => [...prev, newAppointment])
+          // TODO: Call Playbook API to create the appointment
+          // After API call succeeds, the useCalendarPlaybook hook will automatically
+          // refresh the data and update the UI
+          
           setIsBookingOpen(false)
           setBookingSlot(null)
           onNewBooking?.()

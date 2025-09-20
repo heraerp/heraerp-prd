@@ -18,11 +18,11 @@ import {
   Dna,
   Sparkles
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function UniversalCOADNAPage() {
   const router = useRouter()
@@ -254,7 +254,7 @@ const UniversalCOADNA = {
                       <div>
                         <strong>Smart Code Assignment:</strong> Intelligent business context
                         <div className="text-sm text-muted-foreground">
-                          HERA.FIN.GL.UAE.REST.FOOD_COST.v1
+                          HERA.FIN.GL.UAE.REST.FOOD_COST.V1
                         </div>
                       </div>
                     </li>

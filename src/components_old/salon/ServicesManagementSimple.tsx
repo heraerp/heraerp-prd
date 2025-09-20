@@ -1,7 +1,7 @@
 'use client'
 /**
  * Simple Services Management Component
- * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.SIMPLE.v1
+ * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.SIMPLE.V1
  */
 
 import React, { useState } from 'react'

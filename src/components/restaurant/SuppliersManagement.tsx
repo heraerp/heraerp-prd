@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
   DialogContent,
@@ -16,14 +16,14 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -31,16 +31,16 @@ import {
   TableHead,
   TableHeader,
   TableRow
-} from '@/src/components/ui/table'
-import { universalApi } from '@/src/lib/universal-api'
+} from '@/components/ui/table'
+import { universalApi } from '@/lib/universal-api'
 import {
   extractData,
   ensureDefaultEntities,
   formatCurrency,
   generateSmartCode
-} from '@/src/lib/universal-helpers'
-import { StatCardGrid, StatCardData } from '@/src/components/universal/StatCardGrid'
-import { TransactionList } from '@/src/components/universal/TransactionList'
+} from '@/lib/universal-helpers'
+import { StatCardGrid, StatCardData } from '@/components/universal/StatCardGrid'
+import { TransactionList } from '@/components/universal/TransactionList'
 import {
   Building2,
   Phone,
@@ -68,7 +68,7 @@ import {
   Users,
   RefreshCw
 } from 'lucide-react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 interface SuppliersManagementProps {
   organizationId: string

@@ -1,0 +1,618 @@
+smart_code: HERA.UNIV.WF.DAY0.GOLIVE.RUNBOOK.V1
+intent: Day-0 go-live runbook for Hair Talkz canary - first 60-90 minutes of production operation.
+scope:
+  in_scope:
+    - enable workflows for Hair Talkz only
+    - execute smoke test flows
+    - monitor production dashboards
+    - fast rollback procedures
+    - metrics snapshot and correlation logging
+  out_of_scope:
+    - other organization enablement
+    - full feature rollout
+    - infrastructure changes
+preconditions:
+  - final cutover validation completed with GO decision
+  - all production monitoring operational
+  - Hair Talkz organization configured
+  - rollback procedures tested and ready
+invariants:
+  - only Hair Talkz affected during day-0
+  - complete rollback capability maintained
+  - production safety preserved
+inputs:
+  required:
+    - go_live_timestamp: timestamp                 # exact go-live time
+    - hair_talkz_org_id: uuid                     # Hair Talkz organization ID
+    - oncall_engineer: string                     # primary oncall contact
+  optional:
+    - monitoring_duration_minutes: number         # intensive monitoring period (default 90)
+    - auto_rollback_enabled: boolean              # enable automatic rollback triggers
+    - stakeholder_notifications: array           # notification list for updates
+happy_path:
+  - step: enable Hair Talkz workflow flags
+  - step: execute smoke test flows (POS, Returns, HR, AP)
+  - step: monitor production dashboards intensively
+  - step: collect baseline metrics snapshot
+  - step: validate correlation ID logging
+  - step: provide go/no-go decision for continued operation
+
+timeline_overview:
+  t_minus_15_minutes:
+    activity: "Final preparation and team briefing"
+    duration: "15 minutes"
+    
+  t_0_go_live:
+    activity: "Enable Hair Talkz workflows"
+    duration: "5 minutes"
+    
+  t_plus_0_to_30:
+    activity: "Smoke test execution and validation"
+    duration: "30 minutes"
+    
+  t_plus_30_to_90:
+    activity: "Intensive monitoring and metrics collection"
+    duration: "60 minutes"
+    
+  t_plus_90:
+    activity: "Go/no-go decision for continued operation"
+    duration: "15 minutes"
+
+# T-15 MINUTES: FINAL PREPARATION
+pre_go_live_checklist:
+  team_readiness:
+    primary_oncall: "Available and on standby"
+    secondary_oncall: "Available for escalation"
+    hair_talkz_business_owner: "Available for business validation"
+    
+  system_readiness:
+    monitoring_dashboards: "All operational and accessible"
+    alert_channels: "Slack, PagerDuty, SMS configured"
+    rollback_procedures: "Tested and documented"
+    
+  hair_talkz_specific_readiness:
+    organization_configured: "Hair Talkz org setup validated"
+    test_data_prepared: "Demo employees, customers, services ready"
+    staff_notification: "Hair Talkz team informed of go-live"
+    
+  communication_readiness:
+    whatsapp_service: "Operational and tested"
+    notification_templates: "Loaded and validated"
+    correlation_tracking: "Enabled and functional"
+
+# T-0: GO-LIVE (5 MINUTES)
+go_live_procedures:
+  enable_workflow_flags:
+    description: "Enable workflows for Hair Talkz organization only"
+    commands: |
+      # Enable Hair Talkz specific flags
+      curl -X POST "/api/v1/admin/feature-flags" \
+        -H "Authorization: Bearer $ADMIN_TOKEN" \
+        -d '{
+          "action": "set",
+          "organization_id": "hair-talkz-salon-org-uuid",
+          "flags": {
+            "wf_org_enabled_hair-talkz_LEAVE_APPROVAL": true,
+            "wf_org_enabled_hair-talkz_MEMBERSHIP_RENEWAL": true,
+            "wf_org_enabled_hair-talkz_AP_BILL_APPROVAL": true,
+            "wf_org_enabled_hair-talkz_APPT_FOLLOWUP": true
+          },
+          "reason": "Day-0 go-live for Hair Talkz canary"
+        }'
+    validation: |
+      # Verify flags enabled
+      curl -X GET "/api/v1/admin/feature-flags?organization_id=hair-talkz-salon-org-uuid" \
+        -H "Authorization: Bearer $ADMIN_TOKEN"
+      # Expected: All 4 workflow types enabled for Hair Talkz
+    
+  verify_isolation:
+    description: "Ensure other organizations still have workflows disabled"
+    commands: |
+      # Check that no other org has workflows enabled
+      SELECT 
+        organization_id,
+        COUNT(*) as enabled_workflows
+      FROM core_dynamic_data 
+      WHERE key_slug LIKE 'wf_org_enabled_%'
+        AND value_json::text = 'true'
+        AND organization_id != 'hair-talkz-salon-org-uuid'
+      GROUP BY organization_id;
+    expected_result: "0 rows (no other orgs have workflows enabled)"
+    
+  baseline_metrics_snapshot:
+    description: "Capture pre-activation baseline metrics"
+    metrics_to_capture:
+      - active_workflow_count: 0
+      - timer_queue_length: 0
+      - task_backlog_count: 0
+      - error_rate_last_hour: "baseline measurement"
+      - system_resource_usage: "CPU, memory, DB connections"
+    commands: |
+      # Capture baseline metrics
+      curl -X POST "/api/v1/admin/metrics/snapshot" \
+        -H "Authorization: Bearer $ADMIN_TOKEN" \
+        -d '{
+          "snapshot_type": "go_live_baseline",
+          "organization_id": "hair-talkz-salon-org-uuid",
+          "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)'"
+        }'
+
+# T+0 TO T+30: SMOKE TEST EXECUTION
+smoke_test_flows:
+  pos_sale_followup_flow:
+    description: "Test POS sale → followup workflow"
+    scenario: "Customer completes hair service, receives followup message"
+    execution_steps:
+      - step: "Create POS sale transaction in Hair Talkz system"
+        command: |
+          curl -X POST "/api/v1/salon/pos/sales" \
+            -H "Authorization: Bearer $HAIR_TALKZ_TOKEN" \
+            -d '{
+              "customer_phone": "+971501234567",
+              "service_type": "hair_cut",
+              "stylist_id": "stylist-aisha-id",
+              "amount": 120.00,
+              "organization_id": "hair-talkz-salon-org-uuid"
+            }'
+      - step: "Verify workflow triggered"
+        validation: "Check wf_instances_view for new APPT_FOLLOWUP workflow"
+      - step: "Wait for 1-hour timer (accelerated for testing)"
+        note: "Use timer acceleration for day-0 testing"
+      - step: "Verify WhatsApp message sent"
+        validation: "Check communication logs for successful delivery"
+    success_criteria:
+      - workflow_created: true
+      - timer_set_correctly: true
+      - message_delivered: true
+      - correlation_id_tracked: true
+    expected_duration: "5 minutes (with timer acceleration)"
+    
+  returns_processing_flow:
+    description: "Test product return → refund workflow"
+    scenario: "Customer returns product, triggers refund approval"
+    execution_steps:
+      - step: "Create return transaction"
+        command: |
+          curl -X POST "/api/v1/salon/pos/returns" \
+            -H "Authorization: Bearer $HAIR_TALKZ_TOKEN" \
+            -d '{
+              "original_sale_id": "sale-123",
+              "return_amount": 45.00,
+              "reason": "product_defect",
+              "organization_id": "hair-talkz-salon-org-uuid"
+            }'
+      - step: "Verify return approval workflow started"
+      - step: "Simulate manager approval"
+      - step: "Verify refund processed"
+    success_criteria:
+      - return_workflow_started: true
+      - approval_task_created: true
+      - refund_processed: true
+    expected_duration: "3 minutes"
+    
+  hr_leave_approval_flow:
+    description: "Test employee leave request → approval workflow"
+    scenario: "Stylist requests leave, manager approves"
+    execution_steps:
+      - step: "Submit leave request"
+        command: |
+          curl -X POST "/api/v1/hr/leave-requests" \
+            -H "Authorization: Bearer $HAIR_TALKZ_TOKEN" \
+            -d '{
+              "employee_id": "emp-aisha-123",
+              "leave_type": "annual",
+              "start_date": "2024-12-20",
+              "end_date": "2024-12-21",
+              "organization_id": "hair-talkz-salon-org-uuid"
+            }'
+      - step: "Verify workflow and task creation"
+      - step: "Simulate manager approval"
+      - step: "Verify calendar update and notification"
+    success_criteria:
+      - leave_workflow_created: true
+      - manager_task_assigned: true
+      - approval_completed: true
+      - calendar_blocked: true
+      - notification_sent: true
+    expected_duration: "4 minutes"
+    
+  ap_bill_approval_flow:
+    description: "Test vendor bill → approval → GL posting workflow"
+    scenario: "Beauty supply bill requires approval and GL posting"
+    execution_steps:
+      - step: "Upload vendor bill"
+        command: |
+          curl -X POST "/api/v1/ap/bills" \
+            -H "Authorization: Bearer $HAIR_TALKZ_TOKEN" \
+            -d '{
+              "vendor": "Beauty Supply Co",
+              "amount": 2850.00,
+              "po_reference": "PO-2024-156",
+              "organization_id": "hair-talkz-salon-org-uuid"
+            }'
+      - step: "Verify bill approval workflow started"
+      - step: "Simulate 3-way matching validation"
+      - step: "Simulate manager approval"
+      - step: "Verify GL posting creation"
+    success_criteria:
+      - bill_workflow_started: true
+      - po_matching_completed: true
+      - approval_task_completed: true
+      - gl_entries_posted: true
+    expected_duration: "6 minutes"
+
+# T+30 TO T+90: INTENSIVE MONITORING
+monitoring_procedures:
+  dashboard_monitoring:
+    hair_talkz_specific_dashboard:
+      url: "/dashboards/hair-talkz-workflows"
+      metrics_to_watch:
+        - active_workflows_count: "Should increase as tests execute"
+        - workflow_completion_rate: "Target: 100%"
+        - average_processing_time: "Target: < 30 seconds"
+        - timer_fire_accuracy: "Target: < 60 seconds latency"
+        - error_rate: "Target: 0%"
+        - customer_notification_delivery_rate: "Target: 100%"
+      refresh_frequency: "Every 30 seconds"
+      
+    system_health_dashboard:
+      metrics_to_watch:
+        - database_connection_count: "Monitor for connection leaks"
+        - memory_usage: "Should remain stable"
+        - cpu_utilization: "Should remain within normal ranges"
+        - disk_io: "Monitor for unusual activity"
+      alert_thresholds:
+        - memory_usage: "> 80%"
+        - cpu_utilization: "> 70%"
+        - database_connections: "> 200"
+        
+  correlation_tracking_validation:
+    description: "Verify correlation IDs flow through all operations"
+    validation_queries:
+      correlation_completeness: |
+        -- Check correlation coverage for Hair Talkz workflows
+        SELECT 
+          COUNT(*) as total_operations,
+          COUNT(*) FILTER (WHERE (dynamic->>'correlation_id') IS NOT NULL) as correlated_operations,
+          (COUNT(*) FILTER (WHERE (dynamic->>'correlation_id') IS NOT NULL) * 100.0 / COUNT(*)) as coverage_percentage
+        FROM universal_transactions
+        WHERE organization_id = 'hair-talkz-salon-org-uuid'
+          AND smart_code LIKE 'HERA.UNIV.WF.%'
+          AND created_at >= '$go_live_timestamp';
+      expected_result: "coverage_percentage >= 95%"
+      
+  real_time_log_monitoring:
+    log_patterns_to_watch:
+      success_patterns:
+        - "workflow_started.*hair-talkz"
+        - "workflow_completed.*SUCCESS"
+        - "timer_fired.*ON_TIME"
+        - "notification_delivered.*SUCCESS"
+      error_patterns:
+        - "ERROR.*hair-talkz"
+        - "FAILED.*workflow"
+        - "TIMEOUT.*timer"
+        - "DELIVERY_FAILED.*notification"
+    monitoring_command: |
+      # Real-time log monitoring
+      tail -f /var/log/hera/workflow-engine.log | grep -E "(hair-talkz|HERA.UNIV.WF)"
+      
+  performance_metrics_collection:
+    metrics_to_collect_every_5_minutes:
+      workflow_metrics:
+        - workflows_started_count
+        - workflows_completed_count
+        - workflows_failed_count
+        - average_completion_time
+      timer_metrics:
+        - timers_fired_count
+        - average_fire_latency
+        - timers_failed_count
+      communication_metrics:
+        - messages_sent_count
+        - messages_delivered_count
+        - delivery_failure_rate
+      system_metrics:
+        - database_query_time_p95
+        - api_response_time_p95
+        - memory_usage_mb
+        - cpu_usage_percent
+
+# ALERT THRESHOLDS AND RESPONSES
+alert_configuration:
+  critical_alerts:
+    workflow_failure_rate_high:
+      condition: "workflow_failure_rate > 5% in 10 minutes"
+      action: "Immediate investigation, consider rollback"
+      escalation: "Page primary oncall immediately"
+      
+    system_error_rate_high:
+      condition: "error_rate > 2% in 5 minutes"
+      action: "Check logs, identify root cause"
+      escalation: "Slack alert to team"
+      
+    customer_notification_failures:
+      condition: "notification_delivery_rate < 95% in 15 minutes"
+      action: "Check WhatsApp service, investigate delivery issues"
+      escalation: "Notify business owner"
+      
+    timer_latency_high:
+      condition: "timer_fire_latency > 120 seconds"
+      action: "Check scheduler health, restart if needed"
+      escalation: "Engineering team notification"
+      
+  warning_alerts:
+    performance_degradation:
+      condition: "average_response_time > 2 seconds"
+      action: "Monitor and investigate if sustained"
+      
+    resource_usage_high:
+      condition: "memory_usage > 75% OR cpu_usage > 60%"
+      action: "Monitor resource trends, prepare scaling"
+
+# FAST ROLLBACK PROCEDURES
+rollback_decision_criteria:
+  immediate_rollback_triggers:
+    - "workflow_failure_rate > 10% sustained for 15 minutes"
+    - "customer_complaint about automation received"
+    - "data_corruption_detected"
+    - "system_error_rate > 5%"
+    - "notification_delivery_failure > 50%"
+    - "business_owner_requests_rollback"
+    
+  rollback_execution_time: "< 3 minutes"
+  
+rollback_procedures:
+  immediate_disable:
+    description: "Disable Hair Talkz workflows immediately"
+    commands: |
+      # Disable all Hair Talkz workflow flags
+      curl -X POST "/api/v1/admin/feature-flags" \
+        -H "Authorization: Bearer $ADMIN_TOKEN" \
+        -d '{
+          "action": "set",
+          "organization_id": "hair-talkz-salon-org-uuid",
+          "flags": {
+            "wf_org_enabled_hair-talkz_LEAVE_APPROVAL": false,
+            "wf_org_enabled_hair-talkz_MEMBERSHIP_RENEWAL": false,
+            "wf_org_enabled_hair-talkz_AP_BILL_APPROVAL": false,
+            "wf_org_enabled_hair-talkz_APPT_FOLLOWUP": false
+          },
+          "reason": "Day-0 rollback due to issues"
+        }'
+    validation: "Verify no new workflows can start for Hair Talkz"
+    
+  graceful_handling:
+    description: "Handle in-flight workflows gracefully"
+    steps:
+      - step: "Allow active workflows to complete naturally"
+      - step: "Pause workflows that can be safely paused"
+      - step: "Convert remaining tasks to manual processes"
+      - step: "Notify Hair Talkz staff of temporary reversion"
+    
+  post_rollback_validation:
+    description: "Verify rollback successful and system stable"
+    checks:
+      - no_new_workflows_starting: "Verify Hair Talkz workflows disabled"
+      - existing_workflows_handled: "Check in-flight workflow status"
+      - system_stability_restored: "Monitor system metrics return to baseline"
+      - manual_processes_restored: "Confirm Hair Talkz can operate manually"
+
+# T+90: GO/NO-GO DECISION
+go_no_go_evaluation:
+  success_criteria:
+    must_achieve:
+      - "100% smoke test flows completed successfully"
+      - "0% workflow failure rate"
+      - "< 60 second timer fire latency"
+      - "100% notification delivery rate"
+      - "0 critical errors in logs"
+      - "Hair Talkz business owner satisfaction confirmed"
+      
+    performance_targets:
+      - "< 30 second average workflow completion time"
+      - "> 95% correlation ID coverage"
+      - "System resource usage within normal ranges"
+      - "Database performance stable"
+      
+  decision_matrix:
+    continue_operation:
+      criteria: "All must_achieve criteria met + ≥80% performance targets"
+      action: "Continue Hair Talkz workflows, plan broader rollout"
+      communication: "Success announcement to stakeholders"
+      
+    conditional_continue:
+      criteria: "All must_achieve criteria met + 60-79% performance targets"
+      action: "Continue with enhanced monitoring and specific improvements"
+      communication: "Conditional success, monitoring continues"
+      
+    rollback_required:
+      criteria: "Any must_achieve criteria failed OR <60% performance targets"
+      action: "Execute rollback procedures, investigate issues"
+      communication: "Issue notification to stakeholders, analysis to follow"
+
+# STAKEHOLDER COMMUNICATION
+communication_templates:
+  go_live_announcement:
+    subject: "Hair Talkz Workflow Engine - Go-Live Successful"
+    content: |
+      Hair Talkz workflow automation is now live and operational.
+      
+      Key Metrics (First 90 minutes):
+      - Workflows executed: {workflow_count}
+      - Success rate: {success_rate}%
+      - Average completion time: {avg_time} seconds
+      - Customer notifications delivered: {notification_count}
+      
+      All smoke tests passed successfully. Continuing with normal operation.
+      
+      Next steps: Continue monitoring for 24 hours before broader rollout consideration.
+      
+  issue_notification:
+    subject: "Hair Talkz Workflow Engine - Issue Detected"
+    content: |
+      Issue detected during Hair Talkz workflow go-live.
+      
+      Issue Summary:
+      - Type: {issue_type}
+      - Impact: {impact_description}
+      - Status: {current_status}
+      - Action taken: {action_taken}
+      
+      Timeline:
+      - Issue detected: {issue_time}
+      - Response initiated: {response_time}
+      - Expected resolution: {resolution_eta}
+      
+      We will provide updates every 30 minutes until resolved.
+
+# METRICS COLLECTION AND REPORTING
+metrics_tracking:
+  baseline_snapshot:
+    timestamp: "T-15 minutes"
+    metrics:
+      - system_resource_baseline
+      - database_performance_baseline
+      - error_rate_baseline
+      
+  go_live_snapshot:
+    timestamp: "T+0"
+    metrics:
+      - feature_flags_enabled
+      - workflows_available_count
+      - system_ready_status
+      
+  operational_snapshots:
+    frequency: "Every 15 minutes for first 90 minutes"
+    metrics:
+      - active_workflows_count
+      - completed_workflows_count
+      - failed_workflows_count
+      - average_completion_time
+      - timer_fire_accuracy
+      - notification_delivery_rate
+      - system_resource_usage
+      - error_count_and_types
+      
+  final_report_snapshot:
+    timestamp: "T+90"
+    metrics:
+      - overall_success_rate
+      - total_workflows_processed
+      - performance_vs_targets
+      - issues_encountered_and_resolved
+      - go_no_go_decision_rationale
+
+post_day_0_procedures:
+  if_successful:
+    immediate_actions:
+      - continue_hair_talkz_workflows: "Keep workflows enabled"
+      - enhanced_monitoring: "Continue intensive monitoring for 24 hours"
+      - success_communication: "Notify stakeholders of successful go-live"
+      - plan_broader_rollout: "Begin planning phase 2 rollout"
+      
+    24_hour_milestone:
+      - comprehensive_review: "Analyze 24-hour operational data"
+      - performance_validation: "Confirm all SLOs maintained"
+      - customer_feedback_collection: "Gather Hair Talkz customer feedback"
+      - go_no_go_broader_rollout: "Decision on expanding to other organizations"
+      
+  if_issues_encountered:
+    immediate_actions:
+      - root_cause_analysis: "Detailed investigation of issues"
+      - fix_development: "Develop fixes for identified problems"
+      - regression_testing: "Test fixes in staging environment"
+      - revised_rollout_plan: "Update rollout approach based on learnings"
+      
+    resolution_timeline:
+      - critical_issues: "Fix within 24 hours, retry go-live"
+      - performance_issues: "Fix within 1 week, enhanced testing"
+      - design_issues: "Fix within 2 weeks, comprehensive review"
+
+example_execution_timeline:
+  monday_13_45:
+    activity: "Final preparation complete"
+    status: "Team ready, systems validated"
+    
+  monday_14_00:
+    activity: "GO-LIVE: Enable Hair Talkz workflows"
+    expected: "Feature flags enabled, workflows available"
+    
+  monday_14_05:
+    activity: "Smoke test 1: POS sale followup"
+    expected: "Workflow triggers, timer set, message sent"
+    
+  monday_14_10:
+    activity: "Smoke test 2: Returns processing"
+    expected: "Return workflow completes with approval"
+    
+  monday_14_15:
+    activity: "Smoke test 3: HR leave approval"
+    expected: "Leave request approved, calendar updated"
+    
+  monday_14_25:
+    activity: "Smoke test 4: AP bill approval"
+    expected: "Bill approved, GL entries posted"
+    
+  monday_14_30:
+    activity: "All smoke tests complete"
+    status: "100% success rate, entering monitoring phase"
+    
+  monday_15_30:
+    activity: "60-minute operational milestone"
+    metrics: "Performance validated, no issues detected"
+    
+  monday_15_30:
+    activity: "GO/NO-GO decision point"
+    decision: "CONTINUE based on success criteria"
+
+success_metrics_summary:
+  must_achieve_day_0:
+    - "100% smoke test success rate"
+    - "0% workflow failure rate"
+    - "< 60 second timer latency"
+    - "100% notification delivery"
+    - "0 critical system errors"
+    - "Hair Talkz business validation positive"
+    
+  performance_targets_day_0:
+    - "< 30 second average processing time"
+    - "> 95% correlation ID coverage"
+    - "Stable system resource usage"
+    - "No performance degradation"
+
+errors:
+  - code: SMOKE_TEST_FAILED
+    when: any smoke test scenario fails
+    action: investigate specific failure, consider rollback
+  - code: SYSTEM_PERFORMANCE_DEGRADED
+    when: performance metrics exceed acceptable thresholds
+    action: identify bottlenecks, optimize or rollback
+  - code: NOTIFICATION_DELIVERY_FAILED
+    when: customer notifications not delivered
+    action: check WhatsApp service, fix integration issues
+  - code: HAIR_TALKZ_BUSINESS_DISSATISFACTION
+    when: Hair Talkz reports issues or dissatisfaction
+    action: immediate business review, potential rollback
+
+observability:
+  logs:
+    - day_0_go_live_started: { timestamp, hair_talkz_org_id, oncall_engineer }
+    - smoke_test_executed: { test_name, status, duration, correlation_id }
+    - monitoring_milestone: { timestamp, metrics_snapshot, status }
+    - alert_triggered: { alert_type, severity, action_taken }
+    - rollback_executed: { trigger_reason, rollback_duration, status }
+    - day_0_go_live_completed: { overall_status, decision, recommendations }
+  audit_json: true
+  metrics:
+    - day_0_go_live_count
+    - smoke_test_success_rate
+    - go_live_duration_minutes
+    - rollback_count
+    - hair_talkz_satisfaction_score
+
+checks:
+  - description: verify Hair Talkz workflows enabled exclusively
+  - description: ensure all smoke tests execute successfully
+  - description: validate monitoring captures all operational metrics
+  - description: confirm fast rollback procedures work within 3 minutes

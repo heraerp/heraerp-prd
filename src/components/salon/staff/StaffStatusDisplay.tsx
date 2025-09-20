@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { User, Clock, Coffee, Power } from 'lucide-react'
 import { createClient } from '@supabase/supabase-js'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // Lazy initialization to handle build-time issues
 let supabase: ReturnType<typeof createClient> | null = null
@@ -69,10 +69,10 @@ const STATUS_CONFIG = {
 export function StaffStatusDisplay() {
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
 
   useEffect(() => {
-    if (!currentOrganization) return
+    if (!organization) return
 
     const db = getSupabase()
     if (!db) return
@@ -88,7 +88,7 @@ export function StaffStatusDisplay() {
           event: '*',
           schema: 'public',
           table: 'core_relationships',
-          filter: `organization_id=eq.${currentOrganization.id}`
+          filter: `organization_id=eq.${organization.id}`
         },
         () => {
           // Refresh when relationships change
@@ -100,10 +100,10 @@ export function StaffStatusDisplay() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [currentOrganization])
+  }, [organization])
 
   const fetchStaffStatuses = async () => {
-    if (!currentOrganization) return
+    if (!organization) return
 
     const db = getSupabase()
     if (!db) {
@@ -131,7 +131,7 @@ export function StaffStatusDisplay() {
           )
         `
         )
-        .eq('organization_id', currentOrganization.id)
+        .eq('organization_id', organization.id)
         .eq('entity_type', 'employee')
         .eq('status_relationships.relationship_type', 'has_workflow_status')
         .eq('status_relationships.relationship_data->is_active', 'true')

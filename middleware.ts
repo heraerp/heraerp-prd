@@ -7,12 +7,13 @@ import type { NextRequest } from 'next/server'
 // Handles public pages, demo pages with seed data, and customer subdomains
 // ================================================================================
 
-// Demo organization ID from environment
-const DEMO_ORG_ID = process.env.NEXT_PUBLIC_DEMO_ORG_ID || 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
+// Demo organization ID from environment - use salon demo org for consistency
+const DEMO_ORG_ID = process.env.NEXT_PUBLIC_DEMO_ORG_ID || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 // Public pages that don't require authentication
 const PUBLIC_PAGES = [
   '/',
+  '/demo',  // Demo gallery page
   '/pricing',
   '/features',
   '/about',
@@ -87,6 +88,12 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api/') || pathname.startsWith('/_next') || pathname.includes('.')) {
     return NextResponse.next()
   }
+  
+  // Ensure /demo page is accessible without redirect
+  if (pathname === '/demo') {
+    console.log('🎯 Middleware: Allowing direct access to /demo page')
+    return NextResponse.next({ headers: requestHeaders })
+  }
 
   // Parse subdomain
   const subdomain = getSubdomain(hostname)
@@ -118,6 +125,15 @@ export async function middleware(request: NextRequest) {
 
     // Check if it's a demo route
     const firstSegment = pathname.split('/')[1]
+    const secondSegment = pathname.split('/')[2]
+    
+    if (firstSegment === 'demo' && DEMO_ROUTES.includes(secondSegment)) {
+      // Handle /demo/salon, /demo/restaurant, etc. - let route handler take over
+      requestHeaders.set('x-hera-demo-mode', 'true')
+      requestHeaders.set('x-hera-demo-type', secondSegment)
+      return NextResponse.next({ headers: requestHeaders })
+    }
+    
     if (DEMO_ROUTES.includes(firstSegment)) {
       // Demo pages are publicly accessible with seed data
       requestHeaders.set('x-hera-demo-mode', 'true')

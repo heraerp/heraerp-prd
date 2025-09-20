@@ -14,19 +14,19 @@
  */
 
 import { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { getDemoOrganizationInfo } from '@/src/lib/demo-org-resolver'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
 export function useDemoOrganization() {
   const pathname = usePathname()
-  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const { organization: currentOrganization, isLoading: isLoadingOrgs, isAuthenticated } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
   const [demoOrgLoading, setDemoOrgLoading] = useState(true)
 
   // CRITICAL: No fallback - let the component handle missing org
   const organizationId = currentOrganization?.id || demoOrg?.id || ''
-  const organizationName = currentOrganization?.organization_name || demoOrg?.name || ''
+  const organizationName = currentOrganization?.name || demoOrg?.name || ''
 
   // CRITICAL FIX: The bug was using !demoOrg which caused infinite loading
   // Correct logic: only show loading for authenticated users who are loading orgs

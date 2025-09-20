@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { UniversalConfigService } from '@/src/lib/whatsapp/universal-config-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { UniversalConfigService } from '@/lib/whatsapp/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''

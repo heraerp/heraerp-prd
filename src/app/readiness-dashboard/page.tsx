@@ -4,14 +4,14 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Progress } from '@/src/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { formatDate } from '@/src/lib/date-utils'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { formatDate } from '@/lib/date-utils'
 import {
   BarChart3,
   FileText,
@@ -34,15 +34,15 @@ import {
   Activity,
   Zap
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { Input } from '@/src/components/ui/input'
+import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import { motion } from 'framer-motion'
 
 // Custom scrollbar styles for glassmorphism design

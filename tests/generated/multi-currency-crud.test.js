@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Multi_currency
- * Generated at: 2025-09-06T04:22:33.503Z
+ * Generated at: 2025-09-20T19:27:03.596Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.MULTI_CURRENCY",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132553504';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396423597';
 
 describe('Multi_currency - Universal CRUD Operations', () => {
   let createdEntityId;

@@ -131,10 +131,10 @@ export function ServiceList({
           <TableRow className="border-b" style={{ borderColor: COLORS.bronze + '33' }}>
             <TableHead className="w-12">
               <Checkbox
-                checked={allSelected}
-                indeterminate={someSelected}
+                checked={allSelected || someSelected}
                 onCheckedChange={onSelectAll}
                 aria-label="Select all services"
+                className={someSelected && !allSelected ? 'data-[state=checked]:bg-primary/50' : ''}
               />
             </TableHead>
             <TableHead style={{ color: COLORS.bronze }}>Service</TableHead>

@@ -1,6 +1,6 @@
 'use client'
 
-// Smart Code: HERA.ISP.AI.MANAGER.UI.v1
+// Smart Code: HERA.ISP.AI.MANAGER.UI.V1
 // ISP AI Manager – inspired by Furniture AI Manager, tailored for broadband ISPs
 
 import React, { useEffect, useRef, useState } from 'react'
@@ -22,12 +22,12 @@ import {
   BarChart3,
   Gauge
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Badge } from '@/src/components/ui/badge'
-import { cn } from '@/src/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 type MsgType = 'user' | 'assistant' | 'system' | 'insight'
 

@@ -8,20 +8,20 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   Upload,
   File,
@@ -44,8 +44,8 @@ import {
   Tag,
   User
 } from 'lucide-react'
-import { createDocumentService, CRMDocument, DocumentFilter } from '@/src/lib/crm/document-service'
-import { CRMContact } from '@/src/lib/crm/production-api'
+import { createDocumentService, CRMDocument, DocumentFilter } from '@/lib/crm/document-service'
+import { CRMContact } from '@/lib/crm/production-api'
 
 interface DocumentManagerProps {
   contact?: CRMContact

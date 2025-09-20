@@ -4,13 +4,13 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Daily Cash Close Page
- * Smart Code: HERA.SALON.FINANCE.DAILY.CLOSE.PAGE.v1
+ * Smart Code: HERA.SALON.FINANCE.DAILY.CLOSE.PAGE.V1
  *
  * Daily cash close operations for salon
  */
 
 import React from 'react'
-import DailyCashClose from '@/src/components/pos/DailyCashClose'
+import DailyCashClose from '@/components/pos/DailyCashClose'
 
 export default function SalonDailyCashClosePage() {
   return (

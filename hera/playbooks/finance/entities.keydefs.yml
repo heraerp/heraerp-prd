@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.FINANCE.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   - { slug: ledger_account.account_type,   entity_type: ENTITY, name: "Account Type",  metadata: { type: "text",   allowed: ["asset","liability","equity","income","expense"] } }
   - { slug: ledger_account.normal_balance, entity_type: ENTITY, name: "Normal Bal",    metadata: { type: "text",   allowed: ["debit","credit"] } }

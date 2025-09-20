@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Mcp_batch_wizard
- * Generated at: 2025-09-06T04:22:05.003Z
+ * Generated at: 2025-09-20T19:26:55.643Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.MCP_BATCH_WIZARD",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132525004';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396415644';
 
 describe('Mcp_batch_wizard - Universal CRUD Operations', () => {
   let createdEntityId;

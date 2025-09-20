@@ -1,13 +1,13 @@
 /**
  * HERA MCP Intelligent Form Completion API
- * Smart Code: HERA.MCP.API.FORM.COMPLETION.INTELLIGENT.v1
+ * Smart Code: HERA.MCP.API.FORM.COMPLETION.INTELLIGENT.V1
  *
  * Uses AI to intelligently complete questionnaire forms based on business context
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { universalApi } from '@/src/lib/universal-api'
-import { createReadinessTemplate } from '@/src/modules/readiness-questionnaire/template'
+import { universalApi } from '@/lib/universal-api'
+import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
 
 interface BusinessContext {
   businessType: string
@@ -548,7 +548,7 @@ export async function POST(request: NextRequest) {
         totalQuestions: answers.length,
         averageConfidence: answers.reduce((sum, a) => sum + a.confidence, 0) / answers.length,
         highConfidenceAnswers: answers.filter(a => a.confidence >= 0.8).length,
-        smart_code: 'HERA.MCP.API.FORM.COMPLETION.SUCCESS.v1'
+        smart_code: 'HERA.MCP.API.FORM.COMPLETION.SUCCESS.V1'
       }
     })
   } catch (error) {
@@ -558,7 +558,7 @@ export async function POST(request: NextRequest) {
       {
         error: 'Failed to generate intelligent form completion',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.MCP.API.FORM.COMPLETION.ERROR.v1'
+        smart_code: 'HERA.MCP.API.FORM.COMPLETION.ERROR.V1'
       },
       { status: 500 }
     )

@@ -1,25 +1,25 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Badge } from '@/src/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+} from '@/components/ui/select'
+import { BadgeDNA } from '@/lib/dna/components/ui/BadgeDNA'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card, CardContent } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ScrollAreaDNA } from '@/lib/dna/components/ui/ScrollAreaDNA'
 import {
   Calendar,
   Clock,
@@ -42,15 +42,16 @@ import {
   Users,
   X
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { salonClasses, salonTheme } from '@/src/lib/theme/salon-theme'
-import { formatDate, addMinutesSafe } from '@/src/lib/date-utils'
+import { cn } from '@/lib/utils'
+import { salonClasses, salonTheme } from '@/lib/theme/salon-theme'
+import { formatDate, addMinutesSafe } from '@/lib/date-utils'
 import { parseISO, isWithinInterval } from 'date-fns'
 import { SchedulingAssistant } from './SchedulingAssistant'
-import { useToast } from '@/src/hooks/use-toast'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
-import { universalApi } from '@/src/lib/universal-api'
+import { useToast } from '@/hooks/use-toast'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
+import { universalApi } from '@/lib/universal-api'
+import { searchStaff, searchServices, searchCustomers, upsertAppointment } from '@/lib/playbook/entities'
 
 interface Service {
   id: string
@@ -107,9 +108,9 @@ export function BookAppointmentModal({
   preSelectedStylist,
   preSelectedService
 }: BookAppointmentModalProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const { toast } = useToast()
-  const organizationId = currentOrganization?.id || 'demo-salon'
+  const organizationId = organization?.id || 'demo-salon'
 
   // Form state - Default to assistant tab when pre-selected time is provided
   const [activeTab, setActiveTab] = useState<'event' | 'assistant'>(
@@ -145,68 +146,67 @@ export function BookAppointmentModal({
       if (!organizationId) return
 
       setLoadingData(true)
-      universalApi.setOrganizationId(organizationId)
 
       try {
-        // Fetch stylists (staff entities)
-        const stylistsResponse = await universalApi.readEntities({
-          entity_type: 'staff',
-          organization_id: organizationId
-        })
+        // Fetch all data using Playbook API
+        const [staffData, servicesData, customersData] = await Promise.all([
+          searchStaff({
+            organization_id: organizationId,
+            page_size: 100
+          }),
+          searchServices({
+            organization_id: organizationId,
+            page_size: 100
+          }),
+          searchCustomers({
+            organization_id: organizationId,
+            page_size: 50
+          })
+        ])
 
-        if (stylistsResponse && stylistsResponse.data) {
-          const formattedStylists = stylistsResponse.data.map((staff: any) => ({
+        // Format stylists
+        if (staffData?.rows && staffData.rows.length > 0) {
+          const formattedStylists = staffData.rows.map((staff: any) => ({
             id: staff.id,
             entity_name: staff.entity_name,
             entity_code: staff.entity_code || staff.id,
             smart_code: staff.smart_code || 'HERA.SALON.STAFF.v1',
             avatar: staff.entity_name?.charAt(0) || 'S',
-            skills: (staff.metadata as any)?.skills || [],
-            level: (staff.metadata as any)?.level || 'senior',
-            allow_double_book: (staff.metadata as any)?.allow_double_book || false
+            skills: staff.specialties || [],
+            level: staff.role === 'manager' ? 'celebrity' : 'senior',
+            allow_double_book: false
           }))
           setStylists(formattedStylists)
         }
 
-        // Fetch services
-        const servicesResponse = await universalApi.readEntities({
-          entity_type: 'service',
-          organization_id: organizationId
-        })
-
-        if (servicesResponse && servicesResponse.data) {
-          const formattedServices = servicesResponse.data.map((service: any) => ({
+        // Format services
+        if (servicesData?.rows && servicesData.rows.length > 0) {
+          const formattedServices = servicesData.rows.map((service: any) => ({
             id: service.id,
             entity_name: service.entity_name,
             entity_code: service.entity_code || service.id,
             smart_code: service.smart_code || 'HERA.SALON.SERVICE.v1',
-            duration: (service.metadata as any)?.duration || 60,
-            price: (service.metadata as any)?.price || 0,
-            buffer_before: (service.metadata as any)?.buffer_before || 5,
-            buffer_after: (service.metadata as any)?.buffer_after || 10,
-            category: (service.metadata as any)?.category || 'General',
-            skills_required: (service.metadata as any)?.skills_required || []
+            duration: service.duration_minutes || 60,
+            price: service.price || 0,
+            buffer_before: 5,
+            buffer_after: 10,
+            category: service.category || 'General',
+            skills_required: []
           }))
           setServices(formattedServices)
         }
 
-        // Fetch recent customers
-        const customersResponse = await universalApi.readEntities({
-          entity_type: 'customer',
-          organization_id: organizationId,
-          limit: 50
-        })
-
-        if (customersResponse && customersResponse.data) {
-          const formattedCustomers = customersResponse.data.map((customer: any) => ({
+        // Format customers
+        if (customersData?.rows && customersData.rows.length > 0) {
+          const formattedCustomers = customersData.rows.map((customer: any) => ({
             id: customer.id,
             entity_name: customer.entity_name,
             entity_code: customer.entity_code || customer.id,
             smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
-            phone: (customer.metadata as any)?.phone || '',
-            email: (customer.metadata as any)?.email || '',
-            vip_level: (customer.metadata as any)?.vip_level || null,
-            preferences: (customer.metadata as any)?.preferences || {}
+            phone: customer.phone || '',
+            email: customer.email || '',
+            vip_level: customer.vip_tier || null,
+            preferences: customer.notes ? { notes: customer.notes } : {}
           }))
           setCustomers(formattedCustomers)
         }
@@ -251,7 +251,7 @@ export function BookAppointmentModal({
             id: 'srv-1',
             entity_name: 'Brazilian Blowout',
             entity_code: 'SRV-001',
-            smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.v1',
+            smart_code: 'HERA.SALON.SERVICE.CHEMICAL.BRAZILIAN.V1',
             duration: 240,
             price: 500,
             buffer_before: 15,
@@ -565,7 +565,7 @@ export function BookAppointmentModal({
           quantity: 1,
           unit_amount: service.price,
           line_amount: service.price,
-          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.v1',
+          smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.LINE.SERVICE.V1',
           line_data: {
             duration_minutes: service.duration,
             buffer_before: service.buffer_before,
@@ -662,7 +662,7 @@ export function BookAppointmentModal({
                 <TabsContent value="event" className="h-full m-0">
                   <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] h-full">
                     {/* Left Column - Form */}
-                    <ScrollArea className="h-full">
+                    <ScrollAreaDNA height="h-full">
                       <div className="p-6 space-y-0">
                         {/* Title */}
                         <div className="mb-6">
@@ -777,9 +777,9 @@ export function BookAppointmentModal({
                                       </AvatarFallback>
                                     </Avatar>
                                     <span>{stylist.entity_name}</span>
-                                    <Badge variant="secondary" className="ml-auto text-xs">
+                                    <BadgeDNA variant="secondary" className="ml-auto text-xs">
                                       {stylist.level}
-                                    </Badge>
+                                    </BadgeDNA>
                                   </div>
                                 </SelectItem>
                               ))}
@@ -908,7 +908,7 @@ export function BookAppointmentModal({
                           </label>
                         </div>
                       </div>
-                    </ScrollArea>
+                    </ScrollAreaDNA>
 
                     {/* Right Column - Calendar View */}
                     <div className="hidden lg:block h-full bg-[#252525] border-l border-[#323232]">

@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Salon
- * Generated at: 2025-09-06T04:22:10.744Z
+ * Generated at: 2025-09-20T19:26:57.974Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.SALON",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132530745';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396417975';
 
 describe('Salon - Universal CRUD Operations', () => {
   let createdEntityId;

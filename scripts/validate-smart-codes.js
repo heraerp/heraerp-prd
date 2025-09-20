@@ -1,58 +1,56 @@
 #!/usr/bin/env node
 
-/**
- * Smart Code Validation Script
- * Scans codebase for smart codes and validates format
- */
-
 const fs = require('fs');
 const path = require('path');
 
-const SMART_CODE_REGEX = /HERA\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.[vV]\d+/g;
-const VALID_REGEX = /^HERA\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.[A-Z0-9]+\.v\d+$/;
+// Smart code pattern
+const SMART_CODE_PATTERN = /HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.[Vv][0-9]+/g;
+const VALID_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.V[0-9]+$/;
 
-let totalCodes = 0;
-let invalidCodes = [];
+// Files to check
+const FILE_PATTERNS = [
+  '**/*.ts',
+  '**/*.tsx',
+  '**/*.js',
+  '**/*.jsx',
+];
 
-function scanFile(filePath) {
+// Directories to ignore
+const IGNORE_DIRS = ['node_modules', '.next', 'dist', 'build'];
+
+let hasErrors = false;
+
+function validateSmartCode(code, file, line) {
+  if (!VALID_PATTERN.test(code)) {
+    // Check if it's lowercase v
+    if (code.match(/\.v\d+$/)) {
+      console.error(`❌ Smart code has lowercase 'v' in ${file}:${line}`);
+      console.error(`   Found: ${code}`);
+      console.error(`   Fix:   ${code.replace(/\.v(\d+)$/, '.V$1')}`);
+    } else {
+      console.error(`❌ Invalid smart code in ${file}:${line}`);
+      console.error(`   Found: ${code}`);
+      console.error(`   See: /docs/playbooks/_shared/SMART_CODE_GUIDE.md`);
+    }
+    hasErrors = true;
+  }
+}
+
+function checkFile(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
-  const matches = content.match(SMART_CODE_REGEX) || [];
+  const lines = content.split('\n');
   
-  matches.forEach(code => {
-    totalCodes++;
-    
-    if (!VALID_REGEX.test(code)) {
-      // Check if it's the uppercase V issue
-      if (code.match(/\.V\d+$/)) {
-        invalidCodes.push({
-          file: filePath,
-          code: code,
-          issue: 'Uppercase V in version (should be lowercase v)',
-          line: getLineNumber(content, code)
-        });
-      } else {
-        invalidCodes.push({
-          file: filePath,
-          code: code,
-          issue: 'Invalid format',
-          line: getLineNumber(content, code)
-        });
-      }
+  lines.forEach((line, index) => {
+    const matches = line.match(SMART_CODE_PATTERN);
+    if (matches) {
+      matches.forEach(match => {
+        validateSmartCode(match, filePath, index + 1);
+      });
     }
   });
 }
 
-function getLineNumber(content, searchStr) {
-  const lines = content.split('\n');
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes(searchStr)) {
-      return i + 1;
-    }
-  }
-  return 0;
-}
-
-function scanDirectory(dir, excludeDirs = ['node_modules', '.next', 'dist']) {
+function walkDir(dir) {
   const files = fs.readdirSync(dir);
   
   files.forEach(file => {
@@ -60,45 +58,28 @@ function scanDirectory(dir, excludeDirs = ['node_modules', '.next', 'dist']) {
     const stat = fs.statSync(filePath);
     
     if (stat.isDirectory()) {
-      if (!excludeDirs.includes(file) && !file.startsWith('.')) {
-        scanDirectory(filePath, excludeDirs);
+      if (!IGNORE_DIRS.includes(file) && !file.startsWith('.')) {
+        walkDir(filePath);
       }
-    } else if (file.match(/\.(js|ts|tsx|json|sql)$/)) {
-      scanFile(filePath);
+    } else if (stat.isFile()) {
+      if (file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.js') || file.endsWith('.jsx')) {
+        checkFile(filePath);
+      }
     }
   });
 }
 
-console.log('🔍 Scanning for Smart Codes...\n');
+console.log('🔍 Validating smart codes...\n');
 
-// Scan source directories
-const dirsToScan = ['src', 'database', 'scripts', 'mcp-server'];
-dirsToScan.forEach(dir => {
-  if (fs.existsSync(dir)) {
-    scanDirectory(dir);
-  }
-});
+// Start from src directory
+if (fs.existsSync('src')) {
+  walkDir('src');
+}
 
-console.log(`📊 Smart Code Validation Results:`);
-console.log(`   Total codes found: ${totalCodes}`);
-console.log(`   Valid codes: ${totalCodes - invalidCodes.length}`);
-console.log(`   Invalid codes: ${invalidCodes.length}`);
-
-if (invalidCodes.length > 0) {
-  console.log('\n❌ Invalid Smart Codes Found:\n');
-  
-  invalidCodes.forEach(({ file, code, issue, line }) => {
-    console.log(`   File: ${file}:${line}`);
-    console.log(`   Code: ${code}`);
-    console.log(`   Issue: ${issue}`);
-    console.log(`   Fix: ${code.replace(/\.V(\d+)$/, '.v$1')}`);
-    console.log('');
-  });
-  
-  console.log('💡 To fix all uppercase V issues, run:');
-  console.log('   find src -type f -name "*.ts" -exec sed -i "" "s/\\.V\\([0-9]\\+\\)$/.v\\1/g" {} +\n');
-  
+if (hasErrors) {
+  console.error('\n❌ Smart code validation failed!');
+  console.error('📖 See /docs/playbooks/_shared/SMART_CODE_GUIDE.md for rules');
   process.exit(1);
 } else {
-  console.log('\n✅ All Smart Codes are valid!');
+  console.log('✅ All smart codes are valid!');
 }

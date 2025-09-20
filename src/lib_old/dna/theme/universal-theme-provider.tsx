@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA UNIVERSAL THEME PROVIDER
-// Smart Code: HERA.DNA.THEME.PROVIDER.UNIVERSAL.v1
+// Smart Code: HERA.DNA.THEME.PROVIDER.UNIVERSAL.V1
 // React context provider for dynamic theme variants with configuration rules
 // ================================================================================
 

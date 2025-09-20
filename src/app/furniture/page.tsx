@@ -4,16 +4,16 @@ import React, { useState, useEffect } from 'react' // Force dynamic rendering to
 
 export const dynamic = 'force-dynamic'
 // Removed HeraGradientBackgroundDNA import as we're using the dark theme layout
-import { StatCardGrid } from '@/src/lib/dna/components/ui/stat-card-dna'
-import { FurnitureStatCard } from '@/src/components/furniture/FurnitureStatCard'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { StatCardGrid } from '@/lib/dna/components/ui/stat-card-dna'
+import { FurnitureStatCard } from '@/components/furniture/FurnitureStatCard'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Package, ShoppingCart, Factory, Users, TrendingUp, Clock, CheckCircle, AlertCircle, DollarSign, Truck, BarChart3, Settings, FileText, Brain, Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
-import { useFurnitureOrg, FurnitureOrgLoading } from '@/src/components/furniture/FurnitureOrgContext'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
+import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 
 function FurnitureDashboard() {
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
@@ -101,11 +101,11 @@ const quickActions = React.useMemo( () => [
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--color-accent-teal)]-600 to-blue-600 flex items-center justify-center">
-                    <Brain className="h-8 w-8 text-[#37353E]" />
+                    <Brain className="h-8 w-8 text-[var(--color-icon-secondary)]" />
                   </div>
                   <div>
                     <h3 className="bg-[var(--color-body)] text-lg font-semibold flex items-center gap-2">
-                      AI Business Manager <Sparkles className="h-4 w-4 text-[#37353E]" />
+                      AI Business Manager <Sparkles className="h-4 w-4 text-[var(--color-icon-secondary)]" />
                     </h3>
                     <p className="text-sm text-[var(--color-text-secondary)]">
                       Get instant insights, recommendations, and strategic analysis for your furniture business
@@ -251,7 +251,7 @@ const quickActions = React.useMemo( () => [
                     <p className="text-2xl font-bold">₹15.2L</p>
                     <p className="text-sm text-[var(--color-accent-indigo)]">5 overdue</p>
                   </div>
-                  <AlertCircle className="h-8 w-8 text-[#37353E]" />
+                  <AlertCircle className="h-8 w-8 text-[var(--color-icon-secondary)]" />
                 </div>
               </Card>
               <Card className="bg-[var(--color-surface-raised)] border-[var(--color-border)] p-6 bg-[var(--color-body)]/70 bg-[var(--color-body)]/70 backdrop-blur-sm">
@@ -271,7 +271,7 @@ const quickActions = React.useMemo( () => [
                     <p className="text-2xl font-bold">₹8.5L</p>
                     <p className="text-sm text-primary">Healthy</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-[#37353E]" />
+                  <TrendingUp className="h-8 w-8 text-[var(--color-icon-secondary)]" />
                 </div>
               </Card>
             </div>

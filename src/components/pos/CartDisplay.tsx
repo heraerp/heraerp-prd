@@ -7,10 +7,10 @@
 'use client'
 
 import { Trash2, Plus, Minus } from 'lucide-react'
-import { useCartStore } from '@/src/lib/hooks/usePos'
-import { CartLine } from '@/src/lib/schemas/pos'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
+import { useCartStore } from '@/lib/hooks/usePos'
+import { CartLine } from '@/lib/schemas/pos'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export function CartDisplay() {
   const { lines, totals, removeLine, updateQuantity } = useCartStore()

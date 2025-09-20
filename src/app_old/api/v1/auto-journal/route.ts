@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA AUTO-JOURNAL API ENDPOINT
 // RESTful API for intelligent journal entry automation
-// Smart Code: HERA.FIN.GL.AUTO.JOURNAL.API.v1
+// Smart Code: HERA.FIN.GL.AUTO.JOURNAL.API.V1
 // ================================================================================
 
 import { NextRequest, NextResponse } from 'next/server'

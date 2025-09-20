@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Input } from '@/src/components/ui/input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import {
   User,
   Phone,
@@ -33,10 +33,10 @@ import {
 import {
   APPOINTMENT_WORKFLOW,
   APPOINTMENT_SMART_CODES
-} from '@/src/lib/appointments/universal-appointment-system'
+} from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Appointment Details Modal
-// Smart Code: HERA.UNIV.CRM.APT.MODAL.v1
+// Smart Code: HERA.UNIV.CRM.APT.MODAL.V1
 
 interface AppointmentDetailsModalProps {
   isOpen: boolean

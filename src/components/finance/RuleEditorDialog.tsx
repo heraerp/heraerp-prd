@@ -14,25 +14,25 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Label } from '@/src/components/ui/label'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AlertCircle, Save, X, Info } from 'lucide-react'
-import { PostingRule, Mapping } from '@/src/lib/schemas/financeRules'
+import { PostingRule, Mapping } from '@/lib/schemas/financeRules'
 import { RuleMappingsTable } from './RuleMappingsTable'
-import { JsonView } from '@/src/components/common/JsonView'
+import { JsonView } from '@/components/common/JsonView'
 
 interface RuleEditorDialogProps {
   rule: PostingRule | null

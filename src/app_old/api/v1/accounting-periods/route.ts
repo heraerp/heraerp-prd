@@ -5,7 +5,7 @@ import { getHeraAPI } from '@/lib/hera-api'
 
 /**
  * HERA Financial Module - Accounting Periods API
- * Smart Code: HERA.FIN.GL.ENT.PERIOD.v1
+ * Smart Code: HERA.FIN.GL.ENT.PERIOD.V1
  *
  * Manages fiscal years, quarters, months, and custom periods
  * Integrates with existing Mario demo setup
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     // Format periods with financial-specific data
     const formattedPeriods = periods.map(period => ({
       ...period,
-      smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+      smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
       period_id: period.entity_code,
       period_name: period.entity_name,
       fiscal_year: period.fiscal_year || new Date().getFullYear(),
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: formattedPeriods,
-      smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+      smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
       period_summary: {
         total_periods: formattedPeriods.length,
         current_period: currentPeriod?.period_name || 'No active period',
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
             entity_name:
               i < 12 ? `Period ${i + 1} - ${fiscal_year}` : `Adjusting Period - ${fiscal_year}`,
             entity_code: `${fiscal_year}-${String(i + 1).padStart(2, '0')}`,
-            smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+            smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
             fiscal_year,
             period_type: 'month',
             period_number: i + 1,
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: periods,
         message: `Fiscal year ${fiscal_year} setup completed`,
-        smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+        smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
         periods_created: periods.length,
         fiscal_year,
         mario_demo_compatible: true
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'accounting_period',
         entity_name: period_data.period_name,
         entity_code: period_data.period_code,
-        smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+        smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
         fiscal_year: period_data.fiscal_year,
         period_type: period_data.period_type || 'month',
         period_number: period_data.period_number,
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: newPeriod,
         message: 'Accounting period created successfully',
-        smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1'
+        smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1'
       })
     }
 
@@ -261,7 +261,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: updatedPeriod,
       message,
-      smart_code: 'HERA.FIN.GL.ENT.PERIOD.v1',
+      smart_code: 'HERA.FIN.GL.ENT.PERIOD.V1',
       action_performed: action,
       timestamp: new Date().toISOString()
     })

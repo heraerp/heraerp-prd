@@ -4,7 +4,7 @@
  * Smart Code: HERA.GOVERNANCE.INTEGRATION.MANAGER.v1
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import type {
   DNAComponent,
   DNATemplate,
@@ -12,7 +12,7 @@ import type {
   FieldTypeDefinition,
   SmartCodeDefinition,
   OrganizationSystemConfig
-} from '@/src/lib/schema/schema-manager'
+} from '@/lib/schema/schema-manager'
 
 // Map universal table data to schema manager types
 export class SelfGoverningIntegration {
@@ -299,7 +299,7 @@ export class SelfGoverningIntegration {
         entity_type: 'organization_system_config',
         entity_name: `System Configuration`,
         entity_code: `SYSCONFIG-${organizationId}`,
-        smart_code: 'HERA.SYS.CONFIG.ORG.SETTINGS.v1',
+        smart_code: 'HERA.SYS.CONFIG.ORG.SETTINGS.V1',
         metadata: {
           ...config,
           configured_by: userId,

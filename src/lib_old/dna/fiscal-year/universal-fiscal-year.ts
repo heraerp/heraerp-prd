@@ -205,7 +205,7 @@ export class UniversalFiscalYear {
         from_entity_id: fiscalConfigId,
         to_entity_id: periodEntity.id,
         relationship_type: 'has_period',
-        smart_code: 'HERA.FISCAL.REL.CONFIG.PERIOD.v1'
+        smart_code: 'HERA.FISCAL.REL.CONFIG.PERIOD.V1'
       })
 
       periods.push({

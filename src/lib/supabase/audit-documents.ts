@@ -1,4 +1,4 @@
-import { createClient } from '@/src/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 const supabase = createClient()
 
@@ -69,7 +69,7 @@ class AuditDocumentService {
         entity_type: 'document_requisition',
         entity_code: requisitionCode,
         entity_name: `${data.client_name} - Document Requisition`,
-        smart_code: 'HERA.AUD.DOC.ENT.REQ.v1',
+        smart_code: 'HERA.AUD.DOC.ENT.REQ.V1',
         status: 'draft',
         metadata: {
           gspu_client_id: data.client_id, // Internal GSPU client reference
@@ -160,7 +160,7 @@ class AuditDocumentService {
       entity_type: 'audit_document',
       entity_code: doc.code,
       entity_name: doc.name,
-      smart_code: 'HERA.AUD.DOC.ENT.MASTER.v1',
+      smart_code: 'HERA.AUD.DOC.ENT.MASTER.V1',
       status: 'pending',
       metadata: {
         requisition_id: requisitionId,
@@ -287,7 +287,7 @@ class AuditDocumentService {
     await supabase.from('universal_transactions').insert({
       organization_id: updatedDoc.organization_id,
       transaction_type: 'document_status_update',
-      smart_code: 'HERA.AUD.DOC.TXN.STATUS.v1',
+      smart_code: 'HERA.AUD.DOC.TXN.STATUS.V1',
       reference_number: documentId,
       total_amount: 0,
       metadata: {
@@ -334,7 +334,7 @@ class AuditDocumentService {
     await supabase.from('universal_transactions').insert({
       organization_id: updatedReq.organization_id,
       transaction_type: 'requisition_sent',
-      smart_code: 'HERA.AUD.DOC.TXN.SEND.v1',
+      smart_code: 'HERA.AUD.DOC.TXN.SEND.V1',
       reference_number: requisitionId,
       total_amount: 0,
       metadata: {

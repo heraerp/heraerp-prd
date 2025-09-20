@@ -161,16 +161,16 @@ export const PricingRuleFamily = {
 
   // Sub-families
   subFamilies: {
-    DISCOUNT: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT.v1',
-    SURCHARGE: 'HERA.UNIV.CONFIG.PRICING.SURCHARGE.v1',
-    DYNAMIC: 'HERA.UNIV.CONFIG.PRICING.DYNAMIC.v1',
-    BUNDLE: 'HERA.UNIV.CONFIG.PRICING.BUNDLE.v1',
-    LOYALTY: 'HERA.UNIV.CONFIG.PRICING.LOYALTY.v1',
-    SEASONAL: 'HERA.UNIV.CONFIG.PRICING.SEASONAL.v1',
-    PROMOTIONAL: 'HERA.UNIV.CONFIG.PRICING.PROMOTIONAL.v1',
-    VOLUME: 'HERA.UNIV.CONFIG.PRICING.VOLUME.v1',
-    FLASH_SALE: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.v1',
-    MEMBER: 'HERA.UNIV.CONFIG.PRICING.MEMBER.v1'
+    DISCOUNT: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT.V1',
+    SURCHARGE: 'HERA.UNIV.CONFIG.PRICING.SURCHARGE.V1',
+    DYNAMIC: 'HERA.UNIV.CONFIG.PRICING.DYNAMIC.V1',
+    BUNDLE: 'HERA.UNIV.CONFIG.PRICING.BUNDLE.V1',
+    LOYALTY: 'HERA.UNIV.CONFIG.PRICING.LOYALTY.V1',
+    SEASONAL: 'HERA.UNIV.CONFIG.PRICING.SEASONAL.V1',
+    PROMOTIONAL: 'HERA.UNIV.CONFIG.PRICING.PROMOTIONAL.V1',
+    VOLUME: 'HERA.UNIV.CONFIG.PRICING.VOLUME.V1',
+    FLASH_SALE: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.V1',
+    MEMBER: 'HERA.UNIV.CONFIG.PRICING.MEMBER.V1'
   },
 
   // Default conditions
@@ -254,7 +254,7 @@ export const PricingRuleFamily = {
   // Sample templates
   templates: {
     percentageDiscount: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.DISCOUNT.V1',
       status: 'active',
       priority: 100,
       conditions: {
@@ -276,7 +276,7 @@ export const PricingRuleFamily = {
     },
 
     happyHour: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.DYNAMIC.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.DYNAMIC.V1',
       status: 'active',
       priority: 200,
       conditions: {
@@ -302,7 +302,7 @@ export const PricingRuleFamily = {
     },
 
     loyaltyTiers: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.LOYALTY.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.LOYALTY.V1',
       status: 'active',
       priority: 300,
       conditions: {
@@ -328,7 +328,7 @@ export const PricingRuleFamily = {
     },
 
     serviceBundle: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.BUNDLE.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.BUNDLE.V1',
       status: 'active',
       priority: 150,
       conditions: {
@@ -363,7 +363,7 @@ export const PricingRuleFamily = {
     },
 
     volumeDiscount: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.VOLUME.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.VOLUME.V1',
       status: 'active',
       priority: 120,
       conditions: {
@@ -392,7 +392,7 @@ export const PricingRuleFamily = {
     },
 
     birthdaySpecial: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.PROMOTIONAL.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.PROMOTIONAL.V1',
       status: 'active',
       priority: 400,
       conditions: {
@@ -420,7 +420,7 @@ export const PricingRuleFamily = {
     },
 
     peakSurcharge: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.SURCHARGE.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.SURCHARGE.V1',
       status: 'active',
       priority: 50,
       conditions: {
@@ -444,7 +444,7 @@ export const PricingRuleFamily = {
     },
 
     flashSale: {
-      smart_code: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.v1',
+      smart_code: 'HERA.UNIV.CONFIG.PRICING.FLASH_SALE.V1',
       status: 'active',
       priority: 500,
       conditions: {

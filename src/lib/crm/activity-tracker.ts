@@ -5,7 +5,7 @@
  * Project Manager Task: Activity History and Audit Trail (Task #8)
  */
 
-import { heraApi } from '@/src/lib/hera-api'
+import { heraApi } from '@/lib/hera-api'
 
 // Types for activity tracking
 export interface ActivityEvent {

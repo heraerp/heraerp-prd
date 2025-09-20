@@ -3,7 +3,7 @@
  * Stateless tools with clear contracts for Claude + HERA DNA integration
  */
 
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 // Tool type definitions
 export interface MCPToolResponse<T = any> {
@@ -269,7 +269,7 @@ export class MCPTools {
       const transaction = await universalApi.createTransaction({
         transaction_type: 'appointment_booking',
         transaction_code: appointment.entity_code!,
-        smart_code: 'HERA.SALON.APPOINTMENT.TXN.CREATE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.TXN.CREATE.V1',
         metadata: {
           appointment_id: appointment.id,
           channel: 'whatsapp'
@@ -323,8 +323,8 @@ export class MCPTools {
           transaction_type: 'WHATSAPP_MESSAGE_SEND',
           smart_code:
             input.kind === 'freeform'
-              ? 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.v1'
-              : 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.v1',
+              ? 'HERA.SALON.WHATSAPP.MESSAGE.FREEFORM.V1'
+              : 'HERA.SALON.WHATSAPP.MESSAGE.TEMPLATE.V1',
           transaction_status: 'sent',
           metadata: {
             to: input.to,

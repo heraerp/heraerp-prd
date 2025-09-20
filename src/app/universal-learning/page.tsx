@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 // Complete Universal Learning System for ANY educational domain
 
 import { Metadata } from 'next'
-import { UniversalLearningInterface } from '@/src/components/universal-learning/UniversalLearningInterface'
+import { UniversalLearningInterface } from '@/components/universal-learning/UniversalLearningInterface'
 
 export const metadata: Metadata = {
   title: 'HERA Universal Learning Platform',

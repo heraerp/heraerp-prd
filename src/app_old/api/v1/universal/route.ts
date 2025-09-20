@@ -834,7 +834,7 @@ function getMockData(table: string, id?: string | null) {
         entity_type: 'customer',
         entity_name: 'Mario Restaurant Corp',
         entity_code: 'CUST001',
-        smart_code: 'HERA.REST.CRM.ENT.CUSTOMER.v1',
+        smart_code: 'HERA.REST.CRM.ENT.CUSTOMER.V1',
         status: 'active',
         created_at: '2024-01-01T00:00:00Z'
       },
@@ -844,7 +844,7 @@ function getMockData(table: string, id?: string | null) {
         entity_type: 'account',
         entity_name: 'Cash in Bank',
         entity_code: '1100000',
-        smart_code: 'HERA.FIN.GL.ENT.ASSET.v1',
+        smart_code: 'HERA.FIN.GL.ENT.ASSET.V1',
         status: 'active',
         created_at: '2024-01-01T00:00:00Z'
       }
@@ -880,7 +880,7 @@ function getMockData(table: string, id?: string | null) {
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         transaction_type: 'sale',
         transaction_code: 'SALE-2024-001',
-        smart_code: 'HERA.REST.SALE.TXN.ORDER.v1',
+        smart_code: 'HERA.REST.SALE.TXN.ORDER.V1',
         transaction_date: '2024-08-08',
         reference_number: 'INV-001',
         total_amount: 1250.0,
@@ -896,7 +896,7 @@ function getMockData(table: string, id?: string | null) {
         organization_id: '719dfed1-09b4-4ca8-bfda-f682460de945',
         entity_id: '550e8400-e29b-41d4-a716-446655440002',
         line_description: 'Premium Pizza - Large',
-        smart_code: 'HERA.REST.SALE.LINE.FOOD.v1',
+        smart_code: 'HERA.REST.SALE.LINE.FOOD.V1',
         line_order: 1,
         quantity: 2,
         unit_price: 25.0,

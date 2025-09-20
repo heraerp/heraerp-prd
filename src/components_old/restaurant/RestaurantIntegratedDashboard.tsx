@@ -46,14 +46,14 @@ export function RestaurantIntegratedDashboard() {
       status: 'active',
       description: 'Restaurant-specific Chart of Accounts with IFRS compliance',
       icon: <BookOpen className="w-5 h-5" />,
-      smartCode: 'HERA.FIN.GL.COA.RESTAURANT.v1'
+      smartCode: 'HERA.FIN.GL.COA.RESTAURANT.V1'
     },
     {
       name: 'Auto-Journal Engine',
       status: 'active',
       description: '85% automated GL posting for all transactions',
       icon: <Zap className="w-5 h-5" />,
-      smartCode: 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
+      smartCode: 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1'
     },
     {
       name: 'Budgeting System',

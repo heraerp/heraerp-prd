@@ -1,4 +1,4 @@
-smart_code: HERA.HCM.MDM.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.HCM.MDM.ENTITY_CATALOG.CORE.V1
 items:
   # ---- TYPES (governance) ----
   - { slug: employee,          entity_type: ENTITY_TYPE,      name: "Employee" }

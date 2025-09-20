@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Mail, User, Calendar, Shield, CheckCircle, Clock, Send } from 'lucide-react'
 
 export function EmailAccessDemo() {

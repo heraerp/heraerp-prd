@@ -1,4 +1,4 @@
-smart_code: HERA.FINANCE.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.FINANCE.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Currency facts (GBP)
   - { entity_slug: currency:GBP, key_slug: currency.minor_unit, value: 2, value_type: number }

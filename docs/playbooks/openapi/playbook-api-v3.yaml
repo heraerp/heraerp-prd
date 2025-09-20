@@ -1,0 +1,913 @@
+openapi: 3.0.3
+info:
+  title: HERA Playbook API
+  description: |
+    Universal Playbook Execution Engine built on HERA's 6 sacred tables.
+    All operations translate to core_entities, core_relationships, universal_transactions, etc.
+    No custom tables are created - perfect adherence to HERA principles.
+  version: 1.0.0
+  contact:
+    name: HERA Development Team
+    email: dev@heraerp.com
+  license:
+    name: Proprietary
+    url: https://heraerp.com/license
+
+servers:
+  - url: https://api.heraerp.com/v1
+    description: Production
+  - url: https://staging-api.heraerp.com/v1
+    description: Staging
+  - url: http://localhost:3000/api/v1
+    description: Development
+
+tags:
+  - name: Playbooks
+    description: Playbook definition management
+  - name: Runs
+    description: Playbook execution management
+  - name: Steps
+    description: Step execution operations
+
+paths:
+  /playbooks:
+    post:
+      tags: [Playbooks]
+      summary: Create a new playbook definition
+      description: Creates a playbook definition in core_entities with steps
+      operationId: createPlaybook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlaybook'
+      responses:
+        '201':
+          description: Playbook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybookResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+    get:
+      tags: [Playbooks]
+      summary: List all playbooks
+      description: Retrieves playbook definitions from core_entities
+      operationId: listPlaybooks
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/Industry'
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: List of playbooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  playbooks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PlaybookResponse'
+                  next_page_token:
+                    type: string
+
+  /playbooks/{playbook_id}:
+    get:
+      tags: [Playbooks]
+      summary: Get playbook details
+      description: Retrieves a specific playbook with its steps
+      operationId: getPlaybook
+      parameters:
+        - $ref: '#/components/parameters/PlaybookId'
+      responses:
+        '200':
+          description: Playbook details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybookDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Playbooks]
+      summary: Update playbook definition
+      description: Updates playbook in core_entities (creates new version)
+      operationId: updatePlaybook
+      parameters:
+        - $ref: '#/components/parameters/PlaybookId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePlaybook'
+      responses:
+        '200':
+          description: Playbook updated (new version created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaybookResponse'
+
+    delete:
+      tags: [Playbooks]
+      summary: Archive playbook
+      description: Sets playbook status to archived (soft delete)
+      operationId: archivePlaybook
+      parameters:
+        - $ref: '#/components/parameters/PlaybookId'
+      responses:
+        '204':
+          description: Playbook archived
+
+  /playbook-runs:
+    post:
+      tags: [Runs]
+      summary: Start a playbook run
+      description: Creates a run in universal_transactions
+      operationId: startRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartRun'
+      responses:
+        '201':
+          description: Run started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    get:
+      tags: [Runs]
+      summary: List playbook runs
+      description: Retrieves runs from universal_transactions
+      operationId: listRuns
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/PlaybookId'
+        - $ref: '#/components/parameters/SubjectEntityId'
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: List of runs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  runs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RunResponse'
+                  next_page_token:
+                    type: string
+
+  /playbook-runs/{run_id}:
+    get:
+      tags: [Runs]
+      summary: Get run details
+      description: Retrieves run with step executions
+      operationId: getRun
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      responses:
+        '200':
+          description: Run details with steps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags: [Runs]
+      summary: Update run status
+      description: Updates run status (cancel, pause, resume)
+      operationId: updateRunStatus
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [cancelled, paused, resumed]
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Run status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunResponse'
+
+  /playbook-runs/{run_id}/signal:
+    post:
+      tags: [Runs]
+      summary: Send signal to running playbook
+      description: Sends signals like timeout, escalation, etc.
+      operationId: sendSignal
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signal'
+      responses:
+        '202':
+          description: Signal accepted for processing
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /playbook-runs/{run_id}/steps/{sequence}/complete:
+    post:
+      tags: [Steps]
+      summary: Mark step as complete
+      description: Updates step execution in universal_transaction_lines
+      operationId: completeStep
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/Sequence'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteStep'
+      responses:
+        '200':
+          description: Step completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StepExecutionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Step already completed
+
+  /playbook-runs/{run_id}/steps/{sequence}/fail:
+    post:
+      tags: [Steps]
+      summary: Mark step as failed
+      description: Updates step status to failed with error details
+      operationId: failStep
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/Sequence'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [error]
+              properties:
+                error:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    message:
+                      type: string
+                    details:
+                      type: object
+                retryable:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Step marked as failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StepExecutionResponse'
+
+  /playbook-runs/{run_id}/steps/{sequence}/assign:
+    post:
+      tags: [Steps]
+      summary: Assign step to worker
+      description: Updates assignee for human workflow steps
+      operationId: assignStep
+      parameters:
+        - $ref: '#/components/parameters/RunId'
+        - $ref: '#/components/parameters/Sequence'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assignee_entity_id]
+              properties:
+                assignee_entity_id:
+                  type: string
+                  description: Entity ID of the user/worker
+                due_at:
+                  type: string
+                  format: date-time
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Step assigned successfully
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token with organization context
+
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Organization UUID for multi-tenant isolation
+
+    PlaybookId:
+      name: playbook_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Playbook entity ID
+
+    RunId:
+      name: run_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Run transaction ID
+
+    Sequence:
+      name: sequence
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: Step sequence number
+
+    Industry:
+      name: industry
+      in: query
+      schema:
+        type: string
+        enum: [GENERAL, FINANCE, HR, SALES, MARKETING, OPERATIONS]
+      description: Filter by industry
+
+    Status:
+      name: status
+      in: query
+      schema:
+        type: string
+        enum: [draft, published, archived, queued, in_progress, blocked, completed, failed, cancelled]
+      description: Filter by status
+
+    SubjectEntityId:
+      name: subject_entity_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+      description: Filter runs by subject entity
+
+    PageSize:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Number of items per page
+
+    PageToken:
+      name: page_token
+      in: query
+      schema:
+        type: string
+      description: Token for pagination
+
+  schemas:
+    CreatePlaybook:
+      type: object
+      required:
+        - organization_id
+        - industry
+        - module
+        - name
+        - version
+        - inputs
+        - outputs
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+        industry:
+          type: string
+          example: GENERAL
+        module:
+          type: string
+          example: PLAYBOOK
+        name:
+          type: string
+          example: CUSTOMER_ONBOARDING
+        version:
+          type: string
+          pattern: '^V\d+$'
+          example: V1
+        description:
+          type: string
+        inputs:
+          type: object
+          description: JSON schema for playbook inputs
+        outputs:
+          type: object
+          description: JSON schema for playbook outputs
+        policies:
+          type: object
+          description: Business rules and constraints
+        sla_hours:
+          type: number
+          minimum: 0
+        permissions_required:
+          type: array
+          items:
+            type: string
+        steps:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - sequence
+              - worker_type
+            properties:
+              name:
+                type: string
+              sequence:
+                type: integer
+                minimum: 1
+              description:
+                type: string
+              worker_type:
+                type: string
+                enum: [human, ai, system, external]
+              service_endpoint:
+                type: string
+                format: uri
+                description: Required for system/external workers
+              input_contract:
+                type: object
+                description: JSON schema for step inputs
+              output_contract:
+                type: object
+                description: JSON schema for step outputs
+              retry_policy:
+                type: object
+                properties:
+                  max_attempts:
+                    type: integer
+                    default: 3
+                  backoff_seconds:
+                    type: array
+                    items:
+                      type: integer
+              sla_seconds:
+                type: integer
+                minimum: 1
+              permissions_required:
+                type: array
+                items:
+                  type: string
+              idempotency_key_rule:
+                type: string
+              ai_model_preference:
+                type: string
+                enum: [gpt-4, claude-3, gemini-pro]
+              human_skills_required:
+                type: array
+                items:
+                  type: string
+
+    UpdatePlaybook:
+      type: object
+      properties:
+        description:
+          type: string
+        inputs:
+          type: object
+        outputs:
+          type: object
+        policies:
+          type: object
+        sla_hours:
+          type: number
+        permissions_required:
+          type: array
+          items:
+            type: string
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreatePlaybook/properties/steps/items'
+
+    StartRun:
+      type: object
+      required:
+        - organization_id
+        - playbook_id
+        - inputs
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+        playbook_id:
+          type: string
+          format: uuid
+          description: Entity ID of the playbook definition
+        subject_entity_id:
+          type: string
+          format: uuid
+          description: Optional business object being processed
+        inputs:
+          type: object
+          description: Input data matching playbook input schema
+        correlation_id:
+          type: string
+          description: External correlation identifier
+        priority:
+          type: string
+          enum: [low, normal, high, critical]
+          default: normal
+        metadata:
+          type: object
+          additionalProperties: true
+
+    Signal:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - STEP_READY
+            - TIMEOUT_WARNING
+            - ESCALATION_REQUIRED
+            - EXTERNAL_UPDATE
+            - PAUSE_REQUESTED
+            - RESUME_REQUESTED
+          example: STEP_READY
+        payload:
+          type: object
+          description: Signal-specific payload data
+        timestamp:
+          type: string
+          format: date-time
+
+    CompleteStep:
+      type: object
+      required:
+        - outputs
+      properties:
+        outputs:
+          type: object
+          description: Output data matching step output contract
+        ai_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: AI confidence score if AI worker
+        ai_insights:
+          type: string
+          description: AI-generated insights or reasoning
+        worker_notes:
+          type: string
+          description: Human worker notes
+        actual_duration_ms:
+          type: integer
+          description: Actual execution time in milliseconds
+
+    PlaybookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        entity_code:
+          type: string
+        smart_code:
+          type: string
+          example: HERA.GENERAL.PLAYBOOK.DEF.CUSTOMER_ONBOARDING.V1
+        name:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+          enum: [draft, published, archived]
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        published_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    PlaybookDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/PlaybookResponse'
+        - type: object
+          properties:
+            inputs:
+              type: object
+            outputs:
+              type: object
+            policies:
+              type: object
+            sla_hours:
+              type: number
+            permissions_required:
+              type: array
+              items:
+                type: string
+            steps:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  smart_code:
+                    type: string
+                  name:
+                    type: string
+                  sequence:
+                    type: integer
+                  description:
+                    type: string
+                  worker_type:
+                    type: string
+                  service_endpoint:
+                    type: string
+                  input_contract:
+                    type: object
+                  output_contract:
+                    type: object
+                  sla_seconds:
+                    type: integer
+                  permissions_required:
+                    type: array
+                    items:
+                      type: string
+
+    RunResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        transaction_code:
+          type: string
+        smart_code:
+          type: string
+          example: HERA.GENERAL.PLAYBOOK.RUN.CUSTOMER_ONBOARDING.V1
+        playbook_id:
+          type: string
+          format: uuid
+        playbook_name:
+          type: string
+        subject_entity_id:
+          type: string
+          format: uuid
+        subject_entity_name:
+          type: string
+        status:
+          type: string
+          enum: [queued, in_progress, blocked, completed, failed, cancelled]
+        priority:
+          type: string
+        total_steps:
+          type: integer
+        completed_steps:
+          type: integer
+        current_step_sequence:
+          type: integer
+        correlation_id:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    RunDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/RunResponse'
+        - type: object
+          properties:
+            inputs:
+              type: object
+            outputs:
+              type: object
+            error:
+              type: object
+            blocked_reason:
+              type: string
+            total_cost:
+              type: number
+            ai_confidence:
+              type: number
+            ai_insights:
+              type: string
+            steps:
+              type: array
+              items:
+                $ref: '#/components/schemas/StepExecutionResponse'
+
+    StepExecutionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sequence:
+          type: integer
+        step_definition_id:
+          type: string
+          format: uuid
+        step_name:
+          type: string
+        smart_code:
+          type: string
+          example: HERA.GENERAL.PLAYBOOK.STEP.EXEC.VERIFY_IDENTITY.V1
+        status:
+          type: string
+          enum: [queued, in_progress, completed, failed, skipped]
+        worker_type:
+          type: string
+        assignee:
+          type: string
+        inputs:
+          type: object
+        outputs:
+          type: object
+        error:
+          type: object
+        attempt:
+          type: integer
+        latency_ms:
+          type: integer
+        cost:
+          type: number
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        due_at:
+          type: string
+          format: date-time
+        ai_confidence:
+          type: number
+        ai_insights:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              example: PLAYBOOK_NOT_FOUND
+            message:
+              type: string
+              example: The requested playbook does not exist
+            details:
+              type: object
+            request_id:
+              type: string
+              format: uuid
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: INVALID_INPUT
+              message: The provided input does not match the expected schema
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: UNAUTHORIZED
+              message: Invalid or missing authentication token
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: NOT_FOUND
+              message: The requested resource does not exist
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: ALREADY_EXISTS
+              message: A playbook with this name already exists
+
+security:
+  - bearerAuth: []
+
+# Implementation Notes:
+# 1. All POST /playbooks creates rows in core_entities (playbook + steps)
+# 2. All POST /playbook-runs creates rows in universal_transactions
+# 3. Step executions are universal_transaction_lines
+# 4. Relationships tracked in core_relationships
+# 5. Extended properties in core_dynamic_data
+# 6. No custom tables - honors HERA sacred 6-table principle
+# 7. organization_id enforced at every level for multi-tenancy
+# 8. Smart codes provide business context throughout
+# 9. AI-native with confidence scores and insights
+# 10. Complete audit trail via transaction history

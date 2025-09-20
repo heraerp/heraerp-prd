@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.PLAYBOOK.PROJECTS.SEED.v1
+smart_code: HERA.SYSTEM.PLAYBOOK.PROJECTS.SEED.DATA.V1
 
 contracts:
   - entities.core.yml

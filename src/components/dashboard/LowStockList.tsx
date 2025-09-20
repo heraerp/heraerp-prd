@@ -3,18 +3,18 @@
 import React from 'react'
 import Link from 'next/link'
 import { Package, AlertTriangle, ChevronRight } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { useInventoryApiSimple } from '@/src/lib/api/inventory'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useInventoryApiSimple } from '@/lib/api/inventory'
 
 interface LowStockListProps {
   organizationId: string
 }
 
 export function LowStockList({ organizationId }: LowStockListProps) {
-  const { data, isLoading } = useInventoryApiSimple().listLowStock({
+  const { data, isLoading } = useInventoryApiSimple(organizationId).listLowStock({
     organizationId,
     limit: 5
   })

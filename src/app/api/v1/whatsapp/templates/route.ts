@@ -5,7 +5,7 @@ import {
   registerTemplate,
   createCampaign,
   sendCampaignMessage
-} from '@/src/lib/mcp/whatsapp-six-tables-mcp'
+} from '@/lib/mcp/whatsapp-six-tables-mcp'
 
 export async function POST(request: NextRequest) {
   try {

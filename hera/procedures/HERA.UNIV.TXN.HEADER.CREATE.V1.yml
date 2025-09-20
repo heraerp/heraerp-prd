@@ -1,0 +1,112 @@
+smart_code: HERA.UNIV.TXN.HEADER.CREATE.V1
+name: Universal Transaction Header Create
+description: Creates any transaction header with dynamic smart code, relationships, and metadata
+version: 1
+status: active
+tags:
+  - universal
+  - transaction
+  - create
+
+# Input validation with Zod schemas
+input:
+  organization_id:
+    type: string
+    required: true
+    description: Organization ID for multi-tenant isolation
+  
+  header_smart_code:
+    type: string
+    required: true
+    description: Smart code for the transaction (e.g., HERA.SALON.POS.CART.ACTIVE.V1)
+  
+  relationships:
+    type: object
+    required: false
+    description: Optional relationships to create (e.g., ORIGINATES_FROM, BILLS_TO)
+    example:
+      ORIGINATES_FROM:
+        type: appointment
+        id: "uuid"
+      BILLS_TO:
+        type: customer
+        id: "uuid"
+  
+  dynamic:
+    type: object
+    required: false
+    description: Dynamic metadata fields for the transaction
+
+# Steps executed in order
+steps:
+  - id: create_header
+    type: database.create
+    config:
+      table: universal_transactions
+      data:
+        organization_id: "{{ input.organization_id }}"
+        transaction_type: "sale"  # Default type, can be overridden via metadata
+        transaction_code: "{{ 'TXN-' + timestamp() }}"
+        smart_code: "{{ input.header_smart_code }}"
+        transaction_date: "{{ now() }}"
+        total_amount: 0
+        metadata:
+          _merge: "{{ input.dynamic || {} }}"
+          created_via: "HERA.UNIV.TXN.HEADER.CREATE.V1"
+          created_at: "{{ now() }}"
+    output:
+      transaction: "{{ result }}"
+
+  - id: create_relationships
+    type: conditional
+    condition: "{{ input.relationships != null }}"
+    steps:
+      - id: create_each_relationship
+        type: foreach
+        items: "{{ Object.entries(input.relationships) }}"
+        as: rel
+        do:
+          - id: create_relationship
+            type: database.create
+            config:
+              table: core_relationships
+              data:
+                organization_id: "{{ input.organization_id }}"
+                from_entity_id: "{{ steps.create_header.output.transaction.id }}"
+                to_entity_id: "{{ rel[1].id }}"
+                relationship_type: "{{ rel[0] }}"
+                smart_code: "HERA.UNIV.REL.{{ rel[0].toUpperCase() }}.V1"
+                metadata:
+                  entity_type: "{{ rel[1].type }}"
+                  created_via: "HERA.UNIV.TXN.HEADER.CREATE.V1"
+
+# Output structure
+output:
+  success: true
+  transaction:
+    id: "{{ steps.create_header.output.transaction.id }}"
+    smart_code: "{{ steps.create_header.output.transaction.smart_code }}"
+    transaction_code: "{{ steps.create_header.output.transaction.transaction_code }}"
+    organization_id: "{{ steps.create_header.output.transaction.organization_id }}"
+    created_at: "{{ steps.create_header.output.transaction.created_at }}"
+  metadata: "{{ steps.create_header.output.transaction.metadata }}"
+  relationships_created: "{{ steps.create_relationships ? steps.create_relationships.length : 0 }}"
+
+# Error handling
+on_error:
+  - type: log
+    message: "Failed to create transaction header: {{ error.message }}"
+  - type: return
+    data:
+      success: false
+      error: "{{ error.message }}"
+
+# Hooks for extensibility
+hooks:
+  after_success:
+    - type: event
+      name: transaction.header.created
+      data:
+        transaction_id: "{{ steps.create_header.output.transaction.id }}"
+        smart_code: "{{ input.header_smart_code }}"
+        organization_id: "{{ input.organization_id }}"

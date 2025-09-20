@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Search, RefreshCw, Sparkles } from 'lucide-react'
 
 interface EmptyStateProps {

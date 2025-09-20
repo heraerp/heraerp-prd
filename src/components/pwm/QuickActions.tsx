@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import {
   ArrowUpDown,
   Plus,
@@ -13,7 +13,7 @@ import {
   Wallet,
   FileText
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface QuickAction {
   id: string

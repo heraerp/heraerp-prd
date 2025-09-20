@@ -6,10 +6,10 @@ import React, { useState } from 'react'
 import { KpiCards } from './KpiCards'
 import { TransactionsTable } from './TransactionsTable'
 import { DependencyGraph } from './DependencyGraph'
-import { useFactoryDashboard } from '@/src/lib/hooks/use-factory-dashboard-fixed'
+import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard-fixed'
 import { motion } from 'framer-motion'
 import { Factory, RefreshCw } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 
 export default function FactoryDashboardFixed() {
   const { filters, data, actions } = useFactoryDashboard()

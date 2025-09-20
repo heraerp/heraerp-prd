@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { DevelopmentSidebar } from '@/src/components/development/DevelopmentSidebar'
+import { DevelopmentSidebar } from '@/components/development/DevelopmentSidebar'
 
 export const metadata: Metadata = {
   title: 'HERA Development Matrix | Internal Dashboard',

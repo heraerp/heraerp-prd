@@ -122,7 +122,7 @@ const UNIVERSAL_FUNCTIONS = [
         name: 'validate_smart_code',
         description: 'Validate smart code format and structure',
         signature: 'validate_smart_code(code TEXT) RETURNS BOOLEAN',
-        example: `SELECT validate_smart_code('HERA.REST.POS.TXN.SALE.v1');`
+        example: `SELECT validate_smart_code('HERA.REST.POS.TXN.SALE.V1');`
       },
       {
         name: 'generate_smart_code',

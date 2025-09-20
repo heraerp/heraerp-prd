@@ -5,12 +5,12 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { UCRRuleTester } from '@/src/components/salon/UCRRuleTester'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
+import { UCRRuleTester } from '@/components/salon/UCRRuleTester'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 function TestRuleContent() {
   const router = useRouter()

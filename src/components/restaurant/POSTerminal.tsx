@@ -1,31 +1,31 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Separator } from '@/src/components/ui/separator'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { universalApi } from '@/src/lib/universal-api'
-import { formatCurrency, extractData } from '@/src/lib/universal-helpers'
+} from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { universalApi } from '@/lib/universal-api'
+import { formatCurrency, extractData } from '@/lib/universal-helpers'
 import {
   ShoppingCart,
   Plus,
@@ -66,7 +66,7 @@ import {
   UserPlus,
   Table
 } from 'lucide-react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 import Link from 'next/link'
 
 interface POSTerminalProps {

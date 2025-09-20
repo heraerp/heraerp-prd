@@ -91,16 +91,16 @@ export const BookingRuleFamily = {
 
   // Sub-families for specific booking scenarios
   subFamilies: {
-    GENERAL: 'HERA.UNIV.CONFIG.BOOKING.GENERAL.v1',
-    CANCELLATION: 'HERA.UNIV.CONFIG.BOOKING.CANCELLATION.v1',
-    DEPOSIT: 'HERA.UNIV.CONFIG.BOOKING.DEPOSIT.v1',
-    AVAILABILITY: 'HERA.UNIV.CONFIG.BOOKING.AVAILABILITY.v1',
-    GROUP: 'HERA.UNIV.CONFIG.BOOKING.GROUP.v1',
-    LOYALTY: 'HERA.UNIV.CONFIG.BOOKING.LOYALTY.v1',
-    PEAK_TIME: 'HERA.UNIV.CONFIG.BOOKING.PEAK_TIME.v1',
-    NEW_CUSTOMER: 'HERA.UNIV.CONFIG.BOOKING.NEW_CUSTOMER.v1',
-    HIGH_DEMAND: 'HERA.UNIV.CONFIG.BOOKING.HIGH_DEMAND.v1',
-    SEASONAL: 'HERA.UNIV.CONFIG.BOOKING.SEASONAL.v1'
+    GENERAL: 'HERA.UNIV.CONFIG.BOOKING.GENERAL.V1',
+    CANCELLATION: 'HERA.UNIV.CONFIG.BOOKING.CANCELLATION.V1',
+    DEPOSIT: 'HERA.UNIV.CONFIG.BOOKING.DEPOSIT.V1',
+    AVAILABILITY: 'HERA.UNIV.CONFIG.BOOKING.AVAILABILITY.V1',
+    GROUP: 'HERA.UNIV.CONFIG.BOOKING.GROUP.V1',
+    LOYALTY: 'HERA.UNIV.CONFIG.BOOKING.LOYALTY.V1',
+    PEAK_TIME: 'HERA.UNIV.CONFIG.BOOKING.PEAK_TIME.V1',
+    NEW_CUSTOMER: 'HERA.UNIV.CONFIG.BOOKING.NEW_CUSTOMER.V1',
+    HIGH_DEMAND: 'HERA.UNIV.CONFIG.BOOKING.HIGH_DEMAND.V1',
+    SEASONAL: 'HERA.UNIV.CONFIG.BOOKING.SEASONAL.V1'
   },
 
   // Default conditions for booking rules
@@ -183,7 +183,7 @@ export const BookingRuleFamily = {
   // Sample rule templates
   templates: {
     standard: {
-      smart_code: 'HERA.UNIV.CONFIG.BOOKING.GENERAL.v1',
+      smart_code: 'HERA.UNIV.CONFIG.BOOKING.GENERAL.V1',
       status: 'active',
       priority: 100,
       conditions: {
@@ -199,7 +199,7 @@ export const BookingRuleFamily = {
     },
 
     peakHours: {
-      smart_code: 'HERA.UNIV.CONFIG.BOOKING.PEAK_TIME.v1',
+      smart_code: 'HERA.UNIV.CONFIG.BOOKING.PEAK_TIME.V1',
       status: 'active',
       priority: 200,
       conditions: {
@@ -220,7 +220,7 @@ export const BookingRuleFamily = {
     },
 
     newCustomer: {
-      smart_code: 'HERA.UNIV.CONFIG.BOOKING.NEW_CUSTOMER.v1',
+      smart_code: 'HERA.UNIV.CONFIG.BOOKING.NEW_CUSTOMER.V1',
       status: 'active',
       priority: 150,
       conditions: {
@@ -237,7 +237,7 @@ export const BookingRuleFamily = {
     },
 
     highDemand: {
-      smart_code: 'HERA.UNIV.CONFIG.BOOKING.HIGH_DEMAND.v1',
+      smart_code: 'HERA.UNIV.CONFIG.BOOKING.HIGH_DEMAND.V1',
       status: 'active',
       priority: 250,
       conditions: {
@@ -254,7 +254,7 @@ export const BookingRuleFamily = {
     },
 
     loyaltyPlatinum: {
-      smart_code: 'HERA.UNIV.CONFIG.BOOKING.LOYALTY.v1',
+      smart_code: 'HERA.UNIV.CONFIG.BOOKING.LOYALTY.V1',
       status: 'active',
       priority: 300,
       conditions: {

@@ -313,7 +313,7 @@ export class SimpleSalonDNAClient {
             transaction_type: 'appointment',
             transaction_date: params.appointmentDate.toISOString(),
             total_amount: 0, // Will be calculated
-            smart_code: 'HERA.SALON.APPT.TXN.BOOKING.v1',
+            smart_code: 'HERA.SALON.APPT.TXN.BOOKING.V1',
             metadata: {
               customer_id: params.customerId,
               staff_id: params.staffId,

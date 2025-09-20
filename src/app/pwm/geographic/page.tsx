@@ -4,9 +4,9 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { GeographicMap } from '@/src/components/pwm/GeographicMap'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
+import { GeographicMap } from '@/components/pwm/GeographicMap'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ArrowLeft, Globe2 } from 'lucide-react'
 import Link from 'next/link'
 

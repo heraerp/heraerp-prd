@@ -31,7 +31,7 @@ from 'lucide-react'
 import { universalApi }
 from '@/lib/universal-api'
 import { useDemoOrganization }
-from '@/src/lib/dna/patterns/demo-org-pattern'
+from '@/lib/dna/patterns/demo-org-pattern'
 import { cn }
 from '@/lib/utils'
 import { useToast }
@@ -39,7 +39,7 @@ from '@/hooks/use-toast'
 import { generateHeraDocumentNumber, useHeraDocumentNumbering, HERA_DNA_DOCUMENT_TYPES,
   HeraDocumentNumberDisplay
 }
-from '@/src/lib/dna/components/document-numbering-dna'
+from '@/lib/dna/components/document-numbering-dna'
 
 
 interface Customer {
@@ -311,7 +311,7 @@ const loadData = async () => {
         entity_type: 'customer',
         entity_name: customerFormData.name,
         entity_code: `CUST-${Date.now()}`,
-        smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.v1',
+        smart_code: 'HERA.FURNITURE.CUST.ENT.PROF.V1',
         organization_id: organizationId
       })
       
@@ -326,7 +326,7 @@ const loadData = async () => {
         
         for (const field of dynamicFields) {
           await universalApi.setDynamicField(customerId, field.field_name, field.field_value_text, {
-            smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.v1'
+            smart_code: 'HERA.FURNITURE.CUST.DYN.FIELD.V1'
           })
         }
         
@@ -457,7 +457,7 @@ const loadData = async () => {
             transaction_date: orderDetails.order_date,
             reference_entity_id: orderId,
             total_amount: totals.total,
-            smart_code: 'HERA.FURNITURE.SALES.ORDER.POSTED.v1', // Universal Event Contract
+            smart_code: 'HERA.FURNITURE.SALES.ORDER.POSTED.V1', // Universal Event Contract
             metadata: {
               source_system: 'FurnitureSales',
               origin_txn_id: orderId,

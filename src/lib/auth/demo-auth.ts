@@ -3,7 +3,7 @@
  * Handles automatic demo user login and organization assignment
  */
 
-import { supabaseClient as supabase } from '@/src/lib/supabase-client'
+import { supabaseClient as supabase } from '@/lib/supabase-client'
 
 // Universal demo user for all demo apps
 const UNIVERSAL_DEMO_USER = {

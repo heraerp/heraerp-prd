@@ -1,0 +1,392 @@
+smart_code: HERA.UNIV.WF.BACKUP.DR.REHEARSAL.V1
+intent: Backup and disaster recovery rehearsal for workflow engine data.
+scope:
+  in_scope:
+    - database snapshot creation
+    - staging environment restore
+    - workflow state verification
+    - timer replay validation
+    - data consistency checks
+  out_of_scope:
+    - production data modification
+    - full system recovery
+    - infrastructure provisioning
+preconditions:
+  - permissions: system or ops team
+  - staging environment available
+  - backup infrastructure accessible
+invariants:
+  - production data remains untouched
+  - staging environment isolated
+  - all operations logged and auditable
+inputs:
+  required:
+    - backup_timestamp: timestamp                  # point-in-time for backup
+    - staging_db_connection: string               # staging database connection
+  optional:
+    - replay_hours: number                         # hours of timer history to replay (default 1)
+    - organization_filter: array                   # test specific orgs only
+    - validation_mode: enum[quick, full]          # depth of validation
+    - cleanup_after: boolean                       # cleanup staging data after test
+happy_path:
+  - step: create production database snapshot at backup_timestamp
+  - step: restore snapshot to staging environment
+  - step: verify workflow data integrity post-restore
+  - step: identify timers that fired after backup_timestamp
+  - step: replay timer fires using idempotent procedures
+  - step: validate workflow states converge to expected values
+  - step: verify no duplicate executions occurred
+  - step: generate comprehensive DR validation report
+outputs:
+  response:
+    backup_info:
+      snapshot_id: string
+      backup_timestamp: timestamp
+      backup_size_gb: number
+      backup_duration_seconds: number
+    restore_info:
+      restore_timestamp: timestamp
+      restore_duration_seconds: number
+      rows_restored: number
+      data_integrity_check: boolean
+    replay_info:
+      timers_identified: number
+      timers_replayed: number
+      replay_duration_seconds: number
+      duplicate_prevention_effective: boolean
+    validation_results:
+      workflow_states_consistent: boolean
+      transaction_integrity_verified: boolean
+      organization_isolation_maintained: boolean
+      no_data_corruption: boolean
+    overall_dr_status: enum[SUCCESS, WARNING, FAILURE]
+    recommendations: array
+
+backup_procedures:
+  create_snapshot:
+    description: "Create point-in-time database snapshot"
+    sql: |
+      -- Create consistent snapshot with workflow-specific tables
+      SELECT pg_export_snapshot() as snapshot_id;
+      
+      -- Backup workflow-critical tables
+      COPY (
+        SELECT * FROM universal_transactions 
+        WHERE smart_code IN ('HERA.UNIV.WF.INSTANCE.V1', 'HERA.UNIV.WF.TIMER.V1', 'HERA.UNIV.WF.EFFECT.V1')
+          AND created_at <= '$backup_timestamp'
+      ) TO '/backup/workflow_transactions.csv' WITH CSV HEADER;
+      
+      COPY (
+        SELECT * FROM universal_transaction_lines 
+        WHERE smart_code = 'HERA.UNIV.WF.STEP.V1'
+          AND created_at <= '$backup_timestamp'
+      ) TO '/backup/workflow_steps.csv' WITH CSV HEADER;
+    validation: "Verify backup files created and checksums match"
+    
+  verify_backup_integrity:
+    description: "Verify backup data integrity"
+    checks:
+      - count_consistency: "Row counts match between source and backup"
+      - data_checksum: "Data checksums verify integrity"
+      - timestamp_boundary: "No data newer than backup_timestamp"
+    sql: |
+      SELECT 
+        COUNT(*) as total_workflows,
+        COUNT(*) FILTER (WHERE (dynamic->>'current_state') NOT IN ('COMPLETED', 'CANCELLED')) as active_workflows,
+        MIN(created_at) as oldest_workflow,
+        MAX(created_at) as newest_workflow
+      FROM universal_transactions 
+      WHERE smart_code = 'HERA.UNIV.WF.INSTANCE.V1'
+        AND created_at <= '$backup_timestamp';
+
+restore_procedures:
+  staging_restore:
+    description: "Restore backup to staging environment"
+    steps:
+      - step: "Clear staging database (ensure isolation)"
+      - step: "Restore schema and indexes"
+      - step: "Import workflow data from backup files"
+      - step: "Rebuild read model views"
+      - step: "Verify data consistency"
+    sql: |
+      -- Clear staging data
+      TRUNCATE universal_transactions, universal_transaction_lines, core_entities, core_dynamic_data CASCADE;
+      
+      -- Import backup data
+      COPY universal_transactions FROM '/backup/workflow_transactions.csv' WITH CSV HEADER;
+      COPY universal_transaction_lines FROM '/backup/workflow_steps.csv' WITH CSV HEADER;
+      
+      -- Rebuild views
+      CREATE OR REPLACE VIEW wf_instances_view AS (/* view definition */);
+    
+  post_restore_validation:
+    description: "Validate restored data integrity"
+    checks:
+      organization_isolation: |
+        SELECT 
+          organization_id,
+          COUNT(*) as workflow_count
+        FROM wf_instances_view 
+        GROUP BY organization_id
+        ORDER BY organization_id;
+      workflow_state_consistency: |
+        SELECT 
+          current_state,
+          COUNT(*) as instance_count
+        FROM wf_instances_view 
+        GROUP BY current_state;
+      timer_consistency: |
+        SELECT 
+          timer_status,
+          COUNT(*) as timer_count,
+          COUNT(*) FILTER (WHERE fire_at <= '$backup_timestamp') as should_have_fired
+        FROM wf_timers_view 
+        GROUP BY timer_status;
+
+timer_replay_procedures:
+  identify_timers_to_replay:
+    description: "Identify timers that fired after backup timestamp"
+    sql: |
+      SELECT 
+        t.timer_id,
+        t.instance_id,
+        t.fire_at,
+        t.on_fire_smart_code,
+        t.timer_status,
+        EXTRACT(EPOCH FROM (NOW() - t.fire_at)) / 60 as minutes_overdue
+      FROM wf_timers_view t
+      WHERE t.fire_at > '$backup_timestamp'
+        AND t.fire_at <= NOW()
+        AND t.timer_status IN ('PENDING', 'FIRED')
+      ORDER BY t.fire_at;
+    validation: "Ensure no timers are missed for replay"
+    
+  replay_timer_fires:
+    description: "Replay timer fires using idempotent procedures"
+    procedure: |
+      FOR timer_record IN (SELECT * FROM timers_to_replay) LOOP
+        -- Call timer fire procedure idempotently
+        CALL HERA.UNIV.WF.TIMER.FIRE.V1(
+          organization_id => timer_record.organization_id,
+          timer_id => timer_record.timer_id
+        );
+        
+        -- Log replay action
+        INSERT INTO dr_replay_log VALUES (
+          timer_record.timer_id,
+          'REPLAYED',
+          NOW(),
+          'DR_REHEARSAL'
+        );
+      END LOOP;
+    validation: "Verify no duplicate effects or state transitions"
+    
+  verify_idempotent_replay:
+    description: "Verify replay didn't create duplicates"
+    checks:
+      no_duplicate_steps: |
+        SELECT 
+          transaction_id,
+          line_code,
+          COUNT(*) as duplicate_count
+        FROM universal_transaction_lines 
+        WHERE smart_code = 'HERA.UNIV.WF.STEP.V1'
+        GROUP BY transaction_id, line_code
+        HAVING COUNT(*) > 1;
+      no_duplicate_effects: |
+        SELECT 
+          instance_id,
+          effect_smart_code,
+          COUNT(*) as execution_count
+        FROM wf_effects_view 
+        WHERE status = 'COMPLETED'
+        GROUP BY instance_id, effect_smart_code
+        HAVING COUNT(*) > 1;
+
+state_convergence_validation:
+  workflow_state_comparison:
+    description: "Compare workflow states after replay"
+    procedure: |
+      -- Create state snapshot before replay
+      CREATE TEMP TABLE pre_replay_states AS
+      SELECT instance_id, current_state, updated_at
+      FROM wf_instances_view;
+      
+      -- After replay, compare states
+      SELECT 
+        p.instance_id,
+        p.current_state as pre_replay_state,
+        c.current_state as post_replay_state,
+        CASE 
+          WHEN p.current_state = c.current_state THEN 'CONSISTENT'
+          ELSE 'STATE_CHANGE'
+        END as status
+      FROM pre_replay_states p
+      JOIN wf_instances_view c ON c.instance_id = p.instance_id;
+    expected_result: "State changes only for workflows with replayed timers"
+    
+  timer_execution_validation:
+    description: "Verify all due timers were processed"
+    sql: |
+      SELECT 
+        COUNT(*) FILTER (WHERE timer_status = 'PENDING' AND fire_at <= NOW()) as unprocessed_timers,
+        COUNT(*) FILTER (WHERE timer_status = 'FIRED') as fired_timers,
+        COUNT(*) FILTER (WHERE timer_status = 'FAILED') as failed_timers
+      FROM wf_timers_view 
+      WHERE fire_at > '$backup_timestamp';
+    expected_result: "unprocessed_timers = 0, failed_timers minimized"
+
+data_consistency_checks:
+  referential_integrity:
+    description: "Verify referential integrity after restore and replay"
+    checks:
+      workflow_steps_reference_instances: |
+        SELECT COUNT(*) as orphaned_steps
+        FROM wf_steps_view s
+        LEFT JOIN wf_instances_view i ON i.instance_id = s.instance_id
+        WHERE i.instance_id IS NULL;
+      tasks_reference_instances: |
+        SELECT COUNT(*) as orphaned_tasks
+        FROM wf_tasks_view t
+        LEFT JOIN wf_instances_view i ON i.instance_id = t.instance_id
+        WHERE i.instance_id IS NULL;
+      timers_reference_instances: |
+        SELECT COUNT(*) as orphaned_timers
+        FROM wf_timers_view t
+        LEFT JOIN wf_instances_view i ON i.instance_id = t.instance_id
+        WHERE i.instance_id IS NULL;
+    expected_result: "All counts = 0 (no orphaned records)"
+    
+  organization_isolation_post_dr:
+    description: "Verify org isolation maintained after DR"
+    sql: |
+      -- Test cross-org data visibility
+      SELECT 
+        organization_id,
+        COUNT(*) as accessible_workflows
+      FROM wf_instances_view
+      GROUP BY organization_id
+      ORDER BY organization_id;
+    validation: "Each org sees only its own data"
+
+performance_validation:
+  query_performance_post_restore:
+    description: "Verify query performance after restore"
+    tests:
+      instance_list_performance: |
+        EXPLAIN (ANALYZE, BUFFERS) 
+        SELECT * FROM wf_instances_view 
+        WHERE organization_id = '$test_org_id' 
+        LIMIT 50;
+      task_list_performance: |
+        EXPLAIN (ANALYZE, BUFFERS) 
+        SELECT * FROM wf_tasks_view 
+        WHERE organization_id = '$test_org_id' 
+          AND task_state = 'OPEN' 
+        LIMIT 50;
+    expected_result: "Query times within acceptable ranges (< 100ms)"
+
+dr_validation_report:
+  backup_metrics:
+    - backup_size_gb
+    - backup_duration_minutes
+    - data_integrity_verified
+    
+  restore_metrics:
+    - restore_duration_minutes
+    - rows_restored
+    - indexes_rebuilt
+    - views_recreated
+    
+  replay_metrics:
+    - timers_replayed
+    - workflows_affected
+    - state_changes_count
+    - duplicate_prevention_effective
+    
+  validation_metrics:
+    - referential_integrity_score
+    - organization_isolation_maintained
+    - performance_degradation_percent
+    - overall_success_rate
+
+cleanup_procedures:
+  staging_cleanup:
+    description: "Clean up staging environment after rehearsal"
+    steps:
+      - step: "Export DR validation report"
+      - step: "Clear staging workflow data"
+      - step: "Reset staging environment"
+    sql: |
+      -- Export validation results
+      COPY (SELECT * FROM dr_validation_results) TO '/exports/dr_validation_report.csv';
+      
+      -- Clean up staging data
+      TRUNCATE universal_transactions, universal_transaction_lines CASCADE;
+      DROP TABLE IF EXISTS dr_replay_log, pre_replay_states;
+
+errors:
+  - code: BACKUP_FAILED
+    when: snapshot creation or backup fails
+    action: abort DR rehearsal, investigate backup system
+  - code: RESTORE_FAILED
+    when: staging restore fails
+    action: check staging environment, retry restore
+  - code: REPLAY_FAILED
+    when: timer replay produces errors
+    action: investigate idempotency issues, manual intervention
+  - code: STATE_DIVERGENCE
+    when: workflow states don't converge as expected
+    action: detailed analysis of state transitions
+  - code: DATA_CORRUPTION
+    when: data integrity checks fail
+    action: critical investigation, potential backup corruption
+
+observability:
+  logs:
+    - dr_rehearsal_started: { backup_timestamp, staging_environment }
+    - backup_completed: { snapshot_id, backup_size, duration }
+    - restore_completed: { rows_restored, duration }
+    - timer_replay_started: { timers_to_replay }
+    - timer_replayed: { timer_id, instance_id, status }
+    - validation_completed: { overall_status, issues_found }
+    - dr_rehearsal_completed: { success, duration, recommendations }
+  audit_json: true
+  metrics:
+    - dr_rehearsal_count
+    - dr_rehearsal_success_rate
+    - backup_restore_duration
+    - timer_replay_accuracy
+    - data_consistency_score
+
+example_response:
+  backup_info:
+    snapshot_id: "snapshot_20241215_143022"
+    backup_timestamp: "2024-12-15T14:30:22Z"
+    backup_size_gb: 2.4
+    backup_duration_seconds: 45
+  restore_info:
+    restore_timestamp: "2024-12-15T14:35:10Z"
+    restore_duration_seconds: 120
+    rows_restored: 15420
+    data_integrity_check: true
+  replay_info:
+    timers_identified: 23
+    timers_replayed: 23
+    replay_duration_seconds: 15
+    duplicate_prevention_effective: true
+  validation_results:
+    workflow_states_consistent: true
+    transaction_integrity_verified: true
+    organization_isolation_maintained: true
+    no_data_corruption: true
+  overall_dr_status: "SUCCESS"
+  recommendations:
+    - "DR rehearsal successful, no issues found"
+    - "Consider increasing backup frequency during high-activity periods"
+
+checks:
+  - description: verify backup captures all workflow data at point-in-time
+  - description: ensure restore process maintains data integrity
+  - description: validate timer replay prevents duplicates
+  - description: confirm workflow states converge correctly

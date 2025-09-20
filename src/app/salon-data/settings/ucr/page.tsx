@@ -4,12 +4,12 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, useRef } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalConfigService } from '@/src/lib/universal-config/universal-config-service'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import {
   Code,
   Scale,
@@ -30,7 +30,7 @@ import {
   Settings,
   Brain
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
 // Default organization ID for salon - Hair Talkz Park Regis

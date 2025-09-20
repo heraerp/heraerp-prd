@@ -4,9 +4,9 @@
  */
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LucideIcon } from 'lucide-react'
-import { formatCurrency } from '@/src/lib/universal-helpers'
+import { formatCurrency } from '@/lib/universal-helpers'
 
 export interface StatCardData {
   key: string

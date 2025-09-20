@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UNIVERSAL CONFIGURATION RULES
-// Smart Code: HERA.DNA.CONFIG.RULES.UNIVERSAL.v1
+// Smart Code: HERA.DNA.CONFIG.RULES.UNIVERSAL.V1
 // Configuration system for dynamic theme selection based on business rules
 // ================================================================================
 
@@ -74,7 +74,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-restaurant-theme',
     name: 'Restaurant Industry Theme',
     description: 'Apply warm earth theme for restaurant businesses',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.RESTAURANT.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.RESTAURANT.V1',
     priority: 100,
     conditions: [
       {
@@ -103,7 +103,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-salon-theme',
     name: 'Salon Industry Theme',
     description: 'Apply elegant purple theme for salon and spa businesses',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.SALON.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.SALON.V1',
     priority: 100,
     conditions: [
       {
@@ -132,7 +132,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-healthcare-theme',
     name: 'Healthcare Industry Theme',
     description: 'Apply cool teal theme for healthcare organizations',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.HEALTHCARE.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.HEALTHCARE.V1',
     priority: 100,
     conditions: [
       {
@@ -161,7 +161,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-retail-theme',
     name: 'Retail Industry Theme',
     description: 'Apply vibrant green theme for retail businesses',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.RETAIL.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.RETAIL.V1',
     priority: 100,
     conditions: [
       {
@@ -190,7 +190,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-manufacturing-theme',
     name: 'Manufacturing Industry Theme',
     description: 'Apply modern slate theme for manufacturing organizations',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.MANUFACTURING.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.MANUFACTURING.V1',
     priority: 100,
     conditions: [
       {
@@ -219,7 +219,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'industry-professional-theme',
     name: 'Professional Services Theme',
     description: 'Apply professional blue theme for professional services',
-    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.PROFESSIONAL.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.INDUSTRY.PROFESSIONAL.V1',
     priority: 100,
     conditions: [
       {
@@ -244,7 +244,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'enterprise-advanced-features',
     name: 'Enterprise Advanced Features',
     description: 'Enable advanced features for enterprise organizations',
-    smartCode: 'HERA.DNA.CONFIG.RULE.ENTERPRISE.FEATURES.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.ENTERPRISE.FEATURES.V1',
     priority: 200,
     conditions: [
       {
@@ -278,7 +278,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'admin-full-access',
     name: 'Administrator Full Access',
     description: 'Enable all features for administrators',
-    smartCode: 'HERA.DNA.CONFIG.RULE.ADMIN.ACCESS.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.ADMIN.ACCESS.V1',
     priority: 300,
     conditions: [
       {
@@ -313,7 +313,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'custom-brand-colors',
     name: 'Custom Brand Colors',
     description: 'Apply custom brand colors when available',
-    smartCode: 'HERA.DNA.CONFIG.RULE.CUSTOM.BRANDING.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.CUSTOM.BRANDING.V1',
     priority: 400,
     conditions: [
       {
@@ -338,7 +338,7 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
     id: 'high-contrast-accessibility',
     name: 'High Contrast Accessibility',
     description: 'Apply high contrast theme for accessibility',
-    smartCode: 'HERA.DNA.CONFIG.RULE.ACCESSIBILITY.CONTRAST.v1',
+    smartCode: 'HERA.DNA.CONFIG.RULE.ACCESSIBILITY.CONTRAST.V1',
     priority: 500,
     conditions: [
       {
@@ -578,7 +578,7 @@ export class ConfigurationPersistence {
         entity_type: 'configuration',
         entity_name: `Theme Configuration - ${this.organizationId}`,
         entity_code: `CONFIG-THEME-${this.organizationId}`,
-        smart_code: 'HERA.DNA.CONFIG.ENTITY.THEME.v1',
+        smart_code: 'HERA.DNA.CONFIG.ENTITY.THEME.V1',
         organization_id: this.organizationId
       })
 
@@ -605,7 +605,7 @@ export class ConfigurationPersistence {
       const configurations = await universalApi.queryEntities({
         entity_type: 'configuration',
         organization_id: this.organizationId,
-        smart_code: 'HERA.DNA.CONFIG.ENTITY.THEME.v1'
+        smart_code: 'HERA.DNA.CONFIG.ENTITY.THEME.V1'
       })
 
       if (configurations.length === 0) {

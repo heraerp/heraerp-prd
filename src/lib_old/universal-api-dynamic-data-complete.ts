@@ -378,7 +378,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.AI.ENHANCE.VALUE.v1',
+          smart_code: 'HERA.DYN.AI.ENHANCE.VALUE.V1',
           operation: 'update',
           data: { id: fieldId },
           ai_requests: {
@@ -448,7 +448,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.PROMOTE.SYSTEM.FIELD.v1',
+          smart_code: 'HERA.DYN.PROMOTE.SYSTEM.FIELD.V1',
           operation: 'update',
           data: {
             id: fieldId,
@@ -487,7 +487,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.query({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.REBUILD.SEARCH.INDEX.v1',
+          smart_code: 'HERA.DYN.REBUILD.SEARCH.INDEX.V1',
           query: { filters },
           performance: { streaming: true }
         })
@@ -498,7 +498,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.AUDIT.DYNAMIC.FIELD.VERSIONS.v1',
+          smart_code: 'HERA.TXN.AUDIT.DYNAMIC.FIELD.VERSIONS.V1',
           query: {
             filters: {
               transaction_type: 'dynamic_field_update',
@@ -611,7 +611,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
-      smart_code: 'HERA.DYN.BULK.CREATE.COMPLETE.v1',
+      smart_code: 'HERA.DYN.BULK.CREATE.COMPLETE.V1',
       operation: 'transaction',
       operations,
       ai_requests: {

@@ -3,10 +3,10 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { HeraMCPChat } from '@/src/components/chat/HeraMCPChat'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { HeraMCPChat } from '@/components/chat/HeraMCPChat'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Sparkles,
   Code2,

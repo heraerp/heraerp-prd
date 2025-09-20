@@ -1,0 +1,94 @@
+smart_code: HERA.UNIV.TASK.CREATE.V1
+intent: Create a human task linked to a workflow instance.
+scope:
+  in_scope:
+    - create task as entity
+    - assign to role or user
+    - set due date and priority
+    - link to workflow instance
+    - store task details
+  out_of_scope:
+    - task execution
+    - notifications
+    - task templates
+preconditions:
+  - permissions: [$PROFILE.required_role_task_create]
+  - workflow instance exists
+  - assignee (role or user) exists
+invariants:
+  - tasks start in OPEN state
+  - org isolation maintained
+  - task linked to exactly one workflow instance
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+    - title: string                                # task title
+    - body: string                                 # task description
+  optional:
+    - assignee_role: string                        # assign to role
+    - assignee_user_id: uuid                       # assign to specific user
+    - due_at: timestamp                            # due date/time
+    - priority: enum[low, medium, high, urgent]
+    - metadata: object                             # additional context
+happy_path:
+  - step: verify instance exists and belongs to organization
+  - step: validate assignee (role or user_id required, not both)
+  - step: if assignee_user_id, verify user exists in organization
+  - step: if assignee_role, call HERA.UNIV.WF.ROLE.RESOLVE.V1 to validate role and cache resolution
+  - step: create core_entities {entity_type: 'task', entity_name: title, smart_code: 'HERA.UNIV.TASK.DEFINITION.V1'}
+  - step: create core_dynamic_data key='task' value={ state: 'OPEN', body, due_at, assignee, priority, metadata }
+  - step: create relationship TASK -> ASSOCIATED_WITH -> WF.INSTANCE
+  - step: if due_at provided, calculate SLA status
+outputs:
+  entities_created:
+    - core_entities: 1                             # task entity
+    - core_dynamic_data: 1                         # task details
+    - core_relationships: 1                        # task->instance link
+  response:
+    task_id: uuid
+    instance_id: uuid
+    state: string
+    assignee: object
+    due_at: timestamp
+    created_at: timestamp
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INVALID_ASSIGNEE
+    when: both or neither assignee fields provided
+    action: return 400
+  - code: USER_NOT_FOUND
+    when: assignee_user_id doesn't exist in org
+    action: return 400
+  - code: INVALID_DUE_DATE
+    when: due_at is in the past
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_task_create
+    action: return 403
+observability:
+  logs:
+    - task_created: { task_id, instance_id, assignee, due_at, priority }
+  audit_json: true
+  metrics:
+    - task_creation_count by workflow_definition
+    - task_assignment_distribution
+    - task_priority_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  title: "Review Leave Request"
+  body: "Please review and approve/reject the annual leave request for 5 days starting Feb 1"
+  assignee_role: "manager"
+  due_at: "2024-01-20T17:00:00Z"
+  priority: "high"
+  metadata:
+    requester_name: "John Doe"
+    leave_type: "annual"
+    days: 5
+checks:
+  - description: validate task assignment
+  - description: ensure due date is future
+  - description: verify workflow instance exists

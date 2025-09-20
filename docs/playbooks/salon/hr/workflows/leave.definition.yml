@@ -1,0 +1,34 @@
+smart_code: HERA.UNIV.WF.DEFINITION.V1
+intent: HR Leave Approval workflow definition for salon employees
+definition:
+  code: LEAVE_APPROVAL
+  states: [DRAFT, SUBMITTED, MANAGER_REVIEW, APPROVED, REJECTED, CANCELLED]
+  transitions:
+    - from: DRAFT
+      to: SUBMITTED
+      by: [employee]
+    - from: SUBMITTED
+      to: MANAGER_REVIEW
+      by: [system]
+      guards: 
+        - HERA.SALON.HR.LEAVE.ACCRUAL.CHECK.V1
+        - HERA.SALON.HR.LEAVE.OVERLAP.CHECK.V1
+    - from: MANAGER_REVIEW
+      to: APPROVED
+      by: [manager]
+      effects: 
+        - HERA.SALON.HR.LEAVE.CALENDAR.BLOCK.V1
+        - HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1
+    - from: MANAGER_REVIEW
+      to: REJECTED
+      by: [manager]
+      effects: 
+        - HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1
+    - from: SUBMITTED
+      to: CANCELLED
+      by: [employee]
+  timers:
+    - on_enter: MANAGER_REVIEW
+      minutes: 1440                                # 24 hours
+      on_fire: HERA.UNIV.TASK.ESCALATE.V1
+      name: manager_review_timeout

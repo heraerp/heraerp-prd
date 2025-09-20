@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA - MASTER EXPORT SYSTEM
-// Smart Code: HERA.DNA.MASTER.EXPORT.SYSTEM.v1
+// Smart Code: HERA.DNA.MASTER.EXPORT.SYSTEM.V1
 // Root export for the entire HERA DNA component library
 // ================================================================================
 
@@ -50,7 +50,7 @@ export const HERA_DNA_INFO = {
   name: 'HERA DNA Component Library',
   version: '1.0.0',
   description: 'Universal business component library for enterprise applications',
-  smartCode: 'HERA.DNA.MASTER.EXPORT.SYSTEM.v1',
+  smartCode: 'HERA.DNA.MASTER.EXPORT.SYSTEM.V1',
   buildDate: new Date().toISOString(),
   components: {
     total: 25,

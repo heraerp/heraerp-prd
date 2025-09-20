@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { MessageCircle, Send, Bot, User, Loader2, X, Sparkles, AlertCircle } from 'lucide-react'
 
 interface Message {

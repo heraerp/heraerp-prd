@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Users, Calendar, TrendingUp, AlertCircle } from 'lucide-react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 interface TeamMemberLeave {
   id: string

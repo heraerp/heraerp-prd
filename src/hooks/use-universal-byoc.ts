@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { BYOCConfiguration, BYOCTestResult, createBYOCService } from '@/src/lib/universal/byoc-service'
+import { BYOCConfiguration, BYOCTestResult, createBYOCService } from '@/lib/universal/byoc-service'
 
 export interface UseBYOCOptions {
   applicationId: string

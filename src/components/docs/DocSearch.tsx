@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, X, FileText, Hash } from 'lucide-react'
-import { Input } from '@/src/components/ui/input'
-import { Button } from '@/src/components/ui/button'
-import { cn } from '@/src/lib/utils'
-import { searchDocs } from '@/src/lib/hera-docs'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { searchDocs } from '@/lib/hera-docs'
 
 interface SearchResult {
   id: string

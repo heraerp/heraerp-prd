@@ -293,7 +293,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       transaction_date: now.toISOString(),
       transaction_code: `INV-${year}${month}${day}-${Date.now().toString().slice(-6)}`,
       reference_number: `${docNumber}-INV`,
-      smart_code: 'HERA.SALON.INV.SALE.OUT.v1',
+      smart_code: 'HERA.SALON.INV.SALE.OUT.V1',
       total_amount: -(product.quantity * product.price), // Negative for outgoing
       source_entity_id: product.id, // Product entity
       target_entity_id: null, // Could be the store location entity

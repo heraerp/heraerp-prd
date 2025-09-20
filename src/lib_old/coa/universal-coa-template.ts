@@ -1,7 +1,7 @@
 /**
  * HERA Universal Chart of Accounts Template Generator
  * Enforces global 5-6-7-8-9 numbering structure across all industries
- * Smart Code: HERA.UNIVERSAL.COA.TEMPLATE.GENERATOR.v2
+ * Smart Code: HERA.UNIVERSAL.COA.TEMPLATE.GENERATOR.V2
  */
 
 export interface UniversalCOAAccount {

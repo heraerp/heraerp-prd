@@ -484,7 +484,7 @@ export async function GET() {
       }
     ],
     example_request: {
-      smart_code: 'HERA.REST.CRM.TXN.ORDER.v1',
+      smart_code: 'HERA.REST.CRM.TXN.ORDER.V1',
       validation_level: 'L2_SEMANTIC',
       organization_id: 'optional-uuid'
     }

@@ -1,6 +1,6 @@
-smart_code: HERA.PURCH.REPORTS.CORE.DEFS.v1
+smart_code: HERA.PURCH.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.PURCH.REPORT.SPEND_BY_VENDOR.CORE.v1
+  - report_code: HERA.PURCH.REPORT.SPEND_BY_VENDOR.CORE.V1
     description: "Total spend by vendor in date range"
     params_schema:
       from: { type: date }

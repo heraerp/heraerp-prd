@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronDown, Package, Layers, Factory, AlertCircle } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { universalApi } from '@/src/lib/universal-api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/src/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 
 interface BOMComponent {
@@ -169,8 +169,8 @@ export function BOMExplorer({ productId, organizationId, className }: BOMExplore
           {!hasChildren && <div className="bg-[var(--color-body)] w-5" />}
           
           <div className="flex items-center gap-2 flex-1">
-            {node.type === 'product' && <Package className="h-5 w-5 text-[#37353E]" />}
-            {node.type === 'bom' && <Layers className="h-5 w-5 text-[#37353E]" />}
+            {node.type === 'product' && <Package className="h-5 w-5 text-[var(--color-icon-secondary)]" />}
+            {node.type === 'bom' && <Layers className="h-5 w-5 text-[var(--color-icon-secondary)]" />}
             {node.type === 'material' && <Factory className="h-5 w-5 text-green-500" />}
             
             <div className="bg-[var(--color-body)] flex-1">

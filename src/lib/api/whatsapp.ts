@@ -17,8 +17,8 @@ import {
   HERA_MSP_CONFIG,
   validateTemplateVariables,
   renderTemplate
-} from '@/src/lib/schemas/whatsapp'
-import { universalApi } from '@/src/lib/universal-api'
+} from '@/lib/schemas/whatsapp'
+import { universalApi } from '@/lib/universal-api'
 
 // HERA MSP API Client
 class HeraMspApiClient {

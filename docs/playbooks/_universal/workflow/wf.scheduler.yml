@@ -1,0 +1,128 @@
+smart_code: HERA.UNIV.WF.SCHEDULER.V1
+intent: Monitor SLAs and process overdue timers (scheduled job every 5 minutes).
+scope:
+  in_scope:
+    - identify overdue workflow instances
+    - process due timers
+    - escalate overdue tasks
+    - emit notifications for SLA breaches
+    - maintain scheduler health metrics
+  out_of_scope:
+    - workflow execution
+    - timer creation
+    - user interaction
+preconditions:
+  - permissions: system role only
+  - read-models (views) are available
+  - notification procedures are registered
+invariants:
+  - idempotent execution (safe to run multiple times)
+  - org isolation maintained
+  - no duplicate notifications or escalations
+inputs:
+  required:
+    - none (system scheduled job)
+  optional:
+    - dry_run: boolean                             # test mode without actions
+    - organization_filter: array                   # limit to specific orgs
+    - max_instances_per_run: number                # batch size limit
+happy_path:
+  - step: query overdue instances from wf_instances_view WHERE sla_at < now() AND NOT paused
+  - step: for each overdue instance:
+    - check if already escalated (avoid duplicate notifications)
+    - identify owner_team or owner_user_id
+    - call notification procedure with SLA breach details
+    - update instance.dynamic.sla_escalated_at = now()
+  - step: query due timers from wf_timers_view WHERE fire_at <= now() AND status = 'PENDING'
+  - step: for each due timer:
+    - call HERA.UNIV.WF.TIMER.FIRE.V1 with timer_id
+    - handle any execution failures gracefully
+  - step: query overdue tasks from wf_tasks_view WHERE due_at < now() AND task_state IN ('OPEN', 'CLAIMED')
+  - step: for each overdue task:
+    - call HERA.UNIV.TASK.ESCALATE.V1 if not already escalated
+  - step: update scheduler run statistics and health metrics
+outputs:
+  procedures_called:
+    - notification_procedures: N                   # per overdue instance
+    - HERA.UNIV.WF.TIMER.FIRE.V1: N              # per due timer
+    - HERA.UNIV.TASK.ESCALATE.V1: N              # per overdue task
+  response:
+    scheduler_run_id: uuid
+    instances_processed: number
+    instances_escalated: number
+    timers_fired: number
+    tasks_escalated: number
+    run_duration_ms: number
+    next_run_at: timestamp
+errors:
+  - code: SCHEDULER_ALREADY_RUNNING
+    when: another scheduler instance is active
+    action: exit gracefully (distributed lock protection)
+  - code: VIEW_NOT_AVAILABLE
+    when: read-models are not accessible
+    action: log error and retry next cycle
+  - code: NOTIFICATION_FAILED
+    when: notification procedure fails
+    action: log error but continue processing other instances
+  - code: TIMER_FIRE_FAILED
+    when: timer execution fails
+    action: mark timer as failed, continue processing
+observability:
+  logs:
+    - scheduler_run_started: { run_id, instances_found, timers_found, tasks_found }
+    - instance_escalated: { instance_id, owner, sla_breach_hours }
+    - timer_fired: { timer_id, instance_id, on_fire_smart_code, success }
+    - task_escalated: { task_id, instance_id, assignee, overdue_hours }
+    - scheduler_run_completed: { run_id, duration_ms, success_rate }
+  audit_json: false                                # system operation, high frequency
+  metrics:
+    - scheduler_run_count
+    - scheduler_run_duration
+    - instances_escalated_count
+    - timers_fired_count
+    - tasks_escalated_count
+    - scheduler_health_score
+configuration:
+  run_interval_minutes: 5
+  batch_size_instances: 100
+  batch_size_timers: 500
+  batch_size_tasks: 200
+  max_run_duration_minutes: 10
+  distributed_lock_timeout_minutes: 15
+  health_check_retention_hours: 24
+escalation_rules:
+  sla_breach_immediate:
+    notification_smart_code: "HERA.COMMS.ALERT.SLA.BREACH.V1"
+    escalation_levels:
+      - hours: 0                                   # immediate
+        notify: owner
+      - hours: 2                                   # 2 hours overdue
+        notify: owner_manager
+      - hours: 6                                   # 6 hours overdue
+        notify: operations_team
+  task_overdue:
+    notification_smart_code: "HERA.COMMS.ALERT.TASK.OVERDUE.V1"
+    escalation_levels:
+      - hours: 1                                   # 1 hour overdue
+        action: escalate_to_manager
+      - hours: 4                                   # 4 hours overdue
+        action: escalate_to_operations
+notification_templates:
+  sla_breach:
+    subject: "Workflow SLA Breach: {definition_code} - {instance_id}"
+    body: "Workflow instance {instance_id} has breached its SLA deadline by {breach_hours} hours."
+  task_overdue:
+    subject: "Overdue Task: {task_title}"
+    body: "Task {task_id} assigned to {assignee} is overdue by {overdue_hours} hours."
+example_scheduler_run:
+  instances_found: 15
+  instances_escalated: 8
+  timers_fired: 23
+  tasks_escalated: 5
+  run_duration_ms: 2340
+  success_rate: 94.2
+checks:
+  - description: ensure distributed lock prevents concurrent runs
+  - description: verify all overdue items are processed
+  - description: validate notification delivery
+  - description: confirm timer execution accuracy

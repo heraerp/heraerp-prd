@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Refresh Test</title>
+    <script>
+        // Force a hard refresh of the salon dashboard
+        window.location.href = "http://localhost:3004/salon/dashboard?refresh=" + Date.now();
+    </script>
+</head>
+<body>
+    <p>Redirecting to salon dashboard with fresh load...</p>
+</body>
+</html>

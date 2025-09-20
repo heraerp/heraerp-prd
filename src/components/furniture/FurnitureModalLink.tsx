@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 import { NavigationLink }
-from '@/src/components/navigation/NavigationLink'
+from '@/components/navigation/NavigationLink'
 
 
 interface FurnitureModalLinkProps {

@@ -1,5 +1,5 @@
 // HERA 100% Vibe Coding System - Type Definitions
-// Smart Code: HERA.VIBE.FOUNDATION.TYPES.DEFINITIONS.v1
+// Smart Code: HERA.VIBE.FOUNDATION.TYPES.DEFINITIONS.V1
 // Purpose: Universal type definitions for vibe coding system
 
 // Core vibe context for seamless continuity
@@ -198,21 +198,21 @@ export class VibeError extends Error {
 
 export class ContextPreservationError extends VibeError {
   constructor(message: string, context?: object) {
-    super(message, 'HERA.VIBE.ERROR.CONTEXT.PRESERVATION.v1', context)
+    super(message, 'HERA.VIBE.ERROR.CONTEXT.PRESERVATION.V1', context)
     this.name = 'ContextPreservationError'
   }
 }
 
 export class IntegrationError extends VibeError {
   constructor(message: string, context?: object) {
-    super(message, 'HERA.VIBE.ERROR.INTEGRATION.FAILURE.v1', context)
+    super(message, 'HERA.VIBE.ERROR.INTEGRATION.FAILURE.V1', context)
     this.name = 'IntegrationError'
   }
 }
 
 export class QualityValidationError extends VibeError {
   constructor(message: string, context?: object) {
-    super(message, 'HERA.VIBE.ERROR.QUALITY.VALIDATION.v1', context)
+    super(message, 'HERA.VIBE.ERROR.QUALITY.VALIDATION.V1', context)
     this.name = 'QualityValidationError'
   }
 }

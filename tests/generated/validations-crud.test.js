@@ -1,6 +1,6 @@
 /**
  * Auto-generated CRUD tests for Validations
- * Generated at: 2025-09-06T04:22:42.918Z
+ * Generated at: 2025-09-20T19:27:07.431Z
  * HERA Universal 6-table Architecture
  */
 
@@ -14,7 +14,7 @@ const MODULE_CONFIG = {
   "smartCodePrefix": "HERA.VALIDATIONS",
   "dynamicFields": []
 };
-const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1757132562919';
+const TEST_ORG_ID = process.env.TEST_ORG_ID || 'test-org-1758396427432';
 
 describe('Validations - Universal CRUD Operations', () => {
   let createdEntityId;

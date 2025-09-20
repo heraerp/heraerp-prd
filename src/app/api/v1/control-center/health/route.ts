@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { controlCenterService } from '@/src/lib/control-center/control-center-service'
+import { controlCenterService } from '@/lib/control-center/control-center-service'
 
 /**
  * Control Center Health API Endpoint

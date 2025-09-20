@@ -8,12 +8,12 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dialog, DialogContent } from '@/src/components/ui/dialog'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { useToast } from '@/src/hooks/use-toast'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useToast } from '@/hooks/use-toast'
 import {
   Search,
   X,
@@ -38,9 +38,9 @@ import {
   UtensilsCrossed,
   Factory
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import { useDebounce } from '@/src/hooks/use-debounce'
+import { useDebounce } from '@/hooks/use-debounce'
 
 // ================================================================================
 // TYPES AND INTERFACES

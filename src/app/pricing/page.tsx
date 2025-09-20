@@ -13,8 +13,8 @@ import {
   Building,
   Globe
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 const PRICING_PLANS = [
   {

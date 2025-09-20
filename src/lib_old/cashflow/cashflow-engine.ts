@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA UNIVERSAL CASHFLOW STATEMENT ENGINE
 // Complete cashflow tracking and reporting system using 6-table architecture
-// Smart Code: HERA.FIN.CF.STATEMENT.ENGINE.v1
+// Smart Code: HERA.FIN.CF.STATEMENT.ENGINE.V1
 // ================================================================================
 
 import { supabase } from '../supabase'

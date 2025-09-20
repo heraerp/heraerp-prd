@@ -1,0 +1,91 @@
+smart_code: HERA.UNIV.WF.EFFECT.RETRY.V1
+intent: Retry only failed effects from the last STEP atomically.
+scope:
+  in_scope:
+    - retry failed effects
+    - update step metadata
+    - execute effects with idempotency
+    - clear failure status on success
+  out_of_scope:
+    - retrying successful effects
+    - workflow state changes
+    - effect scheduling
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or system
+  - instance exists and step exists
+  - step has failed effects to retry
+invariants:
+  - only failed effects are retried
+  - successful retries clear failure status
+  - idempotency maintained across retries
+  - org isolation enforced
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+    - step_id: uuid                                # specific step with failed effects
+  optional:
+    - effect_filter: array                         # specific effect smart codes to retry
+    - force_retry: boolean                         # ignore retry limits
+    - retried_by: uuid                             # user initiating retry
+happy_path:
+  - step: load step record and verify it belongs to instance
+  - step: extract effects_failed array from step.dynamic
+  - step: if effect_filter provided, filter effects to retry
+  - step: verify there are effects to retry
+  - step: for each failed effect_smart_code:
+    - call HERA.UNIV.WF.EFFECT.EXECUTE.V1 with idempotency guard
+    - collect execution results
+  - step: update step.dynamic.effects_failed to remove successfully retried effects
+  - step: update step.dynamic.last_retry_at = now()
+  - step: create audit record of retry operation
+outputs:
+  transactions_updated:
+    - universal_transaction_lines: 1               # step metadata updated
+  procedures_executed:
+    - HERA.UNIV.WF.EFFECT.EXECUTE.V1: N           # per failed effect
+  response:
+    step_id: uuid
+    effects_retried: array
+    effects_successful: array
+    effects_still_failed: array
+    retry_summary:
+      total_attempted: number
+      total_successful: number
+      total_failed: number
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: STEP_NOT_FOUND
+    when: step_id doesn't exist or doesn't belong to instance
+    action: return 404
+  - code: NO_FAILED_EFFECTS
+    when: step has no failed effects to retry
+    action: return 400 with current step status
+  - code: EFFECT_RETRY_FAILED
+    when: one or more effect retries fail
+    action: return partial success with details
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_admin
+    action: return 403
+observability:
+  logs:
+    - effects_retry_started: { step_id, instance_id, effect_count, retried_by }
+    - effect_retry_result: { step_id, effect_smart_code, success, error_details }
+    - effects_retry_completed: { step_id, successful_count, failed_count }
+  audit_json: true
+  metrics:
+    - effect_retry_count by effect_smart_code
+    - effect_retry_success_rate
+    - effect_retry_duration
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  step_id: "890e1234-e89b-12d3-a456-426614174000"
+  effect_filter: ["HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1"]
+  retried_by: "901e2345-e89b-12d3-a456-426614174000"
+checks:
+  - description: verify step belongs to instance
+  - description: ensure failed effects exist
+  - description: validate retry permissions

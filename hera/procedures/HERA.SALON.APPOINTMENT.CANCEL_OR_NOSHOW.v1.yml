@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.APPOINTMENT.CANCEL_OR_NOSHOW.v1
+smart_code: HERA.SALON.APPOINTMENT.CANCEL.OR.NOSHOW.V1
 intent: >
   Handle appointment cancellation or no-show; optionally emit fee lines based on timing rules and exclude cancelled revenue from reports.
 scope:

@@ -1,0 +1,6 @@
+smart_code: HERA.SALON.POS.CART.DELETE_LINE.V1
+intent: Delete a cart line and release any inventory reservations.
+preconditions: [CART ACTIVE]
+outputs:
+  transactions_emitted:
+    - when retail -> HERA.SALON.INV.RESERVE.RELEASE.V1

@@ -8,11 +8,11 @@ import Link from 'next/link'
 import { usePathname, useRouter }
 from 'next/navigation'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 import { useToast }
-from '@/src/hooks/use-toast'
-import { useMultiOrgAuth }
-from '@/src/components/auth/MultiOrgAuthProvider'
+from '@/hooks/use-toast'
+import { useHERAAuth }
+from '@/components/auth/HERAAuthProvider'
 import { FurnitureNavigationLink }
 from './FurnitureNavigationLink'
 import { FurnitureModalLink }
@@ -212,7 +212,7 @@ const router = useRouter()
 
 const { toast } = useToast()
 
-const { logout } = useMultiOrgAuth()
+const { logout } = useHERAAuth()
 
 const [showAppsModal, setShowAppsModal] = useState(false)
 

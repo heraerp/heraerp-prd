@@ -1,0 +1,81 @@
+smart_code: HERA.UNIV.TASK.ESCALATE.V1
+intent: Escalate an overdue or urgent task to higher authority.
+scope:
+  in_scope:
+    - reassign task to escalation role/user
+    - update priority
+    - notify escalation
+    - maintain escalation history
+  out_of_scope:
+    - automatic escalation scheduling
+    - multi-level escalation chains
+    - task cancellation
+preconditions:
+  - permissions: [$PROFILE.required_role_task_escalate] or system
+  - task exists and is not COMPLETED
+  - escalation target defined
+invariants:
+  - escalation creates audit trail
+  - original assignee preserved in history
+  - priority can only increase
+inputs:
+  required:
+    - organization_id: uuid
+    - task_id: uuid                                # task to escalate
+  optional:
+    - escalate_to_role: string                     # new assignee role
+    - escalate_to_user_id: uuid                    # new assignee user
+    - reason: string                               # escalation reason
+    - new_priority: enum[medium, high, urgent]     # must be >= current
+happy_path:
+  - step: load task entity and dynamic data
+  - step: verify task state != COMPLETED
+  - step: determine escalation target (input or from metadata/profile)
+  - step: store current assignee in escalation_history
+  - step: update task.assignee to escalation target
+  - step: if new_priority > current_priority, update priority
+  - step: update task.escalated_at = now(), escalation_count++
+  - step: add escalation record to metadata.escalation_history
+outputs:
+  entities_updated:
+    - core_dynamic_data: 1                         # task escalation
+  response:
+    task_id: uuid
+    escalated_to: object                           # new assignee
+    escalation_count: number
+    new_priority: string
+    escalated_at: timestamp
+errors:
+  - code: TASK_NOT_FOUND
+    when: task_id doesn't exist in organization
+    action: return 404
+  - code: TASK_ALREADY_COMPLETED
+    when: task state = COMPLETED
+    action: return 409
+  - code: NO_ESCALATION_TARGET
+    when: no target provided and none in metadata
+    action: return 400
+  - code: INVALID_PRIORITY
+    when: new_priority < current_priority
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks permission and not system
+    action: return 403
+observability:
+  logs:
+    - task_escalated: { task_id, from_assignee, to_assignee, reason, escalation_count }
+  audit_json: true
+  metrics:
+    - task_escalation_count by workflow_definition
+    - escalation_reason_distribution
+    - time_to_escalation_distribution
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  task_id: "890e1234-e89b-12d3-a456-426614174000"
+  escalate_to_role: "senior_manager"
+  reason: "SLA breach - no action in 24 hours"
+  new_priority: "urgent"
+checks:
+  - description: verify task is escalatable
+  - description: ensure escalation target is valid
+  - description: maintain escalation history

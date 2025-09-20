@@ -4,19 +4,19 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Textarea } from '@/src/components/ui/textarea'
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Zap,
   Package,

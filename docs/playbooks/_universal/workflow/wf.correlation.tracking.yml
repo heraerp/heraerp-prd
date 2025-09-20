@@ -1,0 +1,407 @@
+smart_code: HERA.UNIV.WF.CORRELATION.TRACKING.V1
+intent: Ensure correlation IDs flow through API → procedure → effects → comms/GL for request tracing.
+scope:
+  in_scope:
+    - correlation ID generation and propagation
+    - request tracing across system boundaries
+    - effect and communication correlation
+    - GL posting correlation
+    - audit trail correlation
+  out_of_scope:
+    - distributed tracing infrastructure
+    - log aggregation system
+    - performance monitoring
+preconditions:
+  - correlation ID format standardized
+  - all procedures support correlation context
+  - downstream systems can accept correlation IDs
+invariants:
+  - correlation IDs are unique per request
+  - correlation IDs propagate through all operations
+  - correlation context preserved across async operations
+inputs:
+  required:
+    - operation_type: enum[generate, propagate, validate]
+  conditional:
+    - correlation_id: string                       # for propagate/validate
+    - parent_correlation_id: string                # for child operations
+  optional:
+    - request_source: string                       # API, scheduler, worker, etc.
+    - trace_level: enum[minimal, full]             # depth of correlation tracking
+happy_path:
+  # Generate new correlation ID
+  - if operation_type == 'generate':
+    - step: generate unique correlation ID with format: WF-{timestamp}-{uuid-short}
+    - step: store in request context
+    - step: return correlation ID for header injection
+    
+  # Propagate existing correlation ID
+  - if operation_type == 'propagate':
+    - step: validate correlation ID format
+    - step: inject into procedure call context
+    - step: ensure downstream operations receive correlation ID
+    
+  # Validate correlation tracking
+  - if operation_type == 'validate':
+    - step: verify correlation ID present in all operation logs
+    - step: check correlation chain completeness
+    - step: generate correlation audit report
+outputs:
+  response:
+    correlation_id: string
+    operation_type: string
+    trace_level: string
+    propagation_status: enum[success, partial, failed]
+    downstream_services: array
+      - service_name: string
+        correlation_received: boolean
+        trace_context: object
+    validation_results: object
+      chain_complete: boolean
+      missing_links: array
+      coverage_percentage: number
+
+correlation_id_format:
+  pattern: "WF-{timestamp}-{short_uuid}-{sequence}"
+  example: "WF-20241215143022-a1b2c3d4-001"
+  components:
+    prefix: "WF"                                   # Workflow system identifier
+    timestamp: "YYYYMMDDHHMMSS"                   # Request timestamp
+    short_uuid: "8 character hex"                 # Unique identifier
+    sequence: "3 digit sequence"                  # For high-frequency requests
+  validation_regex: "^WF-\\d{14}-[0-9a-f]{8}-\\d{3}$"
+
+propagation_points:
+  api_layer:
+    entry_point: "HTTP request headers"
+    injection: "X-Correlation-ID header"
+    fallback: "Generate if missing"
+    
+  procedure_calls:
+    context_field: "correlation_id"
+    injection: |
+      CALL procedure_name(
+        /* standard parameters */,
+        correlation_id => current_setting('app.correlation_id')
+      );
+    
+  effect_execution:
+    context_injection: |
+      -- Store correlation in effect metadata
+      UPDATE universal_transactions 
+      SET dynamic = dynamic || jsonb_build_object('correlation_id', '$correlation_id')
+      WHERE smart_code = 'HERA.UNIV.WF.EFFECT.V1';
+    
+  timer_operations:
+    context_injection: |
+      -- Store correlation in timer metadata
+      UPDATE universal_transactions 
+      SET dynamic = dynamic || jsonb_build_object('correlation_id', '$correlation_id')
+      WHERE smart_code = 'HERA.UNIV.WF.TIMER.V1';
+    
+  communication_services:
+    whatsapp_integration: |
+      -- Pass correlation to WhatsApp service
+      CALL HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1(
+        /* message parameters */,
+        correlation_id => '$correlation_id'
+      );
+    
+  gl_posting:
+    finance_integration: |
+      -- Pass correlation to GL posting
+      CALL HERA.FIN.POSTING.GL.JOURNAL.V1(
+        /* journal parameters */,
+        correlation_id => '$correlation_id',
+        source_reference => 'WORKFLOW:' || '$correlation_id'
+      );
+
+header_injection_middleware:
+  description: "Middleware to inject correlation IDs into all requests"
+  implementation: |
+    export function correlationMiddleware(req: NextRequest) {
+      // Extract or generate correlation ID
+      let correlationId = req.headers.get('X-Correlation-ID');
+      
+      if (!correlationId) {
+        correlationId = generateCorrelationId();
+      }
+      
+      // Validate format
+      if (!isValidCorrelationId(correlationId)) {
+        correlationId = generateCorrelationId();
+      }
+      
+      // Store in request context
+      req.correlationId = correlationId;
+      
+      // Set response header
+      const response = NextResponse.next();
+      response.headers.set('X-Correlation-ID', correlationId);
+      
+      return response;
+    }
+    
+    function generateCorrelationId(): string {
+      const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+      const shortUuid = crypto.randomUUID().replace(/-/g, '').slice(0, 8);
+      const sequence = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return `WF-${timestamp}-${shortUuid}-${sequence}`;
+    }
+
+database_context_injection:
+  session_variables: |
+    -- Set correlation context in database session
+    SELECT set_config('app.correlation_id', '$correlation_id', true);
+    SELECT set_config('app.request_source', '$request_source', true);
+    SELECT set_config('app.trace_level', '$trace_level', true);
+    
+  procedure_template: |
+    -- Standard procedure template with correlation support
+    CREATE OR REPLACE FUNCTION procedure_name(
+      /* standard parameters */,
+      correlation_id text DEFAULT current_setting('app.correlation_id', true)
+    ) RETURNS json AS $$
+    BEGIN
+      -- Log procedure start with correlation
+      INSERT INTO procedure_logs VALUES (
+        now(),
+        'procedure_name',
+        'STARTED',
+        correlation_id,
+        /* other context */
+      );
+      
+      /* procedure logic */
+      
+      -- Log procedure completion
+      INSERT INTO procedure_logs VALUES (
+        now(),
+        'procedure_name',
+        'COMPLETED',
+        correlation_id,
+        /* result context */
+      );
+      
+      RETURN result_json;
+    END;
+    $$ LANGUAGE plpgsql;
+
+correlation_validation:
+  trace_completeness_check: |
+    -- Verify correlation flows through all operations
+    WITH correlation_trace AS (
+      SELECT 
+        correlation_id,
+        'API_ENTRY' as operation_type,
+        created_at as timestamp,
+        'http_request' as source
+      FROM api_request_logs 
+      WHERE correlation_id = '$correlation_id'
+      
+      UNION ALL
+      
+      SELECT 
+        correlation_id,
+        'PROCEDURE_CALL' as operation_type,
+        created_at as timestamp,
+        procedure_name as source
+      FROM procedure_logs 
+      WHERE correlation_id = '$correlation_id'
+      
+      UNION ALL
+      
+      SELECT 
+        (dynamic->>'correlation_id') as correlation_id,
+        'EFFECT_EXECUTION' as operation_type,
+        created_at as timestamp,
+        'workflow_effect' as source
+      FROM universal_transactions 
+      WHERE smart_code = 'HERA.UNIV.WF.EFFECT.V1'
+        AND dynamic->>'correlation_id' = '$correlation_id'
+        
+      UNION ALL
+      
+      SELECT 
+        correlation_id,
+        'COMMUNICATION' as operation_type,
+        created_at as timestamp,
+        'whatsapp_service' as source
+      FROM communication_logs 
+      WHERE correlation_id = '$correlation_id'
+      
+      UNION ALL
+      
+      SELECT 
+        correlation_id,
+        'GL_POSTING' as operation_type,
+        created_at as timestamp,
+        'finance_service' as source
+      FROM gl_posting_logs 
+      WHERE correlation_id = '$correlation_id'
+    )
+    SELECT 
+      correlation_id,
+      COUNT(*) as total_operations,
+      COUNT(DISTINCT operation_type) as operation_types_covered,
+      MIN(timestamp) as trace_start,
+      MAX(timestamp) as trace_end,
+      EXTRACT(EPOCH FROM (MAX(timestamp) - MIN(timestamp))) as total_duration_seconds
+    FROM correlation_trace
+    GROUP BY correlation_id;
+    
+  missing_correlation_detection: |
+    -- Find operations missing correlation IDs
+    SELECT 
+      'workflow_instances' as table_name,
+      COUNT(*) as missing_correlation_count
+    FROM universal_transactions 
+    WHERE smart_code = 'HERA.UNIV.WF.INSTANCE.V1'
+      AND (dynamic->>'correlation_id') IS NULL
+      AND created_at >= NOW() - INTERVAL '24 hours'
+      
+    UNION ALL
+    
+    SELECT 
+      'workflow_effects' as table_name,
+      COUNT(*) as missing_correlation_count
+    FROM universal_transactions 
+    WHERE smart_code = 'HERA.UNIV.WF.EFFECT.V1'
+      AND (dynamic->>'correlation_id') IS NULL
+      AND created_at >= NOW() - INTERVAL '24 hours';
+
+async_operation_correlation:
+  timer_correlation: |
+    -- Preserve correlation when setting timers
+    INSERT INTO universal_transactions (smart_code, dynamic, organization_id)
+    VALUES (
+      'HERA.UNIV.WF.TIMER.V1',
+      jsonb_build_object(
+        'fire_at', '$fire_at',
+        'on_fire_smart_code', '$on_fire_smart_code',
+        'correlation_id', current_setting('app.correlation_id', true),
+        'parent_instance_id', '$instance_id'
+      ),
+      '$organization_id'
+    );
+    
+  worker_correlation: |
+    -- Worker processes inherit correlation from timers
+    SELECT 
+      t.dynamic->>'correlation_id' as inherited_correlation_id,
+      t.dynamic->>'on_fire_smart_code' as procedure_to_call
+    FROM universal_transactions t
+    WHERE t.id = '$timer_id'
+      AND t.smart_code = 'HERA.UNIV.WF.TIMER.V1';
+    
+    -- Set correlation context for worker
+    SELECT set_config('app.correlation_id', inherited_correlation_id, true);
+
+error_correlation:
+  error_tracking: |
+    -- Log errors with correlation context
+    INSERT INTO error_logs VALUES (
+      now(),
+      current_setting('app.correlation_id', true),
+      '$error_code',
+      '$error_message',
+      '$procedure_name',
+      '$stack_trace'
+    );
+    
+  correlation_error_analysis: |
+    -- Analyze errors by correlation
+    SELECT 
+      correlation_id,
+      COUNT(*) as error_count,
+      array_agg(DISTINCT error_code) as error_types,
+      MIN(created_at) as first_error,
+      MAX(created_at) as last_error
+    FROM error_logs 
+    WHERE created_at >= NOW() - INTERVAL '24 hours'
+      AND correlation_id IS NOT NULL
+    GROUP BY correlation_id
+    HAVING COUNT(*) > 1
+    ORDER BY error_count DESC;
+
+observability:
+  logs:
+    - correlation_generated: { correlation_id, request_source, timestamp }
+    - correlation_propagated: { correlation_id, target_service, success }
+    - correlation_validated: { correlation_id, chain_complete, coverage_percentage }
+  audit_json: true
+  metrics:
+    - correlation_id_generation_count
+    - correlation_propagation_success_rate
+    - correlation_chain_completeness_percentage
+    - missing_correlation_operations_count
+
+monitoring_queries:
+  correlation_coverage: |
+    -- Daily correlation coverage report
+    SELECT 
+      DATE(created_at) as date,
+      COUNT(*) as total_operations,
+      COUNT(*) FILTER (WHERE (dynamic->>'correlation_id') IS NOT NULL) as correlated_operations,
+      (COUNT(*) FILTER (WHERE (dynamic->>'correlation_id') IS NOT NULL) * 100.0 / COUNT(*)) as coverage_percentage
+    FROM universal_transactions
+    WHERE smart_code LIKE 'HERA.UNIV.WF.%'
+      AND created_at >= NOW() - INTERVAL '7 days'
+    GROUP BY DATE(created_at)
+    ORDER BY date DESC;
+    
+  correlation_performance: |
+    -- Correlation tracking performance impact
+    SELECT 
+      procedure_name,
+      AVG(duration_ms) FILTER (WHERE correlation_id IS NOT NULL) as avg_duration_with_correlation,
+      AVG(duration_ms) FILTER (WHERE correlation_id IS NULL) as avg_duration_without_correlation,
+      COUNT(*) as total_calls
+    FROM procedure_logs
+    WHERE created_at >= NOW() - INTERVAL '24 hours'
+    GROUP BY procedure_name
+    HAVING COUNT(*) > 100;
+
+example_correlation_flow:
+  http_request: |
+    POST /api/v1/workflows/start
+    Headers: X-Correlation-ID: WF-20241215143022-a1b2c3d4-001
+    
+  procedure_call: |
+    CALL HERA.UNIV.WF.START.V1(
+      organization_id => 'org-123',
+      definition_code => 'LEAVE_APPROVAL',
+      correlation_id => 'WF-20241215143022-a1b2c3d4-001'
+    );
+    
+  effect_execution: |
+    -- Effect inherits correlation
+    metadata: {
+      "effect_smart_code": "HERA.COMMS.WHATSAPP.SEND.MESSAGE.V1",
+      "correlation_id": "WF-20241215143022-a1b2c3d4-001",
+      "parent_workflow": "instance-456"
+    }
+    
+  gl_posting: |
+    CALL HERA.FIN.POSTING.GL.JOURNAL.V1(
+      /* journal parameters */,
+      correlation_id => 'WF-20241215143022-a1b2c3d4-001',
+      source_reference => 'WORKFLOW:WF-20241215143022-a1b2c3d4-001'
+    );
+
+errors:
+  - code: INVALID_CORRELATION_FORMAT
+    when: correlation ID doesn't match expected format
+    action: generate new correlation ID
+  - code: CORRELATION_PROPAGATION_FAILED
+    when: downstream service doesn't receive correlation ID
+    action: log warning, continue operation
+  - code: CORRELATION_CHAIN_BROKEN
+    when: correlation tracking validation fails
+    action: investigate missing correlation points
+
+checks:
+  - description: verify correlation IDs flow through all system boundaries
+  - description: ensure async operations preserve correlation context
+  - description: validate correlation tracking doesn't impact performance
+  - description: confirm error tracking includes correlation information

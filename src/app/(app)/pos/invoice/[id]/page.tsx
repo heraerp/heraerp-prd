@@ -8,10 +8,10 @@
 
 import { useParams } from 'next/navigation'
 import { Code } from 'lucide-react'
-import { InvoiceDisplay } from '@/src/components/pos/InvoiceDisplay'
-import { useSession } from '@/src/lib/auth/session'
-import { PosApi } from '@/src/lib/api/pos'
-import { useInvoice, usePosNavigation } from '@/src/lib/hooks/usePos'
+import { InvoiceDisplay } from '@/components/pos/InvoiceDisplay'
+import { useSession } from '@/lib/auth/session'
+import { PosApi } from '@/lib/api/pos'
+import { useInvoice, usePosNavigation } from '@/lib/hooks/usePos'
 
 const posApi = new PosApi()
 
@@ -56,7 +56,7 @@ export default function InvoiceGenerationPage() {
       {/* Header with Smart Code */}
       <div className="flex items-center gap-2 mb-6">
         <Code className="h-4 w-4 text-gray-500" />
-        <span className="text-sm text-gray-500 font-mono">HERA.SALON.POS.INVOICE.DISPLAY.v1</span>
+        <span className="text-sm text-gray-500 font-mono">HERA.SALON.POS.INVOICE.DISPLAY.V1</span>
       </div>
 
       {/* Invoice Display */}
@@ -74,4 +74,4 @@ export default function InvoiceGenerationPage() {
 }
 
 // Add missing import
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'

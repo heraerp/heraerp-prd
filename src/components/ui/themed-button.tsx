@@ -1,9 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { Button, ButtonProps } from '@/src/components/ui/button'
-import { useModuleTheme } from '@/src/hooks/useModuleTheme'
-import { cn } from '@/src/lib/utils'
+import { Button, ButtonProps } from '@/components/ui/button'
+import { useModuleTheme } from '@/hooks/useModuleTheme'
+import { cn } from '@/lib/utils'
 
 export interface ThemedButtonProps extends ButtonProps {
   gradient?: boolean

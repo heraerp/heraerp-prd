@@ -58,7 +58,7 @@ export const DNA_VALIDATION_RULES: DNAValidationRule[] = [
       return content
         .replace(
           /import.*Card.*from.*shadcn/g,
-          "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/src/lib/dna/components/enterprise/EnterpriseCard'"
+          "import { EnterpriseCard, CardHeader, CardTitle, CardContent } from '@/lib/dna/components/enterprise/EnterpriseCard'"
         )
         .replace(/<Card/g, '<EnterpriseCard')
         .replace(/<\/Card>/g, '</EnterpriseCard>')
@@ -81,7 +81,7 @@ export const DNA_VALIDATION_RULES: DNAValidationRule[] = [
     fix: (content: string) => {
       // Add import if missing
       if (!content.includes('EnterpriseStatsCard')) {
-        content = `import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'\n${content}`
+        content = `import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'\n${content}`
       }
       return content
     },

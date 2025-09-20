@@ -414,7 +414,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.AI.ANALYZE.STRENGTH.v1',
+          smart_code: 'HERA.REL.AI.ANALYZE.STRENGTH.V1',
           operation: 'update',
           data: { id: relationshipId },
           ai_requests: {
@@ -606,7 +606,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.AUDIT.RELATIONSHIP.VERSIONS.v1',
+          smart_code: 'HERA.TXN.AUDIT.RELATIONSHIP.VERSIONS.V1',
           query: {
             filters: {
               transaction_type: 'relationship_update',
@@ -679,7 +679,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'core_relationships',
       organization_id: organizationId,
-      smart_code: 'HERA.REL.BULK.CREATE.COMPLETE.v1',
+      smart_code: 'HERA.REL.BULK.CREATE.COMPLETE.V1',
       operation: 'transaction',
       operations,
       ai_requests: {

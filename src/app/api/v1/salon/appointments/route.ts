@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { createIntegratedAppointment } from '@/src/lib/salon/integrated-appointment-booking'
-import { ServerWorkflow } from '@/src/lib/salon/server-workflow'
+import { createIntegratedAppointment } from '@/lib/salon/integrated-appointment-booking'
+import { ServerWorkflow } from '@/lib/salon/server-workflow'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -21,18 +21,13 @@ export async function GET(request: NextRequest) {
         `
         *,
         client:source_entity_id(id, entity_name, entity_type),
-        stylist:target_entity_id(id, entity_name, entity_type),
-        status_relationships:core_relationships!from_entity_id(
-          to_entity:to_entity_id(id, entity_name, entity_code)
-        )
+        stylist:target_entity_id(id, entity_name, entity_type)
       `
       )
       .eq('organization_id', organizationId)
       .eq('transaction_type', 'appointment')
       .gte('transaction_date', date)
       .lte('transaction_date', date + 'T23:59:59')
-      .eq('status_relationships.relationship_type', 'has_workflow_status')
-      .eq('status_relationships.relationship_data->is_active', 'true')
       .order('transaction_date')
 
     if (error) {
@@ -43,11 +38,6 @@ export async function GET(request: NextRequest) {
     // Transform appointments to include proper entity data
     const transformedAppointments =
       appointments?.map(apt => {
-        // Get current workflow status
-        const currentStatus = apt.status_relationships?.find(
-          rel => rel.relationship_data?.is_active === true
-        )?.to_entity
-
         // Get client contact info from dynamic data if needed
         return {
           id: apt.id,
@@ -63,8 +53,8 @@ export async function GET(request: NextRequest) {
           time: (apt.metadata as any)?.appointment_time || '10:00 AM',
           duration: (apt.metadata as any)?.duration || '60 min',
           price: apt.total_amount || 0,
-          status: currentStatus?.entity_name || (apt.metadata as any)?.status || 'confirmed',
-          statusCode: currentStatus?.entity_code || '',
+          status: (apt.metadata as any)?.status || 'confirmed',
+          statusCode: '',
           notes: (apt.metadata as any)?.notes || ''
         }
       }) || []
@@ -149,18 +139,11 @@ export async function POST(request: NextRequest) {
         `
         *,
         client:source_entity_id(id, entity_name),
-        stylist:target_entity_id(id, entity_name),
-        status_relationships:core_relationships!from_entity_id(
-          to_entity:to_entity_id(entity_name, entity_code)
-        )
+        stylist:target_entity_id(id, entity_name)
       `
       )
       .eq('id', result.appointmentId)
-      .eq('status_relationships.relationship_type', 'has_workflow_status')
-      .eq('status_relationships.relationship_data->is_active', 'true')
       .single()
-
-    const currentStatus = fullAppointment?.status_relationships?.[0]?.to_entity
 
     return NextResponse.json({
       success: true,
@@ -172,8 +155,8 @@ export async function POST(request: NextRequest) {
         stylist: fullAppointment?.stylist?.entity_name || stylistName,
         date,
         time,
-        status: currentStatus?.entity_name || 'Scheduled',
-        statusCode: currentStatus?.entity_code || 'STATUS-APPOINTMENT-SCHEDULED',
+        status: 'Scheduled',
+        statusCode: 'STATUS-APPOINTMENT-SCHEDULED',
         message: result.message
       }
     })
@@ -259,25 +242,18 @@ export async function PUT(request: NextRequest) {
         `
         *,
         client:source_entity_id(id, entity_name),
-        stylist:target_entity_id(id, entity_name),
-        status_relationships:core_relationships!from_entity_id(
-          to_entity:to_entity_id(entity_name, entity_code)
-        )
+        stylist:target_entity_id(id, entity_name)
       `
       )
       .eq('id', id)
-      .eq('status_relationships.relationship_type', 'has_workflow_status')
-      .eq('status_relationships.relationship_data->is_active', 'true')
       .single()
-
-    const currentStatus = updatedAppointment?.status_relationships?.[0]?.to_entity
 
     return NextResponse.json({
       success: true,
       appointment: {
         ...updatedAppointment,
-        currentStatus: currentStatus?.entity_name,
-        statusCode: currentStatus?.entity_code
+        currentStatus: status || 'updated',
+        statusCode: ''
       }
     })
   } catch (error) {

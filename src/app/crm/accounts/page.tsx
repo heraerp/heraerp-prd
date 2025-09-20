@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import {
   Building2,
   Plus,
@@ -23,8 +24,7 @@ import {
   CheckCircle
 } from 'lucide-react'
 
-// India Vision Organization ID
-const KERALA_VISION_ORG_ID = 'a1b2c3d4-5678-90ab-cdef-000000000001'
+// Organization resolution: use auth/demo org if available; fallback will be resolved via API
 
 interface Account {
   id: string
@@ -47,132 +47,174 @@ export default function AccountsPage() {
   const [selectedSegment, setSelectedSegment] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [isCreating, setIsCreating] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
+  const [form, setForm] = useState({
+    name: '',
+    industry: '',
+    segment: 'Enterprise',
+    website: '',
+    revenue: '',
+    employees: '',
+    status: 'active'
+  })
 
   // Sample accounts data
-  const [accounts] = useState<Account[]>([
-    {
-      id: '1',
-      name: 'Infosys Ltd',
-      industry: 'Information Technology',
-      segment: 'Enterprise',
-      revenue: 18500000000,
-      employees: 350000,
-      website: 'www.infosys.com',
-      status: 'active',
-      rating: 5,
-      lastContact: '2024-06-14',
-      opportunities: 3,
-      wonDeals: 12,
-      openCases: 1
-    },
-    {
-      id: '2',
-      name: 'Tata Consultancy Services',
-      industry: 'Information Technology',
-      segment: 'Enterprise',
-      revenue: 25700000000,
-      employees: 600000,
-      website: 'www.tcs.com',
-      status: 'active',
-      rating: 5,
-      lastContact: '2024-06-12',
-      opportunities: 2,
-      wonDeals: 15,
-      openCases: 0
-    },
-    {
-      id: '3',
-      name: 'Wipro Limited',
-      industry: 'Information Technology',
-      segment: 'Enterprise',
-      revenue: 11000000000,
-      employees: 250000,
-      website: 'www.wipro.com',
-      status: 'active',
-      rating: 4,
-      lastContact: '2024-06-10',
-      opportunities: 1,
-      wonDeals: 8,
-      openCases: 0
-    },
-    {
-      id: '4',
-      name: 'HCL Technologies',
-      industry: 'Information Technology',
-      segment: 'Enterprise',
-      revenue: 13000000000,
-      employees: 220000,
-      website: 'www.hcltech.com',
-      status: 'active',
-      rating: 4,
-      lastContact: '2024-06-08',
-      opportunities: 2,
-      wonDeals: 10,
-      openCases: 2
-    },
-    {
-      id: '5',
-      name: 'Tech Mahindra',
-      industry: 'Information Technology',
-      segment: 'SMB',
-      revenue: 6500000000,
-      employees: 150000,
-      website: 'www.techmahindra.com',
-      status: 'active',
-      rating: 4,
-      lastContact: '2024-06-05',
-      opportunities: 1,
-      wonDeals: 6,
-      openCases: 0
-    },
-    {
-      id: '6',
-      name: 'Mindtree',
-      industry: 'Information Technology',
-      segment: 'SMB',
-      revenue: 1200000000,
-      employees: 35000,
-      website: 'www.mindtree.com',
-      status: 'prospect',
-      rating: 3,
-      lastContact: '2024-05-28',
-      opportunities: 1,
-      wonDeals: 0,
-      openCases: 0
-    },
-    {
-      id: '7',
-      name: 'Cognizant',
-      industry: 'Information Technology',
-      segment: 'Enterprise',
-      revenue: 19400000000,
-      employees: 350000,
-      website: 'www.cognizant.com',
-      status: 'active',
-      rating: 5,
-      lastContact: '2024-06-01',
-      opportunities: 4,
-      wonDeals: 18,
-      openCases: 1
-    },
-    {
-      id: '8',
-      name: 'Mphasis',
-      industry: 'Information Technology',
-      segment: 'SMB',
-      revenue: 1600000000,
-      employees: 30000,
-      website: 'www.mphasis.com',
-      status: 'inactive',
-      rating: 2,
-      lastContact: '2024-04-20',
-      opportunities: 0,
-      wonDeals: 3,
-      openCases: 0
-    }
-  ])
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<{ name: string; status: 'active' | 'inactive' }>({ name: '', status: 'active' })
+  const [editBusy, setEditBusy] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
 
   const supabase = createClientComponentClient()
+  const { organizationId: demoOrgId } = useDemoOrganization()
+  const [resolvedOrgId, setResolvedOrgId] = useState<string>('')
+
+  // Resolve org id once (auth/demo or fallback from server)
+  useEffect(() => {
+    async function resolveOrg() {
+      if (demoOrgId) {
+        setResolvedOrgId(demoOrgId)
+        return
+      }
+      try {
+        const r = await fetch('/api/playbook/org/default', { cache: 'no-store' })
+        if (r.ok) {
+          const j = await r.json()
+          setResolvedOrgId(j.id)
+        }
+      } catch {}
+    }
+    resolveOrg()
+  }, [demoOrgId])
+
+  useEffect(() => {
+    if (resolvedOrgId) loadAccounts()
+  }, [resolvedOrgId])
+
+  async function loadAccounts() {
+    try {
+      console.debug('[accounts] using orgId', resolvedOrgId)
+      const res = await fetch(`/api/playbook/crm/accounts?orgId=${resolvedOrgId}`, { cache: 'no-store' })
+      if (!res.ok) throw new Error('Failed to load accounts')
+      const data = await res.json()
+      const items = (data.items || []).map((r: any) => ({
+        id: r.id,
+        name: r.entity_name,
+        industry: r.industry || 'General',
+        segment: r.segment || 'Enterprise',
+        website: r.website || '-',
+        revenue: r.revenue || 0,
+        employees: r.employees || 0,
+        status: ((r.status === 'archived' ? 'inactive' : (r.status || 'active')) as Account['status']),
+        rating: 3,
+        lastContact: r.updated_at || r.created_at,
+        opportunities: 0,
+        wonDeals: 0,
+        openCases: 0
+      }))
+      setAccounts(items)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  function startEdit(acc: Account) {
+    setEditingId(acc.id)
+    setEditError(null)
+    setEditForm({ name: acc.name, status: acc.status === 'inactive' ? 'inactive' : 'active' })
+  }
+
+  async function submitEdit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!resolvedOrgId || !editingId) return
+    setEditBusy(true)
+    setEditError(null)
+    try {
+      const res = await fetch('/api/playbook/crm/accounts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgId: resolvedOrgId,
+          smart_code: 'HERA.CRM.ACCOUNT.UPDATE.v1',
+          idempotency_key: `${Date.now()}-${editingId}`,
+          actor_user_id: '00000000-0000-0000-0000-000000000000',
+          account: {
+            id: editingId,
+            entity_name: editForm.name,
+            status: editForm.status === 'inactive' ? 'archived' : 'active',
+          }
+        })
+      })
+      if (!res.ok) throw new Error(await res.text())
+      setEditingId(null)
+      await loadAccounts()
+    } catch (err: any) {
+      setEditError(err?.message || 'Update failed')
+    } finally {
+      setEditBusy(false)
+    }
+  }
+
+  async function performDelete(id: string) {
+    if (!resolvedOrgId) return
+    if (!confirm('Archive this account?')) return
+    try {
+      const res = await fetch('/api/playbook/crm/accounts', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgId: resolvedOrgId,
+          smart_code: 'HERA.CRM.ACCOUNT.DELETE.v1',
+          id
+        })
+      })
+      if (!res.ok) throw new Error(await res.text())
+      await loadAccounts()
+    } catch (e: any) {
+      console.error(e)
+      alert('Delete failed: ' + (e?.message || 'Unknown'))
+    }
+  }
+
+  async function submitCreate(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.name.trim()) {
+      setCreateError('Account name is required')
+      return
+    }
+    setCreateError(null)
+    setCreating(true)
+    try {
+      // Create account via Playbook API (DB-backed)
+      if (!resolvedOrgId) throw new Error('No organization selected')
+      const res = await fetch('/api/playbook/crm/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgId: resolvedOrgId,
+          smart_code: 'HERA.CRM.ACCOUNT.CREATE.v1',
+          idempotency_key: `${Date.now()}-${form.name}`,
+          actor_user_id: '00000000-0000-0000-0000-000000000000',
+          account: {
+            entity_name: form.name,
+            website: form.website || undefined,
+            industry: form.industry || undefined,
+            owner_id: undefined,
+            phone: undefined,
+          }
+        })
+      })
+      if (!res.ok) throw new Error('Account creation failed')
+      await loadAccounts()
+      setIsCreating(false)
+      setForm({ name: '', industry: '', segment: 'Enterprise', website: '', revenue: '', employees: '', status: 'active' })
+    } catch (err: any) {
+      setCreateError(err?.message || 'Failed to create account')
+    } finally {
+      setCreating(false)
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -245,6 +287,7 @@ export default function AccountsPage() {
           <p className="text-foreground/60 mt-1">Manage your customer accounts and relationships</p>
         </div>
         <button
+          data-testid="new-account-button"
           onClick={() => setIsCreating(true)}
           className="mt-4 sm:mt-0 flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] rounded-lg text-foreground font-medium hover:shadow-lg hover:shadow-[#FF5A09]/30 transition-all duration-300"
         >
@@ -252,6 +295,72 @@ export default function AccountsPage() {
           <span>New Account</span>
         </button>
       </div>
+
+      {isCreating && (
+        <form onSubmit={submitCreate} className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-xl p-4 space-y-3" data-testid="create-account-form">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              data-testid="account-name-input"
+              value={form.name}
+              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+              placeholder="Account name"
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+              required
+            />
+            <input
+              value={form.industry}
+              onChange={e => setForm(f => ({ ...f, industry: e.target.value }))}
+              placeholder="Industry"
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+            />
+            <select
+              value={form.segment}
+              onChange={e => setForm(f => ({ ...f, segment: e.target.value }))}
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+            >
+              <option>Enterprise</option>
+              <option>SMB</option>
+              <option>Startup</option>
+            </select>
+            <input
+              value={form.website}
+              onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+              placeholder="Website"
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10 md:col-span-2"
+            />
+            <input
+              value={form.revenue}
+              onChange={e => setForm(f => ({ ...f, revenue: e.target.value }))}
+              placeholder="Revenue (number)"
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+              inputMode="numeric"
+            />
+            <input
+              value={form.employees}
+              onChange={e => setForm(f => ({ ...f, employees: e.target.value }))}
+              placeholder="Employees"
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+              inputMode="numeric"
+            />
+            <select
+              value={form.status}
+              onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
+              className="px-3 py-2 rounded-md bg-background/5 border border-border/10"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="prospect">Prospect</option>
+            </select>
+          </div>
+          {createError && <p className="text-sm text-red-400">{createError}</p>}
+          <div className="flex gap-2">
+            <button disabled={creating} data-testid="create-account-submit" className="px-4 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground">
+              {creating ? 'Creating...' : 'Create Account'}
+            </button>
+            <button type="button" onClick={() => setIsCreating(false)} className="px-4 py-2 rounded-md border border-border/10">Cancel</button>
+          </div>
+        </form>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -317,7 +426,7 @@ export default function AccountsPage() {
       </div>
 
       {/* Accounts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-testid="accounts-list">
         {filteredAccounts.map(account => (
           <div key={account.id} className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FF5A09]/30 to-[#ec7f37]/30 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
@@ -341,11 +450,52 @@ export default function AccountsPage() {
                   >
                     {account.status}
                   </span>
-                  <button className="text-foreground/40 hover:text-foreground transition-colors">
-                    <MoreVertical className="h-5 w-5" />
+                  <button
+                    type="button"
+                    data-testid={`account-edit-${account.id}`}
+                    onClick={() => startEdit(account)}
+                    className="px-2 py-1 text-xs rounded-md border border-border/10 hover:bg-background/10"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    data-testid={`account-delete-${account.id}`}
+                    onClick={() => performDelete(account.id)}
+                    className="px-2 py-1 text-xs rounded-md border border-red-500/30 text-red-400 hover:bg-red-500/10"
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
+
+              {editingId === account.id && (
+                <form onSubmit={submitEdit} className="mt-3 p-3 border border-border/10 rounded-lg bg-background/5" data-testid={`account-edit-form-${account.id}`}>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <input
+                      value={editForm.name}
+                      onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                      className="px-2 py-2 rounded-md bg-background/5 border border-border/10"
+                      placeholder="Account name"
+                    />
+                    <select
+                      value={editForm.status}
+                      onChange={e => setEditForm(f => ({ ...f, status: e.target.value as any }))}
+                      className="px-2 py-2 rounded-md bg-background/5 border border-border/10"
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <button disabled={editBusy} className="px-3 py-2 rounded-md bg-gradient-to-r from-[#FF5A09] to-[#ec7f37] text-foreground">
+                        {editBusy ? 'Saving...' : 'Save'}
+                      </button>
+                      <button type="button" onClick={() => setEditingId(null)} className="px-3 py-2 rounded-md border border-border/10">Cancel</button>
+                    </div>
+                  </div>
+                  {editError && <p className="text-sm text-red-400 mt-2">{editError}</p>}
+                </form>
+              )}
 
               {/* Rating */}
               <div className="flex items-center space-x-1 mb-4">

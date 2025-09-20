@@ -1,7 +1,7 @@
 /**
  * IFRS Validation and Rollup Functions
  * Validates IFRS compliance and provides rollup calculations
- * Smart Code: HERA.GLOBAL.IFRS.VALIDATION.ROLLUP.v1
+ * Smart Code: HERA.GLOBAL.IFRS.VALIDATION.ROLLUP.V1
  */
 
 export interface IFRSValidationResult {

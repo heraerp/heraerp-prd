@@ -1,12 +1,12 @@
 'use client'
 
-import { Card } from '@/src/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useToast } from '@/src/hooks/use-toast'
+import { useToast } from '@/hooks/use-toast'
 import { useState } from 'react'
 import { Scissors, UtensilsCrossed, Users2, Armchair, ArrowRight, Sparkles } from 'lucide-react'
-import type { Database } from '@/src/types/hera-database.types'
+import type { Database } from '@/types/hera-database.types'
 
 interface DemoModule {
   id: string

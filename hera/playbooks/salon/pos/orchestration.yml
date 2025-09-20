@@ -1,0 +1,213 @@
+smart_code: HERA.SALON.POS.ORCH.CART_LINE_MGMT.V1
+intent: >
+  Deterministic, crash-safe execution for chair-side add/update/delete + reprice,
+  with inventory reservations for retail and full audit.
+
+triggers:
+  # API → Event mapping
+  - on: API.POST./api/v1/salon/pos/carts/:id/lines
+    emit: POS.CART.LINE_ADD.REQUESTED
+  - on: API.PATCH./api/v1/salon/pos/carts/:id/lines/:lineId
+    emit: POS.CART.LINE_UPDATE.REQUESTED
+  - on: API.DELETE./api/v1/salon/pos/carts/:id/lines/:lineId
+    emit: POS.CART.LINE_DELETE.REQUESTED
+  - on: API.POST./api/v1/salon/pos/carts/:id/reprice
+    emit: POS.CART.REPRICE.REQUESTED
+  
+  # Checkout flow triggers
+  - on: API.POST./api/v1/salon/pos/checkout/start
+    emit: POS.CHECKOUT.START.REQUESTED
+  - on: API.POST./api/v1/salon/pos/payments/intent
+    emit: POS.PAYMENT.INTENT.REQUESTED
+  - on: API.POST./api/v1/salon/pos/payments/:id/capture
+    emit: POS.PAYMENT.CAPTURE.REQUESTED
+  - on: API.POST./api/v1/salon/pos/checkout/:id/commit
+    emit: POS.CHECKOUT.COMMIT.REQUESTED
+  
+  # Returns and refunds triggers
+  - on: API.POST./api/v1/salon/pos/sales/:id/returns
+    emit: POS.RETURN.RETAIL.REQUESTED
+  - on: API.POST./api/v1/salon/pos/sales/:id/service-adjustment
+    emit: POS.SERVICE.ADJUSTMENT.REQUESTED
+  - on: API.POST./api/v1/salon/pos/payments/:id/refund
+    emit: POS.PAYMENT.REFUND.REQUESTED
+
+graph:
+  nodes:
+    # ADD
+    - id: VALIDATE_ADD
+      run: HERA.SALON.POS.CART.ADD_LINE.V1
+      mode: validate_only
+    - id: RESERVE_SOFT
+      run: HERA.SALON.INV.RESERVE.SOFT.V1
+      when: $.payload.line_type == 'RETAIL'
+      compensation: HERA.SALON.INV.RESERVE.RELEASE.V1
+    - id: PERSIST_ADD
+      run: HERA.SALON.POS.CART.ADD_LINE.V1
+      mode: persist
+    - id: REPRICE_AFTER_ADD
+      run: HERA.SALON.POS.CART.REPRICE.V1
+
+    # UPDATE
+    - id: VALIDATE_UPDATE
+      run: HERA.SALON.POS.CART.UPDATE_LINE.V1
+      mode: validate_only
+    - id: ADJUST_RESERVATION
+      run: HERA.SALON.INV.RESERVE.SOFT.V1
+      when: $.payload.affects_inventory == true
+      compensation: HERA.SALON.INV.RESERVE.RELEASE.V1
+    - id: PERSIST_UPDATE
+      run: HERA.SALON.POS.CART.UPDATE_LINE.V1
+      mode: persist
+    - id: REPRICE_AFTER_UPDATE
+      run: HERA.SALON.POS.CART.REPRICE.V1
+
+    # DELETE
+    - id: PERSIST_DELETE
+      run: HERA.SALON.POS.CART.DELETE_LINE.V1
+    - id: RELEASE_ON_DELETE
+      run: HERA.SALON.INV.RESERVE.RELEASE.V1
+      when: $.payload.line_type == 'RETAIL'
+    - id: REPRICE_AFTER_DELETE
+      run: HERA.SALON.POS.CART.REPRICE.V1
+
+    # CHECKOUT FLOW
+    - id: START_CHECKOUT
+      run: HERA.SALON.POS.CHECKOUT.START.V1
+    - id: CREATE_PAYMENT_INTENT
+      run: HERA.SALON.PAYMENT.INTENT.CREATE.V1
+    - id: CAPTURE_PAYMENT
+      run: HERA.SALON.PAYMENT.CAPTURE.PROCESS.V1
+    - id: COMMIT_SALE
+      run: HERA.SALON.POS.SALE.COMMIT.V1
+    - id: COMMIT_INVENTORY
+      run: HERA.SALON.INV.COMMIT.SALE.V1
+    - id: CALCULATE_COMMISSION
+      run: HERA.SALON.COMMISSION.CALC.SERVICE.V1
+    - id: POST_GL_JOURNAL
+      run: HERA.FIN.POSTING.GL.JOURNAL.V1
+
+    # RETURNS AND REFUNDS FLOW
+    - id: PROCESS_RETURN
+      run: HERA.SALON.POS.RETURN.RETAIL.V1
+    - id: RESTOCK_GOOD_ITEMS
+      run: HERA.SALON.INV.RETURN.RESTOCK.V1
+      when: $.payload.has_good_items == true
+    - id: WRITE_OFF_DAMAGED
+      run: HERA.SALON.INV.RETURN.DAMAGED.V1
+      when: $.payload.has_damaged_items == true
+    - id: PROCESS_SERVICE_ADJUSTMENT
+      run: HERA.SALON.SVC.ADJ.POSTSALE.V1
+    - id: REVERSE_TAX
+      run: HERA.SALON.TAX.ADJ.REVERSE.V1
+    - id: PROCESS_REFUND
+      run: HERA.SALON.PAYMENT.REFUND.PROCESS.V1
+    - id: POST_GL_REVERSAL
+      run: HERA.FIN.POSTING.GL.REVERSE.V1
+
+edges:
+  # ADD flow
+  - POS.CART.LINE_ADD.REQUESTED -> VALIDATE_ADD -> RESERVE_SOFT -> PERSIST_ADD -> REPRICE_AFTER_ADD
+  # UPDATE flow
+  - POS.CART.LINE_UPDATE.REQUESTED -> VALIDATE_UPDATE -> ADJUST_RESERVATION -> PERSIST_UPDATE -> REPRICE_AFTER_UPDATE
+  # DELETE flow
+  - POS.CART.LINE_DELETE.REQUESTED -> PERSIST_DELETE -> RELEASE_ON_DELETE -> REPRICE_AFTER_DELETE
+  
+  # CHECKOUT flows
+  - POS.CHECKOUT.START.REQUESTED -> START_CHECKOUT
+  - POS.PAYMENT.INTENT.REQUESTED -> CREATE_PAYMENT_INTENT
+  - POS.PAYMENT.CAPTURE.REQUESTED -> CAPTURE_PAYMENT
+  - POS.CHECKOUT.COMMIT.REQUESTED -> COMMIT_SALE -> COMMIT_INVENTORY -> CALCULATE_COMMISSION -> POST_GL_JOURNAL
+  
+  # RETURNS AND REFUNDS flows
+  - POS.RETURN.RETAIL.REQUESTED -> PROCESS_RETURN -> RESTOCK_GOOD_ITEMS -> REVERSE_TAX -> PROCESS_REFUND -> POST_GL_REVERSAL
+  - POS.RETURN.RETAIL.REQUESTED -> PROCESS_RETURN -> WRITE_OFF_DAMAGED -> REVERSE_TAX -> PROCESS_REFUND -> POST_GL_REVERSAL
+  - POS.SERVICE.ADJUSTMENT.REQUESTED -> PROCESS_SERVICE_ADJUSTMENT -> REVERSE_TAX -> PROCESS_REFUND -> POST_GL_REVERSAL
+  - POS.PAYMENT.REFUND.REQUESTED -> PROCESS_REFUND -> POST_GL_REVERSAL
+
+transaction_boundaries:
+  - name: add_line_txn
+    applies_to: [RESERVE_SOFT, PERSIST_ADD]
+  - name: update_line_txn
+    applies_to: [ADJUST_RESERVATION, PERSIST_UPDATE]
+  - name: delete_line_txn
+    applies_to: [PERSIST_DELETE, RELEASE_ON_DELETE]
+  - name: reprice_txn
+    applies_to: [REPRICE_AFTER_ADD, REPRICE_AFTER_UPDATE, REPRICE_AFTER_DELETE]
+  
+  # Checkout transaction boundaries
+  - name: checkout_start_txn
+    applies_to: [START_CHECKOUT]
+  - name: payment_intent_txn
+    applies_to: [CREATE_PAYMENT_INTENT]
+  - name: payment_capture_txn
+    applies_to: [CAPTURE_PAYMENT]
+  - name: sale_commit_txn
+    applies_to: [COMMIT_SALE, COMMIT_INVENTORY, CALCULATE_COMMISSION, POST_GL_JOURNAL]
+  
+  # Returns and refunds transaction boundaries
+  - name: return_txn
+    applies_to: [PROCESS_RETURN]
+  - name: inventory_return_txn
+    applies_to: [RESTOCK_GOOD_ITEMS, WRITE_OFF_DAMAGED]
+  - name: service_adjustment_txn
+    applies_to: [PROCESS_SERVICE_ADJUSTMENT]
+  - name: tax_reversal_txn
+    applies_to: [REVERSE_TAX]
+  - name: refund_txn
+    applies_to: [PROCESS_REFUND]
+  - name: gl_reversal_txn
+    applies_to: [POST_GL_REVERSAL]
+
+retry_policy:
+  max_attempts: 3
+  backoff: exponential
+  base_delay_ms: 100
+  max_delay_ms: 5000
+  retryable_errors:
+    - TEMPORARY_LOCK_FAILURE
+    - NETWORK_TIMEOUT
+    - INVENTORY_CONTENTION
+
+compensation_policy:
+  auto_compensate: true
+  compensation_timeout_ms: 10000
+  preserve_failed_state: true  # For debugging
+
+observability:
+  trace_all_nodes: true
+  emit_metrics:
+    - orchestration.node.duration
+    - orchestration.flow.success_rate
+    - orchestration.compensation.triggered
+  audit_events:
+    - flow_started
+    - node_executed
+    - compensation_applied
+    - flow_completed
+
+validation:
+  enforce_organization_id: true
+  enforce_smart_codes: true
+  validate_against_catalog: true
+  check_permissions: true
+
+# Configuration for different execution modes
+execution_modes:
+  development:
+    dry_run: false
+    verbose_logging: true
+    skip_validations: []
+  
+  staging:
+    dry_run: false
+    verbose_logging: false
+    skip_validations: []
+  
+  production:
+    dry_run: false
+    verbose_logging: false
+    skip_validations: []
+    enable_circuit_breaker: true
+    circuit_breaker_threshold: 10
+    circuit_breaker_timeout_ms: 30000

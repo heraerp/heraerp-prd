@@ -7,10 +7,10 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Switch } from '@/src/components/ui/switch'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 import { 
   Code,
   Edit,
@@ -20,8 +20,8 @@ import {
   ChevronRight,
   AlertCircle
 } from 'lucide-react'
-import { PostingRule } from '@/src/lib/schemas/financeRules'
-import { cn } from '@/src/lib/utils'
+import { PostingRule } from '@/lib/schemas/financeRules'
+import { cn } from '@/lib/utils'
 
 interface RuleCardProps {
   rule: PostingRule

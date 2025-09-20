@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { withErrorHandler, APIError, validationError } from '@/src/lib/api-error-handler'
-import { validatePOSTransaction, type POSTransaction } from '@/src/lib/validations/pos-transaction'
-import type { UniversalTransactions } from '@/src/types/hera-database.types'
-import { rateLimiters } from '@/src/lib/rate-limiter'
-import { posLogger } from '@/src/lib/logger'
+import { withErrorHandler, APIError, validationError } from '@/lib/api-error-handler'
+import { validatePOSTransaction, type POSTransaction } from '@/lib/validations/pos-transaction'
+import type { UniversalTransactions } from '@/types/hera-database.types'
+import { rateLimiters } from '@/lib/rate-limiter'
+import { posLogger } from '@/lib/logger'
 
 // Initialize Supabase client with production-grade error handling
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -293,7 +293,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       transaction_date: now.toISOString(),
       transaction_code: `INV-${year}${month}${day}-${Date.now().toString().slice(-6)}`,
       reference_number: `${docNumber}-INV`,
-      smart_code: 'HERA.SALON.INV.SALE.OUT.v1',
+      smart_code: 'HERA.SALON.INV.SALE.OUT.V1',
       total_amount: -(product.quantity * product.price), // Negative for outgoing
       source_entity_id: product.id, // Product entity
       target_entity_id: null, // Could be the store location entity

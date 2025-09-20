@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Widget } from '@/src/lib/universal-ui/view-meta-service'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Widget } from '@/lib/universal-ui/view-meta-service'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
-import { universalApi } from '@/src/lib/universal-api'
-import { cn } from '@/src/lib/utils'
+import { universalApi } from '@/lib/universal-api'
+import { cn } from '@/lib/utils'
 
 interface StatsWidgetProps {
   widget: Widget

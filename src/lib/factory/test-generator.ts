@@ -829,7 +829,7 @@ jobs:
           -H "Authorization: Bearer \${{ env.HERA_API_TOKEN }}" \\
           -H "Content-Type: application/json" \\
           -d '{
-            "smart_code": "HERA.UNIVERSAL.FACTORY.TEST.REPORT.v1_0",
+            "smart_code": "HERA.UNIVERSAL.FACTORY.TEST.REPORT.V1_0",
             "payload": {
               "module_smart_code": "${this.config.moduleManifest.smart_code}",
               "pipeline_id": "\${{ github.run_id }}",

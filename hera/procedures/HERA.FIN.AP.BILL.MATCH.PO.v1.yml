@@ -1,0 +1,74 @@
+smart_code: HERA.FIN.AP.BILL.MATCH.PO.V1
+intent: Match AP bill to purchase order for 3-way matching validation.
+scope:
+  in_scope:
+    - PO matching logic
+    - quantity and price validation
+    - receipt verification
+  out_of_scope:
+    - PO creation
+    - receipt recording
+preconditions:
+  - bill contains PO reference
+  - PO exists and is approved
+invariants:
+  - matching is non-destructive
+  - tolerance rules applied
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - po_number: string
+      - bill_amount: number
+      - bill_lines: array
+happy_path:
+  - step: load PO transaction by po_number
+  - step: verify PO status is 'approved' or 'partially_received'
+  - step: match bill lines to PO lines by item/service
+  - step: verify quantities within tolerance (default 5%)
+  - step: verify prices within tolerance (default 2%)
+  - step: check total amount variance
+outputs:
+  guard_result:
+    passed: boolean
+    po_matched: boolean
+    quantity_variance: number
+    price_variance: number
+    total_variance: number
+    within_tolerance: boolean
+errors:
+  - code: PO_NOT_FOUND
+    when: po_number doesn't exist in organization
+    action: return guard failure
+  - code: PO_NOT_APPROVED
+    when: PO status is not approved
+    action: return guard failure with current status
+  - code: QUANTITY_VARIANCE_EXCEEDED
+    when: quantity variance > tolerance
+    action: return guard failure with variance details
+  - code: PRICE_VARIANCE_EXCEEDED
+    when: price variance > tolerance
+    action: return guard failure with variance details
+  - code: LINE_ITEM_MISMATCH
+    when: bill lines don't match PO lines
+    action: return guard failure with mismatch details
+observability:
+  logs:
+    - po_matched: { po_number, bill_amount, variances, result }
+  audit_json: true
+  metrics:
+    - po_match_count
+    - po_match_failure_rate by reason
+    - average_variance by type
+example_context:
+  po_number: "PO-2024-001"
+  bill_amount: 1485.00
+  bill_lines:
+    - item_code: "ITM001"
+      quantity: 10
+      unit_price: 148.50
+checks:
+  - description: verify PO is in matchable state
+  - description: apply tolerance rules consistently
+  - description: handle partial receipts correctly

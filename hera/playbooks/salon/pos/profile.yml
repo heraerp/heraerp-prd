@@ -1,0 +1,56 @@
+smart_code: HERA.SALON.POS.PROFILE.V1
+description: Salon POS transaction management profile for universal transaction CRUD
+required_role_create: pos_operator
+required_role_write: pos_operator
+required_role_finalize: pos_manager
+required_role_void: pos_manager
+header_families:
+  - HERA.SALON.POS.CART.ACTIVE.V1
+  - HERA.SALON.POS.CART.PARKED.V1
+  - HERA.SALON.APPOINTMENT.CART.V1
+line_families:
+  - HERA.SALON.SVC.LINE.             # Service lines
+  - HERA.SALON.RETAIL.LINE.          # Product lines
+  - HERA.SALON.POS.ADJUST.           # Adjustments (discount, surcharge)
+  - HERA.SALON.TAX.                  # Tax lines
+  - HERA.SALON.TIP.                  # Tip lines
+  - HERA.SALON.PACKAGE.LINE.         # Package/bundle lines
+initial_state: ACTIVE
+final_state: FINALIZED
+finalize_from_states: [ACTIVE, PARKED]
+line_add_allowed_states: [ACTIVE, PARKED]
+line_update_allowed_states: [ACTIVE, PARKED]
+line_remove_allowed_states: [ACTIVE, PARKED]
+code_format: "SAL-${YYYY}${MM}${DD}-${SEQ}"
+allows_price_override: false
+allow_rounding: true
+require_minimum_lines: false
+void_time_window: 86400              # 24 hours in seconds
+void_type: reverse                   # cancel | reverse
+after_add:
+  - HERA.SALON.POS.CART.REPRICE.V1
+  - HERA.SALON.TAX.CALCULATE.V1
+after_update:
+  - HERA.SALON.POS.CART.REPRICE.V1
+after_remove:
+  - HERA.SALON.POS.CART.REPRICE.V1
+  - HERA.SALON.INV.RELEASE.RESERVATION.V1
+pre_finalize:
+  - HERA.SALON.POS.CART.FINAL_REPRICE.V1
+  - HERA.SALON.TAX.FINAL_CALCULATE.V1
+  - HERA.SALON.INV.VALIDATE.AVAILABILITY.V1
+post_finalize:
+  - HERA.SALON.INV.COMMIT.SALE.V1
+  - HERA.SALON.COMMISSION.CALCULATE.V1
+  - HERA.FIN.POSTING.GL.JOURNAL.V1
+  - HERA.SALON.LOYALTY.ADD_POINTS.V1
+  - HERA.SALON.NOTIFICATION.SEND_RECEIPT.V1
+void_compensations:
+  - HERA.SALON.INV.RESTORE.STOCK.V1
+  - HERA.FIN.POSTING.GL.REVERSE.V1
+  - HERA.SALON.COMMISSION.REVERSE.V1
+  - HERA.SALON.LOYALTY.REVERSE_POINTS.V1
+reversal_rules:
+  create_negative_lines: true
+  reference_original: true
+  reason_required: true

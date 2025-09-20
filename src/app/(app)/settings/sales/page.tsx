@@ -7,10 +7,10 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   Calculator, 
   Percent,
@@ -22,11 +22,11 @@ import {
   CheckCircle,
   Info
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useOrgSettings } from '@/src/lib/api/orgSettings'
-import { SalesPolicyForm } from '@/src/components/settings/SalesPolicyForm'
-import { SalesPolicy } from '@/src/lib/schemas/settings'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useOrgSettings } from '@/lib/api/orgSettings'
+import { SalesPolicyForm } from '@/components/settings/SalesPolicyForm'
+import { SalesPolicy } from '@/lib/schemas/settings'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function SalesSettingsPage() {
   const { currentOrganization } = useOrganization()

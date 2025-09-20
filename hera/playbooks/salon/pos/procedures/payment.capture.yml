@@ -1,0 +1,122 @@
+smart_code: HERA.SALON.PAYMENT.CAPTURE.PROCESS.V1
+intent: >
+  Finalize a payment intent; record funds received.
+  Converts intent to actual payment capture with proper accounting.
+
+scope:
+  in_scope:
+    - Payment intent verification and capture
+    - Method-specific capture handling
+    - Payment recording and tracking
+    - Funds verification and settlement
+  out_of_scope:
+    - Payment intent creation (separate procedure)
+    - Refund processing
+    - Payment gateway setup
+    - Reconciliation workflows
+
+preconditions:
+  - payment intent exists and is in OPEN status
+  - intent amount matches capture request
+  - payment method supports capture
+  - has_permissions: [pos_operator, payment_capture]
+
+invariants:
+  - captured amount matches intent amount
+  - payment capture is idempotent
+  - funds are properly recorded
+  - capture links to original intent
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for payment processing
+    - name: payment_intent_id
+      type: uuid
+      where: payload
+      description: Payment intent to capture
+  optional:
+    - name: capture_amount
+      type: number
+      where: payload
+      default: null
+      description: Partial capture amount (defaults to full intent amount)
+    - name: idempotency_key
+      type: string
+      where: headers
+      description: Idempotency key for safe retries
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: payment_capture
+      description: Payment capture transaction
+      smart_codes:
+        - HERA.SALON.PAYMENT.CARD.CAPTURE.V1
+        - HERA.SALON.PAYMENT.CASH.V1
+        - HERA.SALON.PAYMENT.GIFTCARD.REDEEM.V1
+        - HERA.SALON.PAYMENT.DEPOSIT.REDEEM.V1
+  side_effects:
+    - capture payment through gateway (for card payments)
+    - record payment in financial system
+    - update intent status to CAPTURED
+    - create audit trail for payment
+
+happy_path:
+  - step: Validate payment intent exists and is capturable
+  - step: Verify intent amount and capture amount
+  - step: Check idempotency key for duplicate captures
+  - step: Execute method-specific capture logic
+  - step: For card payments, capture via payment gateway
+  - step: For cash payments, record cash receipt
+  - step: For gift card payments, redeem from gift card balance
+  - step: For deposit payments, redeem from customer deposit
+  - step: Create capture transaction with proper smart code
+  - step: Update intent status to CAPTURED
+  - step: Return payment_id and capture status
+
+errors:
+  - code: INTENT_NOT_FOUND
+    when: payment_intent_id does not exist
+    action: return error with valid intent requirements
+  - code: INTENT_NOT_CAPTURABLE
+    when: intent is already captured or cancelled
+    action: return error with intent status
+  - code: AMOUNT_MISMATCH
+    when: capture amount exceeds intent amount
+    action: return error with amount validation
+  - code: PAYMENT_GATEWAY_FAILURE
+    when: gateway capture fails for card payments
+    action: return error with gateway details
+  - code: INSUFFICIENT_GIFT_CARD_BALANCE
+    when: gift card balance insufficient for redemption
+    action: return error with balance details
+  - code: INSUFFICIENT_DEPOSIT_BALANCE
+    when: customer deposit insufficient for redemption
+    action: return error with deposit balance
+  - code: DUPLICATE_CAPTURE
+    when: idempotency key matches existing successful capture
+    action: return existing capture details
+  - code: CAPTURE_PROCESSING_ERROR
+    when: capture processing fails for technical reasons
+    action: return error with retry guidance
+
+observability:
+  logs: [payment_capture_requested, intent_validated, gateway_captured, capture_recorded]
+  audit_json: true
+  metrics: [payment_capture_duration_ms, capture_success_rate, payment_method_performance]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  payment_intent_id: "pi_123"
+  capture_amount: 116.00
+
+checks:
+  - description: Payment intent properly validated before capture
+  - description: Capture amount matches intent or is valid partial
+  - description: Method-specific capture logic executed correctly
+  - description: Payment recorded with proper accounting codes
+  - description: Intent status updated to prevent double capture
+  - description: Audit trail complete for payment capture

@@ -8,15 +8,15 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { toast } from '@/src/lib/utils'
-import { PosApi } from '@/src/lib/api/pos'
+import { toast } from '@/lib/utils'
+import { PosApi } from '@/lib/api/pos'
 import {
   CartLine,
   CartState,
   Payment,
   calculateTotals,
   calculateCommission,
-} from '@/src/lib/schemas/pos'
+} from '@/lib/schemas/pos'
 
 // Cart store with persistence
 interface CartStore extends CartState {

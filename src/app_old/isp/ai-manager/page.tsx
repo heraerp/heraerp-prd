@@ -1,6 +1,6 @@
 'use client'
 
-// Smart Code: HERA.ISP.AI.MANAGER.UI.v1
+// Smart Code: HERA.ISP.AI.MANAGER.UI.V1
 // ISP AI Manager – inspired by Furniture AI Manager, tailored for broadband ISPs
 
 import React, { useEffect, useRef, useState } from 'react'

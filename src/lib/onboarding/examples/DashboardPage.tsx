@@ -167,7 +167,7 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap">Acme Corp</td>
                     <td className="px-6 py-4 whitespace-nowrap">Customer</td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
-                      HERA.CRM.CUST.ENT.PROF.v1
+                      HERA.CRM.CUST.ENT.PROF.V1
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">2 hours ago</td>
                   </tr>
@@ -175,7 +175,7 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap">Invoice #1234</td>
                     <td className="px-6 py-4 whitespace-nowrap">Transaction</td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
-                      HERA.FIN.INV.TXN.SALE.v1
+                      HERA.FIN.INV.TXN.SALE.V1
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">4 hours ago</td>
                   </tr>
@@ -183,7 +183,7 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap">Widget Pro</td>
                     <td className="px-6 py-4 whitespace-nowrap">Product</td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
-                      HERA.INV.PROD.ENT.ITEM.v1
+                      HERA.INV.PROD.ENT.ITEM.V1
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">Yesterday</td>
                   </tr>

@@ -27,7 +27,7 @@ import {
   Lightbulb
 } from 'lucide-react'
 
-// Smart Code: HERA.REST.ONBOARDING.TOUR.PROGRESSIVE.v1
+// Smart Code: HERA.REST.ONBOARDING.TOUR.PROGRESSIVE.V1
 // Progressive disclosure onboarding for restaurant platform
 
 interface TourStep {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseClient } from '@/src/lib/supabase-lazy'
+import { getSupabaseClient } from '@/lib/supabase-lazy'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams

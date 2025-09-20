@@ -1,6 +1,6 @@
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/src/types/hera-database.types'
+import type { Database } from '@/types/hera-database.types'
 
 // Helper functions for furniture/tender CRUD operations with proper auth
 

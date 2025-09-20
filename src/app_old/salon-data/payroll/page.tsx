@@ -130,7 +130,7 @@ const mockEmployees: Employee[] = [
     entity_name: 'Michael Chen',
     entity_code: 'EMP-002',
     entity_type: 'employee',
-    smart_code: 'HERA.SALON.EMPLOYEE.SENIOR.STYLIST.v1',
+    smart_code: 'HERA.SALON.EMPLOYEE.SENIOR.STYLIST.V1',
     classification: 'employee',
     department: 'Hair Styling',
     pay_schedule: 'bi-weekly',

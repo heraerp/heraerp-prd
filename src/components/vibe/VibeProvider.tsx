@@ -1,13 +1,13 @@
 'use client'
 
 // HERA 100% Vibe Coding System - React Provider
-// Smart Code: HERA.VIBE.FRONTEND.PROVIDER.REACT.v1
+// Smart Code: HERA.VIBE.FRONTEND.PROVIDER.REACT.V1
 // Purpose: Universal React context provider for vibe coding system
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { useSupabaseAuth } from '@/contexts/supabase-auth-context'
-import { vibeEngine } from '@/src/lib/vibe/core-engine'
-import { VibeContext, VibeSession, VibeComponent, IntegrationWeave } from '@/src/lib/vibe/types'
+import { vibeEngine } from '@/lib/vibe/core-engine'
+import { VibeContext, VibeSession, VibeComponent, IntegrationWeave } from '@/lib/vibe/types'
 
 interface VibeContextType {
   // Engine State
@@ -99,7 +99,7 @@ export function VibeProvider({ children, autoInitialize = true }: VibeProviderPr
 
       // Preserve initialization context
       await preserveContext({
-        smart_code: 'HERA.VIBE.FRONTEND.INIT.SUCCESS.v1',
+        smart_code: 'HERA.VIBE.FRONTEND.INIT.SUCCESS.V1',
         user_intent: 'Initialize HERA Vibe Coding System',
         business_context: {
           initialization_method: 'react_provider',

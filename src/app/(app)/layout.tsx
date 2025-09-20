@@ -8,10 +8,10 @@
 
 import React, { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { AuthenticatedOnly, usePermissions } from '@/src/lib/auth/guard'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { navItems, getDefaultBranding } from '@/src/lib/config/navigation'
-import { createApiClient } from '@/src/lib/api/client'
+import { AuthenticatedOnly, usePermissions } from '@/lib/auth/guard'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { navItems, getDefaultBranding } from '@/lib/config/navigation'
+import { createApiClient } from '@/lib/api/client'
 import { Menu, X, LogOut } from 'lucide-react'
 import Link from 'next/link'
 

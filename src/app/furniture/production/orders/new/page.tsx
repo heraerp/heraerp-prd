@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { ArrowLeft, Plus, Trash2, Package, Calendar, User, FileText } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
-import { useUniversalData } from '@/src/lib/dna/patterns/universal-api-loading-pattern'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-pattern'
 
 interface OrderLine {
   id: string
@@ -108,7 +108,7 @@ export default function NewProductionOrderPage() {
             href="/furniture/production/orders"
             className="p-2 hover:bg-[var(--color-body)] rounded-md transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-[#37353E]" />
+            <ArrowLeft className="h-5 w-5 text-[var(--color-icon-secondary)]" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">New Production Order</h1>

@@ -4,50 +4,51 @@
    Beautiful, accessible styling for salon applications
    ================================================================================ */
 
-/* Root theme variables */
+/* Root theme variables - Luxury Color Palette */
 :root {
-  /* Primary palette - Purple to Pink gradient */
-  --salon-primary-50: 253, 244, 255;
-  --salon-primary-100: 250, 232, 255;
-  --salon-primary-200: 245, 208, 254;
-  --salon-primary-300: 240, 171, 252;
-  --salon-primary-400: 232, 121, 249;
-  --salon-primary-500: 217, 70, 239;
-  --salon-primary-600: 192, 38, 211;
-  --salon-primary-700: 162, 28, 175;
-  --salon-primary-800: 134, 25, 143;
-  --salon-primary-900: 112, 26, 117;
+  /* Primary palette - Gold gradient */
+  --salon-primary-50: 245, 230, 200;
+  --salon-primary-100: 245, 230, 200;
+  --salon-primary-200: 245, 230, 200;
+  --salon-primary-300: 212, 175, 55;
+  --salon-primary-400: 212, 175, 55;
+  --salon-primary-500: 212, 175, 55;
+  --salon-primary-600: 184, 134, 11;
+  --salon-primary-700: 184, 134, 11;
+  --salon-primary-800: 140, 120, 83;
+  --salon-primary-900: 140, 120, 83;
   
-  /* Secondary palette - Rose gold */
-  --salon-secondary-50: 253, 242, 248;
-  --salon-secondary-100: 252, 231, 243;
-  --salon-secondary-200: 251, 207, 232;
-  --salon-secondary-300: 249, 168, 212;
-  --salon-secondary-400: 244, 114, 182;
-  --salon-secondary-500: 236, 72, 153;
-  --salon-secondary-600: 219, 39, 119;
-  --salon-secondary-700: 190, 24, 93;
-  --salon-secondary-800: 157, 23, 77;
-  --salon-secondary-900: 131, 24, 67;
+  /* Secondary palette - Bronze/Champagne */
+  --salon-secondary-50: 245, 230, 200;
+  --salon-secondary-100: 245, 230, 200;
+  --salon-secondary-200: 245, 230, 200;
+  --salon-secondary-300: 245, 230, 200;
+  --salon-secondary-400: 140, 120, 83;
+  --salon-secondary-500: 140, 120, 83;
+  --salon-secondary-600: 140, 120, 83;
+  --salon-secondary-700: 90, 42, 64;
+  --salon-secondary-800: 90, 42, 64;
+  --salon-secondary-900: 90, 42, 64;
   
   /* Accent palette - Luxurious gold */
-  --salon-accent-400: 251, 191, 36;
-  --salon-accent-500: 245, 158, 11;
-  --salon-accent-600: 217, 119, 6;
+  --salon-accent-400: 212, 175, 55;
+  --salon-accent-500: 184, 134, 11;
+  --salon-accent-600: 140, 120, 83;
 }
 
-/* Dark mode variables */
+/* Dark mode variables - Using the same luxury palette */
 .dark {
-  --salon-primary-50: 74, 4, 78;
-  --salon-primary-100: 112, 26, 117;
-  --salon-primary-200: 134, 25, 143;
-  --salon-primary-300: 162, 28, 175;
-  --salon-primary-400: 192, 38, 211;
-  --salon-primary-500: 217, 70, 239;
-  --salon-primary-600: 232, 121, 249;
-  --salon-primary-700: 240, 171, 252;
-  --salon-primary-800: 245, 208, 254;
-  --salon-primary-900: 250, 232, 255;
+  /* Gold shades remain prominent in dark mode */
+  --salon-primary-50: 140, 120, 83;
+  --salon-primary-100: 140, 120, 83;
+  --salon-primary-200: 140, 120, 83;
+  --salon-primary-300: 184, 134, 11;
+  --salon-primary-400: 184, 134, 11;
+  --salon-primary-500: 212, 175, 55;
+  --salon-primary-600: 212, 175, 55;
+  --salon-primary-700: 245, 230, 200;
+  --salon-primary-800: 245, 230, 200;
+  --salon-primary-900: 245, 230, 200;
 }
 
 /* Beautiful gradient animations */
@@ -95,31 +96,35 @@
     rgba(var(--salon-accent-500), 0.1) 100%);
 }
 
-/* Enhanced card styling */
+/* Enhanced card styling with luxury theme */
 .salon-card {
-  @apply bg-white/80 dark:bg-gray-900/80;
-  @apply backdrop-blur-xl;
-  @apply border border-purple-200/50 dark:border-purple-800/50;
-  @apply shadow-xl shadow-purple-500/10;
-  @apply transition-all duration-300;
+  background-color: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(212, 175, 55, 0.1);
+  transition: all 300ms;
 }
 
 .salon-card:hover {
-  @apply shadow-2xl shadow-purple-500/20;
-  @apply -translate-y-1;
-  @apply scale-[1.02];
+  box-shadow: 0 25px 50px -12px rgba(212, 175, 55, 0.25);
+  transform: translateY(-4px) scale(1.02);
 }
 
-/* Beautiful buttons */
+/* Beautiful buttons with gold gradient */
 .salon-button-primary {
-  @apply relative overflow-hidden;
-  @apply bg-gradient-to-r from-purple-500 to-pink-500;
-  @apply hover:from-purple-600 hover:to-pink-600;
-  @apply text-white font-medium;
-  @apply shadow-lg shadow-purple-500/25;
-  @apply hover:shadow-xl hover:shadow-purple-500/30;
-  @apply transition-all duration-200;
-  @apply hover:scale-105;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #D4AF37 0%, #B8860B 100%);
+  color: #0B0B0B;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(212, 175, 55, 0.25);
+  transition: all 200ms;
+}
+
+.salon-button-primary:hover {
+  background: linear-gradient(90deg, #B8860B 0%, #8C7853 100%);
+  box-shadow: 0 20px 25px -5px rgba(212, 175, 55, 0.3);
+  transform: scale(1.05);
 }
 
 .salon-button-secondary {

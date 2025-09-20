@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { PWMLayout } from '@/src/components/pwm/PWMLayout'
+import { PWMLayout } from '@/components/pwm/PWMLayout'
 
 export default function PWMPage() {
   // TODO: Get organization ID from auth context

@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Building2,
   UserCheck,
@@ -33,7 +33,7 @@ import {
   Edit,
   Plus
 } from 'lucide-react'
-import type { AuditClient } from '@/src/types/audit.types'
+import type { AuditClient } from '@/types/audit.types'
 
 interface ClientProfileProps {
   clientId?: string

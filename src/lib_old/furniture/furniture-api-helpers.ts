@@ -57,7 +57,7 @@ export const furnitureApi = {
     return universalApi.createTransaction({
       transaction_type: 'bid',
       reference_entity_id: tenderId,
-      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',
       ...data
     })
   },

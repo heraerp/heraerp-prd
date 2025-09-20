@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createDigitalAccountantService } from '@/lib/digital-accountant'
 import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage'
 import { supabaseAdmin } from '@/lib/supabase-server'
-// import { FinanceEventProcessor } from '@/src/lib/dna/integration/finance-event-processor'
+// import { FinanceEventProcessor } from '@/lib/dna/integration/finance-event-processor'
 
 // Smart code patterns for intent detection
 const INTENT_PATTERNS = {
@@ -68,7 +68,7 @@ const INTENT_PATTERNS = {
       /general.*journal/i,
       /journal.*to/i
     ],
-    smartCode: 'HERA.FIN.GL.TXN.JE.GENERAL.v1'
+    smartCode: 'HERA.FIN.GL.TXN.JE.GENERAL.V1'
   },
   invoice: {
     patterns: [
@@ -78,7 +78,7 @@ const INTENT_PATTERNS = {
       /generate.*invoice/i,
       /recurring.*invoice/i
     ],
-    smartCode: 'HERA.FIN.AR.TXN.INV.STANDARD.v1'
+    smartCode: 'HERA.FIN.AR.TXN.INV.STANDARD.V1'
   },
   post: {
     patterns: [
@@ -100,11 +100,11 @@ const INTENT_PATTERNS = {
       /receipt.*from/i,
       /customer.*paid/i
     ],
-    smartCode: 'HERA.FIN.AR.TXN.PMT.BANK.v1'
+    smartCode: 'HERA.FIN.AR.TXN.PMT.BANK.V1'
   },
   reconciliation: {
     patterns: [/reconcile/i, /bank.*statement/i, /match.*transactions/i, /bank.*reconciliation/i],
-    smartCode: 'HERA.FIN.BANK.RECON.AUTO.v1'
+    smartCode: 'HERA.FIN.BANK.RECON.AUTO.V1'
   },
   report: {
     patterns: [
@@ -119,7 +119,7 @@ const INTENT_PATTERNS = {
   },
   vat: {
     patterns: [/vat.*calculation/i, /tax.*period/i, /vat.*return/i, /calculate.*vat/i],
-    smartCode: 'HERA.FIN.TAX.VAT.CALC.v1'
+    smartCode: 'HERA.FIN.TAX.VAT.CALC.V1'
   }
 }
 
@@ -356,7 +356,7 @@ export async function POST(request: NextRequest) {
               transaction_code: journalCode,
               transaction_date: new Date().toISOString(),
               total_amount: amount,
-              smart_code: 'HERA.FIN.GL.TXN.AUTO_POST.v1',
+              smart_code: 'HERA.FIN.GL.TXN.AUTO_POST.V1',
               metadata: {
                 source_smart_code: intent.smartCode,
                 source_transaction: transactionCode,
@@ -380,7 +380,7 @@ export async function POST(request: NextRequest) {
                 quantity: 1,
                 unit_amount: amount,
                 line_amount: amount,
-                smart_code: 'HERA.FIN.GL.LINE.DEBIT.v1',
+                smart_code: 'HERA.FIN.GL.LINE.DEBIT.V1',
                 line_data: {
                   account_code: '110000',
                   account_name: 'Cash',
@@ -398,7 +398,7 @@ export async function POST(request: NextRequest) {
                 quantity: 1,
                 unit_amount: baseAmount,
                 line_amount: baseAmount,
-                smart_code: 'HERA.FIN.GL.LINE.CREDIT.v1',
+                smart_code: 'HERA.FIN.GL.LINE.CREDIT.V1',
                 line_data: {
                   account_code: '400000',
                   account_name: 'Service Revenue',
@@ -416,7 +416,7 @@ export async function POST(request: NextRequest) {
                 quantity: 1,
                 unit_amount: vatAmount,
                 line_amount: vatAmount,
-                smart_code: 'HERA.FIN.GL.LINE.CREDIT.v1',
+                smart_code: 'HERA.FIN.GL.LINE.CREDIT.V1',
                 line_data: {
                   account_code: '220000',
                   account_name: 'VAT Payable',
@@ -945,7 +945,7 @@ export async function POST(request: NextRequest) {
             line_amount: amount,
             quantity: 1,
             unit_price: amount,
-            smart_code: 'HERA.FIN.AR.LINE.SERVICE.v1',
+            smart_code: 'HERA.FIN.AR.LINE.SERVICE.V1',
             metadata: {
               description: 'Professional Services',
               account_code: '4110',

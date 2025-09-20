@@ -1,16 +1,16 @@
 /**
  * HERA Universal Balance Sheet DNA Service
- * Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.v1
+ * Smart Code: HERA.FIN.BALANCE.SHEET.ENGINE.V1
  *
  * Factory service for creating industry-optimized daily balance sheet services
  * that work with HERA's universal 6-table architecture.
  */
 
-import { UniversalAPIClient } from '@/src/lib/universal-api'
+import { UniversalAPIClient } from '@/lib/universal-api'
 
 // Core Balance Sheet DNA Configuration
 export const BALANCE_SHEET_DNA_CONFIG = {
-  component_id: 'HERA.FIN.BALANCE.SHEET.ENGINE.v1',
+  component_id: 'HERA.FIN.BALANCE.SHEET.ENGINE.V1',
   component_name: 'Universal Balance Sheet Engine',
   version: '1.0.0',
 
@@ -71,9 +71,9 @@ export const BALANCE_SHEET_DNA_CONFIG = {
         negative_equity: true
       },
       smart_codes: {
-        daily_report: 'HERA.SALON.BS.DAILY.REPORT.v1',
-        cash_analysis: 'HERA.SALON.BS.CASH.ANALYSIS.v1',
-        ratio_analysis: 'HERA.SALON.BS.RATIO.ANALYSIS.v1'
+        daily_report: 'HERA.SALON.BS.DAILY.REPORT.V1',
+        cash_analysis: 'HERA.SALON.BS.CASH.ANALYSIS.V1',
+        ratio_analysis: 'HERA.SALON.BS.RATIO.ANALYSIS.V1'
       }
     },
 
@@ -108,8 +108,8 @@ export const BALANCE_SHEET_DNA_CONFIG = {
       },
       daily_metrics: ['cash_position', 'food_inventory_level', 'current_ratio', 'owner_equity'],
       smart_codes: {
-        daily_report: 'HERA.REST.BS.DAILY.REPORT.v1',
-        inventory_analysis: 'HERA.REST.BS.INVENTORY.ANALYSIS.v1'
+        daily_report: 'HERA.REST.BS.DAILY.REPORT.V1',
+        inventory_analysis: 'HERA.REST.BS.INVENTORY.ANALYSIS.V1'
       }
     },
 
@@ -311,7 +311,7 @@ export class BalanceSheetDNAService {
       // Generate balance sheet data using SQL function
       const balanceSheetResponse = await this.api.query({
         action: 'custom_query',
-        smart_code: 'HERA.FIN.BS.GENERATE.DAILY.v1',
+        smart_code: 'HERA.FIN.BS.GENERATE.DAILY.V1',
         query: 'generate_daily_balance_sheet',
         params: {
           p_organization_id: this.organizationId,

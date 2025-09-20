@@ -1,0 +1,94 @@
+smart_code: HERA.UNIV.TASK.COMPLETE.V1
+intent: Complete a task and optionally advance the workflow.
+scope:
+  in_scope:
+    - mark task as completed
+    - capture completion details
+    - optionally trigger workflow advance
+    - validate completion authority
+  out_of_scope:
+    - task rejection/return
+    - partial completion
+    - task reassignment
+preconditions:
+  - permissions: [$PROFILE.required_role_task_complete]
+  - task exists and is CLAIMED or OPEN (if assigned to user)
+  - user is assignee or has override permission
+invariants:
+  - state machine: [OPEN, CLAIMED] → COMPLETED (only valid transitions)
+  - completed tasks are immutable
+  - atomic completion prevents race conditions
+  - completion triggers workflow advance if configured
+  - audit trail with outcome captured
+inputs:
+  required:
+    - organization_id: uuid
+    - task_id: uuid                                # task to complete
+    - outcome: string                              # completion outcome
+  optional:
+    - notes: string                                # completion notes
+    - metadata: object                             # outcome-specific data
+    - advance_workflow: object                     # auto-advance workflow
+      - to_state: string
+      - payload: object
+happy_path:
+  - step: load task entity and dynamic data
+  - step: atomically update task state from [OPEN, CLAIMED] to COMPLETED (with WHERE clause)
+  - step: if update affected 0 rows, reload and return appropriate error
+  - step: if task assigned to user, verify current user matches
+  - step: if task assigned to role, verify user has role or override permission
+  - step: update task.completed_at = now(), completed_by = user_id
+  - step: store outcome, notes, and metadata
+  - step: if advance_workflow provided, call HERA.UNIV.WF.ADVANCE.V1
+outputs:
+  entities_updated:
+    - core_dynamic_data: 1                         # task completion
+  procedures_called:
+    - HERA.UNIV.WF.ADVANCE.V1: 0-1               # if advance_workflow
+  response:
+    task_id: uuid
+    state: string                                  # COMPLETED
+    outcome: string
+    completed_at: timestamp
+    workflow_advanced: boolean
+errors:
+  - code: TASK_NOT_FOUND
+    when: task_id doesn't exist in organization
+    action: return 404
+  - code: TASK_NOT_ACTIVE
+    when: task state not in [OPEN, CLAIMED]
+    action: return 409 with current state
+  - code: UNAUTHORIZED_ASSIGNEE
+    when: user is not assignee and lacks override
+    action: return 403
+  - code: WORKFLOW_ADVANCE_FAILED
+    when: advance_workflow specified but fails
+    action: task completed, return warning
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_task_complete
+    action: return 403
+observability:
+  logs:
+    - task_completed: { task_id, outcome, completed_by, duration }
+    - workflow_auto_advanced: { task_id, instance_id, to_state }
+  audit_json: true
+  metrics:
+    - task_completion_count by outcome
+    - task_duration_distribution
+    - auto_advance_rate
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  task_id: "890e1234-e89b-12d3-a456-426614174000"
+  outcome: "approved"
+  notes: "Leave request approved with condition to complete pending work"
+  metadata:
+    condition: "complete_project_x"
+    approved_days: 5
+  advance_workflow:
+    to_state: "APPROVED"
+    payload:
+      approval_notes: "Conditional approval granted"
+checks:
+  - description: verify user can complete task
+  - description: validate outcome is meaningful
+  - description: ensure workflow advance is valid

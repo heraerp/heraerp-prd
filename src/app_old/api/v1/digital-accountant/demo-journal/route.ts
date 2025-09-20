@@ -1,6 +1,6 @@
 /**
  * HERA Digital Accountant - Demo Journal Entry API
- * Smart Code: HERA.API.DIGITAL.ACCOUNTANT.DEMO.v1
+ * Smart Code: HERA.API.DIGITAL.ACCOUNTANT.DEMO.V1
  *
  * Demonstrates complete journal entry process from natural language to posted entries
  */

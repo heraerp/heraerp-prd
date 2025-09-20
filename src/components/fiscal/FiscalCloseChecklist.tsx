@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   CheckSquare,
   Square,
@@ -22,8 +22,8 @@ import {
   FileCheck,
   Info
 } from 'lucide-react'
-import { CloseChecklist, CloseChecklistItem } from '@/src/lib/schemas/fiscal'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { CloseChecklist, CloseChecklistItem } from '@/lib/schemas/fiscal'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface FiscalCloseChecklistProps {
   checklist: CloseChecklist

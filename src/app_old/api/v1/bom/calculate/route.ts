@@ -424,7 +424,7 @@ export async function POST(request: NextRequest) {
           reference_number: bom_data.item_id,
           transaction_date: new Date().toISOString(),
           total_amount: calculationResult.total_cost,
-          smart_code: 'HERA.SYSTEM.FIN.TXN.BOM_CALC.v1',
+          smart_code: 'HERA.SYSTEM.FIN.TXN.BOM_CALC.V1',
           business_context: {
             calculation_type: bom_data.calculation_type,
             costing_method: bom_data.costing_method,

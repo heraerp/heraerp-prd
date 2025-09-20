@@ -26,20 +26,20 @@ import {
   Loader2,
   AlertCircle
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
-import { ReadinessWizardV2 as ReadinessWizard } from '@/src/modules/readiness-questionnaire/ReadinessWizardV2'
-import { createReadinessTemplate } from '@/src/modules/readiness-questionnaire/template'
+import { ReadinessWizardV2 as ReadinessWizard } from '@/modules/readiness-questionnaire/ReadinessWizardV2'
+import { createReadinessTemplate } from '@/modules/readiness-questionnaire/template'
 import type {
   QuestionnaireTemplate,
   QuestionnaireSession,
   SessionAPI
-} from '@/src/modules/readiness-questionnaire/types'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/src/hooks/use-toast'
+} from '@/modules/readiness-questionnaire/types'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useToast } from '@/hooks/use-toast'
 
 export default function ReadinessQuestionnairePage() {
   const router = useRouter()

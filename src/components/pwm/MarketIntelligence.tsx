@@ -1,9 +1,9 @@
 'use client'
 
 import React from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scrollarea'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scrollarea'
 import {
   BarChart3,
   Globe,
@@ -13,7 +13,7 @@ import {
   Minus,
   AlertCircle
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface MarketIntelligenceProps {
   organizationId: string

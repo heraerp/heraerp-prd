@@ -1,4 +1,4 @@
-smart_code: HERA.MFG.MDM.DYNAMIC_DATA.SEED.v1
+smart_code: HERA.MFG.MDM.DYNAMIC_DATA.SEED.V1
 rows:
   # Product/Component
   - { entity_slug: product:FG-001,     key_slug: product.sku,        value: "FG-001", value_type: text }

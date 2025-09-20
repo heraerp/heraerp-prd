@@ -2,12 +2,12 @@
 // REST API exposing the complete Universal Learning Platform functionality
 
 import { NextRequest, NextResponse } from 'next/server'
-import { UniversalContentProcessor } from '@/src/lib/universal-learning/UniversalContentProcessor'
-import { UniversalAIAnalyzer } from '@/src/lib/universal-learning/UniversalAIAnalyzer'
-import { UniversalEntityCreator } from '@/src/lib/universal-learning/UniversalEntityCreator'
-import { UniversalLearningPathGenerator } from '@/src/lib/universal-learning/UniversalLearningPathGenerator'
-import { DomainSpecializationFramework } from '@/src/lib/universal-learning/DomainSpecializationFramework'
-import { CrossDomainIntelligenceEngine } from '@/src/lib/universal-learning/CrossDomainIntelligenceEngine'
+import { UniversalContentProcessor } from '@/lib/universal-learning/UniversalContentProcessor'
+import { UniversalAIAnalyzer } from '@/lib/universal-learning/UniversalAIAnalyzer'
+import { UniversalEntityCreator } from '@/lib/universal-learning/UniversalEntityCreator'
+import { UniversalLearningPathGenerator } from '@/lib/universal-learning/UniversalLearningPathGenerator'
+import { DomainSpecializationFramework } from '@/lib/universal-learning/DomainSpecializationFramework'
+import { CrossDomainIntelligenceEngine } from '@/lib/universal-learning/CrossDomainIntelligenceEngine'
 
 // HERA Organization ID for Universal Learning System
 const HERA_LEARNING_ORG_ID = '719dfed1-09b4-4ca8-bfda-f682460de945'
@@ -759,7 +759,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Universal
           error_name: error.name,
           timestamp: new Date().toISOString()
         },
-        smart_code: `HERA.EDU.UNIVERSAL.API.ERROR.v1`
+        smart_code: `HERA.EDU.UNIVERSAL.API.ERROR.V1`
       },
       { status: 500 }
     )
@@ -788,7 +788,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'Complete Pipeline Processing'
           ],
           supported_domains: ['CA', 'MED', 'LAW', 'ENG', 'LANG', 'GENERAL'],
-          smart_code: 'HERA.EDU.UNIVERSAL.API.HEALTH.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.HEALTH.V1'
         })
 
       case 'capabilities':
@@ -811,7 +811,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'GET /api/v1/universal-learning?action=capabilities': 'API capabilities documentation',
             'GET /api/v1/universal-learning?action=domains': 'Supported domain information'
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.CAPABILITIES.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.CAPABILITIES.V1'
         })
 
       case 'domains':
@@ -891,7 +891,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
               ]
             }
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.DOMAINS.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.DOMAINS.V1'
         })
 
       default:
@@ -907,7 +907,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             'GET /?action=capabilities': 'API documentation',
             'GET /?action=domains': 'Supported domains'
           },
-          smart_code: 'HERA.EDU.UNIVERSAL.API.INFO.v1'
+          smart_code: 'HERA.EDU.UNIVERSAL.API.INFO.V1'
         })
     }
   } catch (error: any) {
@@ -915,7 +915,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       {
         success: false,
         error: error.message || 'Internal server error',
-        smart_code: 'HERA.EDU.UNIVERSAL.API.ERROR.v1'
+        smart_code: 'HERA.EDU.UNIVERSAL.API.ERROR.V1'
       },
       { status: 500 }
     )

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { WhatsAppProcessorV2 } from '@/src/lib/whatsapp/processor-v2'
+import { WhatsAppProcessorV2 } from '@/lib/whatsapp/processor-v2'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''

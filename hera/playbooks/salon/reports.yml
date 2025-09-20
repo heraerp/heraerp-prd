@@ -1,6 +1,6 @@
-smart_code: HERA.SALON.REPORTS.CORE.DEFS.v1
+smart_code: HERA.SALON.REPORTS.CORE.DEFS.V1
 reports:
-  - report_code: HERA.SALON.REPORT.APPTS_BY_STYLIST.CORE.v1
+  - report_code: HERA.SALON.REPORT.APPTS_BY_STYLIST.CORE.V1
     description: "Upcoming appointments by stylist"
     params_schema:
       from: { type: date }
@@ -18,7 +18,7 @@ reports:
         GROUP BY sty.entity_name
         ORDER BY upcoming_count DESC
 
-  - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.v1
+  - report_code: HERA.SALON.REPORT.DAILY_SALES.CORE.V1
     description: "Daily sales summary (AED)"
     params_schema:
       from: { type: date }
@@ -37,7 +37,7 @@ reports:
         GROUP BY DATE(t.transaction_date)
         ORDER BY day DESC
 
-  - report_code: HERA.SALON.REPORT.REVENUE_BY_SERVICE.CORE.v1
+  - report_code: HERA.SALON.REPORT.REVENUE_BY_SERVICE.CORE.V1
     description: "Revenue by service"
     params_schema:
       from: { type: date }

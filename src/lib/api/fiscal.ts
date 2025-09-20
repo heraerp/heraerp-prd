@@ -14,8 +14,8 @@ import {
   FISCAL_SMART_CODES,
   FISCAL_DYNAMIC_DATA_KEYS,
   DEFAULT_CHECKLIST_ITEMS
-} from '@/src/lib/schemas/fiscal'
-import { universalApi } from '@/src/lib/universal-api'
+} from '@/lib/schemas/fiscal'
+import { universalApi } from '@/lib/universal-api'
 
 export function useFiscalApi(organizationId: string) {
   const queryClient = useQueryClient()

@@ -1,0 +1,106 @@
+smart_code: HERA.SALON.POS.CHECKOUT.START.V1
+intent: >
+  Freeze cart totals and open a checkout context.
+  Locks cart to prevent modifications during checkout process.
+
+scope:
+  in_scope:
+    - Cart locking and status management
+    - Final reprice execution to freeze totals
+    - Checkout context initialization
+    - Cart validation for checkout readiness
+  out_of_scope:
+    - Payment processing (separate procedures)
+    - Inventory commitment (happens at commit)
+    - GL posting (happens at commit)
+
+preconditions:
+  - cart.status == ACTIVE
+  - cart has at least one line
+  - cart totals > 0 unless zero-price package
+  - has_permissions: [pos_operator, checkout_start]
+
+invariants:
+  - cart becomes locked during checkout
+  - totals are frozen at checkout start
+  - checkout context is properly initialized
+  - cart lines cannot be modified after checkout start
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for policy and permissions
+    - name: cart_id
+      type: uuid
+      where: payload
+      description: Cart to start checkout for
+  optional:
+    - name: settle_inventory
+      type: boolean
+      where: payload
+      default: true
+      description: Whether to commit inventory at checkout
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: checkout_context
+      description: Checkout transaction for tracking checkout state
+      smart_code: HERA.SALON.POS.CHECKOUT.CONTEXT.V1
+  side_effects:
+    - lock cart to prevent modifications
+    - run final reprice to freeze totals
+    - create checkout tracking context
+    - update cart status to CHECKOUT_IN_PROGRESS
+
+happy_path:
+  - step: Validate cart exists and is in ACTIVE status
+  - step: Check cart has lines and non-zero total (unless package deal)
+  - step: Lock cart to prevent concurrent modifications
+  - step: Execute final reprice via HERA.SALON.POS.CART.REPRICE.V1
+  - step: Create checkout context transaction
+  - step: Update cart status to CHECKOUT_IN_PROGRESS
+  - step: Store checkout snapshot with frozen totals
+  - step: Return checkout_id and cart_snapshot
+
+errors:
+  - code: CART_NOT_FOUND
+    when: cart_id does not exist or not accessible
+    action: return error with cart requirements
+  - code: CART_NOT_ACTIVE
+    when: cart.status != ACTIVE
+    action: return error - only active carts can start checkout
+  - code: CART_EMPTY
+    when: cart has no lines
+    action: return error - cannot checkout empty cart
+  - code: CART_ZERO_TOTAL
+    when: cart total is zero and not a package deal
+    action: return error - zero total carts require special handling
+  - code: CART_ALREADY_IN_CHECKOUT
+    when: cart is already locked for checkout
+    action: return existing checkout_id if same request
+  - code: REPRICE_FAILED
+    when: final reprice operation fails
+    action: return error from reprice operation
+  - code: CHECKOUT_CONTEXT_CREATE_FAILED
+    when: cannot create checkout tracking transaction
+    action: unlock cart and return error
+
+observability:
+  logs: [checkout_start_requested, cart_locked, reprice_executed, checkout_context_created, checkout_started]
+  audit_json: true
+  metrics: [checkout_start_duration_ms, cart_total_at_checkout, lines_count_at_checkout]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  cart_id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+  settle_inventory: true
+
+checks:
+  - description: Cart is locked and status updated to CHECKOUT_IN_PROGRESS
+  - description: Final reprice executed and totals frozen
+  - description: Checkout context created with proper tracking
+  - description: Cart snapshot includes all required checkout data
+  - description: Checkout process completes within performance target

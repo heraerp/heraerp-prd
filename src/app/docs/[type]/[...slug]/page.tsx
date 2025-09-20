@@ -3,11 +3,11 @@ export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { getDocPage, getDocNavigation, trackDocView } from '@/src/lib/hera-docs'
-import DocLayout from '@/src/components/docs/DocLayout'
-import DocContent from '@/src/components/docs/DocContent'
-import DocBreadcrumb from '@/src/components/docs/DocBreadcrumb'
-import DocMeta from '@/src/components/docs/DocMeta'
+import { getDocPage, getDocNavigation, trackDocView } from '@/lib/hera-docs'
+import DocLayout from '@/components/docs/DocLayout'
+import DocContent from '@/components/docs/DocContent'
+import DocBreadcrumb from '@/components/docs/DocBreadcrumb'
+import DocMeta from '@/components/docs/DocMeta'
 
 interface PageProps {
   params: Promise<{

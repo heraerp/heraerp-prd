@@ -43,7 +43,7 @@ const mockAuditFirms: AuditFirm[] = [
     entity_type: 'audit_firm',
     entity_code: 'GSPU',
     entity_name: 'GSPU Audit Partners',
-    smart_code: 'HERA.AUD.FIRM.ENT.PROF.v1',
+    smart_code: 'HERA.AUD.FIRM.ENT.PROF.V1',
     status: 'active',
     metadata: {
       firm_type: 'mid_tier',
@@ -74,7 +74,7 @@ const mockAuditFirms: AuditFirm[] = [
     entity_type: 'audit_firm',
     entity_code: 'ABC',
     entity_name: 'ABC & Associates',
-    smart_code: 'HERA.AUD.FIRM.ENT.PROF.v1',
+    smart_code: 'HERA.AUD.FIRM.ENT.PROF.V1',
     status: 'active',
     metadata: {
       firm_type: 'small_practice',
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'audit_firm',
         entity_code: data.entity_code.toUpperCase(),
         entity_name: data.entity_name,
-        smart_code: 'HERA.AUD.FIRM.ENT.PROF.v1',
+        smart_code: 'HERA.AUD.FIRM.ENT.PROF.V1',
         status: 'pending_approval',
         metadata: {
           firm_type: data.firm_type,

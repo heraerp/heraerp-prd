@@ -6,8 +6,8 @@ import {
   useBottomSheet, 
   BottomSheetRef,
   BottomSheetPresets 
-} from '@/src/lib/dna/components/mobile/BottomSheet'
-import { HeraButtonDNA } from '@/src/lib/dna/components/ui/hera-button-dna'
+} from '@/lib/dna/components/mobile/BottomSheet'
+import { HeraButtonDNA } from '@/lib/dna/components/ui/hera-button-dna'
 import { 
   Smartphone, 
   Settings, 

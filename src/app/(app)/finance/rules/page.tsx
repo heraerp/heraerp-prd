@@ -7,10 +7,10 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { 
   BookOpen,
   Plus,
@@ -18,14 +18,14 @@ import {
   RefreshCw,
   Info
 } from 'lucide-react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
-import { useFinanceRulesApi } from '@/src/lib/api/financeRules'
-import { PostingRule } from '@/src/lib/schemas/financeRules'
-import { RuleFilterBar, CategoryFilter } from '@/src/components/finance/RuleFilterBar'
-import { RuleCard } from '@/src/components/finance/RuleCard'
-import { RuleEditorDialog } from '@/src/components/finance/RuleEditorDialog'
-import { JsonView } from '@/src/components/common/JsonView'
-import { useToast } from '@/src/components/ui/use-toast'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
+import { useFinanceRulesApi } from '@/lib/api/financeRules'
+import { PostingRule } from '@/lib/schemas/financeRules'
+import { RuleFilterBar, CategoryFilter } from '@/components/finance/RuleFilterBar'
+import { RuleCard } from '@/components/finance/RuleCard'
+import { RuleEditorDialog } from '@/components/finance/RuleEditorDialog'
+import { JsonView } from '@/components/common/JsonView'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function PostingRulesViewerPage() {
   const { currentOrganization } = useOrganization()

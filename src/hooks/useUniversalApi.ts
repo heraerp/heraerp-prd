@@ -7,7 +7,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface UniversalApiOptions {
   table: 'core_entities' | 'universal_transactions' | 'universal_transaction_lines' | 'core_dynamic_data' | 'core_relationships' | 'core_organizations'
@@ -24,14 +24,29 @@ interface UseUniversalApiReturn {
   clearError: () => void
 }
 
-export function useUniversalApi(): UseUniversalApiReturn {
+export function useUniversalApi(organizationId?: string): UseUniversalApiReturn {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<any>(null)
-  const { currentOrganization } = useOrganization()
+  
+  // Use provided organizationId or try to get from context
+  let contextOrgId: string | null = organizationId || null
+  
+  // Only try context if no organizationId is provided
+  if (!organizationId) {
+    try {
+      // Try HERA auth 
+      const { organization } = useHERAAuth()
+      if (organization?.id) {
+        contextOrgId = organization.id
+      }
+    } catch (e) {
+      // HERA auth not available - this is expected in some contexts
+    }
+  }
 
   const execute = useCallback(async (options: UniversalApiOptions) => {
-    if (!currentOrganization?.id) {
+    if (!contextOrgId) {
       throw new Error('Organization context required for Universal API access')
     }
 
@@ -49,7 +64,7 @@ export function useUniversalApi(): UseUniversalApiReturn {
         const params = new URLSearchParams()
         
         // Always add organization filter (guardrail)
-        params.append('organization_id', currentOrganization.id)
+        params.append('organization_id', contextOrgId)
         
         // Add additional filters
         Object.entries(filters).forEach(([key, value]) => {
@@ -67,7 +82,7 @@ export function useUniversalApi(): UseUniversalApiReturn {
         // Always inject organization_id (guardrail)
         const dataWithOrg = {
           ...requestData,
-          organization_id: currentOrganization.id
+          organization_id: contextOrgId
         }
         body = JSON.stringify(dataWithOrg)
       }
@@ -101,7 +116,7 @@ export function useUniversalApi(): UseUniversalApiReturn {
     } finally {
       setIsLoading(false)
     }
-  }, [currentOrganization?.id])
+  }, [contextOrgId])
 
   const clearError = () => {
     setError(null)

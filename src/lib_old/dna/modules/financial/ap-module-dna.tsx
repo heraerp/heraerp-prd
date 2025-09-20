@@ -250,7 +250,7 @@ export function APModule({
         from_entity_id: selectedVendor,
         transaction_code: invoiceForm.invoiceNumber,
         total_amount: calculateTotal(),
-        smart_code: 'HERA.FIN.AP.TXN.INV.v1',
+        smart_code: 'HERA.FIN.AP.TXN.INV.V1',
         metadata: {
           ...invoiceForm.metadata,
           due_date: invoiceForm.dueDate,
@@ -948,9 +948,9 @@ export const AP_MODULE_DNA = {
   },
   dependencies: ['universalApi', 'Vendor master data', 'GL account setup', 'Organization context'],
   smartCodes: [
-    'HERA.FIN.AP.ENT.VEN.v1',
-    'HERA.FIN.AP.TXN.INV.v1',
-    'HERA.FIN.AP.TXN.PAY.v1',
+    'HERA.FIN.AP.ENT.VEN.V1',
+    'HERA.FIN.AP.TXN.INV.V1',
+    'HERA.FIN.AP.TXN.PAY.V1',
     'HERA.FIN.AP.VAL.*'
   ]
 }

@@ -1,14 +1,14 @@
 'use client'
 /**
  * Daily Insights Component
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.INSIGHTS.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.INSIGHTS.V1
  */
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   TrendingUp,
   TrendingDown,
@@ -22,7 +22,7 @@ import {
   Award,
   Zap
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface Insight {
   id: string

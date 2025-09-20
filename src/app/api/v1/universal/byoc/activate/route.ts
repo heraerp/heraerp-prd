@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       },
       success: true,
       timestamp: new Date().toISOString(),
-      heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ACTIVATED.v1'
+      heraSmartCode: 'HERA.UNIVERSAL.BYOC.CONFIG.ACTIVATED.V1'
     }
 
     console.log('BYOC Configuration Activated:', auditEntry)

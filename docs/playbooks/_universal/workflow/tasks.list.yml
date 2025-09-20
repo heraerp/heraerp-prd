@@ -1,0 +1,98 @@
+smart_code: HERA.UNIV.TASKS.LIST.V1
+intent: List tasks with filtering and pagination.
+scope:
+  in_scope:
+    - query tasks from view
+    - apply filters and pagination
+    - return formatted results
+    - maintain org isolation
+  out_of_scope:
+    - task modification
+    - state changes
+    - complex aggregations
+preconditions:
+  - permissions: [$PROFILE.required_role_read] or task assignee
+  - organization_id provided for isolation
+invariants:
+  - read-only operation
+  - org isolation enforced
+  - pagination limits respected
+inputs:
+  required:
+    - organization_id: uuid
+  optional:
+    - instance_id: uuid                            # filter by workflow instance
+    - task_state: string                           # filter by task state
+    - assignee_role: string                        # filter by assigned role
+    - assignee_user_id: uuid                       # filter by assigned user
+    - priority: string                             # filter by priority
+    - overdue: boolean                             # filter by due date
+    - created_after: timestamp                     # date range filter
+    - created_before: timestamp                    # date range filter
+    - completed_after: timestamp                   # completion date filter
+    - completed_before: timestamp                  # completion date filter
+    - limit: number                                # pagination limit (default 50, max 500)
+    - offset: number                               # pagination offset
+    - sort_by: string                              # sort field (created_at, due_at, completed_at)
+    - sort_order: enum[asc, desc]                  # sort direction
+happy_path:
+  - step: build query against wf_tasks_view with organization_id filter
+  - step: apply optional filters if provided
+  - step: if overdue=true, add WHERE due_at < now() AND task_state != 'COMPLETED'
+  - step: apply pagination (limit/offset) and sorting
+  - step: execute query and format results
+  - step: include pagination metadata in response
+outputs:
+  response:
+    tasks: array
+      - task_id: uuid
+        title: string
+        task_state: string
+        assignee_user_id: uuid
+        assignee_role: string
+        due_at: timestamp
+        sla_at: timestamp
+        instance_id: uuid
+        priority: string
+        outcome: string
+        completed_at: timestamp
+        completed_by: uuid
+        created_at: timestamp
+        updated_at: timestamp
+    pagination:
+      total_count: number
+      limit: number
+      offset: number
+      has_more: boolean
+    filters_applied: object
+errors:
+  - code: INVALID_FILTER
+    when: filter parameters are invalid
+    action: return 400 with validation details
+  - code: INVALID_PAGINATION
+    when: limit/offset are out of bounds
+    action: return 400 with valid ranges
+  - code: PERMISSION_DENIED
+    when: user lacks read permissions
+    action: return 403
+observability:
+  logs:
+    - tasks_listed: { organization_id, filter_count, result_count }
+  audit_json: false                                # read-only, high frequency
+  metrics:
+    - task_list_requests
+    - task_list_result_size
+    - task_list_duration
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  task_state: "OPEN"
+  assignee_role: "manager"
+  priority: "high"
+  overdue: true
+  limit: 25
+  sort_by: "due_at"
+  sort_order: "asc"
+checks:
+  - description: ensure org isolation in all queries
+  - description: validate pagination parameters
+  - description: verify filter combinations are valid

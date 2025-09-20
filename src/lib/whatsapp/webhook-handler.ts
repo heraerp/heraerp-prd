@@ -122,7 +122,7 @@ export class WhatsAppWebhookHandler {
         entity_name: name,
         entity_code: `WHATSAPP-${waId}`,
         organization_id: this.organizationId,
-        smart_code: 'HERA.CRM.CUST.ENT.WHATSAPP.v1',
+        smart_code: 'HERA.CRM.CUST.ENT.WHATSAPP.V1',
         metadata: {
           wa_id: waId,
           phone: waId,
@@ -144,7 +144,7 @@ export class WhatsAppWebhookHandler {
       field_name: 'phone',
       field_value_text: waId,
       organization_id: this.organizationId,
-      smart_code: 'HERA.CRM.CUST.DYN.PHONE.v1'
+      smart_code: 'HERA.CRM.CUST.DYN.PHONE.V1'
     })
 
     return newCustomer
@@ -176,7 +176,7 @@ export class WhatsAppWebhookHandler {
         entity_name: `Conversation with ${waId}`,
         entity_code: `CONV-${Date.now()}`,
         organization_id: this.organizationId,
-        smart_code: 'HERA.CRM.CONV.ENT.WHATSAPP.v1',
+        smart_code: 'HERA.CRM.CONV.ENT.WHATSAPP.V1',
         metadata: {
           customer_id: customerId,
           wa_id: waId,
@@ -199,7 +199,7 @@ export class WhatsAppWebhookHandler {
       to_entity_id: newConversation.id,
       relationship_type: 'has_conversation',
       organization_id: this.organizationId,
-      smart_code: 'HERA.CRM.REL.CUST.CONV.v1'
+      smart_code: 'HERA.CRM.REL.CUST.CONV.V1'
     })
 
     return newConversation
@@ -275,7 +275,7 @@ export class WhatsAppWebhookHandler {
       unit_price: 0,
       line_amount: 0,
       organization_id: this.organizationId,
-      smart_code: 'HERA.CRM.MSG.LINE.CONTENT.v1',
+      smart_code: 'HERA.CRM.MSG.LINE.CONTENT.V1',
       metadata: {
         content: messageContent,
         content_type: messageType

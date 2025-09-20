@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { RefreshCw, CheckCircle } from 'lucide-react'
 
 export default function RefreshPage() {

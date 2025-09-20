@@ -155,7 +155,7 @@ export async function GET(request: NextRequest) {
           COUNT(DISTINCT ut.from_entity_id) as competitor_count
         FROM universal_transactions ut
         WHERE ut.organization_id = $1
-          AND ut.smart_code = 'HERA.FURNITURE.TENDER.COMPETITOR.BID.DETECTED.v1'
+          AND ut.smart_code = 'HERA.FURNITURE.TENDER.COMPETITOR.BID.DETECTED.V1'
           AND ut.reference_entity_id IN (
             SELECT id FROM core_entities
             WHERE organization_id = $1
@@ -192,7 +192,7 @@ export async function GET(request: NextRequest) {
             hasMore: offset + limit < (countData?.[0]?.total || 0)
           }
         },
-        smart_code: 'HERA.FURNITURE.TENDER.LIST.RETRIEVED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.LIST.RETRIEVED.V1'
       })
     } catch (error) {
       console.error('Error fetching tender list:', error)
@@ -200,7 +200,7 @@ export async function GET(request: NextRequest) {
         {
           success: false,
           error: 'Failed to fetch tender list',
-          smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.V1'
         },
         { status: 500 }
       )

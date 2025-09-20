@@ -1,0 +1,135 @@
+smart_code: HERA.SALON.PAYMENT.REFUND.PROCESS.V1
+intent: >
+  Process payment refunds for returns and adjustments.
+  Supports card, cash, and gift card refund methods with idempotency.
+
+scope:
+  in_scope:
+    - Payment refunds to original method
+    - Partial and full refund amounts
+    - Multiple refund methods
+    - Idempotent refund processing
+    - Gateway refund integration
+  out_of_scope:
+    - Return/adjustment validation (separate procedures)
+    - Inventory processing (separate procedures)
+    - GL posting (separate procedures)
+    - Cross-method refunds (future enhancement)
+
+preconditions:
+  - original payment exists and is captured
+  - refund amount <= original payment amount
+  - refund reason is documented
+  - has_permissions: [pos_operator, process_refunds]
+
+invariants:
+  - original payment remains immutable
+  - refunds create new payment transactions
+  - refund totals never exceed payment totals
+  - idempotency prevents duplicate refunds
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization processing refund
+    - name: payment_id
+      type: uuid
+      where: payload
+      description: Original payment to refund
+    - name: amount
+      type: number
+      where: payload
+      description: Refund amount (must be positive)
+    - name: reason
+      type: string
+      where: payload
+      description: Refund reason (return, adjustment, etc)
+  optional:
+    - name: return_id
+      type: uuid
+      where: payload
+      description: Associated return transaction if applicable
+    - name: adjustment_id
+      type: uuid
+      where: payload
+      description: Associated adjustment transaction if applicable
+    - name: idempotency_key
+      type: string
+      where: headers
+      description: Idempotency key for safe retries
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: refund_payment
+      description: Refund payment transaction
+      smart_codes:
+        - HERA.SALON.PAYMENT.REFUND.CARD.V1
+        - HERA.SALON.PAYMENT.REFUND.CASH.V1
+        - HERA.SALON.PAYMENT.REFUND.GIFTCARD.V1
+  side_effects:
+    - process refund through payment gateway (card)
+    - record cash refund disbursement
+    - restore gift card balance
+    - create refund audit trail
+
+happy_path:
+  - step: Load original payment and validate it exists and is captured
+  - step: Verify refund amount doesn't exceed available refund balance
+  - step: Check idempotency key for duplicate refund attempts
+  - step: Determine refund method from original payment
+  - step: For card refunds, process through payment gateway
+  - step: For cash refunds, record cash disbursement
+  - step: For gift card refunds, restore card balance
+  - step: Create refund transaction with method-specific smart code
+  - step: Link refund to return/adjustment if provided
+  - step: Update original payment's refunded amount tracking
+  - step: Return refund_id and refund details
+
+errors:
+  - code: PAYMENT_NOT_FOUND
+    when: payment_id does not exist
+    action: return error with valid payment requirements
+  - code: PAYMENT_NOT_CAPTURED
+    when: payment is not in captured status
+    action: return error - only captured payments can be refunded
+  - code: REFUND_AMOUNT_EXCEEDED
+    when: refund amount > available refund balance
+    action: return error with maximum refundable amount
+  - code: GATEWAY_REFUND_FAILED
+    when: payment gateway rejects refund
+    action: return error with gateway response details
+  - code: INSUFFICIENT_CASH_DRAWER
+    when: cash drawer lacks funds for cash refund
+    action: return error with cash management requirements
+  - code: GIFT_CARD_REACTIVATION_FAILED
+    when: cannot restore gift card balance
+    action: return error with gift card system details
+  - code: DUPLICATE_REFUND
+    when: idempotency key matches existing refund
+    action: return existing refund details
+  - code: REFUND_WINDOW_EXCEEDED
+    when: refund attempted beyond policy window
+    action: return error with refund policy details
+
+observability:
+  logs: [refund_requested, payment_validated, refund_processed, refund_completed]
+  audit_json: true
+  metrics: [refund_duration_ms, refund_amount, refund_method, gateway_latency_ms]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  payment_id: "pay-123"
+  amount: 18.00
+  reason: "return"
+  return_id: "ret-456"
+
+checks:
+  - description: Original payment properly validated
+  - description: Refund amount within allowed limits
+  - description: Idempotency prevents duplicate refunds
+  - description: Method-specific refund logic executed
+  - description: Refund transaction created with proper smart code
+  - description: Complete audit trail with relationships

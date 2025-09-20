@@ -6,18 +6,18 @@ import React from 'react'
 import { KpiCards } from './KpiCards'
 import { TransactionsTable } from './TransactionsTable'
 import { DependencyGraph } from './DependencyGraph'
-import { useFactoryDashboard } from '@/src/lib/hooks/use-factory-dashboard'
+import { useFactoryDashboard } from '@/lib/hooks/use-factory-dashboard'
 import { motion } from 'framer-motion'
 import { Factory, RefreshCw } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { DatePicker } from '@/src/components/ui/date-picker'
+} from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export default function FactoryDashboard() {
   const { filters, data, actions } = useFactoryDashboard()

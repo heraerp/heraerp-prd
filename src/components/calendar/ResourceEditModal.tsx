@@ -11,23 +11,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Users, CheckCircle } from 'lucide-react'
 
-import { UniversalResource } from '@/src/types/calendar.types'
+import { UniversalResource } from '@/types/calendar.types'
 
 interface ResourceEditModalProps {
   organization_id: string

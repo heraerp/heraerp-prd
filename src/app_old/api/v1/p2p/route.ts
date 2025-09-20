@@ -245,7 +245,7 @@ async function createPurchaseOrder(data: P2PRequestData, organizationId: string)
     from_entity_id: pr_id,
     to_entity_id: po.id,
     relationship_type: 'converted_to',
-    smart_code: 'HERA.P2P.PR.TO.PO.v1'
+    smart_code: 'HERA.P2P.PR.TO.PO.V1'
   })
 
   return NextResponse.json({

@@ -391,7 +391,7 @@ export class IceCreamCOAGenerator {
     const rules = [
       {
         name: 'Ice Cream Retail Sale',
-        trigger: 'HERA.REST.POS.TXN.SALE.v1',
+        trigger: 'HERA.REST.POS.TXN.SALE.V1',
         journal_entries: [
           { account: '1112', type: 'debit', amount: 'total_amount' },
           { account: '4110', type: 'credit', amount: 'base_amount' },
@@ -400,7 +400,7 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Raw Material Purchase',
-        trigger: 'HERA.SCM.PUR.TXN.GOODS_RECEIPT.v1',
+        trigger: 'HERA.SCM.PUR.TXN.GOODS_RECEIPT.V1',
         journal_entries: [
           { account: '1311', type: 'debit', amount: 'base_amount' },
           { account: '1410', type: 'debit', amount: 'gst_amount' },
@@ -409,7 +409,7 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Production Completion',
-        trigger: 'HERA.MFG.PROD.TXN.COMPLETION.v1',
+        trigger: 'HERA.MFG.PROD.TXN.COMPLETION.V1',
         journal_entries: [
           { account: '1331', type: 'debit', amount: 'total_cost' },
           { account: '1321', type: 'credit', amount: 'wip_cost' },
@@ -419,7 +419,7 @@ export class IceCreamCOAGenerator {
       },
       {
         name: 'Cold Chain Wastage',
-        trigger: 'HERA.INV.ADJ.TXN.WASTAGE.v1',
+        trigger: 'HERA.INV.ADJ.TXN.WASTAGE.V1',
         journal_entries: [
           { account: '5412', type: 'debit', amount: 'wastage_cost' },
           { account: '1331', type: 'credit', amount: 'wastage_cost' }

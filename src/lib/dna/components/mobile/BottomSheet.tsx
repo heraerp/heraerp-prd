@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useEffect, useRef, useState, useCallback, forwardRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, PanInfo, useMotionValue, useTransform } from 'framer-motion'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 
 // Types

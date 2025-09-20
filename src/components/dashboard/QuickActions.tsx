@@ -10,9 +10,9 @@ import {
   Receipt,
   Plus
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { cn } from '@/src/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface QuickActionsProps {
   organizationId: string
@@ -26,29 +26,29 @@ export function QuickActions({ organizationId }: QuickActionsProps) {
       title: 'New Appointment',
       icon: Calendar,
       color: 'from-violet-500 to-violet-600',
-      href: '/appointments/new',
+      href: '/salon/appointments',
       description: 'Book a new appointment'
     },
     {
       title: 'Open POS',
       icon: CreditCard,
       color: 'from-pink-500 to-pink-600',
-      href: '/pos/sale',
+      href: '/salon/pos',
       description: 'Process a sale'
     },
     {
-      title: 'Send WhatsApp Campaign',
+      title: 'Send WhatsApp',
       icon: MessageSquare,
       color: 'from-emerald-500 to-emerald-600',
-      href: '/whatsapp/templates',
+      href: '/whatsapp',
       description: 'Message customers'
     },
     {
-      title: 'Add Expense',
+      title: 'View Customers',
       icon: Receipt,
       color: 'from-orange-500 to-orange-600',
-      href: '/reports/finance/pnl?mode=add-expense',
-      description: 'Record expense'
+      href: '/salon/customers',
+      description: 'Manage customers'
     }
   ]
 

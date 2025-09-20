@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   Brain,
   TrendingUp,
@@ -27,7 +27,7 @@ import {
   formatCurrency,
   calculatePostingAccuracy,
   getConfidenceDescription
-} from '@/src/lib/ai-finance-integrator'
+} from '@/lib/ai-finance-integrator'
 
 interface AIFinanceDashboardProps {
   organizationId: string

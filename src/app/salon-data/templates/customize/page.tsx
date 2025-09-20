@@ -5,14 +5,14 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { UCRTemplateCustomizer } from '@/src/components/salon/UCRTemplateCustomizer'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { UCRTemplateCustomizer } from '@/components/salon/UCRTemplateCustomizer'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/src/components/ui/button'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { useToast } from '@/src/components/ui/use-toast'
+import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useToast } from '@/components/ui/use-toast'
 
 function CustomizeTemplateContent() {
   const router = useRouter()

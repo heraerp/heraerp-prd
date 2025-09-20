@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Eye, 
   TrendingUp, 
@@ -28,8 +28,8 @@ import {
   CreditCard,
   Users
 } from 'lucide-react'
-import { BalanceRow, ReportCalculations } from '@/src/lib/schemas/reports'
-import { cn } from '@/src/lib/utils'
+import { BalanceRow, ReportCalculations } from '@/lib/schemas/reports'
+import { cn } from '@/lib/utils'
 
 interface BalanceSheetTableProps {
   data: BalanceRow[]

@@ -17,7 +17,7 @@ export interface ApiOptions {
 }
 
 export class ApiClient {
-  constructor(private opts: ApiOptions) {
+  constructor(private opts: ApiOptions = {}) {
     // Initialize organization context on creation
     if (typeof window !== 'undefined') {
       this.initializeOrgContext()

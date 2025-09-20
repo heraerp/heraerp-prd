@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { enterpriseMiddleware } from '@/src/lib/middleware/enterprise-middleware'
+import { enterpriseMiddleware } from '@/lib/middleware/enterprise-middleware'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
             hasMore: false // Simplified for now
           }
         },
-        smart_code: 'HERA.FURNITURE.TENDER.LIST.RETRIEVED.v1'
+        smart_code: 'HERA.FURNITURE.TENDER.LIST.RETRIEVED.V1'
       })
     } catch (error) {
       console.error('Error fetching tender list:', error)
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
         {
           success: false,
           error: 'Failed to fetch tender list',
-          smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.v1'
+          smart_code: 'HERA.FURNITURE.TENDER.LIST.ERROR.V1'
         },
         { status: 500 }
       )

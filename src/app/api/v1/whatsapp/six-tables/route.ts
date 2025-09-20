@@ -13,7 +13,7 @@ import {
   togglePin,
   toggleArchive,
   WHATSAPP_SMART_CODES
-} from '@/src/lib/mcp/whatsapp-six-tables-mcp'
+} from '@/lib/mcp/whatsapp-six-tables-mcp'
 
 export async function POST(request: NextRequest) {
   try {
@@ -216,7 +216,7 @@ export async function GET(request: NextRequest) {
     // Return smart codes reference
     return NextResponse.json({
       status: 'success',
-      component: 'HERA.WHATSAPP.SIX.TABLES.API.v1',
+      component: 'HERA.WHATSAPP.SIX.TABLES.API.V1',
       description: 'WhatsApp Business Integration using Six Sacred Tables',
       smart_codes: WHATSAPP_SMART_CODES,
       available_actions: {

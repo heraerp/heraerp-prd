@@ -1,0 +1,109 @@
+smart_code: HERA.SALON.COMMISSION.CALC.SERVICE.V1
+intent: >
+  Compute commissions from line staff_split; persist to lines dynamic.
+  Calculates and records staff commissions based on service revenue.
+
+scope:
+  in_scope:
+    - Commission calculation from staff splits
+    - Service revenue commission base
+    - Commission rate application
+    - Commission recording and tracking
+  out_of_scope:
+    - Commission payment processing
+    - Commission plan management
+    - Retail product commissions (configurable)
+    - Commission reconciliation
+
+preconditions:
+  - sale record exists and is committed
+  - service lines have valid staff_split data
+  - commission rates are configured for staff
+  - has_permissions: [pos_operator, commission_calculate]
+
+invariants:
+  - commission splits sum to 100% per service line
+  - commission base excludes discounts per org policy
+  - commissions are calculated on service revenue only (default)
+  - commission records link to sale and staff
+
+inputs:
+  required:
+    - name: organization_id
+      type: uuid
+      where: context
+      description: Organization for commission policies
+    - name: sale_id
+      type: uuid
+      where: payload
+      description: Sale to calculate commissions for
+  optional:
+    - name: commission_base
+      type: enum[before_line_discount,after_line_discount,after_all_discounts]
+      where: payload
+      default: "after_line_discount"
+      description: Commission calculation base per org policy
+
+outputs:
+  entities_created: []
+  transactions_emitted:
+    - slug: commission_records
+      description: Commission calculation transactions
+      smart_code: HERA.SALON.COMMISSION.SERVICE.V1
+  side_effects:
+    - calculate commissions for each staff member
+    - store commission amounts in line dynamic data
+    - create commission tracking records
+    - update staff commission balances
+
+happy_path:
+  - step: Load sale record and identify service lines with staff splits
+  - step: Load organization commission policy and staff rates
+  - step: For each service line, validate staff_split totals 100%
+  - step: Calculate commission base amount per org policy
+  - step: Apply staff commission rates to base amount
+  - step: Distribute commission based on staff_split percentages
+  - step: Create commission tracking transactions
+  - step: Store commission data in line dynamic fields
+  - step: Return commission summary by staff member
+
+errors:
+  - code: SALE_NOT_FOUND
+    when: sale_id does not exist
+    action: return error with valid sale requirements
+  - code: SALE_NOT_COMMITTED
+    when: sale is not in committed status
+    action: return error - only committed sales generate commissions
+  - code: INVALID_STAFF_SPLIT
+    when: staff splits don't total 100% for a service line
+    action: return error with staff split validation details
+  - code: STAFF_NOT_FOUND
+    when: staff member in split not found in organization
+    action: log warning and skip commission for missing staff
+  - code: COMMISSION_RATE_NOT_CONFIGURED
+    when: staff member lacks commission rate configuration
+    action: use default rate from org policy or skip
+  - code: COMMISSION_CALCULATION_ERROR
+    when: commission calculation fails for technical reasons
+    action: return error with calculation details
+  - code: COMMISSION_RECORD_FAILED
+    when: cannot create commission tracking records
+    action: return error with commission system details
+
+observability:
+  logs: [commission_calc_requested, staff_splits_validated, commissions_calculated, records_created]
+  audit_json: true
+  metrics: [commission_calc_duration_ms, total_commission_amount, staff_members_paid, avg_commission_per_service]
+
+example_payload:
+  organization_id: "550e8400-e29b-41d4-a716-446655440000"
+  sale_id: "sale-123"
+  commission_base: "after_line_discount"
+
+checks:
+  - description: Staff splits validated to total 100% per service line
+  - description: Commission base calculated according to org policy
+  - description: Commission rates applied correctly per staff member
+  - description: Commission amounts stored in line dynamic data
+  - description: Commission tracking records created
+  - description: Commission calculation completes within performance target

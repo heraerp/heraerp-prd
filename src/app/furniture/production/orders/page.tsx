@@ -4,13 +4,13 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { EnterpriseDataTable } from '@/src/lib/dna/components/organisms/EnterpriseDataTable'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { EnterpriseDataTable } from '@/lib/dna/components/organisms/EnterpriseDataTable'
 import {
   Search,
   Plus,
@@ -25,11 +25,11 @@ import {
   Truck
 } from 'lucide-react'
 import Link from 'next/link'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
-import FurniturePageHeader from '@/src/components/furniture/FurniturePageHeader'
-import { useUniversalData } from '@/src/lib/dna/patterns/universal-api-loading-pattern'
-import { cn } from '@/src/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
+import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
+import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-pattern'
+import { cn } from '@/lib/utils'
 
 export default function ProductionOrdersPage() {
   const { isAuthenticated, contextLoading } = useMultiOrgAuth()

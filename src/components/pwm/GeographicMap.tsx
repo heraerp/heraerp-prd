@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Globe2, MapPin, TrendingUp, TrendingDown } from 'lucide-react'
 
 interface GeographicMapProps {

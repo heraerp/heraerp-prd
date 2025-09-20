@@ -5,9 +5,9 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
-import { Card, CardContent } from '@/src/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function AuthCallback() {
   const router = useRouter()

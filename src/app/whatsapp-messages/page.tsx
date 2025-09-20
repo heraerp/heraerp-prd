@@ -9,11 +9,11 @@ export const dynamic = 'force-dynamic'
  */
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   MessageCircle,
   RefreshCw,
@@ -40,11 +40,11 @@ import {
   Paperclip,
   Smile
 } from 'lucide-react'
-import { Input } from '@/src/components/ui/input'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { WhatsAppSetup } from '@/src/components/whatsapp/WhatsAppSetup'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { WhatsAppSetup } from '@/components/whatsapp/WhatsAppSetup'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 interface Conversation {
   id: string

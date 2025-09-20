@@ -1,0 +1,70 @@
+smart_code: HERA.SALON.HR.LEAVE.CALENDAR.BLOCK.V1
+intent: Create calendar block transaction for approved leave.
+scope:
+  in_scope:
+    - create calendar block transaction
+    - deduct leave balance
+    - update employee availability
+  out_of_scope:
+    - shift scheduling
+    - customer notifications
+preconditions:
+  - leave request is approved
+  - employee exists
+  - sufficient balance confirmed
+invariants:
+  - calendar block is immutable once created
+  - leave balance is accurately deducted
+  - org isolation maintained
+inputs:
+  required:
+    - organization_id: uuid
+    - context: object                              # from workflow context
+      - employee_id: uuid
+      - leave_type: string
+      - start_date: string
+      - end_date: string
+      - days_requested: number
+      - approved_by: uuid
+happy_path:
+  - step: create universal_transactions header with smart_code=HERA.SALON.HR.CALENDAR.BLOCK.V1
+  - step: create transaction lines for each leave day
+  - step: deduct days from employee leave balance in core_dynamic_data
+  - step: create relationship EMPLOYEE -> HAS_LEAVE_BLOCK -> CALENDAR_BLOCK
+  - step: update employee availability status for the period
+outputs:
+  transactions_created:
+    - universal_transactions: 1                    # calendar block
+    - universal_transaction_lines: n               # one per day
+    - core_relationships: 1                        # employee->block link
+  balance_updated:
+    - core_dynamic_data: 1                         # employee balance
+  response:
+    calendar_block_id: uuid
+    days_blocked: number
+    remaining_balance: number
+errors:
+  - code: BALANCE_UPDATE_FAILED
+    when: unable to deduct from leave balance
+    action: rollback calendar block creation
+  - code: CALENDAR_CONFLICT
+    when: calendar block conflicts with existing entries
+    action: return error with conflict details
+observability:
+  logs:
+    - leave_calendar_blocked: { employee_id, start_date, end_date, days_blocked, remaining_balance }
+  audit_json: true
+  metrics:
+    - calendar_block_count by leave_type
+    - average_leave_duration
+example_context:
+  employee_id: "emp-123e4567-e89b-12d3-a456-426614174000"
+  leave_type: "annual"
+  start_date: "2024-02-01"
+  end_date: "2024-02-05"
+  days_requested: 5
+  approved_by: "mgr-456e7890-e89b-12d3-a456-426614174000"
+checks:
+  - description: ensure calendar block is atomic
+  - description: verify balance deduction is accurate
+  - description: maintain referential integrity

@@ -7,10 +7,10 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
-import { Badge } from '@/src/components/ui/badge'
+} from '@/components/ui/dialog'
+import { Badge } from '@/components/ui/badge'
 import { Check, CheckCheck, Clock, AlertCircle, Send, Smartphone } from 'lucide-react'
-import { formatDate } from '@/src/lib/date-utils'
+import { formatDate } from '@/lib/date-utils'
 
 interface StatusHistoryItem {
   status: string

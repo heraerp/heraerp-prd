@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA CASHFLOW DEMO DATA GENERATOR
 // Creates realistic demo transactions for Hair Talkz salon cashflow demonstration
-// Smart Code: HERA.FIN.CF.DEMO.GENERATOR.v1
+// Smart Code: HERA.FIN.CF.DEMO.GENERATOR.V1
 // ================================================================================
 
 import { universalApi } from '../universal-api'
@@ -27,7 +27,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'service_revenue',
     description: 'Haircut service',
-    smart_code: 'HERA.SALON.SVC.TXN.HAIRCUT.v1',
+    smart_code: 'HERA.SALON.SVC.TXN.HAIRCUT.V1',
     amount_range: [35, 85],
     frequency_per_month: 180, // ~6 haircuts per day
     category: 'operating',
@@ -37,7 +37,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'service_revenue',
     description: 'Hair coloring service',
-    smart_code: 'HERA.SALON.SVC.TXN.COLOR.v1',
+    smart_code: 'HERA.SALON.SVC.TXN.COLOR.V1',
     amount_range: [120, 350],
     frequency_per_month: 45, // ~1.5 per day
     category: 'operating',
@@ -47,7 +47,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'service_revenue',
     description: 'Hair styling service',
-    smart_code: 'HERA.SALON.SVC.TXN.STYLE.v1',
+    smart_code: 'HERA.SALON.SVC.TXN.STYLE.V1',
     amount_range: [45, 120],
     frequency_per_month: 60, // ~2 per day
     category: 'operating',
@@ -57,7 +57,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'product_sale',
     description: 'Hair care product sale',
-    smart_code: 'HERA.SALON.PRD.TXN.SALE.v1',
+    smart_code: 'HERA.SALON.PRD.TXN.SALE.V1',
     amount_range: [15, 85],
     frequency_per_month: 90, // ~3 per day
     category: 'operating',
@@ -69,7 +69,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'supply_purchase',
     description: 'Hair product supplies',
-    smart_code: 'HERA.SALON.INV.PUR.SUPPLY.v1',
+    smart_code: 'HERA.SALON.INV.PUR.SUPPLY.V1',
     amount_range: [200, 800],
     frequency_per_month: 8, // Weekly supply orders
     category: 'operating',
@@ -79,7 +79,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'staff_payment',
     description: 'Stylist salary payment',
-    smart_code: 'HERA.SALON.HR.PAY.STYLIST.v1',
+    smart_code: 'HERA.SALON.HR.PAY.STYLIST.V1',
     amount_range: [2500, 4500],
     frequency_per_month: 6, // 3 stylists × 2 payments per month
     category: 'operating',
@@ -89,7 +89,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'rent_payment',
     description: 'Salon rent payment',
-    smart_code: 'HERA.SALON.FAC.PAY.RENT.v1',
+    smart_code: 'HERA.SALON.FAC.PAY.RENT.V1',
     amount_range: [4500, 4500], // Fixed rent
     frequency_per_month: 1,
     category: 'operating',
@@ -99,7 +99,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'utility_payment',
     description: 'Electricity and water bill',
-    smart_code: 'HERA.SALON.FAC.PAY.UTIL.v1',
+    smart_code: 'HERA.SALON.FAC.PAY.UTIL.V1',
     amount_range: [350, 650],
     frequency_per_month: 2, // Monthly bills
     category: 'operating',
@@ -109,7 +109,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'marketing_payment',
     description: 'Social media advertising',
-    smart_code: 'HERA.SALON.MKT.PAY.SOCIAL.v1',
+    smart_code: 'HERA.SALON.MKT.PAY.SOCIAL.V1',
     amount_range: [200, 500],
     frequency_per_month: 2, // Bi-weekly ad campaigns
     category: 'operating',
@@ -119,7 +119,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'insurance_payment',
     description: 'Business insurance premium',
-    smart_code: 'HERA.SALON.INS.PAY.PREM.v1',
+    smart_code: 'HERA.SALON.INS.PAY.PREM.V1',
     amount_range: [450, 450], // Fixed premium
     frequency_per_month: 0.33, // Quarterly payment
     category: 'operating',
@@ -131,7 +131,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'equipment_purchase',
     description: 'Professional hair dryer',
-    smart_code: 'HERA.SALON.EQP.PUR.DRYER.v1',
+    smart_code: 'HERA.SALON.EQP.PUR.DRYER.V1',
     amount_range: [300, 800],
     frequency_per_month: 0.2, // Every 5 months
     category: 'investing',
@@ -141,7 +141,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'equipment_purchase',
     description: 'Salon chair',
-    smart_code: 'HERA.SALON.EQP.PUR.CHAIR.v1',
+    smart_code: 'HERA.SALON.EQP.PUR.CHAIR.V1',
     amount_range: [800, 2500],
     frequency_per_month: 0.1, // Every 10 months
     category: 'investing',
@@ -151,7 +151,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'renovation',
     description: 'Salon renovation/upgrade',
-    smart_code: 'HERA.SALON.CAP.INV.RENO.v1',
+    smart_code: 'HERA.SALON.CAP.INV.RENO.V1',
     amount_range: [2000, 15000],
     frequency_per_month: 0.05, // Every 20 months
     category: 'investing',
@@ -163,7 +163,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'owner_contribution',
     description: 'Owner cash injection',
-    smart_code: 'HERA.SALON.FIN.OWNER.CONTRIB.v1',
+    smart_code: 'HERA.SALON.FIN.OWNER.CONTRIB.V1',
     amount_range: [5000, 25000],
     frequency_per_month: 0.08, // Every 12-15 months
     category: 'financing',
@@ -173,7 +173,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'loan_payment',
     description: 'Equipment loan repayment',
-    smart_code: 'HERA.SALON.FIN.LOAN.REPAY.v1',
+    smart_code: 'HERA.SALON.FIN.LOAN.REPAY.V1',
     amount_range: [850, 850], // Fixed loan payment
     frequency_per_month: 1,
     category: 'financing',
@@ -183,7 +183,7 @@ const HairSalonDemoTransactions: DemoTransaction[] = [
   {
     transaction_type: 'owner_withdrawal',
     description: 'Owner salary/distribution',
-    smart_code: 'HERA.SALON.FIN.OWNER.WITHDRAW.v1',
+    smart_code: 'HERA.SALON.FIN.OWNER.WITHDRAW.V1',
     amount_range: [3000, 5000],
     frequency_per_month: 2, // Bi-weekly
     category: 'financing',
@@ -350,7 +350,7 @@ export class CashflowDemoDataGenerator {
         reference_number: 'OPENING-BALANCE',
         total_amount: 25000, // Starting with $25k cash
         status: 'completed',
-        smart_code: 'HERA.SALON.FIN.CASH.OPENING.v1',
+        smart_code: 'HERA.SALON.FIN.CASH.OPENING.V1',
         metadata: {
           demo_data: true,
           salon_name: 'Hair Talkz',
@@ -432,21 +432,21 @@ export class CashflowDemoDataGenerator {
       {
         type: 'service_revenue',
         description: 'Wedding party hair styling (5 people)',
-        smart_code: 'HERA.SALON.SVC.TXN.WEDDING.v1',
+        smart_code: 'HERA.SALON.SVC.TXN.WEDDING.V1',
         amount: 850,
         impact: 'inflow'
       },
       {
         type: 'service_revenue',
         description: 'Prom hair and makeup package',
-        smart_code: 'HERA.SALON.SVC.TXN.PROM.v1',
+        smart_code: 'HERA.SALON.SVC.TXN.PROM.V1',
         amount: 180,
         impact: 'inflow'
       },
       {
         type: 'supply_purchase',
         description: 'Extra styling products for events',
-        smart_code: 'HERA.SALON.INV.PUR.EVENT.v1',
+        smart_code: 'HERA.SALON.INV.PUR.EVENT.V1',
         amount: -450,
         impact: 'outflow'
       }
@@ -460,14 +460,14 @@ export class CashflowDemoDataGenerator {
       {
         type: 'marketing_payment',
         description: 'Promotional discount campaign',
-        smart_code: 'HERA.SALON.MKT.PAY.PROMO.v1',
+        smart_code: 'HERA.SALON.MKT.PAY.PROMO.V1',
         amount: -300,
         impact: 'outflow'
       },
       {
         type: 'staff_payment',
         description: 'Reduced hours for stylist',
-        smart_code: 'HERA.SALON.HR.PAY.REDUCED.v1',
+        smart_code: 'HERA.SALON.HR.PAY.REDUCED.V1',
         amount: -2000,
         impact: 'outflow'
       }
@@ -481,14 +481,14 @@ export class CashflowDemoDataGenerator {
       {
         type: 'equipment_purchase',
         description: 'Professional hair washing station',
-        smart_code: 'HERA.SALON.EQP.PUR.WASHSTATION.v1',
+        smart_code: 'HERA.SALON.EQP.PUR.WASHSTATION.V1',
         amount: -3500,
         impact: 'outflow'
       },
       {
         type: 'loan_proceed',
         description: 'Equipment financing for wash station',
-        smart_code: 'HERA.SALON.FIN.LOAN.EQUIP.v1',
+        smart_code: 'HERA.SALON.FIN.LOAN.EQUIP.V1',
         amount: 3000,
         impact: 'inflow'
       }
@@ -502,21 +502,21 @@ export class CashflowDemoDataGenerator {
       {
         type: 'staff_expense',
         description: 'New stylist recruitment costs',
-        smart_code: 'HERA.SALON.HR.EXP.RECRUIT.v1',
+        smart_code: 'HERA.SALON.HR.EXP.RECRUIT.V1',
         amount: -800,
         impact: 'outflow'
       },
       {
         type: 'equipment_purchase',
         description: 'Styling tools for new stylist',
-        smart_code: 'HERA.SALON.EQP.PUR.TOOLS.v1',
+        smart_code: 'HERA.SALON.EQP.PUR.TOOLS.V1',
         amount: -450,
         impact: 'outflow'
       },
       {
         type: 'service_revenue',
         description: 'Increased revenue from additional stylist',
-        smart_code: 'HERA.SALON.SVC.TXN.NEWREV.v1',
+        smart_code: 'HERA.SALON.SVC.TXN.NEWREV.V1',
         amount: 2200,
         impact: 'inflow'
       }

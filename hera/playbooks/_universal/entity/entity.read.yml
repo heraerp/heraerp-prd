@@ -1,0 +1,85 @@
+smart_code: HERA.UNIV.ENTITY.READ.V1
+intent: Read entity with attributes and relationships (logged read for audit).
+scope:
+  in_scope:
+    - read entity master data from core_entities
+    - fetch dynamic attributes from core_dynamic_data
+    - include relationships if requested
+    - logged reads for compliance/audit
+  out_of_scope:
+    - list/search operations (use separate procedures)
+    - write operations
+    - bulk reads
+preconditions:
+  - permissions: [$PROFILE.required_role_read]      # e.g., org_member, catalog_viewer
+  - entity belongs to organization_id or is public
+invariants:
+  - organization isolation enforced
+  - archived entities returned with status indicator
+  - read operation logged if $PROFILE.log_reads is true
+inputs:
+  required:
+    - organization_id: uuid
+    - entity_id: uuid
+  optional:
+    - include_dynamic: boolean=true                 # fetch core_dynamic_data
+    - include_relationships: boolean=false          # fetch core_relationships
+    - include_archived: boolean=false              # allow reading archived entities
+happy_path:
+  - step: validate permissions against $PROFILE.required_role_read
+  - step: select from core_entities where id=entity_id and organization_id matches
+  - step: if not found and !include_archived, check if archived
+  - step: if include_dynamic, fetch core_dynamic_data('attributes')
+  - step: if include_relationships, fetch active relationships
+  - step: if $PROFILE.log_reads, emit read event for audit
+  - step: transform and return entity with requested data
+outputs:
+  entities_read:
+    - core_entities: 1
+    - core_dynamic_data: 0-1
+    - core_relationships: 0-n
+  response:
+    entity:
+      id: uuid
+      entity_type: string
+      entity_name: string
+      entity_code: string
+      smart_code: string
+      status: string
+      organization_id: uuid
+      created_at: timestamp
+      updated_at: timestamp
+      dynamic: object                              # if include_dynamic
+      relationships: array                         # if include_relationships
+errors:
+  - code: ENTITY_NOT_FOUND
+    when: entity_id does not exist in organization
+    action: return 404
+  - code: ENTITY_ARCHIVED
+    when: entity is archived and include_archived=false
+    action: return 410 gone
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_read
+    action: return 403 with required permissions
+  - code: CROSS_ORG_ACCESS_DENIED
+    when: entity belongs to different organization
+    action: return 403 forbidden
+observability:
+  logs:
+    - entity_read: { entity_id, entity_type, include_options, organization_id }
+    - cross_org_attempt: { entity_id, requested_org, actual_org }
+  audit_json: $PROFILE.log_reads                  # configurable per profile
+  metrics:
+    - entity_read_count by entity_type
+    - include_options_usage
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  entity_id: "456e7890-e89b-12d3-a456-426614174000"
+  include_dynamic: true
+  include_relationships: true
+  include_archived: false
+checks:
+  - description: verify organization isolation
+  - description: check read permissions
+  - description: handle archived entities appropriately
+  - description: log reads if required by profile

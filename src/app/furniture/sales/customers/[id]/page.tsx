@@ -5,46 +5,80 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Building2, User, Mail, Phone, MapPin, CreditCard, FileText, AlertCircle, Save, Package, Calendar, TrendingUp, Edit2, X
 } from 'lucide-react'
-import { useDemoOrganization } from '@/src/lib/dna/patterns/demo-org-pattern'
+import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import { useUniversalData, universalFilters
-} from '@/src/lib/dna/patterns/universal-api-loading-pattern'
-import { universalApi } from '@/src/lib/universal-api'
-import { formatCurrency } from '@/src/lib/utils'
+} from '@/lib/dna/patterns/universal-api-loading-pattern'
+import { universalApi } from '@/lib/universal-api'
+import { formatCurrency } from '@/lib/utils'
 import { format } from 'date-fns'
 
 
 export default function CustomerDetailPage({ params }: {
   params: Promise<{ id: string }> }) {
-  const { id } = use(params)
 
-const router = useRouter()
+  const { id } = use(params);
 
-const { organizationId, orgLoading } = useDemoOrganization()
+  const router = useRouter();
 
-const [activeTab, setActiveTab] = useState('details')
+  const { organizationId, orgLoading } = useDemoOrganization();
 
-const [editMode, setEditMode] = useState(false)
+  const [activeTab, setActiveTab] = useState('details');
 
-const [loading, setLoading] = useState(false)
+  const [editMode, setEditMode] = useState(false);
 
-const [error, setError] = useState('')
-          // Load customer entity const { data: customers, refetch: refetchCustomer } = useUniversalData({ table: 'core_entities', filter: item => item.id === id && item.entity_type === 'customer' && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-  const customer = customers?.[0] // Load customer dynamic data
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState('')
+          // Load customer entity; const { data: customers, refetch: refetchCustomer } = useUniversalData({ table: 'core_entities', filter: item => item.id === id && item.entity_type === 'customer' && item.organization_id === organizationId, organizationId, enabled: !!organizationId });
+
+  const customer = customers?.[0] // Load customer dynamic data;
+
   const { data: dynamicData, refetch: refetchDynamicData } = useUniversalData({ table: 'core_dynamic_data', filter: item => item.entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-          // Load customer transactions
+          // Load customer transactions;
+
   const { data: transactions } = useUniversalData({ table: 'universal_transactions', filter: item => item.from_entity_id === params.id && item.organization_id === organizationId, organizationId, enabled: !!organizationId })
-          // Form state
+          // Form state;
+
   const [formData, setFormData] = useState({ entity_name: '', entity_code: '', email: '', phone: '', mobile: '', address: '', city: '', state: '', pincode: '', gstin: '', pan_number: '', contact_person: '', credit_limit: '', payment_terms: '', notes: '' })
-          // Initialize form data from customer and dynamic data useEffect(() => { if (customer && dynamicData) {
+          // Initialize; form data from customer and dynamic data
+  useEffect(() => { if (customer && dynamicData) {
+
   const getFieldValue = (fieldName: string) => {
-  const field =dynamicData.find(d => d.field_name === fieldName) return field?.field_value_text || field?.field_value_number?.toString() || '' } setFormData({ entity_name: customer.entity_name, entity_code: customer.entity_code || '', email: getFieldValue('email'), phone: getFieldValue('phone'), mobile: getFieldValue('mobile'), address: getFieldValue('address'), city: getFieldValue('city'), state: getFieldValue('state'), pincode: getFieldValue('pincode'), gstin: getFieldValue('gstin'), pan_number: getFieldValue('pan_number'), contact_person: getFieldValue('contact_person'), credit_limit: getFieldValue('credit_limit'), payment_terms: getFieldValue('payment_terms') || 'Net 30', notes: getFieldValue('notes'  )  ) }, [customer, dynamicData])
 
-const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> ) => { const { name, value } = e.target setFormData(prev => ({ ...prev, [name]: value })  )
+  const field = dynamicData.find(d => d.field_name === fieldName);
+ return field?.field_value_text || field?.field_value_number?.toString() || '';
+    }
+    
+    setFormData({
+      entity_name: customer.entity_name,
+      entity_code: customer.entity_code || '',
+      email: getFieldValue('email'),
+      phone: getFieldValue('phone'),
+      mobile: getFieldValue('mobile'),
+      address: getFieldValue('address'),
+      city: getFieldValue('city'),
+      state: getFieldValue('state'),
+      pincode: getFieldValue('pincode'),
+      gstin: getFieldValue('gstin'),
+      pan_number: getFieldValue('pan_number'),
+      contact_person: getFieldValue('contact_person'),
+      credit_limit: getFieldValue('credit_limit'),
+      payment_terms: getFieldValue('payment_terms') || 'Net 30',
+      notes: getFieldValue('notes')
+    });
+  }
+}, [customer, dynamicData])
 
-const handleSave = async () => { setError('') setLoading(true) try { universalApi.setOrganizationId(organizationId!)
+  const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> ) => { const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+  
+  const handleSave = async () => { setError('');
+    setLoading(true); try { universalApi.setOrganizationId(organizationId!)
           // Update entity basic info await universalApi.updateEntity(params.id, { entity_name: formData.entity_name, entity_code: formData.entity_code })
-          // Update dynamic fields
-  const dynamicFields =[
+          // Update dynamic fields;
+
+  const dynamicFields = [
   { field_name: 'email', field_value_text: formData.email, field_type: 'text' as const },
   { field_name: 'phone', field_value_text: formData.phone, field_type: 'text' as const },
   { field_name: 'mobile', field_value_text: formData.mobile, field_type: 'text' as const },
@@ -58,23 +92,43 @@ const handleSave = async () => { setError('') setLoading(true) try { universalAp
   { field_name: 'credit_limit', field_value_number: formData.credit_limit ? parseFloat(formData.credit_limit) : 0, field_type: 'number' as const },
   { field_name: 'payment_terms', field_value_text: formData.payment_terms, field_type: 'text' as const },
   { field_name: 'notes', field_value_text: formData.notes, field_type: 'text' as const }
-] for (const field of dynamicFields) {
-  if (field.field_value_text || field.field_value_number) {
-  await universalApi.setDynamicField( params.id, field.field_name, field.field_type === 'number' ? field.field_value_number! : field.field_value_text!, `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.v1`   ) }
+];
 
-// Refresh data await refetchCustomer() await refetchDynamicData() setEditMode(false)   } catch (err) {
-  console.error('Error updating customer:', err) setError('Failed to update customer. Please try again.')   } finally {
+    for (const field of dynamicFields) {
+  if (field.field_value_text || field.field_value_number) {
+        await universalApi.setDynamicField(
+          params.id,
+          field.field_name,
+          field.field_type === 'number' ? field.field_value_number! : field.field_value_text!,
+          `HERA.FURNITURE.CUSTOMER.${field.field_name.toUpperCase()}.v1`
+        );
+      }
+    }
+
+    // Refresh data
+    await refetchCustomer();
+    await refetchDynamicData();
+    setEditMode(false);
+  } catch (err) {
+    console.error('Error updating customer:', err);
+    setError('Failed to update customer. Please try again.');
+  } finally {
     setLoading(false)
   }
 }
 
 // Calculate customer metrics
-  const metrics = { totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0, orderCount: transactions?.length || 0, avgOrderValue: transactions?.length ? transactions.reduce((sum, t) => sum + t.total_amount, 0) / transactions.length : 0, lastOrderDate: transactions?.sort( (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime() )[0]?.transaction_date } if (orgLoading || !customer) {
+  const metrics = { totalRevenue: transactions?.reduce((sum, t) => sum + t.total_amount, 0) || 0, orderCount: transactions?.length || 0, avgOrderValue: transactions?.length ? transactions.reduce((sum, t) => sum + t.total_amount, 0) / transactions.length : 0, lastOrderDate: transactions?.sort( (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime() )[0]?.transaction_date
+  };
+
+  if (orgLoading || !customer) {
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-[var(--color-body)]"> <div className="bg-[var(--color-body)] animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-accent-indigo)]"></div>
       </div>
     )
-  }
+  };
+
 
   return (
     <div className="space-y-6"> {/* Header */} <div className="flex items-center justify-between"> <div className="bg-[var(--color-body)] flex items-center space-x-4"> <Link href="/furniture/sales/customers" className="p-2 hover:bg-[var(--color-body)] dark:hover:bg-[var(--color-body)] rounded-md transition-colors" > <ArrowLeft className="h-5 w-5 text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]" /> </Link> <div> <h1 className="bg-[var(--color-body)] text-2xl font-bold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {customer.entity_name} </h1> <p className="text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">{customer.entity_code}</p> </div> </div> <div> {!editMode ? (
@@ -84,7 +138,7 @@ const handleSave = async () => { setError('') setLoading(true) try { universalAp
       </div>
     )} </div> </div> {/* Error Alert */} {error && ( <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4"> <div className="bg-[var(--color-body)] flex"> <AlertCircle className="h-5 w-5 text-red-400" /> <div className="ml-3"> <p className="text-sm text-red-800 dark:text-red-200">{error}</p> </div> </div>
       </div>
-    )} {/* Metrics Cards */} <div className="grid grid-cols-1 md:grid-cols-4 gap-4"> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-[var(--color-body)] rounded-md p-3"> <Package className="h-6 w-6 text-[#37353E]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Total Orders </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {metrics.orderCount} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-green-500 rounded-md p-3"> <TrendingUp className="h-6 w-6 text-[#37353E]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Total Revenue </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formatCurrency(metrics.totalRevenue)} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-[var(--color-accent-teal)] rounded-md p-3"> <CreditCard className="bg-[var(--color-surface-raised)] border-[var(--color-border)] h-6 w-6 text-[#37353E]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Avg Order Value </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formatCurrency(metrics.avgOrderValue)} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="bg-[var(--color-body)] flex items-center"> <div className="flex-shrink-0 bg-[var(--color-accent-teal)] rounded-md p-3"> <Calendar className="h-6 w-6 text-[#37353E]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Last Order </dt> <dd className="bg-[var(--color-body)] text-sm font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {metrics.lastOrderDate ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy') : 'No orders yet'} </dd> </dl> </div> </div> </div> </div> </div> {/* Tabs */} <div className="border-b border-[var(--color-border)] border-[var(--color-border)]"> <nav className="bg-[var(--color-body)] -mb-px flex space-x-8"> <button onClick={() => setActiveTab('details')} className={`py-2 px-1 border-b-2 font-medium text-sm ${ activeTab === 'details' ? 'border-[var(--color-accent-teal)] text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]' }`} > Customer Details </button> <button onClick={() => setActiveTab('transactions')} className={`py-2 px-1 border-b-2 font-medium text-sm ${ activeTab === 'transactions' ? 'border-[var(--color-accent-teal)] text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]' }`} > Order History </button> </nav> </div> {/* Tab Content */} {activeTab === 'details' && ( <div className="grid grid-cols-1 lg:grid-cols-3 gap-6"> <div className="lg:col-span-2 space-y-6"> {/* Contact Information */} <div className="bg-[var(--color-body)] shadow rounded-lg p-6"> <div className="flex items-center mb-4"> <Phone className="h-5 w-5 text-[var(--color-text-secondary)] mr-2" /> <h3 className="bg-[var(--color-body)] text-lg font-medium text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> Contact Information </h3> </div> <dl className="bg-[var(--color-body)] grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Email</dt> <dd className="bg-[var(--color-body)] mt-1"> {editMode ? (
+    )} {/* Metrics Cards */} <div className="grid grid-cols-1 md:grid-cols-4 gap-4"> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-[var(--color-body)] rounded-md p-3"> <Package className="h-6 w-6 text-[var(--color-icon-secondary)]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Total Orders </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {metrics.orderCount} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-green-500 rounded-md p-3"> <TrendingUp className="h-6 w-6 text-[var(--color-icon-secondary)]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Total Revenue </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formatCurrency(metrics.totalRevenue)} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="flex items-center"> <div className="flex-shrink-0 bg-[var(--color-accent-teal)] rounded-md p-3"> <CreditCard className="bg-[var(--color-surface-raised)] border-[var(--color-border)] h-6 w-6 text-[var(--color-icon-secondary)]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Avg Order Value </dt> <dd className="bg-[var(--color-body)] text-2xl font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formatCurrency(metrics.avgOrderValue)} </dd> </dl> </div> </div> </div> </div> <div className="bg-[var(--color-body)] overflow-hidden shadow rounded-lg"> <div className="p-5"> <div className="bg-[var(--color-body)] flex items-center"> <div className="flex-shrink-0 bg-[var(--color-accent-teal)] rounded-md p-3"> <Calendar className="h-6 w-6 text-[var(--color-icon-secondary)]" /> </div> <div className="ml-5 w-0 flex-1"> <dl> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)] truncate"> Last Order </dt> <dd className="bg-[var(--color-body)] text-sm font-semibold text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {metrics.lastOrderDate ? format(new Date(metrics.lastOrderDate), 'MMM dd, yyyy') : 'No orders yet'} </dd> </dl> </div> </div> </div> </div> </div> {/* Tabs */} <div className="border-b border-[var(--color-border)] border-[var(--color-border)]"> <nav className="bg-[var(--color-body)] -mb-px flex space-x-8"> <button onClick={() => setActiveTab('details')} className={`py-2 px-1 border-b-2 font-medium text-sm ${ activeTab === 'details' ? 'border-[var(--color-accent-teal)] text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]' }`} > Customer Details </button> <button onClick={() => setActiveTab('transactions')} className={`py-2 px-1 border-b-2 font-medium text-sm ${ activeTab === 'transactions' ? 'border-[var(--color-accent-teal)] text-[var(--color-accent-indigo)] dark:text-[var(--color-text-secondary)]' : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)] dark:text-[var(--color-text-secondary)] dark:hover:text-[var(--color-text-secondary)]' }`} > Order History </button> </nav> </div> {/* Tab Content */} {activeTab === 'details' && ( <div className="grid grid-cols-1 lg:grid-cols-3 gap-6"> <div className="lg:col-span-2 space-y-6"> {/* Contact Information */} <div className="bg-[var(--color-body)] shadow rounded-lg p-6"> <div className="flex items-center mb-4"> <Phone className="h-5 w-5 text-[var(--color-text-secondary)] mr-2" /> <h3 className="bg-[var(--color-body)] text-lg font-medium text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> Contact Information </h3> </div> <dl className="bg-[var(--color-body)] grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Email</dt> <dd className="bg-[var(--color-body)] mt-1"> {editMode ? (
             <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="block w-full px-3 py-2 border border-[var(--color-border)] border-[var(--color-border)] rounded-md shadow-sm focus:ring-[var(--color-accent-indigo)] focus:border-[var(--color-accent-teal)] bg-muted-foreground/10 text-[var(--color-text-primary)]" /> )
           : (
             <span className="text-sm text-[var(--color-text-primary)] text-[var(--color-text-primary)]"> {formData.email || '-'} </span> )} </dd> </div> <div> <dt className="bg-[var(--color-body)] text-sm font-medium text-[var(--color-text-secondary)] dark:text-[var(--color-text-secondary)]">Phone</dt> <dd className="bg-[var(--color-body)] mt-1"> {editMode ? (
@@ -127,5 +181,5 @@ const handleSave = async () => { setError('') setLoading(true) try { universalAp
       </tr>
     )) )} </tbody> </table> </div>
       </div>
-    )} </div> )
+    )} </div> );
 }

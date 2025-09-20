@@ -7,7 +7,7 @@
  * Smart Code: HERA.FIN.ACCT.APPROVAL.v1
  */
 
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import {
   ApprovalWorkflow,
   ApprovalStep,
@@ -16,8 +16,8 @@ import {
   ValidationResult,
   ValidationError,
   ACCOUNTANT_SMART_CODES
-} from '@/src/types/digital-accountant.types'
-import { universalApi } from '@/src/lib/universal-api'
+} from '@/types/digital-accountant.types'
+import { universalApi } from '@/lib/universal-api'
 
 // ================================================================================
 // APPROVAL WORKFLOW TYPES
@@ -455,7 +455,7 @@ export class ApprovalWorkflowService {
         organization_id: this.organizationId,
         entity_type: 'approval_workflow',
         entity_name: `Approval for ${entity.entity_name}`,
-        smart_code: 'HERA.FIN.ACCT.APPROVAL.WORKFLOW.v1',
+        smart_code: 'HERA.FIN.ACCT.APPROVAL.WORKFLOW.V1',
         metadata: {
           entity_type: request.entity_type,
           entity_id: request.entity_id,

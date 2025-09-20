@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   ChefHat,
   DollarSign,
@@ -32,8 +32,8 @@ import { RestaurantPOS } from './RestaurantPOS'
 import { RestaurantFinancialDashboard } from './RestaurantFinancialDashboard'
 import { RecipeCostingManager } from './RecipeCostingManager'
 import { KitchenDisplaySystem } from './KitchenDisplaySystem'
-import { universalApi } from '@/src/lib/universal-api'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/lib/universal-api'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 
 export function RestaurantIntegratedDashboard() {
   const [activeModule, setActiveModule] = useState('dashboard')
@@ -46,14 +46,14 @@ export function RestaurantIntegratedDashboard() {
       status: 'active',
       description: 'Restaurant-specific Chart of Accounts with IFRS compliance',
       icon: <BookOpen className="w-5 h-5" />,
-      smartCode: 'HERA.FIN.GL.COA.RESTAURANT.v1'
+      smartCode: 'HERA.FIN.GL.COA.RESTAURANT.V1'
     },
     {
       name: 'Auto-Journal Engine',
       status: 'active',
       description: '85% automated GL posting for all transactions',
       icon: <Zap className="w-5 h-5" />,
-      smartCode: 'HERA.FIN.AUTO.JOURNAL.ENGINE.v1'
+      smartCode: 'HERA.FIN.AUTO.JOURNAL.ENGINE.V1'
     },
     {
       name: 'Budgeting System',

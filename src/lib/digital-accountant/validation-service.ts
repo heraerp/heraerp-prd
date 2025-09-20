@@ -7,7 +7,7 @@
  * Smart Code: HERA.FIN.ACCT.VALIDATE.v1
  */
 
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import {
   JournalEntry,
   JournalLine,
@@ -17,7 +17,7 @@ import {
   ValidationInfo,
   PeriodStatus,
   ACCOUNTANT_SMART_CODES
-} from '@/src/types/digital-accountant.types'
+} from '@/types/digital-accountant.types'
 import { IValidationService } from './contracts'
 import { SQLGuardrailValidator, QuerySanitizer } from './sql-guardrails'
 

@@ -1,0 +1,315 @@
+# PUBLIC SECTOR CRM Smart Code Catalog
+# =====================================
+# Maps CRM concepts to HERA smart codes following the pattern:
+# HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.{VERSION}
+
+metadata:
+  industry: PUBLICSECTOR
+  module: CRM
+  version: v1
+  description: "Smart codes for public sector CRM operations"
+  created_at: "2024-01-01"
+  updated_at: "2024-01-01"
+
+# Entity Smart Codes
+entities:
+  constituent:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.CONSTITUENT.v1
+    description: "Individual citizen or resident"
+    category: master_data
+    fields:
+      - name
+      - dob
+      - national_id
+      - address
+      - email
+      - phone
+      - eligibility_flags
+      - risk_score
+
+  ps_org:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.ORG.v1
+    description: "Public sector organization or department"
+    category: master_data
+    fields:
+      - legal_name
+      - registration_no
+      - sector
+      - address
+      - contacts
+
+  program:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.PROGRAM.v1
+    description: "Government program or initiative"
+    category: master_data
+    fields:
+      - code
+      - title
+      - description
+      - eligibility_rules
+      - budget
+
+  grant_round:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.GRANT_ROUND.v1
+    description: "Specific grant funding round"
+    category: master_data
+    fields:
+      - program_code
+      - round_code
+      - window_open
+      - window_close
+      - kpis
+
+  case:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.CASE.v1
+    description: "Service case or inquiry"
+    category: transactional
+    fields:
+      - subject_entity_id
+      - category
+      - priority
+      - sla_seconds
+      - current_status
+
+  comm_template:
+    code: HERA.PUBLICSECTOR.CRM.ENTITY.COMM_TEMPLATE.v1
+    description: "Communication template"
+    category: master_data
+    fields:
+      - channel
+      - subject
+      - body
+      - placeholders
+
+# Relationship Smart Codes
+relationships:
+  program_grant_round:
+    code: HERA.PUBLICSECTOR.CRM.PROGRAM.HAS_GRANT_ROUND
+    description: "Links program to its grant rounds"
+    from_entity_type: program
+    to_entity_type: grant_round
+    cardinality: one_to_many
+
+  case_subject:
+    code: HERA.PUBLICSECTOR.CRM.CASE.SUBJECT
+    description: "Links case to its subject (constituent or org)"
+    from_entity_type: case
+    to_entity_type: [constituent, ps_org]
+    cardinality: many_to_one
+
+  org_sponsor:
+    code: HERA.PUBLICSECTOR.CRM.ORG.SPONSORS_PROGRAM
+    description: "Links organization to sponsored programs"
+    from_entity_type: ps_org
+    to_entity_type: program
+    cardinality: one_to_many
+
+# Transaction Smart Codes
+transactions:
+  grant_application:
+    code: HERA.PUBLICSECTOR.CRM.TXN.GRANT_APPLICATION.v1
+    description: "Grant application submission"
+    transaction_type: application
+    requires:
+      - applicant_entity_id
+      - grant_round_id
+      - requested_amount
+
+  case_creation:
+    code: HERA.PUBLICSECTOR.CRM.TXN.CASE_CREATE.v1
+    description: "New case creation"
+    transaction_type: case_create
+    requires:
+      - subject_entity_id
+      - category
+      - priority
+
+  communication_sent:
+    code: HERA.PUBLICSECTOR.CRM.TXN.COMM_SENT.v1
+    description: "Communication sent to constituent"
+    transaction_type: communication
+    requires:
+      - recipient_entity_id
+      - template_id
+      - channel
+
+# Playbook Smart Codes
+playbooks:
+  # Playbook Definitions
+  grant_management:
+    definition:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.DEF.GRANT_MGMT.v1
+      description: "End-to-end grant management workflow"
+    
+    steps:
+      eligibility_check:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.GRANT_MGMT.ELIGIBILITY.v1
+        description: "Check applicant eligibility"
+        worker_type: ai
+        
+      document_review:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.GRANT_MGMT.DOCS.v1
+        description: "Review submitted documents"
+        worker_type: human
+        
+      scoring:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.GRANT_MGMT.SCORE.v1
+        description: "Score application"
+        worker_type: api
+        
+      approval:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.GRANT_MGMT.APPROVE.v1
+        description: "Final approval decision"
+        worker_type: human
+
+  case_resolution:
+    definition:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.DEF.CASE_RESOLVE.v1
+      description: "Standard case resolution workflow"
+    
+    steps:
+      triage:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CASE_RESOLVE.TRIAGE.v1
+        description: "Triage and categorize case"
+        worker_type: ai
+        
+      investigation:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CASE_RESOLVE.INVESTIGATE.v1
+        description: "Investigate case details"
+        worker_type: human
+        
+      resolution:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CASE_RESOLVE.RESOLVE.v1
+        description: "Implement resolution"
+        worker_type: human
+        
+      notify:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CASE_RESOLVE.NOTIFY.v1
+        description: "Notify constituent of resolution"
+        worker_type: api
+
+  citizen_onboarding:
+    definition:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.DEF.CITIZEN_ONBOARD.v1
+      description: "New citizen registration and onboarding"
+    
+    steps:
+      identity_verify:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CITIZEN_ONBOARD.VERIFY.v1
+        description: "Verify identity documents"
+        worker_type: api
+        
+      profile_create:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CITIZEN_ONBOARD.PROFILE.v1
+        description: "Create citizen profile"
+        worker_type: ai
+        
+      services_assign:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CITIZEN_ONBOARD.SERVICES.v1
+        description: "Assign eligible services"
+        worker_type: ai
+        
+      welcome_pack:
+        code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.DEF.CITIZEN_ONBOARD.WELCOME.v1
+        description: "Send welcome package"
+        worker_type: api
+
+# Run Smart Codes
+runs:
+  grant_run:
+    code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.RUN.GRANT_MGMT.v1
+    description: "Grant management playbook execution"
+    
+  case_run:
+    code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.RUN.CASE_RESOLVE.v1
+    description: "Case resolution playbook execution"
+    
+  citizen_run:
+    code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.RUN.CITIZEN_ONBOARD.v1
+    description: "Citizen onboarding playbook execution"
+
+# Step Execution Smart Codes
+step_executions:
+  grant_steps:
+    eligibility:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.EXEC.ELIGIBILITY.v1
+      description: "Eligibility check execution"
+      
+    documents:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.EXEC.DOCS.v1
+      description: "Document review execution"
+      
+    scoring:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.EXEC.SCORE.v1
+      description: "Scoring execution"
+      
+    approval:
+      code: HERA.PUBLICSECTOR.CRM.PLAYBOOK.STEP.EXEC.APPROVE.v1
+      description: "Approval execution"
+
+# Dynamic Field Smart Codes
+dynamic_fields:
+  constituent:
+    national_id:
+      code: HERA.PUBLICSECTOR.CRM.DYN.CONSTITUENT.NID.v1
+      description: "National identification number"
+      
+    eligibility_flags:
+      code: HERA.PUBLICSECTOR.CRM.DYN.CONSTITUENT.ELIGIBILITY.v1
+      description: "Program eligibility flags"
+      
+    risk_score:
+      code: HERA.PUBLICSECTOR.CRM.DYN.CONSTITUENT.RISK.v1
+      description: "Risk assessment score"
+
+  program:
+    budget:
+      code: HERA.PUBLICSECTOR.CRM.DYN.PROGRAM.BUDGET.v1
+      description: "Total program budget"
+      
+    eligibility_rules:
+      code: HERA.PUBLICSECTOR.CRM.DYN.PROGRAM.RULES.v1
+      description: "Eligibility rule configuration"
+
+  case:
+    sla_seconds:
+      code: HERA.PUBLICSECTOR.CRM.DYN.CASE.SLA.v1
+      description: "Service level agreement in seconds"
+      
+    current_status:
+      code: HERA.PUBLICSECTOR.CRM.DYN.CASE.STATUS.v1
+      description: "Current case status"
+
+# Business Rules
+business_rules:
+  grant_eligibility:
+    description: "Automatic eligibility checking based on constituent data"
+    triggers:
+      - HERA.PUBLICSECTOR.CRM.TXN.GRANT_APPLICATION.v1
+    conditions:
+      - constituent has required eligibility_flags
+      - constituent risk_score < threshold
+    actions:
+      - set application status
+      - trigger notification
+
+  case_sla:
+    description: "SLA monitoring and escalation"
+    triggers:
+      - HERA.PUBLICSECTOR.CRM.TXN.CASE_CREATE.v1
+    conditions:
+      - case age > sla_seconds * 0.8
+    actions:
+      - escalate to supervisor
+      - send warning notification
+
+  communication_personalization:
+    description: "Personalize communications based on constituent profile"
+    triggers:
+      - HERA.PUBLICSECTOR.CRM.TXN.COMM_SENT.v1
+    conditions:
+      - constituent has preferred language
+      - constituent has accessibility needs
+    actions:
+      - apply language template
+      - apply accessibility formatting

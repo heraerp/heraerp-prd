@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { Widget } from '@/src/lib/universal-ui/view-meta-service'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Widget } from '@/lib/universal-ui/view-meta-service'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface KanbanWidgetProps {
   widget: Widget

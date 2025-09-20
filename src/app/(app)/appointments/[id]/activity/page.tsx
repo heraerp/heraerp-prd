@@ -9,14 +9,14 @@
 import React from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { ChevronLeft, Loader2 } from 'lucide-react'
-import { useAuth } from '@/src/lib/auth/session'
-import { apiClient } from '@/src/lib/auth/session'
-import { createAppointmentsApi } from '@/src/lib/api/appointments'
-import { useAppointment, useAppointmentActivity } from '@/src/lib/hooks/useAppointment'
-import { AppointmentTimeline } from '@/src/components/appointments/AppointmentTimeline'
-import { AppointmentStatusBadge } from '@/src/components/appointments/AppointmentStatusBadge'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card, CardHeader, CardContent } from '@/src/components/ui/Card'
+import { useAuth } from '@/lib/auth/session'
+import { apiClient } from '@/lib/auth/session'
+import { createAppointmentsApi } from '@/lib/api/appointments'
+import { useAppointment, useAppointmentActivity } from '@/lib/hooks/useAppointment'
+import { AppointmentTimeline } from '@/components/appointments/AppointmentTimeline'
+import { AppointmentStatusBadge } from '@/components/appointments/AppointmentStatusBadge'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
 
 export default function AppointmentActivityPage() {
   const router = useRouter()

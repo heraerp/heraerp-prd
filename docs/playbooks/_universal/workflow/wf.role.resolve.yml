@@ -1,0 +1,113 @@
+smart_code: HERA.UNIV.WF.ROLE.RESOLVE.V1
+intent: Resolve workflow role to actual users with caching for performance.
+scope:
+  in_scope:
+    - resolve role names to user IDs
+    - cache resolution results
+    - handle role hierarchy
+    - validate role assignments
+  out_of_scope:
+    - role creation/modification
+    - user management
+    - permission enforcement
+preconditions:
+  - permissions: [$PROFILE.required_role_resolve] or system
+  - organization exists
+  - role resolution context available
+invariants:
+  - role resolutions are cached for performance
+  - cache TTL respects organization settings
+  - role hierarchy respected in resolution
+  - empty role lists handled gracefully
+inputs:
+  required:
+    - organization_id: uuid
+    - role_name: string                            # role to resolve
+  optional:
+    - context: object                              # additional context for resolution
+      - workflow_instance_id: uuid
+      - subject_entity_id: uuid                    # for hierarchical roles
+    - force_refresh: boolean                       # bypass cache
+    - include_hierarchy: boolean                   # include parent roles
+happy_path:
+  - step: check cache for role_name in organization (TTL 5 minutes)
+  - step: if cached and not force_refresh, return cached result
+  - step: query core_entities for role entity with entity_code = role_name
+  - step: query core_relationships for users assigned to role
+  - step: if include_hierarchy, recursively resolve parent roles
+  - step: if context.subject_entity_id provided, apply hierarchical filtering
+  - step: compile final user list with role source tracking
+  - step: cache result with TTL and return
+outputs:
+  cache_operations:
+    - cache_read: 1
+    - cache_write: 1
+  response:
+    role_name: string
+    resolved_users: array
+      - user_id: uuid
+        user_name: string
+        role_source: string                        # direct, inherited, hierarchical
+        effective_permissions: array
+    cache_hit: boolean
+    resolved_at: timestamp
+    cache_expires_at: timestamp
+errors:
+  - code: ROLE_NOT_FOUND
+    when: role_name doesn't exist in organization
+    action: return empty user list with warning
+  - code: NO_USERS_ASSIGNED
+    when: role exists but no users assigned
+    action: return empty user list
+  - code: CACHE_ERROR
+    when: cache read/write fails
+    action: proceed without cache, log warning
+  - code: HIERARCHY_LOOP
+    when: circular role hierarchy detected
+    action: break loop, log error, return partial result
+observability:
+  logs:
+    - role_resolved: { role_name, user_count, cache_hit, resolution_time_ms }
+    - role_cache_miss: { role_name, organization_id }
+    - role_hierarchy_applied: { role_name, parent_roles }
+  audit_json: false                                # high frequency operation
+  metrics:
+    - role_resolution_count by role_name
+    - role_cache_hit_rate
+    - role_resolution_duration
+    - role_hierarchy_depth
+caching_configuration:
+  cache_key_pattern: "role_resolve:{organization_id}:{role_name}:{context_hash}"
+  default_ttl_seconds: 300                         # 5 minutes
+  max_ttl_seconds: 3600                            # 1 hour
+  cache_size_limit: 1000                           # per organization
+  invalidation_triggers:
+    - user_role_assignment_change
+    - role_hierarchy_change
+    - user_deactivation
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  role_name: "manager"
+  context:
+    workflow_instance_id: "789e0123-e89b-12d3-a456-426614174000"
+    subject_entity_id: "emp-456e7890-e89b-12d3-a456-426614174000"
+  include_hierarchy: true
+  force_refresh: false
+example_response:
+  role_name: "manager"
+  resolved_users:
+    - user_id: "901e2345-e89b-12d3-a456-426614174000"
+      user_name: "Alice Smith"
+      role_source: "direct"
+      effective_permissions: ["approve_leave", "assign_tasks"]
+    - user_id: "012e3456-e89b-12d3-a456-426614174000"
+      user_name: "Bob Johnson"
+      role_source: "hierarchical"
+      effective_permissions: ["approve_leave"]
+  cache_hit: false
+  resolved_at: "2024-01-15T10:30:00Z"
+  cache_expires_at: "2024-01-15T10:35:00Z"
+checks:
+  - description: verify role exists in organization
+  - description: ensure cache consistency
+  - description: validate hierarchy resolution

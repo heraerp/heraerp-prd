@@ -5,18 +5,18 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   Loader2,
   Building2,
@@ -36,7 +36,7 @@ import {
   Zap,
   Hammer
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import Link from 'next/link'
 
 const BUSINESS_TYPES = [

@@ -2,11 +2,11 @@
 
 import { useState, useRef } from 'react'
 import React from 'react'
-import { PullToRefresh } from '@/src/lib/dna/components/mobile/PullToRefresh'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Badge } from '@/src/components/ui/badge'
+import { PullToRefresh } from '@/lib/dna/components/mobile/PullToRefresh'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
 import { Calendar, Package, Users, TrendingUp } from 'lucide-react'
 
 // Demo data

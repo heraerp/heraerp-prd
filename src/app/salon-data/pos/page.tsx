@@ -4,24 +4,24 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA ERP - Dubai POS (SoftPOS + Omnichannel)
- * Smart Code: HERA.RETAIL.POS.MODULE.DUBAI.v1
+ * Smart Code: HERA.RETAIL.POS.MODULE.DUBAI.V1
  *
  * Complete Point of Sale system built on HERA's 6-table foundation
  * Multi-tenant, VAT-compliant, offline-capable
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { universalApi } from '@/src/lib/universal-api'
-import { handleError } from '@/src/lib/salon/error-handler'
-import { PaymentWhatsAppActions } from '@/src/components/salon/whatsapp/PaymentWhatsAppActions'
-import type { CartItem, Payment, TransactionData } from '@/src/types/salon.types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { universalApi } from '@/lib/universal-api'
+import { handleError } from '@/lib/salon/error-handler'
+import { PaymentWhatsAppActions } from '@/components/salon/whatsapp/PaymentWhatsAppActions'
+import type { CartItem, Payment, TransactionData } from '@/types/salon.types'
 import {
   CreditCard,
   ShoppingCart,
@@ -61,7 +61,7 @@ import {
   Mail,
   Send
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 // ----------------------------- Types & Interfaces ------------------------------------
 
@@ -144,7 +144,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Brazilian Blowout Treatment',
     entity_code: 'SRV-001',
-    smart_code: 'HERA.SALON.SERVICE.TREATMENT.KERATIN.v1',
+    smart_code: 'HERA.SALON.SERVICE.TREATMENT.KERATIN.V1',
     price: 450,
     cost: 120,
     vat_rate: 5,
@@ -158,7 +158,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Premium Hair Cut & Style',
     entity_code: 'SRV-002',
-    smart_code: 'HERA.SALON.SERVICE.CUT.PREMIUM.v1',
+    smart_code: 'HERA.SALON.SERVICE.CUT.PREMIUM.V1',
     price: 180,
     cost: 45,
     vat_rate: 5,
@@ -172,7 +172,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Hair Color - Full Head',
     entity_code: 'SRV-003',
-    smart_code: 'HERA.SALON.SERVICE.COLOR.FULL.v1',
+    smart_code: 'HERA.SALON.SERVICE.COLOR.FULL.V1',
     price: 320,
     cost: 80,
     vat_rate: 5,
@@ -184,7 +184,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Luxury Spa Facial',
     entity_code: 'SPA-001',
-    smart_code: 'HERA.SALON.SERVICE.FACIAL.LUXURY.v1',
+    smart_code: 'HERA.SALON.SERVICE.FACIAL.LUXURY.V1',
     price: 280,
     cost: 70,
     vat_rate: 5,
@@ -197,7 +197,7 @@ const mockProducts: Product[] = [
     entity_name: 'Aloe Vera Shampoo 250ml',
     entity_code: 'PRD-001',
     barcode: '6291234567890',
-    smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.ALOE.v1',
+    smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.ALOE.V1',
     price: 45,
     cost: 15,
     vat_rate: 5,
@@ -211,7 +211,7 @@ const mockProducts: Product[] = [
     entity_name: 'Argan Oil Hair Mask 200ml',
     entity_code: 'PRD-002',
     barcode: '6291234567891',
-    smart_code: 'HERA.SALON.PRODUCT.MASK.ARGAN.v1',
+    smart_code: 'HERA.SALON.PRODUCT.MASK.ARGAN.V1',
     price: 85,
     cost: 25,
     vat_rate: 5,
@@ -224,7 +224,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Manicure & Pedicure Combo',
     entity_code: 'SPA-002',
-    smart_code: 'HERA.SALON.SERVICE.NAILS.COMBO.v1',
+    smart_code: 'HERA.SALON.SERVICE.NAILS.COMBO.V1',
     price: 220,
     cost: 55,
     vat_rate: 5,
@@ -236,7 +236,7 @@ const mockProducts: Product[] = [
     entity_type: 'product',
     entity_name: 'Bridal Makeup Package',
     entity_code: 'MKP-001',
-    smart_code: 'HERA.SALON.SERVICE.MAKEUP.BRIDAL.v1',
+    smart_code: 'HERA.SALON.SERVICE.MAKEUP.BRIDAL.V1',
     price: 850,
     cost: 200,
     vat_rate: 5,
@@ -465,7 +465,7 @@ export default function DubaiPOSSystem() {
         fiscal_period: new Date().getMonth() + 1,
         posting_period_code: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
         transaction_currency_code: posConfig.currency,
-        smart_code: 'HERA.RETAIL.POS.SALE.RECEIPT.v1',
+        smart_code: 'HERA.RETAIL.POS.SALE.RECEIPT.V1',
         business_context: {
           register_id: currentRegister.id,
           customer_id: selectedCustomer?.id,
@@ -501,7 +501,7 @@ export default function DubaiPOSSystem() {
           unit_amount: item.unit_price,
           line_amount: item.unit_price * item.quantity,
           tax_amount: 0, // Tax shown separately
-          smart_code: 'HERA.RETAIL.POS.SALE.LINE.ITEM.v1',
+          smart_code: 'HERA.RETAIL.POS.SALE.LINE.ITEM.V1',
           line_data: {
             product_id: item.product.id,
             product_code: item.product.entity_code
@@ -518,7 +518,7 @@ export default function DubaiPOSSystem() {
             quantity: 1,
             unit_amount: -item.discount_amount,
             line_amount: -item.discount_amount,
-            smart_code: 'HERA.RETAIL.POS.SALE.LINE.DISCOUNT.v1',
+            smart_code: 'HERA.RETAIL.POS.SALE.LINE.DISCOUNT.V1',
             line_data: {
               discount_type: 'percentage',
               discount_value: item.discount_percent
@@ -537,7 +537,7 @@ export default function DubaiPOSSystem() {
           quantity: 1,
           unit_amount: cartTotals.tax,
           line_amount: cartTotals.tax,
-          smart_code: 'HERA.TAX.UAE.VAT.LINE.v1',
+          smart_code: 'HERA.TAX.UAE.VAT.LINE.V1',
           line_data: {
             tax_profile_id: 'TAX-UAE-5',
             rate: posConfig.vat_rate / 100
@@ -576,7 +576,7 @@ export default function DubaiPOSSystem() {
           quantity: 1,
           unit_amount: -change,
           line_amount: -change,
-          smart_code: 'HERA.RETAIL.POS.PAYMENT.CHANGE.v1'
+          smart_code: 'HERA.RETAIL.POS.PAYMENT.CHANGE.V1'
         })
       }
 

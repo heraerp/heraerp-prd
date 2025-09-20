@@ -1,0 +1,82 @@
+smart_code: HERA.UNIV.WF.INSTANCE.SLA.RECALC.V1
+intent: Recompute SLA for an instance based on definition/profile.
+scope:
+  in_scope:
+    - recalculate SLA deadline
+    - update instance metadata
+    - consider pause time
+    - apply SLA rules from definition
+  out_of_scope:
+    - notification sending
+    - escalation triggering
+    - task SLA calculation
+preconditions:
+  - permissions: [$PROFILE.required_role_admin] or system
+  - instance exists and is not in terminal state
+  - workflow definition has SLA rules
+invariants:
+  - SLA calculation excludes paused time
+  - org isolation maintained
+  - SLA rules applied consistently
+inputs:
+  required:
+    - organization_id: uuid
+    - instance_id: uuid                            # workflow instance
+  optional:
+    - sla_override_hours: number                   # manual SLA override
+    - recalc_reason: string                        # reason for recalculation
+    - recalc_by: uuid                              # user who initiated recalc
+happy_path:
+  - step: load instance and workflow definition
+  - step: if sla_override_hours provided, use that; else load from definition
+  - step: calculate total pause time from step history
+  - step: determine new SLA deadline = created_at + sla_hours - pause_time
+  - step: if instance is currently paused, SLA remains at current calculation
+  - step: update instance.dynamic.sla_at = new deadline
+  - step: update instance.dynamic.sla_recalc_at = now()
+  - step: create STEP line smart_code=HERA.UNIV.WF.STEP.V1
+          metadata: {note: "SLA_RECALC", previous_sla, new_sla, pause_time_hours, recalc_reason}
+outputs:
+  transactions_updated:
+    - universal_transactions: 1                    # instance SLA updated
+    - universal_transaction_lines: 1               # audit step created
+  response:
+    instance_id: uuid
+    previous_sla_at: timestamp
+    new_sla_at: timestamp
+    pause_time_hours: number
+    sla_recalc_at: timestamp
+errors:
+  - code: INSTANCE_NOT_FOUND
+    when: instance_id doesn't exist in organization
+    action: return 404
+  - code: INSTANCE_TERMINAL
+    when: instance is in terminal state
+    action: return 400 with current state
+  - code: NO_SLA_RULES
+    when: workflow definition has no SLA configuration
+    action: return 400 with definition details
+  - code: INVALID_SLA_OVERRIDE
+    when: sla_override_hours is negative or too large
+    action: return 400
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_admin
+    action: return 403
+observability:
+  logs:
+    - sla_recalculated: { instance_id, previous_sla, new_sla, pause_time_hours, recalc_by }
+  audit_json: true
+  metrics:
+    - sla_recalc_count by definition_code
+    - sla_adjustment_distribution
+    - pause_time_impact_hours
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  instance_id: "789e0123-e89b-12d3-a456-426614174000"
+  sla_override_hours: 48
+  recalc_reason: "Extended deadline due to complexity discovered during review"
+  recalc_by: "901e2345-e89b-12d3-a456-426614174000"
+checks:
+  - description: verify SLA rules exist in definition
+  - description: ensure pause time calculation is accurate
+  - description: validate new SLA is reasonable

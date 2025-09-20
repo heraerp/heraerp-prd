@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { APP_VERSION } from '@/src/lib/constants/version'
+import { APP_VERSION } from '@/lib/constants/version'
 
 export const dynamic = 'force-dynamic' // Always fetch fresh
 export const revalidate = 0 // No caching

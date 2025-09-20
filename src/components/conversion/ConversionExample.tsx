@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { ConversionBanner } from './ConversionBanner'
 import { SaaSConversionWizard } from './SaaSConversionWizard'
-import { DemoToSaaSConversionService } from '@/src/lib/conversion/demo-to-saas-service'
-import type { ConversionData } from '@/src/lib/conversion/demo-to-saas-service'
+import { DemoToSaaSConversionService } from '@/lib/conversion/demo-to-saas-service'
+import type { ConversionData } from '@/lib/conversion/demo-to-saas-service'
 
 interface ConversionMetrics {
   sessionDuration: string

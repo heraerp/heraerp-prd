@@ -1,6 +1,6 @@
 /**
  * Chart of Accounts Recipe
- * Smart Code: HERA.URP.RECIPE.FINANCE.COA.v1
+ * Smart Code: HERA.URP.RECIPE.FINANCE.COA.V1
  *
  * Generates hierarchical chart of accounts with balances
  */
@@ -8,9 +8,9 @@
 import type { ReportRecipe } from '../index'
 
 export const chartOfAccountsRecipe: ReportRecipe = {
-  name: 'HERA.URP.RECIPE.FINANCE.COA.v1',
+  name: 'HERA.URP.RECIPE.FINANCE.COA.V1',
   description: 'Hierarchical chart of accounts with current balances',
-  smartCode: 'HERA.URP.RECIPE.FINANCE.COA.v1',
+  smartCode: 'HERA.URP.RECIPE.FINANCE.COA.V1',
   category: 'finance',
 
   parameters: [

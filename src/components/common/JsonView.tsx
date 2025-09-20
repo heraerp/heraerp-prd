@@ -7,16 +7,16 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
-} from '@/src/components/ui/collapsible'
+} from '@/components/ui/collapsible'
 import { Copy, ChevronRight, ChevronDown, Check } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface JsonViewProps {
   data: any

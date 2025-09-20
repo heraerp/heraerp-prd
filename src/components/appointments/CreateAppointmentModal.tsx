@@ -1,20 +1,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/components/ui/dialog'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
+} from '@/components/ui/select'
 import {
   User,
   Phone,
@@ -37,10 +37,10 @@ import {
   UniversalAppointmentSystem,
   SERVICE_TYPES,
   APPOINTMENT_SMART_CODES
-} from '@/src/lib/appointments/universal-appointment-system'
+} from '@/lib/appointments/universal-appointment-system'
 
 // HERA Universal Create Appointment Modal
-// Smart Code: HERA.UNIV.CRM.APT.CREATE.v1
+// Smart Code: HERA.UNIV.CRM.APT.CREATE.V1
 
 interface CreateAppointmentModalProps {
   isOpen: boolean
@@ -720,7 +720,7 @@ export function CreateAppointmentModal({
 
             <div className="ml-auto flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
-                HERA.UNIV.CRM.APT.CREATE.v1
+                HERA.UNIV.CRM.APT.CREATE.V1
               </Badge>
               <Button
                 variant="outline"

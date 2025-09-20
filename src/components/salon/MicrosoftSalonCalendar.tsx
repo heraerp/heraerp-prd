@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import '@/styles/microsoft-calendar.css'
 import {
   Calendar,
@@ -35,18 +35,18 @@ import {
   Settings,
   X
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/lib/utils'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { BookAppointmentModal } from '@/src/components/salon/BookAppointmentModal'
+} from '@/components/ui/select'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BookAppointmentModal } from '@/components/salon/BookAppointmentModal'
 
 interface MicrosoftSalonCalendarProps {
   className?: string
@@ -66,7 +66,7 @@ const BUSINESS_HOURS = {
 }
 
 export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSalonCalendarProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
   const [selectedStylist, setSelectedStylist] = useState<string>('all')

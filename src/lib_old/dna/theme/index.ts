@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UNIVERSAL THEME SYSTEM - UNIFIED EXPORTS
-// Smart Code: HERA.DNA.THEME.SYSTEM.EXPORTS.v1
+// Smart Code: HERA.DNA.THEME.SYSTEM.EXPORTS.V1
 // Complete theming system with variants, configuration rules, and provider
 // ================================================================================
 

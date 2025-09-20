@@ -1,4 +1,4 @@
-smart_code: HERA.SALON.PRICING.POS_FROM_PRICE_LIST.v1
+smart_code: HERA.SALON.PRICING.POS.FROM.PRICELIST.V1
 intent: >
   Price POS order lines using ITEM_IN_PRICE_LIST based on CUSTOMER_PRICE_LIST; discounts emitted as separate lines.
 scope:

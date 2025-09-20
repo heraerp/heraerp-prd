@@ -4,7 +4,7 @@
  * Strictly uses Sacred Six tables with smart code conventions
  */
 
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 
 export type PeriodStatus = 'open' | 'current' | 'closed'

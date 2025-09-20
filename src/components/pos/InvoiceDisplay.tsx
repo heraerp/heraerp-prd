@@ -8,11 +8,11 @@
 
 import { useRef } from 'react'
 import { Printer, Download, Mail, Home, Calendar } from 'lucide-react'
-import { Invoice } from '@/src/lib/schemas/pos'
-import { Button } from '@/src/components/ui/button'
-import { Card } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Separator } from '@/src/components/ui/separator'
+import { Invoice } from '@/lib/schemas/pos'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 interface InvoiceDisplayProps {
   invoice: Invoice

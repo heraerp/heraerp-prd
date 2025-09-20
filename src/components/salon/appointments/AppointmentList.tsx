@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react'
 import { Calendar, Clock, User, DollarSign, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { formatDate } from '@/src/lib/date-utils'
-import { cn } from '@/src/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { formatDate } from '@/lib/date-utils'
+import { cn } from '@/lib/utils'
 import { WhatsAppNotificationBadge, WhatsAppNotificationHistory } from './WhatsAppNotificationBadge'
 
 interface Appointment {

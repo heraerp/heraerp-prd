@@ -5,7 +5,7 @@
  * from the universal 6-table architecture
  */
 
-import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { supabaseAdmin } from '@/lib/supabase-server'
 import type {
   PostingRule,
   OrgFinanceConfig,
@@ -238,7 +238,7 @@ export class FinanceDNALoader {
         transaction_currency_code: event.currency,
         base_currency_code: event.currency,
         exchange_rate: 1.0,
-        smart_code: 'HERA.FIN.GL.TXN.AUTO_POST.v1',
+        smart_code: 'HERA.FIN.GL.TXN.AUTO_POST.V1',
         metadata: {
           source_smart_code: event.smart_code,
           source_system: event.source_system,
@@ -266,7 +266,7 @@ export class FinanceDNALoader {
       quantity: 1,
       unit_amount: line.dr || line.cr,
       line_amount: line.dr || line.cr,
-      smart_code: 'HERA.FIN.GL.LINE.AUTO_POST.v1',
+      smart_code: 'HERA.FIN.GL.LINE.AUTO_POST.V1',
       line_data: {
         account_code: line.entity_id,
         debit: line.dr,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Smart Code: HERA.REST.ORDERS.API.COMPLETE.v1
+// Smart Code: HERA.REST.ORDERS.API.COMPLETE.V1
 // Complete Restaurant Order Management API with Universal 6-Table Architecture
 // Supports B2C customer ordering and B2B internal operations (POS, KDS)
 
@@ -247,7 +247,7 @@ export async function GET(request: NextRequest) {
               transformedOrders.filter(o => o.prep_time_actual).length
             : 0
       },
-      smart_code: 'HERA.REST.ORDERS.API.READ.COMPLETE.v1'
+      smart_code: 'HERA.REST.ORDERS.API.READ.COMPLETE.V1'
     })
   } catch (error) {
     console.error('Orders API error:', error)
@@ -424,25 +424,25 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'kitchen_status',
         field_value_text: 'pending',
-        smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.v1'
+        smart_code: 'HERA.REST.ORDER.KITCHEN.STATUS.V1'
       },
       {
         entity_id: orderTransaction.id,
         field_name: 'payment_method',
         field_value_text: payment_method,
-        smart_code: 'HERA.REST.ORDER.PAYMENT.METHOD.v1'
+        smart_code: 'HERA.REST.ORDER.PAYMENT.METHOD.V1'
       },
       {
         entity_id: orderTransaction.id,
         field_name: 'payment_status',
         field_value_text: payment_method === 'cash' ? 'pending' : 'completed',
-        smart_code: 'HERA.REST.ORDER.PAYMENT.STATUS.v1'
+        smart_code: 'HERA.REST.ORDER.PAYMENT.STATUS.V1'
       },
       {
         entity_id: orderTransaction.id,
         field_name: 'estimated_ready',
         field_value_text: estimatedReady.toISOString(),
-        smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.v1'
+        smart_code: 'HERA.REST.ORDER.ESTIMATED.READY.V1'
       }
     ]
 
@@ -461,7 +461,7 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'customer_name',
         field_value_text: customer_info.name,
-        smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.v1'
+        smart_code: 'HERA.REST.ORDER.CUSTOMER.NAME.V1'
       })
     }
 
@@ -470,7 +470,7 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'customer_phone',
         field_value_text: customer_info.phone,
-        smart_code: 'HERA.REST.ORDER.CUSTOMER.PHONE.v1'
+        smart_code: 'HERA.REST.ORDER.CUSTOMER.PHONE.V1'
       })
     }
 
@@ -502,7 +502,7 @@ export async function POST(request: NextRequest) {
         }))
       },
       message: 'Order created successfully',
-      smart_code: 'HERA.REST.ORDERS.API.CREATE.v1'
+      smart_code: 'HERA.REST.ORDERS.API.CREATE.V1'
     })
   } catch (error) {
     console.error('Order creation API error:', error)
@@ -576,14 +576,14 @@ export async function PUT(request: NextRequest) {
         entity_id: order_id,
         field_name: 'prep_time_actual',
         field_value_integer: prepTimeMinutes,
-        smart_code: 'HERA.REST.ORDER.PREP.TIME.ACTUAL.v1'
+        smart_code: 'HERA.REST.ORDER.PREP.TIME.ACTUAL.V1'
       })
     }
 
     return NextResponse.json({
       success: true,
       message: 'Order updated successfully',
-      smart_code: 'HERA.REST.ORDERS.API.UPDATE.v1'
+      smart_code: 'HERA.REST.ORDERS.API.UPDATE.V1'
     })
   } catch (error) {
     console.error('Order update API error:', error)

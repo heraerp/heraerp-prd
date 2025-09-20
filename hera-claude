@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# HERA Claude wrapper
+# Usage:
+#   ./hera-claude "Generate a POS sidebar component"
+#   ./hera-claude        # interactive mode
+
+GUARDRAIL_PATH="${GUARDRAIL_PATH:-$(pwd)/hera_guardrail}"
+
+if [ ! -f "$GUARDRAIL_PATH" ]; then
+  echo "❌ Guardrail file not found at $GUARDRAIL_PATH"
+  exit 1
+fi
+
+# Change `claude` below if your CLI binary is named differently (e.g., anthropic, claude-chat)
+claude \
+  --system-prompt "$(cat "$GUARDRAIL_PATH")" \
+  "$@"

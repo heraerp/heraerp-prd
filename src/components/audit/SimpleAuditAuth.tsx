@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { User as SupabaseUser, Session } from '@supabase/supabase-js'
 
 // Simplified auth context for audit system

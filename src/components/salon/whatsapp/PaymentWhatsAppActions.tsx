@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 import {
   Receipt,
   CreditCard,
@@ -22,9 +22,9 @@ import {
   Clock,
   DollarSign
 } from 'lucide-react'
-import { formatWhatsAppTemplate } from '@/src/lib/salon/whatsapp-templates'
-import { formatDate } from '@/src/lib/date-utils'
-import { cn } from '@/src/lib/utils'
+import { formatWhatsAppTemplate } from '@/lib/salon/whatsapp-templates'
+import { formatDate } from '@/lib/date-utils'
+import { cn } from '@/lib/utils'
 
 interface PaymentWhatsAppActionsProps {
   payment: {

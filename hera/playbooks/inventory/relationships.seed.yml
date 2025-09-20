@@ -1,4 +1,4 @@
-smart_code: HERA.INVENTORY.MDM.RELATIONSHIPS.SEED.v1
+smart_code: HERA.INVENTORY.MDM.RELATIONSHIPS.SEED.V1
 rows:
   # Item stocked at location
   - from_slug: item:SKU-INV-001

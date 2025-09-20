@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import React from 'react'
-import { PullToRefresh } from '@/src/lib/dna/components/mobile/PullToRefresh'
+import { PullToRefresh } from '@/lib/dna/components/mobile/PullToRefresh'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'

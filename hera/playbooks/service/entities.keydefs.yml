@@ -1,4 +1,4 @@
-smart_code: HERA.SERVICE.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.SERVICE.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   # Service
   - { slug: service.category,         entity_type: ENTITY, name: "Service Category",  metadata: { type: "text" } }

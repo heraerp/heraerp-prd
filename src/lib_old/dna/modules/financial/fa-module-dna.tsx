@@ -257,7 +257,7 @@ export function FAModule({
           from_entity_id: asset.id,
           to_entity_id: assetForm.metadata.placedAtCustomer,
           relationship_type: 'placed_at',
-          smart_code: 'HERA.FIN.FA.REL.PLACEMENT.v1',
+          smart_code: 'HERA.FIN.FA.REL.PLACEMENT.V1',
           metadata: {
             placement_date: new Date(),
             deposit_amount: assetForm.metadata.freezerDeposit || 0
@@ -304,7 +304,7 @@ export function FAModule({
         organization_id: organizationId,
         from_entity_id: maintenanceForm.assetId,
         total_amount: maintenanceForm.cost || 0,
-        smart_code: 'HERA.FIN.FA.TXN.MAINT.v1',
+        smart_code: 'HERA.FIN.FA.TXN.MAINT.V1',
         metadata: {
           maintenance_type: maintenanceForm.maintenanceType,
           status: maintenanceForm.status,
@@ -1378,8 +1378,8 @@ export const FA_MODULE_DNA = {
     'HERA.FIN.FA.COLD_ROOM.v1',
     'HERA.FIN.FA.VEHICLE.v1',
     'HERA.FIN.FA.EQUIPMENT.v1',
-    'HERA.FIN.FA.TXN.MAINT.v1',
-    'HERA.FIN.FA.REL.PLACEMENT.v1',
+    'HERA.FIN.FA.TXN.MAINT.V1',
+    'HERA.FIN.FA.REL.PLACEMENT.V1',
     'HERA.FIN.FA.DEP.*',
     'HERA.FIN.FA.VAL.*'
   ]

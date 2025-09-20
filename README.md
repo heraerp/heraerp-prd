@@ -48,6 +48,49 @@ Deploy any business type instantly:
 
 ```bash
 # Restaurant
+
+---
+
+## 🛡️ **CI & Environment Configuration**
+
+### **Continuous Integration**
+The project includes a comprehensive CI pipeline that validates:
+- **Type checking** - Full TypeScript validation
+- **Linting** - Code quality and consistency
+- **Testing** - Unit and integration tests  
+- **Building** - Production build verification
+
+### **Environment Variables**
+Required environment variables for deployment:
+
+```env
+# API Configuration
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api  # Falls back automatically
+
+# Optional: Additional configuration
+DATABASE_URL=your_database_url
+JWT_SECRET=your_jwt_secret
+```
+
+### **Development Setup**
+```bash
+# Install dependencies
+npm ci
+
+# Run type checking
+npm run typecheck
+
+# Run linting
+npm run lint
+
+# Run tests
+npm run test
+
+# Build for production
+npm run build
+```
+
+The system includes automatic environment validation with fallbacks for development.
 "Setup Italian restaurant for Mario's Authentic Italian"
 → Result: Complete POS, inventory, costing, accounting in 30 seconds
 

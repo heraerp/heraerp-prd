@@ -12,12 +12,13 @@ import {
   CreditCard,
   ChevronRight
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Skeleton } from '@/src/components/ui/skeleton'
-import { cn } from '@/src/lib/utils'
-import { useAppointmentsList } from '@/src/lib/api/appointments'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
+import { useAppointmentsList } from '@/lib/api/appointments'
+import { useRealAppointmentsList } from '@/lib/api/appointments-real'
 
 interface UpcomingAppointmentsProps {
   organizationId: string
@@ -28,21 +29,35 @@ const statusConfig = {
   confirmed: { label: 'Confirmed', color: 'bg-blue-500' },
   in_progress: { label: 'In Progress', color: 'bg-yellow-500' },
   service_complete: { label: 'Complete', color: 'bg-green-500' },
-  cancelled: { label: 'Cancelled', color: 'bg-red-500' }
+  cancelled: { label: 'Cancelled', color: 'bg-red-500' },
+  pending: { label: 'Pending', color: 'bg-orange-500' },
+  completed: { label: 'Completed', color: 'bg-green-500' }
 }
 
+const defaultStatus = { label: 'Scheduled', color: 'bg-blue-500' }
+
 export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsProps) {
-  const { data, isLoading } = useAppointmentsList({
+  const today = new Date().toISOString().split('T')[0]
+  
+  console.log('🎯 UpcomingAppointments rendered with:', { organizationId, today })
+  
+  // Use real appointments from universal_transactions
+  const { data, isLoading, error } = useRealAppointmentsList({
     organizationId,
-    filters: {
-      date_from: new Date().toISOString().split('T')[0],
-      date_to: new Date().toISOString().split('T')[0],
-      status_not_in: ['cancelled', 'draft'],
-      limit: 8
-    }
+    dateFrom: today,
+    dateTo: today
   })
 
   const appointments = data?.appointments || []
+  
+  console.log('📊 Appointment data:', { 
+    isLoading, 
+    appointmentCount: appointments.length, 
+    appointments,
+    error,
+    hasData: !!data 
+  })
+
 
   const handleStartService = async (appointmentId: string, e: React.MouseEvent) => {
     e.preventDefault()
@@ -104,7 +119,7 @@ export function UpcomingAppointments({ organizationId }: UpcomingAppointmentsPro
         ) : (
           <div className="space-y-3">
             {appointments.map((appointment) => {
-              const status = statusConfig[appointment.status as keyof typeof statusConfig]
+              const status = statusConfig[appointment.status as keyof typeof statusConfig] || defaultStatus
               const appointmentTime = format(new Date(appointment.datetime), 'HH:mm')
               
               return (

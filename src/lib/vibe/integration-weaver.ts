@@ -1,5 +1,5 @@
 // HERA 100% Vibe Coding System - Integration Weaver
-// Smart Code: HERA.VIBE.FOUNDATION.INTEGRATION.WEAVER.v1
+// Smart Code: HERA.VIBE.FOUNDATION.INTEGRATION.WEAVER.V1
 // Purpose: Manufacturing-grade seamless component integration system
 
 import { IntegrationWeave, VibeComponent, IntegrationRequest, IntegrationError } from './types'
@@ -479,7 +479,7 @@ export class IntegrationWeaver {
           table: 'universal_transactions',
           data: {
             transaction_type: 'vibe_integration_event',
-            smart_code: 'HERA.VIBE.INTEGRATION.EVENT.LOG.v1',
+            smart_code: 'HERA.VIBE.INTEGRATION.EVENT.LOG.V1',
             metadata: {
               event_type: eventType,
               organization_id: this.organizationId,

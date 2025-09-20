@@ -5,9 +5,9 @@
  * Core service for resolving and applying configuration rules
  */
 
-import { universalApi } from '@/src/lib/universal-api'
-import { supabase } from '@/src/lib/supabase'
-import type { Entity, Transaction, DynamicData, Relationship } from '@/src/types/universal.types'
+import { universalApi } from '@/lib/universal-api'
+import { supabase } from '@/lib/supabase'
+import type { Entity, Transaction, DynamicData, Relationship } from '@/types/universal.types'
 
 // Rule interface matching the README specification
 export interface UniversalRule {
@@ -642,7 +642,7 @@ export class UniversalConfigService {
     try {
       await universalApi.createTransaction({
         transaction_type: 'config_decision',
-        smart_code: 'HERA.UNIV.CONFIG.DECISION.AUDIT.v1',
+        smart_code: 'HERA.UNIV.CONFIG.DECISION.AUDIT.V1',
         organization_id: this.organizationId!,
         total_amount: 0,
         metadata: {

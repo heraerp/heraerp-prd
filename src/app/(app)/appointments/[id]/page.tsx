@@ -18,15 +18,15 @@ import {
   ExternalLink,
   Loader2
 } from 'lucide-react'
-import { useAuth } from '@/src/lib/auth/session'
-import { apiClient } from '@/src/lib/auth/session'
-import { createAppointmentsApi } from '@/src/lib/api/appointments'
-import { useAppointment, useAppointmentNavigation } from '@/src/lib/hooks/useAppointment'
-import { AppointmentStatusBadge } from '@/src/components/appointments/AppointmentStatusBadge'
-import { AppointmentActions } from '@/src/components/appointments/AppointmentActions'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card, CardHeader, CardContent } from '@/src/components/ui/Card'
-import { formatDateTime, formatDuration, formatCurrency } from '@/src/lib/utils'
+import { useAuth } from '@/lib/auth/session'
+import { apiClient } from '@/lib/auth/session'
+import { createAppointmentsApi } from '@/lib/api/appointments'
+import { useAppointment, useAppointmentNavigation } from '@/lib/hooks/useAppointment'
+import { AppointmentStatusBadge } from '@/components/appointments/AppointmentStatusBadge'
+import { AppointmentActions } from '@/components/appointments/AppointmentActions'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { formatDateTime, formatDuration, formatCurrency } from '@/lib/utils'
 
 export default function AppointmentDetailPage() {
   const router = useRouter()
@@ -86,12 +86,12 @@ export default function AppointmentDetailPage() {
           <div className="flex items-start justify-between mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-foreground">
                   {appointment.code}
                 </h1>
                 <AppointmentStatusBadge status={appointment.status} size="lg" />
               </div>
-              <p className="text-sm text-gray-500 font-mono">
+              <p className="text-sm text-muted-foreground font-mono">
                 Smart Code: {appointment.smart_code}
               </p>
             </div>

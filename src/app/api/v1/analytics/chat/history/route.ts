@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createAnalyticsChatStorage } from '@/src/lib/analytics-chat-storage'
-// import { getUserContext } from '@/src/lib/api-utils'; // Disabled for testing
+import { createAnalyticsChatStorage } from '@/lib/analytics-chat-storage'
+// import { getUserContext } from '@/lib/api-utils'; // Disabled for testing
 
 export async function GET(request: NextRequest) {
   try {

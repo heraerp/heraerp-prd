@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { smartCodeEngine, SmartCodeExecution } from '@/src/lib/smart-code-engine'
+import { smartCodeEngine, SmartCodeExecution } from '@/lib/smart-code-engine'
 
 /**
  * Smart Code API Endpoint

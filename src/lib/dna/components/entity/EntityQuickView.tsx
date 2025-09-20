@@ -18,9 +18,9 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { universalApi } from '@/src/lib/universal-api'
-import { formatCurrency } from '@/src/lib/utils/format'
+import { cn } from '@/lib/utils'
+import { universalApi } from '@/lib/universal-api'
+import { formatCurrency } from '@/lib/utils/format'
 import { formatDistanceToNow } from 'date-fns'
 
 // Entity type configurations

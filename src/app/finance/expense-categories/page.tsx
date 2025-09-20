@@ -9,11 +9,11 @@
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-import { UniversalConfigManager } from '@/src/components/universal-config/UniversalConfigManager'
-import { CONFIG_TYPES } from '@/src/lib/universal-config/config-types'
+import { UniversalConfigManager } from '@/components/universal-config/UniversalConfigManager'
+import { CONFIG_TYPES } from '@/lib/universal-config/config-types'
 import { useRouter } from 'next/navigation'
-import { Badge } from '@/src/components/ui/badge'
-import { CurrencyDisplay } from '@/src/components/ui/currency-input'
+import { Badge } from '@/components/ui/badge'
+import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
 export default function ExpenseCategoriesPage() {

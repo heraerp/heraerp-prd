@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.PLAYBOOK.INVENTORY.SEED.v1
+smart_code: HERA.SYSTEM.PLAYBOOK.INVENTORY.SEED.DATA.V1
 
 contracts:
   - entities.core.yml

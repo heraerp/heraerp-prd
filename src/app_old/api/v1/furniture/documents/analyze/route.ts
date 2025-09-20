@@ -324,7 +324,7 @@ export async function POST(request: NextRequest) {
       transaction_date: new Date().toISOString(),
       source_entity_id: fileId,
       target_entity_id: supplierId, // Link to supplier
-      smart_code: 'HERA.FURNITURE.DOCUMENT.ANALYSIS.TXN.v1',
+      smart_code: 'HERA.FURNITURE.DOCUMENT.ANALYSIS.TXN.V1',
       metadata: {
         vendor_name: analysis.vendor_name,
         invoice_amount: analysis.total_amount,

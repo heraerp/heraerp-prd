@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React from 'react'
-import { InventoryManagement } from '@/src/components/restaurant/InventoryManagement'
+import { InventoryManagement } from '@/components/restaurant/InventoryManagement'
 
 // Restaurant organization configuration
 const RESTAURANT_CONFIG = {
@@ -23,12 +23,12 @@ const RESTAURANT_CONFIG = {
     INVENTORY_TRANSFER: 'HERA.RESTAURANT.INV.TRANSFER.v1',
 
     // Transaction lines
-    LINE_ITEM: 'HERA.RESTAURANT.INV.LINE.ITEM.v1',
-    LINE_ADJUSTMENT: 'HERA.RESTAURANT.INV.LINE.ADJUSTMENT.v1',
+    LINE_ITEM: 'HERA.RESTAURANT.INV.LINE.ITEM.V1',
+    LINE_ADJUSTMENT: 'HERA.RESTAURANT.INV.LINE.ADJUSTMENT.V1',
 
     // Relationships
-    REL_ITEM_SUPPLIER: 'HERA.RESTAURANT.INV.REL.ITEM.SUPPLIER.v1',
-    REL_ITEM_LOCATION: 'HERA.RESTAURANT.INV.REL.ITEM.LOCATION.v1'
+    REL_ITEM_SUPPLIER: 'HERA.RESTAURANT.INV.REL.ITEM.SUPPLIER.V1',
+    REL_ITEM_LOCATION: 'HERA.RESTAURANT.INV.REL.ITEM.LOCATION.V1'
   }
 }
 

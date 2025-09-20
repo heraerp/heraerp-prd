@@ -11,18 +11,18 @@ import {
   Printer,
   Mail
 } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Label } from '@/src/components/ui/label'
-import { Input } from '@/src/components/ui/input'
-import { formatDate } from '@/src/lib/date-utils'
-import { useLeaveManagement } from '@/src/hooks/useLeaveManagement'
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { formatDate } from '@/lib/date-utils'
+import { useLeaveManagement } from '@/hooks/useLeaveManagement'
 
 interface ReportOptions {
   fiscalYearStart: string

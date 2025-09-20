@@ -19,7 +19,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Patient Detail View - Using SAME widgets as other industries
     patientDetail: {
       id: 'healthcare-patient-detail',
-      smart_code: 'HERA.HLTH.PAT.ENT.PROF.v1',
+      smart_code: 'HERA.HLTH.PAT.ENT.PROF.V1',
       view_type: 'detail',
       title: 'Patient Medical Record',
       description: 'Complete patient health profile and medical history',
@@ -29,7 +29,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'patient-vitals',
           type: 'stats',
           title: 'Current Vitals',
-          smart_code: 'HERA.HLTH.PAT.STATS.VITALS.v1',
+          smart_code: 'HERA.HLTH.PAT.STATS.VITALS.V1',
           config: {
             metric: 'health_score',
             aggregation: 'avg',
@@ -52,7 +52,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'patient-info',
           type: 'form',
           title: 'Patient Information',
-          smart_code: 'HERA.HLTH.PAT.FORM.INFO.v1',
+          smart_code: 'HERA.HLTH.PAT.FORM.INFO.V1',
           config: {
             fields: [
               {
@@ -135,7 +135,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'appointment-history',
           type: 'grid',
           title: 'Appointment History',
-          smart_code: 'HERA.HLTH.PAT.GRID.APPOINTMENTS.v1',
+          smart_code: 'HERA.HLTH.PAT.GRID.APPOINTMENTS.V1',
           config: {
             columns: [
               { field: 'appointment_date', header: 'Date', type: 'date', sortable: true },
@@ -156,13 +156,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'view-details',
                 label: 'View Details',
                 type: 'navigate',
-                smart_code: 'HERA.HLTH.APPT.ACTION.VIEW.v1'
+                smart_code: 'HERA.HLTH.APPT.ACTION.VIEW.V1'
               },
               {
                 id: 'print-summary',
                 label: 'Print Summary',
                 type: 'custom',
-                smart_code: 'HERA.HLTH.APPT.ACTION.PRINT.v1'
+                smart_code: 'HERA.HLTH.APPT.ACTION.PRINT.V1'
               }
             ]
           },
@@ -181,7 +181,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'medical-timeline',
           type: 'timeline',
           title: 'Medical History',
-          smart_code: 'HERA.HLTH.PAT.TIMELINE.HISTORY.v1',
+          smart_code: 'HERA.HLTH.PAT.TIMELINE.HISTORY.V1',
           config: {
             time_field: 'event_date',
             event_template: '{{event_type}}: {{description}} - Dr. {{provider_name}}'
@@ -194,21 +194,21 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'schedule-appointment',
           label: 'Schedule Appointment',
           type: 'create',
-          smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1',
+          smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.V1',
           icon: 'calendar'
         },
         {
           id: 'prescribe-medication',
           label: 'Prescribe',
           type: 'custom',
-          smart_code: 'HERA.HLTH.PAT.ACTION.PRESCRIBE.v1',
+          smart_code: 'HERA.HLTH.PAT.ACTION.PRESCRIBE.V1',
           icon: 'pill'
         },
         {
           id: 'order-lab',
           label: 'Order Lab Tests',
           type: 'custom',
-          smart_code: 'HERA.HLTH.PAT.ACTION.LAB.v1',
+          smart_code: 'HERA.HLTH.PAT.ACTION.LAB.V1',
           icon: 'test-tube'
         }
       ]
@@ -217,7 +217,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Patient List View
     patientList: {
       id: 'healthcare-patient-list',
-      smart_code: 'HERA.HLTH.PAT.LIST.ALL.v1',
+      smart_code: 'HERA.HLTH.PAT.LIST.ALL.V1',
       view_type: 'list',
       title: 'Patient Registry',
       description: 'All patients in the healthcare system',
@@ -226,7 +226,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'patient-grid',
           type: 'grid',
           title: 'Patients',
-          smart_code: 'HERA.HLTH.PAT.GRID.ALL.v1',
+          smart_code: 'HERA.HLTH.PAT.GRID.ALL.V1',
           config: {
             columns: [
               {
@@ -253,13 +253,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'view-record',
                 label: 'View Record',
                 type: 'navigate',
-                smart_code: 'HERA.HLTH.PAT.ACTION.VIEW.v1'
+                smart_code: 'HERA.HLTH.PAT.ACTION.VIEW.V1'
               },
               {
                 id: 'schedule',
                 label: 'Schedule',
                 type: 'custom',
-                smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.v1'
+                smart_code: 'HERA.HLTH.PAT.ACTION.SCHEDULE.V1'
               }
             ],
             pagination: { page_size: 25, page_size_options: [10, 25, 50, 100] }
@@ -277,7 +277,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Order Entry View - Using form, grid, stats widgets
     orderEntry: {
       id: 'restaurant-order-entry',
-      smart_code: 'HERA.REST.POS.TXN.ORDER.v1',
+      smart_code: 'HERA.REST.POS.TXN.ORDER.V1',
       view_type: 'form',
       title: 'New Order',
       description: 'Restaurant point of sale order entry',
@@ -287,7 +287,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'order-totals',
           type: 'stats',
           title: 'Order Summary',
-          smart_code: 'HERA.REST.POS.STATS.ORDER.v1',
+          smart_code: 'HERA.REST.POS.STATS.ORDER.V1',
           config: {},
           layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 1 } },
           data_source: {
@@ -306,7 +306,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'order-header',
           type: 'form',
           title: 'Order Details',
-          smart_code: 'HERA.REST.POS.FORM.ORDER.v1',
+          smart_code: 'HERA.REST.POS.FORM.ORDER.V1',
           config: {
             fields: [
               {
@@ -375,7 +375,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'menu-items',
           type: 'grid',
           title: 'Menu Items',
-          smart_code: 'HERA.REST.MENU.GRID.ITEMS.v1',
+          smart_code: 'HERA.REST.MENU.GRID.ITEMS.V1',
           config: {
             columns: [
               { field: 'category', header: 'Category', type: 'text', filterable: true },
@@ -390,7 +390,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'add-to-order',
                 label: 'Add',
                 type: 'custom',
-                smart_code: 'HERA.REST.POS.ACTION.ADD_ITEM.v1',
+                smart_code: 'HERA.REST.POS.ACTION.ADD_ITEM.V1',
                 icon: 'plus'
               }
             ]
@@ -408,7 +408,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'order-items',
           type: 'grid',
           title: 'Order Items',
-          smart_code: 'HERA.REST.POS.GRID.ORDER_ITEMS.v1',
+          smart_code: 'HERA.REST.POS.GRID.ORDER_ITEMS.V1',
           config: {
             columns: [
               { field: 'quantity', header: 'Qty', type: 'number', width: '60px' },
@@ -422,13 +422,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'modify-item',
                 label: 'Modify',
                 type: 'edit',
-                smart_code: 'HERA.REST.POS.ACTION.MODIFY.v1'
+                smart_code: 'HERA.REST.POS.ACTION.MODIFY.V1'
               },
               {
                 id: 'remove-item',
                 label: 'Remove',
                 type: 'delete',
-                smart_code: 'HERA.REST.POS.ACTION.REMOVE.v1'
+                smart_code: 'HERA.REST.POS.ACTION.REMOVE.V1'
               }
             ]
           },
@@ -440,21 +440,21 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'send-to-kitchen',
           label: 'Send to Kitchen',
           type: 'workflow',
-          smart_code: 'HERA.REST.POS.ACTION.SEND_KITCHEN.v1',
+          smart_code: 'HERA.REST.POS.ACTION.SEND_KITCHEN.V1',
           icon: 'send'
         },
         {
           id: 'print-bill',
           label: 'Print Bill',
           type: 'custom',
-          smart_code: 'HERA.REST.POS.ACTION.PRINT_BILL.v1',
+          smart_code: 'HERA.REST.POS.ACTION.PRINT_BILL.V1',
           icon: 'printer'
         },
         {
           id: 'process-payment',
           label: 'Payment',
           type: 'workflow',
-          smart_code: 'HERA.REST.POS.ACTION.PAYMENT.v1',
+          smart_code: 'HERA.REST.POS.ACTION.PAYMENT.V1',
           icon: 'credit-card'
         }
       ]
@@ -463,7 +463,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Kitchen Display View
     kitchenDisplay: {
       id: 'restaurant-kitchen-display',
-      smart_code: 'HERA.REST.KDS.VIEW.ORDERS.v1',
+      smart_code: 'HERA.REST.KDS.VIEW.ORDERS.V1',
       view_type: 'dashboard',
       title: 'Kitchen Display System',
       widgets: [
@@ -472,7 +472,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'order-kanban',
           type: 'kanban',
           title: 'Active Orders',
-          smart_code: 'HERA.REST.KDS.KANBAN.ORDERS.v1',
+          smart_code: 'HERA.REST.KDS.KANBAN.ORDERS.V1',
           config: {
             columns: [
               { id: 'new', title: 'New Orders', color: '#ef4444' },
@@ -502,7 +502,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Time Entry Form
     timeEntry: {
       id: 'professional-time-entry',
-      smart_code: 'HERA.PROF.TIME.TXN.ENTRY.v1',
+      smart_code: 'HERA.PROF.TIME.TXN.ENTRY.V1',
       view_type: 'form',
       title: 'Time Entry',
       description: 'Record billable and non-billable time',
@@ -512,7 +512,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'time-form',
           type: 'form',
           title: 'Time Details',
-          smart_code: 'HERA.PROF.TIME.FORM.ENTRY.v1',
+          smart_code: 'HERA.PROF.TIME.FORM.ENTRY.V1',
           config: {
             fields: [
               {
@@ -622,7 +622,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'week-summary',
           type: 'stats',
           title: 'This Week',
-          smart_code: 'HERA.PROF.TIME.STATS.WEEK.v1',
+          smart_code: 'HERA.PROF.TIME.STATS.WEEK.V1',
           config: {},
           layout: { position: { row: 3, col: 0 }, size: { width: 12, height: 1 } },
           data_source: {
@@ -644,7 +644,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'recent-entries',
           type: 'grid',
           title: 'Recent Entries',
-          smart_code: 'HERA.PROF.TIME.GRID.RECENT.v1',
+          smart_code: 'HERA.PROF.TIME.GRID.RECENT.V1',
           config: {
             columns: [
               { field: 'entry_date', header: 'Date', type: 'date', sortable: true },
@@ -670,13 +670,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'save-entry',
           label: 'Save Time Entry',
           type: 'create',
-          smart_code: 'HERA.PROF.TIME.ACTION.SAVE.v1'
+          smart_code: 'HERA.PROF.TIME.ACTION.SAVE.V1'
         },
         {
           id: 'start-timer',
           label: 'Start Timer',
           type: 'custom',
-          smart_code: 'HERA.PROF.TIME.ACTION.TIMER.v1'
+          smart_code: 'HERA.PROF.TIME.ACTION.TIMER.V1'
         }
       ]
     },
@@ -684,7 +684,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Project Dashboard
     projectDashboard: {
       id: 'professional-project-dashboard',
-      smart_code: 'HERA.PROF.PROJ.DASH.OVERVIEW.v1',
+      smart_code: 'HERA.PROF.PROJ.DASH.OVERVIEW.V1',
       view_type: 'dashboard',
       title: 'Project Overview',
       widgets: [
@@ -693,7 +693,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'project-kpis',
           type: 'stats',
           title: 'Project Health',
-          smart_code: 'HERA.PROF.PROJ.STATS.KPI.v1',
+          smart_code: 'HERA.PROF.PROJ.STATS.KPI.V1',
           config: {},
           layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 1 } },
           data_source: {
@@ -712,7 +712,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'burndown-chart',
           type: 'chart',
           title: 'Project Burn Down',
-          smart_code: 'HERA.PROF.PROJ.CHART.BURNDOWN.v1',
+          smart_code: 'HERA.PROF.PROJ.CHART.BURNDOWN.V1',
           config: {
             chart_type: 'line',
             x_axis: 'date',
@@ -730,7 +730,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'wbs-tree',
           type: 'tree',
           title: 'Work Breakdown Structure',
-          smart_code: 'HERA.PROF.PROJ.TREE.WBS.v1',
+          smart_code: 'HERA.PROF.PROJ.TREE.WBS.V1',
           config: {
             node_template: '{{task_name}} ({{hours}}h)',
             expand_level: 2
@@ -749,7 +749,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Inventory Management View
     inventoryManagement: {
       id: 'retail-inventory-management',
-      smart_code: 'HERA.RET.INV.VIEW.STOCK.v1',
+      smart_code: 'HERA.RET.INV.VIEW.STOCK.V1',
       view_type: 'detail',
       title: 'Inventory Management',
       description: 'Stock levels, reordering, and movement tracking',
@@ -759,7 +759,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'inventory-stats',
           type: 'stats',
           title: 'Inventory Overview',
-          smart_code: 'HERA.RET.INV.STATS.KPI.v1',
+          smart_code: 'HERA.RET.INV.STATS.KPI.V1',
           config: {},
           layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 1 } },
           data_source: {
@@ -778,7 +778,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'stock-levels',
           type: 'grid',
           title: 'Current Stock Levels',
-          smart_code: 'HERA.RET.INV.GRID.STOCK.v1',
+          smart_code: 'HERA.RET.INV.GRID.STOCK.V1',
           config: {
             columns: [
               { field: 'sku', header: 'SKU', type: 'text', sortable: true, filterable: true },
@@ -804,19 +804,19 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'adjust-stock',
                 label: 'Adjust',
                 type: 'custom',
-                smart_code: 'HERA.RET.INV.ACTION.ADJUST.v1'
+                smart_code: 'HERA.RET.INV.ACTION.ADJUST.V1'
               },
               {
                 id: 'transfer-stock',
                 label: 'Transfer',
                 type: 'workflow',
-                smart_code: 'HERA.RET.INV.ACTION.TRANSFER.v1'
+                smart_code: 'HERA.RET.INV.ACTION.TRANSFER.V1'
               },
               {
                 id: 'create-po',
                 label: 'Reorder',
                 type: 'create',
-                smart_code: 'HERA.RET.PUR.ACTION.CREATE_PO.v1'
+                smart_code: 'HERA.RET.PUR.ACTION.CREATE_PO.V1'
               }
             ],
             bulk_actions: [
@@ -824,13 +824,13 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
                 id: 'count-inventory',
                 label: 'Physical Count',
                 type: 'workflow',
-                smart_code: 'HERA.RET.INV.ACTION.COUNT.v1'
+                smart_code: 'HERA.RET.INV.ACTION.COUNT.V1'
               },
               {
                 id: 'generate-po',
                 label: 'Generate Purchase Orders',
                 type: 'custom',
-                smart_code: 'HERA.RET.INV.ACTION.GENERATE_PO.v1'
+                smart_code: 'HERA.RET.INV.ACTION.GENERATE_PO.V1'
               }
             ]
           },
@@ -842,7 +842,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'movement-chart',
           type: 'chart',
           title: 'Stock Movement - Last 30 Days',
-          smart_code: 'HERA.RET.INV.CHART.MOVEMENT.v1',
+          smart_code: 'HERA.RET.INV.CHART.MOVEMENT.V1',
           config: {
             chart_type: 'area',
             x_axis: 'date',
@@ -860,7 +860,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'recent-movements',
           type: 'related',
           title: 'Recent Stock Movements',
-          smart_code: 'HERA.RET.INV.RELATED.MOVEMENTS.v1',
+          smart_code: 'HERA.RET.INV.RELATED.MOVEMENTS.V1',
           config: {
             relationship_type: 'stock_movement',
             related_entity_type: 'inventory_transaction',
@@ -899,7 +899,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
     // Sales Dashboard
     salesDashboard: {
       id: 'retail-sales-dashboard',
-      smart_code: 'HERA.RET.SALES.DASH.OVERVIEW.v1',
+      smart_code: 'HERA.RET.SALES.DASH.OVERVIEW.V1',
       view_type: 'dashboard',
       title: 'Sales Analytics',
       widgets: [
@@ -908,7 +908,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'sales-kpis',
           type: 'stats',
           title: "Today's Performance",
-          smart_code: 'HERA.RET.SALES.STATS.TODAY.v1',
+          smart_code: 'HERA.RET.SALES.STATS.TODAY.V1',
           config: {},
           layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 1 } },
           data_source: {
@@ -927,7 +927,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'hourly-sales',
           type: 'chart',
           title: 'Sales by Hour',
-          smart_code: 'HERA.RET.SALES.CHART.HOURLY.v1',
+          smart_code: 'HERA.RET.SALES.CHART.HOURLY.V1',
           config: {
             chart_type: 'bar',
             x_axis: 'hour',
@@ -942,7 +942,7 @@ export const industryConfigurations: Record<string, Record<string, ViewMetadata>
           id: 'top-products-chart',
           type: 'chart',
           title: 'Top 10 Products',
-          smart_code: 'HERA.RET.SALES.CHART.TOP_PRODUCTS.v1',
+          smart_code: 'HERA.RET.SALES.CHART.TOP_PRODUCTS.V1',
           config: {
             chart_type: 'pie',
             series: [{ name: 'Revenue', data_field: 'product_revenue' }]

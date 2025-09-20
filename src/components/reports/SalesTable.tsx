@@ -7,10 +7,10 @@
 'use client'
 
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   Eye, 
   TrendingUp, 
@@ -21,8 +21,8 @@ import {
   ArrowUp,
   ArrowDown
 } from 'lucide-react'
-import { SalesRow, ReportCalculations } from '@/src/lib/schemas/reports'
-import { cn } from '@/src/lib/utils'
+import { SalesRow, ReportCalculations } from '@/lib/schemas/reports'
+import { cn } from '@/lib/utils'
 
 interface SalesTableProps {
   data: SalesRow[]

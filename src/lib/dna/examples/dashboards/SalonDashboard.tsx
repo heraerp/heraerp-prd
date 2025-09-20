@@ -2,16 +2,16 @@
 
 // ================================================================================
 // HERA DNA SALON DASHBOARD EXAMPLE
-// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.SALON.v1
+// Smart Code: HERA.DNA.EXAMPLE.DASHBOARD.SALON.V1
 // Complete salon & spa operations dashboard with appointment management
 // ================================================================================
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Progress } from '@/src/components/ui/progress'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Scissors,
   DollarSign,

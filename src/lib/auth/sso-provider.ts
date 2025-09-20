@@ -3,7 +3,7 @@
  * Tenant-aware session management with smart code integration
  */
 
-import { getSupabase } from '@/src/lib/supabase/client'
+import { getSupabase } from '@/lib/supabase/client'
 import { v4 as uuidv4 } from 'uuid'
 import jwt from 'jsonwebtoken'
 
@@ -94,7 +94,7 @@ export class SSOProvider {
       field_name: 'attribute_mapping',
       field_value_text: JSON.stringify(config.attribute_mapping),
       field_type: 'json',
-      smart_code: `HERA.SECURITY.SSO.ATTRIBUTE.MAPPING.v1`,
+      smart_code: `HERA.SECURITY.SSO.ATTRIBUTE.MAPPING.V1`,
       organization_id: config.tenant_id
     })
 

@@ -1,11 +1,11 @@
 'use server'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getHeraAPI } from '@/src/lib/hera-api'
+import { getHeraAPI } from '@/lib/hera-api'
 
 /**
  * HERA Financial Module - Multi-Currency Management API
- * Smart Code: HERA.FIN.GL.ENT.CURRENCY.v1
+ * Smart Code: HERA.FIN.GL.ENT.CURRENCY.V1
  *
  * Manages currencies, exchange rates, and multi-currency transactions
  * Integrates with existing Mario demo and international operations
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
           entity_type: 'currency_setup',
           entity_name: curr.name,
           entity_code: curr.code,
-          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
           currency_code: curr.code,
           currency_name: curr.name,
           currency_symbol: curr.symbol,
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
 
         return {
           ...currency,
-          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
           currency_id: currency.entity_code,
           currency_code: currency.currency_code,
           currency_name: currency.currency_name,
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: formattedCurrencies,
-      smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+      smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
       currency_summary: {
         total_currencies: formattedCurrencies.length,
         active_currencies: formattedCurrencies.filter(c => c.is_active).length,
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
           entity_type: 'exchange_rate',
           entity_name: `${rate.from_currency} to ${rate.to_currency} - ${rate_date}`,
           entity_code: `RATE-${rate.from_currency}-${rate.to_currency}-${rate_date}`,
-          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+          smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
           from_currency: rate.from_currency,
           to_currency: rate.to_currency,
           exchange_rate: rate.rate,
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: updatedRates,
         message: `${updatedRates.length} exchange rates updated`,
-        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
         rate_date
       })
     }
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'currency_setup',
         entity_name: currency_data.currency_name,
         entity_code: currency_data.currency_code,
-        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
         currency_code: currency_data.currency_code,
         currency_name: currency_data.currency_name,
         currency_symbol: currency_data.currency_symbol,
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: newCurrency,
         message: 'Currency added successfully',
-        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1'
+        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1'
       })
     }
 
@@ -232,7 +232,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: baseCurrency,
         message: `Base currency changed to ${baseCurrency.currency_code}`,
-        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
         warning: 'Existing transactions may need revaluation'
       })
     }
@@ -315,7 +315,7 @@ export async function PUT(request: NextRequest) {
         success: true,
         data: revaluationResults,
         message: `${revaluationResults.length} accounts revalued`,
-        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.v1',
+        smart_code: 'HERA.FIN.GL.ENT.CURRENCY.V1',
         revaluation_date,
         total_revaluation_gain_loss: revaluationResults.reduce(
           (sum, r) => sum + r.revaluation_gain_loss,

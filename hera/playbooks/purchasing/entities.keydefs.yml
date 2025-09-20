@@ -1,4 +1,4 @@
-smart_code: HERA.PURCH.MDM.DYNAMIC_KEYS.CORE.v1
+smart_code: HERA.PURCH.MDM.DYNAMIC_KEYS.CORE.V1
 items:
   - { slug: product.sku,             entity_type: ENTITY, name: "SKU",            metadata: { type: "text" } }
   - { slug: product.buy_category,    entity_type: ENTITY, name: "Buy Category",   metadata: { type: "text" } }

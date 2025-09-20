@@ -1,7 +1,7 @@
 // HERA JWT Service for authentication and authorization
 // Provides JWT token creation, validation, and user context management
 
-import { supabase } from '@/src/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 export interface JWTPayload {
   sub: string // user ID

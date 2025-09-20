@@ -7,9 +7,9 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/src/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/src/components/ui/dropdown-menu'
-import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
 import { 
   Download, 
   FileSpreadsheet, 
@@ -19,7 +19,7 @@ import {
   ExternalLink,
   Mail
 } from 'lucide-react'
-import { ExportFormat, PrintOptions } from '@/src/lib/schemas/reports'
+import { ExportFormat, PrintOptions } from '@/lib/schemas/reports'
 
 interface ExportButtonsProps {
   reportType: 'daily_sales' | 'monthly_sales' | 'pnl' | 'balance_sheet'

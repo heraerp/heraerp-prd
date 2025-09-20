@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA COMPONENTS - UNIFIED EXPORT SYSTEM
-// Smart Code: HERA.DNA.EXPORT.UNIFIED.SYSTEM.v1
+// Smart Code: HERA.DNA.EXPORT.UNIFIED.SYSTEM.V1
 // Central export hub for all HERA DNA components with tree-shaking support
 // ================================================================================
 
@@ -233,9 +233,9 @@ export const HERA_DNA_BUILD_DATE = new Date().toISOString()
 
 // Smart Codes for the component system itself
 export const HERA_DNA_SMART_CODES = {
-  EXPORT_SYSTEM: 'HERA.DNA.EXPORT.UNIFIED.SYSTEM.v1',
-  COMPONENT_REGISTRY: 'HERA.DNA.REGISTRY.COMPONENT.SYSTEM.v1',
-  DYNAMIC_LOADING: 'HERA.DNA.LOADER.DYNAMIC.IMPORT.v1'
+  EXPORT_SYSTEM: 'HERA.DNA.EXPORT.UNIFIED.SYSTEM.V1',
+  COMPONENT_REGISTRY: 'HERA.DNA.REGISTRY.COMPONENT.SYSTEM.V1',
+  DYNAMIC_LOADING: 'HERA.DNA.LOADER.DYNAMIC.IMPORT.V1'
 } as const
 
 // Type definitions for the export system

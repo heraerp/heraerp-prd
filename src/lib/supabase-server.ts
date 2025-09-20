@@ -1,75 +1,60 @@
+/**
+ * Server-side Supabase Client with Organization Context
+ * This handles organization context for server-side operations
+ */
+
 import { createClient } from '@supabase/supabase-js'
+import { headers } from 'next/headers'
 
-// Server-side Supabase configuration - get fresh values at runtime
-// IMPORTANT: These MUST be set as environment variables in Railway
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const getSupabaseServiceKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-// Create a singleton instance for admin client
-let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
-
-// Initialize admin client only when needed
-export const getSupabaseAdmin = () => {
-  if (!supabaseAdminInstance) {
-    const url = getSupabaseUrl()
-    const key = getSupabaseServiceKey()
-
-    // Validate configuration
-    if (!url || url.includes('placeholder')) {
-      console.error('ERROR: NEXT_PUBLIC_SUPABASE_URL is not properly configured!')
-      console.error('Current value:', url)
-      throw new Error('Supabase URL not configured')
-    }
-
-    if (!key || key.includes('placeholder')) {
-      console.error('ERROR: SUPABASE_SERVICE_ROLE_KEY is not properly configured!')
-      throw new Error('Supabase service key not configured')
-    }
-
-    // Create client with actual values
-    supabaseAdminInstance = createClient(url, key, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
-      }
-    })
-  }
-  return supabaseAdminInstance
-}
-
-// Export a proxy that initializes on first use
-export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient>, {
-  get(_, prop) {
-    const client = getSupabaseAdmin()
-    return client[prop as keyof typeof client]
-  }
-})
-
-// Legacy export for compatibility
-export const createClient = getSupabaseAdmin
-
-// Helper to create a server client with user context
-export function createServerClient(accessToken?: string) {
-  if (!accessToken) {
-    return getSupabaseAdmin()
-  }
-
-  const url = getSupabaseUrl()
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-
-  if (!url || !anonKey) {
-    throw new Error('Supabase configuration missing')
-  }
-
-  return createClient(url, anonKey, {
+/**
+ * Create server-side Supabase client with organization context from headers
+ */
+export const createServerSupabaseClient = async () => {
+  const client = createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
+      autoRefreshToken: false,
       persistSession: false
-    },
-    global: {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
     }
   })
+
+  // Get organization context from headers
+  const headersList = headers()
+  const orgId = headersList.get('x-hera-org-id') || 
+                headersList.get('X-Organization-Id') ||
+                process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
+
+  // Set organization context if available
+  if (orgId) {
+    try {
+      await client.rpc('set_current_org_id', { org_id: orgId })
+    } catch (error) {
+      console.warn('Could not set server organization context:', error)
+    }
+  }
+
+  return { client, organizationId: orgId }
+}
+
+/**
+ * Helper to create client with explicit organization context
+ */
+export const createServerClientWithOrg = async (organizationId: string) => {
+  const client = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  })
+
+  // Set organization context
+  try {
+    await client.rpc('set_current_org_id', { org_id: organizationId })
+  } catch (error) {
+    console.warn('Could not set organization context:', error)
+  }
+
+  return client
 }

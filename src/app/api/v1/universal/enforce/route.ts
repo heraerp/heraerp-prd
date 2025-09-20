@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { enforceTransactionStandards } from '@/src/lib/coa-document-enforcement'
+import { enforceTransactionStandards } from '@/lib/coa-document-enforcement'
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
-import { Input } from '@/src/components/ui/input'
-import { useUCRMCP } from '@/src/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
-import { useToast } from '@/src/components/ui/use-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useToast } from '@/components/ui/use-toast'
 import {
   FileText,
   Copy,
@@ -30,9 +30,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter
-} from '@/src/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface UCRTemplate {
   template_id: string
@@ -44,7 +44,7 @@ interface UCRTemplate {
 }
 
 export function UCRTemplateBrowser() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const { listTemplates, cloneTemplate, loading } = useUCRMCP()
   const { toast } = useToast()
   const [templates, setTemplates] = useState<UCRTemplate[]>([])
@@ -119,7 +119,7 @@ export function UCRTemplateBrowser() {
   }
 
   const handleCloneTemplate = async (template: UCRTemplate) => {
-    if (!currentOrganization) {
+    if (!organization) {
       toast({
         title: 'No organization selected',
         description: 'Please select an organization first',

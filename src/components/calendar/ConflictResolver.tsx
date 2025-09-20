@@ -4,11 +4,11 @@
 // Handles scheduling conflicts with smart resolution suggestions
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Alert, AlertDescription, AlertTitle } from '@/src/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   AlertTriangle,
   Clock,
@@ -21,7 +21,7 @@ import {
   MapPin
 } from 'lucide-react'
 
-import { SchedulingConflict, ConflictResolution, TimeSlot } from '@/src/types/calendar.types'
+import { SchedulingConflict, ConflictResolution, TimeSlot } from '@/types/calendar.types'
 
 interface ConflictResolverProps {
   conflicts: SchedulingConflict[]

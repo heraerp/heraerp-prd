@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSupabaseAdmin } from '@/src/lib/supabase-admin'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 interface ValidationRequest {
   organization_id: string
@@ -610,7 +610,7 @@ export async function GET() {
       validation_target: {
         type: 'entity',
         target_id: 'entity-uuid',
-        smart_code: 'HERA.REST.CRM.ENT.CUSTOMER.v1',
+        smart_code: 'HERA.REST.CRM.ENT.CUSTOMER.V1',
         data: {
           entity_name: 'Customer Record',
           entity_type: 'customer',

@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { cn }
-from '@/src/lib/utils'
-import { NavigationLink }
-from '@/src/components/navigation/NavigationLink'
+from '@/lib/utils'
+import NavigationLink
+from '@/components/navigation/NavigationLink'
 
 interface FurnitureNavigationLinkProps {
   href: string
@@ -61,7 +61,7 @@ export function FurnitureNavigationLink({
           'ml-3 lg:ml-0 lg:mt-0.5 font-medium text-sm lg:text-[9px] lg:text-center leading-tight transition-colors duration-300',
           active
             ? 'text-[var(--color-text-secondary)]'
-            : 'text-gray-300 lg:text-[var(--color-text-secondary)] group-hover:text-gray-100 lg:group-hover:text-gray-300'
+            : 'text-[var(--color-text-secondary)] lg:text-[var(--color-text-secondary)] group-hover:text-gray-100 lg:group-hover:text-[var(--color-text-secondary)]'
         )}
       >
         {title}

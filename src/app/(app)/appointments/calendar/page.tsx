@@ -9,14 +9,14 @@
 import React from 'react'
 import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/src/lib/auth/session'
-import { apiClient } from '@/src/lib/auth/session'
-import { createAppointmentsApi } from '@/src/lib/api/appointments'
-import { useAppointments } from '@/src/lib/hooks/useAppointment'
-import { AppointmentCalendar } from '@/src/components/appointments/AppointmentCalendar'
-import { ButtonPrimary } from '@/src/components/ui/ButtonPrimary'
-import { Card } from '@/src/components/ui/Card'
-import type { AppointmentFilters } from '@/src/lib/schemas/appointment'
+import { useAuth } from '@/lib/auth/session'
+import { apiClient } from '@/lib/auth/session'
+import { createAppointmentsApi } from '@/lib/api/appointments'
+import { useAppointments } from '@/lib/hooks/useAppointment'
+import { AppointmentCalendar } from '@/components/appointments/AppointmentCalendar'
+import { ButtonPrimary } from '@/components/ui/ButtonPrimary'
+import { Card } from '@/components/ui/card'
+import type { AppointmentFilters } from '@/lib/schemas/appointment'
 
 export default function AppointmentsCalendarPage() {
   const router = useRouter()

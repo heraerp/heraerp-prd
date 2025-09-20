@@ -7,7 +7,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger
-} from '@/src/components/ui/context-menu'
+} from '@/components/ui/context-menu'
 import {
   Reply,
   Forward,

@@ -7,11 +7,11 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Calendar,
   Lock,
@@ -22,7 +22,7 @@ import {
   ArrowRight,
   CalendarDays
 } from 'lucide-react'
-import { FiscalPeriod } from '@/src/lib/schemas/fiscal'
+import { FiscalPeriod } from '@/lib/schemas/fiscal'
 import {
   Dialog,
   DialogContent,
@@ -30,7 +30,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/src/components/ui/dialog'
+} from '@/components/ui/dialog'
 
 interface FiscalPeriodTableProps {
   periods: FiscalPeriod[]
@@ -408,7 +408,7 @@ export function FiscalPeriodTable({
                   <br />
                   <br />
                   <Badge variant="outline" className="text-xs">
-                    Smart Code: HERA.FIN.FISCAL.PERIOD.LOCK.v1
+                    Smart Code: HERA.FIN.FISCAL.PERIOD.LOCK.V1
                   </Badge>
                 </>
               ) : (
@@ -420,7 +420,7 @@ export function FiscalPeriodTable({
                   <br />
                   <br />
                   <Badge variant="outline" className="text-xs">
-                    Smart Code: HERA.FIN.FISCAL.PERIOD.CLOSE.v1
+                    Smart Code: HERA.FIN.FISCAL.PERIOD.CLOSE.V1
                   </Badge>
                 </>
               )}

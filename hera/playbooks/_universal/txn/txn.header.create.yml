@@ -1,0 +1,88 @@
+smart_code: HERA.UNIV.TXN.HEADER.CREATE.V1
+intent: Create a transaction header in universal_transactions with a profile-specific smart_code.
+scope:
+  in_scope:
+    - transaction header creation (cart, order, invoice, etc.)
+    - initial state setup per profile
+    - relationship establishment (customer, location, etc.)
+    - header-level metadata and attributes
+  out_of_scope:
+    - line item creation (use txn.line.add)
+    - pricing calculation (use profile-specific procedures)
+    - finalization (use txn.header.finalize)
+preconditions:
+  - permissions: [$PROFILE.required_role_create]
+  - organization_id present and valid
+  - referenced entities exist and are active
+invariants:
+  - smart_code chosen from $PROFILE.header_families (e.g., HERA.SALON.POS.CART.ACTIVE.V1)
+  - state machine starts in $PROFILE.initial_state (e.g., ACTIVE, DRAFT)
+  - all transactions include organization_id
+  - transaction_code is unique within organization
+inputs:
+  required:
+    - organization_id: uuid
+    - header_smart_code: string                     # from $PROFILE.header_families
+  optional:
+    - relationships: object                         # e.g., { customer_id, location_id }
+    - dynamic: object                              # header-level attributes
+    - metadata: object                             # system metadata
+    - transaction_date: datetime                   # defaults to now()
+happy_path:
+  - step: validate permissions against $PROFILE.required_role_create
+  - step: validate header_smart_code in $PROFILE.header_families
+  - step: generate unique transaction_code using $PROFILE.code_format
+  - step: validate referenced entities (customer, location, etc.) exist and are active
+  - step: insert universal_transactions header with smart_code=header_smart_code, state=$PROFILE.initial_state
+  - step: create relationships in core_relationships (BILLS_TO, ORIGINATES_FROM, etc.) if provided
+  - step: write dynamic attributes to transaction metadata
+  - step: emit creation event for audit trail
+outputs:
+  transactions_created:
+    - universal_transactions: 1
+    - core_relationships: 0-n                      # based on relationships input
+  response:
+    transaction_id: uuid
+    transaction_code: string
+    smart_code: string
+    state: string
+    created_at: timestamp
+errors:
+  - code: INVALID_SMART_CODE
+    when: header_smart_code not in $PROFILE.header_families
+    action: return allowed smart codes
+  - code: DUPLICATE_TRANSACTION_CODE
+    when: transaction_code already exists
+    action: regenerate code and retry (up to 3 times)
+  - code: INVALID_ENTITY_REFERENCE
+    when: referenced entity (customer, location) not found or archived
+    action: return 400 with invalid references
+  - code: PERMISSION_DENIED
+    when: user lacks $PROFILE.required_role_create
+    action: return 403 with required permissions
+  - code: INVALID_STATE
+    when: initial state not defined in profile
+    action: return configuration error
+observability:
+  logs:
+    - transaction_created: { transaction_id, transaction_code, smart_code, state, organization_id }
+    - relationships_created: { transaction_id, relationship_types }
+  audit_json: true
+  metrics:
+    - transaction_creation_count by smart_code
+    - relationship_creation_count by type
+example_payload:
+  organization_id: "123e4567-e89b-12d3-a456-426614174000"
+  header_smart_code: "HERA.SALON.POS.CART.ACTIVE.V1"
+  relationships:
+    customer_id: "456e7890-e89b-12d3-a456-426614174000"
+    location_id: "789e0123-e89b-12d3-a456-426614174000"
+  dynamic:
+    source: "walk-in"
+    notes: "Birthday discount requested"
+  transaction_date: "2024-01-15T10:30:00Z"
+checks:
+  - description: verify smart code belongs to configured family
+  - description: ensure transaction code uniqueness
+  - description: validate all entity references
+  - description: check initial state is valid

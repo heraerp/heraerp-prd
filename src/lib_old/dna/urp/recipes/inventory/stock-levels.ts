@@ -1,9 +1,9 @@
 import type { ReportRecipe } from '../index'
 
 export const inventoryLevelsRecipe: ReportRecipe = {
-  name: 'HERA.URP.RECIPE.INVENTORY.STOCK.LEVELS.v1',
+  name: 'HERA.URP.RECIPE.INVENTORY.STOCK.LEVELS.V1',
   description: 'Current inventory stock levels by location and product',
-  smartCode: 'HERA.URP.RECIPE.INVENTORY.STOCK.LEVELS.v1',
+  smartCode: 'HERA.URP.RECIPE.INVENTORY.STOCK.LEVELS.V1',
   category: 'inventory',
   parameters: [],
   steps: [],

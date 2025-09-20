@@ -7,19 +7,19 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Alert, AlertDescription } from '@/src/components/ui/alert'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
 import { FileText, TrendingUp, AlertCircle, Calculator } from 'lucide-react'
-import { FiltersBar, useReportFilters } from '@/src/components/reports/FiltersBar'
-import { FinancialSummaryCards } from '@/src/components/reports/SummaryCards'
-import { PnLTable } from '@/src/components/reports/PnLTable'
-import { DrilldownDrawer } from '@/src/components/reports/DrilldownDrawer'
-import { ExportButtons } from '@/src/components/reports/ExportButtons'
-import { PrintHeader, PrintLayout } from '@/src/components/reports/PrintHeader'
-import { useUniversalReports } from '@/src/hooks/useUniversalReports'
-import { FinancialFilters, PnLRow, DrillDownResponse, TransactionDetail } from '@/src/lib/schemas/reports'
-import { useOrganization } from '@/src/components/organization/OrganizationProvider'
+import { FiltersBar, useReportFilters } from '@/components/reports/FiltersBar'
+import { FinancialSummaryCards } from '@/components/reports/SummaryCards'
+import { PnLTable } from '@/components/reports/PnLTable'
+import { DrilldownDrawer } from '@/components/reports/DrilldownDrawer'
+import { ExportButtons } from '@/components/reports/ExportButtons'
+import { PrintHeader, PrintLayout } from '@/components/reports/PrintHeader'
+import { useUniversalReports } from '@/hooks/useUniversalReports'
+import { FinancialFilters, PnLRow, DrillDownResponse, TransactionDetail } from '@/lib/schemas/reports'
+import { useOrganization } from '@/components/organization/OrganizationProvider'
 
 export default function ProfitLossStatementPage() {
   const { currentOrganization } = useOrganization()
@@ -224,7 +224,7 @@ export default function ProfitLossStatementPage() {
             quantity: undefined,
             unit_amount: undefined,
             line_amount: 275.00,
-            smart_code: 'HERA.FIN.GL.CASH.DR.v1'
+            smart_code: 'HERA.FIN.GL.CASH.DR.V1'
           },
           {
             line_number: 2,
@@ -235,7 +235,7 @@ export default function ProfitLossStatementPage() {
             quantity: undefined,
             unit_amount: undefined,
             line_amount: -275.00,
-            smart_code: 'HERA.FIN.GL.REVENUE.CR.v1'
+            smart_code: 'HERA.FIN.GL.REVENUE.CR.V1'
           }
         ],
         related_entities: [

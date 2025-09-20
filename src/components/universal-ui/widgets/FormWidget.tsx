@@ -1,26 +1,26 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Widget } from '@/src/lib/universal-ui/view-meta-service'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Input } from '@/src/components/ui/input'
-import { Label } from '@/src/components/ui/label'
-import { Textarea } from '@/src/components/ui/textarea'
+import { Widget } from '@/lib/universal-ui/view-meta-service'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Switch } from '@/src/components/ui/switch'
-import { Button } from '@/src/components/ui/button'
-import { Calendar } from '@/src/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/src/components/ui/popover'
-import { cn } from '@/src/lib/utils'
+} from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { universalApi } from '@/src/lib/universal-api'
+import { universalApi } from '@/lib/universal-api'
 
 interface FormWidgetProps {
   widget: Widget

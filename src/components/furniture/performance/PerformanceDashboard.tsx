@@ -4,7 +4,7 @@ import { Activity, Clock, Database, AlertCircle, TrendingUp, TrendingDown, Check
 }
 from 'lucide-react'
 import { cn }
-from '@/src/lib/utils'
+from '@/lib/utils'
 
 
 interface PerformanceMetric {

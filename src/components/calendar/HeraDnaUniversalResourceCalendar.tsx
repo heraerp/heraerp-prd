@@ -39,11 +39,11 @@
  */
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import '@/styles/microsoft-calendar.css'
 import {
   Calendar,
@@ -88,18 +88,18 @@ import {
   Heart,
   Shield
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/lib/utils'
+import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Checkbox } from '@/src/components/ui/checkbox'
+} from '@/components/ui/select'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Checkbox } from '@/components/ui/checkbox'
 
 // Universal Business Type Configurations
 const BUSINESS_CONFIGS = {

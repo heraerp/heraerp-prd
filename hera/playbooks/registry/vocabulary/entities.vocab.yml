@@ -1,4 +1,4 @@
-smart_code: HERA.SYSTEM.VOCAB.ENTITY_CATALOG.CORE.v1
+smart_code: HERA.SYSTEM.VOCAB.ENTITY_CATALOG.CORE.V1
 items:
   # Governance TYPES for vocabulary
   - { slug: vocab_term,   entity_type: ENTITY_TYPE, name: "Vocabulary Term" }

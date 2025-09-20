@@ -27,6 +27,15 @@ import type {
   GrantRoundLite,
   ExportProgramsRequest
 } from '@/types/crm-programs';
+import type {
+  GrantKpis,
+  GrantFilters,
+  PaginatedGrants,
+  GrantApplicationDetail,
+  CreateGrantRequest,
+  ReviewGrantRequest,
+  ExportGrantsRequest
+} from '@/types/crm-grants';
 
 // Organization ID management
 let currentOrgId: OrgId | null = null;
@@ -456,6 +465,73 @@ export const orgApi = {
   },
 };
 
+// CRM Grants API
+const crmGrants = {
+  async getKpis(): Promise<GrantKpis> {
+    const response = await fetch(`${API_BASE}/crm/grants/kpis`, {
+      headers: buildHeaders(),
+    });
+    return handleResponse<GrantKpis>(response);
+  },
+
+  async list(filters: GrantFilters = {}): Promise<PaginatedGrants> {
+    const params = new URLSearchParams();
+    if (filters.q) params.set('q', filters.q);
+    if (filters.status?.length) params.set('status', filters.status.join(','));
+    if (filters.round_id) params.set('round_id', filters.round_id);
+    if (filters.program_id) params.set('program_id', filters.program_id);
+    if (filters.amount_min !== undefined) params.set('amount_min', filters.amount_min.toString());
+    if (filters.amount_max !== undefined) params.set('amount_max', filters.amount_max.toString());
+    if (filters.tags?.length) params.set('tags', filters.tags.join(','));
+    params.set('page', (filters.page || 1).toString());
+    params.set('page_size', (filters.page_size || 20).toString());
+
+    const response = await fetch(`${API_BASE}/crm/grants?${params}`, {
+      headers: buildHeaders(),
+    });
+    return handleResponse<PaginatedGrants>(response);
+  },
+
+  async get(applicationId: string): Promise<GrantApplicationDetail> {
+    const response = await fetch(`${API_BASE}/crm/grants/${applicationId}`, {
+      headers: buildHeaders(),
+    });
+    return handleResponse<GrantApplicationDetail>(response);
+  },
+
+  async create(data: CreateGrantRequest): Promise<GrantApplicationDetail> {
+    const response = await fetch(`${API_BASE}/crm/grants`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse<GrantApplicationDetail>(response);
+  },
+
+  async review(applicationId: string, data: ReviewGrantRequest): Promise<GrantApplicationDetail> {
+    const response = await fetch(`${API_BASE}/crm/grants/${applicationId}/review`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(data),
+    });
+    return handleResponse<GrantApplicationDetail>(response);
+  },
+
+  async export(data: ExportGrantsRequest): Promise<Blob | any> {
+    const response = await fetch(`${API_BASE}/crm/grants/export`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(data),
+    });
+    
+    const contentType = response.headers.get('content-type');
+    if (data.format === 'csv' && contentType?.includes('text/csv')) {
+      return response.blob();
+    }
+    return handleResponse<any>(response);
+  },
+};
+
 // CRM Programs API
 const crmPrograms = {
   async getKpis(): Promise<ProgramKpis> {
@@ -530,6 +606,7 @@ export const api = {
   orgApi,
   crm: {
     programs: crmPrograms,
+    grants: crmGrants,
   },
   // Organization helpers
   getOrgId,

@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: FLIGHT_INVENTORY,
-          smart_code: 'HERA.AIR.SEARCH.ENT.SCHEDULE.v1',
+          smart_code: 'HERA.AIR.SEARCH.ENT.SCHEDULE.V1',
           total_flights: FLIGHT_INVENTORY.length
         })
 
@@ -275,7 +275,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Flight Search Handler (HERA.AIR.SEARCH.TXN.QUERY.v1)
+// Flight Search Handler (HERA.AIR.SEARCH.TXN.QUERY.V1)
 async function handleFlightSearch(
   data: FlightSearchData,
   smart_code: string,
@@ -326,7 +326,7 @@ async function handleFlightSearch(
   })
 }
 
-// Flight Booking Handler (HERA.AIR.BOOK.TXN.CREATE.v1)
+// Flight Booking Handler (HERA.AIR.BOOK.TXN.CREATE.V1)
 async function handleFlightBooking(data: BookingData, smart_code: string, organization_id: string) {
   const booking_id = `BOOK-${Date.now()}`
   const confirmation_code = generateConfirmationCode()
@@ -361,7 +361,7 @@ async function handleFlightBooking(data: BookingData, smart_code: string, organi
   })
 }
 
-// Lottery Entry Handler (HERA.AIR.LOTTERY.TXN.ENTER.v1)
+// Lottery Entry Handler (HERA.AIR.LOTTERY.TXN.ENTER.V1)
 async function handleLotteryEntry(
   data: LotteryEntryData,
   smart_code: string,
@@ -388,7 +388,7 @@ async function handleLotteryEntry(
   })
 }
 
-// Lottery Draw Handler (HERA.AIR.LOTTERY.TXN.DRAW.v1)
+// Lottery Draw Handler (HERA.AIR.LOTTERY.TXN.DRAW.V1)
 async function handleLotteryDraw(data: any, smart_code: string, organization_id: string) {
   const winners = await LotteryService.runLotteryDraw(data.flight_id)
 
@@ -413,7 +413,7 @@ async function handleLotteryDraw(data: any, smart_code: string, organization_id:
   })
 }
 
-// Check-in Handler (HERA.AIR.CHECKIN.TXN.PROCESS.v1)
+// Check-in Handler (HERA.AIR.CHECKIN.TXN.PROCESS.V1)
 async function handleCheckIn(data: any, smart_code: string, organization_id: string) {
   const checkin_id = `CI-${Date.now()}`
 
@@ -435,7 +435,7 @@ async function handleCheckIn(data: any, smart_code: string, organization_id: str
   })
 }
 
-// Miles Earning Handler (HERA.AIR.LOYALTY.TXN.EARN.v1)
+// Miles Earning Handler (HERA.AIR.LOYALTY.TXN.EARN.V1)
 async function handleMilesEarning(data: any, smart_code: string, organization_id: string) {
   const base_miles = calculateBaseMiles(data.flight_distance)
   const tier_multiplier = getTierMultiplier(data.loyalty_tier)
@@ -460,7 +460,7 @@ async function handleMilesEarning(data: any, smart_code: string, organization_id
   })
 }
 
-// Seat Selection Handler (HERA.AIR.BOOK.TXN.SEAT.v1)
+// Seat Selection Handler (HERA.AIR.BOOK.TXN.SEAT.V1)
 async function handleSeatSelection(data: any, smart_code: string, organization_id: string) {
   return NextResponse.json({
     success: true,
@@ -493,7 +493,7 @@ async function handleFlightStatus(data: any, smart_code: string, organization_id
       weather_delay: false,
       mechanical_delay: false
     },
-    smart_code: 'HERA.AIR.SEARCH.RPT.STATUS.v1',
+    smart_code: 'HERA.AIR.SEARCH.RPT.STATUS.V1',
     organization_id
   })
 }
@@ -519,7 +519,7 @@ async function getLotteryStatistics(organization_id: string) {
         platinum: { entries: 200, wins: 19, rate: 0.095 }
       }
     },
-    smart_code: 'HERA.AIR.LOTTERY.RPT.STATS.v1',
+    smart_code: 'HERA.AIR.LOTTERY.RPT.STATS.V1',
     organization_id
   })
 }
@@ -546,7 +546,7 @@ async function getLoyaltyStatus(customer_id: string, organization_id: string) {
         expiry_date: '2026-03-31'
       }
     },
-    smart_code: 'HERA.AIR.LOYALTY.RPT.STATUS.v1',
+    smart_code: 'HERA.AIR.LOYALTY.RPT.STATUS.V1',
     organization_id
   })
 }

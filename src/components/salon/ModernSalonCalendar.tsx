@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { SimpleCalendar } from '@/src/components/calendar/SimpleCalendar'
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Input } from '@/src/components/ui/input'
+import { SimpleCalendar } from '@/components/calendar/SimpleCalendar'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Calendar,
   ChevronLeft,
@@ -29,17 +29,17 @@ import {
   Scissors,
   Palette
 } from 'lucide-react'
-import { cn } from '@/src/lib/utils'
-import { useMultiOrgAuth } from '@/src/components/auth/MultiOrgAuthProvider'
+import { cn } from '@/lib/utils'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@/src/components/ui/select'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
-import { Tabs, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+} from '@/components/ui/select'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface ModernSalonCalendarProps {
   className?: string
@@ -47,7 +47,7 @@ interface ModernSalonCalendarProps {
 }
 
 export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCalendarProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { organization } = useHERAAuth()
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
   const [selectedStylist, setSelectedStylist] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')

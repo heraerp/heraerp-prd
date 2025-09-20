@@ -14,7 +14,7 @@ export const SACRED_TABLES = [
 
 export type SacredTable = (typeof SACRED_TABLES)[number]
 
-export const SMART_CODE_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$/
+export const SMART_CODE_PATTERN = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.[vV][0-9]+$/
 
 export interface GuardrailViolation {
   code: string

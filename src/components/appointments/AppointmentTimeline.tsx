@@ -14,8 +14,8 @@ import {
   FileText,
   AlertCircle
 } from 'lucide-react'
-import { formatDateTime, getRelativeTime, cn } from '@/src/lib/utils'
-import type { ActivityEvent } from '@/src/lib/schemas/appointment'
+import { formatDateTime, getRelativeTime, cn } from '@/lib/utils'
+import type { ActivityEvent } from '@/lib/schemas/appointment'
 
 interface AppointmentTimelineProps {
   events: ActivityEvent[]

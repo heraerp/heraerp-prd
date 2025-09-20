@@ -10,12 +10,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { UniversalAPIEnterprise } from '@/src/lib/universal-api-enterprise'
-import { EnterpriseCard } from '@/src/lib/dna/components/enterprise/EnterpriseCard'
-import { EnterpriseStatsCard } from '@/src/lib/dna/components/enterprise/EnterpriseStatsCard'
-import { EnterpriseDashboard } from '@/src/lib/dna/components/enterprise/EnterpriseDashboard'
-import { universalDNAWithColorEnforcement } from '@/src/lib/dna/index-color-integration'
-import { HERA_COLOR_TOKENS_FINAL } from '@/src/lib/dna/design-system/hera-color-palette-dna-final'
+import { UniversalAPIEnterprise } from '@/lib/universal-api-enterprise'
+import { EnterpriseCard } from '@/lib/dna/components/enterprise/EnterpriseCard'
+import { EnterpriseStatsCard } from '@/lib/dna/components/enterprise/EnterpriseStatsCard'
+import { EnterpriseDashboard } from '@/lib/dna/components/enterprise/EnterpriseDashboard'
+import { universalDNAWithColorEnforcement } from '@/lib/dna/index-color-integration'
+import { HERA_COLOR_TOKENS_FINAL } from '@/lib/dna/design-system/hera-color-palette-dna-final'
 
 // Initialize Universal API with enterprise configuration
 const universalAPI = new UniversalAPIEnterprise({
@@ -95,7 +95,7 @@ export default function UniversalAPIDNAIntegration() {
       const bulkSales = await universalAPI.execute({
         entity: 'universal_transactions',
         organization_id: 'demo-org-uuid',
-        smart_code: 'HERA.REST.BULK.SALES.TXN.v1',
+        smart_code: 'HERA.REST.BULK.SALES.TXN.V1',
         operation: 'bulk_create',
         batch: {
           items: [
@@ -159,13 +159,13 @@ export default function UniversalAPIDNAIntegration() {
       const workflow = await universalAPI.execute({
         entity: 'universal_transactions',
         organization_id: 'demo-org-uuid',
-        smart_code: 'HERA.REST.WORKFLOW.NEW.LOCATION.v1',
+        smart_code: 'HERA.REST.WORKFLOW.NEW.LOCATION.V1',
         operation: 'transaction',
         operations: [
           {
             entity: 'core_entities',
             operation: 'create',
-            smart_code: 'HERA.REST.ENTITY.NEW.LOCATION.v1',
+            smart_code: 'HERA.REST.ENTITY.NEW.LOCATION.V1',
             alias: 'new_restaurant',
             data: {
               entity_type: 'restaurant_location',
@@ -200,7 +200,7 @@ export default function UniversalAPIDNAIntegration() {
           {
             entity: 'universal_transactions',
             operation: 'create',
-            smart_code: 'HERA.FIN.TXN.INITIAL.INVESTMENT.v1',
+            smart_code: 'HERA.FIN.TXN.INITIAL.INVESTMENT.V1',
             data: {
               transaction_type: 'capital_investment',
               total_amount: 250000,
