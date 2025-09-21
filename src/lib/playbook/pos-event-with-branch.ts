@@ -5,13 +5,51 @@ import { heraCode } from '@/lib/smart-codes'
 import { flags } from '@/config/flags'
 import { getOrgSettings, getTodayFiscalStamp } from '@/lib/playbook/org-finance-utils'
 
+// cart item shape accepted everywhere
+export type PosItem = {
+  entity_id?: string        // service entity_id
+  name: string
+  qty: number
+  price: number
+  type?: 'SERVICE' | 'PRODUCT' | 'ADJUSTMENT'
+  // stylist info (normalized)
+  stylist_entity_id?: string | null
+  stylist_name?: string | null
+  stylist?: { entity_id: string; name: string } | null
+  // legacy support
+  entity_type?: string
+  performer_entity_id?: string
+}
+
 interface PosTicket {
   id: string
   total: number
   taxTotal?: number
-  items: Array<{ name: string; qty: number; price: number; entity_id?: string }>
+  items: Array<PosItem>
   payments: Array<{ method: string; amount: number }>
   customer_entity_id?: string
+}
+
+/**
+ * Validate POS ticket before posting (and allow product-only tickets)
+ */
+export function validatePosTicket(ticket: PosTicket) {
+  // existing price checks...
+  const serviceItems = (ticket.items || []).filter(i =>
+    (i.type ?? 'SERVICE') === 'SERVICE' ||
+    (i.entity_type === 'service')        // fallback if you carry entity_type
+  )
+  if (serviceItems.length > 0) {
+    const hasStylist = serviceItems.some(i =>
+      i.stylist_entity_id ||
+      i.stylist?.entity_id ||
+      (i as any).performer_entity_id ||      // legacy key support
+      (i as any).line_data?.stylist_entity_id
+    )
+    if (!hasStylist) {
+      throw new Error('Commission validation failed: POS sale must have at least one service line with assigned stylist')
+    }
+  }
 }
 
 /**
@@ -23,8 +61,16 @@ export async function postEventWithBranch(
   ticket: PosTicket,
   createdBy?: string
 ) {
+  // Validate ticket first
+  validatePosTicket(ticket)
+  
   universalApi.setOrganizationId(orgId)
   const extRef = `pos:${ticket.id}`
+  
+  console.debug('Commission check →', {
+    serviceItems: ticket.items.filter(i => (i.type ?? 'SERVICE') === 'SERVICE')
+      .map(i => ({ name: i.name, stylist_entity_id: i.stylist_entity_id, stylist: i.stylist }))
+  })
 
   // Idempotency: short-circuit if header already exists
   const existingResponse = await universalApi.getTransactions({
@@ -95,6 +141,12 @@ export async function postEventWithBranch(
 
   // Service/Product lines
   for (const item of ticket.items) {
+    const stylistEntityId =
+      item.stylist_entity_id ??
+      item.stylist?.entity_id ??
+      (item as any).performer_entity_id ??
+      null
+
     lines.push({
       organization_id: orgId,
       transaction_id: txn.id,
@@ -106,7 +158,13 @@ export async function postEventWithBranch(
       unit_amount: item.price,
       line_amount: item.qty * item.price,
       smart_code: heraCode('HERA.SALON.POS.LINE.SERVICE.v1'),
-      line_data: {},
+      line_data: {
+        stylist_entity_id: stylistEntityId,
+        stylist_name: item.stylist_name ?? item.stylist?.name ?? null,
+        // optional hints for commission engine:
+        commission_rule: (item as any).commission_rule ?? 'STANDARD',
+        service_minutes: (item as any).service_minutes ?? null,
+      },
     })
   }
 

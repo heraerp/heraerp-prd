@@ -216,15 +216,16 @@ export class SalonPosIntegrationService {
           errors.push(`Invalid price for ${item.entity_name}`)
         }
 
-        // Service-specific validations
-        if (item.entity_type === 'service') {
-          if (!item.stylist_id) {
+        // Service-specific validations  
+        if (item.entity_type === 'service' || (item as any).type === 'SERVICE') {
+          const stylistId = (item as any).stylist_entity_id || (item as any).stylist_id || (item as any).performer_entity_id
+          if (!stylistId) {
             errors.push(`Service ${item.entity_name} must have an assigned stylist`)
           } else {
             // Validate stylist is available
             const isAvailable = await this.validateStylistAvailability(
-              item.stylist_id,
-              item.appointment_id
+              stylistId,
+              (item as any).appointment_id
             )
             if (!isAvailable) {
               warnings.push(`Stylist for ${item.entity_name} may not be available`)
@@ -335,9 +336,10 @@ export class SalonPosIntegrationService {
                 : heraCode('HERA.SALON.POS.LINE.PRODUCT.v1'),
             line_data: {
               branch_id: options.branch_id,
-              stylist_id: item.stylist_id,
-              appointment_id: item.appointment_id,
-              notes: item.notes,
+              stylist_entity_id: (item as any).stylist_entity_id || (item as any).stylist_id || (item as any).performer_entity_id,
+              stylist_name: (item as any).stylist_name,
+              appointment_id: (item as any).appointment_id,
+              notes: (item as any).notes,
               entity_type: item.entity_type,
               entity_name: item.entity_name
             }

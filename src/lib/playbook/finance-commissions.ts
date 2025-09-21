@@ -202,12 +202,16 @@ async function calculateCommissions(
   const serviceLinesByStylist = new Map<string, TransactionLine[]>()
 
   for (const line of transactionData.line_items) {
-    if (line.smart_code.includes('SVC.') && line.line_data?.stylist_id) {
-      const stylistId = line.line_data.stylist_id
-      if (!serviceLinesByStylist.has(stylistId)) {
-        serviceLinesByStylist.set(stylistId, [])
+    if (line.smart_code.includes('SVC.') || line.smart_code.includes('SERVICE')) {
+      const stylistId = line.line_data?.stylist_entity_id || 
+                       line.line_data?.stylist_id || 
+                       line.line_data?.performer_entity_id
+      if (stylistId) {
+        if (!serviceLinesByStylist.has(stylistId)) {
+          serviceLinesByStylist.set(stylistId, [])
+        }
+        serviceLinesByStylist.get(stylistId)!.push(line)
       }
-      serviceLinesByStylist.get(stylistId)!.push(line)
     }
   }
 
@@ -355,17 +359,34 @@ export function assertCommissionOnPosSale(transactionData: PosTransactionData): 
 
   // Check that there are service lines with stylists
   const serviceLines = transactionData.line_items.filter(
-    line => line.smart_code.includes('SVC.') && line.line_data?.stylist_id
+    line => line.smart_code.includes('SVC.') || line.smart_code.includes('SERVICE')
   )
-
-  if (serviceLines.length === 0) {
-    errors.push('POS sale must have at least one service line with assigned stylist')
+  
+  if (serviceLines.length > 0) {
+    const stylistLines = serviceLines.filter(line => 
+      line.line_data?.stylist_entity_id ||
+      line.line_data?.stylist_id ||
+      line.line_data?.performer_entity_id
+    )
+    
+    if (stylistLines.length === 0) {
+      errors.push('POS sale must have at least one service line with assigned stylist')
+    }
   }
 
   // Validate each service line has proper structure
-  for (const line of serviceLines) {
-    if (!line.line_data?.stylist_id) {
-      errors.push(`Service line ${line.line_number} must have stylist_id in line_data`)
+  const stylistLines = serviceLines.filter(line => 
+    line.line_data?.stylist_entity_id ||
+    line.line_data?.stylist_id ||
+    line.line_data?.performer_entity_id
+  )
+  
+  for (const line of stylistLines) {
+    const hasStylist = line.line_data?.stylist_entity_id || 
+                      line.line_data?.stylist_id || 
+                      line.line_data?.performer_entity_id
+    if (!hasStylist) {
+      errors.push(`Service line ${line.line_number} must have stylist_entity_id in line_data`)
     }
     if (!line.line_amount || line.line_amount <= 0) {
       errors.push(`Service line ${line.line_number} must have positive line_amount`)
