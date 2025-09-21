@@ -20,12 +20,40 @@
   --hera-plum: #5A2A40;
   --hera-rose: #E8B4B8;
   --hera-light-text: #E0E0E0;
+  
+  /* Luxe Palette Tokens */
+  --luxe-black: #0B0B0B;
+  --luxe-charcoal: #121315;         /* page bg */
+  --luxe-charcoal-2: #1A1C1F;       /* modal bg */
+  --luxe-charcoal-3: #22252A;       /* cards/controls */
+  --luxe-border: #2A2E33;
+  --luxe-gold: #D4AF37;
+  --luxe-gold-600: #C59B2A;         /* hover/focus */
+  --luxe-bronze: #8C7853;
+  --luxe-champagne: #F5E6C8;        /* soft text on dark */
+  --luxe-success: #0D9488;
+  --luxe-danger: #B91C1C;
+  --muted: #9CA3AF;
 }
 
 /* Dark theme with luxury colors */
 .dark {
   --background: var(--hera-black);
   --foreground: var(--hera-light-text);
+  
+  /* Luxe Palette Tokens for Dark Mode */
+  --luxe-black: #0B0B0B;
+  --luxe-charcoal: #121315;
+  --luxe-charcoal-2: #1A1C1F;
+  --luxe-charcoal-3: #22252A;
+  --luxe-border: #2A2E33;
+  --luxe-gold: #D4AF37;
+  --luxe-gold-600: #C59B2A;
+  --luxe-bronze: #8C7853;
+  --luxe-champagne: #F5E6C8;
+  --luxe-success: #0D9488;
+  --luxe-danger: #B91C1C;
+  --muted: #9CA3AF;
   
   --card: var(--hera-charcoal);
   --card-foreground: var(--hera-champagne);

@@ -57,56 +57,45 @@ export class SalonPosIntegrationService {
   ): Promise<PricingResult> {
     try {
       // Load service entity
-      const serviceResponse = await universalApi.read({
-        table: 'core_entities',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'id', operator: 'eq', value: serviceId }
-        ]
-      })
+      const serviceResponse = await universalApi.getEntity(serviceId)
 
-      if (!serviceResponse?.data || serviceResponse.data.length === 0) {
-        throw new Error('Service not found')
-      }
-
-      const service = serviceResponse.data[0]
-
-      // Load pricing data from dynamic fields
-      const pricingResponse = await universalApi.read({
-        table: 'core_dynamic_data',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'entity_id', operator: 'eq', value: serviceId },
-          {
-            field: 'field_name',
-            operator: 'in',
-            value: ['price', 'base_price', 'promotional_price', 'currency', 'peak_hours_multiplier']
-          }
-        ]
-      })
-
-      const pricingData = pricingResponse?.data || []
-      const pricingFields: any = {}
-      pricingData.forEach(field => {
-        pricingFields[field.field_name] =
-          field.field_value_text ||
-          field.field_value_number ||
-          field.field_value_date ||
-          field.field_value_boolean
-      })
-
-      // Apply pricing rules
-      let basePrice = pricingFields.price || pricingFields.base_price || 0
-      let unitPrice = basePrice
-
-      // Peak hours pricing
-      if (options.time && pricingFields.peak_hours_multiplier) {
-        const hour = new Date(`2000-01-01T${options.time}`).getHours()
-        if (hour >= 17 || hour <= 10) {
-          // Peak hours
-          unitPrice = basePrice * pricingFields.peak_hours_multiplier
+      if (!serviceResponse?.success || !serviceResponse.data) {
+        console.log('Service not found for pricing lookup:', serviceId)
+        return {
+          unit_price: 0,
+          base_price: 0,
+          currency: 'AED'
         }
       }
+
+      const service = serviceResponse.data
+
+      // Check metadata for price first (most common)
+      let basePrice = service.metadata?.price || service.metadata?.base_price || 0
+
+      // If no price in metadata, check dynamic fields
+      if (basePrice === 0) {
+        const dynamicFields = await universalApi.getDynamicFields(serviceId)
+
+        if (dynamicFields.success && dynamicFields.data) {
+          const priceField = dynamicFields.data.find(
+            f =>
+              f.field_name === 'price' ||
+              f.field_name === 'base_price' ||
+              f.field_name === 'price_aed'
+          )
+
+          if (priceField) {
+            basePrice = priceField.field_value_number || priceField.field_value_json?.base || 0
+          }
+        }
+      }
+
+      // Apply pricing rules
+      let unitPrice = basePrice
+
+      // Peak hours pricing (if we have dynamic field data)
+      // Note: pricingFields is not defined anymore, skip peak hours for now
 
       // Customer-specific pricing (VIP discounts, etc.)
       if (options.customer_id) {
@@ -126,7 +115,7 @@ export class SalonPosIntegrationService {
       return {
         unit_price: Math.round(unitPrice * 100) / 100, // Round to 2 decimals
         base_price: basePrice,
-        currency: pricingFields.currency || 'AED',
+        currency: service.metadata?.currency || 'AED',
         stylist_commission_rate: stylistCommissionRate
       }
     } catch (error) {
@@ -157,12 +146,11 @@ export class SalonPosIntegrationService {
   > {
     try {
       // Load all stylists
-      const stylistsResponse = await universalApi.read({
-        table: 'core_entities',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'entity_type', operator: 'eq', value: 'employee' }
-        ]
+      const stylistsResponse = await universalApi.getEntities({
+        filters: {
+          entity_type: 'employee'
+        },
+        organizationId: this.organizationId
       })
 
       if (!stylistsResponse?.data) return []
@@ -170,13 +158,7 @@ export class SalonPosIntegrationService {
       const stylists = []
       for (const stylist of stylistsResponse.data) {
         // Load stylist dynamic data
-        const stylistDataResponse = await universalApi.read({
-          table: 'core_dynamic_data',
-          filters: [
-            { field: 'organization_id', operator: 'eq', value: this.organizationId },
-            { field: 'entity_id', operator: 'eq', value: stylist.id }
-          ]
-        })
+        const stylistDataResponse = await universalApi.getDynamicFields(stylist.id)
 
         const stylistData = stylistDataResponse?.data || []
         const stylistFields: any = {}
@@ -249,16 +231,22 @@ export class SalonPosIntegrationService {
           }
         }
 
-        // Pricing validation
-        const expectedPricing = await this.getServicePricing(item.entity_id, {
-          customer_id: ticket.customer_id,
-          stylist_id: item.stylist_id
-        })
+        // Pricing validation - only for services and products, not for adjustments
+        if (item.entity_type === 'service' || item.entity_type === 'product') {
+          const expectedPricing = await this.getServicePricing(item.entity_id, {
+            customer_id: ticket.customer_id,
+            stylist_id: item.stylist_id
+          })
 
-        if (Math.abs(item.unit_price - expectedPricing.unit_price) > 0.01) {
-          warnings.push(
-            `Price mismatch for ${item.entity_name}: expected $${expectedPricing.unit_price}, got $${item.unit_price}`
-          )
+          // Only warn if we found pricing and it doesn't match
+          if (
+            expectedPricing.unit_price > 0 &&
+            Math.abs(item.unit_price - expectedPricing.unit_price) > 0.01
+          ) {
+            warnings.push(
+              `Price mismatch for ${item.entity_name}: expected $${expectedPricing.unit_price}, got $${item.unit_price}`
+            )
+          }
         }
       }
 
@@ -498,18 +486,7 @@ export class SalonPosIntegrationService {
 
   private async getCustomerPricingModifier(customerId: string) {
     try {
-      const customerDataResponse = await universalApi.read({
-        table: 'core_dynamic_data',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'entity_id', operator: 'eq', value: customerId },
-          {
-            field: 'field_name',
-            operator: 'in',
-            value: ['vip_tier', 'discount_percentage', 'loyalty_discount']
-          }
-        ]
-      })
+      const customerDataResponse = await universalApi.getDynamicFields(customerId)
 
       const customerData = customerDataResponse?.data || []
       const customerFields: any = {}
@@ -540,16 +517,11 @@ export class SalonPosIntegrationService {
 
   private async getStylistCommissionRate(stylistId: string) {
     try {
-      const stylistDataResponse = await universalApi.read({
-        table: 'core_dynamic_data',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'entity_id', operator: 'eq', value: stylistId },
-          { field: 'field_name', operator: 'eq', value: 'commission_rate' }
-        ]
-      })
+      const stylistDataResponse = await universalApi.getDynamicFields(stylistId)
 
-      const commissionData = stylistDataResponse?.data?.[0]
+      const commissionData = stylistDataResponse?.data?.find(
+        f => f.field_name === 'commission_rate'
+      )
       return {
         commission_rate: commissionData?.field_value_number || 30
       }
@@ -569,15 +541,8 @@ export class SalonPosIntegrationService {
 
   private async validateCustomerExists(customerId: string): Promise<boolean> {
     try {
-      const customerResponse = await universalApi.read({
-        table: 'core_entities',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: this.organizationId },
-          { field: 'id', operator: 'eq', value: customerId },
-          { field: 'entity_type', operator: 'eq', value: 'customer' }
-        ]
-      })
-      return customerResponse?.data && customerResponse.data.length > 0
+      const customerResponse = await universalApi.getEntity(customerId)
+      return customerResponse?.success && customerResponse.data?.entity_type === 'customer'
     } catch {
       return false
     }

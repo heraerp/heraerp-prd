@@ -9,20 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { universalApi } from '@/lib/universal-api-v2'
 import { cn } from '@/lib/utils'
 
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323',
-  plum: '#B794F4',
-  emerald: '#0F6F5C'
-}
-
 interface Stylist {
   id: string
   name: string
@@ -200,67 +186,36 @@ export function StylistSelectionModal({
 
   return (
     <Dialog open={open} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl bg-c2 text-champagne border border-borderl shadow-2xl rounded-2xl">
         <DialogHeader>
-          <DialogTitle>
-            Select Stylist for {service.name}
-          </DialogTitle>
+          <DialogTitle>Select Stylist for {service.name}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Service Info */}
-          <div 
-            className="p-4 rounded-lg border"
-            style={{ 
-              backgroundColor: COLORS.charcoalLight,
-              borderColor: `${COLORS.bronze}33`,
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-            }}
-          >
+          <div className="p-4 rounded-lg bg-c3 border border-borderl shadow-[0_2px_4px_rgba(0,0,0,0.2)]">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-medium" style={{ color: COLORS.champagne }}>
-                  {service.name}
-                </h3>
-                <p className="text-sm mt-1" style={{ color: COLORS.bronze }}>
-                  ${service.price.toFixed(2)} per service
-                </p>
+                <h3 className="font-medium text-champagne">{service.name}</h3>
+                <p className="text-sm mt-1 text-bronze">${service.price.toFixed(2)} per service</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="hover:bg-transparent"
-                  style={{ 
-                    borderColor: `${COLORS.bronze}66`,
-                    color: COLORS.champagne,
-                    backgroundColor: COLORS.charcoalDark,
-                    border: `1px solid ${COLORS.bronze}66`
-                  }}
+                  className="h-8 w-8 p-0 border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
                 >
                   -
                 </Button>
-                <span 
-                  className="px-3 font-medium min-w-[3rem] text-center"
-                  style={{ 
-                    color: COLORS.gold,
-                    textShadow: `0 0 10px ${COLORS.gold}40`
-                  }}
-                >
+                <span className="px-3 font-medium min-w-[3rem] text-center text-luxe-gold [text-shadow:0_0_10px_rgb(212_175_55_/_25%)]">
                   {quantity}
                 </span>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => setQuantity(quantity + 1)}
-                  className="hover:bg-transparent"
-                  style={{ 
-                    borderColor: `${COLORS.bronze}66`,
-                    color: COLORS.champagne,
-                    backgroundColor: COLORS.charcoalDark,
-                    border: `1px solid ${COLORS.bronze}66`
-                  }}
+                  className="h-8 w-8 p-0 border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
                 >
                   +
                 </Button>
@@ -271,66 +226,35 @@ export function StylistSelectionModal({
           {/* Stylist Selection */}
           {loading ? (
             <div className="py-8 text-center">
-              <div
-                className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
-                style={{ borderColor: COLORS.gold }}
-              ></div>
-              <p className="mt-4" style={{ color: COLORS.lightText }}>
-                Loading stylists...
-              </p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto border-luxe-gold"></div>
+              <p className="mt-4 text-champagne/80">Loading stylists...</p>
             </div>
           ) : (
-            <div 
-              className="space-y-3 max-h-96 overflow-y-auto pr-2"
-              style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: `${COLORS.bronze}33 ${COLORS.charcoalDark}`
-              }}
-            >
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-luxe-charcoal [&::-webkit-scrollbar-thumb]:bg-bronze/30 [&::-webkit-scrollbar-thumb]:rounded">
               {stylists.map(stylist => (
                 <Card
                   key={stylist.id}
                   className={cn(
-                    'cursor-pointer transition-all hover:shadow-md border',
-                    selectedStylist?.id === stylist.id && 'ring-2 ring-[#D4AF37]'
+                    'cursor-pointer transition-all duration-200 border',
+                    'bg-c3 border-borderl hover:border-bronze/50 hover:shadow-md',
+                    selectedStylist?.id === stylist.id &&
+                      'ring-2 ring-luxe-gold bg-luxe-gold/[0.125] border-luxe-gold'
                   )}
-                  style={{
-                    backgroundColor:
-                      selectedStylist?.id === stylist.id
-                        ? 'rgba(212, 175, 55, 0.125)' // COLORS.gold with 12.5% opacity
-                        : COLORS.charcoalLight,
-                    borderColor:
-                      selectedStylist?.id === stylist.id ? COLORS.gold : 'rgba(140, 120, 83, 0.2)' // COLORS.bronze with 20% opacity
-                  }}
                   onClick={() => setSelectedStylist(stylist)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center border"
-                          style={{ 
-                            backgroundColor: `${COLORS.charcoalDark}`,
-                            borderColor: `${COLORS.bronze}33`,
-                            boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.3)`
-                          }}
-                        >
-                          <User className="w-5 h-5" style={{ color: COLORS.gold }} />
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center border border-bronze/30 bg-luxe-charcoal shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]">
+                          <User className="w-5 h-5 text-luxe-gold" />
                         </div>
                         <div>
-                          <h4 className="font-medium" style={{ color: COLORS.champagne }}>
-                            {stylist.name}
-                          </h4>
+                          <h4 className="font-medium text-champagne">{stylist.name}</h4>
                           <div className="flex items-center gap-2 mt-1">
                             {stylist.rating > 0 && (
                               <div className="flex items-center gap-1">
-                                <Star
-                                  className="w-3 h-3 fill-current"
-                                  style={{ color: COLORS.gold }}
-                                />
-                                <span className="text-xs" style={{ color: COLORS.bronze }}>
-                                  {stylist.rating}
-                                </span>
+                                <Star className="w-3 h-3 fill-current text-luxe-gold" />
+                                <span className="text-xs text-bronze">{stylist.rating}</span>
                               </div>
                             )}
                             <div className="flex gap-1">
@@ -338,13 +262,7 @@ export function StylistSelectionModal({
                                 <Badge
                                   key={i}
                                   variant="secondary"
-                                  className="text-xs border"
-                                  style={{
-                                    backgroundColor: `${COLORS.charcoalDark}`,
-                                    color: COLORS.bronze,
-                                    borderColor: `${COLORS.bronze}33`,
-                                    boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.2)`
-                                  }}
+                                  className="text-xs border border-bronze/30 bg-luxe-charcoal text-bronze shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]"
                                 >
                                   {spec}
                                 </Badge>
@@ -357,23 +275,14 @@ export function StylistSelectionModal({
                         {!stylist.available && stylist.id !== 'any' && (
                           <Badge
                             variant="secondary"
-                            className="border"
-                            style={{
-                              backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                              color: '#EF4444',
-                              borderColor: 'rgba(220, 38, 38, 0.3)',
-                              boxShadow: '0 0 4px rgba(220, 38, 38, 0.2)'
-                            }}
+                            className="border bg-danger/10 text-[#EF4444] border-danger/30 shadow-[0_0_4px_rgba(220,38,38,0.2)]"
                           >
                             Busy
                           </Badge>
                         )}
                         {selectedStylist?.id === stylist.id && (
-                          <div
-                            className="w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: COLORS.gold }}
-                          >
-                            <Check className="w-4 h-4" style={{ color: COLORS.black }} />
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-luxe-gold">
+                            <Check className="w-4 h-4 text-luxe-black" />
                           </div>
                         )}
                       </div>
@@ -385,16 +294,11 @@ export function StylistSelectionModal({
           )}
 
           {/* Actions */}
-          <div className="flex gap-2 pt-4 border-t" style={{ borderColor: `${COLORS.bronze}20` }}>
+          <div className="flex gap-2 pt-4 border-t border-bronze/20">
             <Button
               variant="ghost"
               onClick={handleQuickAdd}
-              className="hover:bg-transparent"
-              style={{
-                border: `1px solid ${COLORS.bronze}66`,
-                color: COLORS.champagne,
-                backgroundColor: COLORS.charcoalDark
-              }}
+              className="border border-bronze/40 bg-c3 text-champagne hover:bg-borderl/50 transition-colors"
             >
               Add as Walk-in
             </Button>
@@ -402,28 +306,19 @@ export function StylistSelectionModal({
             <Button
               variant="ghost"
               onClick={onClose}
-              className="hover:bg-transparent"
-              style={{
-                border: `1px solid ${COLORS.bronze}66`,
-                color: COLORS.bronze,
-                backgroundColor: COLORS.charcoalDark
-              }}
+              className="border border-bronze/40 bg-c3 text-bronze hover:bg-borderl/50 transition-colors"
             >
               Cancel
             </Button>
             <Button
               onClick={handleConfirm}
               disabled={!selectedStylist}
-              className="hover:opacity-90 transition-opacity"
-              style={{
-                background: selectedStylist
-                  ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                  : `${COLORS.charcoalLight}`,
-                color: selectedStylist ? COLORS.black : COLORS.bronze,
-                border: selectedStylist ? 'none' : `1px solid ${COLORS.bronze}33`,
-                opacity: selectedStylist ? 1 : 0.5,
-                boxShadow: selectedStylist ? `0 4px 12px ${COLORS.gold}40` : 'none'
-              }}
+              className={cn(
+                'transition-all duration-200',
+                selectedStylist
+                  ? 'bg-gradient-to-r from-luxe-gold to-luxe-gold-600 text-luxe-black hover:opacity-90 shadow-[0_4px_12px_rgba(212,175,55,0.25)]'
+                  : 'bg-c3 text-bronze border border-bronze/30 opacity-50 cursor-not-allowed'
+              )}
             >
               Add to Cart
             </Button>

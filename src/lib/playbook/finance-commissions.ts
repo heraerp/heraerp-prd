@@ -63,7 +63,7 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
     universalApi.setOrganizationId(transactionData.organization_id)
 
     // Create transaction header
-    const transactionResponse = await universalApi.create('universal_transactions', {
+    const transactionResponse = await universalApi.createTransaction({
       organization_id: transactionData.organization_id,
       transaction_type: transactionData.transaction_type,
       smart_code: transactionData.smart_code,
@@ -82,7 +82,7 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
 
     // Create transaction lines
     for (const line of transactionData.line_items) {
-      await universalApi.create('universal_transaction_lines', {
+      await universalApi.createTransactionLine({
         organization_id: transactionData.organization_id,
         transaction_id: transactionId,
         line_entity_id: line.line_entity_id,

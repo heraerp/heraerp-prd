@@ -39,6 +39,18 @@ const config: Config = {
           400: '#E3C75F',
           300: '#F0D584' 
         },
+        
+        // Luxe Palette Token Mappings
+        'luxe-gold': 'var(--luxe-gold)',
+        'luxe-gold-600': 'var(--luxe-gold-600)',
+        bronze: 'var(--luxe-bronze)',
+        champagne: 'var(--luxe-champagne)',
+        'luxe-charcoal': 'var(--luxe-charcoal)',
+        c2: 'var(--luxe-charcoal-2)',
+        c3: 'var(--luxe-charcoal-3)',
+        borderl: 'var(--luxe-border)',
+        success: 'var(--luxe-success)',
+        danger: 'var(--luxe-danger)',
         text: { 
           100: '#F5F7FA', 
           300: '#C7CCD4', 
