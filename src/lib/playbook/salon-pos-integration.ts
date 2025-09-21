@@ -3,6 +3,8 @@
 import { universalApi } from '@/lib/universal-api-v2'
 import { postPosSaleWithCommission, postEventWithBranch } from '@/lib/playbook/finance-commissions'
 import { heraCode, HERA_CODES } from '@/lib/smart-codes'
+import { getOrgSettings } from '@/lib/playbook/org-finance-utils'
+import { flags } from '@/config/flags'
 
 interface SalonPosIntegration {
   organizationId: string
@@ -218,10 +220,17 @@ export class SalonPosIntegrationService {
 
         // Service-specific validations  
         if (item.entity_type === 'service' || (item as any).type === 'SERVICE') {
-          const stylistId = (item as any).stylist_entity_id || (item as any).stylist_id || (item as any).performer_entity_id
-          if (!stylistId) {
+          // Commission gating - only require stylist if commissions are enabled
+          const orgSettings = await getOrgSettings(this.organizationId)
+          const commissionsEnabled = flags.ENABLE_COMMISSIONS && (orgSettings?.salon?.commissions?.enabled ?? true)
+          
+          const stylistId =
+            (item as any).stylist_entity_id ||
+            (item as any).stylist_id ||
+            (item as any).performer_entity_id
+          if (commissionsEnabled && !stylistId) {
             errors.push(`Service ${item.entity_name} must have an assigned stylist`)
-          } else {
+          } else if (stylistId) {
             // Validate stylist is available
             const isAvailable = await this.validateStylistAvailability(
               stylistId,
@@ -336,7 +345,10 @@ export class SalonPosIntegrationService {
                 : heraCode('HERA.SALON.POS.LINE.PRODUCT.v1'),
             line_data: {
               branch_id: options.branch_id,
-              stylist_entity_id: (item as any).stylist_entity_id || (item as any).stylist_id || (item as any).performer_entity_id,
+              stylist_entity_id:
+                (item as any).stylist_entity_id ||
+                (item as any).stylist_id ||
+                (item as any).performer_entity_id,
               stylist_name: (item as any).stylist_name,
               appointment_id: (item as any).appointment_id,
               notes: (item as any).notes,

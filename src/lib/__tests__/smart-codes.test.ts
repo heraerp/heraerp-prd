@@ -1,4 +1,10 @@
-import { heraCode, isValidHeraCode, createHeraCode, parseHeraCode, HERA_CODES } from '../smart-codes'
+import {
+  heraCode,
+  isValidHeraCode,
+  createHeraCode,
+  parseHeraCode,
+  HERA_CODES
+} from '../smart-codes'
 
 describe('Smart Code Functions', () => {
   describe('heraCode', () => {
@@ -106,7 +112,7 @@ describe('Smart Code Functions', () => {
           }
         })
       }
-      
+
       checkNestedCodes(HERA_CODES)
     })
   })

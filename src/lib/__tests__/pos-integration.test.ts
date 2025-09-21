@@ -18,10 +18,10 @@ describe('POS Integration Tests', () => {
   beforeAll(async () => {
     // Use test organization ID from environment or default
     const orgId = process.env.TEST_ORGANIZATION_ID || 'test-org-123'
-    
+
     // Seed test data
     testData = await seedPosTestData(orgId)
-    
+
     // Initialize POS service
     posService = new SalonPosIntegrationService(orgId)
   })
@@ -58,22 +58,18 @@ describe('POS Integration Tests', () => {
       const payments = [
         {
           type: 'card',
-          amount: 157.50, // 150 + 5% tax
+          amount: 157.5, // 150 + 5% tax
           reference: 'TEST-PAYMENT-001',
           cardType: 'visa'
         }
       ]
 
       // Process transaction
-      const result = await posService.processPosTransaction(
-        ticket,
-        payments,
-        {
-          branch_id: testBranchId,
-          cashier_id: testCashierId,
-          till_id: testTillId
-        }
-      )
+      const result = await posService.processPosTransaction(ticket, payments, {
+        branch_id: testBranchId,
+        cashier_id: testCashierId,
+        till_id: testTillId
+      })
 
       // Validate transaction was successful
       expect(result.success).toBe(true)
@@ -96,7 +92,7 @@ describe('POS Integration Tests', () => {
       expect(transaction.transaction_type).toBe('sale') // Should be 'sale', not 'POS_SALE'
       expect(transaction.smart_code).toBe(heraCode('HERA.SALON.POS.SALE.HEADER.v1'))
       expect(transaction.smart_code).toMatch(/\.v1$/) // Ensure lowercase .v1
-      expect(transaction.total_amount).toBe(157.50)
+      expect(transaction.total_amount).toBe(157.5)
       expect(transaction.organization_id).toBe(testData.organizationId)
       expect(transaction.business_context?.branch_id).toBe(testBranchId)
 
@@ -113,7 +109,9 @@ describe('POS Integration Tests', () => {
       expect(lines.length).toBeGreaterThanOrEqual(3)
 
       // Find specific line types
-      const serviceLine = lines.find(l => l.smart_code === heraCode('HERA.SALON.POS.LINE.SERVICE.v1'))
+      const serviceLine = lines.find(
+        l => l.smart_code === heraCode('HERA.SALON.POS.LINE.SERVICE.v1')
+      )
       const taxLine = lines.find(l => l.smart_code === heraCode('HERA.SALON.POS.LINE.TAX.v1'))
       const paymentLine = lines.find(l => l.smart_code?.includes('PAYMENT'))
 
@@ -127,13 +125,13 @@ describe('POS Integration Tests', () => {
 
       // Validate tax line
       expect(taxLine).toBeDefined()
-      expect(taxLine!.line_amount).toBe(7.50) // 5% of 150
+      expect(taxLine!.line_amount).toBe(7.5) // 5% of 150
       expect(taxLine!.smart_code).toMatch(/\.v1$/)
       expect(taxLine!.line_data?.tax_rate).toBe(0.05)
 
       // Validate payment line
       expect(paymentLine).toBeDefined()
-      expect(paymentLine!.line_amount).toBe(-157.50) // Negative to balance
+      expect(paymentLine!.line_amount).toBe(-157.5) // Negative to balance
       expect(paymentLine!.smart_code).toMatch(/\.v1$/)
       expect(paymentLine!.line_data?.payment_method).toBe('card')
 
@@ -149,9 +147,7 @@ describe('POS Integration Tests', () => {
       })
 
       // Check for commission lines (should be present)
-      const commissionLines = lines.filter(l => 
-        l.smart_code?.includes('COMMISSION')
-      )
+      const commissionLines = lines.filter(l => l.smart_code?.includes('COMMISSION'))
       expect(commissionLines.length).toBeGreaterThanOrEqual(1)
     })
 
@@ -163,19 +159,16 @@ describe('POS Integration Tests', () => {
       }
 
       const validation = await posService.validatePosTicket(invalidTicket)
-      
+
       expect(validation.isValid).toBe(false)
       expect(validation.errors).toContain('Ticket must have at least one item')
     })
 
     it('should handle service pricing correctly', async () => {
-      const pricing = await posService.getServicePricing(
-        testData.serviceId,
-        {
-          customer_id: testData.customerId,
-          stylist_id: testData.stylistId
-        }
-      )
+      const pricing = await posService.getServicePricing(testData.serviceId, {
+        customer_id: testData.customerId,
+        stylist_id: testData.stylistId
+      })
 
       expect(pricing.unit_price).toBe(150)
       expect(pricing.base_price).toBe(150)
@@ -206,8 +199,8 @@ describe('POS Integration Tests', () => {
       expect(totals.subtotal).toBe(150)
       expect(totals.discountAmount).toBe(0)
       expect(totals.tipAmount).toBe(0)
-      expect(totals.taxAmount).toBe(7.50) // 5% of 150
-      expect(totals.total).toBe(157.50)
+      expect(totals.taxAmount).toBe(7.5) // 5% of 150
+      expect(totals.total).toBe(157.5)
     })
 
     it('should retrieve available stylists for service', async () => {
@@ -217,7 +210,7 @@ describe('POS Integration Tests', () => {
       )
 
       expect(stylists.length).toBeGreaterThan(0)
-      
+
       const testStylist = stylists.find(s => s.id === testData.stylistId)
       expect(testStylist).toBeDefined()
       expect(testStylist!.name).toBe('Test Stylist Maria')
@@ -229,7 +222,7 @@ describe('POS Integration Tests', () => {
       // Test that heraCode helper properly formats smart codes
       const testCodes = [
         'HERA.SALON.POS.SALE.HEADER.V1', // uppercase V
-        'HERA.SALON.POS.SALE.HEADER.v1', // lowercase v
+        'HERA.SALON.POS.SALE.HEADER.v1' // lowercase v
       ]
 
       testCodes.forEach(code => {

@@ -3,7 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 // Use server-side supabase client
 function getSupabase() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const supabaseKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   return createClient(supabaseUrl, supabaseKey)
 }
 
@@ -39,6 +40,6 @@ export async function getTodayFiscalStamp(organizationId: string) {
   return {
     year: Number(md.year) || null,
     period: Number(md.period) || null,
-    code: md.code ?? data.entity_code ?? null,
+    code: md.code ?? data.entity_code ?? null
   }
 }

@@ -7,7 +7,7 @@ import { getOrgSettings, getTodayFiscalStamp } from '@/lib/playbook/org-finance-
 
 // cart item shape accepted everywhere
 export type PosItem = {
-  entity_id?: string        // service entity_id
+  entity_id?: string // service entity_id
   name: string
   qty: number
   price: number
@@ -33,21 +33,28 @@ interface PosTicket {
 /**
  * Validate POS ticket before posting (and allow product-only tickets)
  */
-export function validatePosTicket(ticket: PosTicket) {
+export async function validatePosTicket(ticket: PosTicket, organizationId: string) {
   // existing price checks...
-  const serviceItems = (ticket.items || []).filter(i =>
-    (i.type ?? 'SERVICE') === 'SERVICE' ||
-    (i.entity_type === 'service')        // fallback if you carry entity_type
+  
+  // Commission gating
+  const org = await getOrgSettings(organizationId)
+  const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
+  
+  const serviceItems = (ticket.items || []).filter(
+    i => (i.type ?? 'SERVICE') === 'SERVICE' || i.entity_type === 'service' // fallback if you carry entity_type
   )
-  if (serviceItems.length > 0) {
-    const hasStylist = serviceItems.some(i =>
-      i.stylist_entity_id ||
-      i.stylist?.entity_id ||
-      (i as any).performer_entity_id ||      // legacy key support
-      (i as any).line_data?.stylist_entity_id
+  if (commissionsEnabled && serviceItems.length > 0) {
+    const hasStylist = serviceItems.some(
+      i =>
+        i.stylist_entity_id ||
+        i.stylist?.entity_id ||
+        (i as any).performer_entity_id || // legacy key support
+        (i as any).line_data?.stylist_entity_id
     )
     if (!hasStylist) {
-      throw new Error('Commission validation failed: POS sale must have at least one service line with assigned stylist')
+      throw new Error(
+        'Commission validation failed: POS sale must have at least one service line with assigned stylist'
+      )
     }
   }
 }
@@ -62,13 +69,14 @@ export async function postEventWithBranch(
   createdBy?: string
 ) {
   // Validate ticket first
-  validatePosTicket(ticket)
-  
+  await validatePosTicket(ticket, orgId)
+
   universalApi.setOrganizationId(orgId)
   const extRef = `pos:${ticket.id}`
-  
+
   console.debug('Commission check →', {
-    serviceItems: ticket.items.filter(i => (i.type ?? 'SERVICE') === 'SERVICE')
+    serviceItems: ticket.items
+      .filter(i => (i.type ?? 'SERVICE') === 'SERVICE')
       .map(i => ({ name: i.name, stylist_entity_id: i.stylist_entity_id, stylist: i.stylist }))
   })
 
@@ -81,7 +89,7 @@ export async function postEventWithBranch(
     },
     pageSize: 1
   })
-  
+
   if (existingResponse.success && existingResponse.data && existingResponse.data.length > 0) {
     console.log('Transaction already exists for ticket:', ticket.id)
     return existingResponse.data[0]
@@ -101,14 +109,14 @@ export async function postEventWithBranch(
     external_reference: extRef,
     business_context: { ticket_id: ticket.id },
     metadata: { ui: 'pos', tax_total: ticket.taxTotal ?? 0 },
-    created_by: createdBy ?? null,
+    created_by: createdBy ?? null
   }
 
   // Currency / fiscal stamping (if available)
   header.transaction_currency_code = org?.finance?.currency ?? 'USD'
   header.base_currency_code = org?.finance?.base_currency ?? header.transaction_currency_code
   header.exchange_rate = 1
-  
+
   if (fiscal) {
     header.fiscal_year = fiscal.year
     header.fiscal_period = fiscal.period
@@ -117,7 +125,7 @@ export async function postEventWithBranch(
 
   console.debug('POS header payload →', header)
   const txnResponse = await universalApi.createTransaction(header)
-  
+
   if (!txnResponse.success || !txnResponse.data) {
     console.error('DB header insert error →', txnResponse.error)
     throw new Error(`createTransaction failed: ${txnResponse.error}`)
@@ -136,16 +144,13 @@ export async function postEventWithBranch(
     DISCOUNT: 'DISCOUNT',
     COMMISSION: 'COMMISSION',
     ADJUSTMENT: 'ADJUSTMENT',
-    ROUNDING: 'ROUNDING',
+    ROUNDING: 'ROUNDING'
   } as const
 
   // Service/Product lines
   for (const item of ticket.items) {
     const stylistEntityId =
-      item.stylist_entity_id ??
-      item.stylist?.entity_id ??
-      (item as any).performer_entity_id ??
-      null
+      item.stylist_entity_id ?? item.stylist?.entity_id ?? (item as any).performer_entity_id ?? null
 
     lines.push({
       organization_id: orgId,
@@ -163,8 +168,8 @@ export async function postEventWithBranch(
         stylist_name: item.stylist_name ?? item.stylist?.name ?? null,
         // optional hints for commission engine:
         commission_rule: (item as any).commission_rule ?? 'STANDARD',
-        service_minutes: (item as any).service_minutes ?? null,
-      },
+        service_minutes: (item as any).service_minutes ?? null
+      }
     })
   }
 
@@ -178,7 +183,7 @@ export async function postEventWithBranch(
       description: 'Sales Tax/VAT',
       line_amount: ticket.taxTotal,
       smart_code: heraCode('HERA.SALON.POS.LINE.TAX.v1'),
-      line_data: {},
+      line_data: {}
     })
   }
 
@@ -192,7 +197,7 @@ export async function postEventWithBranch(
       description: p.method,
       line_amount: -Math.abs(p.amount),
       smart_code: heraCode('HERA.SALON.POS.PAYMENT.' + p.method.toUpperCase() + '.v1'),
-      line_data: {},
+      line_data: {}
     })
   }
 

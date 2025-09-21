@@ -2,6 +2,8 @@
 
 import { universalApi } from '@/lib/universal-api-v2'
 import { heraCode } from '@/lib/smart-codes'
+import { flags } from '@/config/flags'
+import { getOrgSettings } from '@/lib/playbook/org-finance-utils'
 
 interface TransactionLine {
   line_entity_id?: string
@@ -153,19 +155,29 @@ export async function postPosSaleWithCommission(transactionData: PosTransactionD
   error?: string
 }> {
   try {
-    // Validate commission requirements
-    const commissionValidation = assertCommissionOnPosSale(transactionData)
-    if (!commissionValidation.isValid) {
-      throw new Error(`Commission validation failed: ${commissionValidation.errors.join(', ')}`)
-    }
+    // Commission gating
+    const org = await getOrgSettings(transactionData.organization_id)
+    const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
+    
+    // Skip commission lines when disabled
+    let commissionLines: TransactionLine[] = []
+    let enhancedTransactionData = transactionData
+    
+    if (commissionsEnabled) {
+      // Validate commission requirements
+      const commissionValidation = await assertCommissionOnPosSale(transactionData)
+      if (!commissionValidation.isValid) {
+        throw new Error(`Commission validation failed: ${commissionValidation.errors.join(', ')}`)
+      }
 
-    // Calculate commissions for each stylist
-    const commissionLines = await calculateCommissions(transactionData)
+      // Calculate commissions for each stylist
+      commissionLines = await calculateCommissions(transactionData)
 
-    // Create enhanced transaction data with commission lines
-    const enhancedTransactionData: PosTransactionData = {
-      ...transactionData,
-      line_items: [...transactionData.line_items, ...commissionLines]
+      // Create enhanced transaction data with commission lines
+      enhancedTransactionData = {
+        ...transactionData,
+        line_items: [...transactionData.line_items, ...commissionLines]
+      }
     }
 
     // Validate that lines are balanced
@@ -203,9 +215,10 @@ async function calculateCommissions(
 
   for (const line of transactionData.line_items) {
     if (line.smart_code.includes('SVC.') || line.smart_code.includes('SERVICE')) {
-      const stylistId = line.line_data?.stylist_entity_id || 
-                       line.line_data?.stylist_id || 
-                       line.line_data?.performer_entity_id
+      const stylistId =
+        line.line_data?.stylist_entity_id ||
+        line.line_data?.stylist_id ||
+        line.line_data?.performer_entity_id
       if (stylistId) {
         if (!serviceLinesByStylist.has(stylistId)) {
           serviceLinesByStylist.set(stylistId, [])
@@ -345,10 +358,10 @@ export function assertBranchOnEvent(transactionData: PosTransactionData): {
 /**
  * Assert that POS sale has proper commission accrual lines
  */
-export function assertCommissionOnPosSale(transactionData: PosTransactionData): {
+export async function assertCommissionOnPosSale(transactionData: PosTransactionData): Promise<{
   isValid: boolean
   errors: string[]
-} {
+}> {
   const errors: string[] = []
 
   // Check that it's a POS sale transaction
@@ -357,34 +370,45 @@ export function assertCommissionOnPosSale(transactionData: PosTransactionData): 
     return { isValid: false, errors }
   }
 
+  // Commission gating
+  const org = await getOrgSettings(transactionData.organization_id)
+  const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
+  
+  if (!commissionsEnabled) {
+    return { isValid: true, errors: [] }
+  }
+
   // Check that there are service lines with stylists
   const serviceLines = transactionData.line_items.filter(
     line => line.smart_code.includes('SVC.') || line.smart_code.includes('SERVICE')
   )
-  
+
   if (serviceLines.length > 0) {
-    const stylistLines = serviceLines.filter(line => 
-      line.line_data?.stylist_entity_id ||
-      line.line_data?.stylist_id ||
-      line.line_data?.performer_entity_id
+    const stylistLines = serviceLines.filter(
+      line =>
+        line.line_data?.stylist_entity_id ||
+        line.line_data?.stylist_id ||
+        line.line_data?.performer_entity_id
     )
-    
+
     if (stylistLines.length === 0) {
       errors.push('POS sale must have at least one service line with assigned stylist')
     }
   }
 
   // Validate each service line has proper structure
-  const stylistLines = serviceLines.filter(line => 
-    line.line_data?.stylist_entity_id ||
-    line.line_data?.stylist_id ||
-    line.line_data?.performer_entity_id
+  const stylistLines = serviceLines.filter(
+    line =>
+      line.line_data?.stylist_entity_id ||
+      line.line_data?.stylist_id ||
+      line.line_data?.performer_entity_id
   )
-  
+
   for (const line of stylistLines) {
-    const hasStylist = line.line_data?.stylist_entity_id || 
-                      line.line_data?.stylist_id || 
-                      line.line_data?.performer_entity_id
+    const hasStylist =
+      line.line_data?.stylist_entity_id ||
+      line.line_data?.stylist_id ||
+      line.line_data?.performer_entity_id
     if (!hasStylist) {
       errors.push(`Service line ${line.line_number} must have stylist_entity_id in line_data`)
     }

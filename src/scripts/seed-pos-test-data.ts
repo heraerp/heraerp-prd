@@ -128,7 +128,7 @@ export async function cleanupPosTestData(testData: PosTestData) {
     // In a real implementation, you would soft-delete or mark as inactive
     // For now, just log cleanup
     console.log('Cleaning up test data:', testData)
-    
+
     // Mark entities as inactive
     await universalApi.setDynamicField(testData.serviceId, 'is_active', false)
     await universalApi.setDynamicField(testData.customerId, 'is_active', false)
@@ -141,7 +141,7 @@ export async function cleanupPosTestData(testData: PosTestData) {
 // Run if executed directly
 if (require.main === module) {
   const testOrgId = process.env.TEST_ORGANIZATION_ID || 'test-org-123'
-  
+
   seedPosTestData(testOrgId)
     .then(data => {
       console.log('Test data created:', data)
