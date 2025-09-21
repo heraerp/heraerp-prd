@@ -146,27 +146,30 @@ export async function searchAppointments(
   // Set organization context
   universalApi.setOrganizationId(organization_id)
 
-  // 1) Get appointment entity IDs for this org (minimal select for speed)
-  const entitiesResponse = await universalApi.read('core_entities', {
-    organization_id,
-    entity_type: 'appointment'
+  // 1) Get appointment transactions for this org (appointments are stored as transactions)
+  const transactionsResponse = await universalApi.read({
+    table: 'universal_transactions',
+    filters: [
+      { field: 'organization_id', operator: 'eq', value: organization_id },
+      { field: 'transaction_type', operator: 'eq', value: 'appointment' }
+    ]
   })
 
-  if (!entitiesResponse.success || !entitiesResponse.data) {
-    console.error('Error fetching appointment entities:', entitiesResponse.error)
+  if (!transactionsResponse.success || !transactionsResponse.data) {
+    console.error('Error fetching appointment transactions:', transactionsResponse.error)
     return { rows: [], total: 0 }
   }
 
-  const entities = entitiesResponse.data
-  let ids: string[] = entities.map((e: any) => e?.id).filter(Boolean)
+  const transactions = transactionsResponse.data
+  let ids: string[] = transactions.map((t: any) => t?.id).filter(Boolean)
   const total = ids.length
 
   if (!ids.length) {
-    console.log('📅 No appointment entities found for organization:', organization_id)
+    console.log('📅 No appointment transactions found for organization:', organization_id)
     return { rows: [], total }
   }
 
-  console.log(`📅 Found ${total} appointment entities`)
+  console.log(`📅 Found ${total} appointment transactions`)
 
   // 2) Optional server-side prefilter by date range using dynamic field "start_time"
   //    TODO: Add support for between operator in universal API
@@ -188,9 +191,9 @@ export async function searchAppointments(
 
   // 4) Build DTOs
   const byEntity = groupDynamicByEntity(dynRows)
-  const id2entity = new Map<string, any>(entities.map((e: any) => [e.id, e]))
+  const id2transaction = new Map<string, any>(transactions.map((t: any) => [t.id, t]))
   const appointments: AppointmentDTO[] = idsToFetch.map(id =>
-    toAppointmentDTO(id2entity.get(id), byEntity.get(id))
+    toAppointmentDTOFromTransaction(id2transaction.get(id), byEntity.get(id))
   )
 
   // 5) Apply client-side filters if any
@@ -445,7 +448,34 @@ function toISO(x?: string | Date | null): string {
 }
 
 /**
- * Map entity + dynamic data to AppointmentDTO
+ * Map transaction + dynamic data to AppointmentDTO
+ */
+function toAppointmentDTOFromTransaction(transaction: any, dyn: Record<string, any> = {}): AppointmentDTO {
+  // Safe access helper
+  const v = <T = any>(name: string, fallback?: T): T => (dyn[name] ?? fallback) as T
+
+  return {
+    id: transaction?.id ?? '',
+    organization_id: transaction?.organization_id ?? '',
+    smart_code: transaction?.smart_code ?? 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1',
+    entity_name: transaction?.transaction_code ?? transaction?.entity_name,
+    entity_code: transaction?.transaction_code,
+    start_time: toISO(v<string>('start_time') ?? v<string>('start') ?? transaction?.transaction_date),
+    end_time: toISO(v<string>('end_time') ?? v<string>('end') ?? transaction?.transaction_date),
+    status: v<AppointmentStatus>('status', 'booked'),
+    stylist_id: v<string>('stylist_id'),
+    customer_id: v<string>('customer_id'),
+    branch_id: v<string>('branch_id'),
+    chair_id: v<string>('chair_id'),
+    service_ids: v<string[]>('service_ids', []),
+    notes: v<string>('notes') ?? transaction?.notes,
+    price: v<number>('price') ?? v<number>('total') ?? transaction?.total_amount,
+    currency_code: v<string>('currency_code', 'AED')
+  }
+}
+
+/**
+ * Map entity + dynamic data to AppointmentDTO (legacy function kept for compatibility)
  */
 function toAppointmentDTO(entity: any, dyn: Record<string, any> = {}): AppointmentDTO {
   // Safe access helper
