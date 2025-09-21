@@ -1,6 +1,6 @@
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import * as TabsPrimitive from '@radix-ui/react-tabs'
+import { cn } from '@/lib/utils'
 
 // Luxe color palette
 const COLORS = {
@@ -26,7 +26,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-10 items-center justify-center rounded-md p-1 text-muted-foreground",
+      'inline-flex h-10 items-center justify-center rounded-md p-1 text-muted-foreground',
       className
     )}
     style={{
@@ -45,7 +45,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
       className
     )}
     style={{
@@ -63,18 +63,18 @@ const TabsTrigger = React.forwardRef<
         backgroundColor: 'transparent'
       }
     }}
-    onMouseEnter={(e) => {
-      const target = e.currentTarget;
+    onMouseEnter={e => {
+      const target = e.currentTarget
       if (target.getAttribute('data-state') !== 'active') {
-        target.style.backgroundColor = `${COLORS.gold}10`;
-        target.style.color = COLORS.lightText;
+        target.style.backgroundColor = `${COLORS.gold}10`
+        target.style.color = COLORS.lightText
       }
     }}
-    onMouseLeave={(e) => {
-      const target = e.currentTarget;
+    onMouseLeave={e => {
+      const target = e.currentTarget
       if (target.getAttribute('data-state') !== 'active') {
-        target.style.backgroundColor = 'transparent';
-        target.style.color = COLORS.bronze;
+        target.style.backgroundColor = 'transparent'
+        target.style.color = COLORS.bronze
       }
     }}
   />
@@ -88,7 +88,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
       className
     )}
     style={{
@@ -104,37 +104,37 @@ const useLuxeTabsEffect = () => {
   React.useEffect(() => {
     // Apply active state styling
     const applyActiveStyles = () => {
-      const activeTriggers = document.querySelectorAll('[role="tab"][data-state="active"]');
-      activeTriggers.forEach((trigger) => {
-        const element = trigger as HTMLElement;
-        element.style.background = `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`;
-        element.style.color = COLORS.black;
-        element.style.boxShadow = '0 1px 3px rgba(212, 175, 55, 0.3)';
-      });
-      
-      const inactiveTriggers = document.querySelectorAll('[role="tab"][data-state="inactive"]');
-      inactiveTriggers.forEach((trigger) => {
-        const element = trigger as HTMLElement;
+      const activeTriggers = document.querySelectorAll('[role="tab"][data-state="active"]')
+      activeTriggers.forEach(trigger => {
+        const element = trigger as HTMLElement
+        element.style.background = `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
+        element.style.color = COLORS.black
+        element.style.boxShadow = '0 1px 3px rgba(212, 175, 55, 0.3)'
+      })
+
+      const inactiveTriggers = document.querySelectorAll('[role="tab"][data-state="inactive"]')
+      inactiveTriggers.forEach(trigger => {
+        const element = trigger as HTMLElement
         if (!element.matches(':hover')) {
-          element.style.background = 'transparent';
-          element.style.color = COLORS.bronze;
-          element.style.boxShadow = 'none';
+          element.style.background = 'transparent'
+          element.style.color = COLORS.bronze
+          element.style.boxShadow = 'none'
         }
-      });
-    };
+      })
+    }
 
     // Apply styles initially
-    applyActiveStyles();
+    applyActiveStyles()
 
     // Create observer to watch for state changes
-    const observer = new MutationObserver(applyActiveStyles);
-    const tabsElements = document.querySelectorAll('[role="tab"]');
-    tabsElements.forEach((element) => {
-      observer.observe(element, { attributes: true, attributeFilter: ['data-state'] });
-    });
+    const observer = new MutationObserver(applyActiveStyles)
+    const tabsElements = document.querySelectorAll('[role="tab"]')
+    tabsElements.forEach(element => {
+      observer.observe(element, { attributes: true, attributeFilter: ['data-state'] })
+    })
 
-    return () => observer.disconnect();
-  }, []);
-};
+    return () => observer.disconnect()
+  }, [])
+}
 
 export { Tabs, TabsList, TabsTrigger, TabsContent, useLuxeTabsEffect }

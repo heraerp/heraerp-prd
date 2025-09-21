@@ -21,10 +21,10 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
       {/* Always use luxe sidebar for consistent styling */}
       <SalonLuxeSidebar />
       {/* reserve exactly the sidebar width */}
-      <main 
-        id="salon-main" 
+      <main
+        id="salon-main"
         className="ml-64 min-h-[100dvh]"
-        style={{ 
+        style={{
           backgroundColor: '#1A1A1A',
           minHeight: '100vh',
           position: 'relative'

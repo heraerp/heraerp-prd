@@ -16,14 +16,7 @@ export {
 
 export { Button, buttonVariants } from './luxe-button'
 export { Input } from './luxe-input'
-export { 
-  Card, 
-  CardHeader, 
-  CardFooter, 
-  CardTitle, 
-  CardDescription, 
-  CardContent 
-} from './luxe-card'
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './luxe-card'
 export {
   Select,
   SelectGroup,
@@ -34,7 +27,7 @@ export {
   SelectItem,
   SelectSeparator,
   SelectScrollUpButton,
-  SelectScrollDownButton,
+  SelectScrollDownButton
 } from './luxe-select'
 
 // Luxe color palette for use in components
@@ -65,27 +58,27 @@ export const luxeStyles = {
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text'
   },
-  
+
   // Gold button
   goldButton: {
     background: `linear-gradient(135deg, ${LUXE_COLORS.gold} 0%, ${LUXE_COLORS.goldDark} 100%)`,
     color: LUXE_COLORS.black,
     boxShadow: '0 4px 6px rgba(212, 175, 55, 0.2)'
   },
-  
+
   // Card styling
   card: {
     backgroundColor: LUXE_COLORS.charcoalLight,
     border: `1px solid ${LUXE_COLORS.bronze}20`,
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
   },
-  
+
   // Modal backdrop
   backdrop: {
     backgroundColor: 'rgba(11, 11, 11, 0.85)',
     backdropFilter: 'blur(12px)'
   },
-  
+
   // Subtle gradient overlay
   gradientOverlay: {
     background: `radial-gradient(circle at 0% 0%, ${LUXE_COLORS.gold}08 0%, transparent 50%),

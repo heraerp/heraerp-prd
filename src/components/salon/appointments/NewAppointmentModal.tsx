@@ -182,10 +182,10 @@ export function NewAppointmentModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 backdrop-blur-md" 
+      <div
+        className="absolute inset-0 backdrop-blur-md"
         style={{ backgroundColor: 'rgba(11, 11, 11, 0.85)' }}
-        onClick={onClose} 
+        onClick={onClose}
       />
 
       {/* Modal */}
@@ -198,7 +198,7 @@ export function NewAppointmentModal({
         }}
       >
         {/* Header */}
-        <div 
+        <div
           className="sticky top-0 z-10 flex items-center justify-between p-6"
           style={{
             backgroundColor: '#232323',

@@ -179,7 +179,7 @@ export default function SalonAppointmentsPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-violet-600 mx-auto" />
-            <p className="mt-4 text-gray-600">Loading...</p>
+            <p className="mt-4 text-muted-foreground">Loading...</p>
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@ export default function SalonAppointmentsPage() {
             <PageHeaderButton
               variant="primary"
               icon={Plus}
-              onClick={() => window.location.href = 'http://localhost:3001/salon/appointments/new'}
+              onClick={() => router.push('/salon/appointments/new')}
             >
               Book Appointment
             </PageHeaderButton>
@@ -241,17 +241,17 @@ export default function SalonAppointmentsPage() {
       <Card className="p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by customer, stylist, or code..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-9 dark:bg-gray-800 dark:border-gray-700 dark:!text-white dark:placeholder:text-gray-400"
+              className="pl-9"
             />
           </div>
 
           <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
-            <SelectTrigger className="w-[180px] dark:bg-gray-800 dark:border-gray-700 dark:!text-white">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by date" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
@@ -271,7 +271,7 @@ export default function SalonAppointmentsPage() {
           </Select>
 
           <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-            <SelectTrigger className="w-[180px] dark:bg-gray-800 dark:border-gray-700 dark:!text-white">
+            <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent className="hera-select-content">
@@ -304,28 +304,28 @@ export default function SalonAppointmentsPage() {
           {[1, 2, 3].map(i => (
             <Card key={i} className="p-6">
               <div className="animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
+                <div className="h-3 bg-muted rounded w-1/2 mb-2"></div>
+                <div className="h-3 bg-muted rounded w-1/3"></div>
               </div>
             </Card>
           ))}
         </div>
       ) : appointments.length === 0 ? (
         <Card className="p-12 text-center">
-          <Calendar className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:!text-white mb-1">
+          <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-1">
             No appointments found
           </h3>
-          <p className="text-gray-600 dark:!text-gray-200 mb-4">
+          <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
               ? 'Try adjusting your filters'
               : 'Book your first appointment to get started'}
           </p>
           {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
             <Button
-              onClick={() => window.location.href = 'http://localhost:3001/salon/appointments/new'}
-              className="dark:!text-white"
+              onClick={() => router.push('/salon/appointments/new')}
+              className=""
             >
               Book Appointment
             </Button>
@@ -360,14 +360,14 @@ export default function SalonAppointmentsPage() {
                       {getStatusBadge(appointment.status)}
                       <Badge
                         variant="outline"
-                        className="gap-1 dark:text-gray-300 dark:border-gray-600"
+                        className="gap-1"
                       >
                         <Calendar className="w-3 h-3" />
                         {format(appointmentDate, 'MMM d, yyyy')}
                       </Badge>
                       <Badge
                         variant="outline"
-                        className="gap-1 dark:text-gray-300 dark:border-gray-600"
+                        className="gap-1"
                       >
                         <Clock className="w-3 h-3" />
                         {format(appointmentDate, 'h:mm a')}
@@ -411,9 +411,9 @@ export default function SalonAppointmentsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="hover:bg-muted"
                       >
-                        <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

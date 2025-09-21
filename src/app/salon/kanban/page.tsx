@@ -2,68 +2,77 @@
 // HERA • Salon Appointments Kanban Page with DRAFT support
 // ============================================================================
 
-'use client';
+'use client'
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { format, startOfToday } from 'date-fns';
-import { Plus, Calendar, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/luxe-dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { Board } from '@/components/salon/kanban/Board';
-import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel';
-import { useKanbanPlaybook } from '@/hooks/useKanbanPlaybook';
-import { KanbanCard } from '@/schemas/kanban';
-import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard';
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider';
-import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook';
+import React, { useState, useCallback, useEffect } from 'react'
+import { format, startOfToday } from 'date-fns'
+import { Plus, Calendar, RefreshCw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar as CalendarComponent } from '@/components/ui/calendar'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/luxe-dialog'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/hooks/use-toast'
+import { cn } from '@/lib/utils'
+import { Board } from '@/components/salon/kanban/Board'
+import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel'
+import { useKanbanPlaybook } from '@/hooks/useKanbanPlaybook'
+import { KanbanCard } from '@/schemas/kanban'
+import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'
 
 // Salon organization ID
-const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0';
+const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 // Mock branch hook - replace with actual branch management
 const useBranch = () => ({
-  currentBranch: { 
-    id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 
-    name: 'Hair Talkz • Park Regis Kris Kin (Karama)' 
+  currentBranch: {
+    id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
+    name: 'Hair Talkz • Park Regis Kris Kin (Karama)'
   },
   branches: [
-    { id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', name: 'Hair Talkz • Park Regis Kris Kin (Karama)' }
+    {
+      id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258',
+      name: 'Hair Talkz • Park Regis Kris Kin (Karama)'
+    }
   ]
-});
+})
 
 export default function KanbanPage() {
-  const { user, organization } = useHERAAuth();
-  const { currentBranch, branches } = useBranch();
-  const { toast } = useToast();
+  const { user, organization } = useHERAAuth()
+  const { currentBranch, branches } = useBranch()
+  const { toast } = useToast()
   // Initialize with a date that has appointment data, but allow user to change it
   const [date, setDate] = useState(() => {
     // Default to Sept 18, 2025 which has appointment data, or today
-    const hasDataDate = new Date('2025-09-18');
-    const today = startOfToday();
+    const hasDataDate = new Date('2025-09-18')
+    const today = startOfToday()
     // Use data date for demo, but can be changed via date picker
-    return hasDataDate;
-  });
-  const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null);
-  const [rescheduleOpen, setRescheduleOpen] = useState(false);
-  const [cancelModalOpen, setCancelModalOpen] = useState(false);
-  const [cancelReason, setCancelReason] = useState('');
-  const [cardToCancel, setCardToCancel] = useState<KanbanCard | null>(null);
-  const [userId, setUserId] = useState<string>('');
-  
+    return hasDataDate
+  })
+  const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null)
+  const [rescheduleOpen, setRescheduleOpen] = useState(false)
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [cardToCancel, setCardToCancel] = useState<KanbanCard | null>(null)
+  const [userId, setUserId] = useState<string>('')
+
   // Get user ID from localStorage for demo
   useEffect(() => {
-    const storedUserId = localStorage.getItem('salonUserId') || 'demo-user';
-    setUserId(storedUserId);
-  }, []);
-  const [draftModalOpen, setDraftModalOpen] = useState(false);
-  
+    const storedUserId = localStorage.getItem('salonUserId') || 'demo-user'
+    setUserId(storedUserId)
+  }, [])
+  const [draftModalOpen, setDraftModalOpen] = useState(false)
+
   // Draft form state
   const [draftForm, setDraftForm] = useState({
     customer_name: '',
@@ -71,7 +80,7 @@ export default function KanbanPage() {
     staff_name: '',
     start_time: '',
     duration: '60'
-  });
+  })
 
   const {
     cards,
@@ -88,51 +97,54 @@ export default function KanbanPage() {
     branch_id: currentBranch.id,
     date: format(date, 'yyyy-MM-dd'),
     userId: userId || 'demo-user'
-  });
+  })
 
-  const handleCardAction = useCallback(async (card: KanbanCard, action: string) => {
-    switch (action) {
-      case 'confirm':
-        // Move to BOOKED column
-        const bookedCards = cardsByColumn.BOOKED;
-        await moveCard(card.id, 'BOOKED', bookedCards.length);
-        break;
-        
-      case 'edit':
-        setSelectedCard(card);
-        setRescheduleOpen(true);
-        break;
-        
-      case 'reschedule':
-        setSelectedCard(card);
-        setRescheduleOpen(true);
-        break;
-        
-      case 'cancel':
-        setCardToCancel(card);
-        setCancelModalOpen(true);
-        break;
-    }
-  }, [moveCard, cardsByColumn, cancelAppointment]);
+  const handleCardAction = useCallback(
+    async (card: KanbanCard, action: string) => {
+      switch (action) {
+        case 'confirm':
+          // Move to BOOKED column
+          const bookedCards = cardsByColumn.BOOKED
+          await moveCard(card.id, 'BOOKED', bookedCards.length)
+          break
+
+        case 'edit':
+          setSelectedCard(card)
+          setRescheduleOpen(true)
+          break
+
+        case 'reschedule':
+          setSelectedCard(card)
+          setRescheduleOpen(true)
+          break
+
+        case 'cancel':
+          setCardToCancel(card)
+          setCancelModalOpen(true)
+          break
+      }
+    },
+    [moveCard, cardsByColumn, cancelAppointment]
+  )
 
   const handleCreateDraft = async () => {
-    const { customer_name, service_name, staff_name, start_time, duration } = draftForm;
-    
+    const { customer_name, service_name, staff_name, start_time, duration } = draftForm
+
     if (!customer_name || !service_name || !start_time) {
       toast({
         title: 'Missing information',
         description: 'Please fill in all required fields',
         variant: 'destructive'
-      });
-      return;
+      })
+      return
     }
 
-    const [hours, minutes] = start_time.split(':').map(Number);
-    const start = new Date(date);
-    start.setHours(hours, minutes, 0, 0);
-    
-    const end = new Date(start);
-    end.setMinutes(end.getMinutes() + parseInt(duration));
+    const [hours, minutes] = start_time.split(':').map(Number)
+    const start = new Date(date)
+    start.setHours(hours, minutes, 0, 0)
+
+    const end = new Date(start)
+    end.setMinutes(end.getMinutes() + parseInt(duration))
 
     await createDraft({
       customer_id: 'draft-' + Date.now(), // Mock ID
@@ -143,26 +155,26 @@ export default function KanbanPage() {
       staff_name: staff_name || undefined,
       start: start.toISOString(),
       end: end.toISOString()
-    });
+    })
 
-    setDraftModalOpen(false);
+    setDraftModalOpen(false)
     setDraftForm({
       customer_name: '',
       service_name: '',
       staff_name: '',
       start_time: '',
       duration: '60'
-    });
-  };
+    })
+  }
 
   const handleCancelConfirm = async () => {
-    if (!cardToCancel) return;
-    
-    await cancelAppointment(cardToCancel.id, cancelReason || undefined);
-    setCancelModalOpen(false);
-    setCardToCancel(null);
-    setCancelReason('');
-  };
+    if (!cardToCancel) return
+
+    await cancelAppointment(cardToCancel.id, cancelReason || undefined)
+    setCancelModalOpen(false)
+    setCardToCancel(null)
+    setCancelReason('')
+  }
 
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
@@ -174,7 +186,7 @@ export default function KanbanPage() {
               <h1 className="text-2xl font-light tracking-wide">
                 Appointments • {currentBranch.name}
               </h1>
-              
+
               {/* Date picker */}
               <Popover>
                 <PopoverTrigger asChild>
@@ -193,7 +205,7 @@ export default function KanbanPage() {
                   <CalendarComponent
                     mode="single"
                     selected={date}
-                    onSelect={(d) => d && setDate(d)}
+                    onSelect={d => d && setDate(d)}
                     initialFocus
                   />
                 </PopoverContent>
@@ -210,7 +222,7 @@ export default function KanbanPage() {
               >
                 <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
               </Button>
-              
+
               <Button
                 onClick={() => setDraftModalOpen(true)}
                 className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
@@ -258,57 +270,57 @@ export default function KanbanPage() {
                 Create a draft appointment that can be confirmed later
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>Customer Name *</Label>
                 <Input
                   value={draftForm.customer_name}
-                  onChange={(e) => setDraftForm(prev => ({ ...prev, customer_name: e.target.value }))}
+                  onChange={e => setDraftForm(prev => ({ ...prev, customer_name: e.target.value }))}
                   placeholder="Enter customer name"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Service *</Label>
                 <Input
                   value={draftForm.service_name}
-                  onChange={(e) => setDraftForm(prev => ({ ...prev, service_name: e.target.value }))}
+                  onChange={e => setDraftForm(prev => ({ ...prev, service_name: e.target.value }))}
                   placeholder="Enter service name"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label>Staff Member (optional)</Label>
                 <Input
                   value={draftForm.staff_name}
-                  onChange={(e) => setDraftForm(prev => ({ ...prev, staff_name: e.target.value }))}
+                  onChange={e => setDraftForm(prev => ({ ...prev, staff_name: e.target.value }))}
                   placeholder="Enter staff name"
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Start Time *</Label>
                   <Input
                     type="time"
                     value={draftForm.start_time}
-                    onChange={(e) => setDraftForm(prev => ({ ...prev, start_time: e.target.value }))}
+                    onChange={e => setDraftForm(prev => ({ ...prev, start_time: e.target.value }))}
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label>Duration (minutes)</Label>
                   <Input
                     type="number"
                     value={draftForm.duration}
-                    onChange={(e) => setDraftForm(prev => ({ ...prev, duration: e.target.value }))}
+                    onChange={e => setDraftForm(prev => ({ ...prev, duration: e.target.value }))}
                     min="15"
                     step="15"
                   />
                 </div>
               </div>
-              
+
               <div className="flex gap-3 pt-4">
                 <Button
                   variant="outline"
@@ -338,35 +350,31 @@ export default function KanbanPage() {
                 This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>Reason for cancellation (optional)</Label>
                 <Textarea
                   value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
+                  onChange={e => setCancelReason(e.target.value)}
                   placeholder="e.g., Customer request, emergency, no-show..."
                   rows={3}
                 />
               </div>
-              
+
               <div className="flex gap-3 pt-4">
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setCancelModalOpen(false);
-                    setCardToCancel(null);
-                    setCancelReason('');
+                    setCancelModalOpen(false)
+                    setCardToCancel(null)
+                    setCancelReason('')
                   }}
                   className="flex-1"
                 >
                   Keep Appointment
                 </Button>
-                <Button
-                  onClick={handleCancelConfirm}
-                  variant="destructive"
-                  className="flex-1"
-                >
+                <Button onClick={handleCancelConfirm} variant="destructive" className="flex-1">
                   Cancel Appointment
                 </Button>
               </div>
@@ -375,5 +383,5 @@ export default function KanbanPage() {
         </Dialog>
       </div>
     </SalonAuthGuard>
-  );
+  )
 }

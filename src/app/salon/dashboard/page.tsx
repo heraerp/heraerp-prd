@@ -28,7 +28,7 @@ export default function SalonDashboardPage() {
     switch (userRole) {
       case 'Owner':
         return <OwnerDashboard />
-      
+
       case 'Receptionist':
         // For now, show a placeholder for Receptionist
         return (
@@ -51,7 +51,7 @@ export default function SalonDashboardPage() {
             </Card>
           </div>
         )
-      
+
       case 'Accountant':
         // For now, show a placeholder for Accountant
         return (
@@ -74,7 +74,7 @@ export default function SalonDashboardPage() {
             </Card>
           </div>
         )
-      
+
       case 'Administrator':
         // For now, show a placeholder for Administrator
         return (
@@ -97,15 +97,13 @@ export default function SalonDashboardPage() {
             </Card>
           </div>
         )
-      
+
       default:
         return (
           <div className="p-6">
             <Card>
               <CardContent className="pt-6">
-                <p style={{ color: '#E0E0E0' }}>
-                  Loading dashboard...
-                </p>
+                <p style={{ color: '#E0E0E0' }}>Loading dashboard...</p>
               </CardContent>
             </Card>
           </div>

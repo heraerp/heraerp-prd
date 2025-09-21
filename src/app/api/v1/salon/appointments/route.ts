@@ -192,7 +192,7 @@ export async function PUT(request: NextRequest) {
     // If status change requested, update appointment status directly
     if (status) {
       console.log(`Updating appointment ${id} status to: ${status}`)
-      
+
       // First get the current appointment to preserve existing metadata
       const { data: currentAppointment } = await supabase
         .from('universal_transactions')
@@ -227,13 +227,13 @@ export async function PUT(request: NextRequest) {
       }
 
       console.log(`✅ Successfully updated appointment ${id} status to ${status}`)
-      
+
       // Also try the workflow transition if the status entities exist
       try {
         const statusMap: Record<string, string> = {
           draft: 'STATUS-APPOINTMENT-DRAFT',
           booked: 'STATUS-APPOINTMENT-BOOKED',
-          scheduled: 'STATUS-APPOINTMENT-SCHEDULED', 
+          scheduled: 'STATUS-APPOINTMENT-SCHEDULED',
           checked_in: 'STATUS-APPOINTMENT-CHECKED_IN',
           in_service: 'STATUS-APPOINTMENT-IN_SERVICE',
           to_pay: 'STATUS-APPOINTMENT-TO_PAY',

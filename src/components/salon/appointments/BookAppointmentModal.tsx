@@ -374,9 +374,7 @@ export function BookAppointmentModal({
                 <Calendar className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="font-semibold text-foreground">
-                  Book New Appointment
-                </h2>
+                <h2 className="font-semibold text-foreground">Book New Appointment</h2>
                 <p className="text-sm text-muted-foreground font-normal">
                   Schedule a service appointment for your customer
                 </p>
@@ -577,21 +575,15 @@ export function BookAppointmentModal({
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-medium text-foreground">
-                                  {service.entity_name}
-                                </p>
+                                <p className="font-medium text-foreground">{service.entity_name}</p>
                                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                                   <span className="flex items-center gap-1">
                                     <Clock className="w-3 h-3 text-muted-foreground" />
-                                    <span>
-                                      {service.metadata?.duration_minutes || 30} min
-                                    </span>
+                                    <span>{service.metadata?.duration_minutes || 30} min</span>
                                   </span>
                                   <span className="flex items-center gap-1">
                                     <DollarSign className="w-3 h-3 text-muted-foreground" />
-                                    <span>
-                                      AED {service.metadata?.price || 0}
-                                    </span>
+                                    <span>AED {service.metadata?.price || 0}</span>
                                   </span>
                                 </div>
                               </div>
@@ -629,17 +621,12 @@ export function BookAppointmentModal({
                     </h3>
 
                     {cart.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8">
-                        No services selected
-                      </p>
+                      <p className="text-muted-foreground text-center py-8">No services selected</p>
                     ) : (
                       <ScrollArea className="h-48 lg:h-64">
                         <div className="space-y-3">
                           {cart.map(item => (
-                            <div
-                              key={item.service.id}
-                              className="p-3 border rounded-lg"
-                            >
+                            <div key={item.service.id} className="p-3 border rounded-lg">
                               <div className="flex items-center justify-between mb-2">
                                 <p className="font-medium text-sm text-foreground">
                                   {item.service.entity_name}
@@ -663,9 +650,7 @@ export function BookAppointmentModal({
                                   >
                                     <Minus className="w-3 h-3" />
                                   </Button>
-                                  <span className="w-6 text-center text-sm">
-                                    {item.quantity}
-                                  </span>
+                                  <span className="w-6 text-center text-sm">{item.quantity}</span>
                                   <Button
                                     size="icon"
                                     variant="outline"
@@ -724,9 +709,7 @@ export function BookAppointmentModal({
 
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Duration:</span>
-                        <span className="font-medium text-foreground">
-                          {totalDuration} minutes
-                        </span>
+                        <span className="font-medium text-foreground">{totalDuration} minutes</span>
                       </div>
 
                       <div className="pt-2 border-t">

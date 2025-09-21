@@ -28,13 +28,10 @@ export default function SalonLuxeLayout({ children }: SalonLuxeLayoutProps) {
     <div className="min-h-screen" style={{ backgroundColor: COLORS.black }}>
       {/* Sidebar */}
       <SalonLuxeSidebar onNavigate={() => {}} />
-      
+
       {/* Main Content Area */}
       <div
-        className={cn(
-          'transition-all duration-300',
-          sidebarOpen ? 'ml-64' : 'ml-0'
-        )}
+        className={cn('transition-all duration-300', sidebarOpen ? 'ml-64' : 'ml-0')}
         style={{
           backgroundColor: COLORS.charcoal,
           minHeight: '100vh'
@@ -50,11 +47,9 @@ export default function SalonLuxeLayout({ children }: SalonLuxeLayoutProps) {
             zIndex: 0
           }}
         />
-        
+
         {/* Content */}
-        <div className="relative z-10">
-          {children}
-        </div>
+        <div className="relative z-10">{children}</div>
       </div>
     </div>
   )

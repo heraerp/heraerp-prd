@@ -123,7 +123,7 @@ export function CartSidebar({
   }
 
   return (
-    <Card 
+    <Card
       className="h-full backdrop-blur-sm shadow-lg"
       style={{
         backgroundColor: COLORS.charcoalLight,
@@ -138,7 +138,7 @@ export function CartSidebar({
             <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
             <span style={{ color: COLORS.champagne }}>Cart</span>
           </div>
-          <Badge 
+          <Badge
             className="text-xs"
             style={{
               backgroundColor: COLORS.bronze + '20',
@@ -156,7 +156,7 @@ export function CartSidebar({
           /* Empty Cart State */
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="text-center">
-              <div 
+              <div
                 className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
                 style={{
                   backgroundColor: COLORS.charcoalDark,
@@ -172,12 +172,18 @@ export function CartSidebar({
                 Add services or products from the catalog to get started.
               </p>
               <div className="text-xs" style={{ color: COLORS.silverDark }}>
-                💡 Tip: Use <kbd style={{
-                  backgroundColor: COLORS.charcoalDark,
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  border: `1px solid ${COLORS.bronze}33`
-                }}>/</kbd> to search quickly
+                💡 Tip: Use{' '}
+                <kbd
+                  style={{
+                    backgroundColor: COLORS.charcoalDark,
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    border: `1px solid ${COLORS.bronze}33`
+                  }}
+                >
+                  /
+                </kbd>{' '}
+                to search quickly
               </div>
             </div>
           </div>
@@ -199,22 +205,34 @@ export function CartSidebar({
                     {/* Item Header */}
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm leading-tight" style={{ color: COLORS.champagne }}>
+                        <h4
+                          className="font-medium text-sm leading-tight"
+                          style={{ color: COLORS.champagne }}
+                        >
                           {truncateText(item.entity_name, 25)}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge
                             className="text-xs h-5"
                             style={{
-                              backgroundColor: item.entity_type === 'service' ? COLORS.gold + '20' : COLORS.silver + '20',
+                              backgroundColor:
+                                item.entity_type === 'service'
+                                  ? COLORS.gold + '20'
+                                  : COLORS.silver + '20',
                               color: item.entity_type === 'service' ? COLORS.gold : COLORS.silver,
-                              borderColor: item.entity_type === 'service' ? COLORS.gold + '50' : COLORS.silver + '50'
+                              borderColor:
+                                item.entity_type === 'service'
+                                  ? COLORS.gold + '50'
+                                  : COLORS.silver + '50'
                             }}
                           >
                             {item.entity_type}
                           </Badge>
                           {item.stylist_name && (
-                            <div className="flex items-center gap-1 text-xs" style={{ color: COLORS.bronze }}>
+                            <div
+                              className="flex items-center gap-1 text-xs"
+                              style={{ color: COLORS.bronze }}
+                            >
                               <User className="w-3 h-3" style={{ color: COLORS.bronze }} />
                               <span className="truncate max-w-[80px]">
                                 {item.stylist_name.split(' ')[0]}
@@ -241,9 +259,9 @@ export function CartSidebar({
 
                     {/* Quantity Controls */}
                     <div className="flex items-center justify-between">
-                      <div 
+                      <div
                         className="flex items-center border rounded-md"
-                        style={{ 
+                        style={{
                           borderColor: COLORS.bronze + '33',
                           backgroundColor: COLORS.charcoal
                         }}
@@ -257,7 +275,7 @@ export function CartSidebar({
                         >
                           <Minus className="w-3 h-3" />
                         </Button>
-                        <span 
+                        <span
                           className="px-2 py-1 text-xs font-medium min-w-[1.5rem] text-center"
                           style={{ color: COLORS.champagne }}
                         >
@@ -286,7 +304,7 @@ export function CartSidebar({
 
                     {/* Notes Preview */}
                     {item.notes && (
-                      <div 
+                      <div
                         className="mt-2 text-xs rounded p-2"
                         style={{
                           backgroundColor: COLORS.charcoal,
@@ -331,14 +349,16 @@ export function CartSidebar({
                         ({tip.method})
                       </span>
                     </div>
-                    <span className="font-medium" style={{ color: COLORS.gold }}>+${tip.amount.toFixed(2)}</span>
+                    <span className="font-medium" style={{ color: COLORS.gold }}>
+                      +${tip.amount.toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Totals */}
-            <div 
+            <div
               className="px-6 py-4"
               style={{
                 borderTop: `1px solid ${COLORS.bronze}20`,
@@ -355,7 +375,9 @@ export function CartSidebar({
                 {totals.discountAmount > 0 && (
                   <div className="flex justify-between text-sm">
                     <span style={{ color: COLORS.emerald }}>Discount:</span>
-                    <span style={{ color: COLORS.emerald }}>-${totals.discountAmount.toFixed(2)}</span>
+                    <span style={{ color: COLORS.emerald }}>
+                      -${totals.discountAmount.toFixed(2)}
+                    </span>
                   </div>
                 )}
 
@@ -383,7 +405,7 @@ export function CartSidebar({
             </div>
 
             {/* Payment Button */}
-            <div 
+            <div
               className="p-6 pt-4"
               style={{
                 backgroundColor: COLORS.charcoalLight,
@@ -400,7 +422,7 @@ export function CartSidebar({
                   color: COLORS.black,
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
                   ':hover': {
-                    background: `linear-gradient(135deg, ${COLORS.goldDark} 0%, ${COLORS.gold} 100%)`,
+                    background: `linear-gradient(135deg, ${COLORS.goldDark} 0%, ${COLORS.gold} 100%)`
                   }
                 }}
               >

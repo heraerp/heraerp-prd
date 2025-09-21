@@ -2,58 +2,60 @@
 // HERA • Kanban Card Component with DRAFT support
 // ============================================================================
 
-import React from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { cn } from '@/lib/utils';
-import { 
-  Clock, 
-  User, 
-  Scissors, 
-  Star, 
+import React from 'react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { cn } from '@/lib/utils'
+import {
+  Clock,
+  User,
+  Scissors,
+  Star,
   AlertCircle,
   CheckCircle,
   Edit,
   MoreVertical,
   CreditCard
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { KanbanCard as CardType, CANCELLABLE_STATES, RESCHEDULABLE_STATES } from '@/schemas/kanban';
-import { format } from 'date-fns';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import { KanbanCard as CardType, CANCELLABLE_STATES, RESCHEDULABLE_STATES } from '@/schemas/kanban'
+import { format } from 'date-fns'
 
 interface CardProps {
-  card: CardType;
-  onConfirm?: () => void;
-  onEdit?: () => void;
-  onReschedule?: () => void;
-  onCancel?: () => void;
-  onProcessPayment?: () => void;
+  card: CardType
+  onConfirm?: () => void
+  onEdit?: () => void
+  onReschedule?: () => void
+  onCancel?: () => void
+  onProcessPayment?: () => void
 }
 
-export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProcessPayment }: CardProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: card.id });
+export function Card({
+  card,
+  onConfirm,
+  onEdit,
+  onReschedule,
+  onCancel,
+  onProcessPayment
+}: CardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: card.id
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-  };
+    transition
+  }
 
-  const startTime = format(new Date(card.start), 'HH:mm');
-  const endTime = format(new Date(card.end), 'HH:mm');
+  const startTime = format(new Date(card.start), 'HH:mm')
+  const endTime = format(new Date(card.end), 'HH:mm')
 
   return (
     <div
@@ -82,9 +84,11 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Clock className="w-3 h-3 text-gray-400" />
-            <span className="font-medium">{startTime} - {endTime}</span>
+            <span className="font-medium">
+              {startTime} - {endTime}
+            </span>
           </div>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-6 w-6">
@@ -130,9 +134,7 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
         <div className="flex items-center gap-2">
           <User className="w-3 h-3 text-gray-400" />
           <span className="font-medium text-sm">{card.customer_name}</span>
-          {card.flags?.vip && (
-            <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-          )}
+          {card.flags?.vip && <Star className="w-3 h-3 text-amber-500 fill-amber-500" />}
           {card.flags?.new && (
             <Badge variant="secondary" className="text-xs px-1 py-0">
               New
@@ -148,9 +150,7 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
 
         {/* Stylist */}
         {card.stylist_name && (
-          <div className="text-xs text-gray-500 dark:text-gray-500">
-            with {card.stylist_name}
-          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">with {card.stylist_name}</div>
         )}
 
         {/* Status indicator */}
@@ -170,9 +170,9 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
               size="sm"
               variant="default"
               className="flex-1 h-7 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-              onClick={(e) => {
-                e.stopPropagation();
-                onConfirm?.();
+              onClick={e => {
+                e.stopPropagation()
+                onConfirm?.()
               }}
             >
               Confirm
@@ -181,9 +181,9 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
               size="sm"
               variant="outline"
               className="flex-1 h-7"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit?.();
+              onClick={e => {
+                e.stopPropagation()
+                onEdit?.()
               }}
             >
               Edit
@@ -198,9 +198,9 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
               size="sm"
               variant="default"
               className="flex-1 h-7 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-              onClick={(e) => {
-                e.stopPropagation();
-                onProcessPayment?.();
+              onClick={e => {
+                e.stopPropagation()
+                onProcessPayment?.()
               }}
             >
               <CreditCard className="w-3 h-3 mr-1" />
@@ -210,5 +210,5 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProces
         )}
       </div>
     </div>
-  );
+  )
 }

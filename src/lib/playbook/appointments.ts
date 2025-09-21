@@ -2,19 +2,19 @@
 // HERA • Playbook Appointments Extended API
 // ============================================================================
 
-import { KanbanCard, KanbanStatus } from '@/schemas/kanban';
-import { appointmentApi } from '@/lib/salon/appointment-api';
+import { KanbanCard, KanbanStatus } from '@/schemas/kanban'
+import { appointmentApi } from '@/lib/salon/appointment-api'
 
 // Dynamic data implementation
 export const upsertDynamicData = async (params: {
-  entity_id: string;
-  field_name: string;
-  field_value_text?: string;
-  field_value_number?: number;
-  field_value_boolean?: boolean;
-  field_value_json?: any;
-  smart_code: string;
-  metadata?: any;
+  entity_id: string
+  field_name: string
+  field_value_text?: string
+  field_value_number?: number
+  field_value_boolean?: boolean
+  field_value_json?: any
+  smart_code: string
+  metadata?: any
 }) => {
   try {
     // First try to update existing dynamic data
@@ -36,10 +36,10 @@ export const upsertDynamicData = async (params: {
           metadata: params.metadata
         }
       })
-    });
+    })
 
     if (updateResponse.ok) {
-      return true;
+      return true
     }
 
     // If update fails, try to create new record
@@ -59,144 +59,160 @@ export const upsertDynamicData = async (params: {
           metadata: params.metadata
         }
       })
-    });
+    })
 
-    return createResponse.ok;
+    return createResponse.ok
   } catch (error) {
-    console.error('Error upserting dynamic data:', error);
-    return false;
+    console.error('Error upserting dynamic data:', error)
+    return false
   }
-};
+}
 
 export interface AppointmentData {
-  id: string;
-  organization_id: string;
-  branch_id: string;
-  customer_id: string;
-  customer_name: string;
-  service_id: string;
-  service_name: string;
-  staff_id?: string;
-  staff_name?: string;
-  start: string; // ISO
-  end: string;   // ISO
-  status: KanbanStatus;
-  notes?: string;
-  metadata?: any;
+  id: string
+  organization_id: string
+  branch_id: string
+  customer_id: string
+  customer_name: string
+  service_id: string
+  service_name: string
+  staff_id?: string
+  staff_name?: string
+  start: string // ISO
+  end: string // ISO
+  status: KanbanStatus
+  notes?: string
+  metadata?: any
 }
 
 // Extended API for appointments with DRAFT support and reschedule
 export async function listAppointmentsForKanban(params: {
-  organization_id: string;
-  branch_id: string;
-  date: string; // YYYY-MM-DD
+  organization_id: string
+  branch_id: string
+  date: string // YYYY-MM-DD
 }): Promise<KanbanCard[]> {
-  const { organization_id, branch_id, date } = params;
-  
+  const { organization_id, branch_id, date } = params
+
   try {
     // Use the real salon appointments API endpoint
-    const apiUrl = `/api/v1/salon/appointments?organization_id=${organization_id}&date=${date}`;
-    console.log('Fetching appointments from:', apiUrl);
-    
-    const response = await fetch(apiUrl);
-    
+    const apiUrl = `/api/v1/salon/appointments?organization_id=${organization_id}&date=${date}`
+    console.log('Fetching appointments from:', apiUrl)
+
+    const response = await fetch(apiUrl)
+
     if (!response.ok) {
-      console.error(`API error: ${response.status}`);
-      const errorText = await response.text();
-      console.error('API error response:', errorText);
-      throw new Error(`API error: ${response.status}`);
+      console.error(`API error: ${response.status}`)
+      const errorText = await response.text()
+      console.error('API error response:', errorText)
+      throw new Error(`API error: ${response.status}`)
     }
-    
-    const result = await response.json();
-    console.log('API response:', result);
-    
-    const { success, appointments } = result;
-    
+
+    const result = await response.json()
+    console.log('API response:', result)
+
+    const { success, appointments } = result
+
     if (!success || !appointments) {
-      console.log('No appointments found for date:', date);
-      return [];
+      console.log('No appointments found for date:', date)
+      return []
     }
-    
-    console.log(`📅 Found ${appointments.length} appointments for ${date}`);
-    
+
+    console.log(`📅 Found ${appointments.length} appointments for ${date}`)
+
     // Transform appointments to KanbanCard format
-    const cards: KanbanCard[] = [];
-    
+    const cards: KanbanCard[] = []
+
     for (const apt of appointments) {
       // Map appointment status to kanban status
-      let status: KanbanStatus = 'BOOKED';
+      let status: KanbanStatus = 'BOOKED'
       // Check metadata.status first (from kanban updates), then apt.status
-      const aptStatus = apt.metadata?.status || apt.status || 'confirmed';
-      
+      const aptStatus = apt.metadata?.status || apt.status || 'confirmed'
+
       // Log only unexpected statuses for debugging
-      if (!['CONFIRMED', 'BOOKED', 'CHECKED_IN', 'IN_SERVICE', 'IN_PROGRESS', 'TO_PAY', 'REVIEW', 'COMPLETED', 'FINISHED', 'DONE', 'NO_SHOW', 'CANCELLED', 'DRAFT'].includes(aptStatus.toUpperCase())) {
-        console.warn(`⚠️ Unknown appointment status: "${aptStatus}" for appointment ${apt.id}`);
+      if (
+        ![
+          'CONFIRMED',
+          'BOOKED',
+          'CHECKED_IN',
+          'IN_SERVICE',
+          'IN_PROGRESS',
+          'TO_PAY',
+          'REVIEW',
+          'COMPLETED',
+          'FINISHED',
+          'DONE',
+          'NO_SHOW',
+          'CANCELLED',
+          'DRAFT'
+        ].includes(aptStatus.toUpperCase())
+      ) {
+        console.warn(`⚠️ Unknown appointment status: "${aptStatus}" for appointment ${apt.id}`)
       }
-      
+
       switch (aptStatus.toUpperCase()) {
         case 'CONFIRMED':
         case 'BOOKED':
-          status = 'BOOKED';
-          break;
+          status = 'BOOKED'
+          break
         case 'CHECKED_IN':
         case 'CHECKEDIN':
-          status = 'CHECKED_IN';
-          break;
+          status = 'CHECKED_IN'
+          break
         case 'IN_SERVICE':
         case 'SERVING':
         case 'IN_PROGRESS':
-          status = 'IN_SERVICE';
-          break;
+          status = 'IN_SERVICE'
+          break
         case 'TO_PAY':
-          status = 'TO_PAY';
-          break;
+          status = 'TO_PAY'
+          break
         case 'REVIEW':
-          status = 'REVIEW';
-          break;
+          status = 'REVIEW'
+          break
         case 'COMPLETED':
         case 'FINISHED':
         case 'DONE':
-          status = 'DONE';
-          break;
+          status = 'DONE'
+          break
         case 'NO_SHOW':
         case 'NOSHOW':
-          status = 'NO_SHOW';
-          break;
+          status = 'NO_SHOW'
+          break
         case 'CANCELLED':
         case 'CANCELED':
-          status = 'CANCELLED';
-          break;
+          status = 'CANCELLED'
+          break
         case 'DRAFT':
-          status = 'DRAFT';
-          break;
+          status = 'DRAFT'
+          break
         default:
-          console.warn(`⚠️ Unknown status "${aptStatus}", defaulting to BOOKED`);
-          status = 'BOOKED';
+          console.warn(`⚠️ Unknown status "${aptStatus}", defaulting to BOOKED`)
+          status = 'BOOKED'
       }
-      
+
       // Parse appointment time
-      const timeStr = apt.time || '10:00 AM';
-      const cleanTime = timeStr.replace(/\s*(AM|PM)\s*/i, '');
-      const timeParts = cleanTime.split(':');
-      let hour = parseInt(timeParts[0]);
-      const minute = timeParts[1] || '00';
-      
+      const timeStr = apt.time || '10:00 AM'
+      const cleanTime = timeStr.replace(/\s*(AM|PM)\s*/i, '')
+      const timeParts = cleanTime.split(':')
+      let hour = parseInt(timeParts[0])
+      const minute = timeParts[1] || '00'
+
       // Convert to 24-hour format if needed
       if (timeStr.toUpperCase().includes('PM') && hour !== 12) {
-        hour += 12;
+        hour += 12
       } else if (timeStr.toUpperCase().includes('AM') && hour === 12) {
-        hour = 0;
+        hour = 0
       }
-      
+
       // Generate rank based on appointment time
-      const rank = `h${hour.toString().padStart(2, '0')}m${minute.padStart(2, '0')}`;
-      
+      const rank = `h${hour.toString().padStart(2, '0')}m${minute.padStart(2, '0')}`
+
       // Create ISO datetime strings for start and end
-      const startDateTime = `${date}T${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}:00.000Z`;
-      const durationMinutes = parseInt(apt.duration?.toString().replace(/\D/g, '') || '60');
-      const endTime = new Date(new Date(startDateTime).getTime() + durationMinutes * 60000);
-      const endDateTime = endTime.toISOString();
-      
+      const startDateTime = `${date}T${hour.toString().padStart(2, '0')}:${minute.padStart(2, '0')}:00.000Z`
+      const durationMinutes = parseInt(apt.duration?.toString().replace(/\D/g, '') || '60')
+      const endTime = new Date(new Date(startDateTime).getTime() + durationMinutes * 60000)
+      const endDateTime = endTime.toISOString()
+
       cards.push({
         id: apt.id,
         organization_id: organization_id,
@@ -225,28 +241,30 @@ export async function listAppointmentsForKanban(params: {
           client_phone: apt.clientPhone || '',
           client_email: apt.clientEmail || ''
         }
-      });
+      })
     }
-    
-    console.log(`✅ Transformed ${cards.length} appointments to kanban cards`);
-    return cards.sort((a, b) => a.rank.localeCompare(b.rank));
+
+    console.log(`✅ Transformed ${cards.length} appointments to kanban cards`)
+    return cards.sort((a, b) => a.rank.localeCompare(b.rank))
   } catch (error) {
-    console.error('Error fetching appointments for kanban:', error);
-    return [];
+    console.error('Error fetching appointments for kanban:', error)
+    return []
   }
 }
 
 export async function postStatusChange(params: {
-  organization_id: string;
-  appointment_id: string;
-  from_status: KanbanStatus;
-  to_status: KanbanStatus;
-  changed_by: string;
-  reason?: string;
+  organization_id: string
+  appointment_id: string
+  from_status: KanbanStatus
+  to_status: KanbanStatus
+  changed_by: string
+  reason?: string
 }): Promise<boolean> {
   try {
-    console.log(`📝 Updating appointment ${params.appointment_id} status: ${params.from_status} → ${params.to_status}`);
-    
+    console.log(
+      `📝 Updating appointment ${params.appointment_id} status: ${params.from_status} → ${params.to_status}`
+    )
+
     // Update the main appointment status using the salon appointments API
     const updateResponse = await fetch('/api/v1/salon/appointments', {
       method: 'PUT',
@@ -258,15 +276,15 @@ export async function postStatusChange(params: {
         userId: params.changed_by,
         reason: params.reason
       })
-    });
+    })
 
     if (!updateResponse.ok) {
-      const errorText = await updateResponse.text();
-      console.error('Failed to update appointment status:', errorText);
-      throw new Error('Failed to update appointment status');
+      const errorText = await updateResponse.text()
+      console.error('Failed to update appointment status:', errorText)
+      throw new Error('Failed to update appointment status')
     }
 
-    console.log(`✅ Successfully updated appointment status to ${params.to_status}`);
+    console.log(`✅ Successfully updated appointment status to ${params.to_status}`)
 
     // Create audit trail transaction
     const auditResponse = await fetch('/api/v1/universal_transactions', {
@@ -285,60 +303,63 @@ export async function postStatusChange(params: {
           reason: params.reason
         }
       })
-    });
-    
+    })
+
     if (!auditResponse.ok) {
-      console.warn('Failed to create audit trail, but status update succeeded');
+      console.warn('Failed to create audit trail, but status update succeeded')
     }
-    
-    return true;
+
+    return true
   } catch (error) {
-    console.error('Error posting status change:', error);
-    return false;
+    console.error('Error posting status change:', error)
+    return false
   }
 }
 
-export async function updateAppointment(id: string, patch: {
-  when_ts?: string;
-  branch_id?: string;
-  metadata?: {
-    start?: string;
-    end?: string;
-    staff_id?: string;
-    service_id?: string;
-    notes?: string;
-  };
-}): Promise<boolean> {
+export async function updateAppointment(
+  id: string,
+  patch: {
+    when_ts?: string
+    branch_id?: string
+    metadata?: {
+      start?: string
+      end?: string
+      staff_id?: string
+      service_id?: string
+      notes?: string
+    }
+  }
+): Promise<boolean> {
   try {
     const response = await fetch(`/api/v1/universal_transactions/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patch)
-    });
-    
-    return response.ok;
+    })
+
+    return response.ok
   } catch (error) {
-    console.error('Error updating appointment:', error);
-    return false;
+    console.error('Error updating appointment:', error)
+    return false
   }
 }
 
 export async function postReschedule(params: {
-  organization_id: string;
-  appointment_id: string;
-  reason?: string;
+  organization_id: string
+  appointment_id: string
+  reason?: string
   from: {
-    start: string;
-    end: string;
-    branch_id: string;
-    staff_id?: string;
-  };
+    start: string
+    end: string
+    branch_id: string
+    staff_id?: string
+  }
   to: {
-    start: string;
-    end: string;
-    branch_id: string;
-    staff_id?: string;
-  };
+    start: string
+    end: string
+    branch_id: string
+    staff_id?: string
+  }
 }): Promise<boolean> {
   try {
     // Post reschedule audit event
@@ -357,10 +378,10 @@ export async function postReschedule(params: {
           reason: params.reason
         }
       })
-    });
-    
-    if (!response.ok) throw new Error('Failed to post reschedule event');
-    
+    })
+
+    if (!response.ok) throw new Error('Failed to post reschedule event')
+
     // Keep status as BOOKED (or current non-terminal status)
     await upsertDynamicData({
       entity_id: params.appointment_id,
@@ -370,19 +391,19 @@ export async function postReschedule(params: {
       metadata: {
         updated_at: new Date().toISOString()
       }
-    });
-    
-    return true;
+    })
+
+    return true
   } catch (error) {
-    console.error('Error posting reschedule:', error);
-    return false;
+    console.error('Error posting reschedule:', error)
+    return false
   }
 }
 
 export async function confirmDraft(params: {
-  organization_id: string;
-  appointment_id: string;
-  confirmed_by: string;
+  organization_id: string
+  appointment_id: string
+  confirmed_by: string
 }): Promise<boolean> {
   try {
     // 1) Post status change event
@@ -392,8 +413,8 @@ export async function confirmDraft(params: {
       from_status: 'DRAFT',
       to_status: 'BOOKED',
       changed_by: params.confirmed_by
-    });
-    
+    })
+
     // 2) Patch header status to posted
     const patchResponse = await fetch(`/api/v1/universal_transactions/${params.appointment_id}`, {
       method: 'PATCH',
@@ -401,10 +422,10 @@ export async function confirmDraft(params: {
       body: JSON.stringify({
         status: 'posted'
       })
-    });
-    
-    if (!patchResponse.ok) throw new Error('Failed to update header status');
-    
+    })
+
+    if (!patchResponse.ok) throw new Error('Failed to update header status')
+
     // 3) Update status DD to BOOKED
     await upsertDynamicData({
       entity_id: params.appointment_id,
@@ -415,18 +436,22 @@ export async function confirmDraft(params: {
         updated_by: params.confirmed_by,
         updated_at: new Date().toISOString()
       }
-    });
+    })
 
     // 4) Send WhatsApp confirmation notification
     try {
-      console.log('📱 Sending WhatsApp confirmation for appointment:', params.appointment_id);
-      
+      console.log('📱 Sending WhatsApp confirmation for appointment:', params.appointment_id)
+
       // Get appointment details for WhatsApp notification
-      const appointmentResponse = await fetch(`/api/v1/salon/appointments?organization_id=${params.organization_id}`);
+      const appointmentResponse = await fetch(
+        `/api/v1/salon/appointments?organization_id=${params.organization_id}`
+      )
       if (appointmentResponse.ok) {
-        const appointmentData = await appointmentResponse.json();
-        const appointment = appointmentData.appointments?.find((apt: any) => apt.id === params.appointment_id);
-        
+        const appointmentData = await appointmentResponse.json()
+        const appointment = appointmentData.appointments?.find(
+          (apt: any) => apt.id === params.appointment_id
+        )
+
         if (appointment && appointment.clientPhone) {
           // Send WhatsApp notification using the WhatsApp API
           const whatsappResponse = await fetch('/api/v1/whatsapp/templates', {
@@ -446,12 +471,12 @@ export async function confirmDraft(params: {
                 appointment_id: appointment.id
               }
             })
-          });
+          })
 
           if (whatsappResponse.ok) {
-            const whatsappResult = await whatsappResponse.json();
-            console.log('✅ WhatsApp confirmation sent successfully:', whatsappResult.messageId);
-            
+            const whatsappResult = await whatsappResponse.json()
+            console.log('✅ WhatsApp confirmation sent successfully:', whatsappResult.messageId)
+
             // Log WhatsApp notification in universal_transactions
             await fetch('/api/v1/universal', {
               method: 'POST',
@@ -476,33 +501,33 @@ export async function confirmDraft(params: {
                   }
                 }
               })
-            });
+            })
           } else {
-            console.warn('⚠️ Failed to send WhatsApp confirmation, but appointment was confirmed');
+            console.warn('⚠️ Failed to send WhatsApp confirmation, but appointment was confirmed')
           }
         } else {
-          console.warn('⚠️ No customer phone number found for WhatsApp notification');
+          console.warn('⚠️ No customer phone number found for WhatsApp notification')
         }
       }
     } catch (whatsappError) {
-      console.error('WhatsApp notification error (non-blocking):', whatsappError);
+      console.error('WhatsApp notification error (non-blocking):', whatsappError)
       // Don't fail the entire confirmation process if WhatsApp fails
     }
-    
-    return true;
+
+    return true
   } catch (error) {
-    console.error('Error confirming draft:', error);
-    return false;
+    console.error('Error confirming draft:', error)
+    return false
   }
 }
 
 export async function upsertKanbanRank(params: {
-  appointment_id: string;
-  column: KanbanStatus;
-  rank: string;
-  branch_id: string;
-  date: string;
-  organization_id: string;
+  appointment_id: string
+  column: KanbanStatus
+  rank: string
+  branch_id: string
+  date: string
+  organization_id: string
 }): Promise<boolean> {
   try {
     await upsertDynamicData({
@@ -515,21 +540,21 @@ export async function upsertKanbanRank(params: {
         branch_id: params.branch_id,
         date: params.date
       }
-    });
-    return true;
+    })
+    return true
   } catch (error) {
-    console.error('Error upserting kanban rank:', error);
-    return false;
+    console.error('Error upserting kanban rank:', error)
+    return false
   }
 }
 
 // Helper functions for dynamic data
 async function getDynamicData(params: {
-  entity_id: string;
-  field_name: string;
-  smart_code: string;
-  metadata?: any;
+  entity_id: string
+  field_name: string
+  smart_code: string
+  metadata?: any
 }): Promise<any> {
   // Mock implementation - replace with actual API call
-  return null;
+  return null
 }

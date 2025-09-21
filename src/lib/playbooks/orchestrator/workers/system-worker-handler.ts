@@ -435,9 +435,7 @@ export class SystemWorkerHandler {
     }
   }
 
-  private async makeApiCall(
-    config: any
-  ): Promise<{
+  private async makeApiCall(config: any): Promise<{
     data: any
     status: number
     duration_ms: number

@@ -11,7 +11,7 @@ export type KanbanStatus =
   | 'REVIEW'
   | 'DONE'
   | 'NO_SHOW'
-  | 'CANCELLED';
+  | 'CANCELLED'
 
 export const KANBAN_COLUMNS: { key: KanbanStatus; label: string }[] = [
   { key: 'DRAFT', label: 'Draft' },
@@ -22,24 +22,24 @@ export const KANBAN_COLUMNS: { key: KanbanStatus; label: string }[] = [
   { key: 'REVIEW', label: 'Review' },
   { key: 'DONE', label: 'Done' },
   { key: 'NO_SHOW', label: 'No-show' },
-  { key: 'CANCELLED', label: 'Cancelled' },
-];
+  { key: 'CANCELLED', label: 'Cancelled' }
+]
 
 export type KanbanCard = {
-  id: string;
-  organization_id: string;
-  branch_id: string;
-  date: string; // YYYY-MM-DD (Europe/London)
-  status: KanbanStatus;
-  rank: string; // lexo-rank
-  start: string; // ISO
-  end: string;   // ISO
-  customer_name: string;
-  service_name: string;
-  stylist_name?: string;
-  flags?: { vip?: boolean; new?: boolean; late?: boolean };
-  metadata?: any;
-};
+  id: string
+  organization_id: string
+  branch_id: string
+  date: string // YYYY-MM-DD (Europe/London)
+  status: KanbanStatus
+  rank: string // lexo-rank
+  start: string // ISO
+  end: string // ISO
+  customer_name: string
+  service_name: string
+  stylist_name?: string
+  flags?: { vip?: boolean; new?: boolean; late?: boolean }
+  metadata?: any
+}
 
 // Allowed status transitions matrix
 export const ALLOWED_TRANSITIONS: Record<KanbanStatus, KanbanStatus[]> = {
@@ -51,15 +51,11 @@ export const ALLOWED_TRANSITIONS: Record<KanbanStatus, KanbanStatus[]> = {
   REVIEW: ['DONE'],
   DONE: [],
   NO_SHOW: [],
-  CANCELLED: [],
-};
+  CANCELLED: []
+}
 
 // States that can be cancelled
-export const CANCELLABLE_STATES: KanbanStatus[] = [
-  'DRAFT', 'BOOKED', 'CHECKED_IN', 'IN_SERVICE'
-];
+export const CANCELLABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED', 'CHECKED_IN', 'IN_SERVICE']
 
-// States that can be rescheduled  
-export const RESCHEDULABLE_STATES: KanbanStatus[] = [
-  'DRAFT', 'BOOKED', 'CHECKED_IN'
-];
+// States that can be rescheduled
+export const RESCHEDULABLE_STATES: KanbanStatus[] = ['DRAFT', 'BOOKED', 'CHECKED_IN']

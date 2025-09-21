@@ -37,7 +37,7 @@ const DialogOverlay = React.forwardRef<
       className
     )}
     style={{
-      backgroundColor: 'rgba(11, 11, 11, 0.85)', // COLORS.black with opacity
+      backgroundColor: 'rgba(11, 11, 11, 0.85)' // COLORS.black with opacity
     }}
     {...props}
   />
@@ -61,7 +61,7 @@ const DialogContent = React.forwardRef<
         backgroundColor: COLORS.charcoal,
         border: `1px solid ${COLORS.bronze}33`,
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)',
-        position: 'fixed',
+        position: 'fixed'
       }}
       {...props}
     >
@@ -73,12 +73,10 @@ const DialogContent = React.forwardRef<
                        radial-gradient(circle at 100% 100%, ${COLORS.plum}05 0%, transparent 50%)`
         }}
       />
-      
-      <div className="relative z-10">
-        {children}
-      </div>
-      
-      <DialogPrimitive.Close 
+
+      <div className="relative z-10">{children}</div>
+
+      <DialogPrimitive.Close
         className="absolute right-4 top-4 rounded-lg opacity-70 transition-all hover:opacity-100 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none p-1"
         style={{
           color: COLORS.bronze,
@@ -98,19 +96,22 @@ const DialogContent = React.forwardRef<
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div 
-    className={cn('flex flex-col space-y-2 text-center sm:text-left pb-4 mb-4', className)} 
+  <div
+    className={cn('flex flex-col space-y-2 text-center sm:text-left pb-4 mb-4', className)}
     style={{
       borderBottom: `1px solid ${COLORS.bronze}20`
     }}
-    {...props} 
+    {...props}
   />
 )
 DialogHeader.displayName = 'DialogHeader'
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4 mt-4', className)}
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4 mt-4',
+      className
+    )}
     style={{
       borderTop: `1px solid ${COLORS.bronze}20`
     }}

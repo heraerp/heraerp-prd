@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, User, Shield, Calculator, UserCheck, Scissors, Phone, CreditCard, BarChart3 } from 'lucide-react'
+import {
+  Loader2,
+  User,
+  Shield,
+  Calculator,
+  UserCheck,
+  Scissors,
+  Phone,
+  CreditCard,
+  BarChart3
+} from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 
 interface DemoUser {
@@ -133,15 +143,15 @@ export function SalonDemoAuth() {
         localStorage.setItem('organizationId', SALON_ORG_ID)
         localStorage.setItem('salonRole', userMetadata.role || 'Staff')
         localStorage.setItem('salonUserName', userMetadata.full_name || 'User')
-        
+
         // Redirect based on role
         const roleRedirects: Record<string, string> = {
-          'Owner': '/salon/dashboard',
-          'Receptionist': '/salon/pos',
-          'Accountant': '/salon/finance',
-          'Administrator': '/salon/settings'
+          Owner: '/salon/dashboard',
+          Receptionist: '/salon/pos',
+          Accountant: '/salon/finance',
+          Administrator: '/salon/settings'
         }
-        
+
         const redirectPath = roleRedirects[userMetadata.role] || '/salon'
         router.push(redirectPath)
       } else {
@@ -188,12 +198,12 @@ export function SalonDemoAuth() {
 
         // Redirect based on role
         const roleRedirects: Record<string, string> = {
-          'Owner': '/salon/dashboard',
-          'Receptionist': '/salon/pos',
-          'Accountant': '/salon/finance',
-          'Administrator': '/salon/settings'
+          Owner: '/salon/dashboard',
+          Receptionist: '/salon/pos',
+          Accountant: '/salon/finance',
+          Administrator: '/salon/settings'
         }
-        
+
         const redirectPath = roleRedirects[user.role] || '/salon'
         router.push(redirectPath)
       }
@@ -222,8 +232,12 @@ export function SalonDemoAuth() {
               Hair Talkz Salon
             </h1>
           </div>
-          <p className="text-xl text-gray-600 dark:text-gray-300">Select your role to access the salon management system</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Enterprise-grade salon management with role-based access</p>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
+            Select your role to access the salon management system
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Enterprise-grade salon management with role-based access
+          </p>
         </div>
 
         {error && (
@@ -236,15 +250,16 @@ export function SalonDemoAuth() {
           {DEMO_USERS.map(user => {
             const isExpanded = expandedCard === user.id
             const isSelected = selectedUser?.email === user.email
-            
+
             return (
               <div
                 key={user.email}
                 className={`
                   relative cursor-pointer transition-all duration-300 rounded-2xl border-2
-                  ${isSelected 
-                    ? 'border-purple-500 shadow-2xl shadow-purple-500/25' 
-                    : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
+                  ${
+                    isSelected
+                      ? 'border-purple-500 shadow-2xl shadow-purple-500/25'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
                   }
                   ${loading && !isSelected ? 'opacity-50' : ''}
                   bg-white dark:bg-gray-800 overflow-hidden
@@ -255,26 +270,32 @@ export function SalonDemoAuth() {
                 onMouseLeave={() => setExpandedCard(null)}
               >
                 {/* Role-specific gradient background */}
-                <div className={`absolute inset-0 opacity-5 bg-gradient-to-br
+                <div
+                  className={`absolute inset-0 opacity-5 bg-gradient-to-br
                   ${user.role === 'Owner' ? 'from-purple-500 to-pink-500' : ''}
                   ${user.role === 'Receptionist' ? 'from-blue-500 to-cyan-500' : ''}
                   ${user.role === 'Accountant' ? 'from-green-500 to-emerald-500' : ''}
                   ${user.role === 'Administrator' ? 'from-orange-500 to-red-500' : ''}
-                `} />
-                
+                `}
+                />
+
                 <div className="relative p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <div className={`h-14 w-14 rounded-2xl flex items-center justify-center
+                      <div
+                        className={`h-14 w-14 rounded-2xl flex items-center justify-center
                         ${user.role === 'Owner' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : ''}
                         ${user.role === 'Receptionist' ? 'bg-gradient-to-br from-blue-500 to-cyan-500' : ''}
                         ${user.role === 'Accountant' ? 'bg-gradient-to-br from-green-500 to-emerald-500' : ''}
                         ${user.role === 'Administrator' ? 'bg-gradient-to-br from-orange-500 to-red-500' : ''}
-                      `}>
+                      `}
+                      >
                         <user.icon className="h-7 w-7 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{user.fullName}</h3>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                          {user.fullName}
+                        </h3>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                           {user.role}
                         </p>
@@ -287,11 +308,15 @@ export function SalonDemoAuth() {
                       <Loader2 className="h-5 w-5 animate-spin text-purple-600" />
                     )}
                   </div>
-                  
-                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">{user.description}</p>
-                  
+
+                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+                    {user.description}
+                  </p>
+
                   {/* Capabilities list with smooth expansion */}
-                  <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-48' : 'max-h-0'}`}>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-48' : 'max-h-0'}`}
+                  >
                     <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                       <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
                         Capabilities
@@ -300,17 +325,21 @@ export function SalonDemoAuth() {
                         {user.capabilities.map((capability, idx) => (
                           <div key={idx} className="flex items-center gap-2">
                             <div className="h-1 w-1 rounded-full bg-purple-400" />
-                            <span className="text-xs text-gray-600 dark:text-gray-300">{capability}</span>
+                            <span className="text-xs text-gray-600 dark:text-gray-300">
+                              {capability}
+                            </span>
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Login hint */}
                   {!isExpanded && (
                     <div className="absolute bottom-2 right-2">
-                      <span className="text-xs text-gray-400 dark:text-gray-500">Click to login</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                        Click to login
+                      </span>
                     </div>
                   )}
                 </div>
@@ -326,17 +355,18 @@ export function SalonDemoAuth() {
           <p className="text-xs text-gray-500 dark:text-gray-500">
             WhatsApp integrations and external communications are simulated in demo mode
           </p>
-          
+
           {/* Quick logout info */}
           <div className="mt-6 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg max-w-md mx-auto">
             <p className="text-xs text-amber-700 dark:text-amber-300">
-              <strong>Tip:</strong> To switch between demo users, click the Logout button in the top-right corner or visit{' '}
+              <strong>Tip:</strong> To switch between demo users, click the Logout button in the
+              top-right corner or visit{' '}
               <a href="/salon/auth?logout" className="underline font-medium">
                 /salon/auth?logout
               </a>
             </p>
           </div>
-          
+
           <div className="pt-4">
             <a
               href="/salon"

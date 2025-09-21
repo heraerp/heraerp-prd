@@ -268,11 +268,13 @@ export function PaymentDialog({
 
         <div className="space-y-6">
           {/* Order Summary */}
-          <Card style={{ 
-            backgroundColor: '#0F0F0F', 
-            border: '1px solid rgba(212, 175, 55, 0.2)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
-          }}>
+          <Card
+            style={{
+              backgroundColor: '#0F0F0F',
+              border: '1px solid rgba(212, 175, 55, 0.2)',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+            }}
+          >
             <CardContent className="p-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
@@ -490,15 +492,23 @@ export function PaymentDialog({
           )}
 
           {/* Payment Summary */}
-          <div className="p-4 rounded-lg" style={{
-            backgroundColor: '#0F0F0F',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
-            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(90, 42, 64, 0.05) 100%)'
-          }}>
+          <div
+            className="p-4 rounded-lg"
+            style={{
+              backgroundColor: '#0F0F0F',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              background:
+                'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(90, 42, 64, 0.05) 100%)'
+            }}
+          >
             <div className="space-y-3">
               <div className="flex justify-between text-lg">
-                <span className="font-medium" style={{ color: '#F5E6C8' }}>Total Due:</span>
-                <span className="font-bold" style={{ color: '#D4AF37' }}>${(totals?.total || 0).toFixed(2)}</span>
+                <span className="font-medium" style={{ color: '#F5E6C8' }}>
+                  Total Due:
+                </span>
+                <span className="font-bold" style={{ color: '#D4AF37' }}>
+                  ${(totals?.total || 0).toFixed(2)}
+                </span>
               </div>
               {payments.length > 0 && (
                 <>
@@ -511,14 +521,21 @@ export function PaymentDialog({
               )}
               {remainingAmount > 0.01 ? (
                 <div className="flex justify-between text-lg">
-                  <span className="font-medium" style={{ color: '#F5E6C8' }}>Balance to Pay:</span>
-                  <span className="font-bold" style={{ color: '#FF6B6B' }}>${remainingAmount.toFixed(2)}</span>
+                  <span className="font-medium" style={{ color: '#F5E6C8' }}>
+                    Balance to Pay:
+                  </span>
+                  <span className="font-bold" style={{ color: '#FF6B6B' }}>
+                    ${remainingAmount.toFixed(2)}
+                  </span>
                 </div>
               ) : changeAmount > 0 ? (
-                <div className="flex justify-between text-lg p-2 rounded" style={{ 
-                  backgroundColor: 'rgba(15, 111, 92, 0.2)',
-                  border: '1px solid rgba(15, 111, 92, 0.3)'
-                }}>
+                <div
+                  className="flex justify-between text-lg p-2 rounded"
+                  style={{
+                    backgroundColor: 'rgba(15, 111, 92, 0.2)',
+                    border: '1px solid rgba(15, 111, 92, 0.3)'
+                  }}
+                >
                   <span className="font-medium" style={{ color: '#0F6F5C' }}>
                     Change Due:
                   </span>
@@ -557,9 +574,9 @@ export function PaymentDialog({
 
           {/* Action Buttons */}
           <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={handleClose} 
+            <Button
+              variant="outline"
+              onClick={handleClose}
               disabled={processing}
               style={{
                 borderColor: '#8C7853',
@@ -581,7 +598,10 @@ export function PaymentDialog({
               }}
             >
               {processing ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2" style={{ borderColor: '#0B0B0B' }}></div>
+                <div
+                  className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2"
+                  style={{ borderColor: '#0B0B0B' }}
+                ></div>
               ) : (
                 <Check className="w-4 h-4 mr-2" />
               )}

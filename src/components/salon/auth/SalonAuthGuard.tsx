@@ -29,13 +29,13 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/settings': ['Owner', 'Administrator'],
   '/salon/whatsapp': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/leave': ['Owner', 'Administrator'],
-  '/salon/reports': ['Owner', 'Accountant', 'Administrator'],
+  '/salon/reports': ['Owner', 'Accountant', 'Administrator']
 }
 
-export function SalonAuthGuard({ 
-  children, 
-  requiredRoles = [], 
-  requireOwnerOnly = false 
+export function SalonAuthGuard({
+  children,
+  requiredRoles = [],
+  requireOwnerOnly = false
 }: SalonAuthGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -166,27 +166,25 @@ export function SalonAuthGuard({
             <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
-            
-            <h2 className="text-2xl font-bold text-foreground mb-2">
-              Access Denied
-            </h2>
-            
+
+            <h2 className="text-2xl font-bold text-foreground mb-2">Access Denied</h2>
+
             <p className="text-muted-foreground mb-2">
               You don't have permission to access this page.
             </p>
-            
+
             <p className="text-sm text-muted-foreground mb-6">
               Logged in as: <span className="font-medium">{userName}</span> ({userRole})
             </p>
-            
+
             <div className="space-y-3">
               <button
                 onClick={() => {
                   const roleRedirects: Record<string, string> = {
-                    'Owner': '/salon/dashboard',
-                    'Receptionist': '/salon/pos',
-                    'Accountant': '/salon/finance',
-                    'Administrator': '/salon/settings'
+                    Owner: '/salon/dashboard',
+                    Receptionist: '/salon/pos',
+                    Accountant: '/salon/finance',
+                    Administrator: '/salon/settings'
                   }
                   const redirectPath = roleRedirects[userRole || ''] || '/salon'
                   router.push(redirectPath)
@@ -195,7 +193,7 @@ export function SalonAuthGuard({
               >
                 Go to Your Dashboard
               </button>
-              
+
               <button
                 onClick={async () => {
                   await supabase.auth.signOut()
@@ -237,16 +235,18 @@ export function SalonRoleDisplay() {
   if (!role || !userName) return null
 
   const roleColors: Record<string, string> = {
-    'Owner': 'from-purple-500 to-pink-500',
-    'Receptionist': 'from-blue-500 to-cyan-500',
-    'Accountant': 'from-green-500 to-emerald-500',
-    'Administrator': 'from-orange-500 to-red-500'
+    Owner: 'from-purple-500 to-pink-500',
+    Receptionist: 'from-blue-500 to-cyan-500',
+    Accountant: 'from-green-500 to-emerald-500',
+    Administrator: 'from-orange-500 to-red-500'
   }
 
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg">
-        <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] || 'from-gray-500 to-gray-600'} flex items-center justify-center`}>
+        <div
+          className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] || 'from-gray-500 to-gray-600'} flex items-center justify-center`}
+        >
           <Shield className="h-4 w-4 text-primary-foreground" />
         </div>
         <div className="text-sm">

@@ -577,8 +577,12 @@ export function SalonResourceCalendar({
       >
         <div className="text-center">
           <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: '#E8B4B8' }} />
-          <p className="font-semibold mb-2" style={{ color: '#E8B4B8' }}>Failed to load calendar data</p>
-          <p className="text-sm" style={{ color: '#8C7853' }}>{error.message}</p>
+          <p className="font-semibold mb-2" style={{ color: '#E8B4B8' }}>
+            Failed to load calendar data
+          </p>
+          <p className="text-sm" style={{ color: '#8C7853' }}>
+            {error.message}
+          </p>
         </div>
       </div>
     )
@@ -600,11 +604,8 @@ export function SalonResourceCalendar({
 
   return (
     <div
-      className={cn(
-        'flex h-[800px] rounded-lg overflow-hidden',
-        className
-      )}
-      style={{ 
+      className={cn('flex h-[800px] rounded-lg overflow-hidden', className)}
+      style={{
         backgroundColor: COLORS.charcoal,
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.1)',
         border: `1px solid ${COLORS.gold}1A`
@@ -612,20 +613,19 @@ export function SalonResourceCalendar({
     >
       {/* Sidebar */}
       {showSidebar && (
-        <div 
+        <div
           className="w-80 border-r flex flex-col calendar-sidebar"
-          style={{ 
+          style={{
             backgroundColor: COLORS.charcoal,
             borderColor: `${COLORS.gold}33`
           }}
         >
           {/* Sidebar Header */}
-          <div 
-            className="p-4 border-b"
-            style={{ borderColor: `${COLORS.gold}33` }}
-          >
+          <div className="p-4 border-b" style={{ borderColor: `${COLORS.gold}33` }}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>Calendar</h3>
+              <h3 className="text-lg font-semibold" style={{ color: COLORS.champagne }}>
+                Calendar
+              </h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -728,9 +728,9 @@ export function SalonResourceCalendar({
             </div>
 
             {/* Mini Calendar */}
-            <div 
+            <div
               className="rounded-lg p-3"
-              style={{ 
+              style={{
                 backgroundColor: COLORS.black,
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)'
               }}
@@ -879,9 +879,9 @@ export function SalonResourceCalendar({
       {/* Main Calendar Area */}
       <div className="flex-1 flex flex-col">
         {/* Calendar Header */}
-        <div 
+        <div
           className="p-4 border-b"
-          style={{ 
+          style={{
             backgroundColor: COLORS.charcoal,
             borderColor: `${COLORS.gold}33`
           }}
@@ -928,7 +928,7 @@ export function SalonResourceCalendar({
                 <Button
                   variant="outline"
                   className="text-sm font-medium min-w-[120px]"
-                  style={{ 
+                  style={{
                     color: COLORS.champagne,
                     borderColor: COLORS.bronze
                   }}
@@ -987,7 +987,9 @@ export function SalonResourceCalendar({
 
             <div className="flex items-center gap-3">
               <Tabs value={selectedView} onValueChange={v => setSelectedView(v as any)}>
-                <TabsList style={{ backgroundColor: `${COLORS.charcoal}DD`, borderColor: COLORS.bronze }}>
+                <TabsList
+                  style={{ backgroundColor: `${COLORS.charcoal}DD`, borderColor: COLORS.bronze }}
+                >
                   <TabsTrigger value="day" className="text-sm">
                     Day
                   </TabsTrigger>
@@ -1035,18 +1037,15 @@ export function SalonResourceCalendar({
         <div className="flex-1 overflow-hidden">
           <div className="h-full flex">
             {/* Time Column */}
-            <div 
+            <div
               className="w-20 border-r"
-              style={{ 
+              style={{
                 backgroundColor: `${COLORS.charcoal}CC`,
                 borderColor: `${COLORS.gold}33`
               }}
             >
               <div
-                className={cn(
-                  'border-b',
-                  viewMode === 'resource' ? 'h-20' : 'h-14'
-                )}
+                className={cn('border-b', viewMode === 'resource' ? 'h-20' : 'h-14')}
                 style={{ borderColor: `${COLORS.gold}33` }}
               />
               <ScrollArea
@@ -1095,26 +1094,22 @@ export function SalonResourceCalendar({
                                 'h-14 border-b px-2 py-2 text-center day-header',
                                 isToday && 'today'
                               )}
-                              style={{ 
+                              style={{
                                 borderColor: `${COLORS.gold}33`,
                                 backgroundColor: isToday ? `${COLORS.gold}0D` : 'transparent'
                               }}
                             >
                               <p
-                                className={cn(
-                                  'text-xs font-bold uppercase tracking-wider'
-                                )}
-                                style={{ 
+                                className={cn('text-xs font-bold uppercase tracking-wider')}
+                                style={{
                                   color: isToday ? COLORS.gold : COLORS.bronze
                                 }}
                               >
                                 {dayName}
                               </p>
                               <p
-                                className={cn(
-                                  'text-xl font-extrabold'
-                                )}
-                                style={{ 
+                                className={cn('text-xl font-extrabold')}
+                                style={{
                                   color: isToday ? COLORS.gold : COLORS.champagne
                                 }}
                               >
@@ -1142,14 +1137,14 @@ export function SalonResourceCalendar({
                                       'h-16 border-b relative group time-slot',
                                       'hover:bg-opacity-20 cursor-pointer'
                                     )}
-                                    style={{ 
+                                    style={{
                                       borderColor: `${COLORS.gold}1A`,
                                       backgroundColor: 'transparent'
                                     }}
-                                    onMouseEnter={(e) => {
+                                    onMouseEnter={e => {
                                       e.currentTarget.style.backgroundColor = `${COLORS.gold}0D`
                                     }}
-                                    onMouseLeave={(e) => {
+                                    onMouseLeave={e => {
                                       e.currentTarget.style.backgroundColor = 'transparent'
                                     }}
                                     onClick={() => {
@@ -1192,10 +1187,16 @@ export function SalonResourceCalendar({
                                               {apt.icon}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                              <p className="text-xs font-semibold truncate" style={{ color: COLORS.champagne }}>
+                                              <p
+                                                className="text-xs font-semibold truncate"
+                                                style={{ color: COLORS.champagne }}
+                                              >
                                                 {apt.title}
                                               </p>
-                                              <p className="text-xs truncate" style={{ color: COLORS.bronze }}>
+                                              <p
+                                                className="text-xs truncate"
+                                                style={{ color: COLORS.bronze }}
+                                              >
                                                 {apt.client}
                                               </p>
                                               <div className="flex items-center gap-2 mt-1">
@@ -1211,7 +1212,10 @@ export function SalonResourceCalendar({
                                                   {apt.price}
                                                 </Badge>
                                                 {stylistInfo && (
-                                                  <span className="text-xs" style={{ color: COLORS.bronze }}>
+                                                  <span
+                                                    className="text-xs"
+                                                    style={{ color: COLORS.bronze }}
+                                                  >
                                                     {stylistInfo.name}
                                                   </span>
                                                 )}
@@ -1243,9 +1247,9 @@ export function SalonResourceCalendar({
                           style={{ borderColor: `${COLORS.gold}33` }}
                         >
                           {/* Stylist Header */}
-                          <div 
+                          <div
                             className="h-20 border-b px-2 py-2"
-                            style={{ 
+                            style={{
                               backgroundColor: `${COLORS.charcoal}DD`,
                               borderColor: `${COLORS.gold}33`
                             }}
@@ -1257,7 +1261,10 @@ export function SalonResourceCalendar({
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <p className="text-sm font-semibold" style={{ color: COLORS.champagne }}>
+                                <p
+                                  className="text-sm font-semibold"
+                                  style={{ color: COLORS.champagne }}
+                                >
                                   {stylist.name}
                                 </p>
                                 <p className="text-xs" style={{ color: COLORS.bronze }}>
@@ -1306,9 +1313,11 @@ export function SalonResourceCalendar({
                                     isBusinessHour && 'cursor-pointer',
                                     isDropTarget && 'ring-2'
                                   )}
-                                  style={{ 
+                                  style={{
                                     borderColor: `${COLORS.gold}1A`,
-                                    backgroundColor: !isBusinessHour ? `${COLORS.charcoal}66` : 'transparent',
+                                    backgroundColor: !isBusinessHour
+                                      ? `${COLORS.charcoal}66`
+                                      : 'transparent',
                                     ringColor: isDropTarget ? COLORS.gold : undefined
                                   }}
                                   onClick={() => {
@@ -1333,7 +1342,10 @@ export function SalonResourceCalendar({
                                 >
                                   {/* Non-business hour overlay */}
                                   {!isBusinessHour && (
-                                    <div className="absolute inset-0 z-10" style={{ backgroundColor: `${COLORS.charcoal}66` }} />
+                                    <div
+                                      className="absolute inset-0 z-10"
+                                      style={{ backgroundColor: `${COLORS.charcoal}66` }}
+                                    />
                                   )}
 
                                   {/* Appointments */}
@@ -1428,7 +1440,7 @@ function AppointmentCard({
     champagne: '#F5E6C8',
     bronze: '#8C7853'
   }
-  
+
   return (
     <div className="flex items-start gap-2">
       <div
