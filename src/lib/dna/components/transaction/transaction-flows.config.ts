@@ -22,7 +22,8 @@ import {
   Mail,
   Star,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Shield
 } from 'lucide-react'
 import type { TransactionStep, TranslationDictionary } from './UniversalTransactionFlow'
 
