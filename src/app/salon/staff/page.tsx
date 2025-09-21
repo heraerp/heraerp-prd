@@ -119,7 +119,7 @@ function StaffContent() {
       const staffResponse = await searchStaff({
         organization_id: organizationId,
         page: 1,
-        page_size: 500  // Increased to show all staff members
+        page_size: 500 // Increased to show all staff members
       })
 
       console.log('Staff response:', staffResponse)
@@ -171,12 +171,12 @@ function StaffContent() {
 
     try {
       setIsAddingStaff(true)
-      
+
       // Call the API to create the staff member
       const response = await fetch('/api/v1/staff', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           organizationId,
@@ -214,11 +214,11 @@ function StaffContent() {
         hourly_rate: '',
         commission_rate: ''
       })
-      
+
       // Close any open dialogs
       const closeButton = document.querySelector('[aria-label="Close"]') as HTMLButtonElement
       if (closeButton) closeButton.click()
-      
+
       // Reload staff list
       await loadStaff()
     } catch (error) {
@@ -322,7 +322,9 @@ function StaffContent() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name" style={{ color: COLORS.bronze }}>Name</Label>
+                  <Label htmlFor="name" style={{ color: COLORS.bronze }}>
+                    Name
+                  </Label>
                   <Input
                     id="name"
                     value={newStaff.name}
@@ -336,7 +338,9 @@ function StaffContent() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role" style={{ color: COLORS.bronze }}>Role</Label>
+                  <Label htmlFor="role" style={{ color: COLORS.bronze }}>
+                    Role
+                  </Label>
                   <select
                     id="role"
                     className="w-full px-3 py-2 rounded-md"
@@ -348,14 +352,24 @@ function StaffContent() {
                       color: COLORS.champagne
                     }}
                   >
-                    <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>Stylist</option>
-                    <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>Senior Stylist</option>
-                    <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>Manager</option>
-                    <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>Receptionist</option>
+                    <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                      Stylist
+                    </option>
+                    <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                      Senior Stylist
+                    </option>
+                    <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
+                      Manager
+                    </option>
+                    <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
+                      Receptionist
+                    </option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="phone" style={{ color: COLORS.bronze }}>Phone</Label>
+                  <Label htmlFor="phone" style={{ color: COLORS.bronze }}>
+                    Phone
+                  </Label>
                   <Input
                     id="phone"
                     value={newStaff.phone}
@@ -369,7 +383,9 @@ function StaffContent() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email" style={{ color: COLORS.bronze }}>Email</Label>
+                  <Label htmlFor="email" style={{ color: COLORS.bronze }}>
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -385,7 +401,9 @@ function StaffContent() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>Hourly Rate (AED)</Label>
+                    <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>
+                      Hourly Rate (AED)
+                    </Label>
                     <Input
                       id="hourly_rate"
                       type="number"
@@ -400,7 +418,9 @@ function StaffContent() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>Commission %</Label>
+                    <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>
+                      Commission %
+                    </Label>
                     <Input
                       id="commission_rate"
                       type="number"
@@ -636,7 +656,9 @@ function StaffContent() {
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="name-empty" style={{ color: COLORS.bronze }}>Name</Label>
+                      <Label htmlFor="name-empty" style={{ color: COLORS.bronze }}>
+                        Name
+                      </Label>
                       <Input
                         id="name-empty"
                         value={newStaff.name}
@@ -650,7 +672,9 @@ function StaffContent() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="role-empty" style={{ color: COLORS.bronze }}>Role</Label>
+                      <Label htmlFor="role-empty" style={{ color: COLORS.bronze }}>
+                        Role
+                      </Label>
                       <select
                         id="role-empty"
                         className="w-full px-3 py-2 rounded-md"
@@ -662,14 +686,24 @@ function StaffContent() {
                           color: COLORS.champagne
                         }}
                       >
-                        <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>Stylist</option>
-                        <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>Senior Stylist</option>
-                        <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>Manager</option>
-                        <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>Receptionist</option>
+                        <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                          Stylist
+                        </option>
+                        <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                          Senior Stylist
+                        </option>
+                        <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
+                          Manager
+                        </option>
+                        <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
+                          Receptionist
+                        </option>
                       </select>
                     </div>
                     <div>
-                      <Label htmlFor="phone-empty" style={{ color: COLORS.bronze }}>Phone</Label>
+                      <Label htmlFor="phone-empty" style={{ color: COLORS.bronze }}>
+                        Phone
+                      </Label>
                       <Input
                         id="phone-empty"
                         value={newStaff.phone}
@@ -683,7 +717,9 @@ function StaffContent() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email-empty" style={{ color: COLORS.bronze }}>Email</Label>
+                      <Label htmlFor="email-empty" style={{ color: COLORS.bronze }}>
+                        Email
+                      </Label>
                       <Input
                         id="email-empty"
                         type="email"
@@ -699,7 +735,9 @@ function StaffContent() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="hourly_rate-empty" style={{ color: COLORS.bronze }}>Hourly Rate (AED)</Label>
+                        <Label htmlFor="hourly_rate-empty" style={{ color: COLORS.bronze }}>
+                          Hourly Rate (AED)
+                        </Label>
                         <Input
                           id="hourly_rate-empty"
                           type="number"
@@ -714,12 +752,16 @@ function StaffContent() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="commission_rate-empty" style={{ color: COLORS.bronze }}>Commission %</Label>
+                        <Label htmlFor="commission_rate-empty" style={{ color: COLORS.bronze }}>
+                          Commission %
+                        </Label>
                         <Input
                           id="commission_rate-empty"
                           type="number"
                           value={newStaff.commission_rate}
-                          onChange={e => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
+                          onChange={e =>
+                            setNewStaff({ ...newStaff, commission_rate: e.target.value })
+                          }
                           placeholder="20"
                           style={{
                             backgroundColor: COLORS.charcoalLight,

@@ -309,7 +309,7 @@ export class SalonPosIntegrationService {
       const transactionData = {
         organization_id: this.organizationId,
         transaction_type: 'sale',
-        smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
+        smart_code: 'HERA.SALON.POS.SALE.HEADER.V1',
         total_amount: totals.total,
         business_context: {
           branch_id: options.branch_id,
@@ -330,8 +330,8 @@ export class SalonPosIntegrationService {
             line_amount: item.line_amount,
             smart_code:
               item.entity_type === 'service'
-                ? 'HERA.SALON.SVC.LINE.STANDARD.V1'
-                : 'HERA.SALON.PROD.LINE.RETAIL.V1',
+                ? 'HERA.SALON.POS.LINE.SERVICE.V1'
+                : 'HERA.SALON.POS.LINE.PRODUCT.V1',
             line_data: {
               branch_id: options.branch_id,
               stylist_id: item.stylist_id,
@@ -359,7 +359,7 @@ export class SalonPosIntegrationService {
           ...(ticket.discounts || []).map((discount: any, index: number) => ({
             line_number: ticket.lineItems.length + payments.length + index + 1,
             line_amount: -discount.amount, // Negative for discount
-            smart_code: 'HERA.SALON.POS.ADJUST.DISCOUNT.V1',
+            smart_code: 'HERA.SALON.POS.LINE.DISCOUNT.V1',
             line_data: {
               branch_id: options.branch_id,
               discount_type: discount.type,
@@ -376,7 +376,7 @@ export class SalonPosIntegrationService {
               index +
               1,
             line_amount: tip.amount,
-            smart_code: 'HERA.SALON.GL.LINE.TIP.V1',
+            smart_code: 'HERA.SALON.POS.LINE.TIP.V1',
             line_data: {
               branch_id: options.branch_id,
               stylist_id: tip.stylist_id,
@@ -395,7 +395,7 @@ export class SalonPosIntegrationService {
                     (ticket.tips?.length || 0) +
                     1,
                   line_amount: totals.taxAmount,
-                  smart_code: 'HERA.SALON.GL.LINE.TAX.V1',
+                  smart_code: 'HERA.SALON.POS.LINE.TAX.V1',
                   line_data: {
                     branch_id: options.branch_id,
                     tax_rate: 0.05,
@@ -474,13 +474,13 @@ export class SalonPosIntegrationService {
   private getPaymentSmartCode(paymentType: string): string {
     switch (paymentType) {
       case 'cash':
-        return 'HERA.ACCOUNTING.GL.LINE.CASH.V1'
+        return 'HERA.SALON.POS.PAYMENT.CASH.V1'
       case 'card':
-        return 'HERA.ACCOUNTING.GL.LINE.CARD.V1'
+        return 'HERA.SALON.POS.PAYMENT.CARD.V1'
       case 'voucher':
-        return 'HERA.ACCOUNTING.GL.LINE.VOUCHER.V1'
+        return 'HERA.SALON.POS.PAYMENT.VOUCHER.V1'
       default:
-        return 'HERA.ACCOUNTING.GL.LINE.OTHER.V1'
+        return 'HERA.SALON.POS.PAYMENT.OTHER.V1'
     }
   }
 

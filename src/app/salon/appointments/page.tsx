@@ -328,8 +328,8 @@ function SalonAppointmentsContent() {
                 : 'Book your first appointment to get started'}
             </p>
             {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
-              <Button 
-                onClick={() => setShowNewAppointmentModal(true)} 
+              <Button
+                onClick={() => setShowNewAppointmentModal(true)}
                 className="bg-violet-600 hover:bg-violet-700 text-white"
               >
                 <Plus className="w-4 h-4 mr-2" />

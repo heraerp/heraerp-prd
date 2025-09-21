@@ -147,9 +147,13 @@ export async function searchAppointments(
   universalApi.setOrganizationId(organization_id)
 
   // 1) Get appointment transactions for this org (appointments are stored as transactions)
-  const transactionsResponse = await universalApi.read('universal_transactions', {
-    transaction_type: 'APPOINTMENT'
-  }, organization_id)
+  const transactionsResponse = await universalApi.read(
+    'universal_transactions',
+    {
+      transaction_type: 'APPOINTMENT'
+    },
+    organization_id
+  )
 
   if (!transactionsResponse.success || !transactionsResponse.data) {
     console.error('Error fetching appointment transactions:', transactionsResponse.error)
@@ -261,9 +265,13 @@ export async function searchCustomers(
   universalApi.setOrganizationId(organization_id)
 
   // 1) Get customer entity IDs for this org
-  const entitiesResponse = await universalApi.read('core_entities', {
-    entity_type: 'customer'
-  }, organization_id)
+  const entitiesResponse = await universalApi.read(
+    'core_entities',
+    {
+      entity_type: 'customer'
+    },
+    organization_id
+  )
 
   if (!entitiesResponse.success || !entitiesResponse.data) {
     console.error('Error fetching customer entities:', entitiesResponse.error)
@@ -375,9 +383,13 @@ async function fetchDynamicForEntities(
 
     try {
       // For dynamic data, we need to use the direct query since it doesn't have a specific method
-      const response = await universalApi.read('core_dynamic_data', {
-        entity_id: ids
-      }, organization_id)
+      const response = await universalApi.read(
+        'core_dynamic_data',
+        {
+          entity_id: ids
+        },
+        organization_id
+      )
 
       if (response.success && response.data?.length) {
         all.push(...response.data)
@@ -454,7 +466,10 @@ function toISO(x?: string | Date | null): string {
 /**
  * Map transaction + dynamic data to AppointmentDTO
  */
-function toAppointmentDTOFromTransaction(transaction: any, dyn: Record<string, any> = {}): AppointmentDTO {
+function toAppointmentDTOFromTransaction(
+  transaction: any,
+  dyn: Record<string, any> = {}
+): AppointmentDTO {
   // Safe access helper
   const v = <T = any>(name: string, fallback?: T): T => (dyn[name] ?? fallback) as T
 
@@ -464,7 +479,9 @@ function toAppointmentDTOFromTransaction(transaction: any, dyn: Record<string, a
     smart_code: transaction?.smart_code ?? 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1',
     entity_name: transaction?.transaction_code ?? transaction?.entity_name,
     entity_code: transaction?.transaction_code,
-    start_time: toISO(v<string>('start_time') ?? v<string>('start') ?? transaction?.transaction_date),
+    start_time: toISO(
+      v<string>('start_time') ?? v<string>('start') ?? transaction?.transaction_date
+    ),
     end_time: toISO(v<string>('end_time') ?? v<string>('end') ?? transaction?.transaction_date),
     status: v<AppointmentStatus>('status', 'booked'),
     stylist_id: v<string>('stylist_id'),

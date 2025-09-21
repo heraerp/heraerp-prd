@@ -98,7 +98,17 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     } finally {
       setLoading(false)
     }
-  }, [organizationId, branchId, staffId, status, range, page, pageSize, isAuthenticated, localOrgId])
+  }, [
+    organizationId,
+    branchId,
+    staffId,
+    status,
+    range,
+    page,
+    pageSize,
+    isAuthenticated,
+    localOrgId
+  ])
 
   // Load policies and holidays once
   useEffect(() => {
@@ -173,7 +183,17 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     }
 
     loadRequests()
-  }, [organizationId, branchId, staffId, status, range, page, pageSize, isAuthenticated, localOrgId])
+  }, [
+    organizationId,
+    branchId,
+    staffId,
+    status,
+    range,
+    page,
+    pageSize,
+    isAuthenticated,
+    localOrgId
+  ])
 
   // Load balances for visible staff
   useEffect(() => {

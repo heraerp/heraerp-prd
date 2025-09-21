@@ -76,7 +76,7 @@ export async function listStaff({
 }) {
   // Use the searchStaff function from entities playbook
   const { searchStaff } = await import('@/lib/playbook/entities')
-  
+
   try {
     const result = await searchStaff({
       organization_id,
@@ -85,7 +85,7 @@ export async function listStaff({
       page: Math.floor(offset / limit) + 1,
       page_size: limit
     })
-    
+
     // Transform the result to match the expected format
     return {
       items: result.rows || [],

@@ -3,14 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { 
-  User, 
-  LogOut, 
-  ChevronDown,
-  Store,
-  Settings,
-  HelpCircle
-} from 'lucide-react'
+import { User, LogOut, ChevronDown, Store, Settings, HelpCircle } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,8 +36,13 @@ export function SalonNavbar() {
   })
 
   const displayUser = user || userInfo
-  const displayName = displayUser?.user_metadata?.full_name || displayUser?.name || displayUser?.email || 'Demo User'
-  const userInitials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase()
+  const displayName =
+    displayUser?.user_metadata?.full_name || displayUser?.name || displayUser?.email || 'Demo User'
+  const userInitials = displayName
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .toUpperCase()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -76,19 +74,14 @@ export function SalonNavbar() {
       <div className="flex items-center justify-between h-full px-6">
         {/* Left side - Organization name */}
         <div className="flex items-center gap-4">
-          <h1 className="text-lg font-light tracking-wide text-foreground">
-            Hair Talkz Salon
-          </h1>
+          <h1 className="text-lg font-light tracking-wide text-foreground">Hair Talkz Salon</h1>
         </div>
 
         {/* Right side - User menu */}
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center gap-2 hover:bg-accent/50"
-              >
+              <Button variant="ghost" className="flex items-center gap-2 hover:bg-accent/50">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-violet-600 text-white text-sm">
                     {userInitials}
@@ -105,27 +98,27 @@ export function SalonNavbar() {
                   {displayUser?.email || 'demo@hairtalkz.com'}
                 </p>
               </div>
-              
+
               <DropdownMenuSeparator />
-              
+
               <DropdownMenuItem onClick={() => router.push('/salon/settings/profile')}>
                 <User className="mr-2 h-4 w-4" />
                 Profile Settings
               </DropdownMenuItem>
-              
+
               <DropdownMenuItem onClick={() => router.push('/salon/settings')}>
                 <Settings className="mr-2 h-4 w-4" />
                 Salon Settings
               </DropdownMenuItem>
-              
+
               <DropdownMenuItem onClick={() => router.push('/salon/help')}>
                 <HelpCircle className="mr-2 h-4 w-4" />
                 Help & Support
               </DropdownMenuItem>
-              
+
               <DropdownMenuSeparator />
-              
-              <DropdownMenuItem 
+
+              <DropdownMenuItem
                 onClick={handleLogout}
                 disabled={isLoggingOut}
                 className="text-red-600 dark:text-red-400"

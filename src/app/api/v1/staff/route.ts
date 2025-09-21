@@ -9,22 +9,11 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const {
-      organizationId,
-      name,
-      role,
-      phone,
-      email,
-      hourly_rate,
-      commission_rate
-    } = body
+    const { organizationId, name, role, phone, email, hourly_rate, commission_rate } = body
 
     // Validate required fields
     if (!organizationId || !name) {
-      return NextResponse.json(
-        { error: 'Organization ID and name are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID and name are required' }, { status: 400 })
     }
 
     // Create the employee entity
@@ -54,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Add dynamic fields
     const dynamicFields = []
-    
+
     if (phone) {
       dynamicFields.push({
         organization_id: organizationId,
@@ -67,7 +56,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString()
       })
     }
-    
+
     if (email) {
       dynamicFields.push({
         organization_id: organizationId,
@@ -80,7 +69,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString()
       })
     }
-    
+
     if (hourly_rate) {
       dynamicFields.push({
         organization_id: organizationId,
@@ -93,7 +82,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString()
       })
     }
-    
+
     if (commission_rate) {
       dynamicFields.push({
         organization_id: organizationId,
@@ -106,7 +95,7 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString()
       })
     }
-    
+
     // Always add role
     dynamicFields.push({
       organization_id: organizationId,
@@ -118,13 +107,11 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     })
-    
+
     // Insert dynamic fields
     if (dynamicFields.length > 0) {
-      const { error: dynError } = await supabase
-        .from('core_dynamic_data')
-        .insert(dynamicFields)
-        
+      const { error: dynError } = await supabase.from('core_dynamic_data').insert(dynamicFields)
+
       if (dynError) {
         console.error('Error creating dynamic fields:', dynError)
         // Don't fail the whole operation if dynamic fields fail
@@ -136,13 +123,9 @@ export async function POST(request: NextRequest) {
       data: staffEntity,
       message: 'Staff member created successfully'
     })
-    
   } catch (error) {
     console.error('Staff API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error', details: error }, { status: 500 })
   }
 }
 
@@ -152,10 +135,7 @@ export async function GET(request: NextRequest) {
     const organizationId = searchParams.get('organizationId')
 
     if (!organizationId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     // Get all employees for the organization
@@ -191,7 +171,7 @@ export async function GET(request: NextRequest) {
       const staffWithData = entities.map(entity => {
         const entityDynamics = dynamicData?.filter(d => d.entity_id === entity.id) || []
         const dynamicFields: Record<string, any> = {}
-        
+
         entityDynamics.forEach(d => {
           if (d.field_value_text) dynamicFields[d.field_name] = d.field_value_text
           if (d.field_value_number !== null) dynamicFields[d.field_name] = d.field_value_number
@@ -213,12 +193,8 @@ export async function GET(request: NextRequest) {
       success: true,
       data: []
     })
-    
   } catch (error) {
     console.error('Staff API error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error', details: error },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error', details: error }, { status: 500 })
   }
 }

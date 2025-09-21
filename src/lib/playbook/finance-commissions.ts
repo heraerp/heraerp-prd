@@ -62,60 +62,66 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
     // Set organization context
     universalApi.setOrganizationId(transactionData.organization_id)
 
-    // Create transaction header
+    // Create transaction header - STRICT columns only
     const transactionHeader = {
       organization_id: transactionData.organization_id,
-      transaction_type: transactionData.transaction_type.toUpperCase(), // Ensure uppercase
-      transaction_date: new Date().toISOString(), // Use transaction_date, not created_at
-      smart_code: transactionData.smart_code,
-      total_amount: transactionData.total_amount,
-      transaction_code: generateTransactionCode(transactionData.transaction_type),
-      business_context: transactionData.business_context,
+      transaction_type: 'POS_SALE', // UPPERCASE as required
+      transaction_date: new Date().toISOString(),
+      smart_code: transactionData.smart_code.toUpperCase().replace(/\.v(\d+)$/i, '.V$1'), // Ensure .V1 not .v1
+      total_amount: Number(transactionData.total_amount) || 0,
+      transaction_code: generateTransactionCode('POS_SALE'),
       source_entity_id: transactionData.business_context.branch_id || null,
-      target_entity_id: transactionData.business_context.customer_id || null
+      target_entity_id: transactionData.business_context.customer_id || null,
+      business_context: {
+        ticket_id: transactionData.business_context.ticket_id,
+        source: transactionData.business_context.source || 'POS'
+      },
+      metadata: {
+        ui: 'pos',
+        cashier_id: transactionData.business_context.cashier_id,
+        till_id: transactionData.business_context.till_id
+      }
     }
 
-    console.log('Creating transaction with header:', transactionHeader)
+    console.debug('POS header payload →', transactionHeader)
 
     const transactionResponse = await universalApi.createTransaction(transactionHeader)
 
     if (!transactionResponse.success || !transactionResponse.data) {
-      console.error('Transaction creation failed:', transactionResponse.error)
+      console.error('DB header insert error →', transactionResponse.error)
       throw new Error(
-        `Failed to create transaction header: ${transactionResponse.error || 'Unknown error'}`
+        `createTransaction failed: ${transactionResponse.error?.message || transactionResponse.error || 'Unknown error'}`
       )
     }
 
     const transactionId = transactionResponse.data.id
     const transactionCode = transactionResponse.data.transaction_code
 
-    // Create transaction lines
+    // Create transaction lines with STRICT columns
+    let lineNumber = 1
     for (const line of transactionData.line_items) {
       const lineData = {
         organization_id: transactionData.organization_id,
         transaction_id: transactionId,
-        entity_id: line.line_entity_id || null, // Use entity_id, not line_entity_id
-        line_number: line.line_number,
-        line_type: line.line_data?.entity_type || 'SERVICE',
+        line_number: lineNumber++,
+        line_type: line.line_data?.entity_type?.toUpperCase() || 'SERVICE',
+        entity_id: line.line_entity_id || null,
         description: line.line_data?.entity_name || '',
-        quantity: line.quantity || 1,
-        unit_amount: line.unit_price || line.line_amount,
-        line_amount: line.line_amount,
-        smart_code: line.smart_code,
-        line_data: {
-          ...line.line_data,
-          branch_id: transactionData.business_context.branch_id // Mirror branch_id
-        }
+        quantity: Number(line.quantity) || 1,
+        unit_amount: Number(line.unit_price || line.line_amount) || 0,
+        line_amount: Number(line.line_amount) || 0,
+        smart_code: line.smart_code.toUpperCase().replace(/\.v(\d+)$/i, '.V$1'), // Ensure .V1 not .v1
+        line_data: line.line_data || {}
       }
 
-      console.log('Creating transaction line:', lineData)
+      console.debug('Creating transaction line:', lineData)
 
       const lineResponse = await universalApi.createTransactionLine(lineData)
 
       if (!lineResponse.success) {
-        console.error('Failed to create line:', lineResponse.error, lineData)
+        console.error('DB line insert error →', lineResponse.error, lineData)
         throw new Error(
-          `Failed to create transaction line: ${lineResponse.error || 'Unknown error'}`
+          `createTransactionLine failed: ${lineResponse.error?.message || lineResponse.error || 'Unknown error'}`
         )
       }
     }
@@ -231,7 +237,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: commissionAmount,
-        smart_code: 'HERA.SALON.GL.LINE.COMMISSION_EXPENSE.V1',
+        smart_code: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1',
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,
@@ -245,7 +251,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: -commissionAmount, // Negative for credit
-        smart_code: 'HERA.SALON.GL.LINE.COMMISSION_PAYABLE.V1',
+        smart_code: 'HERA.SALON.POS.LINE.COMMISSION.PAYABLE.V1',
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,
@@ -341,7 +347,7 @@ export function assertCommissionOnPosSale(transactionData: PosTransactionData): 
   const errors: string[] = []
 
   // Check that it's a POS sale transaction
-  if (!transactionData.smart_code.includes('POS.TXN.SALE')) {
+  if (!transactionData.smart_code.includes('POS.SALE.')) {
     errors.push('Transaction must be a POS sale to require commission validation')
     return { isValid: false, errors }
   }
