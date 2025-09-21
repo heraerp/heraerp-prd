@@ -23,17 +23,19 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { CheckCircle } from 'lucide-react'
-import { Code } from 'lucide-react'
-import { FileJson } from 'lucide-react'
-import { Globe } from 'lucide-react'
-import { Heart } from 'lucide-react'
-import { Scissors } from 'lucide-react'
-import { Settings } from 'lucide-react'
-import { Shield } from 'lucide-react'
-import { ShoppingCart } from 'lucide-react'
-import { UtensilsCrossed } from 'lucide-react'
-import { Zap } from 'lucide-react'
+import { 
+  CheckCircle,
+  Code,
+  FileJson,
+  Globe,
+  Heart,
+  Scissors,
+  Settings,
+  Shield,
+  ShoppingCart,
+  UtensilsCrossed,
+  Zap 
+} from 'lucide-react'
 import { motion } from 'framer-motion'
 
 // Mock step component for demo
