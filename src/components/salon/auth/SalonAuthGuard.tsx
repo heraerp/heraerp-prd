@@ -30,6 +30,7 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/settings': ['Owner', 'Administrator'],
   '/salon/whatsapp': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/leave': ['Owner', 'Administrator'],
+  '/salon/staff': ['Owner', 'Administrator'],
   '/salon/reports': ['Owner', 'Accountant', 'Administrator']
 }
 

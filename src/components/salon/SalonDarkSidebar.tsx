@@ -91,7 +91,7 @@ const sidebarItems: SidebarItem[] = [
     badge: '5',
     badgeColor: COLORS.gold
   },
-  { title: 'Reports', href: '/salon/reports', icon: BarChart }
+  { title: 'Staff', href: '/salon/staff', icon: UserPlus }
 ]
 
 // All apps for the modal (production ready)
@@ -179,15 +179,15 @@ function AppsModal({
   return createPortal(
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 backdrop-blur-sm z-50" 
+      <div
+        className="fixed inset-0 backdrop-blur-sm z-50"
         style={{ backgroundColor: `${COLORS.black}CC` }}
-        onClick={onClose} 
+        onClick={onClose}
       />
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-        <div 
+        <div
           className="backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden"
           style={{
             backgroundColor: `${COLORS.charcoal}F2`,
@@ -196,12 +196,12 @@ function AppsModal({
           }}
         >
           {/* Modal Header */}
-          <div 
+          <div
             className="flex items-center justify-between p-6 border-b"
             style={{ borderColor: `${COLORS.gold}20` }}
           >
             <div>
-              <h2 
+              <h2
                 className="text-2xl font-bold"
                 style={{
                   background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
@@ -271,10 +271,12 @@ function AppsModal({
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center mb-2"
                       style={{
-                        background: active 
+                        background: active
                           ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
                           : `linear-gradient(135deg, ${COLORS.charcoalLight} 0%, ${COLORS.charcoal} 100%)`,
-                        boxShadow: active ? '0 4px 6px rgba(212, 175, 55, 0.3)' : '0 2px 4px rgba(0, 0, 0, 0.2)'
+                        boxShadow: active
+                          ? '0 4px 6px rgba(212, 175, 55, 0.3)'
+                          : '0 2px 4px rgba(0, 0, 0, 0.2)'
                       }}
                     >
                       <Icon
@@ -338,13 +340,13 @@ export default function SalonDarkSidebar({
       {/* Logo Section */}
       <div
         className="h-20 flex flex-col items-center justify-center border-b"
-        style={{ 
-          borderColor: `${COLORS.gold}15`, 
+        style={{
+          borderColor: `${COLORS.gold}15`,
           backgroundColor: COLORS.charcoalLight,
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
         }}
       >
-        <div 
+        <div
           className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
           style={{
             background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
@@ -353,7 +355,10 @@ export default function SalonDarkSidebar({
         >
           <Sparkles className="h-6 w-6" style={{ color: COLORS.black }} />
         </div>
-        <span className="text-[10px] mt-1 font-medium tracking-wider" style={{ color: COLORS.champagne }}>
+        <span
+          className="text-[10px] mt-1 font-medium tracking-wider"
+          style={{ color: COLORS.champagne }}
+        >
           SALON
         </span>
       </div>
@@ -456,12 +461,15 @@ export default function SalonDarkSidebar({
             }}
           >
             <Grid3x3 className="h-5 w-5" style={{ color: COLORS.bronze }} />
-            <span className="text-[9px] mt-0.5 font-medium text-center leading-tight" style={{ color: COLORS.bronze }}>
+            <span
+              className="text-[9px] mt-0.5 font-medium text-center leading-tight"
+              style={{ color: COLORS.bronze }}
+            >
               More
             </span>
 
             {/* Tooltip */}
-            <div 
+            <div
               className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
               style={{
                 backgroundColor: COLORS.charcoalLight,
@@ -525,7 +533,7 @@ export default function SalonDarkSidebar({
                 </span>
 
                 {/* Tooltip */}
-                <div 
+                <div
                   className="absolute left-full ml-2 px-3 py-2 text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50"
                   style={{
                     backgroundColor: COLORS.charcoalLight,
