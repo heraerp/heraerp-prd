@@ -1,0 +1,386 @@
+diff --git a/src/config/flags.ts b/src/config/flags.ts
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/config/flags.ts
+@@ -0,0 +1,4 @@
++export const flags = {
++  ENABLE_FINANCE_POSTING:
++    (process.env.NEXT_PUBLIC_ENABLE_FINANCE_POSTING ?? 'true').toLowerCase() !== 'false',
++};
+
+diff --git a/src/lib/playbook/org-finance-utils.ts b/src/lib/playbook/org-finance-utils.ts
+new file mode 100644
+index 0000000..2345678
+--- /dev/null
++++ b/src/lib/playbook/org-finance-utils.ts
+@@ -0,0 +1,44 @@
++import { createClient } from '@supabase/supabase-js'
++
++// Use server-side supabase client
++function getSupabase() {
++  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
++  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
++  return createClient(supabaseUrl, supabaseKey)
++}
++
++export async function getOrgSettings(organizationId: string) {
++  const supabase = getSupabase()
++  const { data, error } = await supabase
++    .from('core_organizations')
++    .select('settings')
++    .eq('id', organizationId)
++    .maybeSingle()
++  if (error) {
++    console.warn('getOrgSettings error', error)
++    return null
++  }
++  return data?.settings ?? null
++}
++
++// Try to resolve today's fiscal period entity → return a minimal stamp
++export async function getTodayFiscalStamp(organizationId: string) {
++  const supabase = getSupabase()
++  const today = new Date().toISOString().slice(0, 10)
++  const { data, error } = await supabase
++    .from('core_entities')
++    .select('id, entity_code, metadata')
++    .eq('organization_id', organizationId)
++    .eq('entity_type', 'fiscal_period')
++    .lte('metadata->>start_date', today)
++    .gte('metadata->>end_date', today)
++    .maybeSingle()
++  if (error || !data) return null
++  // Expect metadata like { year: 2025, period: 9, code: "2025-09" }
++  const md: any = data.metadata || {}
++  return {
++    year: Number(md.year) || null,
++    period: Number(md.period) || null,
++    code: md.code ?? data.entity_code ?? null,
++  }
++}
+
+diff --git a/src/lib/playbook/pos-event-with-branch.ts b/src/lib/playbook/pos-event-with-branch.ts
+new file mode 100644
+index 0000000..3456789
+--- /dev/null
++++ b/src/lib/playbook/pos-event-with-branch.ts
+@@ -0,0 +1,152 @@
++'use client'
++
++import { universalApi } from '@/lib/universal-api-v2'
++import { heraCode } from '@/lib/smart-codes'
++import { flags } from '@/config/flags'
++import { getOrgSettings, getTodayFiscalStamp } from '@/lib/playbook/org-finance-utils'
++
++interface PosTicket {
++  id: string
++  total: number
++  taxTotal?: number
++  items: Array<{ name: string; qty: number; price: number; entity_id?: string }>
++  payments: Array<{ method: string; amount: number }>
++  customer_entity_id?: string
++}
++
++/**
++ * Post a POS event with idempotency, currency/fiscal stamping
++ */
++export async function postEventWithBranch(
++  orgId: string,
++  branchEntityId: string,
++  ticket: PosTicket,
++  createdBy?: string
++) {
++  universalApi.setOrganizationId(orgId)
++  const extRef = `pos:${ticket.id}`
++
++  // Idempotency: short-circuit if header already exists
++  const existingResponse = await universalApi.getTransactions({
++    filters: {
++      organization_id: orgId,
++      transaction_type: 'POS_SALE',
++      external_reference: extRef
++    },
++    pageSize: 1
++  })
++  
++  if (existingResponse.success && existingResponse.data && existingResponse.data.length > 0) {
++    console.log('Transaction already exists for ticket:', ticket.id)
++    return existingResponse.data[0]
++  }
++
++  const org = await getOrgSettings(orgId) // currency, etc.
++  const fiscal = await getTodayFiscalStamp(orgId) // optional, may be null
++
++  const header: any = {
++    organization_id: orgId,
++    transaction_type: 'POS_SALE',
++    transaction_date: new Date().toISOString(),
++    source_entity_id: branchEntityId,
++    target_entity_id: ticket.customer_entity_id ?? null,
++    total_amount: Number(ticket.total) || 0,
++    smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.v1'),
++    external_reference: extRef,
++    business_context: { ticket_id: ticket.id },
++    metadata: { ui: 'pos', tax_total: ticket.taxTotal ?? 0 },
++    created_by: createdBy ?? null,
++  }
++
++  // Currency / fiscal stamping (if available)
++  header.transaction_currency_code = org?.finance?.currency ?? 'USD'
++  header.base_currency_code = org?.finance?.base_currency ?? header.transaction_currency_code
++  header.exchange_rate = 1
++  
++  if (fiscal) {
++    header.fiscal_year = fiscal.year
++    header.fiscal_period = fiscal.period
++    header.posting_period_code = fiscal.code // e.g., "2025-09"
++  }
++
++  console.debug('POS header payload →', header)
++  const txnResponse = await universalApi.createTransaction(header)
++  
++  if (!txnResponse.success || !txnResponse.data) {
++    console.error('DB header insert error →', txnResponse.error)
++    throw new Error(`createTransaction failed: ${txnResponse.error}`)
++  }
++
++  const txn = txnResponse.data
++  let ln = 1
++  const lines: any[] = []
++
++  // Canonical line types map
++  const LINE = {
++    SERVICE: 'SERVICE',
++    PRODUCT: 'PRODUCT',
++    TAX: 'TAX',
++    PAYMENT: 'PAYMENT',
++    DISCOUNT: 'DISCOUNT',
++    COMMISSION: 'COMMISSION',
++    ADJUSTMENT: 'ADJUSTMENT',
++    ROUNDING: 'ROUNDING',
++  } as const
++
++  // Service/Product lines
++  for (const item of ticket.items) {
++    lines.push({
++      organization_id: orgId,
++      transaction_id: txn.id,
++      line_number: ln++,
++      line_type: LINE.SERVICE, // keep canonical
++      entity_id: item.entity_id ?? null,
++      description: item.name,
++      quantity: item.qty,
++      unit_amount: item.price,
++      line_amount: item.qty * item.price,
++      smart_code: heraCode('HERA.SALON.POS.LINE.SERVICE.v1'),
++      line_data: {},
++    })
++  }
++
++  // Tax line
++  if (ticket.taxTotal && ticket.taxTotal > 0) {
++    lines.push({
++      organization_id: orgId,
++      transaction_id: txn.id,
++      line_number: ln++,
++      line_type: LINE.TAX,
++      description: 'Sales Tax/VAT',
++      line_amount: ticket.taxTotal,
++      smart_code: heraCode('HERA.SALON.POS.LINE.TAX.v1'),
++      line_data: {},
++    })
++  }
++
++  // Payment lines (negative to balance)
++  for (const p of ticket.payments) {
++    lines.push({
++      organization_id: orgId,
++      transaction_id: txn.id,
++      line_number: ln++,
++      line_type: LINE.PAYMENT,
++      description: p.method,
++      line_amount: -Math.abs(p.amount),
++      smart_code: heraCode('HERA.SALON.POS.PAYMENT.' + p.method.toUpperCase() + '.v1'),
++      line_data: {},
++    })
++  }
++
++  // Create all lines
++  for (const line of lines) {
++    const lineResponse = await universalApi.createTransactionLine(line)
++    if (!lineResponse.success) {
++      console.error('DB line insert error →', lineResponse.error, line)
++      throw new Error(`createTransactionLine failed: ${lineResponse.error}`)
++    }
++  }
++
++  // Break-glass: optionally skip Finance DNA posting
++  if (!flags.ENABLE_FINANCE_POSTING) {
++    console.warn('Finance posting disabled by flag; returning POS doc only.')
++    return txn
++  }
++
++  return txn
++}
+
+diff --git a/database/migrations/20250921_add_utx_idempotency_idx.sql b/database/migrations/20250921_add_utx_idempotency_idx.sql
+new file mode 100644
+index 0000000..4567890
+--- /dev/null
++++ b/database/migrations/20250921_add_utx_idempotency_idx.sql
+@@ -0,0 +1,9 @@
++-- Add unique index for POS transaction idempotency
++-- This ensures that for a given organization and transaction type,
++-- the external_reference (e.g., ticket ID) is unique
++
++CREATE UNIQUE INDEX IF NOT EXISTS ux_utx_org_type_extref
++ON universal_transactions (organization_id, transaction_type, external_reference)
++WHERE external_reference IS NOT NULL;
++
++-- This prevents duplicate transactions when the same POS ticket
++-- is submitted multiple times (network retries, user double-clicks, etc.)
+
+diff --git a/tests/integration/pos-flow.spec.ts b/tests/integration/pos-flow.spec.ts
+new file mode 100644
+index 0000000..5678901
+--- /dev/null
++++ b/tests/integration/pos-flow.spec.ts
+@@ -0,0 +1,159 @@
++import { describe, it, expect, beforeAll } from 'vitest'
++import { postEventWithBranch } from '@/lib/playbook/pos-event-with-branch'
++import { universalApi } from '@/lib/universal-api-v2'
++import { heraCode } from '@/lib/smart-codes'
++
++// Test organization and branch IDs (you'll need to set these)
++const ORG = process.env.TEST_ORGANIZATION_ID || 'test-org-id'
++const BRANCH = process.env.TEST_BRANCH_ID || 'test-branch-id'
++
++describe('POS integration hardening', () => {
++  beforeAll(() => {
++    // Set up API context
++    universalApi.setOrganizationId(ORG)
++  })
++
++  it('creates a POS sale with split payments that balances to zero', async () => {
++    const ticket = {
++      id: 'T-150-5-' + Date.now(), // Unique for each test run
++      total: 157.5,
++      taxTotal: 7.5,
++      items: [{ name: 'Service A', qty: 1, price: 150 }],
++      payments: [{ method: 'Cash', amount: 100 }, { method: 'Card', amount: 57.5 }],
++      customer_entity_id: null,
++    }
++    
++    const txn = await postEventWithBranch(ORG, BRANCH, ticket)
++    expect(txn.transaction_type).toBe('POS_SALE')
++    expect(txn.total_amount).toBe(157.5)
++    
++    // Fetch lines and assert sums
++    const linesResponse = await universalApi.getTransactionLines({
++      filters: { transaction_id: txn.id }
++    })
++    
++    expect(linesResponse.success).toBe(true)
++    const lines = linesResponse.data || []
++    
++    // Calculate totals
++    const nonPayment = lines
++      .filter(l => l.line_type !== 'PAYMENT')
++      .reduce((s, l) => s + (l.line_amount || 0), 0)
++    const payment = lines
++      .filter(l => l.line_type === 'PAYMENT')
++      .reduce((s, l) => s + (l.line_amount || 0), 0)
++    
++    // Assert balances
++    expect(nonPayment).toBeCloseTo(157.5, 2)
++    expect(payment).toBeCloseTo(-157.5, 2)
++    
++    // Check all smart codes use lowercase v
++    lines.forEach(l => {
++      expect(l.smart_code).toBeDefined()
++      expect(/\.v\d+$/.test(l.smart_code)).toBe(true)
++      expect(/\.V\d+$/.test(l.smart_code)).toBe(false)
++    })
++    
++    // Verify line types
++    const lineTypes = lines.map(l => l.line_type)
++    expect(lineTypes).toContain('SERVICE')
++    expect(lineTypes).toContain('TAX')
++    expect(lineTypes).toContain('PAYMENT')
++  })
++
++  it('is idempotent: same ticket id returns the same header', async () => {
++    const ticket = {
++      id: 'T-IDEM-' + Date.now(),
++      total: 157.5,
++      taxTotal: 7.5,
++      items: [{ name: 'Service A', qty: 1, price: 150 }],
++      payments: [{ method: 'Cash', amount: 157.5 }],
++    }
++    
++    // First call creates the transaction
++    const a = await postEventWithBranch(ORG, BRANCH, ticket)
++    expect(a.id).toBeDefined()
++    expect(a.transaction_type).toBe('POS_SALE')
++    
++    // Second call should return the same transaction
++    const b = await postEventWithBranch(ORG, BRANCH, ticket)
++    expect(b.id).toBe(a.id)
++    expect(b.transaction_code).toBe(a.transaction_code)
++    
++    // Verify only one set of lines was created
++    const linesResponse = await universalApi.getTransactionLines({
++      filters: { transaction_id: a.id }
++    })
++    const lines = linesResponse.data || []
++    expect(lines.length).toBeGreaterThan(0)
++    expect(lines.length).toBeLessThan(10) // Should not have duplicate lines
++  })
++})
+
+diff --git a/tests/unit/smart-codes.spec.ts b/tests/unit/smart-codes.spec.ts
+new file mode 100644
+index 0000000..6789012
+--- /dev/null
++++ b/tests/unit/smart-codes.spec.ts
+@@ -0,0 +1,57 @@
++import { isValidHeraCode, heraCode } from '@/lib/smart-codes'
++import { describe, it, expect } from 'vitest'
++
++describe('smart-code regex', () => {
++  it('matches lowercase v only', () => {
++    // Valid patterns with lowercase v
++    expect(isValidHeraCode('HERA.SALON.POS.SALE.LINE.PAYMENT.v1')).toBe(true)
++    expect(isValidHeraCode('HERA.FIN.GL.ACC.ASSET.CASH.v1')).toBe(true)
++    expect(isValidHeraCode('HERA.MFG.BOM.COMP.MAT.RAW.v10')).toBe(true)
++    
++    // Invalid patterns with uppercase V
++    expect(isValidHeraCode('HERA.SALON.POS.SALE.LINE.PAYMENT.V1')).toBe(false)
++    expect(isValidHeraCode('HERA.FIN.GL.ACC.ASSET.CASH.V1')).toBe(false)
++    expect(isValidHeraCode('HERA.MFG.BOM.COMP.MAT.RAW.V10')).toBe(false)
++  })
++
++  it('enforces complete pattern requirements', () => {
++    // Too short (not enough segments)
++    expect(isValidHeraCode('HERA.SALON.v1')).toBe(false)
++    expect(isValidHeraCode('HERA.SALON.POS.v1')).toBe(false)
++    
++    // Missing version
++    expect(isValidHeraCode('HERA.SALON.POS.SALE.LINE.PAYMENT')).toBe(false)
++    
++    // Invalid characters (lowercase in segments)
++    expect(isValidHeraCode('HERA.salon.POS.SALE.LINE.PAYMENT.v1')).toBe(false)
++    expect(isValidHeraCode('HERA.SALON.pos.SALE.LINE.PAYMENT.v1')).toBe(false)
++    
++    // Not starting with HERA
++    expect(isValidHeraCode('ERA.SALON.POS.SALE.LINE.PAYMENT.v1')).toBe(false)
++    expect(isValidHeraCode('HERO.SALON.POS.SALE.LINE.PAYMENT.v1')).toBe(false)
++  })
++
++  it('heraCode helper fixes uppercase V to lowercase v', () => {
++    expect(heraCode('HERA.SALON.POS.SALE.HEADER.V1')).toBe('HERA.SALON.POS.SALE.HEADER.v1')
++    expect(heraCode('HERA.SALON.POS.SALE.HEADER.V10')).toBe('HERA.SALON.POS.SALE.HEADER.v10')
++    expect(heraCode('HERA.SALON.POS.SALE.HEADER.v1')).toBe('HERA.SALON.POS.SALE.HEADER.v1')
++  })
++})

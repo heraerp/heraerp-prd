@@ -1,0 +1,125 @@
+--- a/src/lib/playbook/finance-commissions.ts
++++ b/src/lib/playbook/finance-commissions.ts
+@@ -2,6 +2,8 @@
+ 
+ import { universalApi } from '@/lib/universal-api-v2'
+ import { heraCode } from '@/lib/smart-codes'
++import { flags } from '@/config/flags'
++import { getOrgSettings, getTodayFiscalStamp } from '@/lib/playbook/org-finance-utils'
+ 
+ interface TransactionLine {
+   line_entity_id?: string
+@@ -43,6 +45,17 @@ interface ValidationError {
+   field?: string
+ }
+ 
++interface PosTicket {
++  id: string
++  total: number
++  taxTotal?: number
++  items: Array<{ name: string; qty: number; price: number; entity_id?: string }>
++  payments: Array<{ method: string; amount: number }>
++  customer_entity_id?: string
++  branch_id: string
++  cashier_id?: string
++}
++
+ /**
+  * Post an event with branch enforcement
+  * Ensures branch_id is present in business_context and mirrored to all line_data
+@@ -62,8 +75,36 @@ export async function postEventWithBranch(transactionData: PosTransactionData):
+ 
+     // Set organization context
+     universalApi.setOrganizationId(transactionData.organization_id)
++    const extRef = `pos:${transactionData.business_context.ticket_id}`
++
++    // Idempotency: short-circuit if header already exists
++    const existingResponse = await universalApi.getTransactions({
++      filters: {
++        organization_id: transactionData.organization_id,
++        transaction_type: 'POS_SALE',
++        external_reference: extRef
++      },
++      pageSize: 1
++    })
++    
++    if (existingResponse.success && existingResponse.data && existingResponse.data.length > 0) {
++      console.log('Transaction already exists for ticket:', transactionData.business_context.ticket_id)
++      return {
++        success: true,
++        transaction_id: existingResponse.data[0].id,
++        transaction_code: existingResponse.data[0].transaction_code
++      }
++    }
++
++    // Get org settings and fiscal info
++    const org = await getOrgSettings(transactionData.organization_id)
++    const fiscal = await getTodayFiscalStamp(transactionData.organization_id)
+ 
+     // Create transaction header - STRICT columns only
+-    const transactionHeader = {
++    const transactionHeader: any = {
+       organization_id: transactionData.organization_id,
+       transaction_type: 'POS_SALE', // UPPERCASE as required
+       transaction_date: new Date().toISOString(),
+@@ -73,6 +114,7 @@ export async function postEventWithBranch(transactionData: PosTransactionData):
+       source_entity_id: transactionData.business_context.branch_id || null,
+       target_entity_id: transactionData.business_context.customer_id || null,
++      external_reference: extRef,
+       business_context: {
+         ticket_id: transactionData.business_context.ticket_id,
+         source: transactionData.business_context.source || 'POS'
+@@ -84,6 +126,19 @@ export async function postEventWithBranch(transactionData: PosTransactionData):
+       }
+     }
+ 
++    // Currency / fiscal stamping (if available)
++    transactionHeader.transaction_currency_code = org?.finance?.currency ?? 'USD'
++    transactionHeader.base_currency_code = org?.finance?.base_currency ?? transactionHeader.transaction_currency_code
++    transactionHeader.exchange_rate = 1
++    
++    if (fiscal) {
++      transactionHeader.fiscal_year = fiscal.year
++      transactionHeader.fiscal_period = fiscal.period
++      transactionHeader.posting_period_code = fiscal.code // e.g., "2025-09"
++    }
++
+     console.debug('POS header payload →', transactionHeader)
+ 
+     const transactionResponse = await universalApi.createTransaction(transactionHeader)
+@@ -99,6 +154,18 @@ export async function postEventWithBranch(transactionData: PosTransactionData):
+     const transactionCode = transactionResponse.data.transaction_code
+ 
+     // Create transaction lines with STRICT columns
++    // Canonical line types map
++    const LINE = {
++      SERVICE: 'SERVICE',
++      PRODUCT: 'PRODUCT',
++      TAX: 'TAX',
++      PAYMENT: 'PAYMENT',
++      DISCOUNT: 'DISCOUNT',
++      COMMISSION: 'COMMISSION',
++      ADJUSTMENT: 'ADJUSTMENT',
++      ROUNDING: 'ROUNDING',
++    } as const
++
+     let lineNumber = 1
+     for (const line of transactionData.line_items) {
+       const lineData = {
+@@ -125,6 +192,14 @@ export async function postEventWithBranch(transactionData: PosTransactionData):
+       }
+     }
+ 
++    // Break-glass: optionally skip Finance DNA posting
++    if (!flags.ENABLE_FINANCE_POSTING) {
++      console.warn('Finance posting disabled by flag; returning POS doc only.')
++      return {
++        success: true,
++        transaction_id: transactionId,
++        transaction_code: transactionCode
++      }
++    }
++
+     return {
+       success: true,
+       transaction_id: transactionId,
