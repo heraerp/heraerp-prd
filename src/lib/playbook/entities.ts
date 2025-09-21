@@ -147,13 +147,9 @@ export async function searchAppointments(
   universalApi.setOrganizationId(organization_id)
 
   // 1) Get appointment transactions for this org (appointments are stored as transactions)
-  const transactionsResponse = await universalApi.read({
-    table: 'universal_transactions',
-    filters: [
-      { field: 'organization_id', operator: 'eq', value: organization_id },
-      { field: 'transaction_type', operator: 'eq', value: 'APPOINTMENT' }
-    ]
-  })
+  const transactionsResponse = await universalApi.read('universal_transactions', {
+    transaction_type: 'APPOINTMENT'
+  }, organization_id)
 
   if (!transactionsResponse.success || !transactionsResponse.data) {
     console.error('Error fetching appointment transactions:', transactionsResponse.error)
@@ -266,9 +262,8 @@ export async function searchCustomers(
 
   // 1) Get customer entity IDs for this org
   const entitiesResponse = await universalApi.read('core_entities', {
-    organization_id,
     entity_type: 'customer'
-  })
+  }, organization_id)
 
   if (!entitiesResponse.success || !entitiesResponse.data) {
     console.error('Error fetching customer entities:', entitiesResponse.error)
@@ -360,6 +355,10 @@ async function fetchDynamicForEntities(
   organization_id: string,
   entityIds: string[]
 ): Promise<any[]> {
+  if (!entityIds.length) {
+    return []
+  }
+
   const CHUNK_SIZE = 200 // Keep URLs under limits
   const chunks: string[][] = []
 
@@ -372,16 +371,21 @@ async function fetchDynamicForEntities(
 
   // Fetch each chunk
   for (const ids of chunks) {
-    // universalApi.read handles empty arrays → returns empty quickly (from Step 1)
-    const response = await universalApi.read('core_dynamic_data', {
-      organization_id,
-      entity_id: ids // IN (...)
-    })
+    if (!ids.length) continue
 
-    if (response.success && response.data?.length) {
-      all.push(...response.data)
-    } else if (!response.success) {
-      console.error('Error fetching dynamic data chunk:', response.error)
+    try {
+      // For dynamic data, we need to use the direct query since it doesn't have a specific method
+      const response = await universalApi.read('core_dynamic_data', {
+        entity_id: ids
+      }, organization_id)
+
+      if (response.success && response.data?.length) {
+        all.push(...response.data)
+      } else if (!response.success) {
+        console.error('Error fetching dynamic data chunk:', response.error)
+      }
+    } catch (error) {
+      console.error('Error in fetchDynamicForEntities:', error)
     }
   }
 
@@ -683,69 +687,95 @@ export async function searchStaff(params: {
   page?: number
   page_size?: number
 }): Promise<{ rows: any[]; total: number }> {
-  const { organization_id, branch_id, q, page = 1, page_size = 50 } = params
+  const { organization_id, branch_id, q, page = 1, page_size = 100 } = params
 
-  // Search for employees
-  const result = await universalApi.getEntities({
-    organizationId: organization_id,
-    filters: {
-      entity_type: 'employee',
-      status: ['neq', 'deleted']
-    },
-    page,
-    pageSize: page_size
-  })
+  try {
+    // Set organization context
+    universalApi.setOrganizationId(organization_id)
 
-  if (!result.success || !result.data) {
-    console.error('Error fetching staff entities:', result.error)
+    // Use getEntities method which supports pagination
+    const result = await universalApi.getEntities({
+      organizationId: organization_id,
+      filters: {
+        entity_type: 'employee'
+      },
+      page,
+      pageSize: page_size,
+      orderBy: 'created_at',
+      orderDirection: 'desc'
+    })
+
+    console.log('Staff search result:', result)
+
+    if (!result.success || !result.data) {
+      console.error('Error fetching staff entities:', result.error)
+      return { rows: [], total: 0 }
+    }
+
+    const entities = result.data
+    const total = result.metadata?.count || entities.length || 0
+
+    if (!entities?.length) {
+      console.log('No employee entities found')
+      return { rows: [], total: 0 }
+    }
+
+    console.log(`Found ${entities.length} employee entities`)
+
+    // Get dynamic data for staff attributes
+    const ids = entities.map((e: any) => e.id).filter(Boolean)
+    console.log('Fetching dynamic data for entity IDs:', ids)
+    const dynRows = await fetchDynamicForEntities(organization_id, ids)
+    console.log(`Fetched ${dynRows.length} dynamic data rows`)
+    const byEntity = groupDynamicByEntity(dynRows)
+    const id2entity = new Map(entities.map((e: any) => [e.id, e]))
+
+    // Build staff DTOs
+    const staff = ids.map(id => {
+      const entity = id2entity.get(id)
+      const dynamics = byEntity.get(id) || {}
+
+      return {
+        id,
+        organization_id,
+        entity_name: entity?.entity_name,
+        entity_code: entity?.entity_code,
+        smart_code: entity?.smart_code,
+        branch_id: dynamics.branch_id,
+        role: dynamics.role || 'stylist',
+        specialties: dynamics.specialties || [],
+        available: dynamics.available !== 'false',
+        phone: dynamics.phone,
+        email: dynamics.email,
+        hourly_rate: dynamics.hourly_rate,
+        commission_rate: dynamics.commission_rate,
+        created_at: entity?.created_at
+      }
+    })
+
+    console.log(`Built ${staff.length} staff DTOs`)
+
+    // Apply filters
+    let filteredStaff = staff
+    if (branch_id) {
+      filteredStaff = staff.filter(s => s.branch_id === branch_id)
+    }
+    if (q) {
+      const searchLower = q.toLowerCase()
+      filteredStaff = filteredStaff.filter(
+        s =>
+          s.entity_name?.toLowerCase().includes(searchLower) ||
+          s.entity_code?.toLowerCase().includes(searchLower)
+      )
+    }
+
+    console.log(`After filtering: ${filteredStaff.length} staff members`)
+
+    return { rows: filteredStaff, total: filteredStaff.length }
+  } catch (error) {
+    console.error('Error in searchStaff:', error)
     return { rows: [], total: 0 }
   }
-
-  const entities = result.data
-  const total = result.metadata?.count || 0
-
-  if (!entities?.length) return { rows: [], total: 0 }
-
-  // Get dynamic data for staff attributes
-  const ids = entities.map(e => e.id)
-  const dynRows = await fetchDynamicForEntities(organization_id, ids)
-  const byEntity = groupDynamicByEntity(dynRows)
-  const id2entity = new Map(entities.map((e: any) => [e.id, e]))
-
-  // Build staff DTOs
-  const staff = ids.map(id => {
-    const entity = id2entity.get(id)
-    const dynamics = byEntity.get(id)
-    const dynamicMap = new Map(dynamics?.map(d => [d.field_name, d]))
-
-    return {
-      id,
-      organization_id,
-      entity_name: entity?.entity_name,
-      entity_code: entity?.entity_code,
-      smart_code: entity?.smart_code,
-      branch_id: dynamicMap.get('branch_id')?.field_value_text,
-      role: dynamicMap.get('role')?.field_value_text || 'stylist',
-      specialties: dynamicMap.get('specialties')?.field_value_json || [],
-      available: dynamicMap.get('available')?.field_value_text !== 'false'
-    }
-  })
-
-  // Apply filters
-  let filteredStaff = staff
-  if (branch_id) {
-    filteredStaff = staff.filter(s => s.branch_id === branch_id)
-  }
-  if (q) {
-    const searchLower = q.toLowerCase()
-    filteredStaff = filteredStaff.filter(
-      s =>
-        s.entity_name?.toLowerCase().includes(searchLower) ||
-        s.entity_code?.toLowerCase().includes(searchLower)
-    )
-  }
-
-  return { rows: filteredStaff, total: filteredStaff.length }
 }
 
 /**

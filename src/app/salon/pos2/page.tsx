@@ -62,27 +62,8 @@ function POS2Content() {
   const [isCustomerSearchOpen, setIsCustomerSearchOpen] = useState(false)
   const [isTicketDetailsOpen, setIsTicketDetailsOpen] = useState(false)
 
-  const posTicketResult = organizationId
-    ? usePosTicket(organizationId)
-    : {
-        ticket: { lineItems: [], customer: null, discounts: [], tips: [], metadata: {} },
-        addLineItem: () => {},
-        updateLineItem: () => {},
-        removeLineItem: () => {},
-        addDiscount: () => {},
-        addTip: () => {},
-        clearTicket: () => {},
-        addCustomerToTicket: () => {},
-        addItemsFromAppointment: () => {},
-        calculateTotals: () => ({
-          subtotal: 0,
-          discountAmount: 0,
-          tipAmount: 0,
-          taxAmount: 0,
-          total: 0
-        })
-      }
-
+  // Always call hooks - pass empty string if no org ID to satisfy hooks rules
+  const posTicketResult = usePosTicket(organizationId || 'demo-org')
   const {
     ticket,
     addLineItem,
@@ -96,14 +77,10 @@ function POS2Content() {
     calculateTotals
   } = posTicketResult
 
-  const appointmentLookupResult = organizationId
-    ? useAppointmentLookup(organizationId)
-    : { loadAppointment: async () => null }
+  const appointmentLookupResult = useAppointmentLookup(organizationId || 'demo-org')
   const { loadAppointment } = appointmentLookupResult
 
-  const customerLookupResult = organizationId
-    ? useCustomerLookup(organizationId)
-    : { searchCustomers: async () => [] }
+  const customerLookupResult = useCustomerLookup(organizationId || 'demo-org')
   const { searchCustomers } = customerLookupResult
 
   // Keyboard shortcuts

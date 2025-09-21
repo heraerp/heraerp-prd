@@ -55,41 +55,42 @@ import { toast } from '@/hooks/use-toast'
 import { PageLayout } from '@/components/universal/PageLayout'
 import { PageHeader, PageHeaderButton } from '@/components/universal/PageHeader'
 import { NewAppointmentModal } from '@/components/salon/appointments/NewAppointmentModal'
+import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   booked: {
     label: 'Booked',
     color:
-      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+      'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:border-violet-700',
     icon: CheckCircle
   },
   checked_in: {
     label: 'Checked In',
     color:
-      'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-700',
+      'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700',
     icon: Clock
   },
   completed: {
     label: 'Completed',
     color:
-      'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700',
+      'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700',
     icon: CheckCircle
   },
   cancelled: {
     label: 'Cancelled',
     color:
-      'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700',
+      'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700',
     icon: XCircle
   },
   no_show: {
     label: 'No Show',
     color:
-      'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700',
+      'bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-700',
     icon: XCircle
   }
 }
 
-export default function SalonAppointmentsPage() {
+function SalonAppointmentsContent() {
   const router = useRouter()
   const { organization, isAuthenticated, isLoading: contextLoading } = useHERAAuth()
 
@@ -214,34 +215,26 @@ export default function SalonAppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
+    <div className="min-h-screen bg-gradient-to-br from-muted/50 to-muted dark:from-background dark:to-background">
       <div className="p-6">
-        <PageHeader
-          title="Appointments"
-          breadcrumbs={[
-            { label: 'HERA' },
-            { label: 'SALON OS' },
-            { label: 'Appointments', isActive: true }
-          ]}
-          actions={
-            <>
-              <PageHeaderButton
-                variant="secondary"
-                icon={CalendarDays}
-                onClick={() => router.push('/salon/appointments/calendar')}
-              >
-                Calendar View
-              </PageHeaderButton>
-              <PageHeaderButton
-                variant="primary"
-                icon={Plus}
-                onClick={() => router.push('/salon/appointments/new')}
-              >
-                Book Appointment
-              </PageHeaderButton>
-            </>
-          }
-        />
+        {/* Page Actions */}
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <Button
+            variant="outline"
+            className="border-border hover:bg-accent"
+            onClick={() => router.push('/salon/kanban')}
+          >
+            <CalendarDays className="w-4 h-4 mr-2" />
+            Kanban View
+          </Button>
+          <Button
+            className="bg-violet-600 hover:bg-violet-700 text-white"
+            onClick={() => setShowNewAppointmentModal(true)}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Book Appointment
+          </Button>
+        </div>
 
         {/* Error state */}
         {error && (
@@ -252,7 +245,7 @@ export default function SalonAppointmentsPage() {
         )}
 
         {/* Filters */}
-        <Card className="p-4 mb-6">
+        <Card className="p-6 mb-6 bg-card/95 backdrop-blur shadow-lg border-border">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -260,12 +253,12 @@ export default function SalonAppointmentsPage() {
                 placeholder="Search by customer, stylist, or code..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-9 bg-background border-border"
               />
             </div>
 
             <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] bg-background border-border">
                 <SelectValue placeholder="Filter by date" />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
@@ -285,7 +278,7 @@ export default function SalonAppointmentsPage() {
             </Select>
 
             <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] bg-background border-border">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent className="hera-select-content">
@@ -316,7 +309,7 @@ export default function SalonAppointmentsPage() {
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <Card key={i} className="p-6">
+              <Card key={i} className="p-6 bg-card/95 backdrop-blur shadow-lg border-border">
                 <div className="animate-pulse">
                   <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
                   <div className="h-3 bg-muted rounded w-1/2 mb-2"></div>
@@ -326,8 +319,8 @@ export default function SalonAppointmentsPage() {
             ))}
           </div>
         ) : appointments.length === 0 ? (
-          <Card className="p-12 text-center">
-            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <Card className="p-12 text-center bg-card/95 backdrop-blur shadow-lg border-border">
+            <Calendar className="w-12 h-12 text-violet-500/30 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-1">No appointments found</h3>
             <p className="text-muted-foreground mb-4">
               {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
@@ -335,14 +328,18 @@ export default function SalonAppointmentsPage() {
                 : 'Book your first appointment to get started'}
             </p>
             {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
-              <Button onClick={() => router.push('/salon/appointments/new')} className="">
+              <Button 
+                onClick={() => setShowNewAppointmentModal(true)} 
+                className="bg-violet-600 hover:bg-violet-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
                 Book Appointment
               </Button>
             )}
           </Card>
         ) : (
           <div className="space-y-4">
-            <p className="text-sm text-amber-500 dark:text-amber-400">
+            <p className="text-sm text-muted-foreground">
               Showing {appointments.length} of {total} appointments
             </p>
 
@@ -354,7 +351,7 @@ export default function SalonAppointmentsPage() {
                 <Card
                   key={appointment.id}
                   className={cn(
-                    'p-6 transition-all hover:shadow-md cursor-pointer',
+                    'p-6 transition-all hover:shadow-xl cursor-pointer bg-card/95 backdrop-blur border-border hover:border-violet-500/50',
                     isPast && 'opacity-75'
                   )}
                   onClick={() => router.push(`/salon/appointments/${appointment.id}`)}
@@ -363,22 +360,22 @@ export default function SalonAppointmentsPage() {
                     <div className="flex-1">
                       {/* Header Row */}
                       <div className="flex items-center gap-4 mb-3">
-                        <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">
+                        <h3 className="text-lg font-semibold text-foreground">
                           {appointment.entity_name}
                         </h3>
                         {getStatusBadge(appointment.status)}
-                        <Badge variant="outline" className="gap-1">
+                        <Badge variant="outline" className="gap-1 border-border">
                           <Calendar className="w-3 h-3" />
                           {format(appointmentDate, 'MMM d, yyyy')}
                         </Badge>
-                        <Badge variant="outline" className="gap-1">
+                        <Badge variant="outline" className="gap-1 border-border">
                           <Clock className="w-3 h-3" />
                           {format(appointmentDate, 'h:mm a')}
                         </Badge>
                       </div>
 
                       {/* Details Row */}
-                      <div className="flex flex-wrap gap-4 text-sm text-amber-600 dark:text-amber-400">
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                         {appointment.service_ids && appointment.service_ids.length > 0 && (
                           <div className="flex items-center gap-1">
                             <span className="font-medium">Services:</span>
@@ -388,7 +385,7 @@ export default function SalonAppointmentsPage() {
 
                         {appointment.price && appointment.price > 0 && (
                           <div className="flex items-center gap-1">
-                            <DollarSign className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                            <DollarSign className="w-4 h-4 text-violet-500" />
                             <span className="font-medium">
                               {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
                             </span>
@@ -396,13 +393,13 @@ export default function SalonAppointmentsPage() {
                         )}
 
                         <div className="flex items-center gap-1">
-                          <span className="text-amber-500">#{appointment.entity_code}</span>
+                          <span className="text-violet-500">#{appointment.entity_code}</span>
                         </div>
                       </div>
 
                       {/* Notes */}
                       {appointment.notes && (
-                        <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+                        <p className="mt-2 text-sm text-muted-foreground italic">
                           {appointment.notes}
                         </p>
                       )}
@@ -465,5 +462,13 @@ export default function SalonAppointmentsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function SalonAppointmentsPage() {
+  return (
+    <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
+      <SalonAppointmentsContent />
+    </SalonAuthGuard>
   )
 }

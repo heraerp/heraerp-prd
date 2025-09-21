@@ -5,7 +5,7 @@ import { User, Check, Clock, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/luxe-dialog'
 import { universalApi } from '@/lib/universal-api-v2'
 import { cn } from '@/lib/utils'
 
@@ -200,15 +200,9 @@ export function StylistSelectionModal({
 
   return (
     <Dialog open={open} onOpenChange={open => !open && onClose()}>
-      <DialogContent
-        className="max-w-2xl"
-        style={{
-          backgroundColor: COLORS.charcoal,
-          borderColor: COLORS.bronze + '33'
-        }}
-      >
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle style={{ color: COLORS.champagne }}>
+          <DialogTitle>
             Select Stylist for {service.name}
           </DialogTitle>
         </DialogHeader>
@@ -266,17 +260,16 @@ export function StylistSelectionModal({
                 <Card
                   key={stylist.id}
                   className={cn(
-                    'cursor-pointer transition-all hover:shadow-md',
-                    selectedStylist?.id === stylist.id && 'ring-2'
+                    'cursor-pointer transition-all hover:shadow-md border',
+                    selectedStylist?.id === stylist.id && 'ring-2 ring-[#D4AF37]'
                   )}
                   style={{
                     backgroundColor:
                       selectedStylist?.id === stylist.id
-                        ? COLORS.gold + '20'
+                        ? 'rgba(212, 175, 55, 0.125)' // COLORS.gold with 12.5% opacity
                         : COLORS.charcoalLight,
                     borderColor:
-                      selectedStylist?.id === stylist.id ? COLORS.gold : COLORS.bronze + '33',
-                    ringColor: COLORS.gold
+                      selectedStylist?.id === stylist.id ? COLORS.gold : 'rgba(140, 120, 83, 0.2)' // COLORS.bronze with 20% opacity
                   }}
                   onClick={() => setSelectedStylist(stylist)}
                 >

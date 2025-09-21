@@ -74,8 +74,26 @@ export async function listStaff({
   limit?: number
   offset?: number
 }) {
-  if (!BASE || !KEY) {
-    // Return mock data
+  // Use the searchStaff function from entities playbook
+  const { searchStaff } = await import('@/lib/playbook/entities')
+  
+  try {
+    const result = await searchStaff({
+      organization_id,
+      branch_id,
+      q,
+      page: Math.floor(offset / limit) + 1,
+      page_size: limit
+    })
+    
+    // Transform the result to match the expected format
+    return {
+      items: result.rows || [],
+      total: result.total || 0
+    }
+  } catch (error) {
+    console.error('Error searching staff:', error)
+    // Return mock data as fallback
     const allStaff = generateMockStaff(10, branch_id)
     const filtered = q
       ? allStaff.filter(s => s.entity_name.toLowerCase().includes(q.toLowerCase()))
@@ -85,20 +103,6 @@ export async function listStaff({
       total: filtered.length
     }
   }
-
-  const params = new URLSearchParams({
-    type: 'HERA.SALON.STAFF.V1',
-    organization_id,
-    limit: String(limit),
-    offset: String(offset)
-  })
-  if (branch_id) params.append('metadata.branch_id', branch_id)
-  if (q) params.append('q', q)
-
-  const response = await fetch(`${BASE}/entities?${params}`, {
-    headers: { Authorization: `Bearer ${KEY}` }
-  })
-  return response.json()
 }
 
 export async function listPolicies({ organization_id }: { organization_id: string }) {

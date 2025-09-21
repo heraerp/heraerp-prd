@@ -52,6 +52,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
   const { organization, isAuthenticated } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
 
   const [requests, setRequests] = useState<any[]>([])
   const [balancesByStaff, setBalancesByStaff] = useState<Record<string, LeaveBalance>>({})
@@ -59,12 +60,49 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
   const [holidays, setHolidays] = useState<any[]>([])
   const [staff, setStaff] = useState<Staff[]>([])
 
-  const organizationId = organization?.id || ''
+  // Get organization ID from localStorage for demo mode
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
+
+  const organizationId = organization?.id || localOrgId || ''
   const { branchId, staffId, range, status = 'all', query, page = 1, pageSize = 50 } = options
+
+  // Refresh function to reload data
+  const refreshData = useCallback(async () => {
+    if (!organizationId || (!isAuthenticated && !localOrgId)) return
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const offset = (page - 1) * pageSize
+      const res = await listRequests({
+        organization_id: organizationId,
+        branch_id: branchId,
+        staff_id: staffId,
+        status: status === 'all' ? undefined : status,
+        from: range?.from ? format(range.from, 'yyyy-MM-dd') : undefined,
+        to: range?.to ? format(range.to, 'yyyy-MM-dd') : undefined,
+        limit: pageSize,
+        offset
+      })
+
+      setRequests(res.items || [])
+    } catch (err) {
+      console.error('Failed to refresh requests:', err)
+      setError('Failed to refresh leave requests')
+    } finally {
+      setLoading(false)
+    }
+  }, [organizationId, branchId, staffId, status, range, page, pageSize, isAuthenticated, localOrgId])
 
   // Load policies and holidays once
   useEffect(() => {
-    if (!organizationId || !isAuthenticated) return
+    if (!organizationId || (!isAuthenticated && !localOrgId)) return
 
     const loadStaticData = async () => {
       try {
@@ -82,11 +120,11 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     }
 
     loadStaticData()
-  }, [organizationId, isAuthenticated])
+  }, [organizationId, isAuthenticated, localOrgId])
 
   // Load staff
   useEffect(() => {
-    if (!organizationId || !isAuthenticated) return
+    if (!organizationId || (!isAuthenticated && !localOrgId)) return
 
     const loadStaff = async () => {
       try {
@@ -102,11 +140,11 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     }
 
     loadStaff()
-  }, [organizationId, branchId, query, isAuthenticated])
+  }, [organizationId, branchId, query, isAuthenticated, localOrgId])
 
   // Load requests
   useEffect(() => {
-    if (!organizationId || !isAuthenticated) return
+    if (!organizationId || (!isAuthenticated && !localOrgId)) return
 
     const loadRequests = async () => {
       setLoading(true)
@@ -135,11 +173,11 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     }
 
     loadRequests()
-  }, [organizationId, branchId, staffId, status, range, page, pageSize, isAuthenticated])
+  }, [organizationId, branchId, staffId, status, range, page, pageSize, isAuthenticated, localOrgId])
 
   // Load balances for visible staff
   useEffect(() => {
-    if (!organizationId || !isAuthenticated || staff.length === 0) return
+    if (!organizationId || (!isAuthenticated && !localOrgId) || staff.length === 0) return
 
     const loadBalances = async () => {
       try {
@@ -177,7 +215,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     }
 
     loadBalances()
-  }, [organizationId, staff, isAuthenticated])
+  }, [organizationId, staff, isAuthenticated, localOrgId])
 
   // Create leave request
   const createLeave = useCallback(
@@ -228,7 +266,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
         })
 
         // Reload requests and balances
-        window.location.reload() // Simple refresh for now
+        await refreshData()
 
         return result
       } catch (err) {
@@ -238,7 +276,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
         setLoading(false)
       }
     },
-    [organizationId, holidays]
+    [organizationId, holidays, refreshData]
   )
 
   // Approve/reject request
@@ -246,34 +284,52 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     async (request_id: string, reason?: string) => {
       if (!organizationId) throw new Error('No organization')
 
-      await decideRequest({
-        organization_id: organizationId,
-        request_id,
-        approver_id: organization.id, // Using org as approver for now
-        decision: 'APPROVE',
-        reason
-      })
+      try {
+        setLoading(true)
+        await decideRequest({
+          organization_id: organizationId,
+          request_id,
+          approver_id: organization?.id || organizationId, // Using org as approver for now
+          decision: 'APPROVE',
+          reason
+        })
 
-      window.location.reload()
+        await refreshData()
+      } catch (err) {
+        console.error('Failed to approve request:', err)
+        setError('Failed to approve request')
+        throw err
+      } finally {
+        setLoading(false)
+      }
     },
-    [organizationId, organization]
+    [organizationId, organization, refreshData]
   )
 
   const reject = useCallback(
     async (request_id: string, reason?: string) => {
       if (!organizationId || !reason) throw new Error('Reason required for rejection')
 
-      await decideRequest({
-        organization_id: organizationId,
-        request_id,
-        approver_id: organization.id,
-        decision: 'REJECT',
-        reason
-      })
+      try {
+        setLoading(true)
+        await decideRequest({
+          organization_id: organizationId,
+          request_id,
+          approver_id: organization?.id || organizationId,
+          decision: 'REJECT',
+          reason
+        })
 
-      window.location.reload()
+        await refreshData()
+      } catch (err) {
+        console.error('Failed to reject request:', err)
+        setError('Failed to reject request')
+        throw err
+      } finally {
+        setLoading(false)
+      }
     },
-    [organizationId, organization]
+    [organizationId, organization, refreshData]
   )
 
   // Export CSV
@@ -344,6 +400,7 @@ export function useLeavePlaybook(options: UseLeavePlaybookOptions = {}) {
     createLeave,
     approve,
     reject,
-    exportAnnualReportCSV
+    exportAnnualReportCSV,
+    refreshData
   }
 }

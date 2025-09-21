@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
+import { searchStaff } from '@/lib/playbook/entities'
 import { universalApi } from '@/lib/universal-api-v2'
+import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
+import { supabase } from '@/lib/supabase'
 import {
   Plus,
   Clock,
@@ -107,38 +110,41 @@ function StaffContent() {
 
     try {
       setLoading(true)
+
+      // Set organization context for universal API
       universalApi.setOrganizationId(organizationId)
 
-      // Load staff entities
-      const staffResponse = await universalApi.read({
-        table: 'core_entities',
-        filters: [
-          { field: 'organization_id', operator: 'eq', value: organizationId },
-          { field: 'entity_type', operator: 'eq', value: 'staff' }
-        ]
+      // Use Playbook API to search for employees
+      console.log('Searching for staff with organizationId:', organizationId)
+      const staffResponse = await searchStaff({
+        organization_id: organizationId,
+        page: 1,
+        page_size: 500  // Increased to show all staff members
       })
 
-      if (staffResponse?.data) {
-        // Load dynamic data for each staff member
-        const staffWithDetails = await Promise.all(
-          staffResponse.data.map(async (s: any) => {
-            const dynamicResponse = await universalApi.read({
-              table: 'core_dynamic_data',
-              filters: [
-                { field: 'organization_id', operator: 'eq', value: organizationId },
-                { field: 'entity_id', operator: 'eq', value: s.id }
-              ]
-            })
+      console.log('Staff response:', staffResponse)
+      console.log('Staff rows:', staffResponse?.rows)
+      console.log('Staff total:', staffResponse?.total)
 
-            const dynamicDataMap = (dynamicResponse?.data || []).reduce((acc: any, dd: any) => {
-              acc[dd.field_name] =
-                dd.field_value_text || dd.field_value_number || dd.field_value_boolean
-              return acc
-            }, {})
-
-            return { ...s, dynamic_data: dynamicDataMap }
-          })
-        )
+      if (staffResponse?.rows) {
+        const staffWithDetails = staffResponse.rows.map((s: any) => {
+          // Map the playbook response to the expected format
+          return {
+            id: s.id,
+            entity_name: s.entity_name,
+            entity_code: s.entity_code,
+            smart_code: s.smart_code,
+            created_at: s.created_at || new Date().toISOString(),
+            dynamic_data: {
+              role: s.role || 'employee',
+              branch_id: s.branch_id,
+              phone: s.phone,
+              email: s.email,
+              hourly_rate: s.hourly_rate,
+              commission_rate: s.commission_rate
+            }
+          }
+        })
 
         setStaff(staffWithDetails)
         setStats({
@@ -165,65 +171,61 @@ function StaffContent() {
 
     try {
       setIsAddingStaff(true)
-      universalApi.setOrganizationId(organizationId)
-
-      // Create staff entity
-      const staffResponse = await universalApi.create('core_entities', {
-        organization_id: organizationId,
-        entity_type: 'staff',
-        entity_name: newStaff.name,
-        entity_code: `STAFF-${Date.now()}`,
-        smart_code: 'HERA.SALON.STAFF.ENTITY.V1',
-        metadata: { role: newStaff.role }
+      
+      // Call the API to create the staff member
+      const response = await fetch('/api/v1/staff', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          organizationId,
+          name: newStaff.name,
+          role: newStaff.role,
+          phone: newStaff.phone,
+          email: newStaff.email,
+          hourly_rate: parseFloat(newStaff.hourly_rate) || 0,
+          commission_rate: parseFloat(newStaff.commission_rate) || 0
+        })
       })
 
-      if (staffResponse?.success && staffResponse?.data) {
-        // Add dynamic fields
-        const dynamicFields = [
-          { field_name: 'phone', field_value_text: newStaff.phone },
-          { field_name: 'email', field_value_text: newStaff.email },
-          { field_name: 'hourly_rate', field_value_number: parseFloat(newStaff.hourly_rate) || 0 },
-          {
-            field_name: 'commission_rate',
-            field_value_number: parseFloat(newStaff.commission_rate) || 0
-          },
-          { field_name: 'role', field_value_text: newStaff.role }
-        ]
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to create staff member')
+      }
 
-        for (const field of dynamicFields) {
-          if (field.field_value_text || field.field_value_number) {
-            await universalApi.create('core_dynamic_data', {
-              organization_id: organizationId,
-              entity_id: staffResponse.data.id,
-              field_name: field.field_name,
-              field_value_text: field.field_value_text,
-              field_value_number: field.field_value_number,
-              smart_code: `HERA.SALON.STAFF.DYN.${field.field_name.toUpperCase()}.V1`
-            })
-          }
-        }
+      const result = await response.json()
+      console.log('Staff creation response:', result)
 
+      if (result.success) {
         toast({
           title: 'Success',
-          description: 'Staff member added successfully'
+          description: 'Staff member added successfully',
+          variant: 'default'
         })
-
-        // Reset form and reload
-        setNewStaff({
-          name: '',
-          role: 'stylist',
-          phone: '',
-          email: '',
-          hourly_rate: '',
-          commission_rate: ''
-        })
-        loadStaff()
       }
+
+      // Reset form
+      setNewStaff({
+        name: '',
+        role: 'stylist',
+        phone: '',
+        email: '',
+        hourly_rate: '',
+        commission_rate: ''
+      })
+      
+      // Close any open dialogs
+      const closeButton = document.querySelector('[aria-label="Close"]') as HTMLButtonElement
+      if (closeButton) closeButton.click()
+      
+      // Reload staff list
+      await loadStaff()
     } catch (error) {
       console.error('Error adding staff:', error)
       toast({
         title: 'Error',
-        description: 'Failed to add staff member',
+        description: error instanceof Error ? error.message : 'Failed to add staff member',
         variant: 'destructive'
       })
     } finally {
@@ -299,77 +301,122 @@ function StaffContent() {
                 Add Staff Member
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent
+              style={{
+                backgroundColor: COLORS.charcoal,
+                border: `1px solid ${COLORS.gold}30`,
+                color: COLORS.champagne
+              }}
+            >
               <DialogHeader>
-                <DialogTitle>Add New Staff Member</DialogTitle>
+                <DialogTitle
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  Add New Staff Member
+                </DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" style={{ color: COLORS.bronze }}>Name</Label>
                   <Input
                     id="name"
                     value={newStaff.name}
                     onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
                     placeholder="Staff member name"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}30`,
+                      color: COLORS.champagne
+                    }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">Role</Label>
+                  <Label htmlFor="role" style={{ color: COLORS.bronze }}>Role</Label>
                   <select
                     id="role"
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 rounded-md"
                     value={newStaff.role}
                     onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}30`,
+                      color: COLORS.champagne
+                    }}
                   >
-                    <option value="stylist">Stylist</option>
-                    <option value="senior_stylist">Senior Stylist</option>
-                    <option value="manager">Manager</option>
-                    <option value="receptionist">Receptionist</option>
+                    <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>Stylist</option>
+                    <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>Senior Stylist</option>
+                    <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>Manager</option>
+                    <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>Receptionist</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone" style={{ color: COLORS.bronze }}>Phone</Label>
                   <Input
                     id="phone"
                     value={newStaff.phone}
                     onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
                     placeholder="+971 50 123 4567"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}30`,
+                      color: COLORS.champagne
+                    }}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" style={{ color: COLORS.bronze }}>Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={newStaff.email}
                     onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
                     placeholder="staff@salon.com"
+                    style={{
+                      backgroundColor: COLORS.charcoalLight,
+                      border: `1px solid ${COLORS.gold}30`,
+                      color: COLORS.champagne
+                    }}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="hourly_rate">Hourly Rate (AED)</Label>
+                    <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>Hourly Rate (AED)</Label>
                     <Input
                       id="hourly_rate"
                       type="number"
                       value={newStaff.hourly_rate}
                       onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
                       placeholder="50"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        border: `1px solid ${COLORS.gold}30`,
+                        color: COLORS.champagne
+                      }}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="commission_rate">Commission %</Label>
+                    <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>Commission %</Label>
                     <Input
                       id="commission_rate"
                       type="number"
                       value={newStaff.commission_rate}
                       onChange={e => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
                       placeholder="20"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        border: `1px solid ${COLORS.gold}30`,
+                        color: COLORS.champagne
+                      }}
                     />
                   </div>
                 </div>
                 <Button
-                  className="w-full"
+                  className="w-full hover:opacity-90 transition-opacity"
                   onClick={handleAddStaff}
                   disabled={isAddingStaff || !newStaff.name}
                   style={{
@@ -551,8 +598,153 @@ function StaffContent() {
             <p style={{ color: COLORS.bronze }}>
               {searchTerm
                 ? 'Try adjusting your search terms'
-                : 'Add your first staff member to get started'}
+                : 'Click "Add Staff Member" to add your first employee'}
             </p>
+            {!searchTerm && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    className="mt-4"
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                      color: COLORS.black,
+                      border: 'none'
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Your First Staff Member
+                  </Button>
+                </DialogTrigger>
+                <DialogContent
+                  style={{
+                    backgroundColor: COLORS.charcoal,
+                    border: `1px solid ${COLORS.gold}30`,
+                    color: COLORS.champagne
+                  }}
+                >
+                  <DialogHeader>
+                    <DialogTitle
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text'
+                      }}
+                    >
+                      Add New Staff Member
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="name-empty" style={{ color: COLORS.bronze }}>Name</Label>
+                      <Input
+                        id="name-empty"
+                        value={newStaff.name}
+                        onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
+                        placeholder="Staff member name"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="role-empty" style={{ color: COLORS.bronze }}>Role</Label>
+                      <select
+                        id="role-empty"
+                        className="w-full px-3 py-2 rounded-md"
+                        value={newStaff.role}
+                        onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      >
+                        <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>Stylist</option>
+                        <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>Senior Stylist</option>
+                        <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>Manager</option>
+                        <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>Receptionist</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor="phone-empty" style={{ color: COLORS.bronze }}>Phone</Label>
+                      <Input
+                        id="phone-empty"
+                        value={newStaff.phone}
+                        onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
+                        placeholder="+971 50 123 4567"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email-empty" style={{ color: COLORS.bronze }}>Email</Label>
+                      <Input
+                        id="email-empty"
+                        type="email"
+                        value={newStaff.email}
+                        onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
+                        placeholder="staff@salon.com"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="hourly_rate-empty" style={{ color: COLORS.bronze }}>Hourly Rate (AED)</Label>
+                        <Input
+                          id="hourly_rate-empty"
+                          type="number"
+                          value={newStaff.hourly_rate}
+                          onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
+                          placeholder="50"
+                          style={{
+                            backgroundColor: COLORS.charcoalLight,
+                            border: `1px solid ${COLORS.gold}30`,
+                            color: COLORS.champagne
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="commission_rate-empty" style={{ color: COLORS.bronze }}>Commission %</Label>
+                        <Input
+                          id="commission_rate-empty"
+                          type="number"
+                          value={newStaff.commission_rate}
+                          onChange={e => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
+                          placeholder="20"
+                          style={{
+                            backgroundColor: COLORS.charcoalLight,
+                            border: `1px solid ${COLORS.gold}30`,
+                            color: COLORS.champagne
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      className="w-full hover:opacity-90 transition-opacity"
+                      onClick={handleAddStaff}
+                      disabled={isAddingStaff || !newStaff.name}
+                      style={{
+                        background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                        color: COLORS.black,
+                        border: 'none'
+                      }}
+                    >
+                      {isAddingStaff ? 'Adding...' : 'Add Staff Member'}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         )}
       </div>

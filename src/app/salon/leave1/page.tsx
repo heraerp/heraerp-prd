@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -46,11 +46,20 @@ const SoftCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
 
 export default function LeaveManagementPage() {
   const { organization, isAuthenticated, contextLoading } = useHERAAuth()
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('requests')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBranch, setSelectedBranch] = useState<string>()
   const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [policyModalOpen, setPolicyModalOpen] = useState(false)
+
+  // Get organization ID from localStorage for demo mode
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
 
   const {
     requests,
@@ -86,8 +95,12 @@ export default function LeaveManagementPage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // Auth checks
-  if (!isAuthenticated) {
+  // Get effective organization ID
+  const effectiveOrgId = organization?.id || localOrgId
+
+  // Three-layer authorization pattern (adapted for demo mode)
+  // Layer 1: Authentication check (skip for demo mode)
+  if (!isAuthenticated && !localOrgId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Alert>
@@ -98,7 +111,8 @@ export default function LeaveManagementPage() {
     )
   }
 
-  if (contextLoading) {
+  // Layer 2: Context loading check
+  if (contextLoading && !localOrgId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500" />
@@ -106,7 +120,8 @@ export default function LeaveManagementPage() {
     )
   }
 
-  if (!organization) {
+  // Layer 3: Organization check
+  if (!effectiveOrgId) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Alert>
@@ -130,11 +145,11 @@ export default function LeaveManagementPage() {
     >
       {/* Header */}
       <div
-        className="sticky top-0 z-20 border-b"
+        className="sticky top-0 z-30 border-b ml-20"
         style={{ backgroundColor: COLORS.charcoal, borderColor: COLORS.black }}
       >
         <div className="px-4 md:px-6 py-4">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 md:justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:justify-between">
             <div className="flex items-center gap-3">
               <div
                 className="h-10 w-10 rounded-xl flex items-center justify-center"
@@ -152,7 +167,7 @@ export default function LeaveManagementPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
               {/* Branch Selector */}
               <select
                 className="px-3 py-1.5 rounded-lg bg-transparent border text-sm"
@@ -176,7 +191,7 @@ export default function LeaveManagementPage() {
                   placeholder="Search staff..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-9 w-64 bg-transparent border"
+                  className="pl-9 w-48 lg:w-64 bg-transparent border"
                   style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
                 />
               </div>
@@ -184,25 +199,27 @@ export default function LeaveManagementPage() {
               {/* Actions */}
               <Button
                 onClick={() => setRequestModalOpen(true)}
-                className="border-0 font-semibold"
+                className="border-0 font-semibold text-sm px-3 py-2"
                 style={{
                   backgroundImage: `linear-gradient(90deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                   color: COLORS.black
                 }}
               >
-                <Plus size={16} className="mr-2" />
-                New Request
+                <Plus size={14} className="mr-1" />
+                <span className="hidden sm:inline">New Request</span>
+                <span className="sm:hidden">New</span>
               </Button>
 
               {isAdmin && (
                 <Button
                   variant="outline"
                   onClick={() => setPolicyModalOpen(true)}
-                  className="border"
+                  className="border text-sm px-3 py-2"
                   style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
                 >
-                  <Settings size={16} className="mr-2" />
-                  Policies
+                  <Settings size={14} className="mr-1" />
+                  <span className="hidden sm:inline">Policies</span>
+                  <span className="sm:hidden">Settings</span>
                 </Button>
               )}
             </div>
@@ -211,7 +228,7 @@ export default function LeaveManagementPage() {
       </div>
 
       {/* Main Content */}
-      <div className="px-4 md:px-6 py-6">
+      <div className="px-4 md:px-6 py-6 ml-20">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList
             className="bg-transparent p-1 rounded-full border mb-6"

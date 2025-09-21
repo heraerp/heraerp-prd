@@ -140,47 +140,47 @@ export function LeaveRequestList({
       >
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead>
-              <tr className="border-b" style={{ borderColor: COLORS.black }}>
+            <thead style={{ backgroundColor: '#2A2A2A' }}>
+              <tr className="border-b" style={{ borderColor: '#333333' }}>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Date Range
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Staff
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Type
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Days
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Status
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-left text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Notes
                 </th>
                 <th
-                  className="px-6 py-4 text-right text-xs uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
+                  className="px-6 py-4 text-right text-xs uppercase tracking-wider font-semibold !text-white"
+                  style={{ color: '#FFFFFF !important' }}
                 >
                   Actions
                 </th>

@@ -110,7 +110,7 @@ const allApps: SidebarItem[] = [
 
   // Staff Management
   { title: 'Team', href: '/salon/team', icon: UserPlus },
-  { title: 'Leave', href: '/salon/leave', icon: CalendarCheck },
+  { title: 'Leave', href: '/salon/leave1', icon: CalendarCheck },
   { title: 'Payroll', href: '/salon/payroll', icon: DollarSign },
 
   // Financial
