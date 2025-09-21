@@ -31,7 +31,7 @@ import {
   Heart,
   Scissors,
   Settings,
-  Shield,
+  ShieldCheck,
   ShoppingCart,
   UtensilsCrossed,
   Zap 
@@ -424,7 +424,7 @@ import { salonBookingSteps } from './transaction-flows.config'
 
             <div className="space-y-2">
               <h4 className="font-medium flex items-center gap-2">
-                <Shield className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4" />
                 Enterprise Validation
               </h4>
               <p className="text-sm text-muted-foreground">
