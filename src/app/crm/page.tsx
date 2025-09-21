@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
