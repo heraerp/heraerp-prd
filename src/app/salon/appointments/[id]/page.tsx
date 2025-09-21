@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useToast } from '@/components/ui/use-toast'
+// import { useToast } from '@/components/ui/use-toast' // Removed for runtime compatibility
 import {
   Calendar,
   Clock,
@@ -109,7 +109,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
   const router = useRouter()
   const { organization } = useHERAAuth()
   const organizationId = organization?.id
-  const { toast } = useToast()
+  // const { toast } = useToast() // Removed for runtime compatibility
 
   // Unwrap params Promise for Next.js 15
   const unwrappedParams = use(params)
@@ -170,7 +170,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
           // Load transaction lines
           const linesResponse = await universalApi.read('universal_transaction_lines', {
-            transaction_id: params.id,
+            transaction_id: unwrappedParams.id,
             organization_id: organizationId
           })
 
@@ -196,20 +196,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
             setTransactionLines(linesWithDetails)
           }
         } else {
-          toast({
-            title: 'Error',
-            description: 'Appointment not found',
-            variant: 'destructive'
-          })
+          console.error('Error:', 'Appointment not found')
           router.push('/salon/appointments')
         }
       } catch (error) {
         console.error('Error loading appointment details:', error)
-        toast({
-          title: 'Error',
-          description: 'Failed to load appointment details',
-          variant: 'destructive'
-        })
+        console.error('Error:', 'Failed to load appointment details')
       } finally {
         setLoading(false)
       }
@@ -224,20 +216,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     setDeleting(true)
 
     try {
-      const response = await universalApi.delete('universal_transactions', params.id)
+      const response = await universalApi.delete('universal_transactions', unwrappedParams.id)
       if (response.success) {
-        toast({
-          title: 'Success',
-          description: 'Appointment deleted successfully'
-        })
+        console.log('Success:', 'Appointment deleted successfully')
         router.push('/salon/appointments')
       }
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete appointment',
-        variant: 'destructive'
-      })
+      console.error('Error:', 'Failed to delete appointment')
     } finally {
       setDeleting(false)
     }
@@ -273,7 +258,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -288,7 +273,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
   if (!appointment) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-6 py-12">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -310,7 +295,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
   const totalDuration = appointment.metadata?.total_service_duration_minutes || 0
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-950/20 dark:to-pink-950/20 border-b">
         <div className="container mx-auto px-6 py-4">
@@ -343,7 +328,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               {getStatusBadge(status)}
               <Button
                 variant="outline"
-                onClick={() => router.push(`/salon/appointments/${params.id}/edit`)}
+                onClick={() => router.push(`/salon/appointments/${unwrappedParams.id}/edit`)}
                 className="gap-2"
               >
                 <Edit className="w-4 h-4" />
@@ -494,7 +479,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 {appointment.metadata?.notes && (
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Notes</p>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="p-3 bg-muted rounded-lg">
                       <p className="text-sm text-gray-700 dark:text-gray-300">
                         {appointment.metadata.notes}
                       </p>
@@ -530,7 +515,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     {transactionLines.map(line => (
                       <div
                         key={line.id}
-                        className="p-4 border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700"
+                        className="p-4 border rounded-lg bg-card"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
@@ -647,7 +632,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 <Button
                   className="w-full justify-start"
                   variant="outline"
-                  onClick={() => router.push(`/salon/appointments/${params.id}/edit`)}
+                  onClick={() => router.push(`/salon/appointments/${unwrappedParams.id}/edit`)}
                 >
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Appointment
@@ -658,10 +643,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   variant="outline"
                   onClick={() => {
                     // TODO: Implement duplicate functionality
-                    toast({
-                      title: 'Coming Soon',
-                      description: 'Duplicate appointment feature will be available soon'
-                    })
+                    console.log('Coming Soon:', 'Duplicate appointment feature will be available soon')
                   }}
                 >
                   <Calendar className="w-4 h-4 mr-2" />

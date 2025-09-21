@@ -347,7 +347,7 @@ function CRMDashboard() {
               setFrom('')
               setTo('')
               setStage([])
-              setOwner('')
+              setOwner([])
               setQ('')
               setPage(1)
               setPageSize(10)
@@ -639,7 +639,7 @@ export default function CRMPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="w-8 h-8 mx-auto">Loading...</div>
             <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>

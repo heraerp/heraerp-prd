@@ -37,6 +37,7 @@ import {
   Zap 
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 // Mock step component for demo
 const MockStepComponent: React.FC<any> = ({ data, onChange, errors }) => {
