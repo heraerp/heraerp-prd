@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { universalApi } from '@/lib/universal-api-v2'
+import { flags } from '@/config/flags'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { CatalogPane } from '@/components/salon/pos2/CatalogPane'
 import { CartSidebar } from '@/components/salon/pos2/CartSidebar'
@@ -9,6 +11,7 @@ import { PaymentDialog } from '@/components/salon/pos2/PaymentDialog'
 import { Receipt } from '@/components/salon/pos2/Receipt'
 import { CustomerSearchModal } from '@/components/salon/pos2/CustomerSearchModal'
 import { TicketDetailsModal } from '@/components/salon/pos2/TicketDetailsModal'
+import { PosCommissionBadge } from '@/components/salon/pos/PosCommissionBadge'
 import { usePosTicket } from '@/hooks/usePosTicket'
 import { useAppointmentLookup } from '@/hooks/useAppointmentLookup'
 import { useCustomerLookup } from '@/hooks/useCustomerLookup'
@@ -45,6 +48,7 @@ const COLORS = {
 function POS2Content() {
   const { user, organization } = useHERAAuth()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  const [commissionsEnabled, setCommissionsEnabled] = useState(true)
 
   // Get organization ID from localStorage for demo mode
   useEffect(() => {
@@ -61,6 +65,31 @@ function POS2Content() {
   const [completedSale, setCompletedSale] = useState<any>(null)
   const [isCustomerSearchOpen, setIsCustomerSearchOpen] = useState(false)
   const [isTicketDetailsOpen, setIsTicketDetailsOpen] = useState(false)
+
+  // Load commission settings
+  useEffect(() => {
+    const loadCommissionSettings = async () => {
+      if (!organizationId) return
+
+      try {
+        universalApi.setOrganizationId(organizationId)
+        const orgResponse = await universalApi.getEntity(organizationId)
+
+        if (orgResponse.success && orgResponse.data) {
+          // Type-safe access to settings
+          const orgData = orgResponse.data as any
+          const settings = orgData.settings || {}
+          const enabled =
+            flags.ENABLE_COMMISSIONS && (settings?.salon?.commissions?.enabled ?? true)
+          setCommissionsEnabled(enabled)
+        }
+      } catch (error) {
+        console.error('Error loading commission settings:', error)
+      }
+    }
+
+    loadCommissionSettings()
+  }, [organizationId])
 
   // Always call hooks - pass empty string if no org ID to satisfy hooks rules
   const posTicketResult = usePosTicket(organizationId || 'demo-org')
@@ -136,7 +165,7 @@ function POS2Content() {
   }
 
   const handlePayment = () => {
-    if (ticket.lineItems.length === 0) return
+    if (!ticket?.lineItems || ticket.lineItems.length === 0) return
     setIsPaymentOpen(true)
   }
 
@@ -230,6 +259,9 @@ function POS2Content() {
                 >
                   Live
                 </Badge>
+
+                {/* Commission Status Badge */}
+                <PosCommissionBadge commissionsEnabled={commissionsEnabled} />
               </div>
 
               <div className="flex items-center space-x-4">
@@ -373,6 +405,7 @@ function POS2Content() {
                   onUpdateItem={updateLineItem}
                   onRemoveItem={removeLineItem}
                   onPayment={handlePayment}
+                  commissionsEnabled={commissionsEnabled}
                 />
               </div>
 

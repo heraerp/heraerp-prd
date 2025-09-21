@@ -290,7 +290,7 @@ export function PaymentDialog({
             <CardContent className="p-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
-                  <span>Items ({ticket.lineItems.length}):</span>
+                  <span>Items ({ticket?.lineItems?.length || 0}):</span>
                   <span>${(totals?.subtotal || 0).toFixed(2)}</span>
                 </div>
                 {(totals?.discountAmount || 0) > 0 && (

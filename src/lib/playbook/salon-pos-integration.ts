@@ -218,20 +218,33 @@ export class SalonPosIntegrationService {
           errors.push(`Invalid price for ${item.entity_name}`)
         }
 
-        // Service-specific validations  
+        // Service-specific validations
         if (item.entity_type === 'service' || (item as any).type === 'SERVICE') {
           // Commission gating - only require stylist if commissions are enabled
           const orgSettings = await getOrgSettings(this.organizationId)
-          const commissionsEnabled = flags.ENABLE_COMMISSIONS && (orgSettings?.salon?.commissions?.enabled ?? true)
-          
+          const commissionsEnabled =
+            flags.ENABLE_COMMISSIONS && (orgSettings?.salon?.commissions?.enabled ?? true)
+
           const stylistId =
             (item as any).stylist_entity_id ||
             (item as any).stylist_id ||
             (item as any).performer_entity_id
-          if (commissionsEnabled && !stylistId) {
-            errors.push(`Service ${item.entity_name} must have an assigned stylist`)
-          } else if (stylistId) {
-            // Validate stylist is available
+
+          // Allow 'walk-in', 'any', or null for services that don't require specific stylist assignment
+          const isWalkInOrAny = stylistId === 'walk-in' || stylistId === 'any'
+
+          // Only require stylist if commissions are enabled
+          if (commissionsEnabled && !stylistId && !isWalkInOrAny) {
+            errors.push(
+              `Service ${item.entity_name} must have an assigned stylist (commissions are enabled)`
+            )
+          } else if (!commissionsEnabled && !stylistId) {
+            // If commissions are disabled, log a warning but don't error
+            console.log(
+              `Service ${item.entity_name} has no stylist assigned (commissions disabled - this is allowed)`
+            )
+          } else if (stylistId && !isWalkInOrAny) {
+            // Only validate availability for specific stylist IDs (not walk-in or any)
             const isAvailable = await this.validateStylistAvailability(
               stylistId,
               (item as any).appointment_id
@@ -308,7 +321,7 @@ export class SalonPosIntegrationService {
     }
   ) {
     try {
-      // Validate ticket first
+      // Re-validate ticket at payment time to ensure fresh commission settings
       const validation = await this.validatePosTicket(ticket)
       if (!validation.isValid) {
         throw new Error(`Validation failed: ${validation.errors.join(', ')}`)
@@ -319,8 +332,8 @@ export class SalonPosIntegrationService {
       // Prepare transaction data
       const transactionData = {
         organization_id: this.organizationId,
-        transaction_type: 'sale',
-        smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.v1'),
+        transaction_type: 'sale', // Using 'sale' to avoid validation errors
+        smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.v1'), // Keep POS-specific smart code
         total_amount: totals.total,
         business_context: {
           branch_id: options.branch_id,
@@ -423,7 +436,21 @@ export class SalonPosIntegrationService {
         ]
       }
 
-      // Post the sale with commission calculation
+      // Re-check commission settings at payment time to ensure we're using fresh config
+      const freshOrgSettings = await getOrgSettings(this.organizationId)
+      const commissionsStillEnabled =
+        flags.ENABLE_COMMISSIONS && (freshOrgSettings?.salon?.commissions?.enabled ?? true)
+
+      // Log if commission status changed during checkout
+      if (commissionsStillEnabled !== (validation.warnings.length === 0)) {
+        console.log('Commission settings changed during checkout:', {
+          organizationId: this.organizationId,
+          wasEnabled: validation.warnings.length === 0,
+          nowEnabled: commissionsStillEnabled
+        })
+      }
+
+      // Post the sale with commission calculation (will respect fresh settings)
       const result = await postPosSaleWithCommission(transactionData)
 
       if (!result.success) {

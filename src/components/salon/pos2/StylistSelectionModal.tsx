@@ -34,7 +34,7 @@ interface StylistSelectionModalProps {
     entity_name: string
     quantity: number
     unit_price: number
-    stylist_entity_id?: string
+    stylist_id?: string
     stylist_name?: string
   }) => void
 }
@@ -152,7 +152,9 @@ export function StylistSelectionModal({
   }
 
   const handleConfirm = () => {
-    const finalStylist = selectedStylist?.id === 'any' ? null : selectedStylist
+    // For "Any Available Stylist", use walk-in as the stylist ID
+    const finalStylist =
+      selectedStylist?.id === 'any' ? { id: 'walk-in', name: 'Walk-in' } : selectedStylist
 
     onConfirm({
       entity_id: service.id,
@@ -160,7 +162,7 @@ export function StylistSelectionModal({
       entity_name: service.name,
       quantity,
       unit_price: service.price,
-      stylist_entity_id: finalStylist?.id,
+      stylist_id: finalStylist?.id,
       stylist_name: finalStylist?.name
     })
 
@@ -178,7 +180,7 @@ export function StylistSelectionModal({
       entity_name: service.name,
       quantity: 1,
       unit_price: service.price,
-      stylist_entity_id: 'walk-in', // Special ID for walk-in services
+      stylist_id: 'walk-in', // Special ID for walk-in services
       stylist_name: 'Walk-in'
     })
     onClose()

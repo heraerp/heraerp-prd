@@ -8,7 +8,7 @@ import type { NextRequest } from 'next/server'
 // ================================================================================
 
 // Demo organization ID from environment - use salon demo org for consistency
-const DEMO_ORG_ID = process.env.NEXT_PUBLIC_DEMO_ORG_ID || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
+const DEMO_ORG_ID = process.env['NEXT_PUBLIC_DEMO_ORG_ID'] || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 // Public pages that don't require authentication
 const PUBLIC_PAGES = [
@@ -84,6 +84,9 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   const hostname = request.headers.get('host') || 'localhost:3000'
   
+  // Create response headers with org mode
+  const requestHeaders = new Headers(request.headers)
+  
   // Skip API routes and static files (do not process middleware for these)
   if (pathname.startsWith('/api/') || pathname.startsWith('/_next') || pathname.includes('.')) {
     return NextResponse.next()
@@ -97,9 +100,6 @@ export async function middleware(request: NextRequest) {
 
   // Parse subdomain
   const subdomain = getSubdomain(hostname)
-  
-  // Create response headers with org mode
-  const requestHeaders = new Headers(request.headers)
   
   // Set organization mode based on subdomain
   if (!subdomain || subdomain === 'www' || subdomain === 'demo' || subdomain === 'app') {
@@ -127,14 +127,14 @@ export async function middleware(request: NextRequest) {
     const firstSegment = pathname.split('/')[1]
     const secondSegment = pathname.split('/')[2]
     
-    if (firstSegment === 'demo' && DEMO_ROUTES.includes(secondSegment)) {
+    if (firstSegment === 'demo' && secondSegment && DEMO_ROUTES.includes(secondSegment)) {
       // Handle /demo/salon, /demo/restaurant, etc. - let route handler take over
       requestHeaders.set('x-hera-demo-mode', 'true')
       requestHeaders.set('x-hera-demo-type', secondSegment)
       return NextResponse.next({ headers: requestHeaders })
     }
     
-    if (DEMO_ROUTES.includes(firstSegment)) {
+    if (firstSegment && DEMO_ROUTES.includes(firstSegment)) {
       // Demo pages are publicly accessible with seed data
       requestHeaders.set('x-hera-demo-mode', 'true')
       requestHeaders.set('x-hera-demo-type', firstSegment)
@@ -205,7 +205,7 @@ function getSubdomain(hostname: string): string | null {
   const parts = host.split('.')
   
   // Need at least subdomain.domain.tld
-  if (parts.length >= 3) {
+  if (parts.length >= 3 && parts[0]) {
     return parts[0]
   }
   

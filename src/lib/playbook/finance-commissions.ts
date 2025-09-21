@@ -4,6 +4,7 @@ import { universalApi } from '@/lib/universal-api-v2'
 import { heraCode } from '@/lib/smart-codes'
 import { flags } from '@/config/flags'
 import { getOrgSettings } from '@/lib/playbook/org-finance-utils'
+import { resolveBranchEntityId } from '@/lib/playbook/branch-resolver'
 
 interface TransactionLine {
   line_entity_id?: string
@@ -65,19 +66,30 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
     // Set organization context
     universalApi.setOrganizationId(transactionData.organization_id)
 
+    // Resolve branch entity ID
+    const resolvedBranchId = await resolveBranchEntityId(
+      transactionData.organization_id,
+      transactionData.business_context.branch_id
+    )
+
     // Create transaction header - STRICT columns only
     const transactionHeader = {
       organization_id: transactionData.organization_id,
-      transaction_type: 'POS_SALE', // UPPERCASE as required
+      transaction_type: transactionData.transaction_type, // Use the transaction type from input data
       transaction_date: new Date().toISOString(),
       smart_code: heraCode(transactionData.smart_code), // Ensure .v1 format
       total_amount: Number(transactionData.total_amount) || 0,
-      transaction_code: generateTransactionCode('POS_SALE'),
-      source_entity_id: transactionData.business_context.branch_id || null,
+      transaction_code: generateTransactionCode(transactionData.transaction_type),
+      source_entity_id: resolvedBranchId, // Valid branch entity or null
       target_entity_id: transactionData.business_context.customer_id || null,
       business_context: {
+        branch_id: resolvedBranchId || transactionData.business_context.branch_id,
         ticket_id: transactionData.business_context.ticket_id,
-        source: transactionData.business_context.source || 'POS'
+        source: transactionData.business_context.source || 'POS',
+        customer_id: transactionData.business_context.customer_id,
+        appointment_id: transactionData.business_context.appointment_id,
+        cashier_id: transactionData.business_context.cashier_id,
+        till_id: transactionData.business_context.till_id
       },
       metadata: {
         ui: 'pos',
@@ -157,12 +169,13 @@ export async function postPosSaleWithCommission(transactionData: PosTransactionD
   try {
     // Commission gating
     const org = await getOrgSettings(transactionData.organization_id)
-    const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
-    
+    const commissionsEnabled =
+      flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
+
     // Skip commission lines when disabled
     let commissionLines: TransactionLine[] = []
     let enhancedTransactionData = transactionData
-    
+
     if (commissionsEnabled) {
       // Validate commission requirements
       const commissionValidation = await assertCommissionOnPosSale(transactionData)
@@ -373,7 +386,7 @@ export async function assertCommissionOnPosSale(transactionData: PosTransactionD
   // Commission gating
   const org = await getOrgSettings(transactionData.organization_id)
   const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
-  
+
   if (!commissionsEnabled) {
     return { isValid: true, errors: [] }
   }

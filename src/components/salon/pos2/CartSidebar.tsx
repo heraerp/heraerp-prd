@@ -92,6 +92,7 @@ interface CartSidebarProps {
   onUpdateItem: (id: string, updates: Partial<LineItem>) => void
   onRemoveItem: (id: string) => void
   onPayment: () => void
+  commissionsEnabled?: boolean
 }
 
 export function CartSidebar({
@@ -99,7 +100,8 @@ export function CartSidebar({
   totals,
   onUpdateItem,
   onRemoveItem,
-  onPayment
+  onPayment,
+  commissionsEnabled = true
 }: CartSidebarProps) {
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -247,10 +249,7 @@ export function CartSidebar({
                         onClick={() => onRemoveItem(item.id)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
                         style={{
-                          color: '#EF4444',
-                          ':hover': {
-                            backgroundColor: '#EF444420'
-                          }
+                          color: '#EF4444'
                         }}
                       >
                         <X className="w-3 h-3" />
@@ -294,10 +293,10 @@ export function CartSidebar({
 
                       <div className="text-right">
                         <div className="text-xs" style={{ color: COLORS.bronze }}>
-                          ${item.unit_price.toFixed(2)} each
+                          ${(item?.unit_price || 0).toFixed(2)} each
                         </div>
                         <div className="font-bold text-sm" style={{ color: COLORS.gold }}>
-                          ${item.line_amount.toFixed(2)}
+                          ${(item?.line_amount || 0).toFixed(2)}
                         </div>
                       </div>
                     </div>
@@ -333,7 +332,7 @@ export function CartSidebar({
                       -
                       {discount.type === 'percentage'
                         ? `${discount.value}%`
-                        : `$${discount.value.toFixed(2)}`}
+                        : `$${(discount?.value || 0).toFixed(2)}`}
                     </span>
                   </div>
                 ))}
@@ -350,7 +349,7 @@ export function CartSidebar({
                       </span>
                     </div>
                     <span className="font-medium" style={{ color: COLORS.gold }}>
-                      +${tip.amount.toFixed(2)}
+                      +${(tip?.amount || 0).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -369,29 +368,35 @@ export function CartSidebar({
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span style={{ color: COLORS.bronze }}>Subtotal:</span>
-                  <span style={{ color: COLORS.lightText }}>${totals.subtotal.toFixed(2)}</span>
+                  <span style={{ color: COLORS.lightText }}>
+                    ${(totals?.subtotal || 0).toFixed(2)}
+                  </span>
                 </div>
 
-                {totals.discountAmount > 0 && (
+                {(totals?.discountAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm">
                     <span style={{ color: COLORS.emerald }}>Discount:</span>
                     <span style={{ color: COLORS.emerald }}>
-                      -${totals.discountAmount.toFixed(2)}
+                      -${(totals?.discountAmount || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
 
-                {totals.tipAmount > 0 && (
+                {(totals?.tipAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm">
                     <span style={{ color: COLORS.gold }}>Tips:</span>
-                    <span style={{ color: COLORS.gold }}>+${totals.tipAmount.toFixed(2)}</span>
+                    <span style={{ color: COLORS.gold }}>
+                      +${(totals?.tipAmount || 0).toFixed(2)}
+                    </span>
                   </div>
                 )}
 
-                {totals.taxAmount > 0 && (
+                {(totals?.taxAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm">
                     <span style={{ color: COLORS.bronze }}>Tax:</span>
-                    <span style={{ color: COLORS.lightText }}>${totals.taxAmount.toFixed(2)}</span>
+                    <span style={{ color: COLORS.lightText }}>
+                      ${(totals?.taxAmount || 0).toFixed(2)}
+                    </span>
                   </div>
                 )}
 
@@ -399,8 +404,24 @@ export function CartSidebar({
 
                 <div className="flex justify-between font-bold text-lg pt-1">
                   <span style={{ color: COLORS.champagne }}>Total:</span>
-                  <span style={{ color: COLORS.gold }}>${totals.total.toFixed(2)}</span>
+                  <span style={{ color: COLORS.gold }}>${(totals?.total || 0).toFixed(2)}</span>
                 </div>
+
+                {/* Commission Mode Helper Text */}
+                {!commissionsEnabled &&
+                  ticket?.lineItems?.some(item => item?.entity_type === 'service') && (
+                    <div
+                      className="mt-3 text-xs text-center"
+                      style={{
+                        color: COLORS.silverDark,
+                        opacity: 0.9
+                      }}
+                    >
+                      Commissions are disabled for this location.
+                      <br />
+                      Stylist selection is optional.
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -414,20 +435,17 @@ export function CartSidebar({
             >
               <Button
                 onClick={onPayment}
-                disabled={ticket.lineItems.length === 0}
+                disabled={(ticket?.lineItems?.length || 0) === 0}
                 className="w-full font-medium transition-all transform hover:scale-105"
                 size="lg"
                 style={{
                   background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
                   color: COLORS.black,
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
-                  ':hover': {
-                    background: `linear-gradient(135deg, ${COLORS.goldDark} 0%, ${COLORS.gold} 100%)`
-                  }
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
                 }}
               >
                 <CreditCard className="w-4 h-4 mr-2" />
-                Pay ${totals.total.toFixed(2)}
+                Pay ${(totals?.total || 0).toFixed(2)}
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </div>

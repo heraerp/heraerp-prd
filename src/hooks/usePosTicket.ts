@@ -183,11 +183,12 @@ export function usePosTicket(organizationId: string) {
   // Calculate totals
   const calculateTotals = useCallback((): Totals => {
     // Subtotal from line items
-    const subtotal = ticket.lineItems.reduce((sum, item) => sum + item.line_amount, 0)
+    const subtotal =
+      ticket?.lineItems?.reduce((sum, item) => sum + (item?.line_amount || 0), 0) || 0
 
     // Calculate discount amount
     let discountAmount = 0
-    ticket.discounts.forEach(discount => {
+    ticket?.discounts?.forEach(discount => {
       if (discount.applied_to === 'subtotal') {
         if (discount.type === 'percentage') {
           discountAmount += (subtotal * discount.value) / 100
@@ -199,7 +200,7 @@ export function usePosTicket(organizationId: string) {
     })
 
     // Tip amount
-    const tipAmount = ticket.tips.reduce((sum, tip) => sum + tip.amount, 0)
+    const tipAmount = ticket?.tips?.reduce((sum, tip) => sum + (tip?.amount || 0), 0) || 0
 
     // Calculate tax (assuming 5% tax rate - in production this would be configurable)
     const taxableAmount = subtotal - discountAmount
@@ -293,20 +294,20 @@ export function usePosTicket(organizationId: string) {
   const validateTicket = useCallback((): { isValid: boolean; errors: string[] } => {
     const errors: string[] = []
 
-    if (ticket.lineItems.length === 0) {
+    if (!ticket?.lineItems || ticket.lineItems.length === 0) {
       errors.push('No items in ticket')
     }
 
     // Check for services without stylists
-    const servicesWithoutStylist = ticket.lineItems.filter(
-      item => item.entity_type === 'service' && !item.stylist_id
-    )
+    const servicesWithoutStylist =
+      ticket?.lineItems?.filter(item => item.entity_type === 'service' && !item.stylist_id) || []
     if (servicesWithoutStylist.length > 0) {
       errors.push('All services must have an assigned stylist')
     }
 
     // Check for invalid amounts
-    const invalidItems = ticket.lineItems.filter(item => item.quantity <= 0 || item.unit_price < 0)
+    const invalidItems =
+      ticket?.lineItems?.filter(item => item.quantity <= 0 || item.unit_price < 0) || []
     if (invalidItems.length > 0) {
       errors.push('Invalid quantity or price on some items')
     }

@@ -52,6 +52,14 @@ export const STANDARD_TRANSACTION_TYPES = {
   TRANSFER: 'transfer',
   ADJUSTMENT: 'adjustment',
 
+  // POS-Specific Transactions
+  POS_SALE: 'pos_sale',
+  POS_REFUND: 'pos_refund',
+  POS_VOID: 'pos_void',
+  CASH_RECONCILIATION: 'cash_reconciliation',
+  TILL_OPEN: 'till_open',
+  TILL_CLOSE: 'till_close',
+
   // Budget & Forecast
   BUDGET_LINE: 'budget_line',
   FORECAST_LINE: 'forecast_line',
@@ -66,6 +74,7 @@ export const STANDARD_TRANSACTION_TYPES = {
   SERVICE_ORDER: 'service_order',
   SERVICE_DELIVERY: 'service_delivery',
   TIME_ENTRY: 'time_entry',
+  APPOINTMENT: 'appointment',
 
   // Auto-Journal Types
   AUTO_JOURNAL: 'auto_journal',

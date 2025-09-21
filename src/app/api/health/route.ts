@@ -6,7 +6,7 @@ export async function GET() {
     const checks = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      version: process.env.npm_package_version || '1.2.1',
+      version: process.env['npm_package_version'] || '1.2.1',
       environment: process.env.NODE_ENV || 'production'
     }
 
