@@ -1,4 +1,5 @@
 import { Movement, MovementLine } from '@/schemas/inventory'
+import { heraCode } from '@/lib/smart-codes'
 
 const BASE_URL = process.env.NEXT_PUBLIC_PLAYBOOK_BASE_URL
 const API_KEY = process.env.NEXT_PUBLIC_PLAYBOOK_API_KEY
@@ -45,7 +46,7 @@ function generateMockMovements(
     const movement: Movement = {
       id,
       organization_id: organizationId,
-      smart_code: `HERA.INVENTORY.MOVE.${type}.V1`,
+      smart_code: heraCode(`HERA.INVENTORY.MOVE.${type}.v1`),
       transaction_code: `TXN-${Date.now()}-${i}`,
       when_ts: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
       branch_id: branchId,
@@ -87,7 +88,7 @@ function generateMockMovements(
         id: `${id}-L${j + 1}`,
         transaction_id: id,
         line_no: j + 1,
-        smart_code: 'HERA.INVENTORY.LINE.ITEM.V1',
+        smart_code: heraCode('HERA.INVENTORY.LINE.ITEM.v1'),
         entity_id: `ITM-${String(Math.floor(Math.random() * 15) + 1).padStart(3, '0')}`,
         qty: type === 'ISSUE' ? -qty : qty, // Negative for issues
         uom: 'unit',
@@ -178,12 +179,12 @@ export async function listMovements(params: {
     // Build smart code filter
     const smartCodeFilter =
       params.types && params.types.length > 0
-        ? params.types.map(t => `HERA.INVENTORY.MOVE.${t}.V1`)
+        ? params.types.map(t => heraCode(`HERA.INVENTORY.MOVE.${t}.v1`))
         : [
-            'HERA.INVENTORY.MOVE.RECEIPT.V1',
-            'HERA.INVENTORY.MOVE.ISSUE.V1',
-            'HERA.INVENTORY.MOVE.TRANSFER.V1',
-            'HERA.INVENTORY.MOVE.ADJUST.V1'
+            heraCode('HERA.INVENTORY.MOVE.RECEIPT.v1'),
+            heraCode('HERA.INVENTORY.MOVE.ISSUE.v1'),
+            heraCode('HERA.INVENTORY.MOVE.TRANSFER.v1'),
+            heraCode('HERA.INVENTORY.MOVE.ADJUST.v1')
           ]
 
     const url = withParams('/universal_transactions', {
@@ -360,7 +361,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
   try {
     const journalHeader = {
       organization_id: movement.organization_id,
-      smart_code: 'HERA.FINANCE.JOURNAL.INVENTORY.V1',
+      smart_code: heraCode('HERA.FINANCE.JOURNAL.INVENTORY.v1'),
       when_ts: movement.when_ts,
       reference: `${movement.metadata?.type}/${movement.transaction_code}`,
       total_amount: movement.total_amount,
@@ -374,7 +375,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
 
     const journalLines = entries.map((entry, i) => ({
       line_no: i + 1,
-      smart_code: 'HERA.FINANCE.JOURNAL.LINE.V1',
+      smart_code: heraCode('HERA.FINANCE.JOURNAL.LINE.v1'),
       account_code: entry.account,
       debit_amount: entry.debit || 0,
       credit_amount: entry.credit || 0,

@@ -16,6 +16,7 @@
  */
 
 import { universalApi } from '@/lib/universal-api-v2'
+import { heraCode } from '@/lib/smart-codes'
 
 // ================================================================================
 // APPOINTMENT DTOs
@@ -32,7 +33,7 @@ export type AppointmentStatus =
 export type AppointmentDTO = {
   id: string
   organization_id: string
-  smart_code: string // e.g., HERA.SALON.APPT.ENTITY.APPOINTMENT.V1
+  smart_code: string // e.g., HERA.SALON.APPT.ENTITY.APPOINTMENT.v1
   entity_name?: string
   entity_code?: string
   start_time: string // ISO
@@ -64,7 +65,7 @@ export type AppointmentSearchParams = {
 export interface AppointmentUpsertInput {
   id?: string // If provided, update; otherwise create
   organization_id: string
-  smart_code?: string // Default: HERA.SALON.APPT.ENTITY.APPOINTMENT.V1
+  smart_code?: string // Default: HERA.SALON.APPT.ENTITY.APPOINTMENT.v1
   entity_name: string // e.g., "Appointment - John Doe - 2024-01-15 10:00"
   entity_code?: string // e.g., "APPT-2024-001"
 
@@ -476,7 +477,7 @@ function toAppointmentDTOFromTransaction(
   return {
     id: transaction?.id ?? '',
     organization_id: transaction?.organization_id ?? '',
-    smart_code: transaction?.smart_code ?? 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1',
+    smart_code: transaction?.smart_code ?? heraCode('HERA.SALON.APPT.ENTITY.APPOINTMENT.v1'),
     entity_name: transaction?.transaction_code ?? transaction?.entity_name,
     entity_code: transaction?.transaction_code,
     start_time: toISO(
@@ -505,7 +506,7 @@ function toAppointmentDTO(entity: any, dyn: Record<string, any> = {}): Appointme
   return {
     id: entity?.id ?? '',
     organization_id: entity?.organization_id ?? '',
-    smart_code: entity?.smart_code ?? 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1',
+    smart_code: entity?.smart_code ?? heraCode('HERA.SALON.APPT.ENTITY.APPOINTMENT.v1'),
     entity_name: entity?.entity_name,
     entity_code: entity?.entity_code,
     start_time: toISO(v<string>('start_time') ?? v<string>('start')),
@@ -532,7 +533,7 @@ function toCustomerDTO(entity: any, dyn: Record<string, any> = {}): CustomerDTO 
   return {
     id: entity?.id ?? '',
     organization_id: entity?.organization_id ?? '',
-    smart_code: entity?.smart_code ?? 'HERA.SALON.CRM.ENTITY.CUSTOMER.V1',
+    smart_code: entity?.smart_code ?? heraCode('HERA.SALON.CRM.ENTITY.CUSTOMER.v1'),
     entity_name: entity?.entity_name ?? '',
     entity_code: entity?.entity_code,
     phone: v<string>('phone'),
@@ -608,7 +609,7 @@ export class PlaybookEntities {
         const updateResponse = await universalApi.update('core_entities', input.id, {
           entity_name: input.entity_name,
           entity_code: input.entity_code,
-          smart_code: input.smart_code || 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1'
+          smart_code: input.smart_code || heraCode('HERA.SALON.APPT.ENTITY.APPOINTMENT.v1')
         })
 
         if (!updateResponse.success) {
@@ -623,7 +624,7 @@ export class PlaybookEntities {
           entity_type: 'appointment',
           entity_name: input.entity_name,
           entity_code: input.entity_code || `APPT-${Date.now()}`,
-          smart_code: input.smart_code || 'HERA.SALON.APPT.ENTITY.APPOINTMENT.V1'
+          smart_code: input.smart_code || heraCode('HERA.SALON.APPT.ENTITY.APPOINTMENT.v1')
         })
 
         if (!createResponse.success || !createResponse.data) {
@@ -662,7 +663,7 @@ export class PlaybookEntities {
             field_value_text: field.field_value_text,
             field_value_number: field.field_value_number,
             field_value_json: field.field_value_json,
-            smart_code: `HERA.SALON.APPT.DYN.${field.field_name.toUpperCase()}.V1`
+            smart_code: heraCode(`HERA.SALON.APPT.DYN.${field.field_name.toUpperCase()}.v1`)
           })
         }
       }

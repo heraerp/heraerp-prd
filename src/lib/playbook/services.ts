@@ -1,3 +1,5 @@
+import { heraCode } from '@/lib/smart-codes'
+
 const BASE_URL = process.env.NEXT_PUBLIC_PLAYBOOK_BASE_URL
 const API_KEY = process.env.NEXT_PUBLIC_PLAYBOOK_API_KEY
 const hasEnv = Boolean(BASE_URL && API_KEY)
@@ -46,7 +48,7 @@ function generateMockServices(count: number, organizationId: string) {
   return services.slice(0, count).map((svc, i) => ({
     id: `SRV-${String(i + 1).padStart(3, '0')}`,
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.SERVICE.V1',
+    smart_code: heraCode('HERA.SALON.SERVICE.v1'),
     name: svc.name,
     code: `SVC${String(i + 1).padStart(3, '0')}`,
     status: i % 10 === 0 ? 'archived' : 'active',
@@ -80,7 +82,7 @@ export async function listServices(params: {
 
   try {
     const url = withParams('/entities', {
-      type: 'HERA.SALON.SERVICE.V1',
+      type: 'HERA.SALON.SERVICE.v1',
       organization_id: params.organization_id,
       branch_id: params.branch_id,
       q: params.q,
@@ -128,7 +130,7 @@ export async function createService(payload: {
   try {
     const body = {
       ...payload,
-      smart_code: 'HERA.SALON.SERVICE.V1',
+      smart_code: heraCode('HERA.SALON.SERVICE.v1'),
       status: payload.status || 'active'
     }
 

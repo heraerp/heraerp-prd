@@ -1,4 +1,5 @@
 import { ItemWithStock, StockLevel } from '@/schemas/inventory'
+import { heraCode } from '@/lib/smart-codes'
 
 const BASE_URL = process.env.NEXT_PUBLIC_PLAYBOOK_BASE_URL
 const API_KEY = process.env.NEXT_PUBLIC_PLAYBOOK_API_KEY
@@ -154,7 +155,7 @@ function generateMockItems(count: number, organizationId: string): ItemWithStock
   return items.slice(0, count).map((item, i) => ({
     id: `ITM-${String(i + 1).padStart(3, '0')}`,
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.PRODUCT.V1',
+    smart_code: heraCode('HERA.SALON.PRODUCT.v1'),
     name: item.name,
     sku: item.sku,
     category: item.category,
@@ -243,7 +244,7 @@ export async function listItems(params: {
 
   try {
     const url = withParams('/entities', {
-      type: 'HERA.SALON.PRODUCT.V1',
+      type: 'HERA.SALON.PRODUCT.v1',
       organization_id: params.organization_id,
       branch_id: params.branch_id,
       q: params.q,
@@ -292,7 +293,7 @@ export async function createItem(payload: {
     const newItem: ItemWithStock = {
       id: `ITM-${Date.now()}`,
       ...payload,
-      smart_code: 'HERA.SALON.PRODUCT.V1',
+      smart_code: heraCode('HERA.SALON.PRODUCT.v1'),
       track_stock: payload.track_stock ?? true,
       status: payload.status || 'active',
       created_at: new Date().toISOString(),
@@ -316,7 +317,7 @@ export async function createItem(payload: {
   try {
     const body = {
       ...payload,
-      smart_code: 'HERA.SALON.PRODUCT.V1',
+      smart_code: heraCode('HERA.SALON.PRODUCT.v1'),
       status: payload.status || 'active'
     }
 
@@ -406,7 +407,7 @@ export async function getStockLevel(params: {
 
     const stockLevels: Record<string, StockLevel> = {}
     params.item_ids.forEach(itemId => {
-      const key = `${itemId}:HERA.INVENTORY.STOCKLEVEL.V1`
+      const key = `${itemId}:HERA.INVENTORY.STOCKLEVEL.v1`
       const stockData = mockDataStore.dynamicData.get(key)
 
       if (stockData) {
@@ -438,7 +439,7 @@ export async function getStockLevel(params: {
       },
       body: JSON.stringify({
         entity_ids: params.item_ids,
-        smart_code: 'HERA.INVENTORY.STOCKLEVEL.V1',
+        smart_code: heraCode('HERA.INVENTORY.STOCKLEVEL.v1'),
         filters: { branch_id: params.branch_id }
       })
     })
@@ -509,7 +510,7 @@ export async function getValuationConfig(params: {
       },
       body: JSON.stringify({
         entity_ids: [params.organization_id, ...(params.item_ids || [])],
-        smart_code: 'HERA.INVENTORY.VALUATION_METHOD.V1'
+        smart_code: heraCode('HERA.INVENTORY.VALUATION_METHOD.v1')
       })
     })
 

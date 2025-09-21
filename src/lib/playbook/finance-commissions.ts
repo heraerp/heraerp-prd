@@ -1,6 +1,7 @@
 'use client'
 
 import { universalApi } from '@/lib/universal-api-v2'
+import { heraCode } from '@/lib/smart-codes'
 
 interface TransactionLine {
   line_entity_id?: string
@@ -67,7 +68,7 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
       organization_id: transactionData.organization_id,
       transaction_type: 'POS_SALE', // UPPERCASE as required
       transaction_date: new Date().toISOString(),
-      smart_code: transactionData.smart_code.toUpperCase().replace(/\.v(\d+)$/i, '.V$1'), // Ensure .V1 not .v1
+      smart_code: heraCode(transactionData.smart_code), // Ensure .v1 format
       total_amount: Number(transactionData.total_amount) || 0,
       transaction_code: generateTransactionCode('POS_SALE'),
       source_entity_id: transactionData.business_context.branch_id || null,
@@ -110,7 +111,7 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
         quantity: Number(line.quantity) || 1,
         unit_amount: Number(line.unit_price || line.line_amount) || 0,
         line_amount: Number(line.line_amount) || 0,
-        smart_code: line.smart_code.toUpperCase().replace(/\.v(\d+)$/i, '.V$1'), // Ensure .V1 not .v1
+        smart_code: heraCode(line.smart_code), // Ensure .v1 format
         line_data: line.line_data || {}
       }
 
@@ -237,7 +238,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: commissionAmount,
-        smart_code: 'HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1',
+        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.EXPENSE.v1'),
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,
@@ -251,7 +252,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: -commissionAmount, // Negative for credit
-        smart_code: 'HERA.SALON.POS.LINE.COMMISSION.PAYABLE.V1',
+        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.PAYABLE.v1'),
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,
