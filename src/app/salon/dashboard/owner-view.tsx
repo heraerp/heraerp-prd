@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/luxe-card'
 import { 
   TrendingUp, 
   Users, 
@@ -31,33 +31,45 @@ interface MetricCardProps {
 }
 
 function MetricCard({ title, value, subtitle, icon: Icon, trend, color = 'from-pink-500 to-purple-600' }: MetricCardProps) {
+  const iconGradient = color.includes('green') ? 'linear-gradient(135deg, #0F6F5C 0%, #0A4D3C 100%)' :
+                      color.includes('blue') ? 'linear-gradient(135deg, #5A2A40 0%, #3D1B2B 100%)' :
+                      color.includes('orange') ? 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)' :
+                      'linear-gradient(135deg, #8C7853 0%, #6B5A3F 100%)';
+
   return (
-    <Card className="relative overflow-hidden">
-      <div className={`absolute inset-0 opacity-5 bg-gradient-to-br ${color}`} />
+    <Card className="relative overflow-hidden" style={{ 
+      backgroundColor: '#232323',
+      border: '1px solid rgba(212, 175, 55, 0.15)'
+    }}>
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: `radial-gradient(circle at 100% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 50%)`
+      }} />
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <CardTitle className="text-sm font-medium" style={{ color: '#8C7853' }}>
           {title}
         </CardTitle>
-        <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center`}>
-          <Icon className="h-4 w-4 text-white" />
+        <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ 
+          background: iconGradient,
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}>
+          <Icon className="h-4 w-4" style={{ color: '#0B0B0B' }} />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-gray-900 dark:text-white">{value}</div>
+        <div className="text-2xl font-bold" style={{ color: '#F5E6C8' }}>{value}</div>
         {subtitle && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
+          <p className="text-xs mt-1" style={{ color: '#8C7853', opacity: 0.8 }}>{subtitle}</p>
         )}
         {trend && (
           <div className="flex items-center gap-1 mt-2">
             {trend.isUp ? (
-              <ArrowUpRight className="h-3 w-3 text-green-500" />
+              <ArrowUpRight className="h-3 w-3" style={{ color: '#0F6F5C' }} />
             ) : (
-              <ArrowDownRight className="h-3 w-3 text-red-500" />
+              <ArrowDownRight className="h-3 w-3" style={{ color: '#FF6B6B' }} />
             )}
-            <span className={cn(
-              "text-xs font-medium",
-              trend.isUp ? "text-green-500" : "text-red-500"
-            )}>
+            <span className="text-xs font-medium" style={{
+              color: trend.isUp ? '#0F6F5C' : '#FF6B6B'
+            }}>
               {trend.value}% from last month
             </span>
           </div>
@@ -79,9 +91,12 @@ export function OwnerDashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, Sarah!</h1>
-        <p className="text-purple-100">Here's how Hair Talkz is performing today</p>
+      <div className="rounded-xl p-6" style={{
+        background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+        boxShadow: '0 4px 6px rgba(212, 175, 55, 0.3)'
+      }}>
+        <h1 className="text-3xl font-bold mb-2" style={{ color: '#0B0B0B' }}>Welcome back, Sarah!</h1>
+        <p style={{ color: '#0B0B0B', opacity: 0.8 }}>Here's how Hair Talkz is performing today</p>
       </div>
 
       {/* Key Metrics Grid */}
@@ -123,29 +138,38 @@ export function OwnerDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
+              <BarChart3 className="h-5 w-5" style={{ color: '#D4AF37' }} />
               Monthly Performance
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Revenue Target</span>
-                <span className="text-sm font-medium">85% achieved</span>
+                <span className="text-sm" style={{ color: '#8C7853' }}>Revenue Target</span>
+                <span className="text-sm font-medium" style={{ color: '#F5E6C8' }}>85% achieved</span>
               </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style={{ width: '85%' }} />
+              <div className="w-full rounded-full h-2" style={{ backgroundColor: '#0F0F0F' }}>
+                <div className="h-2 rounded-full" style={{ 
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
+                  width: '85%' 
+                }} />
               </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">AED 385.2K</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Current Month</p>
+              <div className="text-center p-4 rounded-lg" style={{
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                border: '1px solid rgba(212, 175, 55, 0.2)'
+              }}>
+                <p className="text-2xl font-bold" style={{ color: '#D4AF37' }}>AED 385.2K</p>
+                <p className="text-xs" style={{ color: '#8C7853' }}>Current Month</p>
               </div>
-              <div className="text-center p-4 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
-                <p className="text-2xl font-bold text-pink-600 dark:text-pink-400">AED 453K</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Target</p>
+              <div className="text-center p-4 rounded-lg" style={{
+                backgroundColor: 'rgba(90, 42, 64, 0.1)',
+                border: '1px solid rgba(90, 42, 64, 0.2)'
+              }}>
+                <p className="text-2xl font-bold" style={{ color: '#5A2A40' }}>AED 453K</p>
+                <p className="text-xs" style={{ color: '#8C7853' }}>Target</p>
               </div>
             </div>
           </CardContent>
@@ -155,7 +179,7 @@ export function OwnerDashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Scissors className="h-5 w-5" />
+              <Scissors className="h-5 w-5" style={{ color: '#D4AF37' }} />
               Top Services Today
             </CardTitle>
           </CardHeader>
@@ -167,12 +191,15 @@ export function OwnerDashboard() {
                 { service: 'Keratin Treatment', count: 3, revenue: 'AED 2,400' },
                 { service: 'Manicure & Pedicure', count: 5, revenue: 'AED 1,250' }
               ].map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div key={idx} className="flex items-center justify-between p-3 rounded-lg" style={{
+                  backgroundColor: '#0F0F0F',
+                  border: '1px solid rgba(212, 175, 55, 0.1)'
+                }}>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{item.service}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{item.count} bookings</p>
+                    <p className="text-sm font-medium" style={{ color: '#F5E6C8' }}>{item.service}</p>
+                    <p className="text-xs" style={{ color: '#8C7853' }}>{item.count} bookings</p>
                   </div>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{item.revenue}</p>
+                  <p className="text-sm font-semibold" style={{ color: '#D4AF37' }}>{item.revenue}</p>
                 </div>
               ))}
             </div>
@@ -182,52 +209,61 @@ export function OwnerDashboard() {
 
       {/* Alerts & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20">
+        <Card style={{ 
+          backgroundColor: 'rgba(212, 175, 55, 0.1)',
+          border: '1px solid rgba(212, 175, 55, 0.3)'
+        }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-              Low Inventory Alert
+              <AlertCircle className="h-4 w-4" style={{ color: '#D4AF37' }} />
+              <span style={{ color: '#F5E6C8' }}>Low Inventory Alert</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm" style={{ color: '#E0E0E0' }}>
               5 products below reorder level
             </p>
-            <button className="mt-2 text-sm text-orange-600 dark:text-orange-400 font-medium hover:underline">
+            <button className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: '#D4AF37' }}>
               View Inventory →
             </button>
           </CardContent>
         </Card>
 
-        <Card className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+        <Card style={{ 
+          backgroundColor: 'rgba(90, 42, 64, 0.1)',
+          border: '1px solid rgba(90, 42, 64, 0.3)'
+        }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <Star className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              Customer Reviews
+              <Star className="h-4 w-4" style={{ color: '#5A2A40' }} />
+              <span style={{ color: '#F5E6C8' }}>Customer Reviews</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm" style={{ color: '#E0E0E0' }}>
               4.8★ average this week (12 reviews)
             </p>
-            <button className="mt-2 text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">
+            <button className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: '#5A2A40' }}>
               Read Reviews →
             </button>
           </CardContent>
         </Card>
 
-        <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+        <Card style={{ 
+          backgroundColor: 'rgba(15, 111, 92, 0.1)',
+          border: '1px solid rgba(15, 111, 92, 0.3)'
+        }}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
-              Growth Opportunity
+              <TrendingUp className="h-4 w-4" style={{ color: '#0F6F5C' }} />
+              <span style={{ color: '#F5E6C8' }}>Growth Opportunity</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm" style={{ color: '#E0E0E0' }}>
               Wednesday slots 40% unutilized
             </p>
-            <button className="mt-2 text-sm text-green-600 dark:text-green-400 font-medium hover:underline">
+            <button className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity" style={{ color: '#0F6F5C' }}>
               Launch Campaign →
             </button>
           </CardContent>

@@ -51,7 +51,7 @@ const getSidebarItems = (role: string): SidebarItem[] => {
     // POS & Appointments - Receptionist main features
     { 
       title: 'Point of Sale', 
-      href: '/salon/pos', 
+      href: '/salon/pos2', 
       icon: CreditCard,
       roles: ['Owner', 'Receptionist', 'Administrator']
     },
@@ -61,6 +61,12 @@ const getSidebarItems = (role: string): SidebarItem[] => {
       icon: Calendar,
       badge: '3',
       badgeColor: 'bg-violet-500',
+      roles: ['Owner', 'Receptionist', 'Administrator']
+    },
+    {
+      title: 'Kanban Board',
+      href: '/salon/kanban',
+      icon: Grid3x3,
       roles: ['Owner', 'Receptionist', 'Administrator']
     },
     
@@ -142,8 +148,9 @@ const getAllApps = (role: string): SidebarItem[] => {
   const allApps: SidebarItem[] = [
     // Core modules
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home, roles: ['Owner', 'Administrator'] },
-    { title: 'POS', href: '/salon/pos', icon: CreditCard, roles: ['Owner', 'Receptionist', 'Administrator'] },
+    { title: 'POS', href: '/salon/pos2', icon: CreditCard, roles: ['Owner', 'Receptionist', 'Administrator'] },
     { title: 'Appointments', href: '/salon/appointments', icon: Calendar, roles: ['Owner', 'Receptionist', 'Administrator'] },
+    { title: 'Kanban Board', href: '/salon/kanban', icon: Grid3x3, roles: ['Owner', 'Receptionist', 'Administrator'] },
     { title: 'Customers', href: '/salon/customers', icon: Users, roles: ['Owner', 'Receptionist', 'Administrator'] },
     
     // Admin features
@@ -187,15 +194,15 @@ function AppsModal({
   if (!isOpen || !mounted) return null
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
+      <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">All Apps</h2>
+          <h2 className="text-xl font-semibold text-foreground">All Apps</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-accent rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-zinc-400" />
+            <X className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
         
@@ -210,25 +217,25 @@ function AppsModal({
                 href={app.href}
                 onClick={onClose}
                 className={cn(
-                  "flex flex-col items-center gap-2 p-4 rounded-xl transition-all hover:bg-zinc-800",
-                  active && "bg-zinc-800 ring-1 ring-pink-500/50"
+                  "flex flex-col items-center gap-2 p-4 rounded-xl transition-all hover:bg-accent",
+                  active && "bg-accent ring-1 ring-pink-500/50"
                 )}
               >
                 <div className={cn(
                   "p-3 rounded-xl transition-all",
-                  active ? "bg-gradient-to-br from-pink-500 to-violet-600" : "bg-zinc-800"
+                  active ? "bg-gradient-to-br from-pink-500 to-violet-600" : "bg-muted"
                 )}>
-                  <Icon className={cn("w-5 h-5", active ? "text-white" : "text-zinc-400")} />
+                  <Icon className={cn("w-5 h-5", active ? "text-primary-foreground" : "text-muted-foreground")} />
                 </div>
                 <span className={cn(
                   "text-xs text-center",
-                  active ? "text-white font-medium" : "text-zinc-400"
+                  active ? "text-foreground font-medium" : "text-muted-foreground"
                 )}>
                   {app.title}
                 </span>
                 {app.badge && (
                   <span className={cn(
-                    "px-2 py-0.5 text-xs rounded-full text-white font-medium",
+                    "px-2 py-0.5 text-xs rounded-full text-primary-foreground font-medium",
                     app.badgeColor || "bg-pink-500"
                   )}>
                     {app.badge}
@@ -296,11 +303,11 @@ export default function SalonRoleBasedSidebar() {
 
   return (
     <>
-      <aside className="fixed left-0 top-0 w-20 h-screen bg-zinc-950 border-r border-zinc-800 flex flex-col items-center py-4 z-40">
+      <aside className="fixed left-0 top-0 w-20 h-screen bg-background border-r border-border flex flex-col items-center py-4 z-40">
         {/* Logo */}
         <Link
           href="/salon"
-          className="mb-6 p-3 hover:bg-zinc-900 rounded-xl transition-all group"
+          className="mb-6 p-3 hover:bg-accent rounded-xl transition-all group"
         >
           <Scissors className="w-6 h-6 text-pink-500 group-hover:scale-110 transition-transform" />
         </Link>
@@ -308,11 +315,11 @@ export default function SalonRoleBasedSidebar() {
         {/* User info tooltip on hover */}
         <div className="group relative mb-4">
           <div className={`p-2 rounded-lg bg-gradient-to-br ${getRoleColor()} opacity-20 group-hover:opacity-30 transition-opacity`}>
-            <Shield className="w-5 h-5 text-white" />
+            <Shield className="w-5 h-5 text-primary-foreground" />
           </div>
-          <div className="absolute left-full ml-2 px-3 py-2 bg-zinc-800 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-            <p className="text-xs font-medium text-white">{userName}</p>
-            <p className="text-xs text-zinc-400">{userRole}</p>
+          <div className="absolute left-full ml-2 px-3 py-2 bg-popover rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+            <p className="text-xs font-medium text-foreground">{userName}</p>
+            <p className="text-xs text-muted-foreground">{userRole}</p>
             <p className="text-xs text-pink-400 mt-1">{getRoleWelcome()}</p>
           </div>
         </div>
@@ -331,19 +338,19 @@ export default function SalonRoleBasedSidebar() {
                   "relative w-full p-3 rounded-xl flex items-center justify-center transition-all group",
                   active
                     ? "bg-gradient-to-br from-pink-500 to-violet-600 shadow-lg shadow-pink-500/25"
-                    : "hover:bg-zinc-900"
+                    : "hover:bg-accent"
                 )}
               >
                 <Icon
                   className={cn(
                     "w-5 h-5 transition-all",
-                    active ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"
+                    active ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
                   )}
                 />
                 {item.badge && (
                   <span
                     className={cn(
-                      "absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] rounded-full text-white font-medium",
+                      "absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] rounded-full text-primary-foreground font-medium",
                       item.badgeColor || "bg-pink-500"
                     )}
                   >
@@ -351,8 +358,8 @@ export default function SalonRoleBasedSidebar() {
                   </span>
                 )}
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-800 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-                  <span className="text-xs text-white">{item.title}</span>
+                <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+                  <span className="text-xs text-foreground">{item.title}</span>
                 </div>
               </Link>
             )
@@ -363,12 +370,12 @@ export default function SalonRoleBasedSidebar() {
             onClick={() => setAppsModalOpen(true)}
             className={cn(
               "w-full p-3 rounded-xl flex items-center justify-center transition-all group mt-2",
-              "hover:bg-zinc-900"
+              "hover:bg-accent"
             )}
           >
-            <Grid3x3 className="w-5 h-5 text-zinc-500 group-hover:text-zinc-300" />
-            <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-800 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-              <span className="text-xs text-white">All Apps</span>
+            <Grid3x3 className="w-5 h-5 text-muted-foreground group-hover:text-foreground" />
+            <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+              <span className="text-xs text-foreground">All Apps</span>
             </div>
           </button>
         </nav>
@@ -376,11 +383,11 @@ export default function SalonRoleBasedSidebar() {
         {/* Sign out button */}
         <button
           onClick={handleSignOut}
-          className="w-14 p-3 rounded-xl flex items-center justify-center transition-all group hover:bg-zinc-900"
+          className="w-14 p-3 rounded-xl flex items-center justify-center transition-all group hover:bg-accent"
         >
-          <LogOut className="w-5 h-5 text-zinc-500 group-hover:text-red-400" />
-          <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-800 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
-            <span className="text-xs text-white">Sign Out</span>
+          <LogOut className="w-5 h-5 text-muted-foreground group-hover:text-red-400" />
+          <div className="absolute left-full ml-2 px-2 py-1 bg-popover rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap">
+            <span className="text-xs text-foreground">Sign Out</span>
           </div>
         </button>
       </aside>

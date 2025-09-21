@@ -25,9 +25,9 @@ export async function GET(request: NextRequest) {
       `
       )
       .eq('organization_id', organizationId)
-      .eq('transaction_type', 'appointment')
-      .gte('transaction_date', date)
-      .lte('transaction_date', date + 'T23:59:59')
+      .eq('transaction_type', 'APPOINTMENT')
+      .gte('transaction_date', date + 'T00:00:00.000Z')
+      .lte('transaction_date', date + 'T23:59:59.999Z')
       .order('transaction_date')
 
     if (error) {
@@ -189,36 +189,81 @@ export async function PUT(request: NextRequest) {
 
     const workflow = new ServerWorkflow(organizationId)
 
-    // If status change requested, use workflow transition
+    // If status change requested, update appointment status directly
     if (status) {
-      // Map status strings to workflow status codes
-      const statusMap: Record<string, string> = {
-        scheduled: 'STATUS-APPOINTMENT-SCHEDULED',
-        checked_in: 'STATUS-APPOINTMENT-CHECKED_IN',
-        in_service: 'STATUS-APPOINTMENT-IN_SERVICE',
-        completed: 'STATUS-APPOINTMENT-COMPLETED',
-        no_show: 'STATUS-APPOINTMENT-NO_SHOW',
-        cancelled: 'STATUS-APPOINTMENT-CANCELLED'
-      }
-
-      const targetStatusCode = statusMap[status.toLowerCase()] || status
-
-      // Find the target status entity
-      const { data: targetStatus } = await supabase
-        .from('core_entities')
-        .select('id')
+      console.log(`Updating appointment ${id} status to: ${status}`)
+      
+      // First get the current appointment to preserve existing metadata
+      const { data: currentAppointment } = await supabase
+        .from('universal_transactions')
+        .select('metadata')
+        .eq('id', id)
         .eq('organization_id', organizationId)
-        .eq('entity_type', 'workflow_status')
-        .eq('entity_code', targetStatusCode)
         .single()
 
-      if (targetStatus) {
-        // Transition to new status
-        await workflow.transitionStatus(id, targetStatus.id, {
-          userId: userId || 'system',
-          reason: updates.reason || 'Status updated'
+      // Update the appointment status in metadata for compatibility with kanban
+      const { error: updateError } = await supabase
+        .from('universal_transactions')
+        .update({
+          metadata: {
+            ...currentAppointment?.metadata, // Preserve existing metadata
+            status: status.toUpperCase(), // Store in uppercase for kanban compatibility
+            updated_at: new Date().toISOString(),
+            updated_by: userId || 'system'
+          }
         })
-        console.log(`Transitioned appointment ${id} to ${targetStatusCode}`)
+        .eq('id', id)
+        .eq('organization_id', organizationId)
+
+      if (updateError) {
+        console.error('Error updating appointment status:', updateError)
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Failed to update appointment status'
+          },
+          { status: 500 }
+        )
+      }
+
+      console.log(`✅ Successfully updated appointment ${id} status to ${status}`)
+      
+      // Also try the workflow transition if the status entities exist
+      try {
+        const statusMap: Record<string, string> = {
+          draft: 'STATUS-APPOINTMENT-DRAFT',
+          booked: 'STATUS-APPOINTMENT-BOOKED',
+          scheduled: 'STATUS-APPOINTMENT-SCHEDULED', 
+          checked_in: 'STATUS-APPOINTMENT-CHECKED_IN',
+          in_service: 'STATUS-APPOINTMENT-IN_SERVICE',
+          to_pay: 'STATUS-APPOINTMENT-TO_PAY',
+          review: 'STATUS-APPOINTMENT-REVIEW',
+          done: 'STATUS-APPOINTMENT-DONE',
+          completed: 'STATUS-APPOINTMENT-COMPLETED',
+          no_show: 'STATUS-APPOINTMENT-NO_SHOW',
+          cancelled: 'STATUS-APPOINTMENT-CANCELLED'
+        }
+
+        const targetStatusCode = statusMap[status.toLowerCase()]
+        if (targetStatusCode) {
+          const { data: targetStatus } = await supabase
+            .from('core_entities')
+            .select('id')
+            .eq('organization_id', organizationId)
+            .eq('entity_type', 'workflow_status')
+            .eq('entity_code', targetStatusCode)
+            .single()
+
+          if (targetStatus) {
+            await workflow.transitionStatus(id, targetStatus.id, {
+              userId: userId || 'system',
+              reason: updates.reason || 'Status updated'
+            })
+            console.log(`Also updated workflow status to ${targetStatusCode}`)
+          }
+        }
+      } catch (workflowError) {
+        console.warn('Workflow update failed, but main status update succeeded:', workflowError)
       }
     }
 

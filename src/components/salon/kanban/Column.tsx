@@ -60,6 +60,7 @@ export function Column({ id, title, cards, onCardAction, isDraft = false }: Colu
               onEdit={() => onCardAction(card, 'edit')}
               onReschedule={() => onCardAction(card, 'reschedule')}
               onCancel={() => onCardAction(card, 'cancel')}
+              onProcessPayment={() => onCardAction(card, 'process_payment')}
             />
           ))}
         </SortableContext>

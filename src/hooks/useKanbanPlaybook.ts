@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { KanbanCard, KanbanStatus, ALLOWED_TRANSITIONS } from '@/schemas/kanban';
+import { KanbanCard, KanbanStatus, ALLOWED_TRANSITIONS, CANCELLABLE_STATES } from '@/schemas/kanban';
 import * as playbook from '@/lib/playbook/appointments';
 import { between } from '@/lib/kanban/rank';
 
@@ -48,7 +48,11 @@ export function useKanbanPlaybook(params: {
 
   // Validate status transition
   const canTransition = useCallback((from: KanbanStatus, to: KanbanStatus): boolean => {
-    return ALLOWED_TRANSITIONS[from]?.includes(to) || false;
+    const allowed = ALLOWED_TRANSITIONS[from]?.includes(to) || false;
+    if (!allowed) {
+      console.log(`🔄 Invalid transition: ${from} → ${to} (allowed: ${ALLOWED_TRANSITIONS[from]?.join(', ') || 'none'})`);
+    }
+    return allowed;
   }, []);
 
   // Move card between columns
@@ -58,10 +62,16 @@ export function useKanbanPlaybook(params: {
     targetIndex: number
   ) => {
     const card = cards.find(c => c.id === cardId);
-    if (!card) return;
+    if (!card) {
+      console.error('❌ Card not found:', cardId);
+      return;
+    }
+
+    console.log(`🎯 Moving ${card.customer_name} from ${card.status} to ${targetColumn}`);
 
     // Validate transition
     if (!canTransition(card.status, targetColumn)) {
+      console.error(`❌ Invalid transition: ${card.status} → ${targetColumn}`);
       toast({
         title: 'Invalid move',
         description: `Cannot move from ${card.status} to ${targetColumn}`,
@@ -108,6 +118,28 @@ export function useKanbanPlaybook(params: {
           changed_by: userId
         });
         if (!success) throw new Error('Failed to update status');
+        
+        // Show success message for regular transitions
+        const statusDisplay = targetColumn.replace('_', ' ').toLowerCase();
+        toast({
+          title: 'Status updated',
+          description: `${card.customer_name} moved to ${statusDisplay}`
+        });
+
+        // Special handling for TO_PAY status - redirect to POS
+        if (targetColumn === 'TO_PAY') {
+          setTimeout(() => {
+            const posUrl = `/salon/pos2?customer_id=${card.metadata?.customer_id || ''}&customer_name=${encodeURIComponent(card.customer_name)}&appointment_id=${card.id}&service=${encodeURIComponent(card.service_name)}&amount=${card.metadata?.price || 0}`;
+            
+            toast({
+              title: 'Redirecting to POS',
+              description: 'Processing payment for ' + card.customer_name,
+            });
+            
+            // Open POS in new tab to maintain kanban context
+            window.open(posUrl, '_blank');
+          }, 1500); // Small delay to show the status update first
+        }
       }
 
       // Update rank
@@ -145,61 +177,72 @@ export function useKanbanPlaybook(params: {
     start: string;
     end: string;
   }) => {
+    console.log('📝 Creating draft appointment:', data);
+    
     try {
-      const response = await fetch('/api/v1/universal_transactions', {
+      const response = await fetch('/api/v1/salon/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          organization_id,
-          transaction_type: 'appointment',
-          smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
-          status: 'draft',
-          when_ts: data.start,
-          reference_entity_id: data.customer_id,
-          metadata: {
-            branch_id,
-            ...data
-          }
+          organizationId: organization_id,
+          clientName: data.customer_name,
+          clientPhone: '',
+          clientEmail: '',
+          serviceId: data.service_id,
+          serviceName: data.service_name,
+          servicePrice: 0,
+          stylistId: data.staff_id,
+          stylistName: data.staff_name,
+          date: new Date(data.start).toISOString().split('T')[0],
+          time: new Date(data.start).toLocaleTimeString('en-US', { 
+            hour12: true, 
+            hour: 'numeric', 
+            minute: '2-digit' 
+          }),
+          duration: Math.round((new Date(data.end).getTime() - new Date(data.start).getTime()) / (1000 * 60)),
+          notes: 'Draft appointment'
         })
       });
 
-      if (!response.ok) throw new Error('Failed to create draft');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to create draft:', errorText);
+        throw new Error('Failed to create draft');
+      }
 
-      const appointment = await response.json();
+      const result = await response.json();
+      console.log('✅ Draft appointment created:', result);
 
-      // Set initial status DD as DRAFT
-      await playbook.upsertDynamicData({
-        entity_id: appointment.id,
-        field_name: 'appointment_status',
-        field_value_text: 'DRAFT',
-        smart_code: 'HERA.SALON.APPOINTMENT.STATUS.V1',
-        metadata: {
-          created_by: userId,
-          created_at: new Date().toISOString()
-        }
+      // Get the appointment ID from the response
+      const appointmentId = result.appointment?.id;
+      if (!appointmentId) {
+        throw new Error('No appointment ID returned');
+      }
+
+      // Set initial status as DRAFT by updating the appointment status
+      const updateResponse = await fetch(`/api/v1/salon/appointments`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: appointmentId,
+          status: 'draft',
+          organizationId: organization_id,
+          userId: userId
+        })
       });
 
-      // Set initial rank in DRAFT column
-      const draftCards = cards.filter(c => c.status === 'DRAFT');
-      const firstRank = draftCards.length > 0 ? draftCards[0].rank : undefined;
-      const newRank = between(undefined, firstRank);
-
-      await playbook.upsertKanbanRank({
-        appointment_id: appointment.id,
-        column: 'DRAFT',
-        rank: newRank,
-        branch_id,
-        date,
-        organization_id
-      });
+      if (!updateResponse.ok) {
+        console.warn('Failed to set draft status, but appointment was created');
+      }
 
       toast({
         title: 'Draft created',
         description: 'Appointment saved as draft. Confirm when ready.'
       });
 
+      // Reload appointments to show the new draft
       await loadAppointments();
-      return appointment.id;
+      return appointmentId;
     } catch (error) {
       console.error('Failed to create draft:', error);
       toast({
@@ -209,6 +252,77 @@ export function useKanbanPlaybook(params: {
       return null;
     }
   }, [organization_id, branch_id, date, userId, cards, toast, loadAppointments]);
+
+  // Cancel appointment
+  const cancelAppointment = useCallback(async (cardId: string, reason?: string) => {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return false;
+
+    // Check if appointment can be cancelled
+    if (!CANCELLABLE_STATES.includes(card.status)) {
+      toast({
+        title: 'Cannot cancel',
+        description: `Cannot cancel appointment in ${card.status} status`,
+        variant: 'destructive'
+      });
+      return false;
+    }
+
+    setIsMoving(true);
+
+    // Optimistically update UI
+    setCards(prev => prev.map(c => 
+      c.id === cardId 
+        ? { ...c, status: 'CANCELLED' }
+        : c
+    ));
+
+    try {
+      // Post status change to CANCELLED
+      const success = await playbook.postStatusChange({
+        organization_id,
+        appointment_id: cardId,
+        from_status: card.status,
+        to_status: 'CANCELLED',
+        changed_by: userId,
+        reason: reason || 'Cancelled by staff'
+      });
+
+      if (!success) throw new Error('Failed to cancel appointment');
+
+      // Update rank in CANCELLED column
+      const cancelledCards = cards.filter(c => c.status === 'CANCELLED');
+      const newRank = between(undefined, cancelledCards[0]?.rank);
+
+      await playbook.upsertKanbanRank({
+        appointment_id: cardId,
+        column: 'CANCELLED',
+        rank: newRank,
+        branch_id,
+        date,
+        organization_id
+      });
+
+      toast({
+        title: 'Appointment cancelled',
+        description: 'The appointment has been successfully cancelled'
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Failed to cancel appointment:', error);
+      toast({
+        title: 'Failed to cancel appointment',
+        description: 'Refreshing to restore correct state...',
+        variant: 'destructive'
+      });
+      // Rollback by reloading
+      await loadAppointments();
+      return false;
+    } finally {
+      setIsMoving(false);
+    }
+  }, [cards, organization_id, branch_id, date, userId, toast, loadAppointments]);
 
   // Group cards by column
   const cardsByColumn = useMemo(() => {
@@ -245,6 +359,7 @@ export function useKanbanPlaybook(params: {
     isMoving,
     moveCard,
     createDraft,
+    cancelAppointment,
     reload: loadAppointments,
     canTransition
   };

@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/luxe-dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -258,45 +258,49 @@ export function PaymentDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto text-slate-900 dark:text-white">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <Receipt className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+          <DialogTitle className="flex items-center gap-2">
+            <Receipt className="w-5 h-5" style={{ color: '#D4AF37' }} />
             Process Payment - ${(totals?.total || 0).toFixed(2)}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Order Summary */}
-          <Card className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700">
+          <Card style={{ 
+            backgroundColor: '#0F0F0F', 
+            border: '1px solid rgba(212, 175, 55, 0.2)',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+          }}>
             <CardContent className="p-4">
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
                   <span>Items ({ticket.lineItems.length}):</span>
                   <span>${(totals?.subtotal || 0).toFixed(2)}</span>
                 </div>
                 {(totals?.discountAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
+                  <div className="flex justify-between text-sm" style={{ color: '#0F6F5C' }}>
                     <span>Discounts:</span>
                     <span>-${(totals?.discountAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
                 {(totals?.tipAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm text-blue-600">
+                  <div className="flex justify-between text-sm" style={{ color: '#D4AF37' }}>
                     <span>Tips:</span>
                     <span>+${(totals?.tipAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
                 {(totals?.taxAmount || 0) > 0 && (
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-sm" style={{ color: '#E0E0E0' }}>
                     <span>Tax (5%):</span>
                     <span>${(totals?.taxAmount || 0).toFixed(2)}</span>
                   </div>
                 )}
-                <Separator />
+                <Separator style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }} />
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Total Due:</span>
-                  <span className="text-blue-600">${(totals?.total || 0).toFixed(2)}</span>
+                  <span style={{ color: '#F5E6C8' }}>Total Due:</span>
+                  <span style={{ color: '#D4AF37' }}>${(totals?.total || 0).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
@@ -486,16 +490,20 @@ export function PaymentDialog({
           )}
 
           {/* Payment Summary */}
-          <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="p-4 rounded-lg" style={{
+            backgroundColor: '#0F0F0F',
+            border: '1px solid rgba(212, 175, 55, 0.3)',
+            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(90, 42, 64, 0.05) 100%)'
+          }}>
             <div className="space-y-3">
               <div className="flex justify-between text-lg">
-                <span className="font-medium">Total Due:</span>
-                <span className="font-bold text-blue-600">${(totals?.total || 0).toFixed(2)}</span>
+                <span className="font-medium" style={{ color: '#F5E6C8' }}>Total Due:</span>
+                <span className="font-bold" style={{ color: '#D4AF37' }}>${(totals?.total || 0).toFixed(2)}</span>
               </div>
               {payments.length > 0 && (
                 <>
-                  <Separator className="bg-blue-200 dark:bg-blue-800" />
-                  <div className="flex justify-between">
+                  <Separator style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }} />
+                  <div className="flex justify-between" style={{ color: '#E0E0E0' }}>
                     <span>Amount Tendered:</span>
                     <span className="font-semibold">${paidAmount.toFixed(2)}</span>
                   </div>
@@ -503,15 +511,18 @@ export function PaymentDialog({
               )}
               {remainingAmount > 0.01 ? (
                 <div className="flex justify-between text-lg">
-                  <span className="font-medium">Balance to Pay:</span>
-                  <span className="font-bold text-red-600">${remainingAmount.toFixed(2)}</span>
+                  <span className="font-medium" style={{ color: '#F5E6C8' }}>Balance to Pay:</span>
+                  <span className="font-bold" style={{ color: '#FF6B6B' }}>${remainingAmount.toFixed(2)}</span>
                 </div>
               ) : changeAmount > 0 ? (
-                <div className="flex justify-between text-lg bg-green-100 dark:bg-green-900/30 p-2 rounded">
-                  <span className="font-medium text-green-700 dark:text-green-300">
+                <div className="flex justify-between text-lg p-2 rounded" style={{ 
+                  backgroundColor: 'rgba(15, 111, 92, 0.2)',
+                  border: '1px solid rgba(15, 111, 92, 0.3)'
+                }}>
+                  <span className="font-medium" style={{ color: '#0F6F5C' }}>
                     Change Due:
                   </span>
-                  <span className="font-bold text-green-700 dark:text-green-300">
+                  <span className="font-bold" style={{ color: '#0F6F5C' }}>
                     ${changeAmount.toFixed(2)}
                   </span>
                 </div>
@@ -546,16 +557,31 @@ export function PaymentDialog({
 
           {/* Action Buttons */}
           <div className="flex gap-3">
-            <Button variant="outline" onClick={handleClose} disabled={processing}>
+            <Button 
+              variant="outline" 
+              onClick={handleClose} 
+              disabled={processing}
+              style={{
+                borderColor: '#8C7853',
+                color: '#8C7853',
+                backgroundColor: 'transparent'
+              }}
+              className="hover:opacity-80"
+            >
               Cancel
             </Button>
             <Button
               onClick={processPayment}
               disabled={!isFullyPaid || processing}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="flex-1"
+              style={{
+                background: `linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)`,
+                color: '#0B0B0B',
+                border: 'none'
+              }}
             >
               {processing ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2" style={{ borderColor: '#0B0B0B' }}></div>
               ) : (
                 <Check className="w-4 h-4 mr-2" />
               )}

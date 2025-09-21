@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle,
   Edit,
-  MoreVertical
+  MoreVertical,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { KanbanCard as CardType } from '@/schemas/kanban';
+import { KanbanCard as CardType, CANCELLABLE_STATES, RESCHEDULABLE_STATES } from '@/schemas/kanban';
 import { format } from 'date-fns';
 
 interface CardProps {
@@ -33,9 +34,10 @@ interface CardProps {
   onEdit?: () => void;
   onReschedule?: () => void;
   onCancel?: () => void;
+  onProcessPayment?: () => void;
 }
 
-export function Card({ card, onConfirm, onEdit, onReschedule, onCancel }: CardProps) {
+export function Card({ card, onConfirm, onEdit, onReschedule, onCancel, onProcessPayment }: CardProps) {
   const {
     attributes,
     listeners,
@@ -102,16 +104,22 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel }: CardPr
                   </DropdownMenuItem>
                 </>
               )}
-              {card.status !== 'DRAFT' && card.status !== 'DONE' && card.status !== 'CANCELLED' && (
+              {RESCHEDULABLE_STATES.includes(card.status) && (
                 <DropdownMenuItem onClick={onReschedule}>
                   <Clock className="w-4 h-4 mr-2" />
                   Reschedule
                 </DropdownMenuItem>
               )}
-              {(card.status === 'DRAFT' || card.status === 'BOOKED') && (
+              {card.status === 'TO_PAY' && (
+                <DropdownMenuItem onClick={onProcessPayment} className="text-green-600">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Process Payment
+                </DropdownMenuItem>
+              )}
+              {CANCELLABLE_STATES.includes(card.status) && (
                 <DropdownMenuItem onClick={onCancel} className="text-red-600">
                   <AlertCircle className="w-4 h-4 mr-2" />
-                  Cancel
+                  Cancel Appointment
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
@@ -145,6 +153,16 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel }: CardPr
           </div>
         )}
 
+        {/* Status indicator */}
+        {card.status !== 'DRAFT' && (
+          <div className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+            Status: {card.status.replace('_', ' ').toLowerCase()}
+            {card.status === 'TO_PAY' && (
+              <span className="ml-2 text-amber-600 dark:text-amber-400">💳 POS Ready</span>
+            )}
+          </div>
+        )}
+
         {/* Draft actions */}
         {card.status === 'DRAFT' && (
           <div className="flex gap-2 pt-2 border-t">
@@ -169,6 +187,24 @@ export function Card({ card, onConfirm, onEdit, onReschedule, onCancel }: CardPr
               }}
             >
               Edit
+            </Button>
+          </div>
+        )}
+
+        {/* TO_PAY actions */}
+        {card.status === 'TO_PAY' && (
+          <div className="flex gap-2 pt-2 border-t">
+            <Button
+              size="sm"
+              variant="default"
+              className="flex-1 h-7 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              onClick={(e) => {
+                e.stopPropagation();
+                onProcessPayment?.();
+              }}
+            >
+              <CreditCard className="w-3 h-3 mr-1" />
+              Process Payment
             </Button>
           </div>
         )}

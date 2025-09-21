@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { OwnerDashboard } from './owner-view'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/luxe-card'
 import { Shield } from 'lucide-react'
 
 // Import other role-specific dashboards as we create them
@@ -36,15 +36,15 @@ export default function SalonDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
+                  <Shield className="h-5 w-5" style={{ color: '#D4AF37' }} />
                   Receptionist Dashboard
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p style={{ color: '#E0E0E0' }}>
                   Welcome {userName}! Your receptionist dashboard is being prepared.
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                <p className="text-sm mt-2" style={{ color: '#8C7853' }}>
                   In the meantime, you can access the POS and Appointments from the sidebar.
                 </p>
               </CardContent>
@@ -59,15 +59,15 @@ export default function SalonDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
+                  <Shield className="h-5 w-5" style={{ color: '#D4AF37' }} />
                   Accountant Dashboard
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p style={{ color: '#E0E0E0' }}>
                   Welcome {userName}! Your financial dashboard is being prepared.
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                <p className="text-sm mt-2" style={{ color: '#8C7853' }}>
                   In the meantime, you can access Finance and Reports from the sidebar.
                 </p>
               </CardContent>
@@ -82,15 +82,15 @@ export default function SalonDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
+                  <Shield className="h-5 w-5" style={{ color: '#D4AF37' }} />
                   Administrator Dashboard
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p style={{ color: '#E0E0E0' }}>
                   Welcome {userName}! Your admin dashboard is being prepared.
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                <p className="text-sm mt-2" style={{ color: '#8C7853' }}>
                   In the meantime, you can access Settings and User Management from the sidebar.
                 </p>
               </CardContent>
@@ -103,7 +103,7 @@ export default function SalonDashboardPage() {
           <div className="p-6">
             <Card>
               <CardContent className="pt-6">
-                <p className="text-gray-600 dark:text-gray-400">
+                <p style={{ color: '#E0E0E0' }}>
                   Loading dashboard...
                 </p>
               </CardContent>
@@ -115,7 +115,7 @@ export default function SalonDashboardPage() {
 
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Administrator']}>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+      <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
         {renderDashboard()}
       </div>
     </SalonAuthGuard>

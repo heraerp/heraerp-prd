@@ -156,7 +156,7 @@ export class AppointmentApi {
       // Filter for appointment transactions
       const appointments = response.data.filter(
         (txn: any) =>
-          txn.transaction_type === 'appointment' &&
+          txn.transaction_type === 'APPOINTMENT' &&
           txn.smart_code === APPOINTMENT_SMART_CODES.APPOINTMENT_BOOKING
       )
       return appointments

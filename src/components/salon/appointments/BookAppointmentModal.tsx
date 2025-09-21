@@ -16,7 +16,7 @@ import { upsertAppointmentLines } from '@/lib/appointments/upsertAppointmentLine
 import { useAvailableSlots } from '@/lib/hooks/useAppointment'
 import { createAppointmentsApi } from '@/lib/api/appointments'
 import { apiClient } from '@/lib/auth/session'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/luxe-dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -371,13 +371,13 @@ export function BookAppointmentModal({
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-3 text-xl">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-600 to-pink-600 flex items-center justify-center shadow-lg">
-                <Calendar className="w-5 h-5 text-white" />
+                <Calendar className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="font-semibold text-foreground">
                   Book New Appointment
                 </h2>
-                <p className="text-sm text-muted-foreground font-normal dark:text-gray-400">
+                <p className="text-sm text-muted-foreground font-normal">
                   Schedule a service appointment for your customer
                 </p>
               </div>
@@ -410,7 +410,7 @@ export function BookAppointmentModal({
                 {/* Left Column - Customer & Time Selection */}
                 <div className="space-y-4">
                   <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 text-foreground">
                       <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900 flex items-center justify-center">
                         <User className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                       </div>
@@ -420,7 +420,7 @@ export function BookAppointmentModal({
                       <div className="p-3 bg-muted rounded-lg">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                            <p className="font-medium text-foreground">
                               {selectedCustomer.entity_name}
                             </p>
                             <p className="text-sm text-muted-foreground">
@@ -431,7 +431,7 @@ export function BookAppointmentModal({
                             size="sm"
                             variant="ghost"
                             onClick={() => setSelectedCustomer(null)}
-                            className="dark:text-gray-300 dark:hover:bg-gray-700"
+                            className="text-foreground hover:bg-accent"
                           >
                             Change
                           </Button>
@@ -440,12 +440,12 @@ export function BookAppointmentModal({
                     ) : (
                       <div className="space-y-2">
                         <div className="relative">
-                          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                           <Input
                             placeholder="Search customers..."
                             value={customerSearch}
                             onChange={e => setCustomerSearch(e.target.value)}
-                            className="pl-9 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400"
+                            className="pl-9"
                           />
                         </div>
 
@@ -460,7 +460,7 @@ export function BookAppointmentModal({
                                   setCustomerSearch('')
                                 }}
                               >
-                                <p className="font-medium text-gray-900 dark:text-gray-100">
+                                <p className="font-medium text-foreground">
                                   {customer.entity_name}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
@@ -475,7 +475,7 @@ export function BookAppointmentModal({
                   </Card>
 
                   <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 text-foreground">
                       <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
                         <User className="w-4 h-4 text-pink-600 dark:text-pink-400" />
                       </div>
@@ -488,7 +488,7 @@ export function BookAppointmentModal({
                         setSelectedStylist(stylist || null)
                       }}
                     >
-                      <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select a stylist" />
                       </SelectTrigger>
                       <SelectContent className="hera-select-content">
@@ -502,7 +502,7 @@ export function BookAppointmentModal({
                   </Card>
 
                   <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 text-foreground">
                       <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                         <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </div>
@@ -510,20 +510,19 @@ export function BookAppointmentModal({
                     </h3>
                     <div className="space-y-3">
                       <div>
-                        <Label className="text-gray-700 dark:text-gray-300">Date</Label>
+                        <Label>Date</Label>
                         <Input
                           type="date"
                           value={selectedDate}
                           onChange={e => setSelectedDate(e.target.value)}
                           min={format(new Date(), 'yyyy-MM-dd')}
-                          className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                         />
                       </div>
 
                       <div>
-                        <Label className="text-gray-700 dark:text-gray-300">Time</Label>
+                        <Label>Time</Label>
                         <Select value={selectedTime} onValueChange={setSelectedTime}>
-                          <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
+                          <SelectTrigger>
                             <SelectValue placeholder="Select time" />
                           </SelectTrigger>
                           <SelectContent className="hera-select-content">
@@ -537,13 +536,12 @@ export function BookAppointmentModal({
                       </div>
 
                       <div>
-                        <Label className="text-gray-700 dark:text-gray-300">Notes (Optional)</Label>
+                        <Label>Notes (Optional)</Label>
                         <Textarea
                           placeholder="Any special requests..."
                           value={notes}
                           onChange={e => setNotes(e.target.value)}
                           rows={2}
-                          className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400"
                         />
                       </div>
                     </div>
@@ -560,12 +558,12 @@ export function BookAppointmentModal({
                       Select Services
                     </h3>
                     <div className="relative mb-3">
-                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
                         placeholder="Search services..."
                         value={serviceSearch}
                         onChange={e => setServiceSearch(e.target.value)}
-                        className="pl-9 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400"
+                        className="pl-9"
                       />
                     </div>
 
@@ -574,24 +572,24 @@ export function BookAppointmentModal({
                         {filteredServices.map(service => (
                           <div
                             key={service.id}
-                            className="p-3 border rounded-lg hover:bg-muted cursor-pointer transition-colors dark:border-gray-700 dark:hover:bg-gray-800"
+                            className="p-3 border rounded-lg hover:bg-muted cursor-pointer transition-colors"
                             onClick={() => addToCart(service)}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-medium text-gray-900 dark:text-gray-100">
+                                <p className="font-medium text-foreground">
                                   {service.entity_name}
                                 </p>
                                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                                   <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                                    <span className="dark:text-gray-400">
+                                    <Clock className="w-3 h-3 text-muted-foreground" />
+                                    <span>
                                       {service.metadata?.duration_minutes || 30} min
                                     </span>
                                   </span>
                                   <span className="flex items-center gap-1">
-                                    <DollarSign className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                                    <span className="dark:text-gray-400">
+                                    <DollarSign className="w-3 h-3 text-muted-foreground" />
+                                    <span>
                                       AED {service.metadata?.price || 0}
                                     </span>
                                   </span>
@@ -605,7 +603,7 @@ export function BookAppointmentModal({
                                   addToCart(service)
                                 }}
                               >
-                                <Plus className="w-4 h-4 dark:text-gray-300" />
+                                <Plus className="w-4 h-4" />
                               </Button>
                             </div>
                           </div>
@@ -618,7 +616,7 @@ export function BookAppointmentModal({
                 {/* Right Column - Cart & Summary */}
                 <div className="space-y-4 lg:col-span-1">
                   <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 text-foreground">
                       <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
                         <ShoppingBag className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                       </div>
@@ -631,7 +629,7 @@ export function BookAppointmentModal({
                     </h3>
 
                     {cart.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8 dark:text-gray-400">
+                      <p className="text-muted-foreground text-center py-8">
                         No services selected
                       </p>
                     ) : (
@@ -640,10 +638,10 @@ export function BookAppointmentModal({
                           {cart.map(item => (
                             <div
                               key={item.service.id}
-                              className="p-3 border rounded-lg dark:border-gray-700"
+                              className="p-3 border rounded-lg"
                             >
                               <div className="flex items-center justify-between mb-2">
-                                <p className="font-medium text-sm text-gray-900 dark:text-gray-100">
+                                <p className="font-medium text-sm text-foreground">
                                   {item.service.entity_name}
                                 </p>
                                 <Button
@@ -651,7 +649,7 @@ export function BookAppointmentModal({
                                   variant="ghost"
                                   onClick={() => removeFromCart(item.service.id)}
                                 >
-                                  <X className="w-4 h-4 dark:text-gray-300" />
+                                  <X className="w-4 h-4" />
                                 </Button>
                               </div>
 
@@ -661,24 +659,24 @@ export function BookAppointmentModal({
                                     size="icon"
                                     variant="outline"
                                     onClick={() => updateQuantity(item.service.id, -1)}
-                                    className="h-6 w-6 dark:border-gray-600"
+                                    className="h-6 w-6"
                                   >
-                                    <Minus className="w-3 h-3 dark:text-gray-300" />
+                                    <Minus className="w-3 h-3" />
                                   </Button>
-                                  <span className="w-6 text-center text-sm dark:text-gray-300">
+                                  <span className="w-6 text-center text-sm">
                                     {item.quantity}
                                   </span>
                                   <Button
                                     size="icon"
                                     variant="outline"
                                     onClick={() => updateQuantity(item.service.id, 1)}
-                                    className="h-6 w-6 dark:border-gray-600"
+                                    className="h-6 w-6"
                                   >
-                                    <Plus className="w-3 h-3 dark:text-gray-300" />
+                                    <Plus className="w-3 h-3" />
                                   </Button>
                                 </div>
 
-                                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                <div className="text-sm text-muted-foreground font-medium">
                                   AED {(item.price * item.quantity).toFixed(2)}
                                 </div>
                               </div>
@@ -690,17 +688,17 @@ export function BookAppointmentModal({
                   </Card>
 
                   <Card className="p-4 border-2 border-violet-400 dark:border-violet-600 bg-violet-50 dark:bg-violet-950/30">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 text-foreground">
                       <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center">
-                        <DollarSign className="w-4 h-4 text-white" />
+                        <DollarSign className="w-4 h-4 text-primary-foreground" />
                       </div>
                       Booking Summary
                     </h3>
                     <div className="space-y-2 text-sm">
                       {selectedCustomer && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Customer:</span>
-                          <span className="font-medium text-gray-900 dark:text-gray-100">
+                          <span className="text-muted-foreground">Customer:</span>
+                          <span className="font-medium text-foreground">
                             {selectedCustomer.entity_name}
                           </span>
                         </div>
@@ -708,8 +706,8 @@ export function BookAppointmentModal({
 
                       {selectedStylist && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Stylist:</span>
-                          <span className="font-medium text-gray-900 dark:text-gray-100">
+                          <span className="text-muted-foreground">Stylist:</span>
+                          <span className="font-medium text-foreground">
                             {selectedStylist.entity_name}
                           </span>
                         </div>
@@ -717,23 +715,23 @@ export function BookAppointmentModal({
 
                       {selectedDate && selectedTime && (
                         <div className="flex justify-between">
-                          <span className="text-gray-600 dark:text-gray-400">Time:</span>
-                          <span className="font-medium text-gray-900 dark:text-gray-100">
+                          <span className="text-muted-foreground">Time:</span>
+                          <span className="font-medium text-foreground">
                             {format(new Date(`${selectedDate}T${selectedTime}`), 'MMM d, h:mm a')}
                           </span>
                         </div>
                       )}
 
                       <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">Duration:</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                        <span className="text-muted-foreground">Duration:</span>
+                        <span className="font-medium text-foreground">
                           {totalDuration} minutes
                         </span>
                       </div>
 
-                      <div className="pt-2 border-t dark:border-gray-600">
+                      <div className="pt-2 border-t">
                         <div className="flex justify-between text-lg font-semibold">
-                          <span className="text-gray-900 dark:text-gray-100">Total:</span>
+                          <span className="text-foreground">Total:</span>
                           <span className="text-violet-700 dark:text-violet-300">
                             AED {totalAmount.toFixed(2)}
                           </span>
@@ -756,7 +754,7 @@ export function BookAppointmentModal({
                       >
                         {saving ? (
                           <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
                             Booking...
                           </>
                         ) : (

@@ -192,8 +192,8 @@ export function ReschedulePanel({
       });
 
       onOpenChange(false);
-      // Trigger reload in parent
-      window.location.reload();
+      // Trigger reload in parent (better way would be to pass a callback)
+      setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error('Error rescheduling:', error);
       toast({

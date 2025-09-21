@@ -46,10 +46,20 @@ export const ALLOWED_TRANSITIONS: Record<KanbanStatus, KanbanStatus[]> = {
   DRAFT: ['BOOKED', 'CANCELLED'],
   BOOKED: ['CHECKED_IN', 'CANCELLED', 'NO_SHOW'],
   CHECKED_IN: ['IN_SERVICE', 'CANCELLED'],
-  IN_SERVICE: ['TO_PAY'],
+  IN_SERVICE: ['TO_PAY', 'CANCELLED'], // Allow cancel during service
   TO_PAY: ['REVIEW', 'DONE'],
   REVIEW: ['DONE'],
   DONE: [],
   NO_SHOW: [],
   CANCELLED: [],
 };
+
+// States that can be cancelled
+export const CANCELLABLE_STATES: KanbanStatus[] = [
+  'DRAFT', 'BOOKED', 'CHECKED_IN', 'IN_SERVICE'
+];
+
+// States that can be rescheduled  
+export const RESCHEDULABLE_STATES: KanbanStatus[] = [
+  'DRAFT', 'BOOKED', 'CHECKED_IN'
+];

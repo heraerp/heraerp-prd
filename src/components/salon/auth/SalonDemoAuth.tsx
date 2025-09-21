@@ -18,7 +18,7 @@ interface DemoUser {
 }
 
 // Hair Talkz Salon Organization ID
-const SALON_ORG_ID = '48f96c62-4e45-42f1-8a50-d2f4b3a7f803'
+const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 const DEMO_USERS: DemoUser[] = [
   {
@@ -326,6 +326,17 @@ export function SalonDemoAuth() {
           <p className="text-xs text-gray-500 dark:text-gray-500">
             WhatsApp integrations and external communications are simulated in demo mode
           </p>
+          
+          {/* Quick logout info */}
+          <div className="mt-6 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg max-w-md mx-auto">
+            <p className="text-xs text-amber-700 dark:text-amber-300">
+              <strong>Tip:</strong> To switch between demo users, click the Logout button in the top-right corner or visit{' '}
+              <a href="/salon/auth?logout" className="underline font-medium">
+                /salon/auth?logout
+              </a>
+            </p>
+          </div>
+          
           <div className="pt-4">
             <a
               href="/salon"

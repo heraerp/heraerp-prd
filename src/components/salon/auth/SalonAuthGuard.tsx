@@ -15,7 +15,7 @@ interface SalonAuthGuardProps {
 }
 
 // Hair Talkz Salon Organization ID
-const SALON_ORG_ID = '48f96c62-4e45-42f1-8a50-d2f4b3a7f803'
+const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 // Role-based route permissions
 const ROUTE_PERMISSIONS: Record<string, string[]> = {
@@ -162,20 +162,20 @@ export function SalonAuthGuard({
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
+          <div className="bg-card rounded-2xl shadow-xl p-8 text-center">
             <div className="h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
             
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               Access Denied
             </h2>
             
-            <p className="text-gray-600 dark:text-gray-300 mb-2">
+            <p className="text-muted-foreground mb-2">
               You don't have permission to access this page.
             </p>
             
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               Logged in as: <span className="font-medium">{userName}</span> ({userRole})
             </p>
             
@@ -191,7 +191,7 @@ export function SalonAuthGuard({
                   const redirectPath = roleRedirects[userRole || ''] || '/salon'
                   router.push(redirectPath)
                 }}
-                className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Go to Your Dashboard
               </button>
@@ -201,7 +201,7 @@ export function SalonAuthGuard({
                   await supabase.auth.signOut()
                   router.push('/salon/auth')
                 }}
-                className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-accent transition-colors"
               >
                 Switch Account
               </button>
@@ -219,11 +219,20 @@ export function SalonAuthGuard({
 export function SalonRoleDisplay() {
   const [role, setRole] = useState<string | null>(null)
   const [userName, setUserName] = useState<string | null>(null)
+  const router = useRouter()
 
   useEffect(() => {
     setRole(localStorage.getItem('salonRole'))
     setUserName(localStorage.getItem('salonUserName'))
   }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    localStorage.removeItem('organizationId')
+    localStorage.removeItem('salonRole')
+    localStorage.removeItem('salonUserName')
+    router.push('/salon/auth')
+  }
 
   if (!role || !userName) return null
 
@@ -235,14 +244,22 @@ export function SalonRoleDisplay() {
   }
 
   return (
-    <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-800/50 rounded-lg">
-      <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] || 'from-gray-500 to-gray-600'} flex items-center justify-center`}>
-        <Shield className="h-4 w-4 text-white" />
+    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg">
+        <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] || 'from-gray-500 to-gray-600'} flex items-center justify-center`}>
+          <Shield className="h-4 w-4 text-primary-foreground" />
+        </div>
+        <div className="text-sm">
+          <p className="font-medium text-foreground">{userName}</p>
+          <p className="text-xs text-muted-foreground">{role}</p>
+        </div>
       </div>
-      <div className="text-sm">
-        <p className="font-medium text-gray-900 dark:text-white">{userName}</p>
-        <p className="text-xs text-gray-500 dark:text-gray-400">{role}</p>
-      </div>
+      <button
+        onClick={handleLogout}
+        className="px-4 py-2 text-sm font-medium text-foreground bg-muted/50 hover:bg-accent rounded-lg transition-colors"
+      >
+        Logout
+      </button>
     </div>
   )
 }

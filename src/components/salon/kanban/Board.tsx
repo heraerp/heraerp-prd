@@ -126,6 +126,7 @@ export function Board({
             onEdit={() => {}}
             onReschedule={() => {}}
             onCancel={() => {}}
+            onProcessPayment={() => {}}
           />
         )}
       </DragOverlay>

@@ -739,6 +739,188 @@ html {
   background-color: rgba(212, 175, 55, 0.1);
 }
 
+/* HERA DNA STANDARD - Universal Select/Dropdown Fix for Luxe Theme */
+/* Apply luxe theme to all Radix UI Select components globally */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
+
+/* Select Content - Dropdown Panel */
+[role="listbox"],
+[data-radix-select-content] {
+  background-color: var(--hera-charcoal) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1) !important;
+  color: var(--hera-light-text) !important;
+}
+
+/* Select Trigger - The clickable element */
+[data-radix-select-trigger],
+button[role="combobox"] {
+  background-color: var(--hera-charcoal) !important;
+  border: 1px solid rgba(140, 120, 83, 0.4) !important;
+  color: var(--hera-light-text) !important;
+}
+
+[data-radix-select-trigger]:hover,
+button[role="combobox"]:hover {
+  border-color: rgba(212, 175, 55, 0.6) !important;
+}
+
+[data-radix-select-trigger]:focus,
+button[role="combobox"]:focus {
+  border-color: var(--hera-gold) !important;
+  outline: 2px solid rgba(212, 175, 55, 0.3) !important;
+  outline-offset: 2px !important;
+}
+
+/* Select Items - Individual options */
+[role="option"],
+[data-radix-select-item] {
+  color: var(--hera-light-text) !important;
+  background-color: transparent !important;
+  padding: 6px 8px 6px 32px !important;
+  cursor: pointer !important;
+}
+
+[role="option"]:hover,
+[data-radix-select-item]:hover,
+[data-highlighted] {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: var(--hera-champagne) !important;
+}
+
+[role="option"][aria-selected="true"],
+[data-radix-select-item][data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  color: var(--hera-champagne) !important;
+}
+
+/* Select Check Icon */
+[data-radix-select-item-indicator] {
+  color: var(--hera-gold) !important;
+}
+
+/* Select Scroll Buttons */
+[data-radix-select-scroll-up-button],
+[data-radix-select-scroll-down-button] {
+  background-color: var(--hera-charcoal) !important;
+  color: var(--hera-bronze) !important;
+}
+
+/* Select Labels */
+[data-radix-select-label] {
+  color: var(--hera-bronze) !important;
+  font-weight: 600 !important;
+  padding: 6px 8px !important;
+}
+
+/* Native HTML Select elements */
+select {
+  background-color: var(--hera-charcoal) !important;
+  border: 1px solid rgba(140, 120, 83, 0.4) !important;
+  color: var(--hera-light-text) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238C7853' d='M6 9L2 5h8z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.7rem center !important;
+  background-size: 12px !important;
+  padding-right: 2.5rem !important;
+}
+
+select:hover {
+  border-color: rgba(212, 175, 55, 0.6) !important;
+}
+
+select:focus {
+  border-color: var(--hera-gold) !important;
+  outline: 2px solid rgba(212, 175, 55, 0.3) !important;
+  outline-offset: 2px !important;
+}
+
+select option {
+  background-color: var(--hera-charcoal) !important;
+  color: var(--hera-light-text) !important;
+}
+
+select option:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+/* Popover and Combobox styles */
+[data-radix-popper-content-wrapper] [role="dialog"],
+[data-radix-popover-content] {
+  background-color: var(--hera-charcoal) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  color: var(--hera-light-text) !important;
+}
+
+/* Luxe Tabs Styling */
+[role="tablist"] {
+  background-color: var(--hera-charcoal) !important;
+  border: 1px solid rgba(140, 120, 83, 0.4) !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+}
+
+[role="tab"] {
+  color: var(--hera-bronze) !important;
+  background-color: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+[role="tab"]:hover {
+  background-color: rgba(212, 175, 55, 0.1) !important;
+  color: var(--hera-light-text) !important;
+}
+
+[role="tab"][data-state="active"],
+[role="tab"][aria-selected="true"] {
+  background: linear-gradient(135deg, var(--hera-gold) 0%, var(--hera-gold-dark) 100%) !important;
+  color: var(--hera-black) !important;
+  box-shadow: 0 1px 3px rgba(212, 175, 55, 0.3) !important;
+}
+
+/* Calendar/Date Picker Styling */
+[data-radix-popper-content-wrapper] .rdp {
+  background-color: var(--hera-charcoal) !important;
+  color: var(--hera-light-text) !important;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:hover {
+  background-color: var(--hera-gold) !important;
+  color: var(--hera-black) !important;
+}
+
+.rdp-day:hover:not(.rdp-day_selected) {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+.rdp-day_today {
+  color: var(--hera-gold) !important;
+  font-weight: bold !important;
+}
+
+.rdp-head_cell {
+  color: var(--hera-bronze) !important;
+  font-weight: 600 !important;
+}
+
+.rdp-caption {
+  color: var(--hera-champagne) !important;
+}
+
+/* Calendar navigation buttons */
+.rdp-nav_button {
+  color: var(--hera-bronze) !important;
+}
+
+.rdp-nav_button:hover {
+  background-color: rgba(212, 175, 55, 0.2) !important;
+  color: var(--hera-gold) !important;
+}
+
 /* Luxury Scrollbar */
 .luxury-scrollbar::-webkit-scrollbar {
   width: 8px;

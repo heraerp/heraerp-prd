@@ -4,15 +4,16 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { format, startOfToday } from 'date-fns';
 import { Plus, Calendar, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/luxe-dialog';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Board } from '@/components/salon/kanban/Board';
@@ -20,34 +21,47 @@ import { ReschedulePanel } from '@/components/salon/kanban/ReschedulePanel';
 import { useKanbanPlaybook } from '@/hooks/useKanbanPlaybook';
 import { KanbanCard } from '@/schemas/kanban';
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard';
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider';
+import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook';
 
-// Mock auth hook - replace with actual
-const useAuth = () => ({
-  user: { 
-    id: '123', 
-    organization_id: '48f96c62-4e45-42f1-8a50-d2f4b3a7f803' 
-  }
-});
+// Salon organization ID
+const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0';
 
-// Mock branch hook - replace with actual
+// Mock branch hook - replace with actual branch management
 const useBranch = () => ({
   currentBranch: { 
-    id: 'main', 
-    name: 'Hair Talkz Main' 
+    id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', 
+    name: 'Hair Talkz • Park Regis Kris Kin (Karama)' 
   },
   branches: [
-    { id: 'main', name: 'Hair Talkz Main' },
-    { id: 'downtown', name: 'Hair Talkz Downtown' }
+    { id: 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258', name: 'Hair Talkz • Park Regis Kris Kin (Karama)' }
   ]
 });
 
 export default function KanbanPage() {
-  const { user } = useAuth();
+  const { user, organization } = useHERAAuth();
   const { currentBranch, branches } = useBranch();
   const { toast } = useToast();
-  const [date, setDate] = useState(startOfToday());
+  // Initialize with a date that has appointment data, but allow user to change it
+  const [date, setDate] = useState(() => {
+    // Default to Sept 18, 2025 which has appointment data, or today
+    const hasDataDate = new Date('2025-09-18');
+    const today = startOfToday();
+    // Use data date for demo, but can be changed via date picker
+    return hasDataDate;
+  });
   const [selectedCard, setSelectedCard] = useState<KanbanCard | null>(null);
   const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cardToCancel, setCardToCancel] = useState<KanbanCard | null>(null);
+  const [userId, setUserId] = useState<string>('');
+  
+  // Get user ID from localStorage for demo
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('salonUserId') || 'demo-user';
+    setUserId(storedUserId);
+  }, []);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   
   // Draft form state
@@ -66,13 +80,14 @@ export default function KanbanPage() {
     isMoving,
     moveCard,
     createDraft,
+    cancelAppointment,
     reload,
     canTransition
   } = useKanbanPlaybook({
-    organization_id: user.organization_id,
+    organization_id: SALON_ORG_ID,
     branch_id: currentBranch.id,
     date: format(date, 'yyyy-MM-dd'),
-    userId: user.id
+    userId: userId || 'demo-user'
   });
 
   const handleCardAction = useCallback(async (card: KanbanCard, action: string) => {
@@ -94,12 +109,11 @@ export default function KanbanPage() {
         break;
         
       case 'cancel':
-        if (window.confirm('Are you sure you want to cancel this appointment?')) {
-          await moveCard(card.id, 'CANCELLED', 0);
-        }
+        setCardToCancel(card);
+        setCancelModalOpen(true);
         break;
     }
-  }, [moveCard, cardsByColumn]);
+  }, [moveCard, cardsByColumn, cancelAppointment]);
 
   const handleCreateDraft = async () => {
     const { customer_name, service_name, staff_name, start_time, duration } = draftForm;
@@ -141,11 +155,20 @@ export default function KanbanPage() {
     });
   };
 
+  const handleCancelConfirm = async () => {
+    if (!cardToCancel) return;
+    
+    await cancelAppointment(cardToCancel.id, cancelReason || undefined);
+    setCancelModalOpen(false);
+    setCardToCancel(null);
+    setCancelReason('');
+  };
+
   return (
     <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
-      <div className="h-screen flex flex-col bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-950 dark:to-black">
+      <div className="h-screen flex flex-col bg-gradient-to-br from-muted/50 to-muted dark:from-background dark:to-background">
         {/* Luxe header */}
-        <header className="bg-black text-white px-6 py-4 shadow-xl">
+        <header className="bg-background text-foreground px-6 py-4 shadow-xl border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <h1 className="text-2xl font-light tracking-wide">
@@ -158,8 +181,8 @@ export default function KanbanPage() {
                   <Button
                     variant="outline"
                     className={cn(
-                      'justify-start text-left font-normal bg-zinc-900 border-zinc-800 hover:bg-zinc-800',
-                      'text-white hover:text-white'
+                      'justify-start text-left font-normal bg-muted border-border hover:bg-accent',
+                      'text-foreground hover:text-foreground'
                     )}
                   >
                     <Calendar className="mr-2 h-4 w-4" />
@@ -183,7 +206,7 @@ export default function KanbanPage() {
                 size="icon"
                 onClick={reload}
                 disabled={loading || isMoving}
-                className="text-white hover:text-white hover:bg-zinc-800"
+                className="text-foreground hover:text-foreground hover:bg-accent"
               >
                 <RefreshCw className={cn('h-4 w-4', loading && 'animate-spin')} />
               </Button>
@@ -215,7 +238,7 @@ export default function KanbanPage() {
           open={rescheduleOpen}
           onOpenChange={setRescheduleOpen}
           appointment={selectedCard}
-          organization_id={user.organization_id}
+          organization_id={SALON_ORG_ID}
           branch_id={currentBranch.id}
           branches={branches}
           staff={[
@@ -223,7 +246,7 @@ export default function KanbanPage() {
             { id: 'staff2', name: 'Emma' },
             { id: 'staff3', name: 'Lisa' }
           ]}
-          currentUserId={user.id}
+          currentUserId={userId || 'demo-user'}
         />
 
         {/* New Draft Modal */}
@@ -299,6 +322,52 @@ export default function KanbanPage() {
                   className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
                 >
                   Create Draft
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Cancel Confirmation Modal */}
+        <Dialog open={cancelModalOpen} onOpenChange={setCancelModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Cancel Appointment</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to cancel this appointment for {cardToCancel?.customer_name}?
+                This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <Label>Reason for cancellation (optional)</Label>
+                <Textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="e.g., Customer request, emergency, no-show..."
+                  rows={3}
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setCancelModalOpen(false);
+                    setCardToCancel(null);
+                    setCancelReason('');
+                  }}
+                  className="flex-1"
+                >
+                  Keep Appointment
+                </Button>
+                <Button
+                  onClick={handleCancelConfirm}
+                  variant="destructive"
+                  className="flex-1"
+                >
+                  Cancel Appointment
                 </Button>
               </div>
             </div>

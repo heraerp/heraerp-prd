@@ -182,30 +182,29 @@ export function NewAppointmentModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" onClick={onClose} />
+      <div 
+        className="absolute inset-0 backdrop-blur-md" 
+        style={{ backgroundColor: 'rgba(11, 11, 11, 0.85)' }}
+        onClick={onClose} 
+      />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl"
         style={{
-          background: `
-            linear-gradient(135deg, 
-              rgba(31, 41, 55, 0.95) 0%, 
-              rgba(17, 24, 39, 0.98) 100%
-            )
-          `,
-          backdropFilter: 'blur(40px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(150%)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: `
-            0 24px 48px rgba(0, 0, 0, 0.8),
-            0 12px 24px rgba(147, 51, 234, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1)
-          `
+          backgroundColor: '#1A1A1A',
+          border: '1px solid rgba(212, 175, 55, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)'
         }}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-800 bg-background/50 backdrop-blur-xl">
+        <div 
+          className="sticky top-0 z-10 flex items-center justify-between p-6"
+          style={{
+            backgroundColor: '#232323',
+            borderBottom: '1px solid rgba(212, 175, 55, 0.2)'
+          }}
+        >
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"

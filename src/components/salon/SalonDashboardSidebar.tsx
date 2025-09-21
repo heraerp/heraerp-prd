@@ -55,7 +55,7 @@ const sidebarItems: SidebarItem[] = [
     badge: '12',
     badgeColor: 'bg-violet-500'
   },
-  { title: 'POS', href: '/salon/pos', icon: CreditCard },
+  { title: 'POS', href: '/salon/pos2', icon: CreditCard },
   { title: 'Customers', href: '/salon/customers', icon: Users },
   {
     title: 'WhatsApp',
@@ -72,7 +72,7 @@ const allApps: SidebarItem[] = [
   // Main Operations
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
   { title: 'Appointments', href: '/appointments', icon: Calendar },
-  { title: 'POS Terminal', href: '/salon/pos', icon: CreditCard },
+  { title: 'POS Terminal', href: '/salon/pos2', icon: CreditCard },
   { title: 'Customer Management', href: '/salon/customers', icon: Users },
 
   // Communication
@@ -169,7 +169,7 @@ const AppsModal = React.memo(function AppsModal({
           <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-200 to-pink-200 bg-clip-text text-transparent">
             All Apps
           </h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-accent/10 transition-colors">
             <X className="h-5 w-5 text-violet-200" />
           </button>
         </div>
@@ -193,7 +193,7 @@ const AppsModal = React.memo(function AppsModal({
                   'border transition-all duration-200',
                   active
                     ? 'bg-violet-500/20 border-violet-500/50'
-                    : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
+                    : 'bg-muted/50 border-border hover:bg-accent/50 hover:border-accent'
                 )}
               >
                 <Icon
@@ -274,7 +274,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
           'relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group',
           active
             ? 'bg-violet-500/20 text-violet-100'
-            : 'hover:bg-white/10 text-violet-200 hover:text-violet-100'
+            : 'hover:bg-accent/10 text-violet-200 hover:text-violet-100'
         )}
       >
         <Icon className="h-5 w-5 flex-shrink-0" />
@@ -320,7 +320,7 @@ export default function SalonDashboardSidebar({ onNavigate }: SalonDashboardSide
           {/* All Apps Button */}
           <button
             onClick={openAppsModal}
-            className="mt-6 w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10 text-violet-200 hover:text-violet-100 transition-all duration-200"
+            className="mt-6 w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent/10 text-violet-200 hover:text-violet-100 transition-all duration-200"
           >
             <Grid3x3 className="h-5 w-5" />
             <span className="text-sm font-medium">All Apps</span>

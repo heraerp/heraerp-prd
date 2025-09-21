@@ -29,7 +29,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   }
 })
 
-const SALON_ORG_ID = '48f96c62-4e45-42f1-8a50-d2f4b3a7f803'
+const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 const DEMO_USERS = [
   {

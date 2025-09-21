@@ -20,6 +20,21 @@ import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 
+const COLORS = {
+  black: '#0B0B0B',
+  charcoal: '#1A1A1A',
+  gold: '#D4AF37',
+  goldDark: '#B8860B',
+  champagne: '#F5E6C8',
+  bronze: '#8C7853',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323',
+  silver: '#B8B8B8',
+  silverDark: '#999999',
+  emerald: '#0F6F5C'
+}
+
 interface LineItem {
   id: string
   entity_id: string
@@ -108,14 +123,29 @@ export function CartSidebar({
   }
 
   return (
-    <Card className="h-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-slate-200 dark:border-slate-700 shadow-lg text-slate-900 dark:text-white">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-lg text-slate-900 dark:text-white">
+    <Card 
+      className="h-full backdrop-blur-sm shadow-lg"
+      style={{
+        backgroundColor: COLORS.charcoalLight,
+        borderColor: COLORS.bronze + '33',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.2)',
+        color: COLORS.lightText
+      }}
+    >
+      <CardHeader className="pb-3" style={{ borderBottom: `1px solid ${COLORS.bronze}20` }}>
+        <CardTitle className="flex items-center justify-between text-lg">
           <div className="flex items-center gap-2">
-            <ShoppingCart className="w-5 h-5 text-slate-700 dark:text-slate-300" />
-            Cart
+            <ShoppingCart className="w-5 h-5" style={{ color: COLORS.gold }} />
+            <span style={{ color: COLORS.champagne }}>Cart</span>
           </div>
-          <Badge variant="secondary" className="text-xs">
+          <Badge 
+            className="text-xs"
+            style={{
+              backgroundColor: COLORS.bronze + '20',
+              color: COLORS.champagne,
+              borderColor: COLORS.bronze + '50'
+            }}
+          >
             {ticket.lineItems.length} item{ticket.lineItems.length !== 1 ? 's' : ''}
           </Badge>
         </CardTitle>
@@ -126,15 +156,28 @@ export function CartSidebar({
           /* Empty Cart State */
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                <ShoppingCart className="w-8 h-8 text-muted-foreground" />
+              <div 
+                className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                style={{
+                  backgroundColor: COLORS.charcoalDark,
+                  boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5)'
+                }}
+              >
+                <ShoppingCart className="w-8 h-8" style={{ color: COLORS.bronze }} />
               </div>
-              <h3 className="font-medium mb-2">Cart is empty</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <h3 className="font-medium mb-2" style={{ color: COLORS.champagne }}>
+                Cart is empty
+              </h3>
+              <p className="text-sm mb-4" style={{ color: COLORS.bronze }}>
                 Add services or products from the catalog to get started.
               </p>
-              <div className="text-xs text-muted-foreground">
-                💡 Tip: Use <kbd>/</kbd> to search quickly
+              <div className="text-xs" style={{ color: COLORS.silverDark }}>
+                💡 Tip: Use <kbd style={{
+                  backgroundColor: COLORS.charcoalDark,
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  border: `1px solid ${COLORS.bronze}33`
+                }}>/</kbd> to search quickly
               </div>
             </div>
           </div>
@@ -146,24 +189,33 @@ export function CartSidebar({
                 {ticket.lineItems.map(item => (
                   <div
                     key={item.id}
-                    className="group p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-colors"
+                    className="group p-3 rounded-lg border transition-all"
+                    style={{
+                      borderColor: COLORS.bronze + '20',
+                      backgroundColor: COLORS.charcoalDark,
+                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
+                    }}
                   >
                     {/* Item Header */}
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm leading-tight text-slate-900 dark:text-slate-100">
+                        <h4 className="font-medium text-sm leading-tight" style={{ color: COLORS.champagne }}>
                           {truncateText(item.entity_name, 25)}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge
-                            variant={item.entity_type === 'service' ? 'default' : 'secondary'}
                             className="text-xs h-5"
+                            style={{
+                              backgroundColor: item.entity_type === 'service' ? COLORS.gold + '20' : COLORS.silver + '20',
+                              color: item.entity_type === 'service' ? COLORS.gold : COLORS.silver,
+                              borderColor: item.entity_type === 'service' ? COLORS.gold + '50' : COLORS.silver + '50'
+                            }}
                           >
                             {item.entity_type}
                           </Badge>
                           {item.stylist_name && (
-                            <div className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-300">
-                              <User className="w-3 h-3 text-slate-600 dark:text-slate-300" />
+                            <div className="flex items-center gap-1 text-xs" style={{ color: COLORS.bronze }}>
+                              <User className="w-3 h-3" style={{ color: COLORS.bronze }} />
                               <span className="truncate max-w-[80px]">
                                 {item.stylist_name.split(' ')[0]}
                               </span>
@@ -175,7 +227,13 @@ export function CartSidebar({
                         variant="ghost"
                         size="sm"
                         onClick={() => onRemoveItem(item.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                        style={{
+                          color: '#EF4444',
+                          ':hover': {
+                            backgroundColor: '#EF444420'
+                          }
+                        }}
                       >
                         <X className="w-3 h-3" />
                       </Button>
@@ -183,33 +241,44 @@ export function CartSidebar({
 
                     {/* Quantity Controls */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center border rounded-md">
+                      <div 
+                        className="flex items-center border rounded-md"
+                        style={{ 
+                          borderColor: COLORS.bronze + '33',
+                          backgroundColor: COLORS.charcoal
+                        }}
+                      >
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleQuantityChange(item.id, -1)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-transparent"
+                          style={{ color: COLORS.bronze }}
                         >
                           <Minus className="w-3 h-3" />
                         </Button>
-                        <span className="px-2 py-1 text-xs font-medium min-w-[1.5rem] text-center">
+                        <span 
+                          className="px-2 py-1 text-xs font-medium min-w-[1.5rem] text-center"
+                          style={{ color: COLORS.champagne }}
+                        >
                           {item.quantity}
                         </span>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleQuantityChange(item.id, 1)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-transparent"
+                          style={{ color: COLORS.bronze }}
                         >
                           <Plus className="w-3 h-3" />
                         </Button>
                       </div>
 
                       <div className="text-right">
-                        <div className="text-xs text-slate-600 dark:text-slate-300">
+                        <div className="text-xs" style={{ color: COLORS.bronze }}>
                           ${item.unit_price.toFixed(2)} each
                         </div>
-                        <div className="font-bold text-sm text-slate-900 dark:text-white">
+                        <div className="font-bold text-sm" style={{ color: COLORS.gold }}>
                           ${item.line_amount.toFixed(2)}
                         </div>
                       </div>
@@ -217,7 +286,14 @@ export function CartSidebar({
 
                     {/* Notes Preview */}
                     {item.notes && (
-                      <div className="mt-2 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded p-2">
+                      <div 
+                        className="mt-2 text-xs rounded p-2"
+                        style={{
+                          backgroundColor: COLORS.charcoal,
+                          color: COLORS.silverDark,
+                          border: `1px solid ${COLORS.bronze}20`
+                        }}
+                      >
                         {truncateText(item.notes, 50)}
                       </div>
                     )}
@@ -228,14 +304,14 @@ export function CartSidebar({
 
             {/* Discounts and Tips */}
             {(ticket.discounts.length > 0 || ticket.tips.length > 0) && (
-              <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-700">
+              <div className="px-6 py-3" style={{ borderTop: `1px solid ${COLORS.bronze}20` }}>
                 {ticket.discounts.map(discount => (
                   <div key={discount.id} className="flex items-center justify-between py-1 text-sm">
-                    <div className="flex items-center gap-2 text-green-600">
+                    <div className="flex items-center gap-2" style={{ color: COLORS.emerald }}>
                       <Tag className="w-3 h-3" />
                       <span className="truncate">{truncateText(discount.description, 20)}</span>
                     </div>
-                    <span className="font-medium text-green-600">
+                    <span className="font-medium" style={{ color: COLORS.emerald }}>
                       -
                       {discount.type === 'percentage'
                         ? `${discount.value}%`
@@ -246,7 +322,7 @@ export function CartSidebar({
 
                 {ticket.tips.map(tip => (
                   <div key={tip.id} className="flex items-center justify-between py-1 text-sm">
-                    <div className="flex items-center gap-2 text-blue-600">
+                    <div className="flex items-center gap-2" style={{ color: COLORS.gold }}>
                       <DollarSign className="w-3 h-3" />
                       <span className="truncate">
                         {tip.stylist_name
@@ -255,57 +331,78 @@ export function CartSidebar({
                         ({tip.method})
                       </span>
                     </div>
-                    <span className="font-medium text-blue-600">+${tip.amount.toFixed(2)}</span>
+                    <span className="font-medium" style={{ color: COLORS.gold }}>+${tip.amount.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Totals */}
-            <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+            <div 
+              className="px-6 py-4"
+              style={{
+                borderTop: `1px solid ${COLORS.bronze}20`,
+                backgroundColor: COLORS.charcoalDark,
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)'
+              }}
+            >
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Subtotal:</span>
-                  <span>${totals.subtotal.toFixed(2)}</span>
+                  <span style={{ color: COLORS.bronze }}>Subtotal:</span>
+                  <span style={{ color: COLORS.lightText }}>${totals.subtotal.toFixed(2)}</span>
                 </div>
 
                 {totals.discountAmount > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
-                    <span>Discount:</span>
-                    <span>-${totals.discountAmount.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm">
+                    <span style={{ color: COLORS.emerald }}>Discount:</span>
+                    <span style={{ color: COLORS.emerald }}>-${totals.discountAmount.toFixed(2)}</span>
                   </div>
                 )}
 
                 {totals.tipAmount > 0 && (
-                  <div className="flex justify-between text-sm text-blue-600">
-                    <span>Tips:</span>
-                    <span>+${totals.tipAmount.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm">
+                    <span style={{ color: COLORS.gold }}>Tips:</span>
+                    <span style={{ color: COLORS.gold }}>+${totals.tipAmount.toFixed(2)}</span>
                   </div>
                 )}
 
                 {totals.taxAmount > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span>Tax:</span>
-                    <span>${totals.taxAmount.toFixed(2)}</span>
+                    <span style={{ color: COLORS.bronze }}>Tax:</span>
+                    <span style={{ color: COLORS.lightText }}>${totals.taxAmount.toFixed(2)}</span>
                   </div>
                 )}
 
-                <Separator />
+                <Separator style={{ backgroundColor: COLORS.bronze + '33' }} />
 
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total:</span>
-                  <span>${totals.total.toFixed(2)}</span>
+                <div className="flex justify-between font-bold text-lg pt-1">
+                  <span style={{ color: COLORS.champagne }}>Total:</span>
+                  <span style={{ color: COLORS.gold }}>${totals.total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
             {/* Payment Button */}
-            <div className="p-6 pt-4">
+            <div 
+              className="p-6 pt-4"
+              style={{
+                backgroundColor: COLORS.charcoalLight,
+                borderTop: `1px solid ${COLORS.bronze}20`
+              }}
+            >
               <Button
                 onClick={onPayment}
                 disabled={ticket.lineItems.length === 0}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium"
+                className="w-full font-medium transition-all transform hover:scale-105"
                 size="lg"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                  color: COLORS.black,
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                  ':hover': {
+                    background: `linear-gradient(135deg, ${COLORS.goldDark} 0%, ${COLORS.gold} 100%)`,
+                  }
+                }}
               >
                 <CreditCard className="w-4 h-4 mr-2" />
                 Pay ${totals.total.toFixed(2)}
