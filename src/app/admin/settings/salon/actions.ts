@@ -9,28 +9,29 @@ const COOLDOWN_SEC = 30
 async function assertNoRapidToggle(organizationId: string) {
   // Check for recent commission toggle events
   universalApi.setOrganizationId(organizationId)
-  
+
   const recentEvents = await universalApi.read('universal_transactions')
-  
+
   if (recentEvents.success && recentEvents.data) {
     // Filter for recent toggle events
     const toggleEvents = recentEvents.data
-      .filter((t: any) => 
-        t.organization_id === organizationId &&
-        t.transaction_type === 'analytics_event' &&
-        t.smart_code === 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.v1'
+      .filter(
+        (t: any) =>
+          t.organization_id === organizationId &&
+          t.transaction_type === 'analytics_event' &&
+          t.smart_code === 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.v1'
       )
-      .sort((a: any, b: any) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      )
-    
+      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
     if (toggleEvents.length > 0) {
       const lastToggle = new Date(toggleEvents[0].created_at)
       const timeSinceLastToggle = Date.now() - lastToggle.getTime()
-      
+
       if (timeSinceLastToggle < COOLDOWN_SEC * 1000) {
         const remainingSeconds = Math.ceil((COOLDOWN_SEC * 1000 - timeSinceLastToggle) / 1000)
-        throw new Error(`Please wait ${remainingSeconds} seconds before toggling again to prevent accidental changes.`)
+        throw new Error(
+          `Please wait ${remainingSeconds} seconds before toggling again to prevent accidental changes.`
+        )
       }
     }
   }
@@ -44,7 +45,7 @@ export async function toggleCommissionsAction(
   try {
     // Ensure only Owner/Admin can toggle commissions
     const { user } = await assertOwnerOrAdmin()
-    
+
     // Prevent rapid toggling
     await assertNoRapidToggle(organizationId)
 
@@ -105,9 +106,9 @@ export async function toggleCommissionsAction(
     revalidatePath('/admin/settings')
     revalidatePath('/pos')
 
-    return { 
+    return {
       success: true,
-      message: enabled 
+      message: enabled
         ? 'Commissions enabled. Full commission tracking is now active.'
         : 'Commissions disabled. POS is now in Simple mode.'
     }

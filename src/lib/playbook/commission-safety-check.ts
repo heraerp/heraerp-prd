@@ -15,19 +15,21 @@ export interface CommissionSafetyResult {
  * Check for commission lines created while commissions are disabled
  * This helps identify data inconsistencies and potential configuration issues
  */
-export async function checkCommissionSafety(organizationId: string): Promise<CommissionSafetyResult> {
+export async function checkCommissionSafety(
+  organizationId: string
+): Promise<CommissionSafetyResult> {
   try {
     universalApi.setOrganizationId(organizationId)
-    
+
     // Get organization settings
     const orgResponse = await universalApi.getEntity(organizationId)
     if (!orgResponse.success || !orgResponse.data) {
       throw new Error('Failed to load organization')
     }
-    
+
     const settings = orgResponse.data.settings || {}
     const commissionsEnabled = settings?.salon?.commissions?.enabled ?? true
-    
+
     // If commissions are enabled, no violations possible
     if (commissionsEnabled) {
       return {
@@ -36,30 +38,29 @@ export async function checkCommissionSafety(organizationId: string): Promise<Com
         details: []
       }
     }
-    
+
     // Check for commission lines in recent transactions
     const transactionsResponse = await universalApi.read('universal_transactions')
     if (!transactionsResponse.success || !transactionsResponse.data) {
       throw new Error('Failed to load transactions')
     }
-    
+
     const violations: CommissionSafetyResult['details'] = []
-    
+
     // Filter for sales transactions from this org
-    const salesTransactions = transactionsResponse.data.filter((t: any) => 
-      t.organization_id === organizationId && 
-      t.transaction_type === 'sale'
+    const salesTransactions = transactionsResponse.data.filter(
+      (t: any) => t.organization_id === organizationId && t.transaction_type === 'sale'
     )
-    
+
     // Check each transaction for commission lines
     for (const transaction of salesTransactions) {
       // Check metadata for commission_lines
       if (transaction.metadata?.commission_lines?.length > 0) {
         const totalCommission = transaction.metadata.commission_lines.reduce(
-          (sum: number, line: any) => sum + (line.line_amount || 0), 
+          (sum: number, line: any) => sum + (line.line_amount || 0),
           0
         )
-        
+
         violations.push({
           transactionId: transaction.id,
           transactionCode: transaction.transaction_code,
@@ -68,7 +69,7 @@ export async function checkCommissionSafety(organizationId: string): Promise<Com
         })
       }
     }
-    
+
     return {
       hasViolations: violations.length > 0,
       violationCount: violations.length,
@@ -86,7 +87,7 @@ export async function checkCommissionSafety(organizationId: string): Promise<Com
 export async function getCommissionSafetySummary(organizationId: string) {
   try {
     const result = await checkCommissionSafety(organizationId)
-    
+
     if (!result.hasViolations) {
       return {
         status: 'healthy',
@@ -96,9 +97,9 @@ export async function getCommissionSafetySummary(organizationId: string) {
         lastViolation: null
       }
     }
-    
+
     const totalAmount = result.details.reduce((sum, v) => sum + v.commissionAmount, 0)
-    
+
     return {
       status: 'warning',
       message: `Found ${result.violationCount} transactions with commission lines while commissions are disabled`,

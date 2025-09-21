@@ -1,72 +1,22 @@
 import { heraCode } from '@/lib/smart-codes'
 
-const BASE_URL = process.env.NEXT_PUBLIC_PLAYBOOK_BASE_URL
-const API_KEY = process.env.NEXT_PUBLIC_PLAYBOOK_API_KEY
-const hasEnv = Boolean(BASE_URL && API_KEY)
+// Use the server proxy instead of direct API calls
+const PROXY = '/api/playbook'
+const debug = !!process.env.NEXT_PUBLIC_DEBUG_PLAYBOOK
 
-// In-memory store for mock data persistence
-const mockDataStore: {
-  services: Map<string, any[]> // organizationId -> services array
-} = {
-  services: new Map()
-}
-
-function withParams(path: string, params: Record<string, any>) {
-  const url = new URL(path, BASE_URL || 'http://mock.local/')
-  Object.entries(params).forEach(([k, v]) => {
-    if (v !== undefined && v !== null) {
-      url.searchParams.set(k, String(v))
+function buildUrl(path: string, query: Record<string, any> = {}) {
+  const url = new URL(path, 'http://localhost') // base ignored by Next.js
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      url.searchParams.set(key, String(value))
     }
   })
-  return url
-}
-
-// Mock data generator
-function generateMockServices(count: number, organizationId: string) {
-  const categories = ['Hair', 'Color', 'Treatment', 'Styling', 'Nail', 'Spa']
-  const services = [
-    { name: 'Classic Cut', duration: 30, price: 60 },
-    { name: 'Premium Cut & Style', duration: 45, price: 120 },
-    { name: 'Balayage', duration: 180, price: 350 },
-    { name: 'Full Color', duration: 120, price: 200 },
-    { name: 'Highlights', duration: 150, price: 280 },
-    { name: 'Keratin Treatment', duration: 180, price: 450 },
-    { name: 'Deep Conditioning', duration: 45, price: 80 },
-    { name: 'Blowout', duration: 45, price: 75 },
-    { name: 'Updo', duration: 60, price: 150 },
-    { name: 'Makeup Application', duration: 45, price: 120 },
-    { name: 'Manicure', duration: 30, price: 45 },
-    { name: 'Pedicure', duration: 45, price: 65 },
-    { name: 'Gel Polish', duration: 45, price: 60 },
-    { name: 'Facial', duration: 60, price: 180 },
-    { name: 'Massage', duration: 60, price: 200 },
-    { name: 'Eyebrow Threading', duration: 15, price: 25 },
-    { name: 'Beard Trim', duration: 20, price: 35 },
-    { name: 'Hair Extensions', duration: 240, price: 800 }
-  ]
-
-  return services.slice(0, count).map((svc, i) => ({
-    id: `SRV-${String(i + 1).padStart(3, '0')}`,
-    organization_id: organizationId,
-    smart_code: heraCode('HERA.SALON.SERVICE.v1'),
-    name: svc.name,
-    code: `SVC${String(i + 1).padStart(3, '0')}`,
-    status: i % 10 === 0 ? 'archived' : 'active',
-    price: svc.price, // Include the price from the service data
-    duration_mins: svc.duration,
-    category: categories[Math.floor(Math.random() * categories.length)],
-    created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
-    updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-    metadata: {
-      requires_equipment: Math.random() > 0.7,
-      popular: Math.random() > 0.6
-    }
-  }))
+  return url.pathname + url.search
 }
 
 export async function listServices(params: {
   organization_id: string
-  branch_id?: string
+  branch_id?: string | 'ALL'
   q?: string
   status?: 'active' | 'archived' | 'all'
   category_id?: string
@@ -74,43 +24,83 @@ export async function listServices(params: {
   limit?: number
   offset?: number
 }) {
-  if (!hasEnv) {
-    console.error('❌ Playbook API environment variables not configured')
-    console.error('Please set NEXT_PUBLIC_PLAYBOOK_BASE_URL and NEXT_PUBLIC_PLAYBOOK_API_KEY')
-    throw new Error('Playbook API not configured for production use')
-  }
-
   try {
-    const url = withParams('/entities', {
-      type: 'HERA.SALON.SERVICE.v1',
+    const query: any = {
+      type: 'HERA.SALON.SERVICE.V1',
       organization_id: params.organization_id,
-      branch_id: params.branch_id,
       q: params.q,
-      status: params.status === 'all' ? undefined : params.status,
-      category_id: params.category_id,
       sort: params.sort || 'updated_at:desc',
-      limit: params.limit || 25,
-      offset: params.offset || 0
-    })
+      limit: params.limit ?? 25,
+      offset: params.offset ?? 0
+    }
 
-    console.log('📦 Services: GET', url.toString())
-    const res = await fetch(url.toString(), {
+    // Only include branch_id if not "ALL"
+    if (params.branch_id && params.branch_id !== 'ALL') {
+      query.branch_id = params.branch_id
+    }
+
+    // Only include status if not "all"
+    if (params.status && params.status !== 'all') {
+      query.status = params.status
+    }
+
+    if (params.category_id) {
+      query.category_id = params.category_id
+    }
+
+    const url = buildUrl(`${PROXY}/entities`, query)
+
+    if (debug) {
+      console.log('[Services] listServices request:', { url, query })
+    }
+
+    const res = await fetch(url, {
+      cache: 'no-store',
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       }
     })
 
-    if (!res.ok) throw new Error(`Failed to list services: ${res.status}`)
-    const data = await res.json()
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => '')
+      if (debug) {
+        console.error('[Services] listServices failed:', res.status, errorText)
+      }
+      return {
+        ok: false,
+        data: { items: [], total: 0 },
+        error: errorText || `Failed to list services: ${res.status}`
+      } as const
+    }
+
+    const json = await res.json().catch(() => ({}))
+
+    // Support different response shapes (items[], rows[], data[])
+    const items = json.items ?? json.rows ?? json.data ?? []
+    const total = json.total ?? json.count ?? items.length
+
+    if (debug) {
+      console.log('[Services] listServices success:', {
+        count: items.length,
+        total,
+        hasItems: items.length > 0,
+        firstItem: items[0]
+      })
+    }
 
     return {
-      items: data.items || data.rows || [],
-      total: data.total || data.count || 0
-    }
+      ok: true,
+      data: { items, total }
+    } as const
   } catch (error) {
-    console.error('Failed to list services:', error)
-    throw error
+    if (debug) {
+      console.error('[Services] listServices error:', error)
+    }
+    return {
+      ok: false,
+      data: { items: [], total: 0 },
+      error: String(error)
+    } as const
   }
 }
 
@@ -123,32 +113,45 @@ export async function createService(payload: {
   category?: string
   metadata?: any
 }) {
-  if (!hasEnv) {
-    throw new Error('Playbook API not configured for production use')
-  }
-
   try {
     const body = {
       ...payload,
-      smart_code: heraCode('HERA.SALON.SERVICE.v1'),
+      smart_code: heraCode('HERA.SALON.SERVICE.V1'),
       status: payload.status || 'active'
     }
 
-    console.log('✏️ CreateService:', body)
-    const res = await fetch(`${BASE_URL}/entities`, {
+    if (debug) {
+      console.log('[Services] createService request:', body)
+    }
+
+    const res = await fetch(`${PROXY}/entities`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
+      cache: 'no-store',
       body: JSON.stringify(body)
     })
 
-    if (!res.ok) throw new Error(`Failed to create service: ${res.status}`)
-    return await res.json()
+    const json = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      if (debug) {
+        console.error('[Services] createService failed:', res.status, json)
+      }
+      throw new Error(json.error || `Failed to create service: ${res.status}`)
+    }
+
+    if (debug) {
+      console.log('[Services] createService success:', json)
+    }
+
+    return { ok: true, data: json } as const
   } catch (error) {
-    console.error('Failed to create service:', error)
-    throw error
+    if (debug) {
+      console.error('[Services] createService error:', error)
+    }
+    return { ok: false, error: String(error) } as const
   }
 }
 
@@ -163,26 +166,39 @@ export async function updateService(
     metadata: any
   }>
 ) {
-  if (!hasEnv) {
-    throw new Error('Playbook API not configured for production use')
-  }
-
   try {
-    console.log('✏️ UpdateService:', id, patch)
-    const res = await fetch(`${BASE_URL}/entities/${id}`, {
+    if (debug) {
+      console.log('[Services] updateService request:', { id, patch })
+    }
+
+    const res = await fetch(`${PROXY}/entities/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
+      cache: 'no-store',
       body: JSON.stringify(patch)
     })
 
-    if (!res.ok) throw new Error(`Failed to update service: ${res.status}`)
-    return await res.json()
+    const json = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      if (debug) {
+        console.error('[Services] updateService failed:', res.status, json)
+      }
+      throw new Error(json.error || `Failed to update service: ${res.status}`)
+    }
+
+    if (debug) {
+      console.log('[Services] updateService success:', json)
+    }
+
+    return { ok: true, data: json } as const
   } catch (error) {
-    console.error('Failed to update service:', error)
-    throw error
+    if (debug) {
+      console.error('[Services] updateService error:', error)
+    }
+    return { ok: false, error: String(error) } as const
   }
 }
 
@@ -191,56 +207,102 @@ export async function archiveService(id: string, archived = true) {
 }
 
 export async function upsertDynamicData(entity_id: string, smart_code: string, data: any) {
-  if (!hasEnv) {
-    throw new Error('Playbook API not configured for production use')
-  }
-
   try {
-    console.log('✏️ UpsertDynamicData:', { entity_id, smart_code, data })
-    const res = await fetch(`${BASE_URL}/dynamic_data/upsert`, {
+    const body = {
+      entity_id,
+      smart_code,
+      data
+    }
+
+    if (debug) {
+      console.log('[Services] upsertDynamicData request:', body)
+    }
+
+    const res = await fetch(`${PROXY}/dynamic_data/upsert`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        entity_id,
-        smart_code,
-        data
-      })
+      cache: 'no-store',
+      body: JSON.stringify(body)
     })
 
-    if (!res.ok) throw new Error(`Failed to upsert dynamic data: ${res.status}`)
-    return await res.json()
+    const json = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      if (debug) {
+        console.error('[Services] upsertDynamicData failed:', res.status, json)
+      }
+      throw new Error(json.error || `Failed to upsert dynamic data: ${res.status}`)
+    }
+
+    if (debug) {
+      console.log('[Services] upsertDynamicData success:', json)
+    }
+
+    return { ok: true, data: json } as const
   } catch (error) {
-    console.error('Failed to upsert dynamic data:', error)
-    throw error
+    if (debug) {
+      console.error('[Services] upsertDynamicData error:', error)
+    }
+    return { ok: false, error: String(error) } as const
   }
 }
 
 export async function getDynamicData(entity_ids: string[], smart_code: string) {
-  if (!hasEnv) {
-    throw new Error('Playbook API not configured for production use')
-  }
-
   try {
-    console.log('📦 GetDynamicData:', { entity_ids, smart_code })
-    const res = await fetch(`${BASE_URL}/dynamic_data/query`, {
+    const body = {
+      entity_ids,
+      smart_code
+    }
+
+    if (debug) {
+      console.log('[Services] getDynamicData request:', body)
+    }
+
+    const res = await fetch(`${PROXY}/dynamic_data/query`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        entity_ids,
-        smart_code
-      })
+      cache: 'no-store',
+      body: JSON.stringify(body)
     })
 
-    if (!res.ok) throw new Error(`Failed to get dynamic data: ${res.status}`)
-    return await res.json()
+    const json = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      if (debug) {
+        console.error('[Services] getDynamicData failed:', res.status, json)
+      }
+      throw new Error(json.error || `Failed to get dynamic data: ${res.status}`)
+    }
+
+    if (debug) {
+      console.log('[Services] getDynamicData success:', json)
+    }
+
+    // Transform the response to expected format
+    const result: Record<string, any> = {}
+    if (json.data) {
+      // Handle different response formats
+      if (Array.isArray(json.data)) {
+        json.data.forEach((item: any) => {
+          if (item.entity_id && item.data) {
+            result[item.entity_id] = item.data
+          }
+        })
+      } else if (typeof json.data === 'object') {
+        // Already in the expected format
+        Object.assign(result, json.data)
+      }
+    }
+
+    return { ok: true, data: result } as const
   } catch (error) {
-    console.error('Failed to get dynamic data:', error)
-    throw error
+    if (debug) {
+      console.error('[Services] getDynamicData error:', error)
+    }
+    return { ok: false, data: {}, error: String(error) } as const
   }
 }

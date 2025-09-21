@@ -35,7 +35,7 @@ export function useServicesPlaybook({
   const [items, setItems] = useState<ServiceWithDynamicData[]>([])
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Debounce search query
   const [debouncedQuery] = useDebounce(query, 300)
@@ -56,10 +56,10 @@ export function useServicesPlaybook({
     setError(null)
 
     try {
-      // Fetch services
+      // Fetch services with new API format
       const result = await listServices({
         organization_id: organizationId,
-        branch_id: branchId,
+        branch_id: branchId || 'ALL',
         q: debouncedQuery,
         status,
         category_id: categoryId,
@@ -68,29 +68,46 @@ export function useServicesPlaybook({
         offset
       })
 
-      // If no services, set empty and return
-      if (!result.items.length) {
+      if (!result.ok) {
+        setError(result.error || 'Failed to load services')
         setItems([])
-        setTotal(result.total)
-        setIsLoading(false)
+        setTotal(0)
+        return
+      }
+
+      const { items: services, total: totalCount } = result.data
+
+      // If no services, set empty and return
+      if (!services.length) {
+        setItems([])
+        setTotal(totalCount)
         return
       }
 
       // Get entity IDs
-      const entityIds = result.items.map(item => item.id)
+      const entityIds = services.map((item: any) => item.id)
 
-      // Fetch dynamic data in parallel
+      // Fetch dynamic data in parallel - gracefully handle failures
       const [priceData, taxData, commissionData] = await Promise.all([
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.PRICE.V1'),
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.TAX.V1'),
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.COMMISSION.V1')
-      ]).catch(() => [{}, {}, {}]) // Gracefully handle failures
+        getDynamicData(entityIds, 'HERA.SALON.SERVICE.PRICE.V1').catch(() => ({
+          ok: false,
+          data: {}
+        })),
+        getDynamicData(entityIds, 'HERA.SALON.SERVICE.TAX.V1').catch(() => ({
+          ok: false,
+          data: {}
+        })),
+        getDynamicData(entityIds, 'HERA.SALON.SERVICE.COMMISSION.V1').catch(() => ({
+          ok: false,
+          data: {}
+        }))
+      ])
 
       // Merge dynamic data with services
-      const enrichedItems = result.items.map(item => {
-        const price = priceData[item.id]
-        const tax = taxData[item.id]
-        const commission = commissionData[item.id]
+      const enrichedItems = services.map((item: any) => {
+        const price = priceData.ok ? priceData.data[item.id] : null
+        const tax = taxData.ok ? taxData.data[item.id] : null
+        const commission = commissionData.ok ? commissionData.data[item.id] : null
 
         return {
           ...item,
@@ -103,11 +120,12 @@ export function useServicesPlaybook({
       })
 
       setItems(enrichedItems)
-      setTotal(result.total)
+      setTotal(totalCount)
     } catch (err) {
       console.error('Failed to fetch services:', err)
-      setError(err as Error)
-      toast.error('Failed to load services')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load services'
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -136,7 +154,7 @@ export function useServicesPlaybook({
 
       try {
         // Create service entity
-        const service = await createService({
+        const serviceResult = await createService({
           organization_id: organizationId,
           name: data.name,
           code: data.code,
@@ -144,6 +162,12 @@ export function useServicesPlaybook({
           category: data.category,
           metadata: data.metadata
         })
+
+        if (!serviceResult.ok) {
+          throw new Error(serviceResult.error || 'Failed to create service')
+        }
+
+        const service = serviceResult.data
 
         // Save dynamic data
         const dynamicPromises = []
@@ -182,7 +206,8 @@ export function useServicesPlaybook({
         return service
       } catch (error) {
         console.error('Failed to create service:', error)
-        toast.error('Failed to create service')
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create service'
+        toast.error(errorMessage)
         throw error
       }
     },
@@ -211,7 +236,10 @@ export function useServicesPlaybook({
         const { price, currency, tax_rate, commission_type, commission_value, ...entityData } = data
 
         if (Object.keys(entityData).length > 0) {
-          await updateService(id, entityData)
+          const updateResult = await updateService(id, entityData)
+          if (!updateResult.ok) {
+            throw new Error(updateResult.error || 'Failed to update service')
+          }
         }
 
         // Update dynamic data
@@ -250,7 +278,8 @@ export function useServicesPlaybook({
         await fetchServices() // Refresh list
       } catch (error) {
         console.error('Failed to update service:', error)
-        toast.error('Failed to update service')
+        const errorMessage = error instanceof Error ? error.message : 'Failed to update service'
+        toast.error(errorMessage)
         throw error
       }
     },
@@ -261,8 +290,15 @@ export function useServicesPlaybook({
   const archiveMany = useCallback(
     async (ids: string[]) => {
       try {
-        await Promise.all(ids.map(id => archiveService(id, true)))
-        toast.success(`Archived ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+        const results = await Promise.all(ids.map(id => archiveService(id, true)))
+        const failed = results.filter(r => !r.ok).length
+
+        if (failed > 0) {
+          toast.warning(`Archived ${ids.length - failed} of ${ids.length} services`)
+        } else {
+          toast.success(`Archived ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+        }
+
         await fetchServices()
       } catch (error) {
         console.error('Failed to archive services:', error)
@@ -276,8 +312,15 @@ export function useServicesPlaybook({
   const restoreMany = useCallback(
     async (ids: string[]) => {
       try {
-        await Promise.all(ids.map(id => archiveService(id, false)))
-        toast.success(`Restored ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+        const results = await Promise.all(ids.map(id => archiveService(id, false)))
+        const failed = results.filter(r => !r.ok).length
+
+        if (failed > 0) {
+          toast.warning(`Restored ${ids.length - failed} of ${ids.length} services`)
+        } else {
+          toast.success(`Restored ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+        }
+
         await fetchServices()
       } catch (error) {
         console.error('Failed to restore services:', error)

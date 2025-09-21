@@ -6,7 +6,15 @@ import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle, AlertCircle, AlertTriangle, Activity, DollarSign, Users, ShoppingCart } from 'lucide-react'
+import {
+  CheckCircle,
+  AlertCircle,
+  AlertTriangle,
+  Activity,
+  DollarSign,
+  Users,
+  ShoppingCart
+} from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { checkCommissionSafety } from '@/lib/playbook/commission-safety-check'
 
@@ -30,25 +38,27 @@ export default function PosHealthPage() {
 
       try {
         universalApi.setOrganizationId(organization.id)
-        
+
         // Get commission settings
         const orgResponse = await universalApi.getEntity(organization.id)
         const settings = orgResponse.data?.settings || {}
-        const commissionsEnabled = flags.ENABLE_COMMISSIONS && (settings?.salon?.commissions?.enabled ?? true)
-        
+        const commissionsEnabled =
+          flags.ENABLE_COMMISSIONS && (settings?.salon?.commissions?.enabled ?? true)
+
         // Get today's transactions
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        
+
         const transactionsResponse = await universalApi.read('universal_transactions')
-        const todaysTransactions = transactionsResponse.data?.filter((t: any) => {
-          const txDate = new Date(t.created_at)
-          return txDate >= today && t.transaction_type === 'sale'
-        }) || []
+        const todaysTransactions =
+          transactionsResponse.data?.filter((t: any) => {
+            const txDate = new Date(t.created_at)
+            return txDate >= today && t.transaction_type === 'sale'
+          }) || []
 
         // Check for commission lines
-        const hasCommissionLines = todaysTransactions.some((t: any) => 
-          t.metadata?.commission_lines?.length > 0
+        const hasCommissionLines = todaysTransactions.some(
+          (t: any) => t.metadata?.commission_lines?.length > 0
         )
 
         // Count active stylists (simplified - would query staff in production)
@@ -58,7 +68,7 @@ export default function PosHealthPage() {
             if (item.stylist_id) stylistIds.add(item.stylist_id)
           })
         })
-        
+
         // Check commission safety
         let safetyViolations = 0
         let safetyViolationAmount = 0
@@ -66,7 +76,10 @@ export default function PosHealthPage() {
           const safetyResult = await checkCommissionSafety(organization.id)
           if (safetyResult.hasViolations) {
             safetyViolations = safetyResult.violationCount
-            safetyViolationAmount = safetyResult.details.reduce((sum, v) => sum + v.commissionAmount, 0)
+            safetyViolationAmount = safetyResult.details.reduce(
+              (sum, v) => sum + v.commissionAmount,
+              0
+            )
           }
         } catch (safetyError) {
           console.error('Commission safety check failed:', safetyError)
@@ -75,10 +88,14 @@ export default function PosHealthPage() {
         setHealthData({
           commissionsEnabled,
           hasCommissionLines,
-          todaysSales: todaysTransactions.reduce((sum: number, t: any) => sum + (t.total_amount || 0), 0),
+          todaysSales: todaysTransactions.reduce(
+            (sum: number, t: any) => sum + (t.total_amount || 0),
+            0
+          ),
           todaysTransactions: todaysTransactions.length,
           activeStylists: stylistIds.size,
-          lastSaleTime: todaysTransactions.length > 0 ? new Date(todaysTransactions[0].created_at) : null,
+          lastSaleTime:
+            todaysTransactions.length > 0 ? new Date(todaysTransactions[0].created_at) : null,
           loading: false,
           safetyViolations,
           safetyViolationAmount
@@ -92,7 +109,7 @@ export default function PosHealthPage() {
     loadHealthData()
     // Refresh every 30 seconds
     const interval = setInterval(loadHealthData, 30000)
-    
+
     return () => clearInterval(interval)
   }, [organization?.id])
 
@@ -111,7 +128,9 @@ export default function PosHealthPage() {
     <div className="container mx-auto py-8 space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-2">POS Health Monitor</h1>
-        <p className="text-muted-foreground">Real-time monitoring of POS system status and performance</p>
+        <p className="text-muted-foreground">
+          Real-time monitoring of POS system status and performance
+        </p>
       </div>
 
       {/* Commission Status */}
@@ -139,34 +158,32 @@ export default function PosHealthPage() {
               )}
             </Badge>
           </div>
-          
+
           {commissionMismatch && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                Warning: Commission lines detected but commissions are disabled! 
-                This may indicate a configuration issue.
+                Warning: Commission lines detected but commissions are disabled! This may indicate a
+                configuration issue.
               </AlertDescription>
             </Alert>
           )}
-          
+
           {healthData.safetyViolations > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Safety Violation:</strong> Found {healthData.safetyViolations} transactions with 
-                commission lines totaling ${healthData.safetyViolationAmount.toFixed(2)} while commissions 
-                are disabled. This data inconsistency should be investigated.
+                <strong>Safety Violation:</strong> Found {healthData.safetyViolations} transactions
+                with commission lines totaling ${healthData.safetyViolationAmount.toFixed(2)} while
+                commissions are disabled. This data inconsistency should be investigated.
               </AlertDescription>
             </Alert>
           )}
 
           <div className="text-sm text-muted-foreground">
-            {healthData.commissionsEnabled ? (
-              'System is tracking commissions for all service sales with assigned stylists.'
-            ) : (
-              'Simple POS mode - no stylist requirements or commission tracking.'
-            )}
+            {healthData.commissionsEnabled
+              ? 'System is tracking commissions for all service sales with assigned stylists.'
+              : 'Simple POS mode - no stylist requirements or commission tracking.'}
           </div>
         </CardContent>
       </Card>
@@ -179,9 +196,7 @@ export default function PosHealthPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              ${healthData.todaysSales.toFixed(2)}
-            </div>
+            <div className="text-2xl font-bold">${healthData.todaysSales.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
               From {healthData.todaysTransactions} transactions
             </p>
@@ -195,9 +210,7 @@ export default function PosHealthPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{healthData.todaysTransactions}</div>
-            <p className="text-xs text-muted-foreground">
-              Today's completed sales
-            </p>
+            <p className="text-xs text-muted-foreground">Today's completed sales</p>
           </CardContent>
         </Card>
 
@@ -208,9 +221,7 @@ export default function PosHealthPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{healthData.activeStylists}</div>
-            <p className="text-xs text-muted-foreground">
-              Stylists with sales today
-            </p>
+            <p className="text-xs text-muted-foreground">Stylists with sales today</p>
           </CardContent>
         </Card>
 
@@ -222,15 +233,15 @@ export default function PosHealthPage() {
           <CardContent>
             <div className="text-2xl font-bold">
               {healthData.lastSaleTime ? (
-                <>
-                  {Math.floor((Date.now() - healthData.lastSaleTime.getTime()) / 60000)}m ago
-                </>
+                <>{Math.floor((Date.now() - healthData.lastSaleTime.getTime()) / 60000)}m ago</>
               ) : (
                 'No sales'
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              {healthData.lastSaleTime ? healthData.lastSaleTime.toLocaleTimeString() : 'No sales today'}
+              {healthData.lastSaleTime
+                ? healthData.lastSaleTime.toLocaleTimeString()
+                : 'No sales today'}
             </p>
           </CardContent>
         </Card>
@@ -240,9 +251,7 @@ export default function PosHealthPage() {
       <Card>
         <CardHeader>
           <CardTitle>System Status</CardTitle>
-          <CardDescription>
-            Real-time system health indicators
-          </CardDescription>
+          <CardDescription>Real-time system health indicators</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -256,7 +265,9 @@ export default function PosHealthPage() {
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-sm">Commission Engine: {healthData.commissionsEnabled ? 'Active' : 'Disabled'}</span>
+              <span className="text-sm">
+                Commission Engine: {healthData.commissionsEnabled ? 'Active' : 'Disabled'}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-green-500" />

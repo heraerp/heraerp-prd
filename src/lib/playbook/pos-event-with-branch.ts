@@ -35,11 +35,11 @@ interface PosTicket {
  */
 export async function validatePosTicket(ticket: PosTicket, organizationId: string) {
   // existing price checks...
-  
+
   // Commission gating
   const org = await getOrgSettings(organizationId)
   const commissionsEnabled = flags.ENABLE_COMMISSIONS && (org?.salon?.commissions?.enabled ?? true)
-  
+
   const serviceItems = (ticket.items || []).filter(
     i => (i.type ?? 'SERVICE') === 'SERVICE' || i.entity_type === 'service' // fallback if you carry entity_type
   )

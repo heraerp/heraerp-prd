@@ -11,7 +11,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { universalApi } from '@/lib/universal-api-v2'
@@ -40,7 +40,7 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       const orgResponse = await universalApi.getEntity(organizationId)
       if (orgResponse.success && orgResponse.data) {
         const settings = orgResponse.data.settings || {}
@@ -68,7 +68,7 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
     try {
       setUpdating(true)
       setShowReasonDialog(false)
-      
+
       // Use server action for secure update
       const result = await toggleCommissionsAction(organizationId, pendingEnabled, reason)
 
@@ -77,7 +77,7 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
       }
 
       setCommissionsEnabled(pendingEnabled)
-      
+
       // Success toast with icon
       toast({
         title: (
@@ -89,7 +89,6 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
         description: result.message,
         duration: 5000
       })
-      
     } catch (error) {
       console.error('Error updating commission status:', error)
       toast({
@@ -99,7 +98,8 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
             <span>Update Failed</span>
           </div>
         ) as any,
-        description: error instanceof Error ? error.message : 'Failed to update commission settings',
+        description:
+          error instanceof Error ? error.message : 'Failed to update commission settings',
         variant: 'destructive'
       })
     } finally {
@@ -140,7 +140,7 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
               {commissionsEnabled ? 'Commissions Enabled' : 'Commissions Disabled'}
             </Label>
           </div>
-          
+
           <div className="text-sm text-muted-foreground">
             {commissionsEnabled ? (
               <>
@@ -165,7 +165,8 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
 
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-md dark:bg-amber-950 dark:border-amber-800">
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              <strong>Note:</strong> Changes take effect immediately. Existing transactions are not affected.
+              <strong>Note:</strong> Changes take effect immediately. Existing transactions are not
+              affected.
             </p>
           </div>
         </CardContent>
@@ -174,44 +175,45 @@ export function CommissionToggle({ organizationId }: CommissionToggleProps) {
       {/* Reason Dialog */}
       <Dialog open={showReasonDialog} onOpenChange={setShowReasonDialog}>
         <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Confirm Commission Settings Change</DialogTitle>
-          <DialogDescription>
-            You are about to {pendingEnabled ? 'enable' : 'disable'} commissions for this organization.
-            Please provide a reason for this change.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="reason">Reason for change (optional)</Label>
-            <Textarea
-              id="reason"
-              placeholder="e.g., Simplifying operations, Staff request, Testing new workflow..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="min-h-[80px]"
-            />
+          <DialogHeader>
+            <DialogTitle>Confirm Commission Settings Change</DialogTitle>
+            <DialogDescription>
+              You are about to {pendingEnabled ? 'enable' : 'disable'} commissions for this
+              organization. Please provide a reason for this change.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason for change (optional)</Label>
+              <Textarea
+                id="reason"
+                placeholder="e.g., Simplifying operations, Staff request, Testing new workflow..."
+                value={reason}
+                onChange={e => setReason(e.target.value)}
+                className="min-h-[80px]"
+              />
+            </div>
+            <div className="text-sm text-muted-foreground">
+              This change will be logged for audit purposes. The system enforces a 30-second
+              cooldown between changes.
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground">
-            This change will be logged for audit purposes. The system enforces a 30-second cooldown between changes.
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setShowReasonDialog(false)
-              setReason('')
-            }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={toggleCommissions} disabled={updating}>
-            {updating ? 'Updating...' : 'Confirm Change'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  </>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowReasonDialog(false)
+                setReason('')
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={toggleCommissions} disabled={updating}>
+              {updating ? 'Updating...' : 'Confirm Change'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

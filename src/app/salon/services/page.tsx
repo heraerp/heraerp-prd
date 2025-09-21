@@ -21,6 +21,7 @@ import { ServiceForm, ServiceWithDynamicData } from '@/schemas/service'
 import { Plus, Search, Scissors, Download, Building2, Filter, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
+import { useBranchFilter } from '@/hooks/useBranchFilter'
 
 const COLORS = {
   black: '#0B0B0B',
@@ -52,11 +53,18 @@ export default function SalonServicesPage() {
   const [editingService, setEditingService] = useState<ServiceWithDynamicData | null>(null)
   const [showFilters, setShowFilters] = useState(false)
 
+  // Branch filter
+  const { branchId, branches, setBranchId, hasMultipleBranches } = useBranchFilter(
+    undefined,
+    'services'
+  )
+
   // Fetch services data
   const {
     items: services,
     total,
     isLoading,
+    error,
     createOne,
     updateOne,
     archiveMany,
@@ -64,7 +72,7 @@ export default function SalonServicesPage() {
     exportCSV
   } = useServicesPlaybook({
     organizationId,
-    branchId: undefined, // TODO: Add branch selector
+    branchId,
     query: searchQuery,
     status: statusFilter,
     categoryId: categoryFilter,
@@ -188,6 +196,21 @@ export default function SalonServicesPage() {
             }
           />
 
+          {/* Error Banner */}
+          {error && (
+            <div
+              className="mt-4 text-sm px-3 py-2 rounded-lg border flex items-center gap-2"
+              style={{
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                borderColor: 'rgba(255, 0, 0, 0.3)',
+                color: COLORS.lightText
+              }}
+            >
+              <X className="h-4 w-4" style={{ color: '#FF6B6B' }} />
+              {error}
+            </div>
+          )}
+
           {/* Filters */}
           <div className="py-4 border-b" style={{ borderColor: `${COLORS.bronze}33` }}>
             <div className="flex items-center gap-4">
@@ -219,6 +242,27 @@ export default function SalonServicesPage() {
                   </Badge>
                 )}
               </div>
+
+              {/* Branch Selector */}
+              {hasMultipleBranches && (
+                <Select
+                  value={branchId || 'ALL'}
+                  onValueChange={value => setBranchId(value === 'ALL' ? undefined : value)}
+                >
+                  <SelectTrigger className="w-48 bg-background/30 border-border">
+                    <Building2 className="h-4 w-4 mr-2" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Branches</SelectItem>
+                    {branches.map(branch => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
               {/* Sort Dropdown */}
               <Select value={sortBy} onValueChange={setSortBy}>
