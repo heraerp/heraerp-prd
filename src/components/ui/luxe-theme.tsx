@@ -41,12 +41,12 @@ export const LUXE_COLORS = {
   lightText: '#E0E0E0',
   charcoalDark: '#0F0F0F',
   charcoalLight: '#232323',
-  plum: '#5A2A40',
+  plum: '#B794F4',
   emerald: '#0F6F5C',
   error: '#FF6B6B',
   success: '#0F6F5C',
   warning: '#D4AF37',
-  info: '#5A2A40'
+  info: '#B794F4'
 } as const
 
 // Luxe styling utilities

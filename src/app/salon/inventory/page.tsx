@@ -36,7 +36,7 @@ const COLORS = {
   lightText: '#E0E0E0',
   charcoalDark: '#0F0F0F', // Darker shade for depth
   charcoalLight: '#232323', // Lighter shade for elements
-  plum: '#5A2A40', // Added for gradient accent
+  plum: '#B794F4', // Added for gradient accent
   emerald: '#0F6F5C' // Added for accent
 }
 

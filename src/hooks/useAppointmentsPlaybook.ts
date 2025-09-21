@@ -72,10 +72,17 @@ export function useAppointmentsPlaybook(
   // Use organization ID from context or demo
   const organizationId = organization?.id || null
 
-  // Check for demo organization in cookies
+  // Check for demo organization in cookies or localStorage
   const getDemoOrgId = useCallback(() => {
     if (typeof window === 'undefined') return null
 
+    // First try localStorage
+    const localStorageOrgId = localStorage.getItem('organizationId')
+    if (localStorageOrgId) {
+      return localStorageOrgId
+    }
+
+    // Then try cookies
     const cookies = document.cookie.split(';').reduce(
       (acc, cookie) => {
         const [key, value] = cookie.trim().split('=')

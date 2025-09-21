@@ -33,7 +33,7 @@ const COLORS = {
   lightText: '#E0E0E0',
   charcoalDark: '#0F0F0F',
   charcoalLight: '#232323',
-  plum: '#5A2A40',
+  plum: '#B794F4',
   emerald: '#0F6F5C'
 }
 

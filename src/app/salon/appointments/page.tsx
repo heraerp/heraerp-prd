@@ -99,6 +99,16 @@ export default function SalonAppointmentsPage() {
   const [dateFilter, setDateFilter] = useState<'today' | 'tomorrow' | 'week' | 'all'>('all')
   const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false)
 
+  // Get organization ID from localStorage for demo mode
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
+
   // Calculate date range based on filter
   const getDateRange = () => {
     const today = startOfDay(new Date())
@@ -159,9 +169,12 @@ export default function SalonAppointmentsPage() {
     )
   }
 
-  // Three-layer authorization pattern
-  // Layer 1: Authentication check
-  if (!isAuthenticated) {
+  // Get effective organization ID
+  const effectiveOrgId = organizationId || localOrgId
+
+  // Three-layer authorization pattern (adapted for demo mode)
+  // Layer 1: Authentication check (skip for demo mode)
+  if (!isAuthenticated && !localOrgId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
         <Alert>
@@ -173,7 +186,7 @@ export default function SalonAppointmentsPage() {
   }
 
   // Layer 2: Context loading check
-  if (contextLoading) {
+  if (contextLoading && !localOrgId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
         <div className="flex items-center justify-center h-64">
@@ -187,7 +200,7 @@ export default function SalonAppointmentsPage() {
   }
 
   // Layer 3: Organization check
-  if (!organizationId) {
+  if (!effectiveOrgId) {
     return (
       <div className="container mx-auto p-6 max-w-7xl">
         <Alert>
@@ -201,8 +214,9 @@ export default function SalonAppointmentsPage() {
   }
 
   return (
-    <PageLayout>
-      <PageHeader
+    <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
+      <div className="p-6">
+        <PageHeader
         title="Appointments"
         breadcrumbs={[
           { label: 'HERA' },
@@ -314,19 +328,14 @@ export default function SalonAppointmentsPage() {
       ) : appointments.length === 0 ? (
         <Card className="p-12 text-center">
           <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-1">
-            No appointments found
-          </h3>
+          <h3 className="text-lg font-medium text-foreground mb-1">No appointments found</h3>
           <p className="text-muted-foreground mb-4">
             {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
               ? 'Try adjusting your filters'
               : 'Book your first appointment to get started'}
           </p>
           {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
-            <Button
-              onClick={() => router.push('/salon/appointments/new')}
-              className=""
-            >
+            <Button onClick={() => router.push('/salon/appointments/new')} className="">
               Book Appointment
             </Button>
           )}
@@ -358,17 +367,11 @@ export default function SalonAppointmentsPage() {
                         {appointment.entity_name}
                       </h3>
                       {getStatusBadge(appointment.status)}
-                      <Badge
-                        variant="outline"
-                        className="gap-1"
-                      >
+                      <Badge variant="outline" className="gap-1">
                         <Calendar className="w-3 h-3" />
                         {format(appointmentDate, 'MMM d, yyyy')}
                       </Badge>
-                      <Badge
-                        variant="outline"
-                        className="gap-1"
-                      >
+                      <Badge variant="outline" className="gap-1">
                         <Clock className="w-3 h-3" />
                         {format(appointmentDate, 'h:mm a')}
                       </Badge>
@@ -408,11 +411,7 @@ export default function SalonAppointmentsPage() {
                   {/* Actions */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="hover:bg-muted"
-                      >
+                      <Button variant="ghost" size="icon" className="hover:bg-muted">
                         <MoreVertical className="h-4 w-4 text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -461,9 +460,10 @@ export default function SalonAppointmentsPage() {
             setShowNewAppointmentModal(false)
             refresh()
           }}
-          organizationId={organizationId || undefined}
+          organizationId={effectiveOrgId || undefined}
         />
       )}
-    </PageLayout>
+      </div>
+    </div>
   )
 }

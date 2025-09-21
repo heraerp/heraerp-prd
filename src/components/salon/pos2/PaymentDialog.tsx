@@ -498,7 +498,7 @@ export function PaymentDialog({
               backgroundColor: '#0F0F0F',
               border: '1px solid rgba(212, 175, 55, 0.3)',
               background:
-                'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(90, 42, 64, 0.05) 100%)'
+                'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(183, 148, 244, 0.05) 100%)'
             }}
           >
             <div className="space-y-3">

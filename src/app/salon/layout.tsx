@@ -4,6 +4,7 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import SalonRoleBasedSidebar from '@/components/salon/SalonRoleBasedSidebar'
 import SalonLuxeSidebar from '@/components/salon/SalonLuxeSidebar'
+import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
 import { SalonAuthGuard, SalonRoleDisplay } from '@/components/salon/auth/SalonAuthGuard'
 
 export default function SalonLayout({ children }: { children: React.ReactNode }) {
@@ -18,12 +19,12 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
 
   return (
     <SalonAuthGuard>
-      {/* Always use luxe sidebar for consistent styling */}
-      <SalonLuxeSidebar />
+      {/* Use narrow Teams-style sidebar */}
+      <SalonDarkSidebar />
       {/* reserve exactly the sidebar width */}
       <main
         id="salon-main"
-        className="ml-64 min-h-[100dvh]"
+        className="ml-20 min-h-[100dvh]"
         style={{
           backgroundColor: '#1A1A1A',
           minHeight: '100vh',

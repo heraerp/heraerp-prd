@@ -333,7 +333,7 @@ export default function SalonDashboardV2Page() {
   }
 
   // Chart colors
-  const CHART_COLORS = ['#D4AF37', '#E3C75F', '#F0D584', '#8C7853', '#5A2A40']
+  const CHART_COLORS = ['#D4AF37', '#E3C75F', '#F0D584', '#8C7853', '#B794F4']
 
   return (
     <div className="min-h-dvh text-text-100 bg-charcoal-900">

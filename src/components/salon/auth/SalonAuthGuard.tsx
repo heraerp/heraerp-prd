@@ -21,6 +21,7 @@ const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/dashboard': ['Owner', 'Administrator'],
   '/salon/pos': ['Owner', 'Receptionist', 'Administrator'],
+  '/salon/pos2': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/customers': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/appointments': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/finance': ['Owner', 'Accountant', 'Administrator'],

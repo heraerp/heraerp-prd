@@ -31,7 +31,7 @@ export default function SalonAppointmentsCalendarPage() {
           style={{
             background: `radial-gradient(circle at 20% 80%, #D4AF3708 0%, transparent 50%),
                            radial-gradient(circle at 80% 20%, #8C785305 0%, transparent 50%),
-                           radial-gradient(circle at 40% 40%, #5A2A4003 0%, transparent 50%)`
+                           radial-gradient(circle at 40% 40%, #B794F403 0%, transparent 50%)`
           }}
         />
 

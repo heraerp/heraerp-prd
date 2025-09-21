@@ -8,12 +8,16 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // Use the default organization ID from environment or fallback
-const SALON_ORG_ID =
-  process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
+const DEFAULT_SALON_ORG_ID =
+  process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
 export async function GET(request: NextRequest) {
   try {
     console.log('🎯 Fetching Salon Dashboard Data...')
+    
+    // Get organization_id from query params or use default
+    const { searchParams } = new URL(request.url)
+    const organizationId = searchParams.get('organization_id') || DEFAULT_SALON_ORG_ID
 
     // Get today's date for filtering
     const today = new Date().toISOString().split('T')[0]
@@ -22,7 +26,7 @@ export async function GET(request: NextRequest) {
     const { data: staff, error: staffError } = await supabase
       .from('core_entities')
       .select('*')
-      .eq('organization_id', SALON_ORG_ID)
+      .eq('organization_id', organizationId)
       .eq('entity_type', 'employee')
       .eq('status', 'active')
       .order('entity_name')
@@ -35,8 +39,8 @@ export async function GET(request: NextRequest) {
     const { data: appointments, error: appointmentsError } = await supabase
       .from('universal_transactions')
       .select('*')
-      .eq('organization_id', SALON_ORG_ID)
-      .eq('transaction_type', 'appointment')
+      .eq('organization_id', organizationId)
+      .eq('transaction_type', 'APPOINTMENT')  // Use uppercase to match schema
       .gte('transaction_date', today)
       .lt(
         'transaction_date',
@@ -52,7 +56,7 @@ export async function GET(request: NextRequest) {
     const { data: customers, error: customersError } = await supabase
       .from('core_entities')
       .select('*')
-      .eq('organization_id', SALON_ORG_ID)
+      .eq('organization_id', organizationId)
       .eq('entity_type', 'customer')
       .eq('status', 'active')
       .order('updated_at', { ascending: false })

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { CatalogPane } from '@/components/salon/pos2/CatalogPane'
 import { CartSidebar } from '@/components/salon/pos2/CartSidebar'
 import { PaymentDialog } from '@/components/salon/pos2/PaymentDialog'
@@ -37,13 +38,23 @@ const COLORS = {
   lightText: '#E0E0E0',
   charcoalDark: '#0F0F0F', // Darker shade for depth
   charcoalLight: '#232323', // Lighter shade for elements
-  plum: '#5A2A40', // Added for gradient accent
+  plum: '#B794F4', // Added for gradient accent
   emerald: '#0F6F5C' // Added for accent
 }
 
-export default function SalonPOS2Page() {
+function POS2Content() {
   const { user, organization } = useHERAAuth()
-  const organizationId = organization?.id
+  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  
+  // Get organization ID from localStorage for demo mode
+  useEffect(() => {
+    const storedOrgId = localStorage.getItem('organizationId')
+    if (storedOrgId) {
+      setLocalOrgId(storedOrgId)
+    }
+  }, [])
+  
+  const organizationId = organization?.id || localOrgId
   const [selectedBranch, setSelectedBranch] = useState<string>('')
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
@@ -62,10 +73,10 @@ export default function SalonPOS2Page() {
     addCustomerToTicket,
     addItemsFromAppointment,
     calculateTotals
-  } = usePosTicket(organizationId!)
+  } = usePosTicket(organizationId || '')
 
-  const { loadAppointment } = useAppointmentLookup(organizationId!)
-  const { searchCustomers } = useCustomerLookup(organizationId!)
+  const { loadAppointment } = useAppointmentLookup(organizationId || '')
+  const { searchCustomers } = useCustomerLookup(organizationId || '')
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -133,7 +144,7 @@ export default function SalonPOS2Page() {
 
   const totals = calculateTotals()
 
-  if (!user || !organizationId) {
+  if (!organizationId) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -147,10 +158,10 @@ export default function SalonPOS2Page() {
           }}
         >
           <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
-            Authentication Required
+            Loading...
           </h2>
           <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
-            Please log in to access the POS system.
+            Setting up the POS system.
           </p>
         </div>
       </div>
@@ -251,7 +262,7 @@ export default function SalonPOS2Page() {
                       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)'
                     }}
                   >
-                    {user.email}
+                    {user?.email || localStorage.getItem('salonUserName') || 'Staff'}
                   </div>
                 </div>
 
@@ -456,5 +467,13 @@ export default function SalonPOS2Page() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SalonPOS2Page() {
+  return (
+    <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
+      <POS2Content />
+    </SalonAuthGuard>
   )
 }

@@ -27,7 +27,7 @@ const COLORS = {
   espresso: '#3E2723',
   bronze: '#8C7853',
   emerald: '#0F6F5C',
-  plum: '#5A2A40',
+  plum: '#B794F4',
   rose: '#E8B4B8',
   lightText: '#E0E0E0'
 }
