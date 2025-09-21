@@ -353,10 +353,10 @@ export class SalonPosIntegrationService {
               entity_name: item.entity_name
             }
           })),
-          // Payment lines
+          // Payment lines (negative to balance against service/product revenue)
           ...payments.map((payment, index) => ({
             line_number: ticket.lineItems.length + index + 1,
-            line_amount: payment.amount,
+            line_amount: -payment.amount, // Negative to balance
             smart_code: this.getPaymentSmartCode(payment.type),
             line_data: {
               branch_id: options.branch_id,
@@ -395,7 +395,28 @@ export class SalonPosIntegrationService {
               payment_method: tip.method,
               tip_percentage: tip.percentage
             }
-          }))
+          })),
+          // Tax line (if applicable)
+          ...(totals.taxAmount > 0
+            ? [
+                {
+                  line_number:
+                    ticket.lineItems.length +
+                    payments.length +
+                    (ticket.discounts?.length || 0) +
+                    (ticket.tips?.length || 0) +
+                    1,
+                  line_amount: totals.taxAmount,
+                  smart_code: 'HERA.SALON.GL.LINE.TAX.V1',
+                  line_data: {
+                    branch_id: options.branch_id,
+                    tax_rate: 0.05,
+                    tax_type: 'VAT',
+                    taxable_amount: totals.subtotal - totals.discountAmount
+                  }
+                }
+              ]
+            : [])
         ]
       }
 
