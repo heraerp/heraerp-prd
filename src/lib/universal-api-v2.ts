@@ -1982,14 +1982,31 @@ class UniversalAPIv2 {
 
   // Legacy read method for backwards compatibility
   async read(
-    table: string,
+    tableOrOptions: string | { table: string; filter?: any; organizationId?: string },
     filter?: any,
     organizationId?: string
   ): Promise<UniversalResponse<any[]>> {
     try {
+      // Handle both old and new call patterns
+      let table: string
+      let actualFilter: any
+      let actualOrgId: string | undefined
+
+      if (typeof tableOrOptions === 'object' && 'table' in tableOrOptions) {
+        // New object-style call: read({table: 'x', filter: {...}})
+        table = tableOrOptions.table
+        actualFilter = tableOrOptions.filter
+        actualOrgId = tableOrOptions.organizationId
+      } else {
+        // Legacy style call: read('table', filter, orgId)
+        table = tableOrOptions as string
+        actualFilter = filter
+        actualOrgId = organizationId
+      }
+
       // Check for empty array filters early
-      if (filter && typeof filter === 'object') {
-        for (const [key, value] of Object.entries(filter)) {
+      if (actualFilter && typeof actualFilter === 'object') {
+        for (const [key, value] of Object.entries(actualFilter)) {
           if (Array.isArray(value) && value.length === 0) {
             // Empty array filter - return empty result immediately
             return { success: true, data: [], error: null }
@@ -1998,8 +2015,8 @@ class UniversalAPIv2 {
       }
 
       const options: QueryOptions = {
-        organizationId: organizationId || this.organizationId || undefined,
-        filters: filter
+        organizationId: actualOrgId || this.organizationId || undefined,
+        filters: actualFilter
       }
 
       switch (table) {
@@ -2013,14 +2030,14 @@ class UniversalAPIv2 {
           return await this.getTransactionLines(options)
         case 'core_dynamic_data':
           // Special handling for dynamic data
-          if (filter?.entity_id) {
+          if (actualFilter?.entity_id) {
             // Check if entity_id is array and empty
-            if (Array.isArray(filter.entity_id) && filter.entity_id.length === 0) {
+            if (Array.isArray(actualFilter.entity_id) && actualFilter.entity_id.length === 0) {
               return { success: true, data: [], error: null }
             }
             // If it's a single ID and not an array, use getDynamicFields for backwards compatibility
-            if (!Array.isArray(filter.entity_id)) {
-              return await this.getDynamicFields(filter.entity_id)
+            if (!Array.isArray(actualFilter.entity_id)) {
+              return await this.getDynamicFields(actualFilter.entity_id)
             }
             // For arrays, fall through to generic query handling below
           }
@@ -2037,8 +2054,8 @@ class UniversalAPIv2 {
           query = query.eq('organization_id', options.organizationId || this.organizationId)
 
           // Apply additional filters
-          if (filter) {
-            Object.entries(filter).forEach(([key, value]) => {
+          if (actualFilter) {
+            Object.entries(actualFilter).forEach(([key, value]) => {
               if (value !== undefined && value !== null && key !== 'organization_id') {
                 if (Array.isArray(value)) {
                   if (value.length > 0) {

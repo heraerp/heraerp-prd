@@ -63,18 +63,27 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
     universalApi.setOrganizationId(transactionData.organization_id)
 
     // Create transaction header
-    const transactionResponse = await universalApi.createTransaction({
+    const transactionHeader = {
       organization_id: transactionData.organization_id,
-      transaction_type: transactionData.transaction_type,
+      transaction_type: transactionData.transaction_type.toUpperCase(), // Ensure uppercase
+      transaction_date: new Date().toISOString(), // Use transaction_date, not created_at
       smart_code: transactionData.smart_code,
       total_amount: transactionData.total_amount,
       transaction_code: generateTransactionCode(transactionData.transaction_type),
       business_context: transactionData.business_context,
-      created_at: new Date().toISOString()
-    })
+      source_entity_id: transactionData.business_context.branch_id || null,
+      target_entity_id: transactionData.business_context.customer_id || null
+    }
+
+    console.log('Creating transaction with header:', transactionHeader)
+
+    const transactionResponse = await universalApi.createTransaction(transactionHeader)
 
     if (!transactionResponse.success || !transactionResponse.data) {
-      throw new Error('Failed to create transaction header')
+      console.error('Transaction creation failed:', transactionResponse.error)
+      throw new Error(
+        `Failed to create transaction header: ${transactionResponse.error || 'Unknown error'}`
+      )
     }
 
     const transactionId = transactionResponse.data.id
@@ -82,21 +91,33 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
 
     // Create transaction lines
     for (const line of transactionData.line_items) {
-      await universalApi.createTransactionLine({
+      const lineData = {
         organization_id: transactionData.organization_id,
         transaction_id: transactionId,
-        line_entity_id: line.line_entity_id,
+        entity_id: line.line_entity_id || null, // Use entity_id, not line_entity_id
         line_number: line.line_number,
+        line_type: line.line_data?.entity_type || 'SERVICE',
+        description: line.line_data?.entity_name || '',
         quantity: line.quantity || 1,
-        unit_price: line.unit_price || line.line_amount,
+        unit_amount: line.unit_price || line.line_amount,
         line_amount: line.line_amount,
         smart_code: line.smart_code,
         line_data: {
           ...line.line_data,
           branch_id: transactionData.business_context.branch_id // Mirror branch_id
-        },
-        created_at: new Date().toISOString()
-      })
+        }
+      }
+
+      console.log('Creating transaction line:', lineData)
+
+      const lineResponse = await universalApi.createTransactionLine(lineData)
+
+      if (!lineResponse.success) {
+        console.error('Failed to create line:', lineResponse.error, lineData)
+        throw new Error(
+          `Failed to create transaction line: ${lineResponse.error || 'Unknown error'}`
+        )
+      }
     }
 
     return {
