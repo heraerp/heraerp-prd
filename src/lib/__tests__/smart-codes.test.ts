@@ -62,9 +62,10 @@ describe('Smart Code Functions', () => {
       const parsed = parseHeraCode('HERA.SALON.POS.SALE.HEADER.v1')
       expect(parsed).toEqual({
         prefix: 'HERA',
-        segments: ['SALON', 'POS', 'SALE', 'HEADER'],
-        version: 1,
-        isValid: true
+        industry: 'SALON',
+        module: 'POS',
+        parts: ['SALE', 'HEADER'],
+        version: 1
       })
     })
 
@@ -82,26 +83,31 @@ describe('Smart Code Functions', () => {
   describe('HERA_CODES constants', () => {
     it('should have valid smart codes', () => {
       // POS codes
-      expect(isValidHeraCode(HERA_CODES.POS.SALE_HEADER)).toBe(true)
-      expect(isValidHeraCode(HERA_CODES.POS.LINE_SERVICE)).toBe(true)
-      expect(isValidHeraCode(HERA_CODES.POS.PAYMENT_CASH)).toBe(true)
+      expect(isValidHeraCode(HERA_CODES.SALON.POS.SALE.HEADER)).toBe(true)
+      expect(isValidHeraCode(HERA_CODES.SALON.POS.SALE.LINE.SERVICE)).toBe(true)
+      expect(isValidHeraCode(HERA_CODES.SALON.POS.SALE.PAYMENT.CASH)).toBe(true)
 
-      // Entity codes
-      expect(isValidHeraCode(HERA_CODES.ENTITY.CUSTOMER)).toBe(true)
-      expect(isValidHeraCode(HERA_CODES.ENTITY.EMPLOYEE)).toBe(true)
+      // CRM codes
+      expect(isValidHeraCode(HERA_CODES.CRM.CUSTOMER.ENTITY)).toBe(true)
+      expect(isValidHeraCode(HERA_CODES.CRM.SALE.TRANSACTION)).toBe(true)
 
-      // GL codes
-      expect(isValidHeraCode(HERA_CODES.GL.ACCOUNT_ASSET)).toBe(true)
-      expect(isValidHeraCode(HERA_CODES.GL.ACCOUNT_EXPENSE)).toBe(true)
+      // Finance codes
+      expect(isValidHeraCode(HERA_CODES.FIN.GL.ACCOUNT)).toBe(true)
     })
 
     it('should use lowercase v', () => {
-      Object.values(HERA_CODES).forEach(category => {
-        Object.values(category).forEach(code => {
-          expect(code).toMatch(/\.v\d+$/)
-          expect(code).not.toMatch(/\.V\d+$/)
+      const checkNestedCodes = (obj: any) => {
+        Object.values(obj).forEach(value => {
+          if (typeof value === 'string') {
+            expect(value).toMatch(/\.v\d+$/)
+            expect(value).not.toMatch(/\.V\d+$/)
+          } else if (typeof value === 'object' && value !== null) {
+            checkNestedCodes(value)
+          }
         })
-      })
+      }
+      
+      checkNestedCodes(HERA_CODES)
     })
   })
 })
