@@ -24,16 +24,16 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
 import {
-  Scissors,
-  UtensilsCrossed,
-  Heart,
-  ShoppingCart,
-  Globe,
-  Code,
   CheckCircle,
+  Code,
   FileJson,
+  Globe,
+  Heart,
+  Scissors,
   Settings,
   Shield,
+  ShoppingCart,
+  UtensilsCrossed,
   Zap
 } from 'lucide-react'
 import { motion } from 'framer-motion'
