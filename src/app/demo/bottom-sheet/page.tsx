@@ -422,7 +422,7 @@ export default function BottomSheetDemo() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <CalendarIcon className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
+              <Calendar className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
               <p className="font-medium">Schedule</p>
               <p className="text-sm text-gray-500">View calendar</p>
             </div>
