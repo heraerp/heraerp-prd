@@ -151,7 +151,7 @@ export async function searchAppointments(
     table: 'universal_transactions',
     filters: [
       { field: 'organization_id', operator: 'eq', value: organization_id },
-      { field: 'transaction_type', operator: 'eq', value: 'appointment' }
+      { field: 'transaction_type', operator: 'eq', value: 'APPOINTMENT' }
     ]
   })
 

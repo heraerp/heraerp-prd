@@ -4,14 +4,30 @@ import { useState, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { universalApi } from '@/lib/universal-api-v2'
-import { Plus, Clock, Calendar, UserCheck, TrendingUp, Users, Search, Edit, Trash2 } from 'lucide-react'
+import {
+  Plus,
+  Clock,
+  Calendar,
+  UserCheck,
+  TrendingUp,
+  Users,
+  Search,
+  Edit,
+  Trash2
+} from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/luxe-dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/luxe-dialog'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { format } from 'date-fns'
@@ -51,7 +67,7 @@ function StaffContent() {
   const { user, organization } = useHERAAuth()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const { toast } = useToast()
-  
+
   // Get organization ID from localStorage for demo mode
   useEffect(() => {
     const storedOrgId = localStorage.getItem('organizationId')
@@ -59,7 +75,7 @@ function StaffContent() {
       setLocalOrgId(storedOrgId)
     }
   }, [])
-  
+
   const organizationId = organization?.id || localOrgId
 
   const [staff, setStaff] = useState<Staff[]>([])
@@ -88,11 +104,11 @@ function StaffContent() {
 
   const loadStaff = async () => {
     if (!organizationId) return
-    
+
     try {
       setLoading(true)
       universalApi.setOrganizationId(organizationId)
-      
+
       // Load staff entities
       const staffResponse = await universalApi.read({
         table: 'core_entities',
@@ -113,12 +129,13 @@ function StaffContent() {
                 { field: 'entity_id', operator: 'eq', value: s.id }
               ]
             })
-            
+
             const dynamicDataMap = (dynamicResponse?.data || []).reduce((acc: any, dd: any) => {
-              acc[dd.field_name] = dd.field_value_text || dd.field_value_number || dd.field_value_boolean
+              acc[dd.field_name] =
+                dd.field_value_text || dd.field_value_number || dd.field_value_boolean
               return acc
             }, {})
-            
+
             return { ...s, dynamic_data: dynamicDataMap }
           })
         )
@@ -166,7 +183,10 @@ function StaffContent() {
           { field_name: 'phone', field_value_text: newStaff.phone },
           { field_name: 'email', field_value_text: newStaff.email },
           { field_name: 'hourly_rate', field_value_number: parseFloat(newStaff.hourly_rate) || 0 },
-          { field_name: 'commission_rate', field_value_number: parseFloat(newStaff.commission_rate) || 0 },
+          {
+            field_name: 'commission_rate',
+            field_value_number: parseFloat(newStaff.commission_rate) || 0
+          },
           { field_name: 'role', field_value_text: newStaff.role }
         ]
 
@@ -211,14 +231,18 @@ function StaffContent() {
     }
   }
 
-  const filteredStaff = staff.filter(s => 
-    s.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.dynamic_data?.role?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStaff = staff.filter(
+    s =>
+      s.entity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.dynamic_data?.role?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   if (!organizationId) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: COLORS.black }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: COLORS.black }}
+      >
         <div
           className="text-center p-8 rounded-xl"
           style={{
@@ -229,9 +253,7 @@ function StaffContent() {
           <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
             Loading...
           </h2>
-          <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
-            Setting up staff management.
-          </p>
+          <p style={{ color: COLORS.lightText, opacity: 0.7 }}>Setting up staff management.</p>
         </div>
       </div>
     )
@@ -287,7 +309,7 @@ function StaffContent() {
                   <Input
                     id="name"
                     value={newStaff.name}
-                    onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
+                    onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
                     placeholder="Staff member name"
                   />
                 </div>
@@ -297,7 +319,7 @@ function StaffContent() {
                     id="role"
                     className="w-full px-3 py-2 border rounded-md"
                     value={newStaff.role}
-                    onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
+                    onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
                   >
                     <option value="stylist">Stylist</option>
                     <option value="senior_stylist">Senior Stylist</option>
@@ -310,7 +332,7 @@ function StaffContent() {
                   <Input
                     id="phone"
                     value={newStaff.phone}
-                    onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
+                    onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
                     placeholder="+971 50 123 4567"
                   />
                 </div>
@@ -320,7 +342,7 @@ function StaffContent() {
                     id="email"
                     type="email"
                     value={newStaff.email}
-                    onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
+                    onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
                     placeholder="staff@salon.com"
                   />
                 </div>
@@ -331,7 +353,7 @@ function StaffContent() {
                       id="hourly_rate"
                       type="number"
                       value={newStaff.hourly_rate}
-                      onChange={(e) => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
+                      onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
                       placeholder="50"
                     />
                   </div>
@@ -341,13 +363,13 @@ function StaffContent() {
                       id="commission_rate"
                       type="number"
                       value={newStaff.commission_rate}
-                      onChange={(e) => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
+                      onChange={e => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
                       placeholder="20"
                     />
                   </div>
                 </div>
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   onClick={handleAddStaff}
                   disabled={isAddingStaff || !newStaff.name}
                   style={{
@@ -366,10 +388,34 @@ function StaffContent() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {[
-            { title: 'Total Staff', value: stats.totalStaff, desc: 'Team members', icon: Users, color: COLORS.emerald },
-            { title: 'Active Today', value: stats.activeToday, desc: 'Working now', icon: UserCheck, color: COLORS.gold },
-            { title: 'On Leave', value: stats.onLeave, desc: 'Away today', icon: Calendar, color: COLORS.bronze },
-            { title: 'Avg Rating', value: stats.averageRating, desc: 'Out of 5.0', icon: TrendingUp, color: COLORS.champagne }
+            {
+              title: 'Total Staff',
+              value: stats.totalStaff,
+              desc: 'Team members',
+              icon: Users,
+              color: COLORS.emerald
+            },
+            {
+              title: 'Active Today',
+              value: stats.activeToday,
+              desc: 'Working now',
+              icon: UserCheck,
+              color: COLORS.gold
+            },
+            {
+              title: 'On Leave',
+              value: stats.onLeave,
+              desc: 'Away today',
+              icon: Calendar,
+              color: COLORS.bronze
+            },
+            {
+              title: 'Avg Rating',
+              value: stats.averageRating,
+              desc: 'Out of 5.0',
+              icon: TrendingUp,
+              color: COLORS.champagne
+            }
           ].map((stat, index) => (
             <Card
               key={index}
@@ -400,11 +446,14 @@ function StaffContent() {
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" style={{ color: COLORS.bronze }} />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
+              style={{ color: COLORS.bronze }}
+            />
             <Input
               placeholder="Search by name or role..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10 max-w-md"
               style={{
                 backgroundColor: COLORS.charcoalLight,
@@ -422,11 +471,13 @@ function StaffContent() {
               className="animate-spin rounded-full h-8 w-8 border-b-2"
               style={{ borderColor: COLORS.gold }}
             />
-            <span className="ml-3" style={{ color: COLORS.bronze }}>Loading staff data...</span>
+            <span className="ml-3" style={{ color: COLORS.bronze }}>
+              Loading staff data...
+            </span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredStaff.map((member) => (
+            {filteredStaff.map(member => (
               <Card
                 key={member.id}
                 className="transition-all duration-200 hover:scale-[1.02]"
@@ -446,7 +497,11 @@ function StaffContent() {
                       }}
                     >
                       <AvatarFallback style={{ backgroundColor: COLORS.gold, color: COLORS.black }}>
-                        {member.entity_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        {member.entity_name
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
@@ -464,12 +519,8 @@ function StaffContent() {
                         {member.dynamic_data?.role || 'Stylist'}
                       </Badge>
                       <div className="mt-3 space-y-1 text-sm" style={{ color: COLORS.bronze }}>
-                        {member.dynamic_data?.phone && (
-                          <div>📱 {member.dynamic_data.phone}</div>
-                        )}
-                        {member.dynamic_data?.email && (
-                          <div>✉️ {member.dynamic_data.email}</div>
-                        )}
+                        {member.dynamic_data?.phone && <div>📱 {member.dynamic_data.phone}</div>}
+                        {member.dynamic_data?.email && <div>✉️ {member.dynamic_data.email}</div>}
                         <div className="flex gap-4 mt-2">
                           {member.dynamic_data?.hourly_rate && (
                             <span>💰 AED {member.dynamic_data.hourly_rate}/hr</span>
@@ -498,7 +549,9 @@ function StaffContent() {
               No staff members found
             </h3>
             <p style={{ color: COLORS.bronze }}>
-              {searchTerm ? 'Try adjusting your search terms' : 'Add your first staff member to get started'}
+              {searchTerm
+                ? 'Try adjusting your search terms'
+                : 'Add your first staff member to get started'}
             </p>
           </div>
         )}

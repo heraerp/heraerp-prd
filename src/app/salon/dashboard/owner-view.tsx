@@ -151,18 +151,19 @@ export function OwnerDashboard() {
   })
 
   // Get organization ID from localStorage
-  const organizationId = localStorage.getItem('organizationId') || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
+  const organizationId =
+    localStorage.getItem('organizationId') || '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 
   useEffect(() => {
     fetchDashboardData()
     fetchMonthlyData()
-    
+
     // Set up polling to refresh data every 30 seconds
     const interval = setInterval(() => {
       fetchDashboardData()
       fetchMonthlyData()
     }, 30000)
-    
+
     return () => clearInterval(interval)
   }, [])
 
@@ -170,7 +171,7 @@ export function OwnerDashboard() {
     try {
       const response = await fetch(`/api/v1/salon/dashboard?organization_id=${organizationId}`)
       if (!response.ok) throw new Error('Failed to fetch dashboard data')
-      
+
       const data = await response.json()
       setDashboardData(data)
     } catch (error) {
@@ -187,50 +188,50 @@ export function OwnerDashboard() {
       const startOfMonth = new Date()
       startOfMonth.setDate(1)
       startOfMonth.setHours(0, 0, 0, 0)
-      
+
       // Fetch appointments for the month
       const appointmentsResponse = await fetch(
         `/api/v1/salon/appointments?organization_id=${organizationId}&start_date=${startOfMonth.toISOString()}`
       )
-      
+
       if (appointmentsResponse.ok) {
         const appointmentsData = await appointmentsResponse.json()
         const appointments = appointmentsData.appointments || []
-        
+
         // Calculate monthly revenue from completed appointments
         const monthRevenue = appointments
           .filter((apt: any) => apt.metadata?.status === 'completed' || apt.status === 'completed')
           .reduce((sum: number, apt: any) => sum + (apt.price || 0), 0)
-        
+
         // Count new customers this month
         const customersResponse = await fetch(
           `/api/v1/salon/clients?organization_id=${organizationId}&created_after=${startOfMonth.toISOString()}`
         )
-        
+
         let newCustomers = 0
         if (customersResponse.ok) {
           const customersData = await customersResponse.json()
           newCustomers = customersData.clients?.length || 0
         }
-        
+
         // Get staff attendance - fetch all staff and check their attendance
         const staffResponse = await fetch(`/api/v1/salon/staff?organization_id=${organizationId}`)
         let staffData = { present: 0, total: 0 }
-        
+
         if (staffResponse.ok) {
           const staffResult = await staffResponse.json()
           const allStaff = staffResult.staff || []
           staffData.total = allStaff.length
-          
+
           // In a production system, we would check:
           // 1. Leave requests in universal_transactions (type='leave_request')
           // 2. Attendance records for today
           // 3. Staff schedules from core_dynamic_data
-          
+
           // For now, let's check if staff have any appointments today
           const todayDate = new Date().toISOString().split('T')[0]
           const staffWithAppointments = new Set()
-          
+
           // Count staff who have appointments today as present
           appointments.forEach((apt: any) => {
             const stylistId = apt.metadata?.stylist_id || apt.metadata?.staff_id
@@ -238,7 +239,7 @@ export function OwnerDashboard() {
               staffWithAppointments.add(stylistId)
             }
           })
-          
+
           // Calculate present based on activity
           if (staffWithAppointments.size > 0) {
             // Use actual count of staff with appointments
@@ -247,11 +248,11 @@ export function OwnerDashboard() {
             // Default calculation for demo: total - 2 (on leave)
             staffData.present = Math.max(staffData.total - 2, 0)
           }
-          
+
           // Ensure we don't show more present than total
           staffData.present = Math.min(staffData.present, staffData.total)
         }
-        
+
         setMonthlyData({
           revenue: monthRevenue,
           appointments: appointments.length,
@@ -278,20 +279,25 @@ export function OwnerDashboard() {
   const activeCustomers = dashboardData?.recentClients?.length || 0
   const todayAppointments = dashboardData?.quickStats?.appointmentsToday || 0
   const staffPresent = `${monthlyData.staffAttendance.present}/${monthlyData.staffAttendance.total}`
-  
+
   // Calculate top services from today's appointments
-  const serviceCount = dashboardData?.todayAppointments?.reduce((acc, apt) => {
-    const service = apt.service || 'Unknown Service'
-    acc[service] = (acc[service] || 0) + 1
-    return acc
-  }, {} as Record<string, number>) || {}
-  
+  const serviceCount =
+    dashboardData?.todayAppointments?.reduce(
+      (acc, apt) => {
+        const service = apt.service || 'Unknown Service'
+        acc[service] = (acc[service] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    ) || {}
+
   const topServices = Object.entries(serviceCount)
     .map(([service, count]) => {
-      const revenue = dashboardData?.todayAppointments
-        ?.filter(apt => apt.service === service)
-        .reduce((sum, apt) => sum + (apt.price || 0), 0) || 0
-      
+      const revenue =
+        dashboardData?.todayAppointments
+          ?.filter(apt => apt.service === service)
+          .reduce((sum, apt) => sum + (apt.price || 0), 0) || 0
+
       return { service, count, revenue: `AED ${revenue.toLocaleString()}` }
     })
     .sort((a, b) => b.count - a.count)
@@ -328,7 +334,10 @@ export function OwnerDashboard() {
           value={activeCustomers}
           subtitle={`${monthlyData.newCustomers} new this month`}
           icon={Users}
-          trend={{ value: monthlyData.newCustomers > 0 ? 8 : 0, isUp: monthlyData.newCustomers > 0 }}
+          trend={{
+            value: monthlyData.newCustomers > 0 ? 8 : 0,
+            isUp: monthlyData.newCustomers > 0
+          }}
           color="from-blue-500 to-cyan-600"
         />
         <MetricCard
@@ -366,7 +375,10 @@ export function OwnerDashboard() {
                   85% achieved
                 </span>
               </div>
-              <div className="w-full rounded-full h-2" style={{ backgroundColor: 'rgba(229, 231, 235, 0.1)' }}>
+              <div
+                className="w-full rounded-full h-2"
+                style={{ backgroundColor: 'rgba(229, 231, 235, 0.1)' }}
+              >
                 <div
                   className="h-2 rounded-full"
                   style={{
@@ -420,28 +432,30 @@ export function OwnerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topServices.length > 0 ? topServices.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-3 rounded-lg"
-                  style={{
-                    backgroundColor: 'rgba(229, 231, 235, 0.05)',
-                    border: '1px solid rgba(212, 175, 55, 0.15)'
-                  }}
-                >
-                  <div className="flex-1">
-                    <p className="text-sm font-medium" style={{ color: '#F5E6C8' }}>
-                      {item.service}
-                    </p>
-                    <p className="text-xs" style={{ color: '#8C7853' }}>
-                      {item.count} bookings
+              {topServices.length > 0 ? (
+                topServices.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 rounded-lg"
+                    style={{
+                      backgroundColor: 'rgba(229, 231, 235, 0.05)',
+                      border: '1px solid rgba(212, 175, 55, 0.15)'
+                    }}
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm font-medium" style={{ color: '#F5E6C8' }}>
+                        {item.service}
+                      </p>
+                      <p className="text-xs" style={{ color: '#8C7853' }}>
+                        {item.count} bookings
+                      </p>
+                    </div>
+                    <p className="text-sm font-semibold" style={{ color: '#D4AF37' }}>
+                      {item.revenue}
                     </p>
                   </div>
-                  <p className="text-sm font-semibold" style={{ color: '#D4AF37' }}>
-                    {item.revenue}
-                  </p>
-                </div>
-              )) : (
+                ))
+              ) : (
                 <div className="text-center py-4" style={{ color: '#8C7853' }}>
                   No services recorded today yet
                 </div>
@@ -467,12 +481,15 @@ export function OwnerDashboard() {
           </CardHeader>
           <CardContent>
             <p className="text-sm" style={{ color: '#E0E0E0' }}>
-              {dashboardData?.todayAppointments?.filter(apt => apt.time > new Date().toLocaleTimeString('en-US', { hour12: false })).length || 0} appointments remaining today
+              {dashboardData?.todayAppointments?.filter(
+                apt => apt.time > new Date().toLocaleTimeString('en-US', { hour12: false })
+              ).length || 0}{' '}
+              appointments remaining today
             </p>
             <button
               className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity"
               style={{ color: '#D4AF37' }}
-              onClick={() => window.location.href = '/salon/appointments'}
+              onClick={() => (window.location.href = '/salon/appointments')}
             >
               View Schedule →
             </button>
@@ -498,7 +515,7 @@ export function OwnerDashboard() {
             <button
               className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity"
               style={{ color: '#B794F4' }}
-              onClick={() => window.location.href = '/salon/clients'}
+              onClick={() => (window.location.href = '/salon/clients')}
             >
               View Customers →
             </button>
@@ -524,7 +541,7 @@ export function OwnerDashboard() {
             <button
               className="mt-2 text-sm font-medium hover:opacity-80 transition-opacity"
               style={{ color: '#0F6F5C' }}
-              onClick={() => window.location.href = '/salon/reports'}
+              onClick={() => (window.location.href = '/salon/reports')}
             >
               View Reports →
             </button>

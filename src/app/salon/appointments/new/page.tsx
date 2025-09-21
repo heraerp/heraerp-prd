@@ -103,9 +103,12 @@ function NewAppointmentContent() {
       const isDemoLogin = sessionStorage.getItem('isDemoLogin') === 'true'
       const demoModule = sessionStorage.getItem('demoModule')
       const demoOrgId = sessionStorage.getItem('demo-org-id')
+      const localStorageOrgId = localStorage.getItem('organizationId')
 
       if (isDemoLogin && demoModule === 'salon') {
         setDemoOrganizationId(demoOrgId || DEFAULT_SALON_ORG_ID)
+      } else if (localStorageOrgId) {
+        setDemoOrganizationId(localStorageOrgId)
       }
     }
 
@@ -1036,10 +1039,10 @@ export default function NewAppointmentPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="w-8 h-8 mx-auto">Loading...</div>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="mt-2 text-muted-foreground">Loading...</p>
           </div>
         </div>
       }

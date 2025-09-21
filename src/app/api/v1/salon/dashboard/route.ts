@@ -14,7 +14,7 @@ const DEFAULT_SALON_ORG_ID =
 export async function GET(request: NextRequest) {
   try {
     console.log('🎯 Fetching Salon Dashboard Data...')
-    
+
     // Get organization_id from query params or use default
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organization_id') || DEFAULT_SALON_ORG_ID
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       .from('universal_transactions')
       .select('*')
       .eq('organization_id', organizationId)
-      .eq('transaction_type', 'APPOINTMENT')  // Use uppercase to match schema
+      .eq('transaction_type', 'APPOINTMENT') // Use uppercase to match schema
       .gte('transaction_date', today)
       .lt(
         'transaction_date',

@@ -45,7 +45,7 @@ const COLORS = {
 function POS2Content() {
   const { user, organization } = useHERAAuth()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
-  
+
   // Get organization ID from localStorage for demo mode
   useEffect(() => {
     const storedOrgId = localStorage.getItem('organizationId')
@@ -53,7 +53,7 @@ function POS2Content() {
       setLocalOrgId(storedOrgId)
     }
   }, [])
-  
+
   const organizationId = organization?.id || localOrgId
   const [selectedBranch, setSelectedBranch] = useState<string>('')
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
@@ -61,6 +61,27 @@ function POS2Content() {
   const [completedSale, setCompletedSale] = useState<any>(null)
   const [isCustomerSearchOpen, setIsCustomerSearchOpen] = useState(false)
   const [isTicketDetailsOpen, setIsTicketDetailsOpen] = useState(false)
+
+  const posTicketResult = organizationId
+    ? usePosTicket(organizationId)
+    : {
+        ticket: { lineItems: [], customer: null, discounts: [], tips: [], metadata: {} },
+        addLineItem: () => {},
+        updateLineItem: () => {},
+        removeLineItem: () => {},
+        addDiscount: () => {},
+        addTip: () => {},
+        clearTicket: () => {},
+        addCustomerToTicket: () => {},
+        addItemsFromAppointment: () => {},
+        calculateTotals: () => ({
+          subtotal: 0,
+          discountAmount: 0,
+          tipAmount: 0,
+          taxAmount: 0,
+          total: 0
+        })
+      }
 
   const {
     ticket,
@@ -73,10 +94,17 @@ function POS2Content() {
     addCustomerToTicket,
     addItemsFromAppointment,
     calculateTotals
-  } = usePosTicket(organizationId || '')
+  } = posTicketResult
 
-  const { loadAppointment } = useAppointmentLookup(organizationId || '')
-  const { searchCustomers } = useCustomerLookup(organizationId || '')
+  const appointmentLookupResult = organizationId
+    ? useAppointmentLookup(organizationId)
+    : { loadAppointment: async () => null }
+  const { loadAppointment } = appointmentLookupResult
+
+  const customerLookupResult = organizationId
+    ? useCustomerLookup(organizationId)
+    : { searchCustomers: async () => [] }
+  const { searchCustomers } = customerLookupResult
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -160,9 +188,7 @@ function POS2Content() {
           <h2 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
             Loading...
           </h2>
-          <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
-            Setting up the POS system.
-          </p>
+          <p style={{ color: COLORS.lightText, opacity: 0.7 }}>Setting up the POS system.</p>
         </div>
       </div>
     )

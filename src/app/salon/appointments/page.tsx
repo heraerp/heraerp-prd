@@ -101,7 +101,7 @@ export default function SalonAppointmentsPage() {
 
   // Get organization ID from localStorage for demo mode
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
-  
+
   useEffect(() => {
     const storedOrgId = localStorage.getItem('organizationId')
     if (storedOrgId) {
@@ -217,252 +217,252 @@ export default function SalonAppointmentsPage() {
     <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
       <div className="p-6">
         <PageHeader
-        title="Appointments"
-        breadcrumbs={[
-          { label: 'HERA' },
-          { label: 'SALON OS' },
-          { label: 'Appointments', isActive: true }
-        ]}
-        actions={
-          <>
-            <PageHeaderButton
-              variant="secondary"
-              icon={CalendarDays}
-              onClick={() => router.push('/salon/appointments/calendar')}
-            >
-              Calendar View
-            </PageHeaderButton>
-            <PageHeaderButton
-              variant="primary"
-              icon={Plus}
-              onClick={() => router.push('/salon/appointments/new')}
-            >
-              Book Appointment
-            </PageHeaderButton>
-          </>
-        }
-      />
-
-      {/* Error state */}
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Filters */}
-      <Card className="p-4 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by customer, stylist, or code..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-
-          <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by date" />
-            </SelectTrigger>
-            <SelectContent className="hera-select-content">
-              <SelectItem value="all" className="hera-select-item">
-                Next 14 days
-              </SelectItem>
-              <SelectItem value="today" className="hera-select-item">
-                Today
-              </SelectItem>
-              <SelectItem value="tomorrow" className="hera-select-item">
-                Tomorrow
-              </SelectItem>
-              <SelectItem value="week" className="hera-select-item">
-                Next 7 days
-              </SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent className="hera-select-content">
-              <SelectItem value="all" className="hera-select-item">
-                All statuses
-              </SelectItem>
-              <SelectItem value="booked" className="hera-select-item">
-                Booked
-              </SelectItem>
-              <SelectItem value="checked_in" className="hera-select-item">
-                Checked In
-              </SelectItem>
-              <SelectItem value="completed" className="hera-select-item">
-                Completed
-              </SelectItem>
-              <SelectItem value="cancelled" className="hera-select-item">
-                Cancelled
-              </SelectItem>
-              <SelectItem value="no_show" className="hera-select-item">
-                No Show
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </Card>
-
-      {/* Appointments List */}
-      {loading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <Card key={i} className="p-6">
-              <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
-                <div className="h-3 bg-muted rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-muted rounded w-1/3"></div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      ) : appointments.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-1">No appointments found</h3>
-          <p className="text-muted-foreground mb-4">
-            {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
-              ? 'Try adjusting your filters'
-              : 'Book your first appointment to get started'}
-          </p>
-          {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
-            <Button onClick={() => router.push('/salon/appointments/new')} className="">
-              Book Appointment
-            </Button>
-          )}
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          <p className="text-sm text-amber-500 dark:text-amber-400">
-            Showing {appointments.length} of {total} appointments
-          </p>
-
-          {appointments.map(appointment => {
-            const appointmentDate = new Date(appointment.start_time)
-            const isPast = appointmentDate < new Date()
-
-            return (
-              <Card
-                key={appointment.id}
-                className={cn(
-                  'p-6 transition-all hover:shadow-md cursor-pointer',
-                  isPast && 'opacity-75'
-                )}
-                onClick={() => router.push(`/salon/appointments/${appointment.id}`)}
+          title="Appointments"
+          breadcrumbs={[
+            { label: 'HERA' },
+            { label: 'SALON OS' },
+            { label: 'Appointments', isActive: true }
+          ]}
+          actions={
+            <>
+              <PageHeaderButton
+                variant="secondary"
+                icon={CalendarDays}
+                onClick={() => router.push('/salon/appointments/calendar')}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    {/* Header Row */}
-                    <div className="flex items-center gap-4 mb-3">
-                      <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">
-                        {appointment.entity_name}
-                      </h3>
-                      {getStatusBadge(appointment.status)}
-                      <Badge variant="outline" className="gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {format(appointmentDate, 'MMM d, yyyy')}
-                      </Badge>
-                      <Badge variant="outline" className="gap-1">
-                        <Clock className="w-3 h-3" />
-                        {format(appointmentDate, 'h:mm a')}
-                      </Badge>
-                    </div>
+                Calendar View
+              </PageHeaderButton>
+              <PageHeaderButton
+                variant="primary"
+                icon={Plus}
+                onClick={() => router.push('/salon/appointments/new')}
+              >
+                Book Appointment
+              </PageHeaderButton>
+            </>
+          }
+        />
 
-                    {/* Details Row */}
-                    <div className="flex flex-wrap gap-4 text-sm text-amber-600 dark:text-amber-400">
-                      {appointment.service_ids && appointment.service_ids.length > 0 && (
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium">Services:</span>
-                          <span>{appointment.service_ids.length} service(s)</span>
-                        </div>
-                      )}
+        {/* Error state */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-                      {appointment.price && appointment.price > 0 && (
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                          <span className="font-medium">
-                            {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
-                          </span>
-                        </div>
-                      )}
+        {/* Filters */}
+        <Card className="p-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by customer, stylist, or code..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
 
-                      <div className="flex items-center gap-1">
-                        <span className="text-amber-500">#{appointment.entity_code}</span>
-                      </div>
-                    </div>
+            <Select value={dateFilter} onValueChange={(value: any) => setDateFilter(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by date" />
+              </SelectTrigger>
+              <SelectContent className="hera-select-content">
+                <SelectItem value="all" className="hera-select-item">
+                  Next 14 days
+                </SelectItem>
+                <SelectItem value="today" className="hera-select-item">
+                  Today
+                </SelectItem>
+                <SelectItem value="tomorrow" className="hera-select-item">
+                  Tomorrow
+                </SelectItem>
+                <SelectItem value="week" className="hera-select-item">
+                  Next 7 days
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
-                    {/* Notes */}
-                    {appointment.notes && (
-                      <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
-                        {appointment.notes}
-                      </p>
-                    )}
-                  </div>
+            <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent className="hera-select-content">
+                <SelectItem value="all" className="hera-select-item">
+                  All statuses
+                </SelectItem>
+                <SelectItem value="booked" className="hera-select-item">
+                  Booked
+                </SelectItem>
+                <SelectItem value="checked_in" className="hera-select-item">
+                  Checked In
+                </SelectItem>
+                <SelectItem value="completed" className="hera-select-item">
+                  Completed
+                </SelectItem>
+                <SelectItem value="cancelled" className="hera-select-item">
+                  Cancelled
+                </SelectItem>
+                <SelectItem value="no_show" className="hera-select-item">
+                  No Show
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
 
-                  {/* Actions */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" className="hover:bg-muted">
-                        <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={e => {
-                          e.stopPropagation()
-                          router.push(`/salon/appointments/${appointment.id}/edit`)
-                        }}
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-
-                      <DropdownMenuItem
-                        onClick={e => {
-                          e.stopPropagation()
-                          // TODO: Implement delete via Playbook API
-                          toast({
-                            title: 'Not implemented',
-                            description: 'Delete functionality coming soon',
-                            variant: 'destructive'
-                          })
-                        }}
-                        className="text-red-600"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+        {/* Appointments List */}
+        {loading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="p-6">
+                <div className="animate-pulse">
+                  <div className="h-4 bg-muted rounded w-1/4 mb-4"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-1/3"></div>
                 </div>
               </Card>
-            )
-          })}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : appointments.length === 0 ? (
+          <Card className="p-12 text-center">
+            <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-1">No appointments found</h3>
+            <p className="text-muted-foreground mb-4">
+              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
+                ? 'Try adjusting your filters'
+                : 'Book your first appointment to get started'}
+            </p>
+            {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
+              <Button onClick={() => router.push('/salon/appointments/new')} className="">
+                Book Appointment
+              </Button>
+            )}
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-sm text-amber-500 dark:text-amber-400">
+              Showing {appointments.length} of {total} appointments
+            </p>
 
-      {/* New Appointment Modal */}
-      {showNewAppointmentModal && (
-        <NewAppointmentModal
-          onClose={() => setShowNewAppointmentModal(false)}
-          onSuccess={() => {
-            setShowNewAppointmentModal(false)
-            refresh()
-          }}
-          organizationId={effectiveOrgId || undefined}
-        />
-      )}
+            {appointments.map(appointment => {
+              const appointmentDate = new Date(appointment.start_time)
+              const isPast = appointmentDate < new Date()
+
+              return (
+                <Card
+                  key={appointment.id}
+                  className={cn(
+                    'p-6 transition-all hover:shadow-md cursor-pointer',
+                    isPast && 'opacity-75'
+                  )}
+                  onClick={() => router.push(`/salon/appointments/${appointment.id}`)}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      {/* Header Row */}
+                      <div className="flex items-center gap-4 mb-3">
+                        <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">
+                          {appointment.entity_name}
+                        </h3>
+                        {getStatusBadge(appointment.status)}
+                        <Badge variant="outline" className="gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {format(appointmentDate, 'MMM d, yyyy')}
+                        </Badge>
+                        <Badge variant="outline" className="gap-1">
+                          <Clock className="w-3 h-3" />
+                          {format(appointmentDate, 'h:mm a')}
+                        </Badge>
+                      </div>
+
+                      {/* Details Row */}
+                      <div className="flex flex-wrap gap-4 text-sm text-amber-600 dark:text-amber-400">
+                        {appointment.service_ids && appointment.service_ids.length > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="font-medium">Services:</span>
+                            <span>{appointment.service_ids.length} service(s)</span>
+                          </div>
+                        )}
+
+                        {appointment.price && appointment.price > 0 && (
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                            <span className="font-medium">
+                              {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-1">
+                          <span className="text-amber-500">#{appointment.entity_code}</span>
+                        </div>
+                      </div>
+
+                      {/* Notes */}
+                      {appointment.notes && (
+                        <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+                          {appointment.notes}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="hover:bg-muted">
+                          <MoreVertical className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={e => {
+                            e.stopPropagation()
+                            router.push(`/salon/appointments/${appointment.id}/edit`)
+                          }}
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem
+                          onClick={e => {
+                            e.stopPropagation()
+                            // TODO: Implement delete via Playbook API
+                            toast({
+                              title: 'Not implemented',
+                              description: 'Delete functionality coming soon',
+                              variant: 'destructive'
+                            })
+                          }}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+        )}
+
+        {/* New Appointment Modal */}
+        {showNewAppointmentModal && (
+          <NewAppointmentModal
+            onClose={() => setShowNewAppointmentModal(false)}
+            onSuccess={() => {
+              setShowNewAppointmentModal(false)
+              refresh()
+            }}
+            organizationId={effectiveOrgId || undefined}
+          />
+        )}
       </div>
     </div>
   )
