@@ -23,7 +23,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
-import { 
+import {
   CheckCircle,
   Code,
   FileJson,
@@ -31,10 +31,11 @@ import {
   Heart,
   Scissors,
   Settings,
+  Shield,
   ShieldCheck,
   ShoppingCart,
   UtensilsCrossed,
-  Zap 
+  Zap
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -437,4 +438,3 @@ import { salonBookingSteps } from './transaction-flows.config'
     </div>
   )
 }
-
