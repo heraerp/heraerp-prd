@@ -1,0 +1,75 @@
+{
+  // TypeScript and ESLint Configuration
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.includeInlayParameterNameHints": "all",
+  "typescript.preferences.includeInlayParameterNameHintsWhenArgumentMatchesName": false,
+  "typescript.preferences.includeInlayFunctionParameterTypeHints": true,
+  "typescript.preferences.includeInlayVariableTypeHints": false,
+  "typescript.preferences.includeInlayPropertyDeclarationTypeHints": false,
+  "typescript.preferences.includeInlayFunctionLikeReturnTypeHints": true,
+  "typescript.preferences.includeInlayEnumMemberValueHints": true,
+  
+  // Editor Configuration
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true,
+    "source.addMissingImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  
+  // ESLint Configuration
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.workingDirectories": ["./"],
+  
+  // File Associations
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  
+  // Auto Import Configuration
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true,
+  
+  // Validation and Error Checking
+  "typescript.validate.enable": true,
+  "javascript.validate.enable": false,
+  "typescript.surveys.enabled": false,
+  
+  // Problem Matcher for Build Tasks
+  "typescript.tsc.autoDetect": "on",
+  
+  // Files to Exclude
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+    "**/.next": true
+  },
+  
+  // Search Exclude
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/build": true
+  }
+}

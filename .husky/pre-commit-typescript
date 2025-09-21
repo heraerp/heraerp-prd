@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# HERA TypeScript Pre-commit Validation
+# Ensures no TypeScript errors are committed
+
+echo "🔍 Running TypeScript validation..."
+
+# Check for TypeScript errors
+npx tsc --noEmit --pretty
+
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript errors found! Please fix before committing."
+  echo "💡 Tip: Run 'npm run typecheck:fix' to auto-fix common issues"
+  exit 1
+fi
+
+echo "✅ TypeScript validation passed!"
+
+# Check for missing imports
+node scripts/strict-build-validator.js --quick
+
+if [ $? -ne 0 ]; then
+  echo "❌ Build validation failed! Please fix before committing."
+  exit 1
+fi
+
+echo "✅ All checks passed! Proceeding with commit..."

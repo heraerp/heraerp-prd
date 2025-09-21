@@ -221,7 +221,7 @@ export default function SalonAppointmentsPage() {
             <PageHeaderButton
               variant="primary"
               icon={Plus}
-              onClick={() => setShowNewAppointmentModal(true)}
+              onClick={() => window.location.href = 'http://localhost:3001/salon/appointments/new'}
             >
               Book Appointment
             </PageHeaderButton>
@@ -324,7 +324,7 @@ export default function SalonAppointmentsPage() {
           </p>
           {!searchTerm && statusFilter === 'all' && dateFilter === 'all' && (
             <Button
-              onClick={() => router.push('/salon/appointments/new')}
+              onClick={() => window.location.href = 'http://localhost:3001/salon/appointments/new'}
               className="dark:!text-white"
             >
               Book Appointment
@@ -333,7 +333,7 @@ export default function SalonAppointmentsPage() {
         </Card>
       ) : (
         <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-amber-500 dark:text-amber-400">
             Showing {appointments.length} of {total} appointments
           </p>
 
@@ -354,7 +354,7 @@ export default function SalonAppointmentsPage() {
                   <div className="flex-1">
                     {/* Header Row */}
                     <div className="flex items-center gap-4 mb-3">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:!text-white">
+                      <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">
                         {appointment.entity_name}
                       </h3>
                       {getStatusBadge(appointment.status)}
@@ -375,7 +375,7 @@ export default function SalonAppointmentsPage() {
                     </div>
 
                     {/* Details Row */}
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex flex-wrap gap-4 text-sm text-amber-600 dark:text-amber-400">
                       {appointment.service_ids && appointment.service_ids.length > 0 && (
                         <div className="flex items-center gap-1">
                           <span className="font-medium">Services:</span>
@@ -385,7 +385,7 @@ export default function SalonAppointmentsPage() {
 
                       {appointment.price && appointment.price > 0 && (
                         <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          <DollarSign className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                           <span className="font-medium">
                             {appointment.currency_code || 'AED'} {appointment.price.toFixed(2)}
                           </span>
@@ -393,13 +393,13 @@ export default function SalonAppointmentsPage() {
                       )}
 
                       <div className="flex items-center gap-1">
-                        <span className="text-gray-500">#{appointment.entity_code}</span>
+                        <span className="text-amber-500">#{appointment.entity_code}</span>
                       </div>
                     </div>
 
                     {/* Notes */}
                     {appointment.notes && (
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
                         {appointment.notes}
                       </p>
                     )}

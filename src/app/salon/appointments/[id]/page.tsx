@@ -317,7 +317,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     Appointment Details
                   </h1>
-                  <p className="text-sm text-muted-foreground dark:text-gray-400">
+                  <p className="text-sm text-amber-600 dark:text-amber-400">
                     #{appointment.transaction_code}
                   </p>
                 </div>
@@ -516,7 +516,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                       <div key={line.id} className="p-4 border rounded-lg bg-card">
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                            <p className="font-medium text-amber-600 dark:text-amber-400">
                               {line.entity?.entity_name || line.description}
                             </p>
                             {line.entity && (
@@ -531,8 +531,8 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                                   </span>
                                 </span>
                                 <span className="flex items-center gap-1">
-                                  <DollarSign className="w-3 h-3 text-gray-500 dark:text-gray-400" />
-                                  <span className="dark:text-gray-400">
+                                  <DollarSign className="w-3 h-3 text-amber-500 dark:text-amber-400" />
+                                  <span className="dark:text-amber-400">
                                     AED {line.unit_amount.toFixed(2)}
                                   </span>
                                 </span>
@@ -545,7 +545,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600 dark:text-gray-400">
+                          <span className="text-amber-600 dark:text-amber-400">
                             Quantity: {line.quantity}
                           </span>
                           <span className="font-medium text-gray-900 dark:text-gray-100">
@@ -600,7 +600,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   <div className="pt-2 border-t dark:border-gray-600">
                     <div className="flex justify-between text-lg font-semibold">
                       <span className="text-gray-900 dark:text-gray-100">Total Amount:</span>
-                      <span className="text-violet-700 dark:text-violet-300">
+                      <span className="text-amber-600 dark:text-amber-400">
                         AED {appointment.total_amount.toFixed(2)}
                       </span>
                     </div>

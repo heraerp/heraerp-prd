@@ -126,10 +126,10 @@ export function AppointmentList({
                     <User className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg !text-gray-100 dark:!text-foreground">
+                    <h3 className="font-semibold text-lg text-amber-700 dark:text-amber-300">
                       {appointment.customerName}
                     </h3>
-                    <p className="text-sm !text-muted-foreground dark:!text-muted-foreground">
+                    <p className="text-sm text-amber-600 dark:text-amber-400">
                       {appointment.serviceName}
                     </p>
                   </div>
