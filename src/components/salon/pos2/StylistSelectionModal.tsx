@@ -209,7 +209,14 @@ export function StylistSelectionModal({
 
         <div className="space-y-6">
           {/* Service Info */}
-          <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.charcoalLight }}>
+          <div 
+            className="p-4 rounded-lg border"
+            style={{ 
+              backgroundColor: COLORS.charcoalLight,
+              borderColor: `${COLORS.bronze}33`,
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+            }}
+          >
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium" style={{ color: COLORS.champagne }}>
@@ -222,20 +229,38 @@ export function StylistSelectionModal({
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                  className="hover:bg-transparent"
+                  style={{ 
+                    borderColor: `${COLORS.bronze}66`,
+                    color: COLORS.champagne,
+                    backgroundColor: COLORS.charcoalDark,
+                    border: `1px solid ${COLORS.bronze}66`
+                  }}
                 >
                   -
                 </Button>
-                <span className="px-3 font-medium" style={{ color: COLORS.champagne }}>
+                <span 
+                  className="px-3 font-medium min-w-[3rem] text-center"
+                  style={{ 
+                    color: COLORS.gold,
+                    textShadow: `0 0 10px ${COLORS.gold}40`
+                  }}
+                >
                   {quantity}
                 </span>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => setQuantity(quantity + 1)}
-                  style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+                  className="hover:bg-transparent"
+                  style={{ 
+                    borderColor: `${COLORS.bronze}66`,
+                    color: COLORS.champagne,
+                    backgroundColor: COLORS.charcoalDark,
+                    border: `1px solid ${COLORS.bronze}66`
+                  }}
                 >
                   +
                 </Button>
@@ -255,7 +280,13 @@ export function StylistSelectionModal({
               </p>
             </div>
           ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div 
+              className="space-y-3 max-h-96 overflow-y-auto pr-2"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: `${COLORS.bronze}33 ${COLORS.charcoalDark}`
+              }}
+            >
               {stylists.map(stylist => (
                 <Card
                   key={stylist.id}
@@ -277,10 +308,14 @@ export function StylistSelectionModal({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center"
-                          style={{ backgroundColor: COLORS.bronze + '20' }}
+                          className="w-10 h-10 rounded-full flex items-center justify-center border"
+                          style={{ 
+                            backgroundColor: `${COLORS.charcoalDark}`,
+                            borderColor: `${COLORS.bronze}33`,
+                            boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.3)`
+                          }}
                         >
-                          <User className="w-5 h-5" style={{ color: COLORS.bronze }} />
+                          <User className="w-5 h-5" style={{ color: COLORS.gold }} />
                         </div>
                         <div>
                           <h4 className="font-medium" style={{ color: COLORS.champagne }}>
@@ -303,11 +338,12 @@ export function StylistSelectionModal({
                                 <Badge
                                   key={i}
                                   variant="secondary"
-                                  className="text-xs"
+                                  className="text-xs border"
                                   style={{
-                                    backgroundColor: COLORS.charcoalDark,
-                                    color: COLORS.champagne,
-                                    borderColor: COLORS.bronze + '33'
+                                    backgroundColor: `${COLORS.charcoalDark}`,
+                                    color: COLORS.bronze,
+                                    borderColor: `${COLORS.bronze}33`,
+                                    boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.2)`
                                   }}
                                 >
                                   {spec}
@@ -321,10 +357,12 @@ export function StylistSelectionModal({
                         {!stylist.available && stylist.id !== 'any' && (
                           <Badge
                             variant="secondary"
+                            className="border"
                             style={{
-                              backgroundColor: '#DC2626' + '20',
-                              color: '#DC2626',
-                              borderColor: '#DC2626' + '50'
+                              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                              color: '#EF4444',
+                              borderColor: 'rgba(220, 38, 38, 0.3)',
+                              boxShadow: '0 0 4px rgba(220, 38, 38, 0.2)'
                             }}
                           >
                             Busy
@@ -347,24 +385,28 @@ export function StylistSelectionModal({
           )}
 
           {/* Actions */}
-          <div className="flex gap-2 pt-4">
+          <div className="flex gap-2 pt-4 border-t" style={{ borderColor: `${COLORS.bronze}20` }}>
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={handleQuickAdd}
+              className="hover:bg-transparent"
               style={{
-                borderColor: COLORS.bronze,
-                color: COLORS.champagne
+                border: `1px solid ${COLORS.bronze}66`,
+                color: COLORS.champagne,
+                backgroundColor: COLORS.charcoalDark
               }}
             >
               Add as Walk-in
             </Button>
             <div className="flex-1" />
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={onClose}
+              className="hover:bg-transparent"
               style={{
-                borderColor: COLORS.bronze,
-                color: COLORS.champagne
+                border: `1px solid ${COLORS.bronze}66`,
+                color: COLORS.bronze,
+                backgroundColor: COLORS.charcoalDark
               }}
             >
               Cancel
@@ -372,12 +414,15 @@ export function StylistSelectionModal({
             <Button
               onClick={handleConfirm}
               disabled={!selectedStylist}
+              className="hover:opacity-90 transition-opacity"
               style={{
                 background: selectedStylist
                   ? `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`
-                  : undefined,
-                color: selectedStylist ? COLORS.black : undefined,
-                opacity: selectedStylist ? 1 : 0.5
+                  : `${COLORS.charcoalLight}`,
+                color: selectedStylist ? COLORS.black : COLORS.bronze,
+                border: selectedStylist ? 'none' : `1px solid ${COLORS.bronze}33`,
+                opacity: selectedStylist ? 1 : 0.5,
+                boxShadow: selectedStylist ? `0 4px 12px ${COLORS.gold}40` : 'none'
               }}
             >
               Add to Cart
