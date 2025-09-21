@@ -17,6 +17,7 @@ This document provides comprehensive examples for completing steps in HERA Playb
 **Endpoint**: `POST /api/v1/playbooks/runs/{run_id}/steps/{step_id}/complete`
 
 **Headers**:
+
 ```http
 Content-Type: application/json
 Authorization: Bearer <your-jwt-token>
@@ -24,6 +25,7 @@ X-Organization-ID: <organization-uuid>
 ```
 
 **Request Payload**:
+
 ```json
 {
   "outputs": {
@@ -35,6 +37,7 @@ X-Organization-ID: <organization-uuid>
 ```
 
 **Expected Response**:
+
 ```json
 {
   "success": true,
@@ -73,6 +76,7 @@ X-Organization-ID: <organization-uuid>
 ```
 
 **cURL Command**:
+
 ```bash
 curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d3-a456-426614174000/steps/step_123e4567-e89b-12d3-a456-426614174000/complete \
   -H "Content-Type: application/json" \
@@ -92,6 +96,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 1. Human Steps
 
 **Approval Decision**:
+
 ```json
 {
   "outputs": {
@@ -113,6 +118,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **Document Review**:
+
 ```json
 {
   "outputs": {
@@ -129,6 +135,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 2. System Steps
 
 **Successful API Call**:
+
 ```json
 {
   "outputs": {
@@ -146,12 +153,13 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **With Retry Information**:
+
 ```json
 {
   "outputs": {
     "payment_processed": true,
     "transaction_id": "TXN-2025-123456",
-    "amount_charged": 1250.00
+    "amount_charged": 1250.0
   },
   "system_metadata": {
     "service": "payment_gateway",
@@ -159,13 +167,12 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
     "retry_reasons": ["timeout", "gateway_busy"],
     "final_attempt_duration_ms": 1823
   },
-  "warnings": [
-    "Payment gateway experienced delays, consider backup provider"
-  ]
+  "warnings": ["Payment gateway experienced delays, consider backup provider"]
 }
 ```
 
 **With Error Recovery**:
+
 ```json
 {
   "outputs": {
@@ -184,6 +191,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 3. AI Steps
 
 **Document Analysis**:
+
 ```json
 {
   "outputs": {
@@ -192,7 +200,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
       "account_number": "****5678",
       "period": "2024-12",
       "average_balance": 15230.45,
-      "total_deposits": 8500.00
+      "total_deposits": 8500.0
     },
     "validation_status": "valid"
   },
@@ -211,6 +219,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **Text Generation**:
+
 ```json
 {
   "outputs": {
@@ -232,6 +241,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 4. External Steps
 
 **Webhook Response**:
+
 ```json
 {
   "outputs": {
@@ -246,13 +256,14 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
     "received_at": "2025-01-19T10:35:22Z",
     "raw_payload": {
       "status": "success",
-      "data": {"verification": "passed"}
+      "data": { "verification": "passed" }
     }
   }
 }
 ```
 
 **API Integration with Rate Limiting**:
+
 ```json
 {
   "outputs": {
@@ -295,6 +306,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -357,6 +369,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **Response includes routing decisions**:
+
 ```json
 {
   "success": true,
@@ -419,7 +432,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
       "ai_confidence": 0.99
     }
   ],
-  "atomic": true  // All or nothing
+  "atomic": true // All or nothing
 }
 ```
 
@@ -428,6 +441,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 1. Invalid Step State
 
 **Request**:
+
 ```json
 {
   "outputs": {
@@ -437,6 +451,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ```
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -455,6 +470,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 2. Missing Required Outputs
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -481,6 +497,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 3. Contract Validation Failure
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -508,6 +525,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 4. Permission Denied
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -527,6 +545,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks/runs/run_987f6543-e21b-12d
 ### 5. Concurrent Modification
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -553,9 +572,9 @@ When a step is completed, the orchestrator:
 // Orchestrator processing flow
 async function processStepCompletion(stepCompletion: StepCompletion) {
   // 1. Validate completion
-  const validation = await validateCompletion(stepCompletion);
+  const validation = await validateCompletion(stepCompletion)
   if (!validation.valid) {
-    throw new ValidationError(validation.errors);
+    throw new ValidationError(validation.errors)
   }
 
   // 2. Update step status
@@ -563,34 +582,34 @@ async function processStepCompletion(stepCompletion: StepCompletion) {
     outputs: stepCompletion.outputs,
     completedAt: new Date(),
     executionMetadata: stepCompletion.metadata
-  });
+  })
 
   // 3. Check completion conditions
-  const conditions = await evaluateConditions(stepCompletion);
-  
+  const conditions = await evaluateConditions(stepCompletion)
+
   // 4. Determine next steps
   const nextSteps = await determineNextSteps(
     stepCompletion.runId,
     stepCompletion.stepId,
     conditions
-  );
+  )
 
   // 5. Activate next steps
   for (const step of nextSteps) {
-    await activateStep(step.id);
+    await activateStep(step.id)
   }
 
   // 6. Update run progress
-  await updateRunProgress(stepCompletion.runId);
+  await updateRunProgress(stepCompletion.runId)
 
   // 7. Send notifications
-  await sendCompletionNotifications(stepCompletion);
+  await sendCompletionNotifications(stepCompletion)
 
   return {
     step: stepCompletion,
     nextSteps,
     runProgress: await getRunProgress(stepCompletion.runId)
-  };
+  }
 }
 ```
 
@@ -642,6 +661,7 @@ After step completion, the run progress is automatically updated:
 ### 4. Notification Examples
 
 **Email Notification**:
+
 ```json
 {
   "notification_type": "email",
@@ -660,6 +680,7 @@ After step completion, the run progress is automatically updated:
 ```
 
 **Webhook Notification**:
+
 ```json
 {
   "notification_type": "webhook",
@@ -683,8 +704,8 @@ After step completion, the run progress is automatically updated:
 ```typescript
 // Example: Loan approval with multiple paths
 async function completeLoanReviewStep(completion: StepCompletion) {
-  const { outputs } = completion;
-  
+  const { outputs } = completion
+
   // Different paths based on loan amount and risk
   if (outputs.loan_amount > 100000 && outputs.risk_score > 70) {
     // Requires executive approval
@@ -696,7 +717,7 @@ async function completeLoanReviewStep(completion: StepCompletion) {
         loan_details: outputs,
         escalation_reason: 'High value, high risk'
       }
-    });
+    })
   } else if (outputs.risk_score > 85) {
     // Requires additional documentation
     await createDynamicStep({
@@ -708,18 +729,18 @@ async function completeLoanReviewStep(completion: StepCompletion) {
           'employment_verification'
         ]
       }
-    });
+    })
   } else {
     // Standard approval flow
-    await activateStep('standard_approval');
+    await activateStep('standard_approval')
   }
-  
+
   // Update customer
   await sendCustomerUpdate({
     application_id: outputs.application_id,
     status: 'under_review',
     next_action: 'Awaiting internal review'
-  });
+  })
 }
 ```
 

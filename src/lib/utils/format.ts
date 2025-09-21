@@ -21,17 +21,17 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
  */
 export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  
+
   if (isNaN(dateObj.getTime())) {
     return 'Invalid date'
   }
-  
+
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
   }
-  
+
   return dateObj.toLocaleDateString('en-US', options || defaultOptions)
 }
 
@@ -40,11 +40,11 @@ export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOpt
  */
 export function formatTime(date: string | Date): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  
+
   if (isNaN(dateObj.getTime())) {
     return 'Invalid time'
   }
-  
+
   return dateObj.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
@@ -75,17 +75,17 @@ export function formatCompactNumber(value: number): string {
 export function formatPhoneNumber(phone: string): string {
   // Remove all non-digits
   const cleaned = phone.replace(/\D/g, '')
-  
+
   // Format as (XXX) XXX-XXXX
   if (cleaned.length === 10) {
     return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
   }
-  
+
   // Format as +X (XXX) XXX-XXXX
   if (cleaned.length === 11 && cleaned[0] === '1') {
     return `+1 (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`
   }
-  
+
   return phone
 }
 
@@ -96,14 +96,14 @@ export function formatDuration(minutes: number): string {
   if (minutes < 60) {
     return `${minutes} min`
   }
-  
+
   const hours = Math.floor(minutes / 60)
   const mins = minutes % 60
-  
+
   if (mins === 0) {
     return `${hours} hr${hours > 1 ? 's' : ''}`
   }
-  
+
   return `${hours} hr ${mins} min`
 }
 
@@ -114,12 +114,12 @@ export function formatFileSize(bytes: number): string {
   const units = ['B', 'KB', 'MB', 'GB', 'TB']
   let size = bytes
   let unitIndex = 0
-  
+
   while (size >= 1024 && unitIndex < units.length - 1) {
     size /= 1024
     unitIndex++
   }
-  
+
   return `${size.toFixed(1)} ${units[unitIndex]}`
 }
 
@@ -130,12 +130,12 @@ export function formatRelativeTime(date: string | Date): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
   const now = new Date()
   const diff = now.getTime() - dateObj.getTime()
-  
+
   const seconds = Math.floor(diff / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
-  
+
   if (days > 0) {
     return `${days} day${days > 1 ? 's' : ''} ago`
   }
@@ -145,6 +145,6 @@ export function formatRelativeTime(date: string | Date): string {
   if (minutes > 0) {
     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
   }
-  
+
   return 'Just now'
 }

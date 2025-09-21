@@ -15,8 +15,7 @@ export const getSupabase = () => {
   if (globalForSupabase.supabaseInstance) {
     return globalForSupabase.supabaseInstance
   }
-  
-  
+
   const url = getSupabaseUrl()
   const key = getSupabaseAnonKey()
 
@@ -52,7 +51,7 @@ export const getSupabase = () => {
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV
       })
-      
+
       // Debug: Check if this is being called multiple times
       console.log('📍 Supabase client created from:', new Error().stack?.split('\n')[2])
     }
@@ -66,7 +65,7 @@ export const getSupabase = () => {
       rpc: noop
     } as any
   }
-  
+
   return globalForSupabase.supabaseInstance
 }
 

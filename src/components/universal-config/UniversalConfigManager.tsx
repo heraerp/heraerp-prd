@@ -183,7 +183,10 @@ export function UniversalConfigManager({
         )
       }
 
-      console.log('Success:', `${config.displayName} ${selectedItem ? 'updated' : 'created'} successfully`)
+      console.log(
+        'Success:',
+        `${config.displayName} ${selectedItem ? 'updated' : 'created'} successfully`
+      )
 
       setIsAddDialogOpen(false)
       setIsEditDialogOpen(false)

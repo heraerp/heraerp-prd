@@ -72,7 +72,7 @@ export function PullToRefresh({
   const [pullState, setPullState] = useState<PullState>('idle')
   const [pullDistance, setPullDistance] = useState(0)
   const [isScrolledToTop, setIsScrolledToTop] = useState(true)
-  
+
   const touchStartRef = useRef<TouchPosition | null>(null)
   const isRefreshingRef = useRef(false)
   const animationFrameRef = useRef<number | null>(null)
@@ -91,54 +91,60 @@ export function PullToRefresh({
   }, [])
 
   // Handle touch start
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (disabled || isRefreshingRef.current) return
-    
-    const touch = e.touches[0]
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      timestamp: Date.now()
-    }
-    
-    setIsScrolledToTop(checkScrollPosition())
-  }, [disabled, checkScrollPosition])
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      if (disabled || isRefreshingRef.current) return
+
+      const touch = e.touches[0]
+      touchStartRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        timestamp: Date.now()
+      }
+
+      setIsScrolledToTop(checkScrollPosition())
+    },
+    [disabled, checkScrollPosition]
+  )
 
   // Handle touch move
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (disabled || isRefreshingRef.current || !touchStartRef.current || !isScrolledToTop) return
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (disabled || isRefreshingRef.current || !touchStartRef.current || !isScrolledToTop) return
 
-    const touch = e.touches[0]
-    const deltaY = touch.clientY - touchStartRef.current.y
-    
-    // Only handle downward pull when scrolled to top
-    if (deltaY > 0) {
-      e.preventDefault()
-      
-      // Apply resistance for more natural feel
-      const resistance = 0.5
-      const adjustedDelta = deltaY * resistance
-      const newPullDistance = Math.min(adjustedDelta, maxPull)
-      
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
-      
-      animationFrameRef.current = requestAnimationFrame(() => {
-        setPullDistance(newPullDistance)
-        
-        // Update pull state
-        if (newPullDistance >= threshold) {
-          setPullState('readyToRefresh')
-        } else if (newPullDistance > 0) {
-          setPullState('pulling')
+      const touch = e.touches[0]
+      const deltaY = touch.clientY - touchStartRef.current.y
+
+      // Only handle downward pull when scrolled to top
+      if (deltaY > 0) {
+        e.preventDefault()
+
+        // Apply resistance for more natural feel
+        const resistance = 0.5
+        const adjustedDelta = deltaY * resistance
+        const newPullDistance = Math.min(adjustedDelta, maxPull)
+
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current)
         }
-        
-        // Trigger onPull callback
-        onPull?.(newPullDistance / threshold)
-      })
-    }
-  }, [disabled, isScrolledToTop, maxPull, threshold, onPull])
+
+        animationFrameRef.current = requestAnimationFrame(() => {
+          setPullDistance(newPullDistance)
+
+          // Update pull state
+          if (newPullDistance >= threshold) {
+            setPullState('readyToRefresh')
+          } else if (newPullDistance > 0) {
+            setPullState('pulling')
+          }
+
+          // Trigger onPull callback
+          onPull?.(newPullDistance / threshold)
+        })
+      }
+    },
+    [disabled, isScrolledToTop, maxPull, threshold, onPull]
+  )
 
   // Handle touch end
   const handleTouchEnd = useCallback(async () => {
@@ -152,7 +158,7 @@ export function PullToRefresh({
       isRefreshingRef.current = true
       setPullState('refreshing')
       onRefreshStart?.()
-      
+
       try {
         await onRefresh()
       } finally {
@@ -171,12 +177,12 @@ export function PullToRefresh({
   // Programmatic refresh
   const refresh = useCallback(async () => {
     if (isRefreshingRef.current || disabled) return
-    
+
     isRefreshingRef.current = true
     setPullState('refreshing')
     setPullDistance(refreshIndicatorHeight)
     onRefreshStart?.()
-    
+
     try {
       await onRefresh()
     } finally {
@@ -207,7 +213,7 @@ export function PullToRefresh({
       container.removeEventListener('touchmove', handleTouchMove)
       container.removeEventListener('touchend', handleTouchEnd)
       container.removeEventListener('scroll', handleScroll)
-      
+
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
       }
@@ -231,20 +237,21 @@ export function PullToRefresh({
 
     switch (indicatorStyle) {
       case 'linear':
-        return <LinearIndicator state={pullState} progress={pullProgress} messages={finalMessages} />
+        return (
+          <LinearIndicator state={pullState} progress={pullProgress} messages={finalMessages} />
+        )
       case 'circular':
       default:
-        return <CircularIndicator state={pullState} progress={pullProgress} messages={finalMessages} />
+        return (
+          <CircularIndicator state={pullState} progress={pullProgress} messages={finalMessages} />
+        )
     }
   }
 
   return (
     <div
       ref={containerRef}
-      className={cn(
-        'relative h-full w-full overflow-auto overscroll-y-none',
-        className
-      )}
+      className={cn('relative h-full w-full overflow-auto overscroll-y-none', className)}
     >
       {/* Pull indicator */}
       <div
@@ -266,12 +273,14 @@ export function PullToRefresh({
         ref={contentRef}
         className="relative"
         style={{
-          transform: pullState === 'refreshing' 
-            ? `translateY(${refreshIndicatorHeight}px)` 
-            : `translateY(${pullDistance}px)`,
-          transition: pullState === 'idle' || pullState === 'refreshing' 
-            ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
-            : 'none'
+          transform:
+            pullState === 'refreshing'
+              ? `translateY(${refreshIndicatorHeight}px)`
+              : `translateY(${pullDistance}px)`,
+          transition:
+            pullState === 'idle' || pullState === 'refreshing'
+              ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              : 'none'
         }}
       >
         {children}
@@ -281,23 +290,20 @@ export function PullToRefresh({
 }
 
 // Circular Indicator Component
-function CircularIndicator({ 
-  state, 
-  progress, 
-  messages 
-}: { 
+function CircularIndicator({
+  state,
+  progress,
+  messages
+}: {
   state: PullState
   progress: number
-  messages: typeof DEFAULT_MESSAGES 
+  messages: typeof DEFAULT_MESSAGES
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
       <div className="relative h-10 w-10">
         {/* Background circle */}
-        <svg
-          className="absolute inset-0 h-full w-full -rotate-90"
-          viewBox="0 0 40 40"
-        >
+        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 40 40">
           <circle
             cx="20"
             cy="20"
@@ -320,13 +326,13 @@ function CircularIndicator({
             />
           )}
         </svg>
-        
+
         {/* Icon */}
         <div className="absolute inset-0 flex items-center justify-center">
           {state === 'refreshing' ? (
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
           ) : (
-            <RefreshCw 
+            <RefreshCw
               className="h-5 w-5 text-primary transition-transform"
               style={{
                 transform: `rotate(${progress * 180}deg)`
@@ -335,40 +341,38 @@ function CircularIndicator({
           )}
         </div>
       </div>
-      
+
       <span className="text-xs font-medium text-muted-foreground">
-        {state === 'refreshing' 
-          ? messages.refreshing 
+        {state === 'refreshing'
+          ? messages.refreshing
           : state === 'readyToRefresh'
-          ? messages.release
-          : messages.pull
-        }
+            ? messages.release
+            : messages.pull}
       </span>
     </div>
   )
 }
 
 // Linear Indicator Component
-function LinearIndicator({ 
-  state, 
-  progress, 
-  messages 
-}: { 
+function LinearIndicator({
+  state,
+  progress,
+  messages
+}: {
   state: PullState
   progress: number
-  messages: typeof DEFAULT_MESSAGES 
+  messages: typeof DEFAULT_MESSAGES
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-2 px-4">
       <span className="text-xs font-medium text-muted-foreground">
-        {state === 'refreshing' 
-          ? messages.refreshing 
+        {state === 'refreshing'
+          ? messages.refreshing
           : state === 'readyToRefresh'
-          ? messages.release
-          : messages.pull
-        }
+            ? messages.release
+            : messages.pull}
       </span>
-      
+
       <div className="relative h-1 w-full max-w-xs overflow-hidden rounded-full bg-muted">
         {state === 'refreshing' ? (
           <div className="absolute inset-y-0 left-0 w-1/3 animate-pulse rounded-full bg-primary" />

@@ -112,17 +112,17 @@ export function useAppointmentLoader({
     queryKey: ['appointment', appointmentId, organizationId],
     queryFn: async () => {
       if (!appointmentId) return null
-      
+
       const response = await fetch(
         `/api/v1/salon/appointments/${appointmentId}?` +
-        `organization_id=${organizationId}&` +
-        `expand=planned_services,customer,staff,deposits,packages`
+          `organization_id=${organizationId}&` +
+          `expand=planned_services,customer,staff,deposits,packages`
       )
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch appointment')
       }
-      
+
       const data = await response.json()
       return data.appointment as AppointmentDetails
     },
@@ -145,21 +145,21 @@ export function useAppointmentLoader({
           smart_code: 'HERA.SALON.POS.CART.ACTIVE.V1'
         })
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to create cart')
       }
-      
+
       const data = await response.json()
       return data.cart as POSCart
     },
-    onSuccess: (cart) => {
+    onSuccess: cart => {
       // Invalidate appointment query to refresh status
-      queryClient.invalidateQueries({ 
-        queryKey: ['appointment', appointmentId, organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['appointment', appointmentId, organizationId]
       })
-      
+
       // Call success callback
       if (onCartCreated) {
         onCartCreated(cart)
@@ -183,7 +183,7 @@ export function useAppointmentLoader({
     if (!appointment) {
       throw new Error('No appointment loaded')
     }
-    
+
     setIsLoading(true)
     try {
       const cart = await createCartMutation.mutateAsync(appointment.id)
@@ -196,8 +196,8 @@ export function useAppointmentLoader({
   // Reset state
   const reset = useCallback(() => {
     setAppointmentId(null)
-    queryClient.removeQueries({ 
-      queryKey: ['appointment', appointmentId, organizationId] 
+    queryClient.removeQueries({
+      queryKey: ['appointment', appointmentId, organizationId]
     })
   }, [appointmentId, organizationId, queryClient])
 
@@ -206,12 +206,12 @@ export function useAppointmentLoader({
     appointment,
     isLoading: isLoading || isLoadingAppointment || createCartMutation.isPending,
     error: appointmentError || createCartMutation.error,
-    
+
     // Actions
     loadAppointment,
     createCart,
     reset,
-    
+
     // Cart mutation state
     cart: createCartMutation.data,
     isCreatingCart: createCartMutation.isPending

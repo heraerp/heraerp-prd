@@ -26,9 +26,9 @@ export function PageHeaderDNA({
   title,
   subtitle,
   icon: Icon,
-  iconColor = "from-violet-600 to-pink-600",
-  gradientFrom = "from-violet-50 to-pink-50",
-  gradientTo = "dark:from-violet-950/20 dark:to-pink-950/20",
+  iconColor = 'from-violet-600 to-pink-600',
+  gradientFrom = 'from-violet-50 to-pink-50',
+  gradientTo = 'dark:from-violet-950/20 dark:to-pink-950/20',
   backUrl,
   actions,
   className
@@ -36,13 +36,7 @@ export function PageHeaderDNA({
   const router = useRouter()
 
   return (
-    <div className={cn(
-      "bg-gradient-to-r",
-      gradientFrom,
-      gradientTo,
-      "border-b",
-      className
-    )}>
+    <div className={cn('bg-gradient-to-r', gradientFrom, gradientTo, 'border-b', className)}>
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -56,36 +50,28 @@ export function PageHeaderDNA({
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             )}
-            
+
             <div className="flex items-center gap-3">
               {Icon && (
-                <div className={cn(
-                  "w-10 h-10 rounded-full bg-gradient-to-r",
-                  iconColor,
-                  "flex items-center justify-center shadow-lg"
-                )}>
+                <div
+                  className={cn(
+                    'w-10 h-10 rounded-full bg-gradient-to-r',
+                    iconColor,
+                    'flex items-center justify-center shadow-lg'
+                  )}
+                >
                   <Icon className="w-5 h-5 text-white" />
                 </div>
               )}
-              
+
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                  {title}
-                </h1>
-                {subtitle && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {subtitle}
-                  </p>
-                )}
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h1>
+                {subtitle && <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
               </div>
             </div>
           </div>
-          
-          {actions && (
-            <div className="flex items-center gap-3">
-              {actions}
-            </div>
-          )}
+
+          {actions && <div className="flex items-center gap-3">{actions}</div>}
         </div>
       </div>
     </div>

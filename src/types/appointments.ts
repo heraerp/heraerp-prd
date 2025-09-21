@@ -4,11 +4,11 @@
  */
 
 // Re-export from Playbook for convenience
-export type { 
-  AppointmentDTO, 
+export type {
+  AppointmentDTO,
   AppointmentStatus,
   AppointmentSearchParams,
-  AppointmentUpsertInput 
+  AppointmentUpsertInput
 } from '@/lib/playbook/entities'
 
 // Additional appointment-related types can be added here as needed

@@ -24,15 +24,24 @@ function withParams(path: string, params: Record<string, any>) {
 }
 
 // Generate mock movements
-function generateMockMovements(count: number, organizationId: string, branchId: string): Movement[] {
-  const types: Array<'RECEIPT' | 'ISSUE' | 'TRANSFER' | 'ADJUST'> = ['RECEIPT', 'ISSUE', 'TRANSFER', 'ADJUST']
+function generateMockMovements(
+  count: number,
+  organizationId: string,
+  branchId: string
+): Movement[] {
+  const types: Array<'RECEIPT' | 'ISSUE' | 'TRANSFER' | 'ADJUST'> = [
+    'RECEIPT',
+    'ISSUE',
+    'TRANSFER',
+    'ADJUST'
+  ]
   const movements: Movement[] = []
-  
+
   for (let i = 0; i < count; i++) {
     const type = types[Math.floor(Math.random() * types.length)]
     const id = `MVT-${String(mockDataStore.nextId++).padStart(6, '0')}`
     const itemCount = Math.floor(Math.random() * 5) + 1
-    
+
     const movement: Movement = {
       id,
       organization_id: organizationId,
@@ -44,10 +53,14 @@ function generateMockMovements(count: number, organizationId: string, branchId: 
       total_amount: 0,
       metadata: {
         type,
-        reference: type === 'RECEIPT' ? `PO-${Math.floor(Math.random() * 1000)}` : 
-                   type === 'ISSUE' ? `SO-${Math.floor(Math.random() * 1000)}` :
-                   type === 'TRANSFER' ? `TRF-${Math.floor(Math.random() * 1000)}` :
-                   `ADJ-${Math.floor(Math.random() * 1000)}`,
+        reference:
+          type === 'RECEIPT'
+            ? `PO-${Math.floor(Math.random() * 1000)}`
+            : type === 'ISSUE'
+              ? `SO-${Math.floor(Math.random() * 1000)}`
+              : type === 'TRANSFER'
+                ? `TRF-${Math.floor(Math.random() * 1000)}`
+                : `ADJ-${Math.floor(Math.random() * 1000)}`,
         posted_by: 'demo-user',
         posted_at: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString()
       },
@@ -55,13 +68,13 @@ function generateMockMovements(count: number, organizationId: string, branchId: 
       updated_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       lines: []
     }
-    
+
     // Add transfer branches
     if (type === 'TRANSFER') {
       movement.from_entity_id = branchId
       movement.to_entity_id = `BRN-${String(Math.floor(Math.random() * 5) + 1).padStart(3, '0')}`
     }
-    
+
     // Generate lines
     let totalAmount = 0
     for (let j = 0; j < itemCount; j++) {
@@ -69,7 +82,7 @@ function generateMockMovements(count: number, organizationId: string, branchId: 
       const unitCost = Math.floor(Math.random() * 100) + 10
       const amount = qty * unitCost
       totalAmount += amount
-      
+
       const line: MovementLine = {
         id: `${id}-L${j + 1}`,
         transaction_id: id,
@@ -85,14 +98,14 @@ function generateMockMovements(count: number, organizationId: string, branchId: 
           note: `${type} movement line`
         }
       }
-      
+
       movement.lines!.push(line)
     }
-    
+
     movement.total_amount = totalAmount
     movements.push(movement)
   }
-  
+
   return movements.sort((a, b) => b.when_ts.localeCompare(a.when_ts))
 }
 
@@ -105,73 +118,74 @@ export async function listMovements(params: {
   q?: string
   limit?: number
   offset?: number
-}): Promise<{ items: Movement[], total: number }> {
+}): Promise<{ items: Movement[]; total: number }> {
   if (!hasEnv) {
     console.log('📦 Movements: Using mock data (no Playbook env)')
-    
+
     const branchId = params.branch_id || 'BRN-001'
-    
+
     // Initialize mock data if not exists
     if (!mockDataStore.movements.has(params.organization_id)) {
       const initialMovements = generateMockMovements(50, params.organization_id, branchId)
       mockDataStore.movements.set(params.organization_id, initialMovements)
     }
-    
+
     let allMovements = mockDataStore.movements.get(params.organization_id) || []
-    
+
     // Filter by branch
     if (params.branch_id) {
-      allMovements = allMovements.filter(m => 
-        m.branch_id === params.branch_id ||
-        m.from_entity_id === params.branch_id ||
-        m.to_entity_id === params.branch_id
+      allMovements = allMovements.filter(
+        m =>
+          m.branch_id === params.branch_id ||
+          m.from_entity_id === params.branch_id ||
+          m.to_entity_id === params.branch_id
       )
     }
-    
+
     // Filter by type
     if (params.types && params.types.length > 0) {
-      allMovements = allMovements.filter(m => 
-        params.types!.includes(m.metadata?.type || '')
-      )
+      allMovements = allMovements.filter(m => params.types!.includes(m.metadata?.type || ''))
     }
-    
+
     // Filter by date range
     if (params.from) {
-      allMovements = allMovements.filter(m => 
-        new Date(m.when_ts) >= params.from!
-      )
+      allMovements = allMovements.filter(m => new Date(m.when_ts) >= params.from!)
     }
     if (params.to) {
-      allMovements = allMovements.filter(m => 
-        new Date(m.when_ts) <= params.to!
-      )
+      allMovements = allMovements.filter(m => new Date(m.when_ts) <= params.to!)
     }
-    
+
     // Search
     if (params.q) {
       const query = params.q.toLowerCase()
-      allMovements = allMovements.filter(m =>
-        m.transaction_code.toLowerCase().includes(query) ||
-        m.metadata?.reference?.toLowerCase().includes(query) ||
-        m.lines?.some(l => l.metadata?.item_name?.toLowerCase().includes(query))
+      allMovements = allMovements.filter(
+        m =>
+          m.transaction_code.toLowerCase().includes(query) ||
+          m.metadata?.reference?.toLowerCase().includes(query) ||
+          m.lines?.some(l => l.metadata?.item_name?.toLowerCase().includes(query))
       )
     }
-    
+
     // Paginate
     const offset = params.offset || 0
     const limit = params.limit || 50
     const items = allMovements.slice(offset, offset + limit)
-    
+
     return { items, total: allMovements.length }
   }
-  
+
   try {
     // Build smart code filter
-    const smartCodeFilter = params.types && params.types.length > 0
-      ? params.types.map(t => `HERA.INVENTORY.MOVE.${t}.V1`)
-      : ['HERA.INVENTORY.MOVE.RECEIPT.V1', 'HERA.INVENTORY.MOVE.ISSUE.V1', 
-         'HERA.INVENTORY.MOVE.TRANSFER.V1', 'HERA.INVENTORY.MOVE.ADJUST.V1']
-    
+    const smartCodeFilter =
+      params.types && params.types.length > 0
+        ? params.types.map(t => `HERA.INVENTORY.MOVE.${t}.V1`)
+        : [
+            'HERA.INVENTORY.MOVE.RECEIPT.V1',
+            'HERA.INVENTORY.MOVE.ISSUE.V1',
+            'HERA.INVENTORY.MOVE.TRANSFER.V1',
+            'HERA.INVENTORY.MOVE.ADJUST.V1'
+          ]
+
     const url = withParams('/universal_transactions', {
       organization_id: params.organization_id,
       smart_code: `in(${smartCodeFilter.join(',')})`,
@@ -183,7 +197,7 @@ export async function listMovements(params: {
       offset: params.offset || 0,
       sort: 'when_ts:desc'
     })
-    
+
     console.log('📦 Movements: GET', url.toString())
     const res = await fetch(url.toString(), {
       headers: {
@@ -191,10 +205,10 @@ export async function listMovements(params: {
         'Content-Type': 'application/json'
       }
     })
-    
+
     if (!res.ok) throw new Error(`Failed to list movements: ${res.status}`)
     const data = await res.json()
-    
+
     return {
       items: data.items || data.rows || [],
       total: data.total || data.count || 0
@@ -229,7 +243,7 @@ export async function postMovement(
 ): Promise<Movement> {
   if (!hasEnv) {
     console.log('📝 PostMovement: Mock mode', { header, lines })
-    
+
     const movement: Movement = {
       id: `MVT-${String(mockDataStore.nextId++).padStart(6, '0')}`,
       ...header,
@@ -244,17 +258,17 @@ export async function postMovement(
         ...line
       }))
     }
-    
+
     // Add to store
     const orgMovements = mockDataStore.movements.get(header.organization_id) || []
     orgMovements.unshift(movement)
     mockDataStore.movements.set(header.organization_id, orgMovements)
-    
+
     console.log('📝 PostMovement: Added to mock store')
-    
+
     return movement
   }
-  
+
   try {
     const body = {
       ...header,
@@ -262,7 +276,7 @@ export async function postMovement(
       total_amount: lines.reduce((sum, line) => sum + line.amount, 0),
       lines
     }
-    
+
     console.log('📝 PostMovement:', body)
     const res = await fetch(`${BASE_URL}/universal_transactions`, {
       method: 'POST',
@@ -272,7 +286,7 @@ export async function postMovement(
       },
       body: JSON.stringify(body)
     })
-    
+
     if (!res.ok) throw new Error(`Failed to post movement: ${res.status}`)
     return await res.json()
   } catch (error) {
@@ -283,13 +297,13 @@ export async function postMovement(
 
 export async function postAccountingForMovement(movement: Movement): Promise<{
   journal_id: string
-  entries: Array<{ account: string, debit?: number, credit?: number }>
+  entries: Array<{ account: string; debit?: number; credit?: number }>
 }> {
   // This would integrate with Finance DNA to post journal entries
   // For now, we'll return a mock accounting entry
-  
-  const entries: Array<{ account: string, debit?: number, credit?: number }> = []
-  
+
+  const entries: Array<{ account: string; debit?: number; credit?: number }> = []
+
   switch (movement.metadata?.type) {
     case 'RECEIPT':
       // Dr Inventory / Cr GRNI
@@ -298,7 +312,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
         { account: '2110000', credit: movement.total_amount } // GRNI
       )
       break
-      
+
     case 'ISSUE':
       // Dr COGS / Cr Inventory
       entries.push(
@@ -306,7 +320,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
         { account: '1330000', credit: Math.abs(movement.total_amount) } // Inventory
       )
       break
-      
+
     case 'TRANSFER':
       // No P&L impact, optionally use in-transit accounts
       if (movement.from_entity_id && movement.to_entity_id) {
@@ -316,7 +330,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
         )
       }
       break
-      
+
     case 'ADJUST':
       // Positive: Dr Inventory / Cr Variance
       // Negative: Dr Variance / Cr Inventory
@@ -333,7 +347,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
       }
       break
   }
-  
+
   if (!hasEnv) {
     console.log('📋 PostAccountingForMovement: Mock mode', { movement_id: movement.id, entries })
     return {
@@ -341,7 +355,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
       entries
     }
   }
-  
+
   // In production, this would call Finance DNA API
   try {
     const journalHeader = {
@@ -357,7 +371,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
         movement_type: movement.metadata?.type
       }
     }
-    
+
     const journalLines = entries.map((entry, i) => ({
       line_no: i + 1,
       smart_code: 'HERA.FINANCE.JOURNAL.LINE.V1',
@@ -368,12 +382,12 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
         movement_ref: movement.transaction_code
       }
     }))
-    
+
     console.log('📋 PostAccountingForMovement:', { journalHeader, journalLines })
-    
+
     // This would be the actual API call to Finance DNA
     // const journal = await postJournalEntry(journalHeader, journalLines)
-    
+
     return {
       journal_id: `JRN-${Date.now()}`,
       entries

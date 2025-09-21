@@ -29,21 +29,126 @@ function withParams(path: string, params: Record<string, any>) {
 function generateMockItems(count: number, organizationId: string): ItemWithStock[] {
   const categories = ['Hair Care', 'Color', 'Tools', 'Retail', 'Supplies', 'Equipment']
   const items = [
-    { name: 'Professional Shampoo 1L', sku: 'SHMP-PRO-1L', category: 'Hair Care', uom: 'bottle', cost: 45, reorder: 5 },
-    { name: 'Conditioner 1L', sku: 'COND-PRO-1L', category: 'Hair Care', uom: 'bottle', cost: 48, reorder: 5 },
-    { name: 'Hair Color - Blonde', sku: 'CLR-BLND-60', category: 'Color', uom: 'ml', cost: 35, reorder: 10 },
-    { name: 'Hair Color - Brown', sku: 'CLR-BRWN-60', category: 'Color', uom: 'ml', cost: 35, reorder: 10 },
-    { name: 'Hair Color - Black', sku: 'CLR-BLCK-60', category: 'Color', uom: 'ml', cost: 35, reorder: 10 },
-    { name: 'Developer 20 Vol', sku: 'DEV-20V-1L', category: 'Color', uom: 'bottle', cost: 25, reorder: 8 },
-    { name: 'Hair Dryer Pro', sku: 'TOOL-DRYR-01', category: 'Tools', uom: 'unit', cost: 180, reorder: 2 },
-    { name: 'Cutting Scissors', sku: 'TOOL-SCSR-01', category: 'Tools', uom: 'unit', cost: 120, reorder: 3 },
-    { name: 'Hair Clipper', sku: 'TOOL-CLIP-01', category: 'Tools', uom: 'unit', cost: 95, reorder: 2 },
-    { name: 'Styling Gel 500ml', sku: 'STYL-GEL-500', category: 'Retail', uom: 'bottle', cost: 28, reorder: 12 },
-    { name: 'Hair Spray 400ml', sku: 'STYL-SPRY-400', category: 'Retail', uom: 'bottle', cost: 32, reorder: 10 },
-    { name: 'Disposable Gloves (Box)', sku: 'SUPP-GLVS-100', category: 'Supplies', uom: 'box', cost: 15, reorder: 20 },
-    { name: 'Towels (Pack of 12)', sku: 'SUPP-TOWL-12', category: 'Supplies', uom: 'box', cost: 45, reorder: 5 },
-    { name: 'Foil Sheets (500)', sku: 'SUPP-FOIL-500', category: 'Supplies', uom: 'box', cost: 22, reorder: 10 },
-    { name: 'Salon Chair Hydraulic', sku: 'EQPT-CHAIR-01', category: 'Equipment', uom: 'unit', cost: 850, reorder: 1 }
+    {
+      name: 'Professional Shampoo 1L',
+      sku: 'SHMP-PRO-1L',
+      category: 'Hair Care',
+      uom: 'bottle',
+      cost: 45,
+      reorder: 5
+    },
+    {
+      name: 'Conditioner 1L',
+      sku: 'COND-PRO-1L',
+      category: 'Hair Care',
+      uom: 'bottle',
+      cost: 48,
+      reorder: 5
+    },
+    {
+      name: 'Hair Color - Blonde',
+      sku: 'CLR-BLND-60',
+      category: 'Color',
+      uom: 'ml',
+      cost: 35,
+      reorder: 10
+    },
+    {
+      name: 'Hair Color - Brown',
+      sku: 'CLR-BRWN-60',
+      category: 'Color',
+      uom: 'ml',
+      cost: 35,
+      reorder: 10
+    },
+    {
+      name: 'Hair Color - Black',
+      sku: 'CLR-BLCK-60',
+      category: 'Color',
+      uom: 'ml',
+      cost: 35,
+      reorder: 10
+    },
+    {
+      name: 'Developer 20 Vol',
+      sku: 'DEV-20V-1L',
+      category: 'Color',
+      uom: 'bottle',
+      cost: 25,
+      reorder: 8
+    },
+    {
+      name: 'Hair Dryer Pro',
+      sku: 'TOOL-DRYR-01',
+      category: 'Tools',
+      uom: 'unit',
+      cost: 180,
+      reorder: 2
+    },
+    {
+      name: 'Cutting Scissors',
+      sku: 'TOOL-SCSR-01',
+      category: 'Tools',
+      uom: 'unit',
+      cost: 120,
+      reorder: 3
+    },
+    {
+      name: 'Hair Clipper',
+      sku: 'TOOL-CLIP-01',
+      category: 'Tools',
+      uom: 'unit',
+      cost: 95,
+      reorder: 2
+    },
+    {
+      name: 'Styling Gel 500ml',
+      sku: 'STYL-GEL-500',
+      category: 'Retail',
+      uom: 'bottle',
+      cost: 28,
+      reorder: 12
+    },
+    {
+      name: 'Hair Spray 400ml',
+      sku: 'STYL-SPRY-400',
+      category: 'Retail',
+      uom: 'bottle',
+      cost: 32,
+      reorder: 10
+    },
+    {
+      name: 'Disposable Gloves (Box)',
+      sku: 'SUPP-GLVS-100',
+      category: 'Supplies',
+      uom: 'box',
+      cost: 15,
+      reorder: 20
+    },
+    {
+      name: 'Towels (Pack of 12)',
+      sku: 'SUPP-TOWL-12',
+      category: 'Supplies',
+      uom: 'box',
+      cost: 45,
+      reorder: 5
+    },
+    {
+      name: 'Foil Sheets (500)',
+      sku: 'SUPP-FOIL-500',
+      category: 'Supplies',
+      uom: 'box',
+      cost: 22,
+      reorder: 10
+    },
+    {
+      name: 'Salon Chair Hydraulic',
+      sku: 'EQPT-CHAIR-01',
+      category: 'Equipment',
+      uom: 'unit',
+      cost: 850,
+      reorder: 1
+    }
   ]
 
   return items.slice(0, count).map((item, i) => ({
@@ -84,13 +189,13 @@ export async function listItems(params: {
 }) {
   if (!hasEnv) {
     console.log('📦 Inventory: Using mock data (no Playbook env)')
-    
+
     // Initialize mock data for this org if not exists
     if (!mockDataStore.items.has(params.organization_id)) {
       const initialItems = generateMockItems(15, params.organization_id)
       mockDataStore.items.set(params.organization_id, initialItems)
     }
-    
+
     let allItems = mockDataStore.items.get(params.organization_id) || []
 
     // Filter by status
@@ -182,7 +287,7 @@ export async function createItem(payload: {
 }) {
   if (!hasEnv) {
     console.log('✏️ CreateItem: Mock mode', payload)
-    
+
     // Create the new item
     const newItem: ItemWithStock = {
       id: `ITM-${Date.now()}`,
@@ -197,14 +302,14 @@ export async function createItem(payload: {
       value: 0,
       low_stock: true
     }
-    
+
     // Add to persisted store
     const orgItems = mockDataStore.items.get(payload.organization_id) || []
     orgItems.unshift(newItem)
     mockDataStore.items.set(payload.organization_id, orgItems)
-    
+
     console.log('✏️ CreateItem: Added to mock store, total items:', orgItems.length)
-    
+
     return newItem
   }
 
@@ -248,7 +353,7 @@ export async function updateItem(
 ) {
   if (!hasEnv) {
     console.log('✏️ UpdateItem: Mock mode', id, patch)
-    
+
     // Find and update in all orgs
     for (const [orgId, items] of mockDataStore.items.entries()) {
       const itemIndex = items.findIndex(i => i.id === id)
@@ -264,7 +369,7 @@ export async function updateItem(
         return updatedItem
       }
     }
-    
+
     return { id, ...patch, updated_at: new Date().toISOString() }
   }
 
@@ -298,12 +403,12 @@ export async function getStockLevel(params: {
 }): Promise<Record<string, StockLevel>> {
   if (!hasEnv) {
     console.log('📦 GetStockLevel: Mock mode', params)
-    
+
     const stockLevels: Record<string, StockLevel> = {}
     params.item_ids.forEach(itemId => {
       const key = `${itemId}:HERA.INVENTORY.STOCKLEVEL.V1`
       const stockData = mockDataStore.dynamicData.get(key)
-      
+
       if (stockData) {
         stockLevels[itemId] = stockData
       } else {
@@ -319,7 +424,7 @@ export async function getStockLevel(params: {
         }
       }
     })
-    
+
     return stockLevels
   }
 
@@ -340,13 +445,13 @@ export async function getStockLevel(params: {
 
     if (!res.ok) throw new Error(`Failed to get stock levels: ${res.status}`)
     const data = await res.json()
-    
+
     // Transform to Record format
     const stockLevels: Record<string, StockLevel> = {}
     Object.entries(data).forEach(([itemId, stockData]: [string, any]) => {
       stockLevels[itemId] = stockData
     })
-    
+
     return stockLevels
   } catch (error) {
     console.error('Failed to get stock levels:', error)
@@ -388,7 +493,7 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
 export async function getValuationConfig(params: {
   organization_id: string
   item_ids?: string[]
-}): Promise<{ method: 'WAC' | 'FIFO', item_overrides?: Record<string, 'WAC' | 'FIFO'> }> {
+}): Promise<{ method: 'WAC' | 'FIFO'; item_overrides?: Record<string, 'WAC' | 'FIFO'> }> {
   if (!hasEnv) {
     console.log('📦 GetValuationConfig: Mock mode', params)
     return { method: 'WAC', item_overrides: {} }
@@ -410,16 +515,16 @@ export async function getValuationConfig(params: {
 
     if (!res.ok) throw new Error(`Failed to get valuation config: ${res.status}`)
     const data = await res.json()
-    
+
     const orgMethod = data[params.organization_id]?.method || 'WAC'
     const item_overrides: Record<string, 'WAC' | 'FIFO'> = {}
-    
+
     params.item_ids?.forEach(itemId => {
       if (data[itemId]?.method && data[itemId].method !== orgMethod) {
         item_overrides[itemId] = data[itemId].method
       }
     })
-    
+
     return { method: orgMethod, item_overrides }
   } catch (error) {
     console.error('Failed to get valuation config:', error)

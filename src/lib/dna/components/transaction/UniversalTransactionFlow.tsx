@@ -70,16 +70,16 @@ export interface TransactionFlowProps {
   transactionType: string
   smartCode: string
   steps: TransactionStep[]
-  
+
   // Localization
   locale?: string
   translations?: TranslationDictionary
-  
+
   // Industry/Business configuration
   industry?: string
   businessType?: string
   currency?: string
-  
+
   // Features
   allowDraft?: boolean
   allowSkip?: boolean
@@ -88,14 +88,14 @@ export interface TransactionFlowProps {
   animationEnabled?: boolean
   autoSave?: boolean
   autoSaveInterval?: number
-  
+
   // Data and callbacks
   initialData?: Record<string, any>
   onComplete: (data: Record<string, any>) => Promise<void> | void
   onStepChange?: (step: number, data: Record<string, any>) => void
   onSaveDraft?: (data: Record<string, any>) => Promise<void>
   onCancel?: () => void
-  
+
   // Styling
   className?: string
   theme?: 'default' | 'minimal' | 'enterprise'
@@ -265,21 +265,24 @@ export function UniversalTransactionFlow({
   const [isValidating, setIsValidating] = useState(false)
   const [isCompleting, setIsCompleting] = useState(false)
   const [visitedSteps, setVisitedSteps] = useState<Set<number>>(new Set([0]))
-  
+
   const { toast } = useToast()
-  
+
   // Get translations
-  const t = useCallback((key: string) => {
-    const keys = key.split('.')
-    let value: any = translations[locale] || translations.en
-    
-    for (const k of keys) {
-      value = value?.[k]
-    }
-    
-    return value || key
-  }, [locale, translations])
-  
+  const t = useCallback(
+    (key: string) => {
+      const keys = key.split('.')
+      let value: any = translations[locale] || translations.en
+
+      for (const k of keys) {
+        value = value?.[k]
+      }
+
+      return value || key
+    },
+    [locale, translations]
+  )
+
   // Filter active steps based on conditions
   const activeSteps = useMemo(() => {
     return steps.filter(step => {
@@ -289,48 +292,51 @@ export function UniversalTransactionFlow({
       return true
     })
   }, [steps, transactionData])
-  
+
   // Auto-save functionality
   useEffect(() => {
     if (!autoSave || !onSaveDraft) return
-    
+
     const interval = setInterval(() => {
       onSaveDraft(transactionData).catch(error => {
         console.error('Auto-save failed:', error)
       })
     }, autoSaveInterval)
-    
+
     return () => clearInterval(interval)
   }, [autoSave, autoSaveInterval, onSaveDraft, transactionData])
-  
+
   // Handle data changes
-  const handleDataChange = useCallback((updates: Record<string, any>) => {
-    setTransactionData(prev => ({
-      ...prev,
-      ...updates
-    }))
-    
-    // Clear related errors
-    const updatedErrors = { ...errors }
-    Object.keys(updates).forEach(key => {
-      delete updatedErrors[key]
-    })
-    setErrors(updatedErrors)
-  }, [errors])
-  
+  const handleDataChange = useCallback(
+    (updates: Record<string, any>) => {
+      setTransactionData(prev => ({
+        ...prev,
+        ...updates
+      }))
+
+      // Clear related errors
+      const updatedErrors = { ...errors }
+      Object.keys(updates).forEach(key => {
+        delete updatedErrors[key]
+      })
+      setErrors(updatedErrors)
+    },
+    [errors]
+  )
+
   // Validate current step
   const validateStep = async () => {
     const step = activeSteps[currentStep]
     if (!step.validation) return { valid: true }
-    
+
     setIsValidating(true)
     try {
       const result = await step.validation(transactionData)
-      
+
       if (!result.valid && result.errors) {
         setErrors(result.errors)
       }
-      
+
       if (result.warnings) {
         Object.entries(result.warnings).forEach(([field, message]) => {
           toast({
@@ -340,35 +346,35 @@ export function UniversalTransactionFlow({
           })
         })
       }
-      
+
       return result
     } finally {
       setIsValidating(false)
     }
   }
-  
+
   // Navigation handlers
   const handleNext = async () => {
     const validation = await validateStep()
     if (!validation.valid) return
-    
+
     const newStep = currentStep + 1
     setCurrentStep(newStep)
     setVisitedSteps(prev => new Set(prev).add(newStep))
-    
+
     if (onStepChange) {
       onStepChange(newStep, transactionData)
     }
   }
-  
+
   const handleBack = () => {
     setCurrentStep(Math.max(0, currentStep - 1))
   }
-  
+
   const handleComplete = async () => {
     const validation = await validateStep()
     if (!validation.valid) return
-    
+
     setIsCompleting(true)
     try {
       await onComplete({
@@ -383,7 +389,7 @@ export function UniversalTransactionFlow({
           completedAt: new Date().toISOString()
         }
       })
-      
+
       toast({
         title: t('status.complete'),
         description: `${transactionType} completed successfully`,
@@ -399,10 +405,10 @@ export function UniversalTransactionFlow({
       setIsCompleting(false)
     }
   }
-  
+
   const handleSaveDraft = async () => {
     if (!onSaveDraft) return
-    
+
     try {
       await onSaveDraft({
         ...transactionData,
@@ -411,7 +417,7 @@ export function UniversalTransactionFlow({
           savedAt: new Date().toISOString()
         }
       })
-      
+
       toast({
         title: t('status.draft'),
         description: 'Draft saved successfully'
@@ -424,15 +430,15 @@ export function UniversalTransactionFlow({
       })
     }
   }
-  
+
   const currentStepData = activeSteps[currentStep]
   const StepComponent = currentStepData?.component
   const StepIcon = currentStepData?.icon
-  
+
   const isFirstStep = currentStep === 0
   const isLastStep = currentStep === activeSteps.length - 1
   const progressPercentage = ((currentStep + 1) / activeSteps.length) * 100
-  
+
   return (
     <div className={cn('space-y-6', className)}>
       {/* Progress Bar */}
@@ -449,21 +455,18 @@ export function UniversalTransactionFlow({
           <Progress value={progressPercentage} className="h-2" />
         </div>
       )}
-      
+
       {/* Step Indicators */}
       <div className="flex items-center justify-center space-x-2">
         {activeSteps.map((step, index) => {
           const isActive = index === currentStep
           const isCompleted = visitedSteps.has(index) && index < currentStep
           const Icon = step.icon
-          
+
           return (
             <div
               key={step.id}
-              className={cn(
-                'flex items-center',
-                index < activeSteps.length - 1 && 'flex-1'
-              )}
+              className={cn('flex items-center', index < activeSteps.length - 1 && 'flex-1')}
             >
               <button
                 onClick={() => {
@@ -489,7 +492,7 @@ export function UniversalTransactionFlow({
                   <span className="text-sm font-semibold">{index + 1}</span>
                 ) : null}
               </button>
-              
+
               {index < activeSteps.length - 1 && (
                 <div
                   className={cn(
@@ -502,12 +505,11 @@ export function UniversalTransactionFlow({
           )
         })}
       </div>
-      
+
       {/* Step Content */}
-      <Card className={cn(
-        'relative overflow-hidden',
-        theme === 'enterprise' && 'shadow-xl border-2'
-      )}>
+      <Card
+        className={cn('relative overflow-hidden', theme === 'enterprise' && 'shadow-xl border-2')}
+      >
         <div className="p-6">
           {/* Step Header */}
           <div className="flex items-center justify-between mb-6">
@@ -517,12 +519,10 @@ export function UniversalTransactionFlow({
                 {currentStepData?.name}
               </h3>
               {currentStepData?.description && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  {currentStepData.description}
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">{currentStepData.description}</p>
               )}
             </div>
-            
+
             {/* Language Selector */}
             <Button
               variant="ghost"
@@ -540,7 +540,7 @@ export function UniversalTransactionFlow({
               {locale.toUpperCase()}
             </Button>
           </div>
-          
+
           {/* Step Component */}
           <AnimatePresence mode="wait">
             {StepComponent && (
@@ -563,20 +563,16 @@ export function UniversalTransactionFlow({
             )}
           </AnimatePresence>
         </div>
-        
+
         {/* Navigation Footer */}
         <div className="flex items-center justify-between p-6 border-t bg-muted/50">
           <div className="flex items-center gap-2">
             {onCancel && (
-              <Button
-                variant="ghost"
-                onClick={onCancel}
-                disabled={isCompleting}
-              >
+              <Button variant="ghost" onClick={onCancel} disabled={isCompleting}>
                 {t('buttons.cancel')}
               </Button>
             )}
-            
+
             {allowDraft && onSaveDraft && (
               <Button
                 variant="outline"
@@ -589,7 +585,7 @@ export function UniversalTransactionFlow({
               </Button>
             )}
           </div>
-          
+
           <div className="flex items-center gap-2">
             {!isFirstStep && (
               <Button
@@ -602,7 +598,7 @@ export function UniversalTransactionFlow({
                 {t('buttons.back')}
               </Button>
             )}
-            
+
             {isLastStep ? (
               <Button
                 onClick={handleComplete}
@@ -639,7 +635,7 @@ export function UniversalTransactionFlow({
           </div>
         </div>
       </Card>
-      
+
       {/* Validation Errors Summary */}
       {Object.keys(errors).length > 0 && (
         <Card className="border-destructive/50 bg-destructive/10">
@@ -647,9 +643,7 @@ export function UniversalTransactionFlow({
             <div className="flex items-start gap-2">
               <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
               <div className="space-y-1">
-                <p className="font-medium text-destructive">
-                  {t('validation.error')}
-                </p>
+                <p className="font-medium text-destructive">{t('validation.error')}</p>
                 <ul className="text-sm space-y-1">
                   {Object.entries(errors).map(([field, error]) => (
                     <li key={field} className="text-muted-foreground">
@@ -683,7 +677,7 @@ export const ExampleCustomerStep: React.FC<TransactionStepProps> = ({
         <input
           type="text"
           value={data.customerName || ''}
-          onChange={(e) => onChange({ customerName: e.target.value })}
+          onChange={e => onChange({ customerName: e.target.value })}
           className={cn(
             'w-full px-3 py-2 border rounded-md',
             errors.customerName && 'border-destructive'
@@ -711,9 +705,9 @@ export const ExamplePaymentStep: React.FC<TransactionStepProps> = ({
     salon: ['cash', 'card', 'mobile', 'package'],
     healthcare: ['cash', 'card', 'insurance']
   }
-  
+
   const methods = paymentMethods[industry] || paymentMethods.retail
-  
+
   return (
     <div className="space-y-4">
       <div>
@@ -735,13 +729,13 @@ export const ExamplePaymentStep: React.FC<TransactionStepProps> = ({
           ))}
         </div>
       </div>
-      
+
       <div>
         <label className="text-sm font-medium">Amount</label>
         <input
           type="number"
           value={data.amount || ''}
-          onChange={(e) => onChange({ amount: parseFloat(e.target.value) })}
+          onChange={e => onChange({ amount: parseFloat(e.target.value) })}
           className={cn(
             'w-full px-3 py-2 border rounded-md',
             errors.amount && 'border-destructive'

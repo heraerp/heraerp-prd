@@ -8,9 +8,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/utils'
 import { AppointmentsApi } from '@/lib/api/appointments'
-import { 
-  AppointmentCreate, 
-  AppointmentTransition, 
+import {
+  AppointmentCreate,
+  AppointmentTransition,
   AppointmentFilters,
   ACTION_TO_STATUS,
   Appointment
@@ -24,7 +24,7 @@ export function useAppointment(id: string, api: AppointmentsApi) {
   const get = useQuery({
     queryKey: ['appointment', id],
     queryFn: () => api.get(id),
-    enabled: !!id,
+    enabled: !!id
   })
 
   // Update appointment
@@ -35,29 +35,29 @@ export function useAppointment(id: string, api: AppointmentsApi) {
       queryClient.invalidateQueries({ queryKey: ['appointment', id] })
       toast.success('Appointment updated')
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error instanceof Error ? error.message : 'Failed to update appointment')
-    },
+    }
   })
 
   // Transition appointment
   const transition = useMutation({
     mutationKey: ['appointment-transition', id],
     mutationFn: (body: AppointmentTransition) => api.transition(id, body),
-    onMutate: async (body) => {
+    onMutate: async body => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['appointment', id] })
-      
+
       // Snapshot the previous value
       const previousAppointment = queryClient.getQueryData(['appointment', id])
-      
+
       // Optimistically update to the new value
       if (previousAppointment && typeof previousAppointment === 'object') {
         const newStatus = ACTION_TO_STATUS[body.action]
         queryClient.setQueryData(['appointment', id], {
           ...(previousAppointment as any),
           status: newStatus,
-          updated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         })
       }
 
@@ -69,7 +69,7 @@ export function useAppointment(id: string, api: AppointmentsApi) {
         mark_paid: 'Payment recorded',
         close: 'Appointment closed',
         cancel: 'Appointment cancelled',
-        no_show: 'Marked as no-show',
+        no_show: 'Marked as no-show'
       }
       toast.success(messages[body.action] || 'Status updated')
 
@@ -94,7 +94,7 @@ export function useAppointment(id: string, api: AppointmentsApi) {
       // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: ['appointment', id] })
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
-    },
+    }
   })
 
   return {
@@ -102,7 +102,7 @@ export function useAppointment(id: string, api: AppointmentsApi) {
     isLoading: get.isLoading,
     error: get.error,
     update,
-    transition,
+    transition
   }
 }
 
@@ -110,7 +110,7 @@ export function useAppointment(id: string, api: AppointmentsApi) {
 export function useAppointments(filters: AppointmentFilters, api: AppointmentsApi) {
   return useQuery({
     queryKey: ['appointments', filters],
-    queryFn: () => api.list(filters),
+    queryFn: () => api.list(filters)
   })
 }
 
@@ -122,15 +122,15 @@ export function useCreateAppointment(api: AppointmentsApi) {
   return useMutation({
     mutationKey: ['appointment-create'],
     mutationFn: (payload: AppointmentCreate) => api.create(payload),
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
       toast.success('Appointment booked successfully')
       setTimeout(() => toast.info('WhatsApp: Confirmation message queued'), 1000)
       router.push(`/appointments/${data.id}`)
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error instanceof Error ? error.message : 'Failed to book appointment')
-    },
+    }
   })
 }
 
@@ -139,21 +139,24 @@ export function useAppointmentActivity(appointmentId: string, api: AppointmentsA
   return useQuery({
     queryKey: ['appointment-activity', appointmentId],
     queryFn: () => api.getActivity(appointmentId),
-    enabled: !!appointmentId,
+    enabled: !!appointmentId
   })
 }
 
 // Available slots hook
-export function useAvailableSlots(params: {
-  branch_code: string
-  stylist_code: string
-  date: string
-  service_duration: number
-}, api: AppointmentsApi) {
+export function useAvailableSlots(
+  params: {
+    branch_code: string
+    stylist_code: string
+    date: string
+    service_duration: number
+  },
+  api: AppointmentsApi
+) {
   return useQuery({
     queryKey: ['available-slots', params],
     queryFn: () => api.getAvailableSlots(params),
-    enabled: !!(params.branch_code && params.stylist_code && params.date),
+    enabled: !!(params.branch_code && params.stylist_code && params.date)
   })
 }
 
@@ -162,7 +165,7 @@ export function useUpcomingCount(organizationId: string, api: AppointmentsApi) {
   return useQuery({
     queryKey: ['appointments-upcoming-count', organizationId],
     queryFn: () => api.getUpcomingCount(organizationId),
-    enabled: !!organizationId,
+    enabled: !!organizationId
   })
 }
 
@@ -178,7 +181,6 @@ export function useAppointmentNavigation() {
     goToNew: () => router.push('/appointments/new'),
     goToPOS: (appointmentId: string) => router.push(`/pos/sale?apptId=${appointmentId}`),
     goToCustomer: (customerId: string) => router.push(`/customers/${customerId}`),
-    goToStaff: (staffId: string) => router.push(`/staff/${staffId}`),
+    goToStaff: (staffId: string) => router.push(`/staff/${staffId}`)
   }
 }
-

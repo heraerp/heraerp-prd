@@ -384,7 +384,9 @@ export function SAPFIModule({
               <CardContent className="p-6">
                 <BookOpen className="h-8 w-8 text-primary mb-2" />
                 <h3 className="font-semibold">Trial Balance</h3>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">Real-time from SAP</p>
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  Real-time from SAP
+                </p>
               </CardContent>
             </Card>
             <Card className="cursor-pointer hover:shadow-lg transition-shadow">

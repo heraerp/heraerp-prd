@@ -27,7 +27,7 @@ export * from './theme/theme-provider-dna'
 // Financial modules
 export * from './modules/financial'
 
-// ERP modules  
+// ERP modules
 export * from './modules/erp'
 
 // ================================================================================
@@ -60,7 +60,7 @@ export const HERA_DNA_INFO = {
   },
   compatibility: {
     react: '>=18.0.0',
-    typescript: '>=5.0.0', 
+    typescript: '>=5.0.0',
     nextjs: '>=15.0.0'
   }
 } as const
@@ -75,17 +75,17 @@ export {
   StatCardDNA,
   HeraButtonDNA,
   HeraSidebarDNA,
-  
+
   // Business Logic
   UniversalTransactionFlow,
   UniversalSearch,
   EntityQuickView,
   SmartCodePicker,
-  
+
   // Mobile
   BottomSheet,
   PullToRefresh,
-  
+
   // Enterprise
   EnterpriseDataTable,
   EnterpriseDashboard

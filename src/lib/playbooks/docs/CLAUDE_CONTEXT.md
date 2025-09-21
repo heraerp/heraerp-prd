@@ -1,6 +1,7 @@
 # HERA Playbook System - Claude Context Primer
 
 ## Quick Start
+
 ```yaml
 # 1. Define your business in a playbook
 entities:
@@ -22,6 +23,7 @@ const customer = await api.createCustomer({
 ```
 
 ## Core Concept: 6 Sacred Tables Handle Everything
+
 ```sql
 core_organizations      -- Multi-tenant isolation
 core_entities          -- ALL business objects (customers, products, accounts)
@@ -32,6 +34,7 @@ universal_transaction_lines -- Transaction details
 ```
 
 ## Essential Playbook Structure
+
 ```yaml
 # /hera/playbooks/{module}/entities.core.yml
 entities:
@@ -64,15 +67,17 @@ orchestration:
 ## Critical Patterns
 
 ### 1. Smart Codes (MANDATORY)
+
 ```typescript
 // Format: HERA.{MODULE}.{TYPE}.{SUBTYPE}.V{VERSION}
-"HERA.CRM.CUSTOMER.V1"          // Entity
-"HERA.CRM.CUSTOMER.EMAIL.V1"    // Field
-"HERA.CRM.REL.CUSTOMER_CONTACT.V1" // Relationship
-"HERA.SALES.ORDER.V1"           // Transaction
+'HERA.CRM.CUSTOMER.V1' // Entity
+'HERA.CRM.CUSTOMER.EMAIL.V1' // Field
+'HERA.CRM.REL.CUSTOMER_CONTACT.V1' // Relationship
+'HERA.SALES.ORDER.V1' // Transaction
 ```
 
 ### 2. Field Storage Pattern
+
 ```typescript
 // Simple fields → core_entities columns
 { name: "John", status: "active" }  // Stored directly
@@ -82,33 +87,36 @@ orchestration:
 ```
 
 ### 3. TypeScript Generation
+
 ```typescript
 // Playbook YAML → TypeScript interfaces
 interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  credit_limit?: number;
+  id: string
+  name: string
+  email: string
+  credit_limit?: number
 }
 
 // Generated APIs
-await api.createCustomer(data);
-await api.updateCustomer(id, data);
-await api.getCustomer(id);
+await api.createCustomer(data)
+await api.updateCustomer(id, data)
+await api.getCustomer(id)
 ```
 
 ### 4. Key/Surrogate Definitions
+
 ```yaml
 # entities.keydefs.yml
 keydefs:
   - entity_type: customer
     unique_keys:
-      - [customer_code]  # Business key
-      - [email]          # Natural key
-    surrogate_key: true  # UUID primary key
+      - [customer_code] # Business key
+      - [email] # Natural key
+    surrogate_key: true # UUID primary key
 ```
 
 ## Essential Commands
+
 ```bash
 # Development
 npm run playbook:validate {module}  # Check YAML syntax
@@ -124,6 +132,7 @@ npm run playbook:generate:all      # Generate all TypeScript
 ```
 
 ## Module Organization
+
 ```
 /hera/playbooks/
   ├── {module}/
@@ -153,36 +162,40 @@ npm run playbook:generate:all      # Generate all TypeScript
 ## Integration Points
 
 ### 1. Universal API
+
 ```typescript
-import { universalApi } from '@/lib/universal-api';
+import { universalApi } from '@/lib/universal-api'
 
 // All operations go through universal API
 await universalApi.createEntity({
   entity_type: 'customer',
   organization_id: orgId,
   ...data
-});
+})
 ```
 
 ### 2. Generated Type-Safe APIs
+
 ```typescript
-import { crmApi } from '@/lib/api/crm';
+import { crmApi } from '@/lib/api/crm'
 
 // Playbook-generated APIs
 const customer = await crmApi.createCustomer({
-  name: "ACME Corp",
-  email: "test@acme.com"
-});
+  name: 'ACME Corp',
+  email: 'test@acme.com'
+})
 ```
 
 ### 3. React Query Hooks
+
 ```typescript
 // Auto-generated hooks
-const { data, isLoading } = useCustomer(customerId);
-const mutation = useCreateCustomer();
+const { data, isLoading } = useCustomer(customerId)
+const mutation = useCreateCustomer()
 ```
 
 ## Complete Example: CRM Module
+
 ```yaml
 # entities.core.yml
 entities:
@@ -225,6 +238,7 @@ const order = await salesApi.createSalesOrder({
 5. **Document Fields** - Use description for clarity
 
 ## Revolutionary Benefits
+
 - **Zero Schema Changes** - Add features without migrations
 - **Type Safety** - Full TypeScript generation
 - **Multi-Tenant** - Perfect isolation built-in
@@ -232,4 +246,5 @@ const order = await salesApi.createSalesOrder({
 - **Instant APIs** - CRUD operations auto-generated
 
 ---
+
 **Remember**: HERA Playbooks let you define your entire business in YAML and get a complete, type-safe, production-ready system with zero custom database work!

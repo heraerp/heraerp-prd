@@ -159,7 +159,9 @@ export function HeraSidebar({
                     <item.icon
                       className={cn(
                         'h-4 w-4 transition-all duration-200',
-                        active ? 'text-foreground' : 'text-muted-foreground group-hover:text-gray-200'
+                        active
+                          ? 'text-foreground'
+                          : 'text-muted-foreground group-hover:text-gray-200'
                       )}
                     />
                   </div>
@@ -229,7 +231,9 @@ export function HeraSidebar({
             {headerContent || (
               <div className="flex items-center space-x-4">
                 <div className="hidden sm:block">
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">{title}</p>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    {title}
+                  </p>
                 </div>
               </div>
             )}
@@ -281,7 +285,9 @@ export function HeraSidebar({
                   >
                     <app.icon className="h-6 w-6 text-foreground" />
                   </div>
-                  <h3 className="font-semibold text-gray-100 group-hover:text-foreground">{app.name}</h3>
+                  <h3 className="font-semibold text-gray-100 group-hover:text-foreground">
+                    {app.name}
+                  </h3>
                   <p className="text-sm text-muted-foreground mt-1">{app.description}</p>
                 </button>
               ))}

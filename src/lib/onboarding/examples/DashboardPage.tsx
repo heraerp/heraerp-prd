@@ -169,7 +169,9 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
                       HERA.CRM.CUST.ENT.PROF.V1
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">2 hours ago</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">
+                      2 hours ago
+                    </td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">Invoice #1234</td>
@@ -177,7 +179,9 @@ function DashboardContent() {
                     <td className="px-6 py-4 whitespace-nowrap text-xs font-mono">
                       HERA.FIN.INV.TXN.SALE.V1
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">4 hours ago</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-muted-foreground">
+                      4 hours ago
+                    </td>
                   </tr>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">Widget Pro</td>

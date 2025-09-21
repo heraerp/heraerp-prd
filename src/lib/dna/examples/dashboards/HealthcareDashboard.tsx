@@ -298,10 +298,7 @@ const getStatusIcon = (status: string) => {
 // MAIN COMPONENT
 // ================================================================================
 
-export function HealthcareDashboard({ 
-  organizationId,
-  className 
-}: HealthcareDashboardProps) {
+export function HealthcareDashboard({ organizationId, className }: HealthcareDashboardProps) {
   const [metrics, setMetrics] = useState<HealthcareMetrics>(mockMetrics)
   const [patients, setPatients] = useState<Patient[]>(mockPatients)
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
@@ -313,7 +310,7 @@ export function HealthcareDashboard({
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 60000)
-    
+
     return () => clearInterval(timer)
   }, [])
 
@@ -348,9 +345,7 @@ export function HealthcareDashboard({
       accessorKey: 'urgency',
       header: 'Urgency',
       cell: ({ row }: { row: any }) => (
-        <Badge className={getUrgencyColor(row.original.urgency)}>
-          {row.original.urgency}
-        </Badge>
+        <Badge className={getUrgencyColor(row.original.urgency)}>{row.original.urgency}</Badge>
       )
     },
     {
@@ -382,7 +377,8 @@ export function HealthcareDashboard({
             Healthcare Dashboard
           </h1>
           <p className="text-muted-foreground">
-            City General Medical Center • {currentTime.toLocaleDateString()} {currentTime.toLocaleTimeString()}
+            City General Medical Center • {currentTime.toLocaleDateString()}{' '}
+            {currentTime.toLocaleTimeString()}
           </p>
         </div>
         <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
@@ -401,7 +397,9 @@ export function HealthcareDashboard({
           <StatCardDNA
             title="Daily Revenue"
             value={formatCurrency(metrics.dailyRevenue)}
-            trend={metrics.revenueChange > 0 ? `+${metrics.revenueChange}%` : `${metrics.revenueChange}%`}
+            trend={
+              metrics.revenueChange > 0 ? `+${metrics.revenueChange}%` : `${metrics.revenueChange}%`
+            }
             trendDirection={metrics.revenueChange > 0 ? 'up' : 'down'}
             icon={DollarSign}
             description="Today's total revenue"
@@ -416,7 +414,11 @@ export function HealthcareDashboard({
           <StatCardDNA
             title="Patients Today"
             value={metrics.patientsToday.toString()}
-            trend={metrics.patientsChange > 0 ? `+${metrics.patientsChange}%` : `${metrics.patientsChange}%`}
+            trend={
+              metrics.patientsChange > 0
+                ? `+${metrics.patientsChange}%`
+                : `${metrics.patientsChange}%`
+            }
             trendDirection={metrics.patientsChange > 0 ? 'up' : 'down'}
             icon={Users}
             description="Total patients seen"
@@ -431,7 +433,11 @@ export function HealthcareDashboard({
           <StatCardDNA
             title="Completed"
             value={metrics.appointmentsCompleted.toString()}
-            trend={metrics.completedChange > 0 ? `+${metrics.completedChange}%` : `${metrics.completedChange}%`}
+            trend={
+              metrics.completedChange > 0
+                ? `+${metrics.completedChange}%`
+                : `${metrics.completedChange}%`
+            }
             trendDirection={metrics.completedChange > 0 ? 'up' : 'down'}
             icon={CheckCircle}
             description="Appointments completed"
@@ -446,7 +452,11 @@ export function HealthcareDashboard({
           <StatCardDNA
             title="Bed Occupancy"
             value={`${metrics.bedOccupancy}%`}
-            trend={metrics.occupancyChange > 0 ? `+${metrics.occupancyChange}%` : `${metrics.occupancyChange}%`}
+            trend={
+              metrics.occupancyChange > 0
+                ? `+${metrics.occupancyChange}%`
+                : `${metrics.occupancyChange}%`
+            }
             trendDirection={metrics.occupancyChange > 0 ? 'up' : 'down'}
             icon={Activity}
             description="Current bed utilization"
@@ -466,7 +476,7 @@ export function HealthcareDashboard({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {appointments.map((appointment) => {
+              {appointments.map(appointment => {
                 const StatusIcon = getStatusIcon(appointment.status)
                 return (
                   <div
@@ -474,15 +484,20 @@ export function HealthcareDashboard({
                     className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        appointment.status === 'scheduled' ? 'bg-blue-100 text-blue-600' :
-                        appointment.status === 'ongoing' ? 'bg-orange-100 text-orange-600' :
-                        appointment.status === 'completed' ? 'bg-green-100 text-green-600' :
-                        'bg-red-100 text-red-600'
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          appointment.status === 'scheduled'
+                            ? 'bg-blue-100 text-blue-600'
+                            : appointment.status === 'ongoing'
+                              ? 'bg-orange-100 text-orange-600'
+                              : appointment.status === 'completed'
+                                ? 'bg-green-100 text-green-600'
+                                : 'bg-red-100 text-red-600'
+                        }`}
+                      >
                         <StatusIcon className="w-5 h-5" />
                       </div>
-                      
+
                       <div>
                         <p className="font-medium">{appointment.patientName}</p>
                         <p className="text-sm text-muted-foreground">
@@ -490,7 +505,7 @@ export function HealthcareDashboard({
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="text-right">
                       <p className="font-medium">{appointment.time}</p>
                       <p className="text-sm text-muted-foreground">
@@ -514,17 +529,20 @@ export function HealthcareDashboard({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {doctors.map((doctor) => {
+              {doctors.map(doctor => {
                 const StatusIcon = getStatusIcon(doctor.availability)
                 return (
                   <div key={doctor.id} className="flex items-center gap-3">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={doctor.avatar} />
                       <AvatarFallback>
-                        {doctor.name.split(' ').map(n => n[1]).join('')}
+                        {doctor.name
+                          .split(' ')
+                          .map(n => n[1])
+                          .join('')}
                       </AvatarFallback>
                     </Avatar>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <p className="font-medium text-sm">{doctor.name}</p>

@@ -5,13 +5,7 @@
 // ================================================================================
 
 import { describe, it, expect } from 'vitest'
-import { 
-  landingForRole, 
-  isAllowed, 
-  getUnauthorizedRedirect,
-  ROLE_HOME,
-  ROLE_NAV
-} from '../rbac'
+import { landingForRole, isAllowed, getUnauthorizedRedirect, ROLE_HOME, ROLE_NAV } from '../rbac'
 
 describe('RBAC System', () => {
   describe('landingForRole', () => {
@@ -98,7 +92,7 @@ describe('RBAC System', () => {
     it('should have landing pages for all roles', () => {
       const roles = Object.keys(ROLE_HOME)
       const navRoles = Object.keys(ROLE_NAV)
-      
+
       expect(roles).toEqual(navRoles)
       expect(roles).toContain('accountant')
     })

@@ -16,8 +16,8 @@ const generateMockStaff = (count: number, branchId?: string) => {
     metadata: {
       branch_id: branchId || 'branch-1',
       role: ['Stylist', 'Senior Stylist', 'Manager'][i % 3],
-      join_date: new Date(2023, 0, 15 + i * 30).toISOString(),
-    },
+      join_date: new Date(2023, 0, 15 + i * 30).toISOString()
+    }
   }))
 }
 
@@ -36,8 +36,8 @@ const generateMockRequests = (staffId?: string) => {
         type: 'ANNUAL',
         from: '2025-10-01',
         to: '2025-10-05',
-        days: 5,
-      },
+        days: 5
+      }
     },
     {
       id: 'req-2',
@@ -52,21 +52,21 @@ const generateMockRequests = (staffId?: string) => {
         type: 'ANNUAL',
         from: '2025-11-15',
         to: '2025-11-20',
-        days: 4,
-      },
-    },
+        days: 4
+      }
+    }
   ]
-  
+
   return staffId ? baseRequests.filter(r => r.source_entity_id === staffId) : baseRequests
 }
 
 // API wrapper functions with mock fallbacks
-export async function listStaff({ 
-  organization_id, 
-  branch_id, 
-  q, 
-  limit = 50, 
-  offset = 0 
+export async function listStaff({
+  organization_id,
+  branch_id,
+  q,
+  limit = 50,
+  offset = 0
 }: {
   organization_id: string
   branch_id?: string
@@ -77,12 +77,12 @@ export async function listStaff({
   if (!BASE || !KEY) {
     // Return mock data
     const allStaff = generateMockStaff(10, branch_id)
-    const filtered = q 
+    const filtered = q
       ? allStaff.filter(s => s.entity_name.toLowerCase().includes(q.toLowerCase()))
       : allStaff
     return {
       items: filtered.slice(offset, offset + limit),
-      total: filtered.length,
+      total: filtered.length
     }
   }
 
@@ -90,13 +90,13 @@ export async function listStaff({
     type: 'HERA.SALON.STAFF.V1',
     organization_id,
     limit: String(limit),
-    offset: String(offset),
+    offset: String(offset)
   })
   if (branch_id) params.append('metadata.branch_id', branch_id)
   if (q) params.append('q', q)
 
   const response = await fetch(`${BASE}/entities?${params}`, {
-    headers: { Authorization: `Bearer ${KEY}` },
+    headers: { Authorization: `Bearer ${KEY}` }
   })
   return response.json()
 }
@@ -115,8 +115,8 @@ export async function listPolicies({ organization_id }: { organization_id: strin
             annual_entitlement: 25,
             carry_over_cap: 5,
             prorate: true,
-            min_notice_days: 7,
-          },
+            min_notice_days: 7
+          }
         },
         {
           id: 'policy-2',
@@ -128,17 +128,20 @@ export async function listPolicies({ organization_id }: { organization_id: strin
             annual_entitlement: 30,
             carry_over_cap: 10,
             prorate: true,
-            min_notice_days: 14,
-          },
-        },
+            min_notice_days: 14
+          }
+        }
       ],
-      total: 2,
+      total: 2
     }
   }
 
-  const response = await fetch(`${BASE}/entities?type=HERA.HR.LEAVE.POLICY.V1&organization_id=${organization_id}`, {
-    headers: { Authorization: `Bearer ${KEY}` },
-  })
+  const response = await fetch(
+    `${BASE}/entities?type=HERA.HR.LEAVE.POLICY.V1&organization_id=${organization_id}`,
+    {
+      headers: { Authorization: `Bearer ${KEY}` }
+    }
+  )
   return response.json()
 }
 
@@ -147,7 +150,7 @@ export async function upsertPolicy({
   id,
   name,
   code,
-  accrual,
+  accrual
 }: {
   organization_id: string
   id?: string
@@ -161,12 +164,12 @@ export async function upsertPolicy({
 
   const method = id ? 'PATCH' : 'POST'
   const url = id ? `${BASE}/entities/${id}` : `${BASE}/entities`
-  
+
   const response = await fetch(url, {
     method,
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       organization_id,
@@ -174,10 +177,10 @@ export async function upsertPolicy({
       entity_name: name,
       entity_code: code,
       smart_code: 'HERA.HR.LEAVE.POLICY.V1',
-      metadata: accrual,
-    }),
+      metadata: accrual
+    })
   })
-  
+
   return response.json()
 }
 
@@ -189,7 +192,7 @@ export async function listRequests({
   from,
   to,
   limit = 50,
-  offset = 0,
+  offset = 0
 }: {
   organization_id: string
   branch_id?: string
@@ -207,10 +210,10 @@ export async function listRequests({
       if (branch_id && r.metadata.branch_id !== branch_id) return false
       return true
     })
-    
+
     return {
       items: filtered.slice(offset, offset + limit),
-      total: filtered.length,
+      total: filtered.length
     }
   }
 
@@ -218,9 +221,9 @@ export async function listRequests({
     smart_code: 'HERA.HR.LEAVE.REQUEST.V1',
     organization_id,
     limit: String(limit),
-    offset: String(offset),
+    offset: String(offset)
   })
-  
+
   if (branch_id) params.append('metadata.branch_id', branch_id)
   if (staff_id) params.append('source_entity_id', staff_id)
   if (status) params.append('status', status)
@@ -228,7 +231,7 @@ export async function listRequests({
   if (to) params.append('transaction_date_lte', to)
 
   const response = await fetch(`${BASE}/universal_transactions?${params}`, {
-    headers: { Authorization: `Bearer ${KEY}` },
+    headers: { Authorization: `Bearer ${KEY}` }
   })
   return response.json()
 }
@@ -240,7 +243,7 @@ export async function createRequest({
   from,
   to,
   lines,
-  notes,
+  notes
 }: {
   organization_id: string
   staff_id: string
@@ -253,7 +256,7 @@ export async function createRequest({
   if (!BASE || !KEY) {
     return {
       id: `req-${Date.now()}`,
-      success: true,
+      success: true
     }
   }
 
@@ -262,7 +265,7 @@ export async function createRequest({
     method: 'POST',
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       organization_id,
@@ -276,9 +279,9 @@ export async function createRequest({
         branch_id,
         from: from.toISOString(),
         to: to.toISOString(),
-        notes,
-      },
-    }),
+        notes
+      }
+    })
   })
 
   const txn = await txnResponse.json()
@@ -289,15 +292,15 @@ export async function createRequest({
       method: 'POST',
       headers: {
         Authorization: `Bearer ${KEY}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         organization_id,
         transaction_id: txn.id,
         line_description: `Leave day: ${line.date}`,
         smart_code: 'HERA.HR.LEAVE.LINE.V1',
-        metadata: line,
-      }),
+        metadata: line
+      })
     })
   }
 
@@ -309,7 +312,7 @@ export async function decideRequest({
   request_id,
   approver_id,
   decision,
-  reason,
+  reason
 }: {
   organization_id: string
   request_id: string
@@ -326,7 +329,7 @@ export async function decideRequest({
     method: 'POST',
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       organization_id,
@@ -337,9 +340,9 @@ export async function decideRequest({
       metadata: {
         request_id,
         decision,
-        reason,
-      },
-    }),
+        reason
+      }
+    })
   })
 
   // Update request status
@@ -347,11 +350,11 @@ export async function decideRequest({
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      status: decision === 'APPROVE' ? 'approved' : 'rejected',
-    }),
+      status: decision === 'APPROVE' ? 'approved' : 'rejected'
+    })
   })
 
   return { success: true }
@@ -361,7 +364,7 @@ export async function getBalances({
   organization_id,
   staff_ids,
   period_start,
-  period_end,
+  period_end
 }: {
   organization_id: string
   staff_ids: string[]
@@ -379,7 +382,7 @@ export async function getBalances({
       carried_over_days: 3,
       accrued_days: 0,
       taken_days: 8,
-      scheduled_days: 5,
+      scheduled_days: 5
     }))
   }
 
@@ -387,7 +390,7 @@ export async function getBalances({
     method: 'POST',
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       organization_id,
@@ -395,9 +398,9 @@ export async function getBalances({
       entity_ids: staff_ids,
       filters: {
         period_start,
-        period_end,
-      },
-    }),
+        period_end
+      }
+    })
   })
 
   return response.json()
@@ -412,13 +415,13 @@ export async function upsertBalance(entity_id: string, data: any) {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       entity_id,
       smart_code: 'HERA.HR.LEAVE.BALANCE.V1',
-      data,
-    }),
+      data
+    })
   })
 
   return response.json()
@@ -426,7 +429,7 @@ export async function upsertBalance(entity_id: string, data: any) {
 
 export async function listHolidays({
   organization_id,
-  year,
+  year
 }: {
   organization_id: string
   year: number
@@ -442,16 +445,16 @@ export async function listHolidays({
         { id: 'hol-5', entity_name: 'Spring Bank Holiday', metadata: { date: `${year}-05-26` } },
         { id: 'hol-6', entity_name: 'Summer Bank Holiday', metadata: { date: `${year}-08-25` } },
         { id: 'hol-7', entity_name: 'Christmas Day', metadata: { date: `${year}-12-25` } },
-        { id: 'hol-8', entity_name: 'Boxing Day', metadata: { date: `${year}-12-26` } },
+        { id: 'hol-8', entity_name: 'Boxing Day', metadata: { date: `${year}-12-26` } }
       ],
-      total: 8,
+      total: 8
     }
   }
 
   const response = await fetch(
     `${BASE}/entities?type=HERA.HR.HOLIDAY.V1&organization_id=${organization_id}&metadata.year=${year}`,
     {
-      headers: { Authorization: `Bearer ${KEY}` },
+      headers: { Authorization: `Bearer ${KEY}` }
     }
   )
   return response.json()
@@ -467,19 +470,19 @@ export function calculateWorkingDays(
 ): number {
   const days = eachDayOfInterval({ start: from, end: to })
   const holidayStrings = holidays.map(h => format(h, 'yyyy-MM-dd'))
-  
+
   let workingDays = 0
-  
+
   for (const day of days) {
     const dayString = format(day, 'yyyy-MM-dd')
     if (!isWeekend(day) && !holidayStrings.includes(dayString)) {
       workingDays++
     }
   }
-  
+
   // Adjust for half days
   if (halfDayStart && workingDays > 0) workingDays -= 0.5
   if (halfDayEnd && workingDays > 0) workingDays -= 0.5
-  
+
   return workingDays
 }

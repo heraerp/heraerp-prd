@@ -11,18 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Palette, 
-  Settings, 
-  Eye, 
-  Code, 
-  Sparkles,
-  Building,
-  User,
-  Check,
-  Copy
-} from 'lucide-react'
-import { 
+import { Palette, Settings, Eye, Code, Sparkles, Building, User, Check, Copy } from 'lucide-react'
+import {
   UniversalThemeProvider,
   useUniversalTheme,
   ThemeSelector,
@@ -31,11 +21,7 @@ import {
   generateThemeCSS,
   applySmartThemeConfiguration
 } from '../theme'
-import type { 
-  UniversalConfigurationRules,
-  OrganizationProfile,
-  UserProfile 
-} from '../theme'
+import type { UniversalConfigurationRules, OrganizationProfile, UserProfile } from '../theme'
 
 // ================================================================================
 // EXAMPLE ORGANIZATION AND USER PROFILES
@@ -140,14 +126,17 @@ function ThemeConfigurationDemo() {
         selectedUser.userId
       )
       setConfigResult(result)
-      
+
       // Apply the recommended theme
       if (result.configuration.theme.variant !== currentTheme.id) {
         setTheme(result.configuration.theme.variant, result.configuration.theme.customizations)
       }
-      
+
       // Generate CSS for preview
-      const css = generateThemeCSS(result.configuration.theme.variant, result.configuration.theme.customizations)
+      const css = generateThemeCSS(
+        result.configuration.theme.variant,
+        result.configuration.theme.customizations
+      )
       setGeneratedCSS(css)
     } catch (error) {
       console.error('Failed to apply configuration:', error)
@@ -186,7 +175,7 @@ function ThemeConfigurationDemo() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {EXAMPLE_ORGANIZATIONS.map((org) => (
+            {EXAMPLE_ORGANIZATIONS.map(org => (
               <button
                 key={org.organizationId}
                 onClick={() => setSelectedOrg(org)}
@@ -205,11 +194,11 @@ function ThemeConfigurationDemo() {
                   </div>
                   {org.brandColors && (
                     <div className="flex gap-1">
-                      <div 
+                      <div
                         className="w-4 h-4 rounded-full border"
                         style={{ backgroundColor: org.brandColors.primary }}
                       />
-                      <div 
+                      <div
                         className="w-4 h-4 rounded-full border"
                         style={{ backgroundColor: org.brandColors.secondary }}
                       />
@@ -229,7 +218,7 @@ function ThemeConfigurationDemo() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {EXAMPLE_USERS.map((user) => (
+            {EXAMPLE_USERS.map(user => (
               <button
                 key={user.userId}
                 onClick={() => setSelectedUser(user)}
@@ -283,9 +272,15 @@ function ThemeConfigurationDemo() {
                   <div>
                     <h4 className="font-medium mb-2">Theme Details</h4>
                     <div className="space-y-2 text-sm">
-                      <p><strong>Variant:</strong> {currentTheme.name}</p>
-                      <p><strong>Description:</strong> {currentTheme.description}</p>
-                      <p><strong>Smart Code:</strong> {currentTheme.smartCode}</p>
+                      <p>
+                        <strong>Variant:</strong> {currentTheme.name}
+                      </p>
+                      <p>
+                        <strong>Description:</strong> {currentTheme.description}
+                      </p>
+                      <p>
+                        <strong>Smart Code:</strong> {currentTheme.smartCode}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -295,8 +290,12 @@ function ThemeConfigurationDemo() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {Object.entries(configResult.configuration.features).map(([feature, enabled]) => (
                     <div key={feature} className="flex items-center gap-2">
-                      <Check className={`w-4 h-4 ${enabled ? 'text-green-500' : 'text-gray-300'}`} />
-                      <span className="text-sm capitalize">{feature.replace(/([A-Z])/g, ' $1')}</span>
+                      <Check
+                        className={`w-4 h-4 ${enabled ? 'text-green-500' : 'text-gray-300'}`}
+                      />
+                      <span className="text-sm capitalize">
+                        {feature.replace(/([A-Z])/g, ' $1')}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -305,7 +304,10 @@ function ThemeConfigurationDemo() {
               <TabsContent value="rules" className="space-y-4">
                 <div className="space-y-2">
                   {configResult.appliedRules.map((rule: any) => (
-                    <div key={rule.id} className="flex items-center justify-between p-2 bg-theme-surface rounded">
+                    <div
+                      key={rule.id}
+                      className="flex items-center justify-between p-2 bg-theme-surface rounded"
+                    >
                       <div>
                         <p className="font-medium text-sm">{rule.name}</p>
                         <p className="text-xs text-muted-foreground">{rule.smartCode}</p>
@@ -318,11 +320,7 @@ function ThemeConfigurationDemo() {
 
               <TabsContent value="css" className="space-y-4">
                 <div className="relative">
-                  <Button
-                    onClick={copyCSS}
-                    size="sm"
-                    className="absolute top-2 right-2 z-10"
-                  >
+                  <Button onClick={copyCSS} size="sm" className="absolute top-2 right-2 z-10">
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     {copied ? 'Copied!' : 'Copy'}
                   </Button>
@@ -368,7 +366,7 @@ function ThemeConfigurationDemo() {
                 <Button variant="outline">Outline</Button>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="font-medium">Cards</h4>
               <div className="card-theme-surface p-4 rounded-lg">
@@ -380,11 +378,13 @@ function ThemeConfigurationDemo() {
           <div className="space-y-3">
             <h4 className="font-medium">Color Palette</h4>
             <div className="grid grid-cols-11 gap-1">
-              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((shade) => (
+              {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(shade => (
                 <div key={shade} className="space-y-1">
-                  <div 
+                  <div
                     className="w-full h-8 rounded border"
-                    style={{ backgroundColor: currentTheme.main[shade as keyof typeof currentTheme.main] }}
+                    style={{
+                      backgroundColor: currentTheme.main[shade as keyof typeof currentTheme.main]
+                    }}
                   />
                   <p className="text-xs text-center">{shade}</p>
                 </div>

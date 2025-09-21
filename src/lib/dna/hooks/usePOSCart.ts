@@ -62,12 +62,7 @@ export interface UpdateLineRequest {
   staff_split?: Array<{ staff_id: string; pct: number }>
 }
 
-export function usePOSCart({
-  cartId,
-  organizationId,
-  onUpdate,
-  onError
-}: UsePOSCartOptions) {
+export function usePOSCart({ cartId, organizationId, onUpdate, onError }: UsePOSCartOptions) {
   const [activeCartId, setActiveCartId] = useState(cartId)
   const queryClient = useQueryClient()
 
@@ -81,15 +76,15 @@ export function usePOSCart({
     queryKey: ['pos-cart', activeCartId, organizationId],
     queryFn: async () => {
       if (!activeCartId) return null
-      
+
       const response = await fetch(
         `/api/v1/salon/pos/carts/${activeCartId}?organization_id=${organizationId}`
       )
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch cart')
       }
-      
+
       const data = await response.json()
       return data.cart as POSCart
     },
@@ -102,7 +97,7 @@ export function usePOSCart({
   const addLineMutation = useMutation({
     mutationFn: async (request: AddLineRequest) => {
       if (!activeCartId) throw new Error('No active cart')
-      
+
       const response = await fetch(`/api/v1/salon/pos/carts/${activeCartId}/lines`, {
         method: 'POST',
         headers: {
@@ -113,17 +108,17 @@ export function usePOSCart({
           organization_id: organizationId
         })
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to add line')
       }
-      
+
       return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['pos-cart', activeCartId, organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['pos-cart', activeCartId, organizationId]
       })
       refetch()
     },
@@ -137,7 +132,7 @@ export function usePOSCart({
   const updateLineMutation = useMutation({
     mutationFn: async (request: UpdateLineRequest) => {
       if (!activeCartId) throw new Error('No active cart')
-      
+
       const response = await fetch(
         `/api/v1/salon/pos/carts/${activeCartId}/lines/${request.line_id}`,
         {
@@ -151,17 +146,17 @@ export function usePOSCart({
           })
         }
       )
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to update line')
       }
-      
+
       return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['pos-cart', activeCartId, organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['pos-cart', activeCartId, organizationId]
       })
       refetch()
     },
@@ -175,24 +170,24 @@ export function usePOSCart({
   const removeLineMutation = useMutation({
     mutationFn: async (lineId: string) => {
       if (!activeCartId) throw new Error('No active cart')
-      
+
       const response = await fetch(
         `/api/v1/salon/pos/carts/${activeCartId}/lines/${lineId}?organization_id=${organizationId}`,
         {
           method: 'DELETE'
         }
       )
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to remove line')
       }
-      
+
       return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['pos-cart', activeCartId, organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['pos-cart', activeCartId, organizationId]
       })
       refetch()
     },
@@ -206,7 +201,7 @@ export function usePOSCart({
   const applyDiscountMutation = useMutation({
     mutationFn: async ({ type, value }: { type: 'percent' | 'amount'; value: number }) => {
       if (!activeCartId) throw new Error('No active cart')
-      
+
       const response = await fetch(`/api/v1/salon/pos/carts/${activeCartId}/discount`, {
         method: 'POST',
         headers: {
@@ -218,17 +213,17 @@ export function usePOSCart({
           organization_id: organizationId
         })
       })
-      
+
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to apply discount')
       }
-      
+
       return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['pos-cart', activeCartId, organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['pos-cart', activeCartId, organizationId]
       })
       refetch()
     },
@@ -246,14 +241,14 @@ export function usePOSCart({
   // Calculate cart totals
   const calculateTotals = useCallback(() => {
     if (!cart) return null
-    
+
     const subtotal = cart.lines.reduce((sum, line) => sum + line.line_total, 0)
     const discount = cart.pricing_summary.discounts || 0
     const discountedSubtotal = subtotal - discount
     const tax = discountedSubtotal * 0.2 // 20% VAT
     const tip = cart.pricing_summary.tip || 0
     const total = discountedSubtotal + tax + tip
-    
+
     return {
       subtotal,
       discount,
@@ -283,7 +278,7 @@ export function usePOSCart({
     totals: calculateTotals(),
     isAppointmentCart: isAppointmentCart(),
     appointmentLines: getAppointmentLines(),
-    
+
     // Actions
     loadCart,
     addLine: addLineMutation.mutateAsync,
@@ -291,7 +286,7 @@ export function usePOSCart({
     removeLine: removeLineMutation.mutateAsync,
     applyDiscount: applyDiscountMutation.mutateAsync,
     refetch,
-    
+
     // Mutation states
     isAddingLine: addLineMutation.isPending,
     isUpdatingLine: updateLineMutation.isPending,

@@ -104,7 +104,6 @@ export async function postEventWithBranch(transactionData: PosTransactionData): 
       transaction_id: transactionId,
       transaction_code: transactionCode
     }
-
   } catch (error) {
     console.error('Error posting event with branch:', error)
     return {
@@ -138,10 +137,7 @@ export async function postPosSaleWithCommission(transactionData: PosTransactionD
     // Create enhanced transaction data with commission lines
     const enhancedTransactionData: PosTransactionData = {
       ...transactionData,
-      line_items: [
-        ...transactionData.line_items,
-        ...commissionLines
-      ]
+      line_items: [...transactionData.line_items, ...commissionLines]
     }
 
     // Validate that lines are balanced
@@ -157,7 +153,6 @@ export async function postPosSaleWithCommission(transactionData: PosTransactionD
       ...result,
       commission_lines: commissionLines
     }
-
   } catch (error) {
     console.error('Error posting POS sale with commission:', error)
     return {
@@ -170,12 +165,14 @@ export async function postPosSaleWithCommission(transactionData: PosTransactionD
 /**
  * Calculate commission lines for a POS transaction
  */
-async function calculateCommissions(transactionData: PosTransactionData): Promise<TransactionLine[]> {
+async function calculateCommissions(
+  transactionData: PosTransactionData
+): Promise<TransactionLine[]> {
   const commissionLines: TransactionLine[] = []
-  
+
   // Group service lines by stylist
   const serviceLinesByStylist = new Map<string, TransactionLine[]>()
-  
+
   for (const line of transactionData.line_items) {
     if (line.smart_code.includes('SVC.') && line.line_data?.stylist_id) {
       const stylistId = line.line_data.stylist_id
@@ -191,13 +188,13 @@ async function calculateCommissions(transactionData: PosTransactionData): Promis
 
   for (const [stylistId, lines] of serviceLinesByStylist) {
     const totalServiceAmount = lines.reduce((sum, line) => sum + line.line_amount, 0)
-    
+
     // Get commission rule for stylist (in production, this would come from database)
     const commissionRule = await getCommissionRule(stylistId, transactionData.organization_id)
-    
+
     if (commissionRule && totalServiceAmount >= (commissionRule.min_amount || 0)) {
       let commissionAmount: number
-      
+
       if (commissionRule.commission_type === 'percentage') {
         commissionAmount = totalServiceAmount * (commissionRule.commission_rate / 100)
       } else {
@@ -246,7 +243,10 @@ async function calculateCommissions(transactionData: PosTransactionData): Promis
  * Get commission rule for a stylist (mock implementation)
  * In production, this would query the database
  */
-async function getCommissionRule(stylistId: string, organizationId: string): Promise<CommissionRule | null> {
+async function getCommissionRule(
+  stylistId: string,
+  organizationId: string
+): Promise<CommissionRule | null> {
   // Mock commission rules - in production, these would be stored in core_dynamic_data
   const mockRules: CommissionRule[] = [
     {
@@ -269,12 +269,14 @@ async function getCommissionRule(stylistId: string, organizationId: string): Pro
     }
   ]
 
-  return mockRules.find(rule => rule.stylist_id === stylistId) || {
-    stylist_id: stylistId,
-    commission_rate: 30, // Default 30%
-    commission_type: 'percentage',
-    min_amount: 10
-  }
+  return (
+    mockRules.find(rule => rule.stylist_id === stylistId) || {
+      stylist_id: stylistId,
+      commission_rate: 30, // Default 30%
+      commission_type: 'percentage',
+      min_amount: 10
+    }
+  )
 }
 
 /**
@@ -296,7 +298,9 @@ export function assertBranchOnEvent(transactionData: PosTransactionData): {
   // Check that all lines have matching branch_id in line_data
   for (const line of transactionData.line_items) {
     if (line.line_data?.branch_id && line.line_data.branch_id !== expectedBranchId) {
-      errors.push(`Line ${line.line_number} has mismatched branch_id: expected ${expectedBranchId}, got ${line.line_data.branch_id}`)
+      errors.push(
+        `Line ${line.line_number} has mismatched branch_id: expected ${expectedBranchId}, got ${line.line_data.branch_id}`
+      )
     }
   }
 
@@ -322,8 +326,8 @@ export function assertCommissionOnPosSale(transactionData: PosTransactionData): 
   }
 
   // Check that there are service lines with stylists
-  const serviceLines = transactionData.line_items.filter(line => 
-    line.smart_code.includes('SVC.') && line.line_data?.stylist_id
+  const serviceLines = transactionData.line_items.filter(
+    line => line.smart_code.includes('SVC.') && line.line_data?.stylist_id
   )
 
   if (serviceLines.length === 0) {
@@ -357,7 +361,7 @@ function validateBalancedLines(transactionData: PosTransactionData): {
 
   // Group lines by currency
   const currencyTotals = new Map<string, number>()
-  
+
   for (const line of transactionData.line_items) {
     const currency = line.line_data?.currency || 'AED' // Default currency
     const currentTotal = currencyTotals.get(currency) || 0
@@ -366,7 +370,7 @@ function validateBalancedLines(transactionData: PosTransactionData): {
 
   // Check that each currency balances to zero (within tolerance)
   const tolerance = 0.01 // 1 cent tolerance for rounding
-  
+
   for (const [currency, total] of currencyTotals) {
     if (Math.abs(total) > tolerance) {
       errors.push(`Currency ${currency} does not balance: total = ${total.toFixed(2)}`)

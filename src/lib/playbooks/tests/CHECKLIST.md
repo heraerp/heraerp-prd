@@ -1,9 +1,11 @@
 # Playbook System Test Checklist
 
 ## Overview
+
 This checklist covers all test requirements for the HERA Playbook System, organized by functional area. Each item should be verified through both unit tests and integration tests.
 
 ## Test Coverage Status
+
 - [ ] All tests passing
 - [ ] Coverage > 80%
 - [ ] Performance benchmarks met
@@ -14,6 +16,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 1. Playbook Creation and Versioning
 
 ### 1.1 Basic Playbook Creation
+
 - [ ] Create playbook with required fields only
   - Test file: `playbook-crud.test.ts`
 - [ ] Create playbook with all optional fields
@@ -26,6 +29,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `playbook-crud.test.ts`
 
 ### 1.2 Playbook Versioning
+
 - [ ] Create new version increments correctly (v1 → v2)
   - Test file: `playbook-versioning.test.ts`
 - [ ] Previous version marked as inactive
@@ -38,6 +42,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `playbook-versioning.test.ts`
 
 ### 1.3 Invalid Creation Scenarios
+
 - [ ] Reject duplicate smart codes
   - Test file: `playbook-validation.test.ts`
 - [ ] Reject invalid smart code formats
@@ -52,6 +57,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 2. Playbook Steps Management
 
 ### 2.1 Step Creation
+
 - [ ] Create human step with required fields
   - Test file: `playbook-steps.test.ts`
 - [ ] Create AI step with required fields
@@ -64,6 +70,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `smart-code-validation.test.ts`
 
 ### 2.2 Step Sequencing
+
 - [ ] Steps execute in sequence order (10, 20, 30)
   - Test file: `step-sequencing.test.ts`
 - [ ] Can insert steps between existing (15 between 10-20)
@@ -74,6 +81,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `parallel-execution.test.ts`
 
 ### 2.3 Step Relationships
+
 - [ ] Steps linked to correct playbook via relationships
   - Test file: `playbook-relationships.test.ts`
 - [ ] Step dependencies tracked in relationships
@@ -86,6 +94,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 3. Publishing and Freezing
 
 ### 3.1 Publishing Workflow
+
 - [ ] Publish changes status to 'published'
   - Test file: `playbook-publishing.test.ts`
 - [ ] Published playbooks cannot be edited
@@ -96,6 +105,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `publishing-validation.test.ts`
 
 ### 3.2 Freezing Mechanism
+
 - [ ] Frozen playbooks reject all modifications
   - Test file: `playbook-freezing.test.ts`
 - [ ] Frozen steps cannot be updated
@@ -106,6 +116,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `playbook-freezing.test.ts`
 
 ### 3.3 Archival Process
+
 - [ ] Archive changes status to 'archived'
   - Test file: `playbook-archival.test.ts`
 - [ ] Archived playbooks excluded from active queries
@@ -120,6 +131,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 4. Run Execution
 
 ### 4.1 Run Header Creation
+
 - [ ] Create run header with valid playbook reference
   - Test file: `run-execution.test.ts`
 - [ ] Run number auto-generated correctly
@@ -132,6 +144,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `run-context.test.ts`
 
 ### 4.2 Run Lines Execution
+
 - [ ] Run lines created for each playbook step
   - Test file: `run-lines.test.ts`
 - [ ] Line sequence matches step sequence
@@ -142,11 +155,12 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `run-timing.test.ts`
 
 ### 4.3 Status Progression
+
 - [ ] Run progresses: pending → running → completed
   - Test file: `run-status.test.ts`
 - [ ] Run can fail: running → failed
   - Test file: `run-status.test.ts`
-- [ ] Run can be cancelled: * → cancelled
+- [ ] Run can be cancelled: \* → cancelled
   - Test file: `run-cancellation.test.ts`
 - [ ] Line status affects run status
   - Test file: `run-status-aggregation.test.ts`
@@ -156,6 +170,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 5. Retry Policy Enforcement
 
 ### 5.1 Basic Retry Logic
+
 - [ ] Retry on transient failures
   - Test file: `retry-policy.test.ts`
 - [ ] Respect max retry count
@@ -166,6 +181,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `retry-classification.test.ts`
 
 ### 5.2 Retry Configuration
+
 - [ ] Step-level retry override
   - Test file: `retry-configuration.test.ts`
 - [ ] Playbook default retry policy
@@ -176,6 +192,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `retry-audit.test.ts`
 
 ### 5.3 Retry Scenarios
+
 - [ ] Network timeout retry
   - Test file: `retry-scenarios.test.ts`
 - [ ] Rate limit retry with backoff
@@ -190,6 +207,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 6. AI Step Execution
 
 ### 6.1 AI Field Population
+
 - [ ] AI fields populated for AI steps only
   - Test file: `ai-step-execution.test.ts`
 - [ ] Model selection respected
@@ -200,6 +218,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `ai-token-limits.test.ts`
 
 ### 6.2 AI Response Handling
+
 - [ ] Response stored in result field
   - Test file: `ai-response-storage.test.ts`
 - [ ] Confidence score recorded
@@ -210,6 +229,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `ai-fallback.test.ts`
 
 ### 6.3 AI Contract Validation
+
 - [ ] Output matches expected schema
   - Test file: `ai-contract-validation.test.ts`
 - [ ] Required fields present
@@ -222,6 +242,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 7. Human Step Handling
 
 ### 7.1 Human Step Waiting
+
 - [ ] Execution pauses at human steps
   - Test file: `human-step-waiting.test.ts`
 - [ ] Webhook/notification sent
@@ -232,6 +253,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `human-step-timeout.test.ts`
 
 ### 7.2 Human Step Completion
+
 - [ ] API endpoint accepts completion
   - Test file: `human-completion-api.test.ts`
 - [ ] Validates human input against contract
@@ -242,6 +264,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `human-step-resume.test.ts`
 
 ### 7.3 Human Step Features
+
 - [ ] Approval workflows
   - Test file: `human-approval.test.ts`
 - [ ] Multi-person sign-off
@@ -256,6 +279,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 8. Organization Security (RLS)
 
 ### 8.1 Row-Level Security
+
 - [ ] Playbooks filtered by organization_id
   - Test file: `rls-playbooks.test.ts`
 - [ ] Steps filtered by parent playbook org
@@ -266,6 +290,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `rls-cross-org.test.ts`
 
 ### 8.2 Multi-Tenant Isolation
+
 - [ ] Cannot see other org's playbooks
   - Test file: `multi-tenant-isolation.test.ts`
 - [ ] Cannot execute other org's playbooks
@@ -276,6 +301,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `system-playbook-access.test.ts`
 
 ### 8.3 Permission Checks
+
 - [ ] Create requires organization context
   - Test file: `permission-create.test.ts`
 - [ ] Update checks organization ownership
@@ -290,6 +316,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 9. Smart Code Validation
 
 ### 9.1 Format Validation
+
 - [ ] Playbook codes match `HERA.PLAYBOOK.*`
   - Test file: `smart-code-format.test.ts`
 - [ ] Step codes match `HERA.PLAYBOOK.STEP.*`
@@ -300,6 +327,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `smart-code-industry.test.ts`
 
 ### 9.2 Uniqueness Checks
+
 - [ ] No duplicate smart codes in org
   - Test file: `smart-code-uniqueness.test.ts`
 - [ ] Version increments preserve base code
@@ -312,6 +340,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 10. Contract Enforcement
 
 ### 10.1 Input Contract Validation
+
 - [ ] Required fields enforced
   - Test file: `contract-input-validation.test.ts`
 - [ ] Type checking on inputs
@@ -322,6 +351,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `contract-defaults.test.ts`
 
 ### 10.2 Output Contract Validation
+
 - [ ] Output matches expected format
   - Test file: `contract-output-validation.test.ts`
 - [ ] Required outputs present
@@ -330,6 +360,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `contract-coercion.test.ts`
 
 ### 10.3 Contract Evolution
+
 - [ ] Backward compatibility maintained
   - Test file: `contract-compatibility.test.ts`
 - [ ] Version migration support
@@ -342,6 +373,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 11. Policy Compliance
 
 ### 11.1 Execution Policies
+
 - [ ] Concurrency limits enforced
   - Test file: `policy-concurrency.test.ts`
 - [ ] Rate limiting applied
@@ -352,6 +384,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `policy-scheduling.test.ts`
 
 ### 11.2 Data Policies
+
 - [ ] PII handling compliance
   - Test file: `policy-pii.test.ts`
 - [ ] Data retention rules
@@ -362,6 +395,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `policy-audit.test.ts`
 
 ### 11.3 Business Policies
+
 - [ ] Approval thresholds
   - Test file: `policy-approval.test.ts`
 - [ ] Segregation of duties
@@ -374,6 +408,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 12. Security and Permissions
 
 ### 12.1 Authentication
+
 - [ ] JWT token validation
   - Test file: `auth-jwt.test.ts`
 - [ ] Session management
@@ -384,6 +419,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `auth-mfa.test.ts`
 
 ### 12.2 Authorization
+
 - [ ] Role-based access control
   - Test file: `authz-rbac.test.ts`
 - [ ] Playbook-specific permissions
@@ -394,6 +430,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `authz-execution.test.ts`
 
 ### 12.3 Security Features
+
 - [ ] SQL injection prevention
   - Test file: `security-sql-injection.test.ts`
 - [ ] XSS prevention
@@ -408,6 +445,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 13. Idempotency
 
 ### 13.1 Execution Idempotency
+
 - [ ] Duplicate run requests handled
   - Test file: `idempotency-execution.test.ts`
 - [ ] Idempotency keys tracked
@@ -418,6 +456,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `idempotency-ttl.test.ts`
 
 ### 13.2 Step Idempotency
+
 - [ ] Re-running steps safe
   - Test file: `idempotency-steps.test.ts`
 - [ ] Side effects tracked
@@ -430,6 +469,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 14. Signal Handling
 
 ### 14.1 Cancellation Signals
+
 - [ ] Graceful cancellation support
   - Test file: `signal-cancellation.test.ts`
 - [ ] Cleanup on cancellation
@@ -440,6 +480,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `signal-cascade.test.ts`
 
 ### 14.2 Pause/Resume Signals
+
 - [ ] Pause at safe points
   - Test file: `signal-pause.test.ts`
 - [ ] State preserved on pause
@@ -450,6 +491,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `signal-pause-timeout.test.ts`
 
 ### 14.3 External Signals
+
 - [ ] Webhook signal reception
   - Test file: `signal-webhook.test.ts`
 - [ ] Event-driven triggers
@@ -462,6 +504,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 15. Performance Requirements
 
 ### 15.1 Response Times
+
 - [ ] Playbook creation < 100ms
   - Test file: `perf-creation.test.ts`
 - [ ] Step execution < 500ms (non-AI)
@@ -472,6 +515,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `perf-queries.test.ts`
 
 ### 15.2 Scalability
+
 - [ ] Handle 1000+ concurrent runs
   - Test file: `scale-concurrent-runs.test.ts`
 - [ ] Support 10K+ playbooks per org
@@ -482,6 +526,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `scale-failover.test.ts`
 
 ### 15.3 Resource Usage
+
 - [ ] Memory usage < 512MB per worker
   - Test file: `resource-memory.test.ts`
 - [ ] CPU usage scales linearly
@@ -496,6 +541,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 16. Integration Tests
 
 ### 16.1 End-to-End Workflows
+
 - [ ] Complete playbook lifecycle
   - Test file: `e2e-lifecycle.test.ts`
 - [ ] Multi-step execution flow
@@ -506,6 +552,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `e2e-ai.test.ts`
 
 ### 16.2 External Integrations
+
 - [ ] Webhook delivery
   - Test file: `integration-webhooks.test.ts`
 - [ ] Email notifications
@@ -516,6 +563,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `integration-slack.test.ts`
 
 ### 16.3 System Integration
+
 - [ ] Universal API compatibility
   - Test file: `integration-universal-api.test.ts`
 - [ ] Smart code system integration
@@ -530,6 +578,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## 17. Error Handling
 
 ### 17.1 Graceful Degradation
+
 - [ ] Network errors handled
   - Test file: `error-network.test.ts`
 - [ ] Database errors handled
@@ -540,6 +589,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `error-validation.test.ts`
 
 ### 17.2 Error Recovery
+
 - [ ] Automatic retry on transient errors
   - Test file: `error-retry.test.ts`
 - [ ] Circuit breaker implementation
@@ -550,6 +600,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
   - Test file: `error-notifications.test.ts`
 
 ### 17.3 Error Reporting
+
 - [ ] Detailed error messages
   - Test file: `error-messages.test.ts`
 - [ ] Error categorization
@@ -564,12 +615,14 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## Test Execution Guidelines
 
 ### Priority Levels
+
 1. **Critical**: Security, RLS, Contract Validation
 2. **High**: Core CRUD, Execution Flow, Retry Logic
 3. **Medium**: Integration, Performance, Error Handling
 4. **Low**: UI/UX, Analytics, Reporting
 
 ### Test Environment Requirements
+
 - [ ] Isolated test database
 - [ ] Mock AI services available
 - [ ] Test organization setup
@@ -577,6 +630,7 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 - [ ] Performance monitoring tools
 
 ### Continuous Integration
+
 - [ ] All tests run on PR
 - [ ] Nightly full test suite
 - [ ] Performance regression tests
@@ -587,18 +641,21 @@ This checklist covers all test requirements for the HERA Playbook System, organi
 ## Sign-off
 
 ### Development Team
+
 - [ ] Unit tests complete
 - [ ] Integration tests complete
 - [ ] Code review passed
 - [ ] Documentation updated
 
 ### QA Team
+
 - [ ] Functional testing complete
 - [ ] Performance testing complete
 - [ ] Security testing complete
 - [ ] User acceptance criteria met
 
 ### Release Readiness
+
 - [ ] All critical tests passing
 - [ ] Performance benchmarks met
 - [ ] Security audit passed

@@ -1,74 +1,73 @@
-import { api } from './api-client';
-import type { TaskItem, StepSchemaResult } from '@/types/tasks';
+import { api } from './api-client'
+import type { TaskItem, StepSchemaResult } from '@/types/tasks'
 
 // Simple cache for schemas to avoid repeated fetches
-const schemaCache = new Map<string, Record<string, unknown>>();
+const schemaCache = new Map<string, Record<string, unknown>>()
 
 /**
  * Get the output schema for a step from a task
  */
 export async function getStepOutputSchema(task: TaskItem): Promise<Record<string, unknown>> {
-  const cacheKey = `${task.run_id}-${task.sequence}`;
-  
+  const cacheKey = `${task.run_id}-${task.sequence}`
+
   // Check cache first
   if (schemaCache.has(cacheKey)) {
-    return schemaCache.get(cacheKey)!;
+    return schemaCache.get(cacheKey)!
   }
 
   try {
     // Strategy 1: Try to get playbook definition and find step
-    const playbookName = task.metadata?.playbook_name as string;
-    
+    const playbookName = task.metadata?.playbook_name as string
+
     if (playbookName) {
       try {
         // Fetch playbook by name
-        const playbooks = await api.playbooks.list({ 
+        const playbooks = await api.playbooks.list({
           filter: { name: playbookName },
-          limit: 1 
-        });
-        
+          limit: 1
+        })
+
         if (playbooks.data && playbooks.data.length > 0) {
-          const playbook = playbooks.data[0];
-          
+          const playbook = playbooks.data[0]
+
           // Get full playbook definition
-          const fullPlaybook = await api.playbooks.get(playbook.id);
-          
+          const fullPlaybook = await api.playbooks.get(playbook.id)
+
           // Find step by sequence or name
-          const step = findStepInPlaybook(fullPlaybook, task.step_name, task.sequence);
-          
+          const step = findStepInPlaybook(fullPlaybook, task.step_name, task.sequence)
+
           if (step?.output_contract) {
-            schemaCache.set(cacheKey, step.output_contract);
-            return step.output_contract;
+            schemaCache.set(cacheKey, step.output_contract)
+            return step.output_contract
           }
         }
       } catch (error) {
-        console.warn('Failed to fetch playbook definition:', error);
+        console.warn('Failed to fetch playbook definition:', error)
       }
     }
 
     // Strategy 2: Try to get schema from run metadata or step definition endpoint
     // This would be a custom endpoint that returns step schemas
     try {
-      const response = await fetch(`/api/v1/runs/${task.run_id}/steps/${task.sequence}/schema`);
+      const response = await fetch(`/api/v1/runs/${task.run_id}/steps/${task.sequence}/schema`)
       if (response.ok) {
-        const schemaResult: StepSchemaResult = await response.json();
+        const schemaResult: StepSchemaResult = await response.json()
         if (schemaResult.output_contract) {
-          schemaCache.set(cacheKey, schemaResult.output_contract);
-          return schemaResult.output_contract;
+          schemaCache.set(cacheKey, schemaResult.output_contract)
+          return schemaResult.output_contract
         }
       }
     } catch (error) {
-      console.warn('Failed to fetch step schema from API:', error);
+      console.warn('Failed to fetch step schema from API:', error)
     }
 
     // Strategy 3: Return default schema based on step name patterns
-    const defaultSchema = getDefaultSchemaForStepName(task.step_name);
-    schemaCache.set(cacheKey, defaultSchema);
-    return defaultSchema;
-
+    const defaultSchema = getDefaultSchemaForStepName(task.step_name)
+    schemaCache.set(cacheKey, defaultSchema)
+    return defaultSchema
   } catch (error) {
-    console.error('Failed to get step output schema:', error);
-    
+    console.error('Failed to get step output schema:', error)
+
     // Return minimal default schema
     const fallbackSchema = {
       type: 'object',
@@ -79,10 +78,10 @@ export async function getStepOutputSchema(task: TaskItem): Promise<Record<string
           description: 'Step completion result'
         }
       }
-    };
-    
-    schemaCache.set(cacheKey, fallbackSchema);
-    return fallbackSchema;
+    }
+
+    schemaCache.set(cacheKey, fallbackSchema)
+    return fallbackSchema
   }
 }
 
@@ -90,8 +89,8 @@ export async function getStepOutputSchema(task: TaskItem): Promise<Record<string
  * Find step definition in playbook by name or sequence
  */
 function findStepInPlaybook(
-  playbook: any, 
-  stepName: string, 
+  playbook: any,
+  stepName: string,
   sequence: number
 ): StepSchemaResult | null {
   // Look for steps in playbook definition
@@ -101,40 +100,40 @@ function findStepInPlaybook(
       return {
         output_contract: playbook.steps[sequence - 1].output_contract,
         step_definition: playbook.steps[sequence - 1]
-      };
+      }
     }
-    
+
     // Try to find by name
-    const step = playbook.steps.find((s: any) => s.name === stepName);
+    const step = playbook.steps.find((s: any) => s.name === stepName)
     if (step) {
       return {
         output_contract: step.output_contract,
         step_definition: step
-      };
+      }
     }
   }
 
   // Look in metadata or other playbook structures
   if (playbook.metadata?.steps) {
-    const step = playbook.metadata.steps.find((s: any) => 
-      s.name === stepName || s.sequence === sequence
-    );
+    const step = playbook.metadata.steps.find(
+      (s: any) => s.name === stepName || s.sequence === sequence
+    )
     if (step) {
       return {
         output_contract: step.output_contract,
         step_definition: step
-      };
+      }
     }
   }
 
-  return null;
+  return null
 }
 
 /**
  * Generate default schema based on step name patterns
  */
 function getDefaultSchemaForStepName(stepName: string): Record<string, unknown> {
-  const lowerName = stepName.toLowerCase();
+  const lowerName = stepName.toLowerCase()
 
   // Approval steps
   if (lowerName.includes('approve') || lowerName.includes('review')) {
@@ -154,7 +153,7 @@ function getDefaultSchemaForStepName(stepName: string): Record<string, unknown> 
         }
       },
       required: ['approved']
-    };
+    }
   }
 
   // Validation steps
@@ -181,7 +180,7 @@ function getDefaultSchemaForStepName(stepName: string): Record<string, unknown> 
         }
       },
       required: ['valid']
-    };
+    }
   }
 
   // Data entry steps
@@ -207,7 +206,7 @@ function getDefaultSchemaForStepName(stepName: string): Record<string, unknown> 
         }
       },
       required: ['confirmed']
-    };
+    }
   }
 
   // Generic completion schema
@@ -234,12 +233,12 @@ function getDefaultSchemaForStepName(stepName: string): Record<string, unknown> 
       }
     },
     required: ['status']
-  };
+  }
 }
 
 /**
  * Clear schema cache (useful for testing or when playbooks change)
  */
 export function clearSchemaCache(): void {
-  schemaCache.clear();
+  schemaCache.clear()
 }

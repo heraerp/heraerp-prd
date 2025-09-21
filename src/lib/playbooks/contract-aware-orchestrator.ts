@@ -1,46 +1,50 @@
 /**
  * Contract-Aware Playbook Orchestrator
- * 
+ *
  * Enhanced orchestrator that validates data contracts and enforces
  * policies at every step of playbook execution using HERA's
  * dynamic data storage for contract definitions.
  */
 
-import { PlaybookOrchestrator } from './orchestrator';
-import { ContractValidationService, ValidationResult, PolicyValidationResult } from './contract-validation';
-import { universalApi } from '@/lib/universal-api';
-import type { WorkerResult } from './orchestrator';
+import { PlaybookOrchestrator } from './orchestrator'
+import {
+  ContractValidationService,
+  ValidationResult,
+  PolicyValidationResult
+} from './contract-validation'
+import { universalApi } from '@/lib/universal-api'
+import type { WorkerResult } from './orchestrator'
 
 export interface ContractValidationMetrics {
-  input_validation: ValidationResult;
-  output_validation?: ValidationResult;
+  input_validation: ValidationResult
+  output_validation?: ValidationResult
   policy_validations: {
-    sla: PolicyValidationResult;
-    quorum?: PolicyValidationResult;
-    segregation: PolicyValidationResult;
-    approval?: PolicyValidationResult;
-    retry?: PolicyValidationResult;
-  };
-  total_validation_time_ms: number;
-  contract_compliance_score: number;
+    sla: PolicyValidationResult
+    quorum?: PolicyValidationResult
+    segregation: PolicyValidationResult
+    approval?: PolicyValidationResult
+    retry?: PolicyValidationResult
+  }
+  total_validation_time_ms: number
+  contract_compliance_score: number
 }
 
 export interface EnhancedWorkerResult extends WorkerResult {
-  contract_compliance?: ContractValidationMetrics;
-  policy_violations?: string[];
-  validation_warnings?: string[];
+  contract_compliance?: ContractValidationMetrics
+  policy_violations?: string[]
+  validation_warnings?: string[]
 }
 
 /**
  * Contract-Aware Orchestrator with full validation and policy enforcement
  */
 export class ContractAwareOrchestrator extends PlaybookOrchestrator {
-  private validationService: ContractValidationService;
-  private validationMetrics: Map<string, ContractValidationMetrics> = new Map();
+  private validationService: ContractValidationService
+  private validationMetrics: Map<string, ContractValidationMetrics> = new Map()
 
   constructor(organizationId: string) {
-    super(organizationId);
-    this.validationService = new ContractValidationService(organizationId);
+    super(organizationId)
+    this.validationService = new ContractValidationService(organizationId)
   }
 
   /**
@@ -50,70 +54,74 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
     playbookId: string,
     inputs: any,
     options: {
-      correlationId?: string;
-      priority?: 'low' | 'normal' | 'high' | 'critical';
-      subjectEntityId?: string;
+      correlationId?: string
+      priority?: 'low' | 'normal' | 'high' | 'critical'
+      subjectEntityId?: string
     } = {}
   ): Promise<string> {
-    const validationStart = Date.now();
-    
+    const validationStart = Date.now()
+
     try {
       // 1. Validate playbook input contract
-      const inputValidation = await this.validationService.validatePlaybookInput(
-        playbookId,
-        inputs
-      );
+      const inputValidation = await this.validationService.validatePlaybookInput(playbookId, inputs)
 
       if (!inputValidation.valid) {
         throw new Error(
           `Playbook input validation failed: ${inputValidation.errors?.map(e => e.message).join(', ')}`
-        );
+        )
       }
 
       // 2. Validate approval policy for run initiation
-      const approvalValidation = await this.validationService.validateApprovalPolicy(
-        playbookId,
-        {
-          amount: inputs.amount_requested,
-          riskLevel: this.assessInputRiskLevel(inputs),
-          specialCircumstances: inputs.special_circumstances
-        }
-      );
+      const approvalValidation = await this.validationService.validateApprovalPolicy(playbookId, {
+        amount: inputs.amount_requested,
+        riskLevel: this.assessInputRiskLevel(inputs),
+        specialCircumstances: inputs.special_circumstances
+      })
 
       if (!approvalValidation.compliant && approvalValidation.severity === 'critical') {
-        throw new Error(`Approval policy violation: ${approvalValidation.message}`);
+        throw new Error(`Approval policy violation: ${approvalValidation.message}`)
       }
 
       // 3. Create run with validated inputs
-      const runId = await super.startRun(playbookId, inputValidation.validatedData!, options);
+      const runId = await super.startRun(playbookId, inputValidation.validatedData!, options)
 
       // 4. Store validation metrics
-      const validationTime = Date.now() - validationStart;
+      const validationTime = Date.now() - validationStart
       const complianceMetrics: ContractValidationMetrics = {
         input_validation: inputValidation,
         policy_validations: {
-          sla: { compliant: true, message: "Run initiated - SLA tracking started", severity: 'info' },
-          segregation: { compliant: true, message: "No segregation conflicts at run start", severity: 'info' },
+          sla: {
+            compliant: true,
+            message: 'Run initiated - SLA tracking started',
+            severity: 'info'
+          },
+          segregation: {
+            compliant: true,
+            message: 'No segregation conflicts at run start',
+            severity: 'info'
+          },
           approval: approvalValidation
         },
         total_validation_time_ms: validationTime,
-        contract_compliance_score: this.calculateComplianceScore([inputValidation], [approvalValidation])
-      };
+        contract_compliance_score: this.calculateComplianceScore(
+          [inputValidation],
+          [approvalValidation]
+        )
+      }
 
-      this.validationMetrics.set(runId, complianceMetrics);
+      this.validationMetrics.set(runId, complianceMetrics)
 
       // 5. Log compliance audit event
-      await this.logComplianceEvent(runId, 'run_started', complianceMetrics);
+      await this.logComplianceEvent(runId, 'run_started', complianceMetrics)
 
-      return runId;
-
+      return runId
     } catch (error) {
       // Log validation failure
       await this.logComplianceEvent('unknown', 'validation_failed', {
         error: error.message,
         validation_time_ms: Date.now() - validationStart
-      });
-      throw error;
+      })
+      throw error
     }
   }
 
@@ -126,17 +134,12 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
     stepDef: any,
     inputs: any
   ): Promise<EnhancedWorkerResult> {
-    const validationStart = Date.now();
-    let validationMetrics: ContractValidationMetrics | undefined;
+    const validationStart = Date.now()
+    let validationMetrics: ContractValidationMetrics | undefined
 
     try {
       // 1. Pre-execution validation
-      const preValidation = await this.performPreExecutionValidation(
-        runId,
-        stepId,
-        stepDef,
-        inputs
-      );
+      const preValidation = await this.performPreExecutionValidation(runId, stepId, stepDef, inputs)
 
       if (preValidation.hasBlockingViolations) {
         return {
@@ -148,7 +151,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
           contract_compliance: preValidation.metrics,
           policy_violations: preValidation.blockingReasons,
           validation_warnings: preValidation.warnings
-        };
+        }
       }
 
       // 2. Execute step with validated inputs
@@ -157,7 +160,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         stepId,
         stepDef,
         preValidation.validatedInputs
-      );
+      )
 
       // 3. Post-execution validation (if step completed successfully)
       if (stepResult.status === 'completed' && stepResult.outputs) {
@@ -166,7 +169,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
           stepDef,
           stepResult.outputs,
           preValidation.metrics
-        );
+        )
 
         if (!postValidation.outputValidation.valid) {
           return {
@@ -175,38 +178,37 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
             error: `Output validation failed: ${postValidation.outputValidation.errors?.map(e => e.message).join(', ')}`,
             contract_compliance: postValidation.metrics,
             validation_warnings: ['Output contract validation failed after successful execution']
-          };
+          }
         }
 
-        validationMetrics = postValidation.metrics;
-        stepResult.outputs = postValidation.outputValidation.validatedData;
+        validationMetrics = postValidation.metrics
+        stepResult.outputs = postValidation.outputValidation.validatedData
       } else {
-        validationMetrics = preValidation.metrics;
+        validationMetrics = preValidation.metrics
       }
 
       // 4. Update global validation metrics
-      this.updateValidationMetrics(runId, validationMetrics);
+      this.updateValidationMetrics(runId, validationMetrics)
 
       // 5. Log compliance event
       await this.logComplianceEvent(runId, 'step_executed', {
         step_id: stepId,
         step_name: stepDef.metadata?.step_name,
         validation_metrics: validationMetrics
-      });
+      })
 
       return {
         ...stepResult,
         contract_compliance: validationMetrics,
         validation_warnings: preValidation.warnings
-      };
-
+      }
     } catch (error) {
       // Log validation error
       await this.logComplianceEvent(runId, 'step_validation_error', {
         step_id: stepId,
         error: error.message,
         validation_time_ms: Date.now() - validationStart
-      });
+      })
 
       return {
         status: 'failed',
@@ -215,7 +217,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         ai_confidence: 0.1,
         ai_insights: `Step execution failed: ${error.message}`,
         contract_compliance: validationMetrics
-      };
+      }
     }
   }
 
@@ -228,14 +230,14 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
   ): Promise<{ success: boolean; validationResults?: ValidationResult }> {
     try {
       // Get run details
-      const run = await universalApi.getTransaction(runId);
-      const playbookId = run.reference_entity_id;
+      const run = await universalApi.getTransaction(runId)
+      const playbookId = run.reference_entity_id
 
       // Validate final outputs against playbook output contract
       const outputValidation = await this.validationService.validatePlaybookOutput(
         playbookId,
         finalOutputs
-      );
+      )
 
       if (!outputValidation.valid) {
         // Update run status to failed due to output validation
@@ -247,34 +249,33 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
             output_validation_errors: outputValidation.errors,
             completed_at: new Date().toISOString()
           }
-        });
+        })
 
         return {
           success: false,
           validationResults: outputValidation
-        };
+        }
       }
 
       // Complete run successfully
-      await super.completeRun(runId, outputValidation.validatedData!);
+      await super.completeRun(runId, outputValidation.validatedData!)
 
       // Log final compliance metrics
-      const finalMetrics = this.validationMetrics.get(runId);
+      const finalMetrics = this.validationMetrics.get(runId)
       await this.logComplianceEvent(runId, 'run_completed', {
         final_outputs_validated: true,
         compliance_metrics: finalMetrics
-      });
+      })
 
       return {
         success: true,
         validationResults: outputValidation
-      };
-
+      }
     } catch (error) {
       await this.logComplianceEvent(runId, 'run_completion_failed', {
         error: error.message
-      });
-      throw error;
+      })
+      throw error
     }
   }
 
@@ -286,25 +287,27 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
     stepDef: any,
     inputs: any
   ): Promise<{
-    validatedInputs: any;
-    metrics: ContractValidationMetrics;
-    hasBlockingViolations: boolean;
-    blockingReasons: string[];
-    warnings: string[];
+    validatedInputs: any
+    metrics: ContractValidationMetrics
+    hasBlockingViolations: boolean
+    blockingReasons: string[]
+    warnings: string[]
   }> {
-    const validationStart = Date.now();
-    const warnings: string[] = [];
-    const blockingReasons: string[] = [];
+    const validationStart = Date.now()
+    const warnings: string[] = []
+    const blockingReasons: string[] = []
 
     // 1. Validate step input contract
-    const inputValidation = await this.validationService.validateStepInput(stepId, inputs);
-    
+    const inputValidation = await this.validationService.validateStepInput(stepId, inputs)
+
     if (!inputValidation.valid) {
-      blockingReasons.push(`Input validation: ${inputValidation.errors?.map(e => e.message).join(', ')}`);
+      blockingReasons.push(
+        `Input validation: ${inputValidation.errors?.map(e => e.message).join(', ')}`
+      )
     }
 
     // 2. Get run context for policy validation
-    const runContext = await this.getRunContext(runId, stepDef);
+    const runContext = await this.getRunContext(runId, stepDef)
 
     // 3. Validate SLA policy
     const slaValidation = await this.validationService.validateSLAPolicy(
@@ -314,12 +317,12 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         startTime: inputs.step_started_at || new Date().toISOString(),
         businessHoursOnly: runContext.businessHoursOnly
       }
-    );
+    )
 
     if (!slaValidation.compliant && slaValidation.severity === 'critical') {
-      blockingReasons.push(`SLA violation: ${slaValidation.message}`);
+      blockingReasons.push(`SLA violation: ${slaValidation.message}`)
     } else if (!slaValidation.compliant) {
-      warnings.push(`SLA warning: ${slaValidation.message}`);
+      warnings.push(`SLA warning: ${slaValidation.message}`)
     }
 
     // 4. Validate segregation of duties
@@ -332,14 +335,14 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         previousStepUsers: runContext.previousStepUsers,
         relationshipChecks: runContext.relationshipChecks
       }
-    );
+    )
 
     if (!segregationValidation.compliant && segregationValidation.severity === 'critical') {
-      blockingReasons.push(`Segregation violation: ${segregationValidation.message}`);
+      blockingReasons.push(`Segregation violation: ${segregationValidation.message}`)
     }
 
     // 5. Validate quorum policy (for committee steps)
-    let quorumValidation: PolicyValidationResult | undefined;
+    let quorumValidation: PolicyValidationResult | undefined
     if (stepDef.metadata.step_name === 'CommitteeReview') {
       quorumValidation = await this.validationService.validateQuorumPolicy(
         stepDef.metadata.playbook_id,
@@ -349,15 +352,15 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
           votingWindowStart: runContext.votingWindowStart,
           conflictChecks: runContext.conflictChecks
         }
-      );
+      )
 
       if (!quorumValidation.compliant && quorumValidation.severity === 'error') {
-        blockingReasons.push(`Quorum violation: ${quorumValidation.message}`);
+        blockingReasons.push(`Quorum violation: ${quorumValidation.message}`)
       }
     }
 
     // 6. Validate approval policy (for decision steps)
-    let approvalValidation: PolicyValidationResult | undefined;
+    let approvalValidation: PolicyValidationResult | undefined
     if (['AwardDecision', 'ApprovalRequired'].includes(stepDef.metadata.step_name)) {
       approvalValidation = await this.validationService.validateApprovalPolicy(
         stepDef.metadata.playbook_id,
@@ -367,15 +370,15 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
           approvers: runContext.approvers,
           specialCircumstances: runContext.specialCircumstances
         }
-      );
+      )
 
       if (!approvalValidation.compliant && approvalValidation.severity === 'critical') {
-        blockingReasons.push(`Approval violation: ${approvalValidation.message}`);
+        blockingReasons.push(`Approval violation: ${approvalValidation.message}`)
       }
     }
 
     // 7. Build validation metrics
-    const validationTime = Date.now() - validationStart;
+    const validationTime = Date.now() - validationStart
     const metrics: ContractValidationMetrics = {
       input_validation: inputValidation,
       policy_validations: {
@@ -389,7 +392,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         [inputValidation],
         [slaValidation, segregationValidation, quorumValidation, approvalValidation].filter(Boolean)
       )
-    };
+    }
 
     return {
       validatedInputs: inputValidation.validatedData || inputs,
@@ -397,7 +400,7 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
       hasBlockingViolations: blockingReasons.length > 0,
       blockingReasons,
       warnings
-    };
+    }
   }
 
   private async performPostExecutionValidation(
@@ -406,11 +409,11 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
     outputs: any,
     preValidationMetrics: ContractValidationMetrics
   ): Promise<{
-    outputValidation: ValidationResult;
-    metrics: ContractValidationMetrics;
+    outputValidation: ValidationResult
+    metrics: ContractValidationMetrics
   }> {
     // Validate step output contract
-    const outputValidation = await this.validationService.validateStepOutput(stepId, outputs);
+    const outputValidation = await this.validationService.validateStepOutput(stepId, outputs)
 
     // Update metrics with output validation
     const metrics: ContractValidationMetrics = {
@@ -420,23 +423,23 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
         [preValidationMetrics.input_validation, outputValidation],
         Object.values(preValidationMetrics.policy_validations).filter(Boolean)
       )
-    };
+    }
 
     return {
       outputValidation,
       metrics
-    };
+    }
   }
 
   private async getRunContext(runId: string, stepDef: any): Promise<any> {
     // Get run transaction
-    const run = await universalApi.getTransaction(runId);
-    
+    const run = await universalApi.getTransaction(runId)
+
     // Get previous step executions
     const stepExecutions = await universalApi.queryTransactionLines({
       transaction_id: runId,
       organization_id: this.organizationId
-    });
+    })
 
     // Build context object with all necessary information for policy validation
     return {
@@ -445,91 +448,89 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
       businessHoursOnly: true, // Could be configured per organization
       transactionAmount: run.total_amount,
       riskLevel: this.assessRiskLevel(run),
-      previousStepUsers: stepExecutions.data?.map(step => ({
-        stepName: step.metadata?.step_name,
-        userId: step.metadata?.executed_by,
-        roles: step.metadata?.user_roles || []
-      })) || [],
+      previousStepUsers:
+        stepExecutions.data?.map(step => ({
+          stepName: step.metadata?.step_name,
+          userId: step.metadata?.executed_by,
+          roles: step.metadata?.user_roles || []
+        })) || [],
       committeeMembers: run.metadata?.committee_members || [],
       votingWindowStart: run.metadata?.voting_window_start,
       conflictChecks: run.metadata?.conflict_checks || [],
       approvers: run.metadata?.approvers || [],
       specialCircumstances: run.metadata?.special_circumstances || [],
       relationshipChecks: run.metadata?.relationship_checks || []
-    };
+    }
   }
 
   private assessInputRiskLevel(inputs: any): 'low' | 'medium' | 'high' | 'critical' {
     // Simple risk assessment based on amount and other factors
-    const amount = inputs.amount_requested || 0;
-    
-    if (amount > 75000) return 'high';
-    if (amount > 25000) return 'medium';
-    if (inputs.new_applicant) return 'medium';
-    return 'low';
+    const amount = inputs.amount_requested || 0
+
+    if (amount > 75000) return 'high'
+    if (amount > 25000) return 'medium'
+    if (inputs.new_applicant) return 'medium'
+    return 'low'
   }
 
   private assessRiskLevel(run: any): 'low' | 'medium' | 'high' | 'critical' {
     // Assess risk based on run characteristics
-    const amount = run.total_amount || 0;
-    const aiConfidence = run.ai_confidence || 1;
-    
-    if (amount > 75000 && aiConfidence < 0.7) return 'critical';
-    if (amount > 50000 || aiConfidence < 0.8) return 'high';
-    if (amount > 25000 || aiConfidence < 0.9) return 'medium';
-    return 'low';
+    const amount = run.total_amount || 0
+    const aiConfidence = run.ai_confidence || 1
+
+    if (amount > 75000 && aiConfidence < 0.7) return 'critical'
+    if (amount > 50000 || aiConfidence < 0.8) return 'high'
+    if (amount > 25000 || aiConfidence < 0.9) return 'medium'
+    return 'low'
   }
 
   private calculateComplianceScore(
     validationResults: ValidationResult[],
     policyResults: PolicyValidationResult[]
   ): number {
-    let totalScore = 0;
-    let totalWeight = 0;
+    let totalScore = 0
+    let totalWeight = 0
 
     // Contract validation score (weight: 40%)
-    const validResults = validationResults.filter(r => r.valid);
-    const contractScore = validResults.length / validationResults.length;
-    totalScore += contractScore * 0.4;
-    totalWeight += 0.4;
+    const validResults = validationResults.filter(r => r.valid)
+    const contractScore = validResults.length / validationResults.length
+    totalScore += contractScore * 0.4
+    totalWeight += 0.4
 
     // Policy compliance score (weight: 60%)
     if (policyResults.length > 0) {
-      const compliantPolicies = policyResults.filter(p => p.compliant);
-      const policyScore = compliantPolicies.length / policyResults.length;
-      totalScore += policyScore * 0.6;
-      totalWeight += 0.6;
+      const compliantPolicies = policyResults.filter(p => p.compliant)
+      const policyScore = compliantPolicies.length / policyResults.length
+      totalScore += policyScore * 0.6
+      totalWeight += 0.6
     }
 
-    return totalWeight > 0 ? Math.round((totalScore / totalWeight) * 100) : 0;
+    return totalWeight > 0 ? Math.round((totalScore / totalWeight) * 100) : 0
   }
 
   private updateValidationMetrics(runId: string, stepMetrics: ContractValidationMetrics): void {
-    const existingMetrics = this.validationMetrics.get(runId);
-    
+    const existingMetrics = this.validationMetrics.get(runId)
+
     if (existingMetrics) {
       // Aggregate metrics across all steps
       const aggregatedMetrics: ContractValidationMetrics = {
         input_validation: stepMetrics.input_validation,
         output_validation: stepMetrics.output_validation,
         policy_validations: stepMetrics.policy_validations,
-        total_validation_time_ms: existingMetrics.total_validation_time_ms + stepMetrics.total_validation_time_ms,
+        total_validation_time_ms:
+          existingMetrics.total_validation_time_ms + stepMetrics.total_validation_time_ms,
         contract_compliance_score: Math.round(
           (existingMetrics.contract_compliance_score + stepMetrics.contract_compliance_score) / 2
         )
-      };
-      
-      this.validationMetrics.set(runId, aggregatedMetrics);
+      }
+
+      this.validationMetrics.set(runId, aggregatedMetrics)
     } else {
-      this.validationMetrics.set(runId, stepMetrics);
+      this.validationMetrics.set(runId, stepMetrics)
     }
   }
 
-  private async logComplianceEvent(
-    runId: string,
-    eventType: string,
-    details: any
-  ): Promise<void> {
+  private async logComplianceEvent(runId: string, eventType: string, details: any): Promise<void> {
     try {
       await universalApi.createTransaction({
         transaction_type: 'compliance_audit',
@@ -542,9 +543,9 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
           timestamp: new Date().toISOString(),
           details
         }
-      });
+      })
     } catch (error) {
-      console.error('Failed to log compliance event:', error);
+      console.error('Failed to log compliance event:', error)
       // Don't throw - compliance logging should not break workflow
     }
   }
@@ -553,21 +554,21 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
    * Get validation metrics for a run
    */
   getValidationMetrics(runId: string): ContractValidationMetrics | undefined {
-    return this.validationMetrics.get(runId);
+    return this.validationMetrics.get(runId)
   }
 
   /**
    * Clear validation metrics (for cleanup)
    */
   clearValidationMetrics(runId: string): void {
-    this.validationMetrics.delete(runId);
+    this.validationMetrics.delete(runId)
   }
 
   /**
    * Get validation service for direct access
    */
   getValidationService(): ContractValidationService {
-    return this.validationService;
+    return this.validationService
   }
 }
 
@@ -575,5 +576,5 @@ export class ContractAwareOrchestrator extends PlaybookOrchestrator {
  * Factory function to create contract-aware orchestrator
  */
 export function createContractAwareOrchestrator(organizationId: string): ContractAwareOrchestrator {
-  return new ContractAwareOrchestrator(organizationId);
+  return new ContractAwareOrchestrator(organizationId)
 }

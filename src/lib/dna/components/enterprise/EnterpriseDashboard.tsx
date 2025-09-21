@@ -223,7 +223,10 @@ export const ChartPlaceholder: React.FC<{
 }> = ({ type = 'line', height = '300px', loading = false }) => {
   if (loading) {
     return (
-      <div className="animate-pulse bg-gray-200 dark:bg-muted-foreground/10 rounded-lg" style={{ height }} />
+      <div
+        className="animate-pulse bg-gray-200 dark:bg-muted-foreground/10 rounded-lg"
+        style={{ height }}
+      />
     )
   }
 

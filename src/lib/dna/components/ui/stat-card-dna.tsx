@@ -148,7 +148,11 @@ export function MiniStatCardDNA({
       )}
     >
       <div>
-        <p className={cn('text-sm text-muted-foreground dark:text-muted-foreground', titleClassName)}>{title}</p>
+        <p
+          className={cn('text-sm text-muted-foreground dark:text-muted-foreground', titleClassName)}
+        >
+          {title}
+        </p>
         <p
           className={cn(
             'text-2xl font-bold mt-1',

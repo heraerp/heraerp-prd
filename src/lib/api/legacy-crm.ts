@@ -8,19 +8,25 @@ export const legacyCrmApi = {
   async leads({ orgId, q }: any) {
     universalApi.setOrganizationId(orgId)
     const res = await universalApi.getEntities({ filters: { entity_type: 'lead' } })
-    const items = (res.data || []).filter((e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase()))
+    const items = (res.data || []).filter(
+      (e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase())
+    )
     return toPage(items)
   },
   async opportunities({ orgId, q }: any) {
     universalApi.setOrganizationId(orgId)
     const res = await universalApi.getEntities({ filters: { entity_type: 'opportunity' } })
-    const items = (res.data || []).filter((e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase()))
+    const items = (res.data || []).filter(
+      (e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase())
+    )
     return toPage(items)
   },
   async activities({ orgId, q }: any) {
     universalApi.setOrganizationId(orgId)
     const res = await universalApi.getEntities({ filters: { entity_type: 'activity' } })
-    const items = (res.data || []).filter((e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase()))
+    const items = (res.data || []).filter(
+      (e: any) => !q || e.entity_name?.toLowerCase().includes(q.toLowerCase())
+    )
     return toPage(items)
-  },
+  }
 }

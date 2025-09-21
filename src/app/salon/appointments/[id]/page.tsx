@@ -513,10 +513,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 <ScrollArea className="h-[600px] pr-2 appointment-scrollbar">
                   <div className="space-y-3">
                     {transactionLines.map(line => (
-                      <div
-                        key={line.id}
-                        className="p-4 border rounded-lg bg-card"
-                      >
+                      <div key={line.id} className="p-4 border rounded-lg bg-card">
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
                             <p className="font-medium text-gray-900 dark:text-gray-100">
@@ -643,7 +640,10 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                   variant="outline"
                   onClick={() => {
                     // TODO: Implement duplicate functionality
-                    console.log('Coming Soon:', 'Duplicate appointment feature will be available soon')
+                    console.log(
+                      'Coming Soon:',
+                      'Duplicate appointment feature will be available soon'
+                    )
                   }}
                 >
                   <Calendar className="w-4 h-4 mr-2" />

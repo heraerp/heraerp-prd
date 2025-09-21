@@ -26,9 +26,9 @@ export type LineInput = {
   }>
 }
 
-export type AppointmentStatus = 
+export type AppointmentStatus =
   | 'DRAFT'
-  | 'CONFIRMED' 
+  | 'CONFIRMED'
   | 'IN_SERVICE'
   | 'COMPLETED'
   | 'CANCELLED'
@@ -42,7 +42,7 @@ export type SmartCodes = {
 
 export const SMART_CODES: SmartCodes = {
   APPOINTMENT_HEADER: 'HERA.SALON.APPOINTMENT.BOOKING.HEADER.V1',
-  SERVICE_LINE: 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1', 
+  SERVICE_LINE: 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1',
   PRODUCT_LINE: 'HERA.SALON.APPOINTMENT.LINE.PRODUCT.V1'
 } as const
 
@@ -96,8 +96,8 @@ export type AppointmentRecord = {
   transaction_code: string
   total_amount: number
   metadata?: any
-  source_entity?: any  // Customer
-  target_entity?: any  // Stylist
+  source_entity?: any // Customer
+  target_entity?: any // Stylist
   status?: string
 }
 

@@ -1,7 +1,7 @@
 /**
  * HERA Playbook Finance API with Branch Accounting
  * Smart Code: HERA.LIB.PLAYBOOK.FINANCE.V1
- * 
+ *
  * Provides financial posting operations with branch dimension:
  * - Enforces branch_id on relevant transactions
  * - Ensures consistent branch tracking across all lines
@@ -15,8 +15,8 @@ import { assertBranchOnEvent } from '@/lib/guardrails/branch'
 // TYPE DEFINITIONS
 // ================================================================================
 
-export type BranchContext = { 
-  branch_id: string 
+export type BranchContext = {
+  branch_id: string
 }
 
 export type PostEventInput = {
@@ -36,10 +36,10 @@ export type PostEventInput = {
     unit_amount?: number
     tax_amount?: number
   }>
-  currency?: { 
+  currency?: {
     transaction_currency_code?: string
     base_currency_code?: string
-    exchange_rate?: number 
+    exchange_rate?: number
   }
   transaction_date?: string
   reference_number?: string
@@ -58,10 +58,10 @@ export async function postEventWithBranch(
   input: PostEventInput & { business_context: BranchContext }
 ) {
   const { business_context, lines, organization_id, transaction_type, smart_code } = input
-  
+
   // Validate branch_id is present
   if (!business_context?.branch_id) {
-    throw new Error("branch_id is required in business_context")
+    throw new Error('branch_id is required in business_context')
   }
 
   // Apply guardrail validation
@@ -74,15 +74,15 @@ export async function postEventWithBranch(
   // Patch all lines to include branch_id
   const patchedLines = lines.map(l => ({
     ...l,
-    line_data: { 
-      ...(l.line_data ?? {}), 
-      branch_id: business_context.branch_id 
-    },
+    line_data: {
+      ...(l.line_data ?? {}),
+      branch_id: business_context.branch_id
+    }
   }))
 
   // Create the transaction with branch context
-  return postEvent({ 
-    ...input, 
+  return postEvent({
+    ...input,
     lines: patchedLines,
     business_context: {
       ...business_context,
@@ -139,7 +139,7 @@ export async function postEvent(input: PostEventInput) {
     const transaction_id = txnResponse.data.id
 
     // Create transaction lines
-    const linePromises = lines.map((line, idx) => 
+    const linePromises = lines.map((line, idx) =>
       universalApi.create('universal_transaction_lines', {
         organization_id,
         transaction_id,
@@ -159,7 +159,7 @@ export async function postEvent(input: PostEventInput) {
     )
 
     const lineResults = await Promise.all(linePromises)
-    
+
     // Check all lines were created successfully
     const failedLines = lineResults.filter(r => !r.success)
     if (failedLines.length > 0) {
@@ -174,7 +174,6 @@ export async function postEvent(input: PostEventInput) {
         lines_created: lineResults.length
       }
     }
-
   } catch (error) {
     console.error('Error posting financial event:', error)
     return {

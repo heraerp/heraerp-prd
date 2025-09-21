@@ -6,10 +6,10 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useUniversalApi } from '@/hooks/useUniversalApi'
-import { 
-  Product, 
-  ProductWithInventory, 
-  ProductPolicy, 
+import {
+  Product,
+  ProductWithInventory,
+  ProductPolicy,
   InventoryMovement,
   ListProductsRequest,
   CreateProductRequest,
@@ -30,7 +30,10 @@ export class InventoryApi {
   constructor(private universalApi: ReturnType<typeof useUniversalApi>) {}
 
   // List products with inventory data
-  async listProducts(orgId: string, filters: Partial<ListProductsRequest> = {}): Promise<ProductWithInventory[]> {
+  async listProducts(
+    orgId: string,
+    filters: Partial<ListProductsRequest> = {}
+  ): Promise<ProductWithInventory[]> {
     // Get products from core_entities
     const productsResult = await this.universalApi.execute({
       table: 'core_entities',
@@ -51,7 +54,10 @@ export class InventoryApi {
     // Enrich each product with inventory data
     for (const product of products) {
       // Apply filters
-      if (filters.search && !product.entity_name.toLowerCase().includes(filters.search.toLowerCase())) {
+      if (
+        filters.search &&
+        !product.entity_name.toLowerCase().includes(filters.search.toLowerCase())
+      ) {
         continue
       }
       if (filters.category && product.metadata?.category !== filters.category) {
@@ -100,14 +106,14 @@ export class InventoryApi {
         }))
 
       const qty_on_hand = calculateOnHand(inventoryMovements)
-      
+
       // Get policy data
-      const policies = policyResult.data as any[] || []
+      const policies = (policyResult.data as any[]) || []
       const reorderLevelPolicy = policies.find(p => p.field_name === 'reorder_level')
       const reorder_level = reorderLevelPolicy?.field_value_number || 0
 
-      const lastMovement = inventoryMovements.sort((a, b) => 
-        new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+      const lastMovement = inventoryMovements.sort(
+        (a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
       )[0]
 
       const enrichedProduct: ProductWithInventory = {
@@ -125,7 +131,8 @@ export class InventoryApi {
         is_low_stock: isLowStock(qty_on_hand, reorder_level),
         last_movement_date: lastMovement?.transaction_date,
         last_movement_type: lastMovement?.line_type,
-        costing_method: policies.find(p => p.field_name === 'costing_method')?.field_value_text || 'FIFO'
+        costing_method:
+          policies.find(p => p.field_name === 'costing_method')?.field_value_text || 'FIFO'
       }
 
       enrichedProducts.push(enrichedProduct)
@@ -140,28 +147,31 @@ export class InventoryApi {
     // Apply pagination
     const offset = filters.offset || 0
     const limit = filters.limit || 100
-    
+
     return filteredProducts.slice(offset, offset + limit)
   }
 
   // Get single product with full details
   async getProduct(orgId: string, productCode: string): Promise<ProductWithInventory | null> {
-    const products = await this.listProducts(orgId, { 
+    const products = await this.listProducts(orgId, {
       search: productCode,
-      limit: 1 
+      limit: 1
     })
-    
+
     return products.find(p => p.entity_code === productCode) || null
   }
 
   // Create or update product
-  async upsertProduct(orgId: string, data: CreateProductRequest | UpdateProductRequest): Promise<ProductWithInventory> {
+  async upsertProduct(
+    orgId: string,
+    data: CreateProductRequest | UpdateProductRequest
+  ): Promise<ProductWithInventory> {
     const isUpdate = 'entity_id' in data
 
     if (isUpdate) {
       // Update existing product
       const updateData = data as UpdateProductRequest
-      
+
       // Update core entity
       await this.universalApi.execute({
         table: 'core_entities',
@@ -197,7 +207,6 @@ export class InventoryApi {
       const updated = await this.getProduct(orgId, updateData.entity_code!)
       if (!updated) throw new Error('Failed to retrieve updated product')
       return updated
-
     } else {
       // Create new product
       const createData = data as CreateProductRequest
@@ -265,21 +274,23 @@ export class InventoryApi {
             transaction_type: 'inventory_adjustment',
             transaction_code: `ADJ-${Date.now()}`,
             smart_code: INVENTORY_SMART_CODES.PRODUCT_ADJUSTMENT,
-            total_amount: (createData.opening_qty * (createData.standard_cost || 0)),
+            total_amount: createData.opening_qty * (createData.standard_cost || 0),
             metadata: {
               adjustment_type: 'opening_balance',
               reason: 'Initial stock setup'
             },
-            lines: [{
-              line_number: 1,
-              line_type: 'adjustment',
-              entity_id: entityId,
-              description: `Opening Balance - ${createData.entity_name}`,
-              quantity: createData.opening_qty,
-              unit_amount: createData.standard_cost || 0,
-              line_amount: (createData.opening_qty * (createData.standard_cost || 0)),
-              smart_code: INVENTORY_SMART_CODES.PRODUCT_ADJUSTMENT
-            }]
+            lines: [
+              {
+                line_number: 1,
+                line_type: 'adjustment',
+                entity_id: entityId,
+                description: `Opening Balance - ${createData.entity_name}`,
+                quantity: createData.opening_qty,
+                unit_amount: createData.standard_cost || 0,
+                line_amount: createData.opening_qty * (createData.standard_cost || 0),
+                smart_code: INVENTORY_SMART_CODES.PRODUCT_ADJUSTMENT
+              }
+            ]
           }
         })
       }
@@ -293,9 +304,9 @@ export class InventoryApi {
 
   // Get low stock products
   async listLowStock(orgId: string): Promise<ProductWithInventory[]> {
-    return this.listProducts(orgId, { 
+    return this.listProducts(orgId, {
       low_stock_only: true,
-      limit: 1000 
+      limit: 1000
     })
   }
 
@@ -306,7 +317,7 @@ export class InventoryApi {
       table: 'universal_transaction_lines',
       method: 'GET',
       filters: {
-        organization_id: orgId,
+        organization_id: orgId
         // Note: Universal API filtering by date range would be done at the API level
         // For now, we'll get all movements and filter in memory
       }
@@ -317,16 +328,19 @@ export class InventoryApi {
     }
 
     const allMovements = movementsResult.data as any[]
-    
+
     // Filter by date range and convert to InventoryMovement
     const startDate = new Date(params.start_date)
     const endDate = new Date(params.end_date)
-    
+
     const periodMovements: InventoryMovement[] = allMovements
       .filter(line => {
         const lineDate = new Date(line.created_at)
-        return lineDate >= startDate && lineDate <= endDate &&
-               ['receipt', 'issue', 'adjustment', 'transfer'].includes(line.line_type)
+        return (
+          lineDate >= startDate &&
+          lineDate <= endDate &&
+          ['receipt', 'issue', 'adjustment', 'transfer'].includes(line.line_type)
+        )
       })
       .map(line => ({
         transaction_id: line.transaction_id,
@@ -370,7 +384,7 @@ export class InventoryApi {
 
     // Calculate usage for each product
     const usageResults: ProductUsage[] = []
-    
+
     for (const [productId, movements] of movementsByProduct) {
       const product = productMap.get(productId)
       if (!product) continue
@@ -386,7 +400,7 @@ export class InventoryApi {
       }
 
       const metrics = calculateUsageMetrics(movements, startDate, endDate)
-      
+
       usageResults.push({
         product_code: product.entity_code,
         product_name: product.entity_name,
@@ -395,15 +409,13 @@ export class InventoryApi {
     }
 
     // Sort by total issues (descending) and limit to top N
-    return usageResults
-      .sort((a, b) => b.total_issues - a.total_issues)
-      .slice(0, params.top_n || 10)
+    return usageResults.sort((a, b) => b.total_issues - a.total_issues).slice(0, params.top_n || 10)
   }
 
   // Create inventory movement transaction
   async createMovement(
-    orgId: string, 
-    productId: string, 
+    orgId: string,
+    productId: string,
     movementType: 'receipt' | 'issue' | 'adjustment' | 'transfer',
     quantity: number,
     unitCost: number = 0,
@@ -434,20 +446,22 @@ export class InventoryApi {
           reason,
           reference_doc: referenceDoc
         },
-        lines: [{
-          line_number: 1,
-          line_type: movementType,
-          entity_id: productId,
-          description: `${movementType.charAt(0).toUpperCase() + movementType.slice(1)} - ${reason || 'Inventory movement'}`,
-          quantity: movementType === 'issue' ? -Math.abs(quantity) : Math.abs(quantity),
-          unit_amount: unitCost,
-          line_amount: movementType === 'issue' ? -Math.abs(lineAmount) : Math.abs(lineAmount),
-          smart_code: smartCodeMap[movementType],
-          metadata: {
-            movement_type: movementType,
-            reference_doc: referenceDoc
+        lines: [
+          {
+            line_number: 1,
+            line_type: movementType,
+            entity_id: productId,
+            description: `${movementType.charAt(0).toUpperCase() + movementType.slice(1)} - ${reason || 'Inventory movement'}`,
+            quantity: movementType === 'issue' ? -Math.abs(quantity) : Math.abs(quantity),
+            unit_amount: unitCost,
+            line_amount: movementType === 'issue' ? -Math.abs(lineAmount) : Math.abs(lineAmount),
+            smart_code: smartCodeMap[movementType],
+            metadata: {
+              movement_type: movementType,
+              reference_doc: referenceDoc
+            }
           }
-        }]
+        ]
       }
     })
   }
@@ -465,7 +479,7 @@ export function useInventoryApi(organizationId?: string) {
 // Simple wrapper for dashboard
 export function useInventoryApiSimple(organizationId?: string) {
   const api = useInventoryApi(organizationId)
-  
+
   return {
     listLowStock: ({ organizationId, limit = 10 }: { organizationId: string; limit?: number }) => {
       return {

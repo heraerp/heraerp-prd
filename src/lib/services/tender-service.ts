@@ -435,7 +435,7 @@ class TenderService {
       if (isDemoLogin) {
         return 'demo-token'
       }
-      
+
       // Try to get from Supabase session
       const supabaseToken = localStorage.getItem('supabase.auth.token')
       if (supabaseToken) {

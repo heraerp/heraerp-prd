@@ -13,7 +13,7 @@ const CRM_CODES = [
   'HERA.CRM.RENEWAL.CLOSE.V1',
   'HERA.CRM.ACCOUNT.CREATE.V1',
   'HERA.CRM.ACCOUNT.UPDATE.V1',
-  'HERA.CRM.ACCOUNT.DELETE.V1',
+  'HERA.CRM.ACCOUNT.DELETE.V1'
 ]
 
 export function isCRMSmartCode(code: string | null | undefined): boolean {

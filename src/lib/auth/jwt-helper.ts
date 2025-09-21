@@ -20,10 +20,7 @@ export interface HERAJWTPayload {
 /**
  * Ensure JWT has proper organization context
  */
-export function ensureOrganizationInJWT(
-  user: User | null,
-  organizationId?: string
-): User | null {
+export function ensureOrganizationInJWT(user: User | null, organizationId?: string): User | null {
   if (!user || !organizationId) return user
 
   // Ensure app_metadata exists

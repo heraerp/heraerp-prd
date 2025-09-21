@@ -1,69 +1,77 @@
-import * as fc from 'fast-check';
-import Ajv from 'ajv';
-import addFormats from 'ajv-formats';
-import { describe, it, expect, beforeAll } from '@jest/globals';
+import * as fc from 'fast-check'
+import Ajv from 'ajv'
+import addFormats from 'ajv-formats'
+import { describe, it, expect, beforeAll } from '@jest/globals'
 
 // Import the actual schemas from the Grants playbook
-import grantsPlaybook from '../../registry/grants.json';
+import grantsPlaybook from '../../registry/grants.json'
 
 // Initialize AJV with formats support
-const ajv = new Ajv({ 
-  allErrors: true, 
+const ajv = new Ajv({
+  allErrors: true,
   strict: false,
-  additionalProperties: false 
-});
-addFormats(ajv);
+  additionalProperties: false
+})
+addFormats(ajv)
 
 // Custom arbitraries for specific formats
-const einArbitrary = fc.tuple(
-  fc.integer({ min: 10, max: 99 }),
-  fc.integer({ min: 1000000, max: 9999999 })
-).map(([prefix, suffix]) => `${prefix}-${suffix}`);
+const einArbitrary = fc
+  .tuple(fc.integer({ min: 10, max: 99 }), fc.integer({ min: 1000000, max: 9999999 }))
+  .map(([prefix, suffix]) => `${prefix}-${suffix}`)
 
-const dunsArbitrary = fc.integer({ min: 100000000, max: 999999999 }).map(String);
+const dunsArbitrary = fc.integer({ min: 100000000, max: 999999999 }).map(String)
 
-const grantOpportunityArbitrary = fc.tuple(
-  fc.constantFrom('EPA', 'NSF', 'NIH', 'DOE', 'USDA'),
-  fc.integer({ min: 2020, max: 2030 }),
-  fc.integer({ min: 1000, max: 9999 })
-).map(([agency, year, num]) => `${agency}-${year}-${num}`);
+const grantOpportunityArbitrary = fc
+  .tuple(
+    fc.constantFrom('EPA', 'NSF', 'NIH', 'DOE', 'USDA'),
+    fc.integer({ min: 2020, max: 2030 }),
+    fc.integer({ min: 1000, max: 9999 })
+  )
+  .map(([agency, year, num]) => `${agency}-${year}-${num}`)
 
-const emailArbitrary = fc.tuple(
-  fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 1, maxLength: 20 }),
-  fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 1, maxLength: 20 }),
-  fc.constantFrom('com', 'org', 'edu', 'gov', 'net')
-).map(([local, domain, tld]) => `${local}@${domain}.${tld}`);
+const emailArbitrary = fc
+  .tuple(
+    fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 1, maxLength: 20 }),
+    fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 1, maxLength: 20 }),
+    fc.constantFrom('com', 'org', 'edu', 'gov', 'net')
+  )
+  .map(([local, domain, tld]) => `${local}@${domain}.${tld}`)
 
-const phoneArbitrary = fc.tuple(
-  fc.integer({ min: 200, max: 999 }),
-  fc.integer({ min: 200, max: 999 }),
-  fc.integer({ min: 1000, max: 9999 })
-).map(([area, prefix, line]) => `${area}-${prefix}-${line}`);
+const phoneArbitrary = fc
+  .tuple(
+    fc.integer({ min: 200, max: 999 }),
+    fc.integer({ min: 200, max: 999 }),
+    fc.integer({ min: 1000, max: 9999 })
+  )
+  .map(([area, prefix, line]) => `${area}-${prefix}-${line}`)
 
-const dateArbitrary = fc.date({ 
-  min: new Date('2020-01-01'), 
-  max: new Date('2030-12-31') 
-}).map(date => date.toISOString().split('T')[0]);
+const dateArbitrary = fc
+  .date({
+    min: new Date('2020-01-01'),
+    max: new Date('2030-12-31')
+  })
+  .map(date => date.toISOString().split('T')[0])
 
-const moneyArbitrary = (min = 0, max = 10000000) => 
-  fc.float({ min, max, noNaN: true })
-    .map(val => Math.round(val * 100) / 100);
+const moneyArbitrary = (min = 0, max = 10000000) =>
+  fc.float({ min, max, noNaN: true }).map(val => Math.round(val * 100) / 100)
 
-const urlArbitrary = fc.tuple(
-  fc.constantFrom('http', 'https'),
-  fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 3, maxLength: 20 }),
-  fc.constantFrom('com', 'org', 'gov', 'edu')
-).map(([protocol, domain, tld]) => `${protocol}://${domain}.${tld}`);
+const urlArbitrary = fc
+  .tuple(
+    fc.constantFrom('http', 'https'),
+    fc.stringOf(fc.char({ minCodePoint: 97, maxCodePoint: 122 }), { minLength: 3, maxLength: 20 }),
+    fc.constantFrom('com', 'org', 'gov', 'edu')
+  )
+  .map(([protocol, domain, tld]) => `${protocol}://${domain}.${tld}`)
 
 describe('Grants Playbook Contract Validation', () => {
-  let inputValidator: any;
-  let outputValidator: any;
+  let inputValidator: any
+  let outputValidator: any
 
   beforeAll(() => {
     // Compile schemas
-    inputValidator = ajv.compile(grantsPlaybook.input_contract);
-    outputValidator = ajv.compile(grantsPlaybook.output_contract);
-  });
+    inputValidator = ajv.compile(grantsPlaybook.input_contract)
+    outputValidator = ajv.compile(grantsPlaybook.output_contract)
+  })
 
   describe('Input Contract Property Tests', () => {
     it('should validate all valid input combinations', () => {
@@ -90,17 +98,17 @@ describe('Grants Playbook Contract Validation', () => {
             cost_share_percentage: fc.option(fc.float({ min: 0, max: 100 }), { nil: undefined }),
             indirect_cost_rate: fc.option(fc.float({ min: 0, max: 100 }), { nil: undefined })
           }),
-          (data) => {
-            const valid = inputValidator(data);
-            expect(valid).toBe(true);
+          data => {
+            const valid = inputValidator(data)
+            expect(valid).toBe(true)
             if (!valid) {
-              console.error('Validation errors:', inputValidator.errors);
+              console.error('Validation errors:', inputValidator.errors)
             }
           }
         ),
         { numRuns: 100 }
-      );
-    });
+      )
+    })
 
     it('should reject inputs with missing required fields', () => {
       const requiredFields = [
@@ -115,7 +123,7 @@ describe('Grants Playbook Contract Validation', () => {
         'project_abstract',
         'budget_narrative',
         'submission_deadline'
-      ];
+      ]
 
       requiredFields.forEach(field => {
         fc.assert(
@@ -137,13 +145,13 @@ describe('Grants Playbook Contract Validation', () => {
               budget_narrative: fc.string({ minLength: 50 }),
               submission_deadline: dateArbitrary
             }),
-            (validData) => {
+            validData => {
               // Remove the field being tested
-              const invalidData = { ...validData };
-              delete (invalidData as any)[field];
-              
-              const valid = inputValidator(invalidData);
-              expect(valid).toBe(false);
+              const invalidData = { ...validData }
+              delete (invalidData as any)[field]
+
+              const valid = inputValidator(invalidData)
+              expect(valid).toBe(false)
               expect(inputValidator.errors).toEqual(
                 expect.arrayContaining([
                   expect.objectContaining({
@@ -151,12 +159,12 @@ describe('Grants Playbook Contract Validation', () => {
                     message: expect.stringContaining(`must have required property '${field}'`)
                   })
                 ])
-              );
+              )
             }
           )
-        );
-      });
-    });
+        )
+      })
+    })
 
     it('should enforce string length constraints', () => {
       fc.assert(
@@ -180,7 +188,7 @@ describe('Grants Playbook Contract Validation', () => {
               },
               budget_narrative: 'A'.repeat(100),
               submission_deadline: '2024-12-31'
-            };
+            }
 
             // Test too long organization name
             let result = inputValidator({
@@ -188,8 +196,8 @@ describe('Grants Playbook Contract Validation', () => {
               organization_name: tooLongOrgName,
               program_title: 'Valid Title',
               project_abstract: 'A'.repeat(200)
-            });
-            expect(result).toBe(false);
+            })
+            expect(result).toBe(false)
 
             // Test too short abstract
             result = inputValidator({
@@ -197,8 +205,8 @@ describe('Grants Playbook Contract Validation', () => {
               organization_name: 'Valid Org',
               program_title: 'Valid Title',
               project_abstract: tooShortAbstract
-            });
-            expect(result).toBe(false);
+            })
+            expect(result).toBe(false)
 
             // Test too long program title
             result = inputValidator({
@@ -206,12 +214,12 @@ describe('Grants Playbook Contract Validation', () => {
               organization_name: 'Valid Org',
               program_title: tooLongProgramTitle,
               project_abstract: 'A'.repeat(200)
-            });
-            expect(result).toBe(false);
+            })
+            expect(result).toBe(false)
           }
         )
-      );
-    });
+      )
+    })
 
     it('should validate EIN format', () => {
       fc.assert(
@@ -222,8 +230,8 @@ describe('Grants Playbook Contract Validation', () => {
             // Invalid formats
             fc.string({ minLength: 1, maxLength: 20 }).filter(s => !/^\d{2}-\d{7}$/.test(s))
           ),
-          (ein) => {
-            const isValidFormat = /^\d{2}-\d{7}$/.test(ein);
+          ein => {
+            const isValidFormat = /^\d{2}-\d{7}$/.test(ein)
             const data = {
               organization_name: 'Test Org',
               ein,
@@ -240,14 +248,14 @@ describe('Grants Playbook Contract Validation', () => {
               project_abstract: 'A'.repeat(200),
               budget_narrative: 'A'.repeat(100),
               submission_deadline: '2024-12-31'
-            };
+            }
 
-            const valid = inputValidator(data);
-            expect(valid).toBe(isValidFormat);
+            const valid = inputValidator(data)
+            expect(valid).toBe(isValidFormat)
           }
         )
-      );
-    });
+      )
+    })
 
     it('should validate numeric constraints', () => {
       fc.assert(
@@ -263,18 +271,24 @@ describe('Grants Playbook Contract Validation', () => {
               fc.integer({ min: -10, max: 0 }), // Invalid negative/zero
               fc.integer({ min: 61, max: 100 }) // Invalid too large
             ),
-            cost_share_percentage: fc.option(fc.oneof(
-              fc.float({ min: 0, max: 100 }), // Valid
-              fc.float({ min: -50, max: -1 }), // Invalid negative
-              fc.float({ min: 101, max: 200 }) // Invalid over 100
-            ), { nil: undefined }),
-            indirect_cost_rate: fc.option(fc.oneof(
-              fc.float({ min: 0, max: 100 }), // Valid
-              fc.float({ min: -50, max: -1 }), // Invalid negative
-              fc.float({ min: 101, max: 200 }) // Invalid over 100
-            ), { nil: undefined })
+            cost_share_percentage: fc.option(
+              fc.oneof(
+                fc.float({ min: 0, max: 100 }), // Valid
+                fc.float({ min: -50, max: -1 }), // Invalid negative
+                fc.float({ min: 101, max: 200 }) // Invalid over 100
+              ),
+              { nil: undefined }
+            ),
+            indirect_cost_rate: fc.option(
+              fc.oneof(
+                fc.float({ min: 0, max: 100 }), // Valid
+                fc.float({ min: -50, max: -1 }), // Invalid negative
+                fc.float({ min: 101, max: 200 }) // Invalid over 100
+              ),
+              { nil: undefined }
+            )
           }),
-          (numericData) => {
+          numericData => {
             const data = {
               organization_name: 'Test Org',
               ein: '12-3456789',
@@ -290,85 +304,129 @@ describe('Grants Playbook Contract Validation', () => {
               budget_narrative: 'A'.repeat(100),
               submission_deadline: '2024-12-31',
               ...numericData
-            };
+            }
 
-            const valid = inputValidator(data);
-            
+            const valid = inputValidator(data)
+
             // Check if the numeric values are within valid ranges
-            const shouldBeValid = 
+            const shouldBeValid =
               numericData.requested_amount > 0 &&
-              numericData.project_duration_months >= 1 && 
+              numericData.project_duration_months >= 1 &&
               numericData.project_duration_months <= 60 &&
-              (numericData.cost_share_percentage === undefined || 
-               (numericData.cost_share_percentage >= 0 && numericData.cost_share_percentage <= 100)) &&
-              (numericData.indirect_cost_rate === undefined || 
-               (numericData.indirect_cost_rate >= 0 && numericData.indirect_cost_rate <= 100));
+              (numericData.cost_share_percentage === undefined ||
+                (numericData.cost_share_percentage >= 0 &&
+                  numericData.cost_share_percentage <= 100)) &&
+              (numericData.indirect_cost_rate === undefined ||
+                (numericData.indirect_cost_rate >= 0 && numericData.indirect_cost_rate <= 100))
 
-            expect(valid).toBe(shouldBeValid);
+            expect(valid).toBe(shouldBeValid)
           }
         )
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe('Output Contract Property Tests', () => {
     it('should validate all valid output combinations', () => {
       fc.assert(
         fc.property(
           fc.record({
-            application_number: fc.string({ minLength: 1, maxLength: 50 })
+            application_number: fc
+              .string({ minLength: 1, maxLength: 50 })
               .map(s => `GRANT-${Date.now()}-${s.toUpperCase()}`),
-            submission_status: fc.constantFrom('draft', 'submitted', 'under_review', 'awarded', 'rejected'),
-            submission_timestamp: fc.option(fc.date().map(d => d.toISOString()), { nil: undefined }),
-            confirmation_number: fc.option(fc.string({ minLength: 10, maxLength: 30 }), { nil: undefined }),
-            review_results: fc.option(fc.record({
-              technical_score: fc.integer({ min: 0, max: 100 }),
-              management_score: fc.integer({ min: 0, max: 100 }),
-              budget_score: fc.integer({ min: 0, max: 100 }),
-              overall_score: fc.integer({ min: 0, max: 100 }),
-              reviewer_comments: fc.array(fc.string({ minLength: 1, maxLength: 1000 }), { maxLength: 10 }),
-              recommendation: fc.constantFrom('fund', 'fund_with_conditions', 'do_not_fund')
-            }), { nil: undefined }),
-            award_details: fc.option(fc.record({
-              award_amount: moneyArbitrary(1000, 5000000),
-              award_start_date: dateArbitrary,
-              award_end_date: dateArbitrary,
-              award_number: fc.string({ minLength: 5, maxLength: 30 }),
-              terms_and_conditions: fc.option(fc.string({ minLength: 1, maxLength: 10000 }), { nil: undefined }),
-              reporting_requirements: fc.option(fc.array(fc.record({
-                report_type: fc.constantFrom('progress', 'financial', 'final', 'annual'),
-                due_date: dateArbitrary,
-                description: fc.option(fc.string({ minLength: 1, maxLength: 500 }), { nil: undefined })
-              }), { maxLength: 20 }), { nil: undefined })
-            }), { nil: undefined }),
-            documents_generated: fc.array(fc.record({
-              document_type: fc.constantFrom('application_pdf', 'budget_spreadsheet', 'supporting_documents', 'award_letter'),
-              document_url: urlArbitrary,
-              generated_date: dateArbitrary,
-              file_size_bytes: fc.option(fc.integer({ min: 1, max: 100000000 }), { nil: undefined })
-            }), { maxLength: 50 }),
-            validation_errors: fc.array(fc.record({
-              field: fc.string({ minLength: 1, maxLength: 100 }),
-              message: fc.string({ minLength: 1, maxLength: 500 }),
-              severity: fc.constantFrom('error', 'warning', 'info')
-            }), { maxLength: 100 }),
+            submission_status: fc.constantFrom(
+              'draft',
+              'submitted',
+              'under_review',
+              'awarded',
+              'rejected'
+            ),
+            submission_timestamp: fc.option(
+              fc.date().map(d => d.toISOString()),
+              { nil: undefined }
+            ),
+            confirmation_number: fc.option(fc.string({ minLength: 10, maxLength: 30 }), {
+              nil: undefined
+            }),
+            review_results: fc.option(
+              fc.record({
+                technical_score: fc.integer({ min: 0, max: 100 }),
+                management_score: fc.integer({ min: 0, max: 100 }),
+                budget_score: fc.integer({ min: 0, max: 100 }),
+                overall_score: fc.integer({ min: 0, max: 100 }),
+                reviewer_comments: fc.array(fc.string({ minLength: 1, maxLength: 1000 }), {
+                  maxLength: 10
+                }),
+                recommendation: fc.constantFrom('fund', 'fund_with_conditions', 'do_not_fund')
+              }),
+              { nil: undefined }
+            ),
+            award_details: fc.option(
+              fc.record({
+                award_amount: moneyArbitrary(1000, 5000000),
+                award_start_date: dateArbitrary,
+                award_end_date: dateArbitrary,
+                award_number: fc.string({ minLength: 5, maxLength: 30 }),
+                terms_and_conditions: fc.option(fc.string({ minLength: 1, maxLength: 10000 }), {
+                  nil: undefined
+                }),
+                reporting_requirements: fc.option(
+                  fc.array(
+                    fc.record({
+                      report_type: fc.constantFrom('progress', 'financial', 'final', 'annual'),
+                      due_date: dateArbitrary,
+                      description: fc.option(fc.string({ minLength: 1, maxLength: 500 }), {
+                        nil: undefined
+                      })
+                    }),
+                    { maxLength: 20 }
+                  ),
+                  { nil: undefined }
+                )
+              }),
+              { nil: undefined }
+            ),
+            documents_generated: fc.array(
+              fc.record({
+                document_type: fc.constantFrom(
+                  'application_pdf',
+                  'budget_spreadsheet',
+                  'supporting_documents',
+                  'award_letter'
+                ),
+                document_url: urlArbitrary,
+                generated_date: dateArbitrary,
+                file_size_bytes: fc.option(fc.integer({ min: 1, max: 100000000 }), {
+                  nil: undefined
+                })
+              }),
+              { maxLength: 50 }
+            ),
+            validation_errors: fc.array(
+              fc.record({
+                field: fc.string({ minLength: 1, maxLength: 100 }),
+                message: fc.string({ minLength: 1, maxLength: 500 }),
+                severity: fc.constantFrom('error', 'warning', 'info')
+              }),
+              { maxLength: 100 }
+            ),
             processing_metadata: fc.record({
               processing_time_ms: fc.integer({ min: 0, max: 300000 }),
               api_version: fc.constantFrom('1.0', '1.1', '2.0'),
               server_timestamp: fc.date().map(d => d.toISOString())
             })
           }),
-          (data) => {
-            const valid = outputValidator(data);
-            expect(valid).toBe(true);
+          data => {
+            const valid = outputValidator(data)
+            expect(valid).toBe(true)
             if (!valid) {
-              console.error('Output validation errors:', outputValidator.errors);
+              console.error('Output validation errors:', outputValidator.errors)
             }
           }
         ),
         { numRuns: 100 }
-      );
-    });
+      )
+    })
 
     it('should enforce required output fields', () => {
       const requiredFields = [
@@ -377,7 +435,7 @@ describe('Grants Playbook Contract Validation', () => {
         'documents_generated',
         'validation_errors',
         'processing_metadata'
-      ];
+      ]
 
       requiredFields.forEach(field => {
         const validData = {
@@ -390,15 +448,15 @@ describe('Grants Playbook Contract Validation', () => {
             api_version: '1.0',
             server_timestamp: new Date().toISOString()
           }
-        };
+        }
 
-        const invalidData = { ...validData };
-        delete (invalidData as any)[field];
+        const invalidData = { ...validData }
+        delete (invalidData as any)[field]
 
-        const valid = outputValidator(invalidData);
-        expect(valid).toBe(false);
-      });
-    });
+        const valid = outputValidator(invalidData)
+        expect(valid).toBe(false)
+      })
+    })
 
     it('should validate conditional fields based on status', () => {
       fc.assert(
@@ -410,7 +468,13 @@ describe('Grants Playbook Contract Validation', () => {
             hasReviewResults: fc.boolean(),
             hasAwardDetails: fc.boolean()
           }),
-          ({ status, hasSubmissionTimestamp, hasConfirmationNumber, hasReviewResults, hasAwardDetails }) => {
+          ({
+            status,
+            hasSubmissionTimestamp,
+            hasConfirmationNumber,
+            hasReviewResults,
+            hasAwardDetails
+          }) => {
             const data: any = {
               application_number: 'GRANT-2024-TEST001',
               submission_status: status,
@@ -421,14 +485,14 @@ describe('Grants Playbook Contract Validation', () => {
                 api_version: '1.0',
                 server_timestamp: new Date().toISOString()
               }
-            };
+            }
 
             // Add optional fields based on flags
             if (hasSubmissionTimestamp) {
-              data.submission_timestamp = new Date().toISOString();
+              data.submission_timestamp = new Date().toISOString()
             }
             if (hasConfirmationNumber) {
-              data.confirmation_number = 'CONF-123456';
+              data.confirmation_number = 'CONF-123456'
             }
             if (hasReviewResults) {
               data.review_results = {
@@ -438,7 +502,7 @@ describe('Grants Playbook Contract Validation', () => {
                 overall_score: 88,
                 reviewer_comments: ['Good proposal'],
                 recommendation: 'fund'
-              };
+              }
             }
             if (hasAwardDetails) {
               data.award_details = {
@@ -446,18 +510,18 @@ describe('Grants Playbook Contract Validation', () => {
                 award_start_date: '2024-01-01',
                 award_end_date: '2026-12-31',
                 award_number: 'AWD-2024-001'
-              };
+              }
             }
 
-            const valid = outputValidator(data);
-            
+            const valid = outputValidator(data)
+
             // Validation should pass - schema doesn't enforce conditional requirements
-            expect(valid).toBe(true);
+            expect(valid).toBe(true)
           }
         )
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe('Contract Evolution Tests', () => {
     it('should handle backward compatibility when adding optional fields', () => {
@@ -477,10 +541,10 @@ describe('Grants Playbook Contract Validation', () => {
         project_abstract: 'A'.repeat(200),
         budget_narrative: 'A'.repeat(100),
         submission_deadline: '2024-12-31'
-      };
+      }
 
       // Old data should still validate
-      expect(inputValidator(oldData)).toBe(true);
+      expect(inputValidator(oldData)).toBe(true)
 
       // New data with additional optional fields should also validate
       const newData = {
@@ -490,15 +554,15 @@ describe('Grants Playbook Contract Validation', () => {
         duns_number: '123456789',
         // Hypothetical new optional field
         new_optional_field: 'This would be ignored by additionalProperties: false'
-      };
+      }
 
       // Schema with additionalProperties: false will reject unknown fields
-      expect(inputValidator(newData)).toBe(false);
+      expect(inputValidator(newData)).toBe(false)
 
       // But without the unknown field, it should pass
-      const { new_optional_field, ...validNewData } = newData;
-      expect(inputValidator(validNewData)).toBe(true);
-    });
+      const { new_optional_field, ...validNewData } = newData
+      expect(inputValidator(validNewData)).toBe(true)
+    })
 
     it('should enforce schema versioning through validation', () => {
       // Test that the schema properly validates version-specific constraints
@@ -512,7 +576,7 @@ describe('Grants Playbook Contract Validation', () => {
           api_version: '1.0', // v1 API
           server_timestamp: new Date().toISOString()
         }
-      };
+      }
 
       const v2Data = {
         ...v1Data,
@@ -520,13 +584,13 @@ describe('Grants Playbook Contract Validation', () => {
           ...v1Data.processing_metadata,
           api_version: '2.0' // v2 API
         }
-      };
+      }
 
       // Both versions should validate
-      expect(outputValidator(v1Data)).toBe(true);
-      expect(outputValidator(v2Data)).toBe(true);
-    });
-  });
+      expect(outputValidator(v1Data)).toBe(true)
+      expect(outputValidator(v2Data)).toBe(true)
+    })
+  })
 
   describe('Performance Tests', () => {
     it('should handle large input validation efficiently', () => {
@@ -549,15 +613,15 @@ describe('Grants Playbook Contract Validation', () => {
         submission_deadline: '2030-12-31',
         cost_share_percentage: 100,
         indirect_cost_rate: 100
-      };
+      }
 
-      const startTime = Date.now();
-      const valid = inputValidator(largeInput);
-      const endTime = Date.now();
+      const startTime = Date.now()
+      const valid = inputValidator(largeInput)
+      const endTime = Date.now()
 
-      expect(valid).toBe(true);
-      expect(endTime - startTime).toBeLessThan(100); // Should validate in under 100ms
-    });
+      expect(valid).toBe(true)
+      expect(endTime - startTime).toBeLessThan(100) // Should validate in under 100ms
+    })
 
     it('should handle many simultaneous validations', () => {
       const validations = Array.from({ length: 1000 }, (_, i) => ({
@@ -576,15 +640,15 @@ describe('Grants Playbook Contract Validation', () => {
         project_abstract: 'A'.repeat(200 + (i % 100)),
         budget_narrative: 'B'.repeat(100 + (i % 50)),
         submission_deadline: '2024-12-31'
-      }));
+      }))
 
-      const startTime = Date.now();
-      const results = validations.map(data => inputValidator(data));
-      const endTime = Date.now();
+      const startTime = Date.now()
+      const results = validations.map(data => inputValidator(data))
+      const endTime = Date.now()
 
-      expect(results.every(r => r === true)).toBe(true);
-      expect(endTime - startTime).toBeLessThan(1000); // Should complete 1000 validations in under 1 second
-    });
+      expect(results.every(r => r === true)).toBe(true)
+      expect(endTime - startTime).toBeLessThan(1000) // Should complete 1000 validations in under 1 second
+    })
 
     it('should validate complex nested structures efficiently', () => {
       fc.assert(
@@ -606,8 +670,10 @@ describe('Grants Playbook Contract Validation', () => {
                 management_score: 92,
                 budget_score: 88,
                 overall_score: 92,
-                reviewer_comments: Array.from({ length: numReviewComments }, (_, i) => 
-                  `Review comment ${i}: This is a detailed review comment that provides feedback on the grant application.`
+                reviewer_comments: Array.from(
+                  { length: numReviewComments },
+                  (_, i) =>
+                    `Review comment ${i}: This is a detailed review comment that provides feedback on the grant application.`
                 ),
                 recommendation: 'fund' as const
               },
@@ -617,14 +683,22 @@ describe('Grants Playbook Contract Validation', () => {
                 award_end_date: '2026-12-31',
                 award_number: 'AWD-2024-COMPLEX',
                 terms_and_conditions: 'A'.repeat(5000),
-                reporting_requirements: Array.from({ length: numReportingRequirements }, (_, i) => ({
-                  report_type: ['progress', 'financial', 'final', 'annual'][i % 4] as const,
-                  due_date: '2024-12-31',
-                  description: `Report ${i} description`
-                }))
+                reporting_requirements: Array.from(
+                  { length: numReportingRequirements },
+                  (_, i) => ({
+                    report_type: ['progress', 'financial', 'final', 'annual'][i % 4] as const,
+                    due_date: '2024-12-31',
+                    description: `Report ${i} description`
+                  })
+                )
               },
               documents_generated: Array.from({ length: numDocuments }, (_, i) => ({
-                document_type: ['application_pdf', 'budget_spreadsheet', 'supporting_documents', 'award_letter'][i % 4] as const,
+                document_type: [
+                  'application_pdf',
+                  'budget_spreadsheet',
+                  'supporting_documents',
+                  'award_letter'
+                ][i % 4] as const,
                 document_url: `https://example.com/doc${i}.pdf`,
                 generated_date: '2024-01-01',
                 file_size_bytes: 1000000 + i * 1000
@@ -639,20 +713,20 @@ describe('Grants Playbook Contract Validation', () => {
                 api_version: '2.0',
                 server_timestamp: new Date().toISOString()
               }
-            };
+            }
 
-            const startTime = performance.now();
-            const valid = outputValidator(complexOutput);
-            const endTime = performance.now();
+            const startTime = performance.now()
+            const valid = outputValidator(complexOutput)
+            const endTime = performance.now()
 
-            expect(valid).toBe(true);
-            expect(endTime - startTime).toBeLessThan(50); // Complex validation should still be fast
+            expect(valid).toBe(true)
+            expect(endTime - startTime).toBeLessThan(50) // Complex validation should still be fast
           }
         ),
         { numRuns: 20 }
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe('Edge Case Tests', () => {
     it('should handle unicode and special characters', () => {
@@ -672,11 +746,11 @@ describe('Grants Playbook Contract Validation', () => {
         project_abstract: 'This abstract contains émojis 🎯 and spëcial çharacters ñ ü ö ä',
         budget_narrative: 'Budget includes €uro and £pound symbols with ¥en',
         submission_deadline: '2024-12-31'
-      };
+      }
 
-      const valid = inputValidator(unicodeData);
-      expect(valid).toBe(true);
-    });
+      const valid = inputValidator(unicodeData)
+      expect(valid).toBe(true)
+    })
 
     it('should handle boundary dates correctly', () => {
       fc.assert(
@@ -691,7 +765,7 @@ describe('Grants Playbook Contract Validation', () => {
             fc.constant('not-a-date'), // Not a date
             dateArbitrary // Valid dates
           ),
-          (dateString) => {
+          dateString => {
             const data = {
               organization_name: 'Test Org',
               ein: '12-3456789',
@@ -708,19 +782,19 @@ describe('Grants Playbook Contract Validation', () => {
               project_abstract: 'A'.repeat(200),
               budget_narrative: 'A'.repeat(100),
               submission_deadline: dateString
-            };
+            }
 
-            const valid = inputValidator(data);
-            
+            const valid = inputValidator(data)
+
             // Check if the date is valid ISO format
-            const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(dateString) && 
-                               !isNaN(Date.parse(dateString));
-            
-            expect(valid).toBe(isValidDate);
+            const isValidDate =
+              /^\d{4}-\d{2}-\d{2}$/.test(dateString) && !isNaN(Date.parse(dateString))
+
+            expect(valid).toBe(isValidDate)
           }
         )
-      );
-    });
+      )
+    })
 
     it('should handle null and undefined values appropriately', () => {
       const dataWithNulls = {
@@ -742,11 +816,11 @@ describe('Grants Playbook Contract Validation', () => {
         submission_deadline: '2024-12-31',
         cost_share_percentage: null, // Should be rejected
         indirect_cost_rate: undefined // Should be accepted
-      };
+      }
 
-      const valid = inputValidator(dataWithNulls);
-      expect(valid).toBe(false); // null values should fail validation
-    });
+      const valid = inputValidator(dataWithNulls)
+      expect(valid).toBe(false) // null values should fail validation
+    })
 
     it('should handle extreme numeric values', () => {
       fc.assert(
@@ -786,22 +860,18 @@ describe('Grants Playbook Contract Validation', () => {
               project_abstract: 'A'.repeat(200),
               budget_narrative: 'A'.repeat(100),
               submission_deadline: '2024-12-31'
-            };
+            }
 
-            const valid = inputValidator(data);
-            
+            const valid = inputValidator(data)
+
             // Check if values are within acceptable ranges
-            const isValidAmount = typeof amount === 'number' && 
-                                 isFinite(amount) && 
-                                 amount > 0;
-            const isValidMonths = Number.isInteger(months) && 
-                                 months >= 1 && 
-                                 months <= 60;
+            const isValidAmount = typeof amount === 'number' && isFinite(amount) && amount > 0
+            const isValidMonths = Number.isInteger(months) && months >= 1 && months <= 60
 
-            expect(valid).toBe(isValidAmount && isValidMonths);
+            expect(valid).toBe(isValidAmount && isValidMonths)
           }
         )
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

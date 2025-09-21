@@ -19,7 +19,7 @@ interface SessionState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  
+
   // Actions
   login: (credentials: LoginRequest) => Promise<void>
   signup: (credentials: any) => Promise<void>
@@ -51,18 +51,18 @@ export const useSession = create<SessionState>()(
 
       login: async (credentials: LoginRequest) => {
         set({ isLoading: true, error: null })
-        
+
         try {
           const supabase = createClient()
-          
+
           // Sign in with Supabase
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials.email,
-            password: credentials.password,
+            password: credentials.password
           })
-          
+
           if (error) throw error
-          
+
           // Create user object compatible with our schema
           const user: User = {
             id: data.user!.id,
@@ -71,27 +71,26 @@ export const useSession = create<SessionState>()(
             roles: ['user'], // Default role, should be fetched from database
             organization_id: data.user!.user_metadata?.organization_id || '',
             created_at: data.user!.created_at,
-            last_login: new Date().toISOString(),
+            last_login: new Date().toISOString()
           }
-          
+
           // Update API client with token
           apiClient.setToken(data.session!.access_token)
           apiClient.setOrganizationId(user.organization_id)
-          
+
           set({
             user,
             token: data.session!.access_token,
             isAuthenticated: true,
             isLoading: false,
-            error: null,
+            error: null
           })
-          
+
           // Store in localStorage for persistence across tabs
           if (typeof window !== 'undefined') {
             localStorage.setItem('hera-auth-token', data.session!.access_token)
             localStorage.setItem('hera-user', JSON.stringify(user))
           }
-          
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Login failed'
           set({
@@ -99,7 +98,7 @@ export const useSession = create<SessionState>()(
             token: null,
             isAuthenticated: false,
             isLoading: false,
-            error: errorMessage,
+            error: errorMessage
           })
           throw error
         }
@@ -107,23 +106,23 @@ export const useSession = create<SessionState>()(
 
       signup: async (credentials: any) => {
         set({ isLoading: true, error: null })
-        
+
         try {
           // Call the signup API endpoint
           const response = await fetch('/api/auth/signup', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(credentials),
+            body: JSON.stringify(credentials)
           })
-          
+
           const data = await response.json()
-          
+
           if (!response.ok) {
             throw new Error(data.error || 'Signup failed')
           }
-          
+
           // If session returned (instant signup), log them in
           if (data.session) {
             const user: User = {
@@ -133,38 +132,37 @@ export const useSession = create<SessionState>()(
               roles: ['user'],
               organization_id: '',
               created_at: new Date().toISOString(),
-              last_login: new Date().toISOString(),
+              last_login: new Date().toISOString()
             }
-            
+
             // Update API client with token
             apiClient.setToken(data.session.access_token)
             apiClient.setOrganizationId(user.organization_id)
-            
+
             set({
               user,
               token: data.session.access_token,
               isAuthenticated: true,
               isLoading: false,
-              error: null,
+              error: null
             })
-            
+
             // Store in localStorage
             if (typeof window !== 'undefined') {
               localStorage.setItem('hera-auth-token', data.session.access_token)
               localStorage.setItem('hera-user', JSON.stringify(user))
             }
-            
+
             return { needsEmailConfirmation: false }
           }
-          
+
           // Email confirmation required
           set({
             isLoading: false,
-            error: null,
+            error: null
           })
-          
+
           return { needsEmailConfirmation: data.needsEmailConfirmation }
-          
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Signup failed'
           set({
@@ -172,7 +170,7 @@ export const useSession = create<SessionState>()(
             token: null,
             isAuthenticated: false,
             isLoading: false,
-            error: errorMessage,
+            error: errorMessage
           })
           throw error
         }
@@ -180,13 +178,13 @@ export const useSession = create<SessionState>()(
 
       logout: async () => {
         set({ isLoading: true, error: null })
-        
+
         try {
           const supabase = createClient()
-          
+
           // Sign out with Supabase
           const { error } = await supabase.auth.signOut()
-          
+
           if (error) {
             console.warn('Logout failed:', error)
           }
@@ -200,13 +198,13 @@ export const useSession = create<SessionState>()(
             token: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null,
+            error: null
           })
-          
+
           // Clear API client
           apiClient.setToken('')
           apiClient.setOrganizationId('')
-          
+
           // Clear localStorage
           if (typeof window !== 'undefined') {
             localStorage.removeItem('hera-auth-token')
@@ -217,7 +215,7 @@ export const useSession = create<SessionState>()(
 
       setUser: (user: User | null) => {
         set({ user, isAuthenticated: !!user })
-        
+
         if (user && typeof window !== 'undefined') {
           localStorage.setItem('hera-user', JSON.stringify(user))
         }
@@ -225,7 +223,7 @@ export const useSession = create<SessionState>()(
 
       setToken: (token: string | null) => {
         set({ token, isAuthenticated: !!token })
-        
+
         if (token) {
           apiClient.setToken(token)
           if (typeof window !== 'undefined') {
@@ -246,26 +244,25 @@ export const useSession = create<SessionState>()(
       checkSession: async () => {
         // Only run on client side
         if (typeof window === 'undefined') return
-        
+
         const storedToken = localStorage.getItem('hera-auth-token')
         const storedUser = localStorage.getItem('hera-user')
-        
+
         if (storedToken && storedUser) {
           try {
             const user = JSON.parse(storedUser) as User
-            
+
             // Restore session
             apiClient.setToken(storedToken)
             apiClient.setOrganizationId(user.organization_id)
-            
+
             set({
               user,
               token: storedToken,
               isAuthenticated: true,
               isLoading: false,
-              error: null,
+              error: null
             })
-            
           } catch (error) {
             console.error('Failed to restore session:', error)
             // Clear invalid stored data
@@ -276,22 +273,22 @@ export const useSession = create<SessionState>()(
               token: null,
               isAuthenticated: false,
               isLoading: false,
-              error: null,
+              error: null
             })
           }
         } else {
           set({ isLoading: false })
         }
-      },
+      }
     }),
     {
       name: 'hera-session-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         // Only persist essential data
         user: state.user,
         token: state.token,
-        isAuthenticated: state.isAuthenticated,
-      }),
+        isAuthenticated: state.isAuthenticated
+      })
     }
   )
 )
@@ -314,22 +311,13 @@ export const authUtils = {
     const user = useSession.getState().user
     return user?.roles.some(role => roles.includes(role)) || false
   },
-  getOrganizationId: () => useSession.getState().user?.organization_id,
+  getOrganizationId: () => useSession.getState().user?.organization_id
 }
 
 // React hook for auth status
 export const useAuth = () => {
-  const {
-    user,
-    token,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    signup,
-    logout,
-    clearError,
-  } = useSession()
+  const { user, token, isAuthenticated, isLoading, error, login, signup, logout, clearError } =
+    useSession()
 
   return {
     user,
@@ -344,7 +332,7 @@ export const useAuth = () => {
     // Utility methods
     hasRole: (role: string) => user?.roles.includes(role as any) || false,
     hasAnyRole: (roles: string[]) => user?.roles.some(role => roles.includes(role)) || false,
-    organizationId: user?.organization_id,
+    organizationId: user?.organization_id
   }
 }
 

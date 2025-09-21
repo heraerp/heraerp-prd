@@ -31,10 +31,10 @@ export function useFinancialReports(organizationId: string, filters?: ReportFilt
     queryKey: ['financial-reports', organizationId, filters],
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       // Mock reports for now
       const currentMonth = new Date().toISOString().slice(0, 7)
-      
+
       return [
         {
           id: '1',
@@ -95,7 +95,7 @@ export function useGenerateReport() {
       options?: Record<string, any>
     }) => {
       const { organizationId, reportType, startDate, endDate, options } = params
-      
+
       // Create a report generation transaction
       const report = await universalApi.createTransaction({
         organization_id: organizationId,
@@ -109,7 +109,7 @@ export function useGenerateReport() {
           options
         }
       })
-      
+
       return report
     }
   })
@@ -122,11 +122,11 @@ export async function downloadReport(reportId: string, reportName: string) {
   try {
     // In a real implementation, this would fetch the report from the API
     const response = await fetch(`/api/reports/${reportId}/download`)
-    
+
     if (!response.ok) {
       throw new Error('Failed to download report')
     }
-    
+
     const blob = await response.blob()
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')

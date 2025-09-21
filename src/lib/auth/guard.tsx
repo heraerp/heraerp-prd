@@ -15,25 +15,25 @@ import { landingForRole, isAllowed, getUnauthorizedRedirect, Role as RBACRole } 
 
 export interface GuardProps {
   children: React.ReactNode
-  
+
   // Authentication requirements
   requireAuth?: boolean
   redirectTo?: string
-  
+
   // Role-based access
   allowedRoles?: string[]
   requiredRole?: string
-  
+
   // Feature-based access (for future feature flags)
   requiredFeatures?: string[]
-  
+
   // Custom permission check
   permissionCheck?: (user: any) => boolean
-  
+
   // Loading and error states
   loadingComponent?: React.ReactNode
   unauthorizedComponent?: React.ReactNode
-  
+
   // Behavior options
   showUnauthorized?: boolean
   silent?: boolean
@@ -50,7 +50,7 @@ export function Guard({
   loadingComponent,
   unauthorizedComponent,
   showUnauthorized = true,
-  silent = false,
+  silent = false
 }: GuardProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -92,9 +92,8 @@ export function Guard({
 
       // Then check explicit role requirements
       const hasRequiredRole = requiredRole ? user.role === requiredRole : true
-      const hasAllowedRole = allowedRoles.length > 0 
-        ? allowedRoles.includes(user.role || 'customer')
-        : true
+      const hasAllowedRole =
+        allowedRoles.length > 0 ? allowedRoles.includes(user.role || 'customer') : true
 
       if (!hasRequiredRole || !hasAllowedRole) {
         if (!silent && !showUnauthorized) {
@@ -126,7 +125,7 @@ export function Guard({
     redirectTo,
     router,
     silent,
-    showUnauthorized,
+    showUnauthorized
   ])
 
   // Show loading state
@@ -148,7 +147,7 @@ export function Guard({
   // Check authentication
   if (requireAuth && !isAuthenticated) {
     if (silent) return null
-    
+
     // Will redirect via useEffect, show loading state
     return (
       <div className="flex items-center justify-center min-h-[200px]">
@@ -164,14 +163,12 @@ export function Guard({
   if (isAuthenticated && user) {
     const userRole = user.role || 'customer'
     const hasRequiredRole = requiredRole ? userRole === requiredRole : true
-    const hasAllowedRole = allowedRoles.length > 0 
-      ? allowedRoles.includes(userRole)
-      : true
+    const hasAllowedRole = allowedRoles.length > 0 ? allowedRoles.includes(userRole) : true
     const hasCustomPermission = permissionCheck ? permissionCheck(user) : true
 
     if (!hasRequiredRole || !hasAllowedRole || !hasCustomPermission) {
       if (silent) return null
-      
+
       if (showUnauthorized) {
         if (unauthorizedComponent) {
           return <>{unauthorizedComponent}</>
@@ -185,20 +182,14 @@ export function Guard({
                   <ShieldX className="w-8 h-8 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Access Denied
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Access Denied</h3>
                   <p className="text-sm text-gray-600 mb-4">
                     You don't have permission to access this feature.
                   </p>
                   <div className="text-xs text-gray-500">
                     <p>Your role: {user.role || 'customer'}</p>
-                    {requiredRole && (
-                      <p>Required role: {requiredRole}</p>
-                    )}
-                    {allowedRoles.length > 0 && (
-                      <p>Allowed roles: {allowedRoles.join(', ')}</p>
-                    )}
+                    {requiredRole && <p>Required role: {requiredRole}</p>}
+                    {allowedRoles.length > 0 && <p>Allowed roles: {allowedRoles.join(', ')}</p>}
                   </div>
                 </div>
               </div>
@@ -230,7 +221,7 @@ export function withGuard<P extends object>(
   }
 
   GuardedComponent.displayName = `withGuard(${Component.displayName || Component.name})`
-  
+
   return GuardedComponent
 }
 
@@ -271,7 +262,7 @@ export function usePermissions() {
     hasRole,
     hasAnyRole,
     hasAllRoles,
-    canAccess,
+    canAccess
   }
 }
 
@@ -286,17 +277,17 @@ export const ROLES = {
   ACCOUNTANT: 'accountant'
 } as const
 
-export type Role = typeof ROLES[keyof typeof ROLES]
+export type Role = (typeof ROLES)[keyof typeof ROLES]
 
 // Hook for route guard
 export function useRouteGuard(): { allowed: boolean; redirect: string } {
   const { user } = useMultiOrgAuth()
   const pathname = usePathname()
-  
+
   const role = (user?.role || 'customer') as RBACRole
   const allowed = isAllowed(role, pathname)
   const redirect = allowed ? '' : getUnauthorizedRedirect(role)
-  
+
   return { allowed, redirect }
 }
 
@@ -304,13 +295,13 @@ export function useRouteGuard(): { allowed: boolean; redirect: string } {
 export function useRoleLanding() {
   const router = useRouter()
   const { user } = useMultiOrgAuth()
-  
+
   const redirectToLanding = () => {
     const role = (user?.role || 'customer') as RBACRole
     const landing = landingForRole(role)
     router.replace(landing)
   }
-  
+
   return { redirectToLanding }
 }
 

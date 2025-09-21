@@ -55,8 +55,15 @@ export interface PipelineSummary {
   totals: { count: number; amount: number }
 }
 
-export interface FunnelStage { name: string; count: number; rate?: number }
-export interface Funnel { stages: FunnelStage[]; conversionRate: number }
+export interface FunnelStage {
+  name: string
+  count: number
+  rate?: number
+}
+export interface Funnel {
+  stages: FunnelStage[]
+  conversionRate: number
+}
 
 export interface PageResult<T> {
   items: T[]

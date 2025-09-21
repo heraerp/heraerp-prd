@@ -81,10 +81,10 @@ export function BottomSheetProductionExample() {
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
         Dashboard with Interactive Bottom Sheet
       </h2>
-      
+
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((metric) => (
+        {metrics.map(metric => (
           <div
             key={metric.id}
             onClick={() => handleMetricClick(metric.id)}
@@ -117,35 +117,25 @@ export function BottomSheetProductionExample() {
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">
                     {selectedMetricData.value}
                   </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Current Period
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Current Period</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-semibold text-green-600">
-                    {selectedMetricData.trend}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    vs Last Period
-                  </p>
+                  <p className="text-lg font-semibold text-green-600">{selectedMetricData.trend}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">vs Last Period</p>
                 </div>
               </div>
             </div>
 
             {/* Breakdown */}
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
-                Breakdown
-              </h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Breakdown</h3>
               <div className="space-y-2">
                 {selectedMetricData.details.breakdown.map((item, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
                   >
-                    <span className="text-gray-700 dark:text-gray-300">
-                      {item.label}
-                    </span>
+                    <span className="text-gray-700 dark:text-gray-300">{item.label}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">
                       {item.value}
                     </span>

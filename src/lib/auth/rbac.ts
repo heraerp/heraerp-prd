@@ -11,7 +11,7 @@ export type Role = 'owner' | 'admin' | 'manager' | 'stylist' | 'cashier' | 'cust
  */
 export const ROLE_HOME: Record<Role, string> = {
   owner: '/dashboard',
-  admin: '/admin', 
+  admin: '/admin',
   manager: '/dashboard',
   stylist: '/appointments',
   cashier: '/pos/sale',
@@ -35,12 +35,7 @@ export const ROLE_NAV: Record<Role, string[]> = {
     '/settings/*',
     '/whatsapp/*'
   ],
-  admin: [
-    '/admin',
-    '/settings/*',
-    '/finance/closing',
-    '/finance/rules'
-  ],
+  admin: ['/admin', '/settings/*', '/finance/closing', '/finance/rules'],
   manager: [
     '/dashboard',
     '/appointments',
@@ -49,23 +44,10 @@ export const ROLE_NAV: Record<Role, string[]> = {
     '/reports/*',
     '/whatsapp/*'
   ],
-  stylist: [
-    '/appointments',
-    '/staff/schedule'
-  ],
-  cashier: [
-    '/pos/sale',
-    '/appointments'
-  ],
-  customer: [
-    '/customer/*'
-  ],
-  accountant: [
-    '/accountant',
-    '/reports/*',
-    '/finance/closing',
-    '/finance/rules'
-  ]
+  stylist: ['/appointments', '/staff/schedule'],
+  cashier: ['/pos/sale', '/appointments'],
+  customer: ['/customer/*'],
+  accountant: ['/accountant', '/reports/*', '/finance/closing', '/finance/rules']
 }
 
 /**
@@ -80,7 +62,7 @@ export function landingForRole(role: Role): string {
  */
 export function isAllowed(role: Role, path: string): boolean {
   const allowedPaths = ROLE_NAV[role] || []
-  
+
   return allowedPaths.some(allowed => {
     // Wildcard matching
     if (allowed.endsWith('/*')) {

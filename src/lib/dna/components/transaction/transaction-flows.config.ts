@@ -37,7 +37,7 @@ export const salonBookingSteps: TransactionStep[] = [
     description: 'Choose services for your appointment',
     icon: Scissors,
     component: null, // Would be actual component
-    validation: async (data) => {
+    validation: async data => {
       if (!data.services || data.services.length === 0) {
         return {
           valid: false,
@@ -55,7 +55,7 @@ export const salonBookingSteps: TransactionStep[] = [
     description: 'Select your preferred stylist',
     icon: Users,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.staffId) {
         return {
           valid: false,
@@ -73,11 +73,11 @@ export const salonBookingSteps: TransactionStep[] = [
     description: 'Choose your appointment slot',
     icon: Calendar,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.date || !data.time) {
         return {
           valid: false,
-          errors: { 
+          errors: {
             date: !data.date ? 'Please select a date' : undefined,
             time: !data.time ? 'Please select a time' : undefined
           }
@@ -102,23 +102,23 @@ export const salonBookingSteps: TransactionStep[] = [
     description: 'Provide your contact details',
     icon: Phone,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       const errors: Record<string, string> = {}
-      
+
       if (!data.customerName) errors.customerName = 'Name is required'
       if (!data.customerPhone) errors.customerPhone = 'Phone is required'
       if (!data.customerEmail) errors.customerEmail = 'Email is required'
-      
+
       // Validate phone format
       if (data.customerPhone && !/^\+?[\d\s-()]+$/.test(data.customerPhone)) {
         errors.customerPhone = 'Invalid phone number'
       }
-      
+
       // Validate email format
       if (data.customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.customerEmail)) {
         errors.customerEmail = 'Invalid email address'
       }
-      
+
       return {
         valid: Object.keys(errors).length === 0,
         errors
@@ -148,7 +148,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
     description: 'How would you like to receive your order?',
     icon: UtensilsCrossed,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.orderType) {
         return {
           valid: false,
@@ -166,7 +166,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
     description: 'Choose items from our menu',
     icon: ShoppingCart,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.items || data.items.length === 0) {
         return {
           valid: false,
@@ -184,13 +184,13 @@ export const restaurantOrderSteps: TransactionStep[] = [
     description: 'Where should we deliver?',
     icon: MapPin,
     component: null,
-    skipCondition: (data) => data.orderType !== 'delivery',
-    validation: async (data) => {
+    skipCondition: data => data.orderType !== 'delivery',
+    validation: async data => {
       const errors: Record<string, string> = {}
-      
+
       if (!data.deliveryAddress) errors.deliveryAddress = 'Address is required'
       if (!data.deliveryPhone) errors.deliveryPhone = 'Phone is required'
-      
+
       return {
         valid: Object.keys(errors).length === 0,
         errors
@@ -205,7 +205,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
     description: 'Complete your payment',
     icon: CreditCard,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.paymentMethod) {
         return {
           valid: false,
@@ -230,7 +230,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
     description: 'What type of appointment do you need?',
     icon: Heart,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.appointmentType) {
         return {
           valid: false,
@@ -248,8 +248,8 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
     description: 'Select your preferred physician',
     icon: Users,
     component: null,
-    skipCondition: (data) => data.appointmentType === 'emergency',
-    validation: async (data) => {
+    skipCondition: data => data.appointmentType === 'emergency',
+    validation: async data => {
       if (!data.doctorId) {
         return {
           valid: false,
@@ -267,7 +267,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
     description: 'Tell us about your health concern',
     icon: FileText,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.symptoms || data.symptoms.length < 10) {
         return {
           valid: false,
@@ -285,15 +285,15 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
     description: 'Provide your insurance details',
     icon: Shield,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.hasInsurance) {
         return { valid: true } // Self-pay is OK
       }
-      
+
       const errors: Record<string, string> = {}
       if (!data.insuranceProvider) errors.insuranceProvider = 'Provider is required'
       if (!data.insuranceNumber) errors.insuranceNumber = 'Policy number is required'
-      
+
       return {
         valid: Object.keys(errors).length === 0,
         errors
@@ -314,25 +314,25 @@ export const retailPurchaseSteps: TransactionStep[] = [
     description: 'Review items in your cart',
     icon: ShoppingCart,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.cartItems || data.cartItems.length === 0) {
         return {
           valid: false,
           errors: { cartItems: 'Your cart is empty' }
         }
       }
-      
+
       // Check stock availability
       const outOfStock = data.cartItems.filter(item => item.quantity > item.stock)
       if (outOfStock.length > 0) {
         return {
           valid: false,
-          errors: { 
-            stock: `${outOfStock.length} items are out of stock` 
+          errors: {
+            stock: `${outOfStock.length} items are out of stock`
           }
         }
       }
-      
+
       return { valid: true }
     },
     requiredFields: ['cartItems'],
@@ -344,12 +344,12 @@ export const retailPurchaseSteps: TransactionStep[] = [
     description: 'How can we reach you?',
     icon: Mail,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       const errors: Record<string, string> = {}
-      
+
       if (!data.email) errors.email = 'Email is required'
       if (!data.phone) errors.phone = 'Phone is required'
-      
+
       return {
         valid: Object.keys(errors).length === 0,
         errors
@@ -364,13 +364,13 @@ export const retailPurchaseSteps: TransactionStep[] = [
     description: 'Where should we send your order?',
     icon: Truck,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       const errors: Record<string, string> = {}
-      
+
       if (!data.shippingAddress) errors.shippingAddress = 'Address is required'
       if (!data.shippingCity) errors.shippingCity = 'City is required'
       if (!data.shippingPostal) errors.shippingPostal = 'Postal code is required'
-      
+
       return {
         valid: Object.keys(errors).length === 0,
         errors
@@ -385,21 +385,21 @@ export const retailPurchaseSteps: TransactionStep[] = [
     description: 'Secure payment processing',
     icon: CreditCard,
     component: null,
-    validation: async (data) => {
+    validation: async data => {
       if (!data.paymentMethod) {
         return {
           valid: false,
           errors: { paymentMethod: 'Please select payment method' }
         }
       }
-      
+
       if (data.paymentMethod === 'card' && !data.cardToken) {
         return {
           valid: false,
           errors: { cardToken: 'Please enter card details' }
         }
       }
-      
+
       return { valid: true }
     },
     requiredFields: ['paymentMethod'],
@@ -552,7 +552,7 @@ export const transactionFlowRegistry = {
     name: 'Walk-in Service',
     icon: Clock
   },
-  
+
   // Restaurant flows
   'restaurant.order': {
     steps: restaurantOrderSteps,
@@ -566,7 +566,7 @@ export const transactionFlowRegistry = {
     name: 'Table Reservation',
     icon: Calendar
   },
-  
+
   // Healthcare flows
   'healthcare.appointment': {
     steps: healthcareAppointmentSteps,
@@ -580,7 +580,7 @@ export const transactionFlowRegistry = {
     name: 'Prescription Refill',
     icon: FileText
   },
-  
+
   // Retail flows
   'retail.purchase': {
     steps: retailPurchaseSteps,
@@ -607,7 +607,7 @@ export function mergeTranslations(
   industry: TranslationDictionary
 ): TranslationDictionary {
   const merged = { ...base }
-  
+
   Object.keys(industry).forEach(locale => {
     if (!merged[locale]) {
       merged[locale] = industry[locale]
@@ -618,6 +618,6 @@ export function mergeTranslations(
       }
     }
   })
-  
+
   return merged
 }

@@ -15,7 +15,7 @@ import {
   CartState,
   Payment,
   calculateTotals,
-  calculateCommission,
+  calculateCommission
 } from '@/lib/schemas/pos'
 
 // Cart store with persistence
@@ -38,58 +38,65 @@ export const useCartStore = create<CartStore>()(
       appointment_id: undefined,
       customer_id: undefined,
 
-      addService: (service) => set(state => {
-        const lines = [...state.lines, service]
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      addService: service =>
+        set(state => {
+          const lines = [...state.lines, service]
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      addProduct: (product) => set(state => {
-        const lines = [...state.lines, product]
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      addProduct: product =>
+        set(state => {
+          const lines = [...state.lines, product]
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      addDiscount: (discount) => set(state => {
-        const lines = [...state.lines, discount]
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      addDiscount: discount =>
+        set(state => {
+          const lines = [...state.lines, discount]
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      addTip: (tip) => set(state => {
-        // Remove existing tip if any
-        const lines = state.lines.filter(line => line.kind !== 'tip')
-        lines.push(tip)
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      addTip: tip =>
+        set(state => {
+          // Remove existing tip if any
+          const lines = state.lines.filter(line => line.kind !== 'tip')
+          lines.push(tip)
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      removeLine: (index) => set(state => {
-        const lines = state.lines.filter((_, i) => i !== index)
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      removeLine: index =>
+        set(state => {
+          const lines = state.lines.filter((_, i) => i !== index)
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      updateQuantity: (index, qty) => set(state => {
-        const lines = [...state.lines]
-        const line = lines[index]
-        if (line && (line.kind === 'service' || line.kind === 'item')) {
-          lines[index] = { ...line, qty }
-        }
-        return { lines, totals: calculateTotals(lines) }
-      }),
+      updateQuantity: (index, qty) =>
+        set(state => {
+          const lines = [...state.lines]
+          const line = lines[index]
+          if (line && (line.kind === 'service' || line.kind === 'item')) {
+            lines[index] = { ...line, qty }
+          }
+          return { lines, totals: calculateTotals(lines) }
+        }),
 
-      clearCart: () => set({
-        lines: [],
-        totals: calculateTotals([]),
-        appointment_id: undefined,
-        customer_id: undefined,
-      }),
+      clearCart: () =>
+        set({
+          lines: [],
+          totals: calculateTotals([]),
+          appointment_id: undefined,
+          customer_id: undefined
+        }),
 
-      loadFromAppointment: (state) => set(state),
+      loadFromAppointment: state => set(state)
     }),
     {
       name: 'hera-pos-cart',
-      partialize: (state) => ({
+      partialize: state => ({
         lines: state.lines,
         appointment_id: state.appointment_id,
-        customer_id: state.customer_id,
-      }),
+        customer_id: state.customer_id
+      })
     }
   )
 )
@@ -99,7 +106,7 @@ export function usePriceList(api: PosApi) {
   return useQuery({
     queryKey: ['pos-price-list'],
     queryFn: () => api.priceList(),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 5 * 60 * 1000 // Cache for 5 minutes
   })
 }
 
@@ -116,17 +123,17 @@ export function useCheckout(api: PosApi) {
         lines: cart.lines,
         totals: cart.totals,
         appointment_id: cart.appointment_id,
-        customer_id: cart.customer_id,
+        customer_id: cart.customer_id
       }
       return api.checkout(cartState, txnId)
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast.success('Invoice created successfully')
       router.push(`/pos/payment?invoice=${data.invoiceId}`)
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error instanceof Error ? error.message : 'Failed to create checkout')
-    },
+    }
   })
 }
 
@@ -138,25 +145,25 @@ export function usePayment(api: PosApi) {
 
   return useMutation({
     mutationKey: ['pos-payment'],
-    mutationFn: ({ invoiceId, payment }: { invoiceId: string; payment: Payment }) => 
+    mutationFn: ({ invoiceId, payment }: { invoiceId: string; payment: Payment }) =>
       api.pay(invoiceId, payment),
     onSuccess: (data, variables) => {
       toast.success('Payment processed successfully')
-      
+
       // Clear cart after successful payment
       clearCart()
-      
+
       // Show BOM consumption toast
       setTimeout(() => {
         toast.info('Inventory: BOM consumption posted')
       }, 1500)
-      
+
       // Navigate to invoice
       router.push(`/pos/invoice/${variables.invoiceId}`)
     },
-    onError: (error) => {
+    onError: error => {
       toast.error(error instanceof Error ? error.message : 'Failed to process payment')
-    },
+    }
   })
 }
 
@@ -165,7 +172,7 @@ export function useInvoice(invoiceId: string, api: PosApi) {
   return useQuery({
     queryKey: ['pos-invoice', invoiceId],
     queryFn: () => api.invoice(invoiceId),
-    enabled: !!invoiceId,
+    enabled: !!invoiceId
   })
 }
 
@@ -183,7 +190,7 @@ export function useLoadAppointment(api: PosApi) {
       loadFromAppointment(cartState)
       return cartState
     },
-    enabled: !!apptId,
+    enabled: !!apptId
   })
 }
 
@@ -205,26 +212,26 @@ export function usePosNavigation() {
     goToPayment: (invoiceId: string) => router.push(`/pos/payment?invoice=${invoiceId}`),
     goToInvoice: (invoiceId: string) => router.push(`/pos/invoice/${invoiceId}`),
     goToAppointment: (appointmentId: string) => router.push(`/appointments/${appointmentId}`),
-    goToCustomer: (customerId: string) => router.push(`/customers/${customerId}`),
+    goToCustomer: (customerId: string) => router.push(`/customers/${customerId}`)
   }
 }
 
 // Cart summary hook
 export function useCartSummary() {
   const cart = useCartStore()
-  
+
   const serviceCount = cart.lines.filter(l => l.kind === 'service').length
   const itemCount = cart.lines.filter(l => l.kind === 'item').length
   const hasDiscount = cart.lines.some(l => l.kind === 'discount')
   const hasTip = cart.lines.some(l => l.kind === 'tip')
-  
+
   return {
     serviceCount,
     itemCount,
     hasDiscount,
     hasTip,
     isEmpty: cart.lines.length === 0,
-    canCheckout: cart.lines.length > 0 && (serviceCount > 0 || itemCount > 0),
+    canCheckout: cart.lines.length > 0 && (serviceCount > 0 || itemCount > 0)
   }
 }
 
@@ -235,33 +242,35 @@ export function useQuickActions() {
 
   return {
     applyPercentageDiscount: (percentage: number, reason?: string) => {
-      const subtotal = useCartStore.getState().totals.subtotal_services + 
-                      useCartStore.getState().totals.subtotal_items
+      const subtotal =
+        useCartStore.getState().totals.subtotal_services +
+        useCartStore.getState().totals.subtotal_items
       const amount = Math.round(subtotal * (percentage / 100))
       addDiscount({
         kind: 'discount',
         amount,
         percentage,
-        reason: reason || `${percentage}% discount`,
+        reason: reason || `${percentage}% discount`
       })
     },
-    
+
     applyFixedDiscount: (amount: number, reason?: string) => {
       addDiscount({
         kind: 'discount',
         amount,
-        reason: reason || 'Fixed discount',
+        reason: reason || 'Fixed discount'
       })
     },
-    
+
     addQuickTip: (percentage: number) => {
-      const subtotal = useCartStore.getState().totals.subtotal_services + 
-                      useCartStore.getState().totals.subtotal_items
+      const subtotal =
+        useCartStore.getState().totals.subtotal_services +
+        useCartStore.getState().totals.subtotal_items
       const amount = Math.round(subtotal * (percentage / 100))
       addTip({
         kind: 'tip',
-        amount,
+        amount
       })
-    },
+    }
   }
 }

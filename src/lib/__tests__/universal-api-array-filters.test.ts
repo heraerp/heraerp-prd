@@ -92,12 +92,12 @@ describe('Playbook Entities with improved array handling', () => {
   it('should efficiently query dynamic data with batch entity IDs', () => {
     // The Playbook searchAppointments now uses array filters
     // This improves performance by reducing individual queries
-    
+
     // Test scenario:
     // 1. Get all appointment entities (1 query)
     // 2. Get all dynamic data for those entities (1 query with array filter)
     // Instead of N+1 queries, we now have just 2 queries
-    
+
     expect(true).toBe(true) // Placeholder - actual test would need mocking
   })
 })

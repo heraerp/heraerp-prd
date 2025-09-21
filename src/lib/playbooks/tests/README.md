@@ -48,6 +48,7 @@ tests/
 ### Jest Configuration (`jest.config.js`)
 
 The Jest configuration includes:
+
 - TypeScript support via ts-jest
 - Path aliases for clean imports
 - Coverage thresholds (80% global, 90% for critical modules)
@@ -75,6 +76,7 @@ npm run test:all
 ```
 
 This runs the complete test suite runner that:
+
 1. Sets up the test environment
 2. Runs test suites in priority order
 3. Generates comprehensive reports
@@ -112,6 +114,7 @@ npm run test:ci
 ## Test Reports
 
 After running tests, reports are available in:
+
 - `coverage/` - Coverage reports (lcov, HTML)
 - `coverage/junit.xml` - JUnit format for CI integration
 - `coverage/test-report.html` - Detailed HTML report
@@ -124,23 +127,23 @@ After running tests, reports are available in:
 
 ```typescript
 // Check if string is valid smart code
-expect(smartCode).toBeValidSmartCode();
+expect(smartCode).toBeValidSmartCode()
 
 // Check if number is within range
-expect(value).toBeWithinRange(0, 100);
+expect(value).toBeWithinRange(0, 100)
 
 // Check if array contains transaction type
-expect(transactions).toContainTransaction('sale');
+expect(transactions).toContainTransaction('sale')
 ```
 
 ### Test Helpers
 
 ```typescript
-import { createTestOrganization, createTestUser, createTestEntity } from '../setup/test-setup';
+import { createTestOrganization, createTestUser, createTestEntity } from '../setup/test-setup'
 
-const org = createTestOrganization();
-const user = createTestUser();
-const entity = createTestEntity('customer', 'Test Customer');
+const org = createTestOrganization()
+const user = createTestUser()
+const entity = createTestEntity('customer', 'Test Customer')
 ```
 
 ## Best Practices

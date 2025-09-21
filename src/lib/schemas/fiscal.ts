@@ -73,7 +73,10 @@ export const FISCAL_DYNAMIC_DATA_KEYS = {
 } as const
 
 // Default checklist items
-export const DEFAULT_CHECKLIST_ITEMS: Omit<CloseChecklistItem, 'completed' | 'completed_at' | 'completed_by'>[] = [
+export const DEFAULT_CHECKLIST_ITEMS: Omit<
+  CloseChecklistItem,
+  'completed' | 'completed_at' | 'completed_by'
+>[] = [
   {
     key: 'pos_posted',
     label: 'All POS transactions posted',

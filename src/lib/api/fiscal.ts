@@ -5,9 +5,9 @@
 // ================================================================================
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { 
-  FiscalConfig, 
-  FiscalPeriod, 
+import {
+  FiscalConfig,
+  FiscalPeriod,
   CloseChecklist,
   CloseChecklistItem,
   YearCloseRequest,
@@ -33,12 +33,17 @@ export function useFiscalApi(organizationId: string) {
     queryKey: keys.config,
     queryFn: async (): Promise<FiscalConfig> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, FISCAL_DYNAMIC_DATA_KEYS.CONFIG)
-        return result ? FiscalConfig.parse(result) : FiscalConfig.parse({
-          fiscal_year_start: `${new Date().getFullYear()}-01-01`,
-          retained_earnings_account: '3200',
-          lock_after_days: 7
-        })
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          FISCAL_DYNAMIC_DATA_KEYS.CONFIG
+        )
+        return result
+          ? FiscalConfig.parse(result)
+          : FiscalConfig.parse({
+              fiscal_year_start: `${new Date().getFullYear()}-01-01`,
+              retained_earnings_account: '3200',
+              lock_after_days: 7
+            })
       } catch (error) {
         console.error('Failed to get fiscal config:', error)
         return FiscalConfig.parse({
@@ -78,7 +83,10 @@ export function useFiscalApi(organizationId: string) {
     queryKey: keys.periods,
     queryFn: async (): Promise<FiscalPeriod[]> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, FISCAL_DYNAMIC_DATA_KEYS.PERIODS)
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          FISCAL_DYNAMIC_DATA_KEYS.PERIODS
+        )
         return Array.isArray(result) ? result.map(p => FiscalPeriod.parse(p)) : []
       } catch (error) {
         console.error('Failed to get fiscal periods:', error)
@@ -132,7 +140,10 @@ export function useFiscalApi(organizationId: string) {
     queryKey: keys.checklist,
     queryFn: async (): Promise<CloseChecklist> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, FISCAL_DYNAMIC_DATA_KEYS.CHECKLIST)
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          FISCAL_DYNAMIC_DATA_KEYS.CHECKLIST
+        )
         if (Array.isArray(result) && result.length > 0) {
           return result.map(item => CloseChecklistItem.parse(item))
         }
@@ -244,7 +255,10 @@ export function useFiscalApi(organizationId: string) {
       // Update the period status locally
       const currentPeriods = getPeriods.data || []
       const updatedPeriods = currentPeriods.map(period => {
-        if (period.code === periodCode && (period.status === 'open' || period.status === 'locked')) {
+        if (
+          period.code === periodCode &&
+          (period.status === 'open' || period.status === 'locked')
+        ) {
           return {
             ...period,
             status: 'closed' as const,
@@ -289,10 +303,8 @@ export function useFiscalApi(organizationId: string) {
   const getCurrentPeriod = () => {
     const periods = getPeriods.data || []
     const today = new Date().toISOString().split('T')[0]
-    
-    return periods.find(period => 
-      period.from <= today && period.to >= today
-    )
+
+    return periods.find(period => period.from <= today && period.to >= today)
   }
 
   const isChecklistComplete = () => {
@@ -302,16 +314,16 @@ export function useFiscalApi(organizationId: string) {
 
   const areAllPeriodsClosed = (year?: string) => {
     const periods = getPeriods.data || []
-    const filteredPeriods = year 
-      ? periods.filter(p => p.code.startsWith(year))
-      : periods
+    const filteredPeriods = year ? periods.filter(p => p.code.startsWith(year)) : periods
 
     return filteredPeriods.length > 0 && filteredPeriods.every(p => p.status === 'closed')
   }
 
   const canClosePeriod = (periodCode: string) => {
     const period = getPeriods.data?.find(p => p.code === periodCode)
-    return period && (period.status === 'open' || period.status === 'locked') && isChecklistComplete()
+    return (
+      period && (period.status === 'open' || period.status === 'locked') && isChecklistComplete()
+    )
   }
 
   const canLockPeriod = (periodCode: string) => {

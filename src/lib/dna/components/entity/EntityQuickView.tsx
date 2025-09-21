@@ -3,12 +3,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Building2, 
-  Package, 
-  Users, 
-  FileText, 
-  Calendar, 
+import {
+  Building2,
+  Package,
+  Users,
+  FileText,
+  Calendar,
   DollarSign,
   ChevronRight,
   Eye,
@@ -82,28 +82,28 @@ interface EntityData {
 export interface EntityQuickViewProps {
   // Entity identifier - can be ID or full entity object
   entity: string | Partial<EntityData>
-  
+
   // Trigger element
   children: React.ReactElement
-  
+
   // Delay before showing preview (ms)
   delay?: number
-  
+
   // Custom content renderer
   renderContent?: (entity: EntityData) => React.ReactNode
-  
+
   // Position strategy
   position?: 'auto' | 'top' | 'bottom' | 'left' | 'right'
-  
+
   // Event callbacks
   onShow?: () => void
   onHide?: () => void
   onAction?: (action: string, entity: EntityData) => void
-  
+
   // Style customization
   className?: string
   maxWidth?: number
-  
+
   // Feature flags
   showTransactions?: boolean
   showRelated?: boolean
@@ -130,7 +130,7 @@ export function EntityQuickView({
   const [entityData, setEntityData] = useState<EntityData | null>(null)
   const [viewPosition, setViewPosition] = useState({ top: 0, left: 0 })
   const [placement, setPlacement] = useState<'top' | 'bottom' | 'left' | 'right'>('bottom')
-  
+
   const triggerRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -140,19 +140,20 @@ export function EntityQuickView({
   // Fetch entity data
   const fetchEntityData = useCallback(async () => {
     setIsLoading(true)
-    
+
     try {
       let data: EntityData
-      
+
       // If entity is an object, use it directly
       if (typeof entity === 'object' && 'id' in entity) {
         data = entity as EntityData
-        
+
         // Fetch dynamic fields if not present
         if (!data.dynamic_fields) {
           const dynamicFields = await universalApi.getDynamicFields(data.id)
           data.dynamic_fields = dynamicFields.reduce((acc: any, field: any) => {
-            acc[field.field_name] = field.field_value_text || field.field_value_number || field.field_value_date
+            acc[field.field_name] =
+              field.field_value_text || field.field_value_number || field.field_value_date
             return acc
           }, {})
         }
@@ -160,16 +161,17 @@ export function EntityQuickView({
         // Fetch entity by ID
         const entities = await universalApi.read('core_entities')
         const entityRecord = entities.find((e: any) => e.id === entity)
-        
+
         if (!entityRecord) throw new Error('Entity not found')
-        
+
         // Fetch dynamic fields
         const dynamicFields = await universalApi.getDynamicFields(entity)
         const dynamicFieldsMap = dynamicFields.reduce((acc: any, field: any) => {
-          acc[field.field_name] = field.field_value_text || field.field_value_number || field.field_value_date
+          acc[field.field_name] =
+            field.field_value_text || field.field_value_number || field.field_value_date
           return acc
         }, {})
-        
+
         data = {
           ...entityRecord,
           dynamic_fields: dynamicFieldsMap
@@ -177,15 +179,12 @@ export function EntityQuickView({
       } else {
         throw new Error('Invalid entity prop')
       }
-      
+
       // Fetch recent transactions if enabled
       if (showTransactions) {
         const transactions = await universalApi.read('universal_transactions')
         const recentTxns = transactions
-          .filter((txn: any) => 
-            txn.from_entity_id === data.id || 
-            txn.to_entity_id === data.id
-          )
+          .filter((txn: any) => txn.from_entity_id === data.id || txn.to_entity_id === data.id)
           .slice(0, 3)
           .map((txn: any) => ({
             id: txn.id,
@@ -193,25 +192,22 @@ export function EntityQuickView({
             total_amount: txn.total_amount,
             transaction_date: txn.transaction_date
           }))
-        
+
         data.recent_transactions = recentTxns
       }
-      
+
       // Fetch related entities if enabled
       if (showRelated) {
         const relationships = await universalApi.read('core_relationships')
         const relatedRels = relationships
-          .filter((rel: any) => 
-            rel.from_entity_id === data.id || 
-            rel.to_entity_id === data.id
-          )
+          .filter((rel: any) => rel.from_entity_id === data.id || rel.to_entity_id === data.id)
           .slice(0, 3)
-        
+
         const entities = await universalApi.read('core_entities')
         const relatedEntities = relatedRels.map((rel: any) => {
           const relatedId = rel.from_entity_id === data.id ? rel.to_entity_id : rel.from_entity_id
           const relatedEntity = entities.find((e: any) => e.id === relatedId)
-          
+
           return {
             id: relatedId,
             entity_name: relatedEntity?.entity_name || 'Unknown',
@@ -219,10 +215,10 @@ export function EntityQuickView({
             relationship_type: rel.relationship_type
           }
         })
-        
+
         data.related_entities = relatedEntities
       }
-      
+
       setEntityData(data)
     } catch (error) {
       console.error('Error fetching entity data:', error)
@@ -234,17 +230,17 @@ export function EntityQuickView({
   // Calculate position
   const calculatePosition = useCallback(() => {
     if (!triggerRef.current || !contentRef.current) return
-    
+
     const triggerRect = triggerRef.current.getBoundingClientRect()
     const contentRect = contentRef.current.getBoundingClientRect()
     const viewportWidth = window.innerWidth
     const viewportHeight = window.innerHeight
     const gap = 8
-    
+
     let top = 0
     let left = 0
     let finalPlacement: typeof placement = 'bottom'
-    
+
     // Auto position calculation
     if (position === 'auto') {
       // Try bottom first
@@ -302,11 +298,11 @@ export function EntityQuickView({
           break
       }
     }
-    
+
     // Keep within viewport bounds
     left = Math.max(gap, Math.min(left, viewportWidth - contentRect.width - gap))
     top = Math.max(gap, Math.min(top, viewportHeight - contentRect.height - gap))
-    
+
     setViewPosition({ top, left })
     setPlacement(finalPlacement)
   }, [position])
@@ -380,12 +376,12 @@ export function EntityQuickView({
   useEffect(() => {
     if (isVisible) {
       calculatePosition()
-      
+
       // Recalculate on scroll/resize
       const handleUpdate = () => calculatePosition()
       window.addEventListener('scroll', handleUpdate, true)
       window.addEventListener('resize', handleUpdate)
-      
+
       return () => {
         window.removeEventListener('scroll', handleUpdate, true)
         window.removeEventListener('resize', handleUpdate)
@@ -401,7 +397,7 @@ export function EntityQuickView({
       bgColor: 'bg-gray-500/10'
     }
     const Icon = config.icon
-    
+
     return (
       <div className={cn('p-2 rounded-lg', config.bgColor)}>
         <Icon className={cn('w-5 h-5', config.color)} />
@@ -412,7 +408,7 @@ export function EntityQuickView({
   // Format field value
   const formatFieldValue = (field: string, value: any) => {
     if (value === null || value === undefined) return '-'
-    
+
     // Special formatting based on field name
     if (field.includes('price') || field.includes('amount') || field.includes('limit')) {
       return formatCurrency(parseFloat(value))
@@ -423,21 +419,21 @@ export function EntityQuickView({
     if (field.includes('percent')) {
       return `${value}%`
     }
-    
+
     return String(value)
   }
 
   // Render content
   const renderQuickViewContent = () => {
     if (!entityData) return null
-    
+
     // Use custom renderer if provided
     if (renderContent) {
       return renderContent(entityData)
     }
-    
+
     const config = ENTITY_CONFIG[entityData.entity_type as keyof typeof ENTITY_CONFIG]
-    
+
     return (
       <>
         {/* Header */}
@@ -460,7 +456,7 @@ export function EntityQuickView({
             </div>
           </div>
         </div>
-        
+
         {/* Smart Code */}
         {entityData.smart_code && (
           <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800">
@@ -469,13 +465,13 @@ export function EntityQuickView({
             </div>
           </div>
         )}
-        
+
         {/* Key Fields */}
         <div className="p-4 space-y-2 border-b border-gray-100 dark:border-gray-800">
-          {config?.fields.map((field) => {
+          {config?.fields.map(field => {
             const value = entityData.dynamic_fields?.[field] || entityData.metadata?.[field]
             if (!value) return null
-            
+
             return (
               <div key={field} className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400 capitalize">
@@ -487,7 +483,7 @@ export function EntityQuickView({
               </div>
             )
           })}
-          
+
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Created:</span>
             <span className="font-medium text-gray-900 dark:text-gray-100">
@@ -495,29 +491,31 @@ export function EntityQuickView({
             </span>
           </div>
         </div>
-        
+
         {/* Recent Transactions */}
-        {showTransactions && entityData.recent_transactions && entityData.recent_transactions.length > 0 && (
-          <div className="p-4 border-b border-gray-100 dark:border-gray-800">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" />
-              Recent Transactions
-            </h4>
-            <div className="space-y-2">
-              {entityData.recent_transactions.map((txn) => (
-                <div key={txn.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400 capitalize">
-                    {txn.transaction_type.replace(/_/g, ' ')}
-                  </span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">
-                    {formatCurrency(txn.total_amount)}
-                  </span>
-                </div>
-              ))}
+        {showTransactions &&
+          entityData.recent_transactions &&
+          entityData.recent_transactions.length > 0 && (
+            <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+                Recent Transactions
+              </h4>
+              <div className="space-y-2">
+                {entityData.recent_transactions.map(txn => (
+                  <div key={txn.id} className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400 capitalize">
+                      {txn.transaction_type.replace(/_/g, ' ')}
+                    </span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {formatCurrency(txn.total_amount)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        
+          )}
+
         {/* Related Entities */}
         {showRelated && entityData.related_entities && entityData.related_entities.length > 0 && (
           <div className="p-4 border-b border-gray-100 dark:border-gray-800">
@@ -526,13 +524,11 @@ export function EntityQuickView({
               Related Entities
             </h4>
             <div className="space-y-2">
-              {entityData.related_entities.map((related) => (
+              {entityData.related_entities.map(related => (
                 <div key={related.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     {renderEntityIcon(related.entity_type)}
-                    <span className="text-gray-900 dark:text-gray-100">
-                      {related.entity_name}
-                    </span>
+                    <span className="text-gray-900 dark:text-gray-100">{related.entity_name}</span>
                   </div>
                   <span className="text-xs text-gray-500 capitalize">
                     {related.relationship_type.replace(/_/g, ' ')}
@@ -542,7 +538,7 @@ export function EntityQuickView({
             </div>
           </div>
         )}
-        
+
         {/* Quick Actions */}
         {showActions && (
           <div className="p-3 flex gap-2">
@@ -581,45 +577,50 @@ export function EntityQuickView({
   return (
     <>
       {childrenWithProps}
-      
-      {typeof window !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {isVisible && (
-            <motion.div
-              ref={contentRef}
-              id="entity-quick-view"
-              className={cn(
-                'fixed z-[9999] bg-white dark:bg-gray-900 rounded-lg shadow-xl',
-                'border border-gray-200 dark:border-gray-700',
-                'backdrop-blur-xl backdrop-saturate-150',
-                'overflow-hidden',
-                className
-              )}
-              style={{
-                top: viewPosition.top,
-                left: viewPosition.left,
-                maxWidth,
-                width: 'max-content'
-              }}
-              initial={{ opacity: 0, scale: 0.95, y: placement === 'bottom' ? -10 : placement === 'top' ? 10 : 0 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              role="tooltip"
-              aria-label="Entity quick view"
-            >
-              {isLoading ? (
-                <div className="p-8 flex items-center justify-center">
-                  <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-                </div>
-              ) : (
-                renderQuickViewContent()
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+
+      {typeof window !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {isVisible && (
+              <motion.div
+                ref={contentRef}
+                id="entity-quick-view"
+                className={cn(
+                  'fixed z-[9999] bg-white dark:bg-gray-900 rounded-lg shadow-xl',
+                  'border border-gray-200 dark:border-gray-700',
+                  'backdrop-blur-xl backdrop-saturate-150',
+                  'overflow-hidden',
+                  className
+                )}
+                style={{
+                  top: viewPosition.top,
+                  left: viewPosition.left,
+                  maxWidth,
+                  width: 'max-content'
+                }}
+                initial={{
+                  opacity: 0,
+                  scale: 0.95,
+                  y: placement === 'bottom' ? -10 : placement === 'top' ? 10 : 0
+                }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                role="tooltip"
+                aria-label="Entity quick view"
+              >
+                {isLoading ? (
+                  <div className="p-8 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                  </div>
+                ) : (
+                  renderQuickViewContent()
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </>
   )
 }
@@ -637,9 +638,9 @@ export function EntityQuickViewSkeleton() {
           </div>
         </div>
       </div>
-      
+
       <div className="p-4 space-y-3">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3].map(i => (
           <div key={i} className="flex justify-between">
             <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
             <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/4" />
@@ -652,19 +653,13 @@ export function EntityQuickViewSkeleton() {
 
 // Compound component for custom layouts
 export const EntityQuickViewHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-4 border-b border-gray-100 dark:border-gray-800">
-    {children}
-  </div>
+  <div className="p-4 border-b border-gray-100 dark:border-gray-800">{children}</div>
 )
 
 export const EntityQuickViewBody = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-4">
-    {children}
-  </div>
+  <div className="p-4">{children}</div>
 )
 
 export const EntityQuickViewFooter = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-3 border-t border-gray-100 dark:border-gray-800">
-    {children}
-  </div>
+  <div className="p-3 border-t border-gray-100 dark:border-gray-800">{children}</div>
 )

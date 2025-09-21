@@ -5,7 +5,7 @@
 
 // Industry-specific dashboard examples
 export { RestaurantDashboard } from './RestaurantDashboard'
-export type { 
+export type {
   RestaurantDashboardProps,
   RestaurantMetrics,
   MenuItem,
@@ -49,7 +49,12 @@ export const DASHBOARD_INFO = {
     name: 'Salon Dashboard',
     description: 'Complete salon & spa operations dashboard with appointment management',
     smartCode: 'HERA.DNA.EXAMPLE.DASHBOARD.SALON.V1',
-    features: ['Appointment Scheduling', 'Staff Management', 'Service Performance', 'Client Satisfaction'],
+    features: [
+      'Appointment Scheduling',
+      'Staff Management',
+      'Service Performance',
+      'Client Satisfaction'
+    ],
     industry: 'salon'
   },
   healthcare: {

@@ -9,7 +9,6 @@ import type { LineInput } from '../upsertAppointmentLines'
 
 // Test type definitions to ensure compile-time type safety
 describe('Appointment System TypeScript Types', () => {
-  
   describe('DraftInput interface', () => {
     it('should have correct required fields', () => {
       const validDraftInput: DraftInput = {
@@ -18,7 +17,7 @@ describe('Appointment System TypeScript Types', () => {
         durationMin: 60,
         customerEntityId: 'customer-123'
       }
-      
+
       expect(validDraftInput).toBeDefined()
     })
 
@@ -32,7 +31,7 @@ describe('Appointment System TypeScript Types', () => {
         notes: 'Special hair treatment',
         idempotencyKey: 'unique-key-123'
       }
-      
+
       expect(draftWithOptionals).toBeDefined()
     })
 
@@ -44,7 +43,7 @@ describe('Appointment System TypeScript Types', () => {
         customerEntityId: 'customer-123',
         preferredStylistEntityId: null
       }
-      
+
       expect(draftWithNullStylist).toBeDefined()
     })
   })
@@ -59,12 +58,12 @@ describe('Appointment System TypeScript Types', () => {
             type: 'SERVICE',
             entityId: 'service-123',
             qty: 1,
-            unitAmount: 50.00,
+            unitAmount: 50.0,
             durationMin: 30
           }
         ]
       }
-      
+
       expect(validLineInput).toBeDefined()
     })
 
@@ -77,19 +76,19 @@ describe('Appointment System TypeScript Types', () => {
             type: 'SERVICE',
             entityId: 'service-123',
             qty: 1,
-            unitAmount: 50.00,
+            unitAmount: 50.0,
             durationMin: 30
           },
           {
             type: 'PRODUCT',
             entityId: 'product-456',
             qty: 2,
-            unitAmount: 25.00
+            unitAmount: 25.0
             // durationMin is optional for products
           }
         ]
       }
-      
+
       expect(lineInputMixed).toBeDefined()
     })
 
@@ -97,7 +96,7 @@ describe('Appointment System TypeScript Types', () => {
       // This test ensures TypeScript will catch invalid item types at compile time
       const serviceItem = { type: 'SERVICE' as const, entityId: '1', qty: 1, unitAmount: 10 }
       const productItem = { type: 'PRODUCT' as const, entityId: '2', qty: 1, unitAmount: 20 }
-      
+
       expect(serviceItem.type).toBe('SERVICE')
       expect(productItem.type).toBe('PRODUCT')
     })
@@ -107,19 +106,19 @@ describe('Appointment System TypeScript Types', () => {
     it('should define createDraftAppointment return type', () => {
       // This validates that the return type Promise<{ id: string }> is correct
       type ExpectedReturn = Promise<{ id: string }>
-      
+
       // This will cause a TypeScript error if the actual return type doesn't match
       const mockReturn: ExpectedReturn = Promise.resolve({ id: 'test-id' })
-      
+
       expect(mockReturn).toBeDefined()
     })
 
     it('should define upsertAppointmentLines return type', () => {
       // This validates that the return type Promise<void> is correct
       type ExpectedReturn = Promise<void>
-      
+
       const mockReturn: ExpectedReturn = Promise.resolve()
-      
+
       expect(mockReturn).toBeDefined()
     })
   })
@@ -133,7 +132,7 @@ describe('Appointment System TypeScript Types', () => {
     it('should use proper smart codes for service lines', () => {
       const expectedServiceSmartCode = 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1'
       const expectedProductSmartCode = 'HERA.SALON.APPOINTMENT.LINE.PRODUCT.V1'
-      
+
       expect(expectedServiceSmartCode).toMatch(/^HERA\.\w+\.\w+\.\w+\.\w+\.v\d+$/)
       expect(expectedProductSmartCode).toMatch(/^HERA\.\w+\.\w+\.\w+\.\w+\.v\d+$/)
     })
@@ -147,7 +146,7 @@ describe('Appointment System TypeScript Types', () => {
         durationMin: 1, // Minimum duration
         customerEntityId: 'customer-123'
       }
-      
+
       expect(edgeCaseInput.durationMin).toBeGreaterThan(0)
     })
 
@@ -165,7 +164,7 @@ describe('Appointment System TypeScript Types', () => {
           }
         ]
       }
-      
+
       expect(largeQuantityInput.items[0].qty).toBeLessThan(1000)
       expect(largeQuantityInput.items[0].unitAmount).toBeLessThan(10000)
     })
@@ -177,11 +176,13 @@ export type TestTypes = {
   // These type assertions will cause compilation errors if our types are wrong
   draftInput: DraftInput extends {
     organizationId: string
-    startAt: string  
+    startAt: string
     durationMin: number
     customerEntityId: string
-  } ? true : never
-  
+  }
+    ? true
+    : never
+
   lineInput: LineInput extends {
     organizationId: string
     appointmentId: string
@@ -191,7 +192,9 @@ export type TestTypes = {
       qty: number
       unitAmount: number
     }>
-  } ? true : never
+  }
+    ? true
+    : never
 }
 
 // This ensures our actual exports match the expected interface

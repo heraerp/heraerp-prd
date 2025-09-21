@@ -7,11 +7,19 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useEffect, useState } from 'react'
 
 // Industry-specific demo user types
-export type DemoUserType = 
-  | 'salon-receptionist' | 'salon-stylist' | 'salon-manager'
-  | 'restaurant-cashier' | 'restaurant-server' | 'restaurant-manager'
-  | 'healthcare-nurse' | 'healthcare-doctor' | 'healthcare-receptionist'
-  | 'manufacturing-operator' | 'manufacturing-supervisor' | 'manufacturing-planner'
+export type DemoUserType =
+  | 'salon-receptionist'
+  | 'salon-stylist'
+  | 'salon-manager'
+  | 'restaurant-cashier'
+  | 'restaurant-server'
+  | 'restaurant-manager'
+  | 'healthcare-nurse'
+  | 'healthcare-doctor'
+  | 'healthcare-receptionist'
+  | 'manufacturing-operator'
+  | 'manufacturing-supervisor'
+  | 'manufacturing-planner'
 
 // Scope patterns for authorization checking
 export interface ScopePattern {
@@ -58,28 +66,28 @@ export interface HERAAuthDNAHook {
   organization: any
   isAuthenticated: boolean
   isLoading: boolean
-  
+
   // Authorization
   hasScope: (scope: string) => boolean
   hasModuleAccess: (module: string, permission: 'read' | 'write') => boolean
   hasEntityAccess: (module: string, entity: string, permission: 'read' | 'write') => boolean
-  
+
   // Industry helpers
   industry: string | null
   industryConfig: any
   availableModules: string[]
   userRole: string | null
-  
+
   // Session management
   sessionType: 'demo' | 'real' | null
   timeRemaining: number
   isExpired: boolean
   sessionInfo: any
-  
+
   // Demo functions
   initializeDemo: (demoType: DemoUserType) => Promise<boolean>
   logout: () => Promise<void>
-  
+
   // Scope builders
   scope: ScopePattern
 }
@@ -99,7 +107,7 @@ export function useHERAAuthDNA(): HERAAuthDNAHook {
         setIndustry(detectedIndustry)
       }
     }
-    
+
     if (heraAuth.organization?.type) {
       setIndustry(heraAuth.organization.type)
     }
@@ -116,21 +124,25 @@ export function useHERAAuthDNA(): HERAAuthDNAHook {
   }, [heraAuth.user])
 
   // Get industry configuration
-  const industryConfig = industry ? INDUSTRY_CONFIGS[industry as keyof typeof INDUSTRY_CONFIGS] : null
+  const industryConfig = industry
+    ? INDUSTRY_CONFIGS[industry as keyof typeof INDUSTRY_CONFIGS]
+    : null
 
   // Enhanced authorization helpers
   const hasModuleAccess = (module: string, permission: 'read' | 'write'): boolean => {
     if (!industryConfig) return false
-    
+
     const scopePattern = `${permission}:${industryConfig.scope_prefix}.${module.toUpperCase()}`
-    return heraAuth.scopes.some(scope => 
-      scope.startsWith(scopePattern) || scope.endsWith('*')
-    )
+    return heraAuth.scopes.some(scope => scope.startsWith(scopePattern) || scope.endsWith('*'))
   }
 
-  const hasEntityAccess = (module: string, entity: string, permission: 'read' | 'write'): boolean => {
+  const hasEntityAccess = (
+    module: string,
+    entity: string,
+    permission: 'read' | 'write'
+  ): boolean => {
     if (!industryConfig) return false
-    
+
     const fullScope = `${permission}:${industryConfig.scope_prefix}.${module.toUpperCase()}.${entity.toUpperCase()}`
     return heraAuth.hasScope(fullScope)
   }
@@ -166,28 +178,28 @@ export function useHERAAuthDNA(): HERAAuthDNAHook {
     organization: heraAuth.organization,
     isAuthenticated: heraAuth.isAuthenticated,
     isLoading: heraAuth.isLoading,
-    
+
     // Enhanced authorization
     hasScope: heraAuth.hasScope,
     hasModuleAccess,
     hasEntityAccess,
-    
+
     // Industry context
     industry,
     industryConfig,
     availableModules: industryConfig?.modules || [],
     userRole,
-    
+
     // Session management
     sessionType: heraAuth.sessionType,
     timeRemaining: heraAuth.timeRemaining,
     isExpired: heraAuth.isExpired,
     sessionInfo,
-    
+
     // Actions
     initializeDemo: heraAuth.initializeDemo,
     logout: heraAuth.logout,
-    
+
     // Scope utilities
     scope
   }
@@ -205,7 +217,7 @@ function detectIndustryFromSmartCode(smartCode: string): string | null {
 // Industry-specific hooks for common use cases
 export function useSalonAuth() {
   const auth = useHERAAuthDNA()
-  
+
   return {
     ...auth,
     // Salon-specific helpers
@@ -221,7 +233,7 @@ export function useSalonAuth() {
 
 export function useRestaurantAuth() {
   const auth = useHERAAuthDNA()
-  
+
   return {
     ...auth,
     // Restaurant-specific helpers
@@ -237,7 +249,7 @@ export function useRestaurantAuth() {
 
 export function useHealthcareAuth() {
   const auth = useHERAAuthDNA()
-  
+
   return {
     ...auth,
     // Healthcare-specific helpers
@@ -253,7 +265,7 @@ export function useHealthcareAuth() {
 
 export function useManufacturingAuth() {
   const auth = useHERAAuthDNA()
-  
+
   return {
     ...auth,
     // Manufacturing-specific helpers
@@ -273,17 +285,17 @@ export const DEMO_USER_CONFIGS = {
   'salon-receptionist': 'Salon Receptionist - Appointment booking and customer management',
   'salon-stylist': 'Hair Stylist - Service delivery and customer interaction',
   'salon-manager': 'Salon Manager - Full salon operations and staff management',
-  
+
   // Restaurant
   'restaurant-cashier': 'Restaurant Cashier - Order taking and payment processing',
   'restaurant-server': 'Restaurant Server - Table service and order management',
   'restaurant-manager': 'Restaurant Manager - Full restaurant operations',
-  
+
   // Healthcare
   'healthcare-nurse': 'Registered Nurse - Patient care and medical records',
   'healthcare-doctor': 'Medical Doctor - Full patient care and prescriptions',
   'healthcare-receptionist': 'Medical Receptionist - Appointment scheduling and patient check-in',
-  
+
   // Manufacturing
   'manufacturing-operator': 'Machine Operator - Production line operations',
   'manufacturing-supervisor': 'Production Supervisor - Team and quality management',

@@ -13,11 +13,7 @@ export {
   createCustomTheme
 } from './universal-theme-variants'
 
-export type {
-  ColorShades,
-  ThemeVariant,
-  ThemeConfiguration
-} from './universal-theme-variants'
+export type { ColorShades, ThemeVariant, ThemeConfiguration } from './universal-theme-variants'
 
 // Theme provider and context
 export {
@@ -112,7 +108,7 @@ export async function applySmartThemeConfiguration(
   ])
 
   const { getThemeConfiguration } = await import('./universal-configuration-rules')
-  
+
   return await getThemeConfiguration(orgProfile, userProfile, customRules)
 }
 
@@ -161,9 +157,9 @@ export function useThemeColors() {
   if (typeof window === 'undefined') {
     return null
   }
-  
+
   const style = getComputedStyle(document.documentElement)
-  
+
   return {
     primary: style.getPropertyValue('--color-primary').trim(),
     secondary: style.getPropertyValue('--color-secondary').trim(),
@@ -181,9 +177,9 @@ export function useThemeColors() {
 export function generateThemeCSS(variantId: string, customizations?: any) {
   const variant = getThemeVariant(variantId)
   if (!variant) return ''
-  
+
   const variables = generateCSSVariables(variant, customizations)
-  
+
   return Object.entries(variables)
     .map(([property, value]) => `${property}: ${value};`)
     .join('\n')
@@ -202,7 +198,10 @@ export function isThemeDarkModeCapable(variantId: string): boolean {
  */
 export function getContrastingTextColor(backgroundColor: string, theme: ThemeVariant): string {
   // Simple contrast calculation - in a real implementation you'd use proper color contrast algorithms
-  const isLight = backgroundColor.includes('50') || backgroundColor.includes('100') || backgroundColor.includes('200')
+  const isLight =
+    backgroundColor.includes('50') ||
+    backgroundColor.includes('100') ||
+    backgroundColor.includes('200')
   return isLight ? theme.semantic.foreground : theme.main[50]
 }
 

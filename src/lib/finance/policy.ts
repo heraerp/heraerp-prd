@@ -1,6 +1,6 @@
 /**
  * HERA Finance DNA - Sales Posting Policy Management
- * 
+ *
  * Manages finance posting policies stored as data in core_dynamic_data
  * following Finance DNA patterns.
  */
@@ -53,7 +53,9 @@ interface GLAccount {
 /**
  * Gets sales posting policy for organization
  */
-export async function getSalesPostingPolicy(organization_id: string): Promise<SalesPostingPolicy | null> {
+export async function getSalesPostingPolicy(
+  organization_id: string
+): Promise<SalesPostingPolicy | null> {
   try {
     universalApi.setOrganizationId(organization_id)
 
@@ -66,7 +68,7 @@ export async function getSalesPostingPolicy(organization_id: string): Promise<Sa
     })
 
     const policyFields = policyResponse?.data || []
-    
+
     if (policyFields.length === 0) {
       return null
     }
@@ -89,15 +91,12 @@ export async function getSalesPostingPolicy(organization_id: string): Promise<Sa
         current = current[path[i]]
       }
 
-      const value = field.field_value_text || 
-                   field.field_value_boolean || 
-                   field.field_value_number
+      const value = field.field_value_text || field.field_value_boolean || field.field_value_number
 
       current[path[path.length - 1]] = value
     })
 
     return policy as SalesPostingPolicy
-
   } catch (error) {
     console.error('Error getting sales posting policy:', error)
     return null
@@ -137,11 +136,17 @@ export async function setSalesPostingPolicy(
       { field_name: 'accounts.service_revenue', field_value_text: policy.accounts.service_revenue },
       { field_name: 'accounts.product_revenue', field_value_text: policy.accounts.product_revenue },
       { field_name: 'accounts.vat_liability', field_value_text: policy.accounts.vat_liability },
-      { field_name: 'accounts.discounts_contra', field_value_text: policy.accounts.discounts_contra },
+      {
+        field_name: 'accounts.discounts_contra',
+        field_value_text: policy.accounts.discounts_contra
+      },
       { field_name: 'accounts.tips_payable', field_value_text: policy.accounts.tips_payable },
       { field_name: 'accounts.cash_clearing', field_value_text: policy.accounts.cash_clearing },
       { field_name: 'accounts.card_clearing', field_value_text: policy.accounts.card_clearing },
-      { field_name: 'accounts.giftcard_liability', field_value_text: policy.accounts.giftcard_liability },
+      {
+        field_name: 'accounts.giftcard_liability',
+        field_value_text: policy.accounts.giftcard_liability
+      },
       { field_name: 'accounts.rounding_diff', field_value_text: policy.accounts.rounding_diff },
 
       // Grouping settings
@@ -149,7 +154,10 @@ export async function setSalesPostingPolicy(
       { field_name: 'grouping.by_tax_rate', field_value_boolean: policy.grouping.by_tax_rate },
 
       // Other settings
-      { field_name: 'include_cogs_from_inventory', field_value_boolean: policy.include_cogs_from_inventory }
+      {
+        field_name: 'include_cogs_from_inventory',
+        field_value_boolean: policy.include_cogs_from_inventory
+      }
     ]
 
     for (const field of fieldsToCreate) {
@@ -165,7 +173,6 @@ export async function setSalesPostingPolicy(
     }
 
     return { success: true }
-
   } catch (error) {
     console.error('Error setting sales posting policy:', error)
     return {
@@ -178,7 +185,9 @@ export async function setSalesPostingPolicy(
 /**
  * Gets expense posting policy for organization
  */
-export async function getExpensePostingPolicy(organization_id: string): Promise<ExpensePostingPolicy | null> {
+export async function getExpensePostingPolicy(
+  organization_id: string
+): Promise<ExpensePostingPolicy | null> {
   try {
     universalApi.setOrganizationId(organization_id)
 
@@ -191,7 +200,7 @@ export async function getExpensePostingPolicy(organization_id: string): Promise<
     })
 
     const policyFields = policyResponse?.data || []
-    
+
     if (policyFields.length === 0) {
       return null
     }
@@ -213,15 +222,12 @@ export async function getExpensePostingPolicy(organization_id: string): Promise<
         current = current[path[i]]
       }
 
-      const value = field.field_value_text || 
-                   field.field_value_boolean || 
-                   field.field_value_number
+      const value = field.field_value_text || field.field_value_boolean || field.field_value_number
 
       current[path[path.length - 1]] = value
     })
 
     return policy as ExpensePostingPolicy
-
   } catch (error) {
     console.error('Error getting expense posting policy:', error)
     return null
@@ -244,7 +250,7 @@ export async function getGLAccounts(organization_id: string): Promise<GLAccount[
     })
 
     const accounts = accountsResponse?.data || []
-    
+
     // Get dynamic data for accounts
     const accountIds = accounts.map(a => a.id)
     if (accountIds.length === 0) return []
@@ -260,26 +266,26 @@ export async function getGLAccounts(organization_id: string): Promise<GLAccount[
 
     const dynamicFields = dynamicResponse?.data || []
 
-    return accounts.map(account => {
-      const accountFields = dynamicFields.filter(f => f.entity_id === account.id)
-      const fieldMap: any = {}
-      
-      accountFields.forEach(field => {
-        fieldMap[field.field_name] = field.field_value_text || 
-                                    field.field_value_boolean || 
-                                    field.field_value_number
+    return accounts
+      .map(account => {
+        const accountFields = dynamicFields.filter(f => f.entity_id === account.id)
+        const fieldMap: any = {}
+
+        accountFields.forEach(field => {
+          fieldMap[field.field_name] =
+            field.field_value_text || field.field_value_boolean || field.field_value_number
+        })
+
+        return {
+          id: account.id,
+          code: account.entity_code || '',
+          name: account.entity_name,
+          type: fieldMap.account_type || 'unknown',
+          ledger_type: fieldMap.ledger_type || 'GL',
+          is_active: fieldMap.is_active !== false
+        }
       })
-
-      return {
-        id: account.id,
-        code: account.entity_code || '',
-        name: account.entity_name,
-        type: fieldMap.account_type || 'unknown',
-        ledger_type: fieldMap.ledger_type || 'GL',
-        is_active: fieldMap.is_active !== false
-      }
-    }).filter(account => account.ledger_type === 'GL' && account.is_active)
-
+      .filter(account => account.ledger_type === 'GL' && account.is_active)
   } catch (error) {
     console.error('Error getting GL accounts:', error)
     return []
@@ -289,33 +295,59 @@ export async function getGLAccounts(organization_id: string): Promise<GLAccount[
 /**
  * Gets suggested account mappings based on account names and types
  */
-export async function getSuggestedAccountMappings(organization_id: string): Promise<Partial<SalesPostingPolicy['accounts']>> {
+export async function getSuggestedAccountMappings(
+  organization_id: string
+): Promise<Partial<SalesPostingPolicy['accounts']>> {
   try {
     const accounts = await getGLAccounts(organization_id)
     const suggestions: Partial<SalesPostingPolicy['accounts']> = {}
 
     // Helper to find account by name pattern
     const findAccount = (patterns: string[]) => {
-      return accounts.find(account => 
-        patterns.some(pattern => 
-          account.name.toLowerCase().includes(pattern.toLowerCase()) ||
-          account.code.toLowerCase().includes(pattern.toLowerCase())
+      return accounts.find(account =>
+        patterns.some(
+          pattern =>
+            account.name.toLowerCase().includes(pattern.toLowerCase()) ||
+            account.code.toLowerCase().includes(pattern.toLowerCase())
         )
       )
     }
 
     // Revenue accounts
-    const serviceRevenue = findAccount(['service revenue', 'service sales', 'salon revenue', '4100', '4110'])
+    const serviceRevenue = findAccount([
+      'service revenue',
+      'service sales',
+      'salon revenue',
+      '4100',
+      '4110'
+    ])
     if (serviceRevenue) suggestions.service_revenue = serviceRevenue.id
 
-    const productRevenue = findAccount(['product revenue', 'product sales', 'retail sales', '4200', '4210'])
+    const productRevenue = findAccount([
+      'product revenue',
+      'product sales',
+      'retail sales',
+      '4200',
+      '4210'
+    ])
     if (productRevenue) suggestions.product_revenue = productRevenue.id
 
     // Liability accounts
-    const vatLiability = findAccount(['vat payable', 'sales tax payable', 'tax liability', '2200', '2210'])
+    const vatLiability = findAccount([
+      'vat payable',
+      'sales tax payable',
+      'tax liability',
+      '2200',
+      '2210'
+    ])
     if (vatLiability) suggestions.vat_liability = vatLiability.id
 
-    const tipsPayable = findAccount(['tips payable', 'gratuities payable', 'tips liability', '2300'])
+    const tipsPayable = findAccount([
+      'tips payable',
+      'gratuities payable',
+      'tips liability',
+      '2300'
+    ])
     if (tipsPayable) suggestions.tips_payable = tipsPayable.id
 
     const giftcardLiability = findAccount(['gift card liability', 'voucher liability', '2400'])
@@ -325,11 +357,23 @@ export async function getSuggestedAccountMappings(organization_id: string): Prom
     const cashClearing = findAccount(['cash', 'cash on hand', 'petty cash', '1100', '1110'])
     if (cashClearing) suggestions.cash_clearing = cashClearing.id
 
-    const cardClearing = findAccount(['credit card clearing', 'card receivable', 'payment processor', '1200', '1210'])
+    const cardClearing = findAccount([
+      'credit card clearing',
+      'card receivable',
+      'payment processor',
+      '1200',
+      '1210'
+    ])
     if (cardClearing) suggestions.card_clearing = cardClearing.id
 
     // Contra revenue
-    const discountsContra = findAccount(['discounts', 'sales discounts', 'promotional discounts', '4900', '4910'])
+    const discountsContra = findAccount([
+      'discounts',
+      'sales discounts',
+      'promotional discounts',
+      '4900',
+      '4910'
+    ])
     if (discountsContra) suggestions.discounts_contra = discountsContra.id
 
     // Rounding
@@ -337,7 +381,6 @@ export async function getSuggestedAccountMappings(organization_id: string): Prom
     if (roundingDiff) suggestions.rounding_diff = roundingDiff.id
 
     return suggestions
-
   } catch (error) {
     console.error('Error getting suggested account mappings:', error)
     return {}
@@ -382,7 +425,6 @@ export async function validateSalesPostingPolicy(
       isValid: errors.length === 0,
       errors
     }
-
   } catch (error) {
     console.error('Error validating sales posting policy:', error)
     return {
@@ -402,7 +444,7 @@ export async function createDefaultSalesPostingPolicy(organization_id: string): 
 }> {
   try {
     const suggestions = await getSuggestedAccountMappings(organization_id)
-    
+
     // Create minimal policy structure
     const policy: SalesPostingPolicy = {
       accounts: {
@@ -425,7 +467,7 @@ export async function createDefaultSalesPostingPolicy(organization_id: string): 
 
     // Validate the policy
     const validation = await validateSalesPostingPolicy(organization_id, policy)
-    
+
     if (!validation.isValid) {
       return {
         success: false,
@@ -435,7 +477,7 @@ export async function createDefaultSalesPostingPolicy(organization_id: string): 
 
     // Save the policy
     const result = await setSalesPostingPolicy(organization_id, policy)
-    
+
     if (result.success) {
       return {
         success: true,
@@ -444,7 +486,6 @@ export async function createDefaultSalesPostingPolicy(organization_id: string): 
     } else {
       return result
     }
-
   } catch (error) {
     console.error('Error creating default sales posting policy:', error)
     return {

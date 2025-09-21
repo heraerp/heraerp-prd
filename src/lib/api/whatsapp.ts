@@ -5,12 +5,12 @@
 // ================================================================================
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { 
-  WaConfig, 
-  WaTemplate, 
-  WaMessage, 
-  WaPrefs, 
-  MessageFilters, 
+import {
+  WaConfig,
+  WaTemplate,
+  WaMessage,
+  WaPrefs,
+  MessageFilters,
   MessageAnalytics,
   HeraMspApiResponse,
   WHATSAPP_SMART_CODES,
@@ -31,24 +31,24 @@ class HeraMspApiClient {
   }
 
   private async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit & { orgToken?: string }
   ): Promise<HeraMspApiResponse> {
     const { orgToken, ...fetchOptions } = options
-    
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...fetchOptions,
       timeout: this.timeout,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': orgToken ? `Bearer ${orgToken}` : '',
+        Authorization: orgToken ? `Bearer ${orgToken}` : '',
         'X-API-Version': HERA_MSP_CONFIG.API_VERSION,
         ...fetchOptions.headers
       }
     })
 
     const data = await response.json()
-    
+
     if (!response.ok) {
       throw new Error(data.error || `HTTP ${response.status}`)
     }
@@ -56,11 +56,14 @@ class HeraMspApiClient {
     return HeraMspApiResponse.parse(data)
   }
 
-  async sendMessage(orgToken: string, message: {
-    to: string
-    template: string
-    variables: Record<string, string>
-  }): Promise<HeraMspApiResponse> {
+  async sendMessage(
+    orgToken: string,
+    message: {
+      to: string
+      template: string
+      variables: Record<string, string>
+    }
+  ): Promise<HeraMspApiResponse> {
     return this.request('/messages/send', {
       method: 'POST',
       orgToken,
@@ -68,13 +71,16 @@ class HeraMspApiClient {
     })
   }
 
-  async createTemplate(orgToken: string, template: {
-    name: string
-    language: string
-    category: string
-    body: string
-    variables: string[]
-  }): Promise<HeraMspApiResponse> {
+  async createTemplate(
+    orgToken: string,
+    template: {
+      name: string
+      language: string
+      category: string
+      body: string
+      variables: string[]
+    }
+  ): Promise<HeraMspApiResponse> {
     return this.request('/templates', {
       method: 'POST',
       orgToken,
@@ -131,7 +137,7 @@ export function useWhatsappApi(organizationId: string) {
   const saveConfig = useMutation({
     mutationFn: async (config: WaConfig): Promise<void> => {
       const parsedConfig = WaConfig.parse(config)
-      
+
       // Store in core_dynamic_data
       await universalApi.setDynamicData(
         organizationId,
@@ -162,9 +168,10 @@ export function useWhatsappApi(organizationId: string) {
       try {
         const results = await universalApi.listDynamicData(organizationId, 'WA_TEMPLATE.')
         return results.map(item => {
-          const templateData = typeof item.field_value_json === 'string' 
-            ? JSON.parse(item.field_value_json) 
-            : item.field_value_json
+          const templateData =
+            typeof item.field_value_json === 'string'
+              ? JSON.parse(item.field_value_json)
+              : item.field_value_json
           return WaTemplate.parse(templateData)
         })
       } catch (error) {
@@ -179,7 +186,7 @@ export function useWhatsappApi(organizationId: string) {
   const saveTemplate = useMutation({
     mutationFn: async (template: WaTemplate): Promise<void> => {
       const parsedTemplate = WaTemplate.parse(template)
-      
+
       // Validate template variables
       const validation = validateTemplateVariables(parsedTemplate)
       if (!validation.isValid) {
@@ -205,7 +212,7 @@ export function useWhatsappApi(organizationId: string) {
             body: parsedTemplate.body,
             variables: parsedTemplate.variables
           })
-          
+
           // Update template with MSP response
           if (response.template_id) {
             parsedTemplate.hera_template_id = response.template_id
@@ -244,16 +251,18 @@ export function useWhatsappApi(organizationId: string) {
           order_by: 'created_at DESC'
         })
 
-        return results.map(entity => WaMessage.parse({
-          ...entity,
-          id: entity.id,
-          organization_id: entity.organization_id,
-          entity_type: entity.entity_type,
-          entity_code: entity.entity_code,
-          entity_name: entity.entity_name,
-          // Parse metadata for message details
-          ...entity.metadata
-        }))
+        return results.map(entity =>
+          WaMessage.parse({
+            ...entity,
+            id: entity.id,
+            organization_id: entity.organization_id,
+            entity_type: entity.entity_type,
+            entity_code: entity.entity_code,
+            entity_name: entity.entity_name,
+            // Parse metadata for message details
+            ...entity.metadata
+          })
+        )
       } catch (error) {
         console.error('Failed to get WhatsApp messages:', error)
         return []
@@ -264,7 +273,9 @@ export function useWhatsappApi(organizationId: string) {
   })
 
   const sendMessage = useMutation({
-    mutationFn: async (message: Omit<WaMessage, 'id' | 'status' | 'created_at'>): Promise<WaMessage> => {
+    mutationFn: async (
+      message: Omit<WaMessage, 'id' | 'status' | 'created_at'>
+    ): Promise<WaMessage> => {
       // 1. Enforce consent - check customer preferences
       const customerPrefs = await getCustomerPrefs(message.to_customer_code)
       if (!customerPrefs?.opted_in) {
@@ -359,7 +370,13 @@ export function useWhatsappApi(organizationId: string) {
   }
 
   const setCustomerPrefs = useMutation({
-    mutationFn: async ({ customerCode, prefs }: { customerCode: string; prefs: WaPrefs }): Promise<void> => {
+    mutationFn: async ({
+      customerCode,
+      prefs
+    }: {
+      customerCode: string
+      prefs: WaPrefs
+    }): Promise<void> => {
       const parsedPrefs = WaPrefs.parse({
         ...prefs,
         consent_ts: prefs.opted_in ? new Date().toISOString() : prefs.consent_ts
@@ -392,8 +409,12 @@ export function useWhatsappApi(organizationId: string) {
         })
 
         // Calculate analytics from message entities
-        const totalSent = messages.filter(m => ['sent', 'delivered', 'read'].includes(m.metadata?.status)).length
-        const totalDelivered = messages.filter(m => ['delivered', 'read'].includes(m.metadata?.status)).length
+        const totalSent = messages.filter(m =>
+          ['sent', 'delivered', 'read'].includes(m.metadata?.status)
+        ).length
+        const totalDelivered = messages.filter(m =>
+          ['delivered', 'read'].includes(m.metadata?.status)
+        ).length
         const totalRead = messages.filter(m => m.metadata?.status === 'read').length
         const totalFailed = messages.filter(m => m.metadata?.status === 'failed').length
 
@@ -420,12 +441,12 @@ export function useWhatsappApi(organizationId: string) {
           const date = new Date()
           date.setDate(date.getDate() - i)
           const dateStr = date.toISOString().split('T')[0]
-          
+
           const count = messages.filter(m => {
             const msgDate = m.created_at?.split('T')[0]
             return msgDate === dateStr
           }).length
-          
+
           dailyUsage.push({ date: dateStr, count })
         }
 
@@ -522,7 +543,7 @@ export function useWhatsappMetrics({ organizationId }: { organizationId: string 
     queryFn: async () => {
       const api = useWhatsappApi(organizationId)
       const analytics = await api.getAnalytics.queryFn()
-      
+
       return {
         sent: analytics.total_sent,
         delivered: analytics.total_delivered,
@@ -535,9 +556,12 @@ export function useWhatsappMetrics({ organizationId }: { organizationId: string 
   })
 }
 
-export function useWhatsappFailures({ organizationId, limit = 5 }: { 
+export function useWhatsappFailures({
+  organizationId,
+  limit = 5
+}: {
   organizationId: string
-  limit?: number 
+  limit?: number
 }) {
   return useQuery({
     queryKey: ['whatsapp', 'failures', organizationId, limit],

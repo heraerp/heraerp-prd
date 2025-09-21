@@ -111,7 +111,7 @@ const mockAppointments: Appointment[] = [
     stylist: 'Emma',
     time: '10:30 AM',
     duration: 120,
-    price: 185.00,
+    price: 185.0,
     status: 'in_progress'
   },
   {
@@ -121,7 +121,7 @@ const mockAppointments: Appointment[] = [
     stylist: 'Lisa',
     time: '11:00 AM',
     duration: 90,
-    price: 85.00,
+    price: 85.0,
     status: 'scheduled'
   },
   {
@@ -131,7 +131,7 @@ const mockAppointments: Appointment[] = [
     stylist: 'Anna',
     time: '11:30 AM',
     duration: 60,
-    price: 120.00,
+    price: 120.0,
     status: 'scheduled'
   },
   {
@@ -141,7 +141,7 @@ const mockAppointments: Appointment[] = [
     stylist: 'Emma',
     time: '12:00 PM',
     duration: 45,
-    price: 65.00,
+    price: 65.0,
     status: 'completed'
   }
 ]
@@ -151,50 +151,50 @@ const mockServices: Service[] = [
     id: 'svc-001',
     name: 'Hair Cut & Color',
     category: 'Hair Services',
-    price: 185.00,
+    price: 185.0,
     duration: 120,
     bookingsToday: 8,
-    revenue: 1480.00,
+    revenue: 1480.0,
     popularityScore: 95
   },
   {
     id: 'svc-002',
     name: 'Manicure & Pedicure',
     category: 'Nail Services',
-    price: 85.00,
+    price: 85.0,
     duration: 90,
     bookingsToday: 6,
-    revenue: 510.00,
+    revenue: 510.0,
     popularityScore: 88
   },
   {
     id: 'svc-003',
     name: 'Facial Treatment',
     category: 'Skincare',
-    price: 120.00,
+    price: 120.0,
     duration: 60,
     bookingsToday: 5,
-    revenue: 600.00,
+    revenue: 600.0,
     popularityScore: 82
   },
   {
     id: 'svc-004',
     name: 'Hair Styling',
     category: 'Hair Services',
-    price: 65.00,
+    price: 65.0,
     duration: 45,
     bookingsToday: 4,
-    revenue: 260.00,
+    revenue: 260.0,
     popularityScore: 76
   },
   {
     id: 'svc-005',
     name: 'Eyebrow Threading',
     category: 'Beauty Services',
-    price: 35.00,
+    price: 35.0,
     duration: 30,
     bookingsToday: 7,
-    revenue: 245.00,
+    revenue: 245.0,
     popularityScore: 90
   }
 ]
@@ -206,7 +206,7 @@ const mockStylists: Stylist[] = [
     avatar: '/avatars/emma.jpg',
     specialties: ['Hair Color', 'Cutting', 'Styling'],
     appointmentsToday: 8,
-    revenue: 1240.00,
+    revenue: 1240.0,
     rating: 4.9,
     availability: 'busy'
   },
@@ -216,7 +216,7 @@ const mockStylists: Stylist[] = [
     avatar: '/avatars/lisa.jpg',
     specialties: ['Nails', 'Manicure', 'Pedicure'],
     appointmentsToday: 6,
-    revenue: 680.00,
+    revenue: 680.0,
     rating: 4.8,
     availability: 'available'
   },
@@ -226,7 +226,7 @@ const mockStylists: Stylist[] = [
     avatar: '/avatars/anna.jpg',
     specialties: ['Skincare', 'Facials', 'Anti-aging'],
     appointmentsToday: 5,
-    revenue: 750.00,
+    revenue: 750.0,
     rating: 4.9,
     availability: 'busy'
   },
@@ -236,7 +236,7 @@ const mockStylists: Stylist[] = [
     avatar: '/avatars/maria.jpg',
     specialties: ['Hair Styling', 'Makeup', 'Bridal'],
     appointmentsToday: 4,
-    revenue: 520.00,
+    revenue: 520.0,
     rating: 4.7,
     availability: 'break'
   }
@@ -291,10 +291,7 @@ const getStatusIcon = (status: string) => {
 // MAIN COMPONENT
 // ================================================================================
 
-export function SalonDashboard({ 
-  organizationId,
-  className 
-}: SalonDashboardProps) {
+export function SalonDashboard({ organizationId, className }: SalonDashboardProps) {
   const [metrics, setMetrics] = useState<SalonMetrics>(mockMetrics)
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
   const [services, setServices] = useState<Service[]>(mockServices)
@@ -306,7 +303,7 @@ export function SalonDashboard({
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 60000)
-    
+
     return () => clearInterval(timer)
   }, [])
 
@@ -339,9 +336,7 @@ export function SalonDashboard({
       accessorKey: 'bookingsToday',
       header: 'Bookings',
       cell: ({ row }: { row: any }) => (
-        <div className="text-center">
-          {row.original.bookingsToday}
-        </div>
+        <div className="text-center">{row.original.bookingsToday}</div>
       )
     },
     {
@@ -366,11 +361,10 @@ export function SalonDashboard({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold !text-gray-900 dark:!text-gray-100">
-            Salon Dashboard
-          </h1>
+          <h1 className="text-3xl font-bold !text-gray-900 dark:!text-gray-100">Salon Dashboard</h1>
           <p className="text-muted-foreground">
-            Hair Talkz Salon & Spa • {currentTime.toLocaleDateString()} {currentTime.toLocaleTimeString()}
+            Hair Talkz Salon & Spa • {currentTime.toLocaleDateString()}{' '}
+            {currentTime.toLocaleTimeString()}
           </p>
         </div>
         <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
@@ -389,7 +383,9 @@ export function SalonDashboard({
           <StatCardDNA
             title="Daily Revenue"
             value={formatCurrency(metrics.dailyRevenue)}
-            trend={metrics.revenueChange > 0 ? `+${metrics.revenueChange}%` : `${metrics.revenueChange}%`}
+            trend={
+              metrics.revenueChange > 0 ? `+${metrics.revenueChange}%` : `${metrics.revenueChange}%`
+            }
             trendDirection={metrics.revenueChange > 0 ? 'up' : 'down'}
             icon={DollarSign}
             description="Today's total earnings"
@@ -404,7 +400,11 @@ export function SalonDashboard({
           <StatCardDNA
             title="Appointments"
             value={metrics.appointmentsToday.toString()}
-            trend={metrics.appointmentsChange > 0 ? `+${metrics.appointmentsChange}%` : `${metrics.appointmentsChange}%`}
+            trend={
+              metrics.appointmentsChange > 0
+                ? `+${metrics.appointmentsChange}%`
+                : `${metrics.appointmentsChange}%`
+            }
             trendDirection={metrics.appointmentsChange > 0 ? 'up' : 'down'}
             icon={Calendar}
             description="Scheduled today"
@@ -419,7 +419,9 @@ export function SalonDashboard({
           <StatCardDNA
             title="Clients Served"
             value={metrics.clientsServed.toString()}
-            trend={metrics.clientsChange > 0 ? `+${metrics.clientsChange}%` : `${metrics.clientsChange}%`}
+            trend={
+              metrics.clientsChange > 0 ? `+${metrics.clientsChange}%` : `${metrics.clientsChange}%`
+            }
             trendDirection={metrics.clientsChange > 0 ? 'up' : 'down'}
             icon={Users}
             description="Completed services"
@@ -434,7 +436,11 @@ export function SalonDashboard({
           <StatCardDNA
             title="Utilization"
             value={`${metrics.utilization}%`}
-            trend={metrics.utilizationChange > 0 ? `+${metrics.utilizationChange}%` : `${metrics.utilizationChange}%`}
+            trend={
+              metrics.utilizationChange > 0
+                ? `+${metrics.utilizationChange}%`
+                : `${metrics.utilizationChange}%`
+            }
             trendDirection={metrics.utilizationChange > 0 ? 'up' : 'down'}
             icon={TrendingUp}
             description="Staff utilization rate"
@@ -454,7 +460,7 @@ export function SalonDashboard({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {appointments.map((appointment) => {
+              {appointments.map(appointment => {
                 const StatusIcon = getStatusIcon(appointment.status)
                 return (
                   <div
@@ -462,15 +468,20 @@ export function SalonDashboard({
                     className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        appointment.status === 'scheduled' ? 'bg-blue-100 text-blue-600' :
-                        appointment.status === 'in_progress' ? 'bg-orange-100 text-orange-600' :
-                        appointment.status === 'completed' ? 'bg-green-100 text-green-600' :
-                        'bg-red-100 text-red-600'
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          appointment.status === 'scheduled'
+                            ? 'bg-blue-100 text-blue-600'
+                            : appointment.status === 'in_progress'
+                              ? 'bg-orange-100 text-orange-600'
+                              : appointment.status === 'completed'
+                                ? 'bg-green-100 text-green-600'
+                                : 'bg-red-100 text-red-600'
+                        }`}
+                      >
                         <StatusIcon className="w-5 h-5" />
                       </div>
-                      
+
                       <div>
                         <p className="font-medium">{appointment.clientName}</p>
                         <p className="text-sm text-muted-foreground">
@@ -478,7 +489,7 @@ export function SalonDashboard({
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="text-right">
                       <p className="font-medium">{appointment.time}</p>
                       <p className="text-sm text-muted-foreground">
@@ -502,17 +513,20 @@ export function SalonDashboard({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {stylists.map((stylist) => {
+              {stylists.map(stylist => {
                 const StatusIcon = getStatusIcon(stylist.availability)
                 return (
                   <div key={stylist.id} className="flex items-center gap-3">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={stylist.avatar} />
                       <AvatarFallback>
-                        {stylist.name.split(' ').map(n => n[0]).join('')}
+                        {stylist.name
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')}
                       </AvatarFallback>
                     </Avatar>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <p className="font-medium text-sm">{stylist.name}</p>

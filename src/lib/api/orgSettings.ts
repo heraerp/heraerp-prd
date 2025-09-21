@@ -5,11 +5,11 @@
 // ================================================================================
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { 
-  SalesPolicy, 
-  Branch, 
-  RoleGrant, 
-  NotificationPolicy, 
+import {
+  SalesPolicy,
+  Branch,
+  RoleGrant,
+  NotificationPolicy,
   SystemSettings,
   UserRole,
   DEFAULT_ROLE_PERMISSIONS,
@@ -44,7 +44,10 @@ export function useOrgSettings(organizationId: string) {
         })
       }
       try {
-        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SALES_POLICY)
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          SETTINGS_DYNAMIC_DATA_KEYS.SALES_POLICY
+        )
         if (result.success && result.data && result.data.field_value_json) {
           return SalesPolicy.parse(result.data.field_value_json)
         }
@@ -90,18 +93,20 @@ export function useOrgSettings(organizationId: string) {
         })
 
         if (results.success && results.data) {
-          return results.data.map(entity => Branch.parse({
-            organization_id: entity.organization_id,
-            entity_type: entity.entity_type,
-            entity_code: entity.entity_code,
-            entity_name: entity.entity_name,
-            smart_code: entity.smart_code,
-            created_at: entity.created_at,
-            updated_at: entity.updated_at,
-            // Parse metadata for branch details
-            ...entity.metadata,
-            is_active: entity.metadata?.is_active ?? true
-          }))
+          return results.data.map(entity =>
+            Branch.parse({
+              organization_id: entity.organization_id,
+              entity_type: entity.entity_type,
+              entity_code: entity.entity_code,
+              entity_name: entity.entity_name,
+              smart_code: entity.smart_code,
+              created_at: entity.created_at,
+              updated_at: entity.updated_at,
+              // Parse metadata for branch details
+              ...entity.metadata,
+              is_active: entity.metadata?.is_active ?? true
+            })
+          )
         }
         return []
       } catch (error) {
@@ -165,7 +170,7 @@ export function useOrgSettings(organizationId: string) {
       // Soft delete by setting is_active to false
       const branches = getBranches.data || []
       const branch = branches.find(b => b.entity_code === branchCode)
-      
+
       if (branch) {
         await universalApi.updateEntity(branchCode, {
           metadata: {
@@ -187,8 +192,14 @@ export function useOrgSettings(organizationId: string) {
     queryKey: keys.roleGrants,
     queryFn: async (): Promise<RoleGrant[]> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.ROLE_GRANTS)
-        const grants = (result.success && result.data && result.data.field_value_json) ? result.data.field_value_json : []
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          SETTINGS_DYNAMIC_DATA_KEYS.ROLE_GRANTS
+        )
+        const grants =
+          result.success && result.data && result.data.field_value_json
+            ? result.data.field_value_json
+            : []
         return Array.isArray(grants) ? grants.map(g => RoleGrant.parse(g)) : []
       } catch (error) {
         console.error('Failed to get role grants:', error)
@@ -255,7 +266,10 @@ export function useOrgSettings(organizationId: string) {
     queryKey: keys.notifications,
     queryFn: async (): Promise<NotificationPolicy> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.NOTIFICATION_POLICY)
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          SETTINGS_DYNAMIC_DATA_KEYS.NOTIFICATION_POLICY
+        )
         if (result.success && result.data && result.data.field_value_json) {
           return NotificationPolicy.parse(result.data.field_value_json)
         }
@@ -295,14 +309,20 @@ export function useOrgSettings(organizationId: string) {
     queryKey: keys.systemSettings,
     queryFn: async (): Promise<SystemSettings> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS)
-        
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS
+        )
+
         // Get organization info from core_organizations
         const orgEntity = await universalApi.getOrganization(organizationId)
-        
-        const settingsData = (result.success && result.data && result.data.field_value_json) ? result.data.field_value_json : {}
+
+        const settingsData =
+          result.success && result.data && result.data.field_value_json
+            ? result.data.field_value_json
+            : {}
         const systemSettings = SystemSettings.parse(settingsData)
-        
+
         // Merge with organization info
         if (orgEntity.success && orgEntity.data) {
           systemSettings.organization_info = {
@@ -353,7 +373,10 @@ export function useOrgSettings(organizationId: string) {
     queryKey: keys.featureFlags,
     queryFn: async (): Promise<SystemSettings['feature_flags']> => {
       try {
-        const result = await universalApi.getDynamicData(organizationId, SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS)
+        const result = await universalApi.getDynamicData(
+          organizationId,
+          SETTINGS_DYNAMIC_DATA_KEYS.SYSTEM_SETTINGS
+        )
         if (result.success && result.data && result.data.field_value_json) {
           const systemSettings = SystemSettings.parse(result.data.field_value_json)
           return systemSettings.feature_flags
@@ -389,17 +412,17 @@ export function useOrgSettings(organizationId: string) {
 
   // ==================== HELPER FUNCTIONS ====================
 
-  const getUserPermissions = (userEmail: string): typeof DEFAULT_ROLE_PERMISSIONS['owner'] => {
+  const getUserPermissions = (userEmail: string): (typeof DEFAULT_ROLE_PERMISSIONS)['owner'] => {
     const roleGrants = getRoleGrants.data || []
     const userGrant = roleGrants.find(g => g.user_email === userEmail && g.is_active)
-    
+
     if (!userGrant || userGrant.roles.length === 0) {
       return DEFAULT_ROLE_PERMISSIONS.stylist // Default minimal permissions
     }
 
     // Merge permissions from all assigned roles
     let mergedPermissions = { ...DEFAULT_ROLE_PERMISSIONS.stylist }
-    
+
     for (const role of userGrant.roles) {
       const rolePermissions = DEFAULT_ROLE_PERMISSIONS[role]
       Object.keys(rolePermissions).forEach(permission => {
@@ -412,7 +435,10 @@ export function useOrgSettings(organizationId: string) {
     return mergedPermissions
   }
 
-  const hasPermission = (userEmail: string, permission: keyof typeof DEFAULT_ROLE_PERMISSIONS['owner']): boolean => {
+  const hasPermission = (
+    userEmail: string,
+    permission: keyof (typeof DEFAULT_ROLE_PERMISSIONS)['owner']
+  ): boolean => {
     const permissions = getUserPermissions(userEmail)
     return permissions[permission] || false
   }

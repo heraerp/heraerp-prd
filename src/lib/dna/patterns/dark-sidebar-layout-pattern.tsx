@@ -98,7 +98,10 @@ export function DarkSidebarLayout({
                           )}
                         >
                           <item.icon
-                            className={cn('h-5 w-5', isActive ? 'text-foreground' : 'text-muted-foreground')}
+                            className={cn(
+                              'h-5 w-5',
+                              isActive ? 'text-foreground' : 'text-muted-foreground'
+                            )}
                           />
                           {item.badge && (
                             <span
@@ -140,7 +143,9 @@ export function DarkSidebarLayout({
                 size="icon"
                 className={cn('relative', isActive && `${colors.text}`)}
               >
-                <item.icon className={cn('h-5 w-5', isActive ? colors.text : 'text-muted-foreground')} />
+                <item.icon
+                  className={cn('h-5 w-5', isActive ? colors.text : 'text-muted-foreground')}
+                />
               </Button>
             </Link>
           )

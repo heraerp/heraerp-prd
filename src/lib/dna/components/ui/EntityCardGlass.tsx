@@ -1,7 +1,7 @@
 /**
  * HERA DNA UI - Entity Card with Glassmorphism
  * Smart Code: HERA.DNA.UI.ENTITY.CARD.GLASS.V1
- * 
+ *
  * Reusable entity card component with modern glassmorphism design
  * Links with useReadEntities and useGetDynamicFields hooks
  */
@@ -42,20 +42,28 @@ export function EntityCardGlass({
 }: EntityCardGlassProps) {
   // Glassmorphism styles based on variant
   const variantStyles = {
-    default: 'bg-white/80 dark:bg-gray-900/80 border-gray-200/50 dark:border-gray-700/50 hover:bg-white/90 dark:hover:bg-gray-900/90',
-    primary: 'bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-violet-500/20 hover:from-violet-500/20 hover:to-purple-500/20',
-    success: 'bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/20 hover:from-emerald-500/20 hover:to-green-500/20',
-    warning: 'bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20 hover:from-amber-500/20 hover:to-orange-500/20',
-    danger: 'bg-gradient-to-br from-red-500/10 to-rose-500/10 border-red-500/20 hover:from-red-500/20 hover:to-rose-500/20'
+    default:
+      'bg-white/80 dark:bg-gray-900/80 border-gray-200/50 dark:border-gray-700/50 hover:bg-white/90 dark:hover:bg-gray-900/90',
+    primary:
+      'bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-violet-500/20 hover:from-violet-500/20 hover:to-purple-500/20',
+    success:
+      'bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/20 hover:from-emerald-500/20 hover:to-green-500/20',
+    warning:
+      'bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20 hover:from-amber-500/20 hover:to-orange-500/20',
+    danger:
+      'bg-gradient-to-br from-red-500/10 to-rose-500/10 border-red-500/20 hover:from-red-500/20 hover:to-rose-500/20'
   }
 
   // Get status from metadata or relationships
   const status = entity.metadata?.status || dynamicFields.status || 'active'
-  const statusVariant = 
-    status === 'active' ? 'success' :
-    status === 'pending' ? 'warning' :
-    status === 'inactive' ? 'secondary' :
-    'default'
+  const statusVariant =
+    status === 'active'
+      ? 'success'
+      : status === 'pending'
+        ? 'warning'
+        : status === 'inactive'
+          ? 'secondary'
+          : 'default'
 
   return (
     <div
@@ -75,7 +83,7 @@ export function EntityCardGlass({
     >
       {/* Glass effect overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-      
+
       {/* Content */}
       <div className="relative p-6">
         {/* Header */}
@@ -86,55 +94,51 @@ export function EntityCardGlass({
                 <Icon className="h-5 w-5 text-violet-600 dark:text-violet-400" />
               </div>
             )}
-            
+
             <div className="flex-1">
               <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
                 {entity.entity_name}
               </h3>
-              
+
               {entity.entity_code && (
                 <p className="text-sm text-gray-600 dark:text-gray-400 font-mono">
                   {entity.entity_code}
                 </p>
               )}
-              
+
               <div className="flex items-center gap-2 mt-2">
-                <BadgeDNA variant={statusVariant}>
-                  {status}
-                </BadgeDNA>
-                
+                <BadgeDNA variant={statusVariant}>{status}</BadgeDNA>
+
                 <BadgeDNA variant="secondary" className="text-xs">
                   {entity.entity_type}
                 </BadgeDNA>
               </div>
             </div>
           </div>
-          
-          {actions && (
-            <div className="flex items-center gap-2">
-              {actions}
-            </div>
-          )}
+
+          {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
-        
+
         {/* Dynamic Fields Display */}
         {Object.keys(dynamicFields).length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
             <div className="grid grid-cols-2 gap-3">
-              {Object.entries(dynamicFields).slice(0, 4).map(([key, value]) => (
-                <div key={key}>
-                  <p className="text-xs text-gray-500 dark:text-gray-500 capitalize">
-                    {key.replace(/_/g, ' ')}
-                  </p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {value?.toString() || '-'}
-                  </p>
-                </div>
-              ))}
+              {Object.entries(dynamicFields)
+                .slice(0, 4)
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <p className="text-xs text-gray-500 dark:text-gray-500 capitalize">
+                      {key.replace(/_/g, ' ')}
+                    </p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {value?.toString() || '-'}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         )}
-        
+
         {/* Metadata Preview */}
         {entity.metadata && (
           <div className="mt-4 flex flex-wrap gap-2">
@@ -145,7 +149,7 @@ export function EntityCardGlass({
             ))}
           </div>
         )}
-        
+
         {/* Smart Code Footer */}
         {entity.smart_code && (
           <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
@@ -155,7 +159,7 @@ export function EntityCardGlass({
           </div>
         )}
       </div>
-      
+
       {/* Decorative gradient orb */}
       <div className="absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/20 blur-3xl" />
     </div>
@@ -164,22 +168,22 @@ export function EntityCardGlass({
 
 /**
  * Usage Example:
- * 
+ *
  * import { EntityCardGlass } from '@/lib/dna/components/ui/EntityCardGlass'
  * import { useReadEntities, useGetDynamicFields } from '@/lib/dna/hooks/hera-dna-hook-registry'
- * 
+ *
  * function CustomerList() {
  *   const readEntities = useReadEntities()
  *   const getDynamicFields = useGetDynamicFields()
  *   const [customers, setCustomers] = useState([])
  *   const [customerFields, setCustomerFields] = useState({})
- *   
+ *
  *   useEffect(() => {
  *     const loadCustomers = async () => {
  *       const result = await readEntities({ entity_type: 'customer' })
  *       if (result.data) {
  *         setCustomers(result.data)
- *         
+ *
  *         // Load dynamic fields for each customer
  *         for (const customer of result.data) {
  *           const fields = await getDynamicFields(customer.id)
@@ -194,7 +198,7 @@ export function EntityCardGlass({
  *     }
  *     loadCustomers()
  *   }, [])
- *   
+ *
  *   return (
  *     <div className="grid gap-4">
  *       {customers.map(customer => (

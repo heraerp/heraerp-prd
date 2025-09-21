@@ -5,6 +5,7 @@ Enterprise-grade UI component library with modern glassmorphism design, dark mod
 ## 🎨 Design Philosophy
 
 HERA DNA UI components follow these core principles:
+
 - **Glassmorphism First**: Modern transparent design with backdrop blur effects
 - **Dark Mode Native**: Every component works perfectly in both light and dark themes
 - **Hook Integration**: Components are designed to work seamlessly with HERA DNA hooks
@@ -14,24 +15,24 @@ HERA DNA UI components follow these core principles:
 ## 🚀 Quick Start
 
 ```typescript
-import { 
-  CardDNA, 
-  PrimaryButtonDNA, 
+import {
+  CardDNA,
+  PrimaryButtonDNA,
   FormFieldDNA,
   EntityCardGlass,
-  HERA_GLASS_THEME 
+  HERA_GLASS_THEME
 } from '@/src/lib/dna/components/ui/hera-dna-ui-registry'
 
-import { 
-  useCreateEntity, 
-  useReadEntities 
+import {
+  useCreateEntity,
+  useReadEntities
 } from '@/src/lib/dna/hooks/hera-dna-hook-registry'
 
 // Use components with hooks
 function MyComponent() {
   const createEntity = useCreateEntity()
   const readEntities = useReadEntities()
-  
+
   return (
     <CardDNA title="Customers" variant="primary">
       {/* Component content */}
@@ -45,6 +46,7 @@ function MyComponent() {
 ### Layout Components
 
 #### PageHeaderDNA
+
 **Smart Code**: `HERA.DNA.UI.HEADER.GLASS.v1`  
 **Linked Hook**: `useHERAAuth`
 
@@ -62,6 +64,7 @@ Page headers with gradient backgrounds, back navigation, and action buttons.
 ```
 
 #### HERAGradientBackground
+
 **Smart Code**: `HERA.DNA.UI.BACKGROUND.GRADIENT.v1`
 
 Animated gradient backgrounds for visual appeal.
@@ -75,14 +78,15 @@ Animated gradient backgrounds for visual appeal.
 ### Card Components
 
 #### CardDNA (Base Card)
+
 **Smart Code**: `HERA.DNA.UI.CARD.GLASS.v1`  
 **Linked Hook**: `useReadEntities`
 
 Enhanced cards with glassmorphism effects, hover states, and icons.
 
 ```typescript
-<CardDNA 
-  title="Sales Overview" 
+<CardDNA
+  title="Sales Overview"
   icon={DollarSign}
   variant="default" // default | info | success | warning | danger
 >
@@ -91,6 +95,7 @@ Enhanced cards with glassmorphism effects, hover states, and icons.
 ```
 
 #### EntityCardGlass
+
 **Smart Code**: `HERA.DNA.UI.ENTITY.CARD.GLASS.v1`  
 **Linked Hooks**: `useReadEntities` + `useGetDynamicFields`
 
@@ -129,6 +134,7 @@ const dynamicFields = {
 ### Form Components
 
 #### FormFieldDNA
+
 **Smart Code**: `HERA.DNA.UI.FORM.FIELD.v1`  
 **Linked Hooks**: `useCreateEntity`, `useUpdateEntity`
 
@@ -170,6 +176,7 @@ Complete form field with label, icon, helper text, and error states.
 ```
 
 ### PageHeaderDNA
+
 Consistent page headers with gradient backgrounds, back navigation, and action buttons.
 
 ```typescript
@@ -188,6 +195,7 @@ Consistent page headers with gradient backgrounds, back navigation, and action b
 ```
 
 ### CardDNA
+
 Enhanced cards with hover effects, icons, and proper dark mode borders.
 
 ```typescript
@@ -208,10 +216,11 @@ Enhanced cards with hover effects, icons, and proper dark mode borders.
 ```
 
 ### ButtonDNA
+
 Buttons with loading states, icons, and consistent styling.
 
 ```typescript
-<ButtonDNA 
+<ButtonDNA
   icon={Save}
   loading={saving}
   loadingText="Saving..."
@@ -228,6 +237,7 @@ Buttons with loading states, icons, and consistent styling.
 ```
 
 ### BadgeDNA
+
 Enhanced badges with proper contrast in dark mode.
 
 ```typescript
@@ -243,6 +253,7 @@ Enhanced badges with proper contrast in dark mode.
 ```
 
 ### ScrollAreaDNA
+
 Scroll areas with enhanced visible scrollbars in both light and dark modes.
 
 ```typescript
@@ -267,6 +278,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
 ## 🔧 Common Patterns
 
 ### Form Page
+
 ```typescript
 <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
   <PageHeaderDNA
@@ -274,7 +286,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
     icon={User}
     backUrl="/customers"
   />
-  
+
   <div className="container mx-auto px-6 py-6">
     <CardDNA>
       <div className="space-y-4">
@@ -285,7 +297,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
           onChange={setName}
           icon={User}
         />
-        
+
         <FormFieldDNA
           type="email"
           label="Email"
@@ -293,7 +305,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
           onChange={setEmail}
           icon={Mail}
         />
-        
+
         <ButtonDNA icon={Save} loading={saving}>
           Save Changes
         </ButtonDNA>
@@ -304,6 +316,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
 ```
 
 ### List Page with Filters
+
 ```typescript
 <div className="space-y-4">
   <CardDNA title="Filters" icon={Filter}>
@@ -315,7 +328,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
         onChange={setSearch}
         icon={Search}
       />
-      
+
       <FormFieldDNA
         type="select"
         label="Status"
@@ -323,7 +336,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
         onChange={setStatus}
         options={statusOptions}
       />
-      
+
       <FormFieldDNA
         type="date"
         label="Date"
@@ -332,7 +345,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
       />
     </div>
   </CardDNA>
-  
+
   <ScrollAreaDNA height="h-[600px]">
     {items.map(item => (
       <CardDNA key={item.id} hoverable onClick={() => handleClick(item)}>
@@ -364,6 +377,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
 ### Stat Card Components
 
 #### StatCardDNA
+
 **Smart Code**: `HERA.DNA.UI.STAT.CARD.v1`  
 **Linked Hook**: `useReadEntities`
 
@@ -373,14 +387,14 @@ Statistics display cards with trend indicators.
 import { StatCardDNA, StatCardGrid } from '@/src/lib/dna/components/ui/hera-dna-ui-registry'
 
 <StatCardGrid>
-  <StatCardDNA 
+  <StatCardDNA
     title="Total Revenue"
     value="$125,000"
     icon={DollarSign}
     trend="+12.5%"
     trendUp
   />
-  <StatCardDNA 
+  <StatCardDNA
     title="Customers"
     value="1,234"
     icon={Users}
@@ -391,6 +405,7 @@ import { StatCardDNA, StatCardGrid } from '@/src/lib/dna/components/ui/hera-dna-
 ```
 
 #### MiniStatCardDNA
+
 **Smart Code**: `HERA.DNA.UI.STAT.MINI.v1`
 
 Compact statistics cards for dashboards.
@@ -407,6 +422,7 @@ Compact statistics cards for dashboards.
 ### Mobile Components
 
 #### BottomSheet
+
 **Smart Code**: `HERA.DNA.UI.MOBILE.SHEET.v1`
 
 Mobile-optimized bottom sheet for filters and actions.
@@ -424,6 +440,7 @@ Mobile-optimized bottom sheet for filters and actions.
 ## 🎨 Glassmorphism Utilities
 
 ### Glass Card Classes
+
 **Smart Code**: `HERA.DNA.UI.UTIL.GLASS.v1`
 
 ```typescript
@@ -454,25 +471,26 @@ HERA_GLASS_THEME.shadow.lg // "shadow-lg shadow-black/15"
 ## 🔗 Hook Integration Patterns
 
 ### Entity List Pattern
+
 **Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.LIST.v1`
 
 ```typescript
-import { 
-  CardDNA, 
-  ScrollAreaDNA, 
+import {
+  CardDNA,
+  ScrollAreaDNA,
   EntityCardGlass,
-  BadgeDNA 
+  BadgeDNA
 } from '@/src/lib/dna/components/ui/hera-dna-ui-registry'
-import { 
-  useReadEntities, 
-  useGetDynamicFields 
+import {
+  useReadEntities,
+  useGetDynamicFields
 } from '@/src/lib/dna/hooks/hera-dna-hook-registry'
 
 function CustomerList() {
   const readEntities = useReadEntities()
   const getDynamicFields = useGetDynamicFields()
   const [customers, setCustomers] = useState([])
-  
+
   useEffect(() => {
     const loadData = async () => {
       const result = await readEntities({ entity_type: 'customer' })
@@ -480,7 +498,7 @@ function CustomerList() {
     }
     loadData()
   }, [])
-  
+
   return (
     <CardDNA title="Customers" icon={Users}>
       <ScrollAreaDNA height="h-96">
@@ -500,6 +518,7 @@ function CustomerList() {
 ```
 
 ### Entity Form Pattern
+
 **Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.FORM.v1`
 
 ```typescript
@@ -511,20 +530,20 @@ function CustomerForm() {
     email: '',
     phone: ''
   })
-  
+
   const handleSubmit = async () => {
     const result = await createEntity({
       entity_type: 'customer',
       entity_name: formData.name,
       smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'
     })
-    
+
     if (result.data) {
       await setDynamicField(result.data.id, 'email', formData.email)
       await setDynamicField(result.data.id, 'phone', formData.phone)
     }
   }
-  
+
   return (
     <CardDNA title="New Customer" icon={UserPlus}>
       <div className="space-y-4">
@@ -567,6 +586,7 @@ import { ThemeProviderDNA } from '@/src/lib/dna/components/ui/hera-dna-ui-regist
 ## 📱 Responsive Design
 
 All components are mobile-first and responsive:
+
 - Cards stack on mobile, grid on desktop
 - Forms adapt to screen size
 - Modals become full-screen on mobile
@@ -593,7 +613,7 @@ All components are mobile-first and responsive:
 
 ```typescript
 import { useState, useEffect } from 'react'
-import { 
+import {
   PageHeaderDNA,
   CardDNA,
   EntityCardGlass,
@@ -603,7 +623,7 @@ import {
   StatCardGrid,
   StatCardDNA
 } from '@/src/lib/dna/components/ui/hera-dna-ui-registry'
-import { 
+import {
   useReadEntities,
   useCreateEntity,
   useEntityStats
@@ -614,11 +634,11 @@ export default function CustomerManagementPage() {
   const readEntities = useReadEntities()
   const createEntity = useCreateEntity()
   const getStats = useEntityStats()
-  
+
   const [customers, setCustomers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddForm, setShowAddForm] = useState(false)
-  
+
   return (
     <div className="space-y-6">
       <PageHeaderDNA
@@ -626,7 +646,7 @@ export default function CustomerManagementPage() {
         subtitle="Manage your customer relationships"
         icon={Users}
         actions={
-          <PrimaryButtonDNA 
+          <PrimaryButtonDNA
             icon={UserPlus}
             onClick={() => setShowAddForm(true)}
           >
@@ -634,7 +654,7 @@ export default function CustomerManagementPage() {
           </PrimaryButtonDNA>
         }
       />
-      
+
       <StatCardGrid>
         <StatCardDNA
           title="Total Customers"
@@ -651,7 +671,7 @@ export default function CustomerManagementPage() {
           trendUp
         />
       </StatCardGrid>
-      
+
       <CardDNA title="Customer List" icon={Users}>
         <FormFieldDNA
           type="text"
@@ -662,7 +682,7 @@ export default function CustomerManagementPage() {
           icon={Search}
           className="mb-4"
         />
-        
+
         <ScrollAreaDNA height="h-96">
           {customers
             .filter(c => c.entity_name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -692,8 +712,9 @@ export default function CustomerManagementPage() {
 ## 🔄 Migration Guide
 
 Replace existing components for glassmorphism upgrade:
+
 - `Input` → `FormFieldDNA` with glassmorphism
-- `Select` → `FormFieldDNA with type="select"` 
+- `Select` → `FormFieldDNA with type="select"`
 - `Card` → `CardDNA` with glass effects
 - `Badge` → `BadgeDNA` with enhanced contrast
 - `Button` → `ButtonDNA` variants with gradients

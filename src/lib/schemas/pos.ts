@@ -13,7 +13,7 @@ export const CartService = z.object({
   service_name: z.string(),
   qty: z.number().positive(),
   unit_price: z.number().nonnegative(),
-  duration_min: z.number().int().positive().optional(),
+  duration_min: z.number().int().positive().optional()
 })
 
 export const CartItem = z.object({
@@ -22,19 +22,19 @@ export const CartItem = z.object({
   product_name: z.string(),
   qty: z.number().positive(),
   unit_price: z.number().nonnegative(),
-  on_hand: z.number().int().optional(),
+  on_hand: z.number().int().optional()
 })
 
 export const CartDiscount = z.object({
   kind: z.literal('discount'),
   amount: z.number().positive(),
   reason: z.string().optional(),
-  percentage: z.number().min(0).max(100).optional(),
+  percentage: z.number().min(0).max(100).optional()
 })
 
 export const CartTip = z.object({
   kind: z.literal('tip'),
-  amount: z.number().nonnegative(),
+  amount: z.number().nonnegative()
 })
 
 export const CartLine = z.discriminatedUnion('kind', [CartService, CartItem, CartDiscount, CartTip])
@@ -50,7 +50,7 @@ export const Totals = z.object({
   tax_rate: z.number().default(0.05), // 5% UAE VAT
   tax_total: z.number(),
   tip_total: z.number(),
-  grand_total: z.number(),
+  grand_total: z.number()
 })
 export type Totals = z.infer<typeof Totals>
 
@@ -59,7 +59,7 @@ export const Payment = z.object({
   method: z.enum(['cash', 'card']),
   amount: z.number().positive(),
   reference: z.string().optional(),
-  card_last_four: z.string().optional(),
+  card_last_four: z.string().optional()
 })
 export type Payment = z.infer<typeof Payment>
 
@@ -69,7 +69,7 @@ export const ServicePrice = z.object({
   service_name: z.string(),
   price: z.number().nonnegative(),
   duration_min: z.number().int().positive(),
-  category: z.string().optional(),
+  category: z.string().optional()
 })
 export type ServicePrice = z.infer<typeof ServicePrice>
 
@@ -78,7 +78,7 @@ export const ProductPrice = z.object({
   product_name: z.string(),
   price: z.number().nonnegative(),
   on_hand: z.number().int(),
-  category: z.string().optional(),
+  category: z.string().optional()
 })
 export type ProductPrice = z.infer<typeof ProductPrice>
 
@@ -89,14 +89,16 @@ export const InvoiceHeader = z.object({
   txn_id: z.string(),
   smart_code: z.string(),
   organization_id: z.string(),
-  customer: z.object({
-    id: z.string(),
-    name: z.string(),
-    code: z.string(),
-  }).optional(),
+  customer: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      code: z.string()
+    })
+    .optional(),
   appointment_id: z.string().optional(),
   created_at: z.string().datetime(),
-  status: z.enum(['draft', 'posted', 'paid', 'cancelled']),
+  status: z.enum(['draft', 'posted', 'paid', 'cancelled'])
 })
 export type InvoiceHeader = z.infer<typeof InvoiceHeader>
 
@@ -107,7 +109,7 @@ export const InvoiceLine = z.object({
   qty: z.number().optional(),
   unit_price: z.number().optional(),
   amount: z.number(),
-  smart_code: z.string(),
+  smart_code: z.string()
 })
 export type InvoiceLine = z.infer<typeof InvoiceLine>
 
@@ -115,7 +117,7 @@ export const Invoice = z.object({
   header: InvoiceHeader,
   lines: z.array(InvoiceLine),
   totals: Totals,
-  payment: Payment.optional(),
+  payment: Payment.optional()
 })
 export type Invoice = z.infer<typeof Invoice>
 
@@ -128,7 +130,7 @@ export const UniversalTxnHeader = z.object({
   status: z.enum(['draft', 'posted', 'cancelled']),
   currency: z.string(),
   source_entity_type: z.string().optional(),
-  source_entity_ref: z.string().optional(),
+  source_entity_ref: z.string().optional()
 })
 export type UniversalTxnHeader = z.infer<typeof UniversalTxnHeader>
 
@@ -142,7 +144,7 @@ export const UniversalTxnLine = z.object({
   unit_price: z.number().optional(),
   amount: z.number().optional(),
   currency: z.string(),
-  line_data: z.record(z.any()).optional(),
+  line_data: z.record(z.any()).optional()
 })
 export type UniversalTxnLine = z.infer<typeof UniversalTxnLine>
 
@@ -150,14 +152,16 @@ export const UniversalTxn = z.object({
   organization_id: z.string(),
   txn: UniversalTxnHeader,
   lines: z.array(UniversalTxnLine),
-  totals: z.object({
-    subtotal: z.number(),
-    discount_total: z.number(),
-    tax_total: z.number(),
-    tip_total: z.number(),
-    grand_total: z.number(),
-    currency: z.string(),
-  }).optional(),
+  totals: z
+    .object({
+      subtotal: z.number(),
+      discount_total: z.number(),
+      tax_total: z.number(),
+      tip_total: z.number(),
+      grand_total: z.number(),
+      currency: z.string()
+    })
+    .optional()
 })
 export type UniversalTxn = z.infer<typeof UniversalTxn>
 
@@ -166,7 +170,7 @@ export const CartState = z.object({
   lines: z.array(CartLine),
   totals: Totals,
   appointment_id: z.string().optional(),
-  customer_id: z.string().optional(),
+  customer_id: z.string().optional()
 })
 export type CartState = z.infer<typeof CartState>
 
@@ -174,7 +178,7 @@ export type CartState = z.infer<typeof CartState>
 export const CheckoutResponse = z.object({
   orderId: z.string(),
   invoiceId: z.string(),
-  txnId: z.string(),
+  txnId: z.string()
 })
 export type CheckoutResponse = z.infer<typeof CheckoutResponse>
 
@@ -182,7 +186,7 @@ export type CheckoutResponse = z.infer<typeof CheckoutResponse>
 export const PaymentResponse = z.object({
   paymentId: z.string(),
   invoiceId: z.string(),
-  txnId: z.string(),
+  txnId: z.string()
 })
 export type PaymentResponse = z.infer<typeof PaymentResponse>
 
@@ -191,7 +195,7 @@ export const CommissionInfo = z.object({
   service_subtotal: z.number(),
   commission_rate: z.number().default(0.35), // 35%
   commission_amount: z.number(),
-  currency: z.string().default('AED'),
+  currency: z.string().default('AED')
 })
 export type CommissionInfo = z.infer<typeof CommissionInfo>
 
@@ -233,7 +237,7 @@ export function calculateTotals(lines: CartLine[]): Totals {
     tax_rate,
     tax_total,
     tip_total,
-    grand_total,
+    grand_total
   }
 }
 
@@ -246,6 +250,6 @@ export function calculateCommission(totals: Totals): CommissionInfo {
     service_subtotal,
     commission_rate,
     commission_amount,
-    currency: totals.currency,
+    currency: totals.currency
   }
 }

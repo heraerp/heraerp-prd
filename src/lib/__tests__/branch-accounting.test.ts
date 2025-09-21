@@ -13,7 +13,9 @@ describe('Branch Accounting', () => {
       expect(() => {
         assertBranchOnEvent({
           transaction_type: 'POS_SALE',
-          business_context: { /* missing branch_id */ },
+          business_context: {
+            /* missing branch_id */
+          },
           lines: []
         })
       }).toThrow('branch_id required in business_context')
@@ -23,7 +25,9 @@ describe('Branch Accounting', () => {
       expect(() => {
         assertBranchOnEvent({
           transaction_type: 'APPT_BOOKING',
-          business_context: { /* missing branch_id */ },
+          business_context: {
+            /* missing branch_id */
+          },
           lines: []
         })
       }).toThrow('branch_id required in business_context')
@@ -68,21 +72,23 @@ describe('Branch Accounting', () => {
 
   describe('Branch-aware Posting', () => {
     it('should reject postEventWithBranch without branch_id', async () => {
-      await expect(postEventWithBranch({
-        organization_id: 'test-org',
-        transaction_type: 'POS_SALE',
-        smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
-        business_context: {} as any, // Missing branch_id
-        lines: []
-      })).rejects.toThrow('branch_id is required')
+      await expect(
+        postEventWithBranch({
+          organization_id: 'test-org',
+          transaction_type: 'POS_SALE',
+          smart_code: 'HERA.SALON.POS.TXN.SALE.V1',
+          business_context: {} as any, // Missing branch_id
+          lines: []
+        })
+      ).rejects.toThrow('branch_id is required')
     })
 
     it('should propagate branch_id to all transaction lines', async () => {
-      const mockCreate = jest.fn().mockResolvedValue({ 
-        success: true, 
-        data: { id: 'txn-123' } 
+      const mockCreate = jest.fn().mockResolvedValue({
+        success: true,
+        data: { id: 'txn-123' }
       })
-      
+
       jest.mock('@/src/lib/universal-api-v2', () => ({
         universalApi: {
           setOrganizationId: jest.fn(),
@@ -106,21 +112,22 @@ describe('Branch Accounting', () => {
       })
 
       // Verify branch_id was added to line metadata
-      const lineCall = mockCreate.mock.calls.find(
-        call => call[0] === 'universal_transaction_lines'
-      )
+      const lineCall = mockCreate.mock.calls.find(call => call[0] === 'universal_transaction_lines')
       expect(lineCall?.[1]?.metadata?.branch_id).toBe('branch-123')
     })
   })
 
   describe('Branch P&L Reporting', () => {
     it('should filter transactions by date range', async () => {
-      const mockRead = jest.fn()
-        .mockResolvedValueOnce({ // Transactions
+      const mockRead = jest
+        .fn()
+        .mockResolvedValueOnce({
+          // Transactions
           success: true,
           data: [{ id: 'txn-1' }, { id: 'txn-2' }]
         })
-        .mockResolvedValueOnce({ // Lines
+        .mockResolvedValueOnce({
+          // Lines
           success: true,
           data: [
             {
@@ -131,7 +138,8 @@ describe('Branch Accounting', () => {
             }
           ]
         })
-        .mockResolvedValueOnce({ // Branch entities
+        .mockResolvedValueOnce({
+          // Branch entities
           success: true,
           data: [{ id: 'branch-1', entity_name: 'Main Branch' }]
         })
@@ -236,7 +244,7 @@ describe('Branch Accounting', () => {
     it('should use array filters for efficient queries', async () => {
       // When fetching lines for multiple transactions
       const txnIds = ['txn-1', 'txn-2', 'txn-3']
-      
+
       // Should use array filter instead of multiple queries
       const mockRead = jest.fn().mockResolvedValue({
         success: true,
@@ -255,19 +263,17 @@ describe('Branch Accounting', () => {
       })
 
       // Verify array filter was used
-      const lineCall = mockRead.mock.calls.find(
-        call => call[0] === 'universal_transaction_lines'
-      )
+      const lineCall = mockRead.mock.calls.find(call => call[0] === 'universal_transaction_lines')
       expect(lineCall?.[1]?.transaction_id).toBeInstanceOf(Array)
     })
 
     it('should handle empty array filters gracefully', async () => {
       // When no transactions found, should not query lines
-      const mockRead = jest.fn()
-        .mockResolvedValueOnce({ // No transactions
-          success: true,
-          data: []
-        })
+      const mockRead = jest.fn().mockResolvedValueOnce({
+        // No transactions
+        success: true,
+        data: []
+      })
 
       const result = await getBranchPnL({
         organization_id: 'test-org'

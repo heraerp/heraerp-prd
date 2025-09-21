@@ -45,13 +45,16 @@ export class SalonPosIntegrationService {
   /**
    * Get pricing for a service or product with playbook integration
    */
-  async getServicePricing(serviceId: string, options: {
-    customer_id?: string
-    appointment_id?: string
-    stylist_id?: string
-    date?: string
-    time?: string
-  } = {}): Promise<PricingResult> {
+  async getServicePricing(
+    serviceId: string,
+    options: {
+      customer_id?: string
+      appointment_id?: string
+      stylist_id?: string
+      date?: string
+      time?: string
+    } = {}
+  ): Promise<PricingResult> {
     try {
       // Load service entity
       const serviceResponse = await universalApi.read({
@@ -74,17 +77,22 @@ export class SalonPosIntegrationService {
         filters: [
           { field: 'organization_id', operator: 'eq', value: this.organizationId },
           { field: 'entity_id', operator: 'eq', value: serviceId },
-          { field: 'field_name', operator: 'in', value: ['price', 'base_price', 'promotional_price', 'currency', 'peak_hours_multiplier'] }
+          {
+            field: 'field_name',
+            operator: 'in',
+            value: ['price', 'base_price', 'promotional_price', 'currency', 'peak_hours_multiplier']
+          }
         ]
       })
 
       const pricingData = pricingResponse?.data || []
       const pricingFields: any = {}
       pricingData.forEach(field => {
-        pricingFields[field.field_name] = field.field_value_text || 
-                                          field.field_value_number || 
-                                          field.field_value_date ||
-                                          field.field_value_boolean
+        pricingFields[field.field_name] =
+          field.field_value_text ||
+          field.field_value_number ||
+          field.field_value_date ||
+          field.field_value_boolean
       })
 
       // Apply pricing rules
@@ -94,7 +102,8 @@ export class SalonPosIntegrationService {
       // Peak hours pricing
       if (options.time && pricingFields.peak_hours_multiplier) {
         const hour = new Date(`2000-01-01T${options.time}`).getHours()
-        if (hour >= 17 || hour <= 10) { // Peak hours
+        if (hour >= 17 || hour <= 10) {
+          // Peak hours
           unitPrice = basePrice * pricingFields.peak_hours_multiplier
         }
       }
@@ -120,7 +129,6 @@ export class SalonPosIntegrationService {
         currency: pricingFields.currency || 'AED',
         stylist_commission_rate: stylistCommissionRate
       }
-
     } catch (error) {
       console.error('Error getting service pricing:', error)
       return {
@@ -134,14 +142,19 @@ export class SalonPosIntegrationService {
   /**
    * Get available stylists for a service
    */
-  async getAvailableStylists(serviceId: string, dateTime?: string): Promise<Array<{
-    id: string
-    name: string
-    specialties: string[]
-    commission_rate: number
-    available: boolean
-    next_available?: string
-  }>> {
+  async getAvailableStylists(
+    serviceId: string,
+    dateTime?: string
+  ): Promise<
+    Array<{
+      id: string
+      name: string
+      specialties: string[]
+      commission_rate: number
+      available: boolean
+      next_available?: string
+    }>
+  > {
     try {
       // Load all stylists
       const stylistsResponse = await universalApi.read({
@@ -168,10 +181,11 @@ export class SalonPosIntegrationService {
         const stylistData = stylistDataResponse?.data || []
         const stylistFields: any = {}
         stylistData.forEach(field => {
-          stylistFields[field.field_name] = field.field_value_text || 
-                                            field.field_value_number || 
-                                            field.field_value_date ||
-                                            field.field_value_boolean
+          stylistFields[field.field_name] =
+            field.field_value_text ||
+            field.field_value_number ||
+            field.field_value_date ||
+            field.field_value_boolean
         })
 
         // Check if stylist is active and a stylist role
@@ -188,7 +202,6 @@ export class SalonPosIntegrationService {
       }
 
       return stylists
-
     } catch (error) {
       console.error('Error getting available stylists:', error)
       return []
@@ -226,7 +239,10 @@ export class SalonPosIntegrationService {
             errors.push(`Service ${item.entity_name} must have an assigned stylist`)
           } else {
             // Validate stylist is available
-            const isAvailable = await this.validateStylistAvailability(item.stylist_id, item.appointment_id)
+            const isAvailable = await this.validateStylistAvailability(
+              item.stylist_id,
+              item.appointment_id
+            )
             if (!isAvailable) {
               warnings.push(`Stylist for ${item.entity_name} may not be available`)
             }
@@ -240,14 +256,18 @@ export class SalonPosIntegrationService {
         })
 
         if (Math.abs(item.unit_price - expectedPricing.unit_price) > 0.01) {
-          warnings.push(`Price mismatch for ${item.entity_name}: expected $${expectedPricing.unit_price}, got $${item.unit_price}`)
+          warnings.push(
+            `Price mismatch for ${item.entity_name}: expected $${expectedPricing.unit_price}, got $${item.unit_price}`
+          )
         }
       }
 
       // Validate totals
-      const calculatedSubtotal = ticket.lineItems.reduce((sum: number, item: any) => 
-        sum + (item.quantity * item.unit_price), 0)
-      
+      const calculatedSubtotal = ticket.lineItems.reduce(
+        (sum: number, item: any) => sum + item.quantity * item.unit_price,
+        0
+      )
+
       const totals = this.calculateTicketTotals(ticket)
       if (Math.abs(totals.subtotal - calculatedSubtotal) > 0.01) {
         errors.push('Subtotal calculation mismatch')
@@ -266,7 +286,6 @@ export class SalonPosIntegrationService {
         errors,
         warnings
       }
-
     } catch (error) {
       console.error('Error validating POS ticket:', error)
       return {
@@ -280,11 +299,15 @@ export class SalonPosIntegrationService {
   /**
    * Process POS sale with complete playbook integration
    */
-  async processPosTransaction(ticket: any, payments: any[], options: {
-    branch_id: string
-    cashier_id: string
-    till_id?: string
-  }) {
+  async processPosTransaction(
+    ticket: any,
+    payments: any[],
+    options: {
+      branch_id: string
+      cashier_id: string
+      till_id?: string
+    }
+  ) {
     try {
       // Validate ticket first
       const validation = await this.validatePosTicket(ticket)
@@ -317,9 +340,10 @@ export class SalonPosIntegrationService {
             quantity: item.quantity,
             unit_price: item.unit_price,
             line_amount: item.line_amount,
-            smart_code: item.entity_type === 'service' 
-              ? 'HERA.SALON.SVC.LINE.STANDARD.V1' 
-              : 'HERA.SALON.PROD.LINE.RETAIL.V1',
+            smart_code:
+              item.entity_type === 'service'
+                ? 'HERA.SALON.SVC.LINE.STANDARD.V1'
+                : 'HERA.SALON.PROD.LINE.RETAIL.V1',
             line_data: {
               branch_id: options.branch_id,
               stylist_id: item.stylist_id,
@@ -357,7 +381,12 @@ export class SalonPosIntegrationService {
           })),
           // Tip lines
           ...(ticket.tips || []).map((tip: any, index: number) => ({
-            line_number: ticket.lineItems.length + payments.length + (ticket.discounts?.length || 0) + index + 1,
+            line_number:
+              ticket.lineItems.length +
+              payments.length +
+              (ticket.discounts?.length || 0) +
+              index +
+              1,
             line_amount: tip.amount,
             smart_code: 'HERA.SALON.GL.LINE.TIP.V1',
             line_data: {
@@ -393,7 +422,6 @@ export class SalonPosIntegrationService {
         transaction_code: result.transaction_code,
         commission_lines: result.commission_lines
       }
-
     } catch (error) {
       console.error('Error processing POS transaction:', error)
       return {
@@ -407,19 +435,22 @@ export class SalonPosIntegrationService {
    * Helper methods
    */
   private calculateTicketTotals(ticket: any) {
-    const subtotal = ticket.lineItems.reduce((sum: number, item: any) => 
-      sum + (item.quantity * item.unit_price), 0)
-    
-    const discountAmount = (ticket.discounts || []).reduce((sum: number, discount: any) => 
-      sum + discount.amount, 0)
-    
-    const tipAmount = (ticket.tips || []).reduce((sum: number, tip: any) => 
-      sum + tip.amount, 0)
-    
+    const subtotal = ticket.lineItems.reduce(
+      (sum: number, item: any) => sum + item.quantity * item.unit_price,
+      0
+    )
+
+    const discountAmount = (ticket.discounts || []).reduce(
+      (sum: number, discount: any) => sum + discount.amount,
+      0
+    )
+
+    const tipAmount = (ticket.tips || []).reduce((sum: number, tip: any) => sum + tip.amount, 0)
+
     const taxRate = 0.05 // 5% VAT
     const taxableAmount = subtotal - discountAmount
     const taxAmount = taxableAmount * taxRate
-    
+
     const total = subtotal - discountAmount + tipAmount + taxAmount
 
     return {
@@ -433,10 +464,14 @@ export class SalonPosIntegrationService {
 
   private getPaymentSmartCode(paymentType: string): string {
     switch (paymentType) {
-      case 'cash': return 'HERA.ACCOUNTING.GL.LINE.CASH.V1'
-      case 'card': return 'HERA.ACCOUNTING.GL.LINE.CARD.V1'
-      case 'voucher': return 'HERA.ACCOUNTING.GL.LINE.VOUCHER.V1'
-      default: return 'HERA.ACCOUNTING.GL.LINE.OTHER.V1'
+      case 'cash':
+        return 'HERA.ACCOUNTING.GL.LINE.CASH.V1'
+      case 'card':
+        return 'HERA.ACCOUNTING.GL.LINE.CARD.V1'
+      case 'voucher':
+        return 'HERA.ACCOUNTING.GL.LINE.VOUCHER.V1'
+      default:
+        return 'HERA.ACCOUNTING.GL.LINE.OTHER.V1'
     }
   }
 
@@ -447,29 +482,34 @@ export class SalonPosIntegrationService {
         filters: [
           { field: 'organization_id', operator: 'eq', value: this.organizationId },
           { field: 'entity_id', operator: 'eq', value: customerId },
-          { field: 'field_name', operator: 'in', value: ['vip_tier', 'discount_percentage', 'loyalty_discount'] }
+          {
+            field: 'field_name',
+            operator: 'in',
+            value: ['vip_tier', 'discount_percentage', 'loyalty_discount']
+          }
         ]
       })
 
       const customerData = customerDataResponse?.data || []
       const customerFields: any = {}
       customerData.forEach(field => {
-        customerFields[field.field_name] = field.field_value_text || 
-                                          field.field_value_number || 
-                                          field.field_value_date ||
-                                          field.field_value_boolean
+        customerFields[field.field_name] =
+          field.field_value_text ||
+          field.field_value_number ||
+          field.field_value_date ||
+          field.field_value_boolean
       })
 
       // VIP tier discounts
       const vipDiscounts: any = {
-        'vip': 10,
-        'premium': 15,
-        'platinum': 20
+        vip: 10,
+        premium: 15,
+        platinum: 20
       }
 
       return {
-        discount_percentage: customerFields.discount_percentage || 
-                           vipDiscounts[customerFields.vip_tier] || 0
+        discount_percentage:
+          customerFields.discount_percentage || vipDiscounts[customerFields.vip_tier] || 0
       }
     } catch (error) {
       console.error('Error getting customer pricing modifier:', error)
@@ -498,7 +538,10 @@ export class SalonPosIntegrationService {
     }
   }
 
-  private async validateStylistAvailability(stylistId: string, appointmentId?: string): Promise<boolean> {
+  private async validateStylistAvailability(
+    stylistId: string,
+    appointmentId?: string
+  ): Promise<boolean> {
     // Simplified validation - in production would check actual calendar
     return true
   }
@@ -552,7 +595,7 @@ export function createSalonPosIntegration(organizationId: string): SalonPosInteg
  */
 export function useSalonPosIntegration(organizationId: string) {
   const service = new SalonPosIntegrationService(organizationId)
-  
+
   return {
     getServicePricing: service.getServicePricing.bind(service),
     getAvailableStylists: service.getAvailableStylists.bind(service),

@@ -15,6 +15,7 @@ npm install
 ## Usage
 
 ### Basic Verification
+
 ```bash
 npm run verify
 # or directly:
@@ -39,11 +40,13 @@ Options:
 ### Examples
 
 #### 1. Basic Human-Readable Report
+
 ```bash
 npm run verify
 ```
 
 #### 2. Verbose Report with Missing Tests
+
 ```bash
 npm run verify:verbose
 # or
@@ -51,6 +54,7 @@ npm run verify:verbose
 ```
 
 #### 3. Generate JSON Report
+
 ```bash
 npm run verify:json
 # or
@@ -58,20 +62,26 @@ npm run verify:json
 ```
 
 #### 4. Verify Specific Sections Only
+
 ```bash
 ./verify-checklist.ts -s 1,2,8 -v
 ```
+
 This will only verify sections 1, 2, and 8 with verbose output.
 
 #### 5. Update Checklist with Test Status
+
 ```bash
 ./verify-checklist.ts -u
 ```
+
 This will:
+
 - Mark items as checked [x] if their test files exist
 - Add status comments showing test results (if available)
 
 #### 6. CI/CD Integration
+
 ```bash
 npm run verify:ci
 # or
@@ -85,6 +95,7 @@ This generates both a JSON report and a coverage badge suitable for CI/CD pipeli
 ### Human-Readable Format (Default)
 
 The default output includes:
+
 - **Summary Statistics**: Total items, checked items, test coverage percentage
 - **Coverage Bar**: Visual representation of test coverage
 - **Section Breakdown**: Coverage details for each checklist section
@@ -93,9 +104,10 @@ The default output includes:
 - **Recommendations**: Actionable suggestions based on coverage analysis
 
 Example output:
+
 ```
 ═══════════════════════════════════════════════════════════════════
-                    CHECKLIST VERIFICATION REPORT                   
+                    CHECKLIST VERIFICATION REPORT
 ═══════════════════════════════════════════════════════════════════
 
 📊 SUMMARY
@@ -122,6 +134,7 @@ Coverage: ███████████████████████�
 ### JSON Format
 
 The JSON output includes:
+
 ```json
 {
   "summary": {
@@ -164,6 +177,7 @@ The script can generate an SVG coverage badge suitable for README files or docum
 ```
 
 The badge color changes based on coverage:
+
 - 🟢 Green: 80% or higher
 - 🟡 Yellow: 60-79%
 - 🔴 Red: Below 60%
@@ -192,27 +206,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         run: |
           cd src/lib/playbooks/tests
           npm install
-      
+
       - name: Run tests
         run: |
           cd src/lib/playbooks/tests
           npm run test:ci
-      
+
       - name: Verify checklist coverage
         run: |
           cd src/lib/playbooks/tests
           npm run verify:ci
-      
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
@@ -220,7 +234,7 @@ jobs:
           path: |
             src/lib/playbooks/tests/coverage-report.json
             src/lib/playbooks/tests/coverage.svg
-      
+
       - name: Comment PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
@@ -230,7 +244,7 @@ jobs:
             const report = JSON.parse(fs.readFileSync('src/lib/playbooks/tests/coverage-report.json'));
             const coverage = report.summary.overallCoverage;
             const emoji = coverage >= 80 ? '✅' : coverage >= 60 ? '⚠️' : '❌';
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -249,6 +263,7 @@ jobs:
 ### Exit Codes
 
 The script uses exit codes for CI/CD integration:
+
 - `0`: Success (coverage >= 80%)
 - `1`: Coverage below threshold
 - `2`: Error during execution
@@ -271,16 +286,21 @@ The script uses exit codes for CI/CD integration:
 ## Troubleshooting
 
 ### Issue: Script can't find test files
+
 **Solution**: Ensure you're running the script from the correct directory (`src/lib/playbooks/tests/`).
 
 ### Issue: Permission denied error
+
 **Solution**: Make the script executable:
+
 ```bash
 chmod +x verify-checklist.ts
 ```
 
 ### Issue: Module not found errors
+
 **Solution**: Install dependencies:
+
 ```bash
 npm install
 ```
@@ -292,19 +312,16 @@ npm install
 The verification script can be imported and used programmatically:
 
 ```typescript
-import { ChecklistVerifier } from './verify-checklist';
+import { ChecklistVerifier } from './verify-checklist'
 
-const verifier = new ChecklistVerifier(
-  './CHECKLIST.md',
-  './tests'
-);
+const verifier = new ChecklistVerifier('./CHECKLIST.md', './tests')
 
 const report = await verifier.verify({
   verbose: true,
   format: 'json'
-});
+})
 
-console.log(`Coverage: ${report.overallCoverage}%`);
+console.log(`Coverage: ${report.overallCoverage}%`)
 ```
 
 ### Custom Reports
@@ -329,6 +346,7 @@ To improve the verification script:
 ## Future Enhancements
 
 Planned improvements:
+
 - Integration with code coverage tools
 - Historical coverage tracking
 - Automated checklist generation from test files

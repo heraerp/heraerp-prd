@@ -34,7 +34,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-01') // Monday
       const to = new Date('2024-01-05') // Friday
       const holidays: Date[] = []
-      
+
       const result = calculateWorkingDays(from, to, holidays, false, false)
       expect(result).toBe(5) // Mon-Fri
     })
@@ -43,7 +43,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-01')
       const to = new Date('2024-01-05')
       const holidays = [new Date('2024-01-03')] // Wednesday
-      
+
       const result = calculateWorkingDays(from, to, holidays, false, false)
       expect(result).toBe(4) // 5 days - 1 holiday
     })
@@ -52,7 +52,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-01')
       const to = new Date('2024-01-05')
       const holidays: Date[] = []
-      
+
       const result = calculateWorkingDays(from, to, holidays, true, true)
       expect(result).toBe(4) // 5 days - 0.5 start - 0.5 end
     })
@@ -61,7 +61,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-05') // Friday
       const to = new Date('2024-01-08') // Monday
       const holidays: Date[] = []
-      
+
       const result = calculateWorkingDays(from, to, holidays, false, false)
       expect(result).toBe(2) // Friday and Monday only
     })
@@ -70,7 +70,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-03') // Wednesday
       const to = new Date('2024-01-03') // Same day
       const holidays: Date[] = []
-      
+
       const result = calculateWorkingDays(from, to, holidays, false, false)
       expect(result).toBe(1)
     })
@@ -79,7 +79,7 @@ describe('hr_leave playbook', () => {
       const from = new Date('2024-01-03')
       const to = new Date('2024-01-03')
       const holidays: Date[] = []
-      
+
       const result = calculateWorkingDays(from, to, holidays, true, false)
       expect(result).toBe(0.5)
     })
@@ -87,9 +87,7 @@ describe('hr_leave playbook', () => {
 
   describe('listStaff', () => {
     it('queries staff entities correctly', async () => {
-      const mockStaff = [
-        { id: 'staff-1', entity_type: 'employee', entity_name: 'John Doe' }
-      ]
+      const mockStaff = [{ id: 'staff-1', entity_type: 'employee', entity_name: 'John Doe' }]
       ;(universalApi.listEntities as jest.Mock).mockResolvedValue({ data: mockStaff })
 
       const result = await listStaff({
@@ -125,8 +123,8 @@ describe('hr_leave playbook', () => {
   describe('listPolicies', () => {
     it('queries leave policies correctly', async () => {
       const mockPolicies = [
-        { 
-          id: 'policy-1', 
+        {
+          id: 'policy-1',
           entity_type: 'hr_policy',
           smart_code: 'HERA.SALON.HR.POL.LEAVE.ANNUAL.V1'
         }
@@ -145,12 +143,12 @@ describe('hr_leave playbook', () => {
 
     it('filters only leave policies', async () => {
       const mockPolicies = [
-        { 
-          id: 'policy-1', 
+        {
+          id: 'policy-1',
           smart_code: 'HERA.SALON.HR.POL.LEAVE.ANNUAL.V1'
         },
-        { 
-          id: 'policy-2', 
+        {
+          id: 'policy-2',
           smart_code: 'HERA.SALON.HR.POL.ATTENDANCE.V1'
         }
       ]
@@ -216,9 +214,7 @@ describe('hr_leave playbook', () => {
         branch_id: 'branch-1',
         from: new Date('2024-01-15'),
         to: new Date('2024-01-15'),
-        lines: [
-          { date: '2024-01-15', portion: 0.5, type: 'ANNUAL' }
-        ]
+        lines: [{ date: '2024-01-15', portion: 0.5, type: 'ANNUAL' }]
       })
 
       expect(universalApi.createTransaction).toHaveBeenCalledWith(
@@ -237,11 +233,11 @@ describe('hr_leave playbook', () => {
         id: 'req-1',
         status: 'pending'
       }
-      ;(universalApi.read as jest.Mock).mockResolvedValue({ 
-        data: [mockRequest] 
+      ;(universalApi.read as jest.Mock).mockResolvedValue({
+        data: [mockRequest]
       })
-      ;(universalApi.updateTransaction as jest.Mock).mockResolvedValue({ 
-        data: { ...mockRequest, status: 'approved' } 
+      ;(universalApi.updateTransaction as jest.Mock).mockResolvedValue({
+        data: { ...mockRequest, status: 'approved' }
       })
 
       const result = await decideRequest({
@@ -272,11 +268,11 @@ describe('hr_leave playbook', () => {
         id: 'req-1',
         status: 'pending'
       }
-      ;(universalApi.read as jest.Mock).mockResolvedValue({ 
-        data: [mockRequest] 
+      ;(universalApi.read as jest.Mock).mockResolvedValue({
+        data: [mockRequest]
       })
-      ;(universalApi.updateTransaction as jest.Mock).mockResolvedValue({ 
-        data: { ...mockRequest, status: 'rejected' } 
+      ;(universalApi.updateTransaction as jest.Mock).mockResolvedValue({
+        data: { ...mockRequest, status: 'rejected' }
       })
 
       const result = await decideRequest({
@@ -336,11 +332,13 @@ describe('hr_leave playbook', () => {
       })
 
       expect(result).toHaveLength(1)
-      expect(result[0]).toEqual(expect.objectContaining({
-        staff_id: 'staff-1',
-        entitlement_days: 21,
-        taken_days: 5
-      }))
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          staff_id: 'staff-1',
+          entitlement_days: 21,
+          taken_days: 5
+        })
+      )
     })
 
     it('filters by staff IDs', async () => {

@@ -1,6 +1,6 @@
-import { 
-  ServiceResponse, 
-  ProductResponse, 
+import {
+  ServiceResponse,
+  ProductResponse,
   CustomerResponse,
   ListQuery,
   ServiceCreate,
@@ -37,7 +37,7 @@ export class SalonPOSApi {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      const error = await response.json() as ErrorResponse
+      const error = (await response.json()) as ErrorResponse
       throw new Error(error.error || 'Request failed')
     }
     return response.json()
@@ -52,8 +52,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.SERVICE.CREATE.v1',
         actor_user_id: this.actorUserId,
-        service,
-      }),
+        service
+      })
     })
     return this.handleResponse<ServiceResponse>(response)
   }
@@ -62,14 +62,19 @@ export class SalonPOSApi {
     const queryParams = new URLSearchParams({
       orgId: this.orgId,
       ...Object.fromEntries(
-        Object.entries(params).filter(([_, v]) => v !== undefined).map(([k, v]) => [k, String(v)])
-      ),
+        Object.entries(params)
+          .filter(([_, v]) => v !== undefined)
+          .map(([k, v]) => [k, String(v)])
+      )
     })
     const response = await fetch(`${this.baseUrl}/service/list?${queryParams}`)
     return this.handleResponse<ListResponse<ServiceResponse>>(response)
   }
 
-  async updateService(id: string, updates: Omit<ServiceUpdate['service'], 'id'>): Promise<ServiceResponse> {
+  async updateService(
+    id: string,
+    updates: Omit<ServiceUpdate['service'], 'id'>
+  ): Promise<ServiceResponse> {
     const response = await fetch(`${this.baseUrl}/service/update`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -77,8 +82,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.SERVICE.UPDATE.v1',
         actor_user_id: this.actorUserId,
-        service: { id, ...updates },
-      }),
+        service: { id, ...updates }
+      })
     })
     return this.handleResponse<ServiceResponse>(response)
   }
@@ -91,8 +96,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.SERVICE.DELETE.v1',
         actor_user_id: this.actorUserId,
-        service: { id },
-      }),
+        service: { id }
+      })
     })
     return this.handleResponse(response)
   }
@@ -111,8 +116,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.PRODUCT.CREATE.v1',
         actor_user_id: this.actorUserId,
-        product,
-      }),
+        product
+      })
     })
     return this.handleResponse<ProductResponse>(response)
   }
@@ -121,8 +126,10 @@ export class SalonPOSApi {
     const queryParams = new URLSearchParams({
       orgId: this.orgId,
       ...Object.fromEntries(
-        Object.entries(params).filter(([_, v]) => v !== undefined).map(([k, v]) => [k, String(v)])
-      ),
+        Object.entries(params)
+          .filter(([_, v]) => v !== undefined)
+          .map(([k, v]) => [k, String(v)])
+      )
     })
     const response = await fetch(`${this.baseUrl}/product/list?${queryParams}`)
     return this.handleResponse<ListResponse<ProductResponse>>(response)
@@ -142,8 +149,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.CUSTOMER.CREATE.v1',
         actor_user_id: this.actorUserId,
-        customer,
-      }),
+        customer
+      })
     })
     return this.handleResponse<CustomerResponse>(response)
   }
@@ -151,7 +158,7 @@ export class SalonPOSApi {
   async searchCustomers(query: string): Promise<CustomerResponse[]> {
     const queryParams = new URLSearchParams({
       orgId: this.orgId,
-      q: query,
+      q: query
     })
     const response = await fetch(`${this.baseUrl}/customer/search?${queryParams}`)
     const result = await this.handleResponse<ListResponse<CustomerResponse>>(response)
@@ -166,8 +173,8 @@ export class SalonPOSApi {
       body: JSON.stringify({
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.TICKET.CREATE.v1',
-        workstationId,
-      }),
+        workstationId
+      })
     })
     return this.handleResponse(response)
   }
@@ -183,8 +190,8 @@ export class SalonPOSApi {
         orgId: this.orgId,
         smart_code: 'HERA.SALON.POS.TICKET.ADD_LINE.v1',
         ticketId,
-        line,
-      }),
+        line
+      })
     })
     return this.handleResponse(response)
   }

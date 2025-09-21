@@ -446,9 +446,14 @@ export const ReadinessWizard: React.FC<ReadinessWizardProps> = ({ template, sess
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-700 dark:text-gray-300 font-medium">Progress</span>
-            <span className="text-gray-900 dark:text-foreground font-bold">{progress.percent}%</span>
+            <span className="text-gray-900 dark:text-foreground font-bold">
+              {progress.percent}%
+            </span>
           </div>
-          <Progress value={progress.percent} className="h-2 bg-gray-200 dark:bg-muted-foreground/10" />
+          <Progress
+            value={progress.percent}
+            className="h-2 bg-gray-200 dark:bg-muted-foreground/10"
+          />
         </div>
       </div>
 

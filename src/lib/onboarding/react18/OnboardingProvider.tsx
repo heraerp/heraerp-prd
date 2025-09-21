@@ -336,13 +336,17 @@ function OnboardingOverlay({
 
         {/* Content */}
         <h3 className="font-semibold text-lg mb-2">{step.titleKey}</h3>
-        <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}>
+        <p
+          className={`text-sm mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-muted-foreground'}`}
+        >
           {step.bodyKey}
         </p>
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-4">
-          <div className={`text-xs ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+          <div
+            className={`text-xs ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+          >
             Step {currentStep + 1} of {tour.steps.length}
           </div>
           <div className="flex gap-1">

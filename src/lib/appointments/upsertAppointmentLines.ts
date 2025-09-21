@@ -51,9 +51,10 @@ export async function upsertAppointmentLines(input: LineInput): Promise<void> {
     line_amount: item.qty * item.unitAmount,
     discount_amount: 0,
     tax_amount: 0,
-    smart_code: item.type === 'SERVICE' 
-      ? 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1'
-      : 'HERA.SALON.APPOINTMENT.LINE.PRODUCT.V1',
+    smart_code:
+      item.type === 'SERVICE'
+        ? 'HERA.SALON.APPOINTMENT.LINE.SERVICE.V1'
+        : 'HERA.SALON.APPOINTMENT.LINE.PRODUCT.V1',
     line_data: {
       item_type: item.type,
       duration_minutes: item.durationMin || null,
@@ -62,9 +63,7 @@ export async function upsertAppointmentLines(input: LineInput): Promise<void> {
   }))
 
   // Insert new lines
-  const { error: insertError } = await supabase
-    .from('universal_transaction_lines')
-    .insert(lines)
+  const { error: insertError } = await supabase.from('universal_transaction_lines').insert(lines)
 
   if (insertError) {
     console.error('Error inserting appointment lines:', insertError)
@@ -95,7 +94,7 @@ export async function upsertAppointmentLines(input: LineInput): Promise<void> {
 
   const { error: updateError } = await supabase
     .from('universal_transactions')
-    .update({ 
+    .update({
       total_amount: totalAmount,
       metadata: updatedMetadata
     })

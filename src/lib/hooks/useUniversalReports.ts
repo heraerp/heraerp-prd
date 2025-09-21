@@ -12,7 +12,11 @@ interface UseUniversalReportsParams {
   }
 }
 
-export function useUniversalReports({ organizationId, reportType, dateRange }: UseUniversalReportsParams) {
+export function useUniversalReports({
+  organizationId,
+  reportType,
+  dateRange
+}: UseUniversalReportsParams) {
   return useQuery({
     queryKey: ['reports', reportType, organizationId, dateRange],
     queryFn: async () => {
@@ -22,7 +26,7 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
         if (organizationId) {
           universalApi.setOrganizationId(organizationId)
         }
-        
+
         const transactionsResult = await universalApi.getTransactions({
           organizationId: organizationId,
           filters: {
@@ -35,7 +39,10 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
 
         if (!transactionsResult.success || !transactionsResult.data) {
           console.log('No transactions found or error:', transactionsResult.error)
-          return { summary: { total_gross: 0, transaction_count: 0, average_daily: 0 }, daily_breakdown: [] }
+          return {
+            summary: { total_gross: 0, transaction_count: 0, average_daily: 0 },
+            daily_breakdown: []
+          }
         }
 
         const transactions = transactionsResult.data.filter(txn => {
@@ -45,7 +52,7 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
 
         // Calculate daily breakdown
         const dailyMap = new Map<string, { gross_sales: number; transaction_count: number }>()
-        
+
         transactions.forEach(txn => {
           const date = txn.transaction_date.split('T')[0]
           const current = dailyMap.get(date) || { gross_sales: 0, transaction_count: 0 }
@@ -58,7 +65,7 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
         const start = new Date(dateRange.start)
         const end = new Date(dateRange.end)
         const daily_breakdown = []
-        
+
         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
           const dateStr = d.toISOString().split('T')[0]
           const data = dailyMap.get(dateStr) || { gross_sales: 0, transaction_count: 0 }
@@ -72,9 +79,11 @@ export function useUniversalReports({ organizationId, reportType, dateRange }: U
         const summary = {
           total_gross: daily_breakdown.reduce((sum, day) => sum + day.gross_sales, 0),
           transaction_count: daily_breakdown.reduce((sum, day) => sum + day.transaction_count, 0),
-          average_daily: daily_breakdown.length > 0 
-            ? daily_breakdown.reduce((sum, day) => sum + day.gross_sales, 0) / daily_breakdown.length 
-            : 0
+          average_daily:
+            daily_breakdown.length > 0
+              ? daily_breakdown.reduce((sum, day) => sum + day.gross_sales, 0) /
+                daily_breakdown.length
+              : 0
         }
 
         return {

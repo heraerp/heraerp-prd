@@ -283,7 +283,9 @@ export function WorkCenterGrid({
               </div>
               <Badge
                 className={
-                  activeOrder ? 'bg-green-500/10 text-green-400' : 'bg-gray-500/10 text-muted-foreground'
+                  activeOrder
+                    ? 'bg-green-500/10 text-green-400'
+                    : 'bg-gray-500/10 text-muted-foreground'
                 }
               >
                 {activeOrder ? 'Running' : 'Idle'}
@@ -293,7 +295,9 @@ export function WorkCenterGrid({
             {activeOrder && progress ? (
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium text-foreground">{activeOrder.transaction_code}</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {activeOrder.transaction_code}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {product?.entity_name || 'Unknown Product'}
                   </p>

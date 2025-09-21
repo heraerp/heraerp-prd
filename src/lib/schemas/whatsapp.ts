@@ -8,7 +8,10 @@ import { z } from 'zod'
 
 export const WaConfig = z.object({
   // HERA MSP Configuration - uses HERA's managed WhatsApp API
-  hera_api_endpoint: z.string().url().default(process.env.NEXT_PUBLIC_HERA_WA_API || 'https://wa-api.heraerp.com'),
+  hera_api_endpoint: z
+    .string()
+    .url()
+    .default(process.env.NEXT_PUBLIC_HERA_WA_API || 'https://wa-api.heraerp.com'),
   organization_token: z.string().min(20, 'Organization token must be at least 20 characters'),
   sender_name: z.string().min(2, 'Sender name must be at least 2 characters'),
   webhook_secret: z.string().min(16, 'Webhook secret must be at least 16 characters').optional(),
@@ -16,17 +19,22 @@ export const WaConfig = z.object({
   daily_limit: z.number().min(1).max(10000).default(1000),
   rate_limit_per_minute: z.number().min(1).max(100).default(20),
   sandbox: z.boolean().default(true), // HERA sandbox vs production
-  features: z.object({
-    templates: z.boolean().default(true),
-    media: z.boolean().default(true),
-    interactive: z.boolean().default(false),
-    webhooks: z.boolean().default(true)
-  }).default({})
+  features: z
+    .object({
+      templates: z.boolean().default(true),
+      media: z.boolean().default(true),
+      interactive: z.boolean().default(false),
+      webhooks: z.boolean().default(true)
+    })
+    .default({})
 })
 export type WaConfig = z.infer<typeof WaConfig>
 
 export const WaTemplate = z.object({
-  name: z.string().min(3, 'Template name must be at least 3 characters').regex(/^[A-Z_]+$/, 'Template name must be uppercase with underscores only'),
+  name: z
+    .string()
+    .min(3, 'Template name must be at least 3 characters')
+    .regex(/^[A-Z_]+$/, 'Template name must be uppercase with underscores only'),
   language: z.string().min(2, 'Language code required').default('en'),
   category: z.enum(['marketing', 'utility', 'authentication']).default('utility'),
   body: z.string().min(10, 'Template body must be at least 10 characters'),
@@ -102,14 +110,22 @@ export const MessageAnalytics = z.object({
   delivery_rate: z.number().min(0).max(1).default(0),
   read_rate: z.number().min(0).max(1).default(0),
   median_delivery_time: z.number().optional(), // seconds
-  top_templates: z.array(z.object({
-    name: z.string(),
-    count: z.number()
-  })).default([]),
-  daily_usage: z.array(z.object({
-    date: z.string(),
-    count: z.number()
-  })).default([]),
+  top_templates: z
+    .array(
+      z.object({
+        name: z.string(),
+        count: z.number()
+      })
+    )
+    .default([]),
+  daily_usage: z
+    .array(
+      z.object({
+        date: z.string(),
+        count: z.number()
+      })
+    )
+    .default([]),
   quota_used: z.number().default(0),
   quota_limit: z.number().default(1000)
 })
@@ -127,42 +143,47 @@ export const HeraMspApiResponse = z.object({
 export type HeraMspApiResponse = z.infer<typeof HeraMspApiResponse>
 
 // Template validation helpers
-export const validateTemplateVariables = (template: WaTemplate): { isValid: boolean; errors: string[] } => {
+export const validateTemplateVariables = (
+  template: WaTemplate
+): { isValid: boolean; errors: string[] } => {
   const errors: string[] = []
-  
+
   // Extract variables from template body using regex
   const bodyVariables = Array.from(template.body.matchAll(/\{\{(\w+)\}\}/g))
     .map(match => match[1])
     .filter((value, index, self) => self.indexOf(value) === index) // unique
-  
+
   // Check if all body variables are declared
   for (const bodyVar of bodyVariables) {
     if (!template.variables.includes(bodyVar)) {
       errors.push(`Variable '${bodyVar}' used in template body but not declared in variables array`)
     }
   }
-  
+
   // Check if declared variables are used
   for (const declaredVar of template.variables) {
     if (!bodyVariables.includes(declaredVar)) {
       errors.push(`Variable '${declaredVar}' declared but not used in template body`)
     }
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors
   }
 }
 
-export const renderTemplate = (template: WaTemplate, substitutions: Record<string, string>): string => {
+export const renderTemplate = (
+  template: WaTemplate,
+  substitutions: Record<string, string>
+): string => {
   let rendered = template.body
-  
+
   for (const [variable, value] of Object.entries(substitutions)) {
     const regex = new RegExp(`\\{\\{${variable}\\}\\}`, 'g')
     rendered = rendered.replace(regex, value || `{{${variable}}}`)
   }
-  
+
   return rendered
 }
 

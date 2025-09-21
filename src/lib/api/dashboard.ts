@@ -15,7 +15,7 @@ export interface DashboardMetrics {
   averageTicketSize: number
   whatsappDelivered: number
   lowStockCount: number
-  
+
   // Financial metrics
   monthlyRevenue?: number
   outstandingReceivables?: number
@@ -56,7 +56,7 @@ export function useDashboardMetrics(organizationId: string) {
     queryKey: ['dashboard-metrics', organizationId],
     queryFn: async () => {
       if (!organizationId) return null
-      
+
       // Fetch transactions and compute today's metrics (client-side date filter)
       const today = new Date().toISOString().split('T')[0]
 
@@ -78,7 +78,7 @@ export function useDashboardMetrics(organizationId: string) {
       // Calculate metrics
       const grossSales = todays.reduce((sum, t) => sum + (t.total_amount || 0), 0)
       const netRevenue = grossSales * 0.85 // Keep same assumption for now
-      
+
       // Mock other metrics for now
       return {
         grossSales,
@@ -106,13 +106,37 @@ export function useStaffMetrics(organizationId: string) {
     queryKey: ['staff-metrics', organizationId],
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       // Mock staff metrics
       return [
-        { staffId: '1', staffName: 'Sarah Johnson', utilization: 85, appointmentsCompleted: 8, revenue: 680 },
-        { staffId: '2', staffName: 'Maria Garcia', utilization: 72, appointmentsCompleted: 6, revenue: 520 },
-        { staffId: '3', staffName: 'Emily Chen', utilization: 90, appointmentsCompleted: 9, revenue: 820 },
-        { staffId: '4', staffName: 'Lisa Williams', utilization: 68, appointmentsCompleted: 5, revenue: 450 }
+        {
+          staffId: '1',
+          staffName: 'Sarah Johnson',
+          utilization: 85,
+          appointmentsCompleted: 8,
+          revenue: 680
+        },
+        {
+          staffId: '2',
+          staffName: 'Maria Garcia',
+          utilization: 72,
+          appointmentsCompleted: 6,
+          revenue: 520
+        },
+        {
+          staffId: '3',
+          staffName: 'Emily Chen',
+          utilization: 90,
+          appointmentsCompleted: 9,
+          revenue: 820
+        },
+        {
+          staffId: '4',
+          staffName: 'Lisa Williams',
+          utilization: 68,
+          appointmentsCompleted: 5,
+          revenue: 450
+        }
       ] as StaffMetrics[]
     },
     enabled: !!organizationId,
@@ -128,13 +152,41 @@ export function useUpcomingAppointments(organizationId: string) {
     queryKey: ['upcoming-appointments', organizationId],
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       // Mock appointments
       return [
-        { id: '1', customerName: 'Jane Smith', serviceName: 'Hair Color & Cut', time: '10:00 AM', staffName: 'Sarah', status: 'confirmed' },
-        { id: '2', customerName: 'Emma Wilson', serviceName: 'Manicure & Pedicure', time: '11:30 AM', staffName: 'Maria', status: 'confirmed' },
-        { id: '3', customerName: 'Olivia Brown', serviceName: 'Hair Treatment', time: '2:00 PM', staffName: 'Emily', status: 'pending' },
-        { id: '4', customerName: 'Sophia Davis', serviceName: 'Facial', time: '3:30 PM', staffName: 'Lisa', status: 'confirmed' }
+        {
+          id: '1',
+          customerName: 'Jane Smith',
+          serviceName: 'Hair Color & Cut',
+          time: '10:00 AM',
+          staffName: 'Sarah',
+          status: 'confirmed'
+        },
+        {
+          id: '2',
+          customerName: 'Emma Wilson',
+          serviceName: 'Manicure & Pedicure',
+          time: '11:30 AM',
+          staffName: 'Maria',
+          status: 'confirmed'
+        },
+        {
+          id: '3',
+          customerName: 'Olivia Brown',
+          serviceName: 'Hair Treatment',
+          time: '2:00 PM',
+          staffName: 'Emily',
+          status: 'pending'
+        },
+        {
+          id: '4',
+          customerName: 'Sophia Davis',
+          serviceName: 'Facial',
+          time: '3:30 PM',
+          staffName: 'Lisa',
+          status: 'confirmed'
+        }
       ] as AppointmentData[]
     },
     enabled: !!organizationId,
@@ -150,10 +202,10 @@ export function useDashboardAlerts(organizationId: string) {
     queryKey: ['dashboard-alerts', organizationId],
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       // Mock alerts
       const alerts: AlertData[] = []
-      
+
       // Check for low stock
       const lowStockCount = 3
       if (lowStockCount > 0) {
@@ -165,7 +217,7 @@ export function useDashboardAlerts(organizationId: string) {
           actionUrl: '/inventory/alerts'
         })
       }
-      
+
       // Check for pending appointments
       alerts.push({
         id: 'pending-appts',
@@ -174,7 +226,7 @@ export function useDashboardAlerts(organizationId: string) {
         action: 'View Appointments',
         actionUrl: '/appointments?status=pending'
       })
-      
+
       return alerts
     },
     enabled: !!organizationId,
@@ -190,22 +242,22 @@ export function useRevenueData(organizationId: string, days: number = 7) {
     queryKey: ['revenue-data', organizationId, days],
     queryFn: async () => {
       if (!organizationId) return []
-      
+
       // Generate mock data for the last N days
       const data = []
       for (let i = days - 1; i >= 0; i--) {
         const date = new Date()
         date.setDate(date.getDate() - i)
-        
+
         // Mock revenue between 500-1500
         const revenue = 500 + Math.random() * 1000
-        
+
         data.push({
           date: date.toISOString().split('T')[0],
           revenue: Math.round(revenue)
         })
       }
-      
+
       return data
     },
     enabled: !!organizationId,

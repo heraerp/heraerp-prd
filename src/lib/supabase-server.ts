@@ -22,9 +22,10 @@ export const createServerSupabaseClient = async () => {
 
   // Get organization context from headers
   const headersList = headers()
-  const orgId = headersList.get('x-hera-org-id') || 
-                headersList.get('X-Organization-Id') ||
-                process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
+  const orgId =
+    headersList.get('x-hera-org-id') ||
+    headersList.get('X-Organization-Id') ||
+    process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID
 
   // Set organization context if available
   if (orgId) {

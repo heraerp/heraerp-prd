@@ -18,22 +18,14 @@ interface ScrollAreaDNAProps {
 export function ScrollAreaDNA({
   children,
   className,
-  height = "h-96",
-  width = "w-full"
+  height = 'h-96',
+  width = 'w-full'
 }: ScrollAreaDNAProps) {
   const heightClass = typeof height === 'number' ? `h-[${height}px]` : height
   const widthClass = typeof width === 'number' ? `w-[${width}px]` : width
 
   return (
-    <ScrollArea 
-      className={cn(
-        heightClass,
-        widthClass,
-        "pr-2",
-        "enhanced-scrollbar",
-        className
-      )}
-    >
+    <ScrollArea className={cn(heightClass, widthClass, 'pr-2', 'enhanced-scrollbar', className)}>
       {children}
     </ScrollArea>
   )

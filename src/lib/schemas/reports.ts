@@ -82,11 +82,13 @@ export const DailySalesReport = z.object({
     product_mix_percent: z.number().min(0).max(100)
   }),
   hourly_breakdown: z.array(SalesRow),
-  top_services: z.array(z.object({
-    service_name: z.string(),
-    service_count: z.number(),
-    service_revenue: Amount
-  })),
+  top_services: z.array(
+    z.object({
+      service_name: z.string(),
+      service_count: z.number(),
+      service_revenue: Amount
+    })
+  ),
   generated_at: DateTimeISO
 })
 
@@ -111,13 +113,15 @@ export const MonthlySalesReport = z.object({
     growth_vs_previous: z.number().optional()
   }),
   daily_breakdown: z.array(SalesRow),
-  weekly_trends: z.array(z.object({
-    week_start: DateISO,
-    week_end: DateISO,
-    weekly_total: Amount,
-    daily_average: Amount,
-    transaction_count: z.number()
-  })),
+  weekly_trends: z.array(
+    z.object({
+      week_start: DateISO,
+      week_end: DateISO,
+      weekly_total: Amount,
+      daily_average: Amount,
+      transaction_count: z.number()
+    })
+  ),
   generated_at: DateTimeISO
 })
 
@@ -130,7 +134,15 @@ export type MonthlySalesReport = z.infer<typeof MonthlySalesReport>
 export const PnLRow = z.object({
   account_code: z.string(),
   account_name: z.string(),
-  group: z.enum(['revenue', 'cogs', 'gross_profit', 'expenses', 'operating_profit', 'other', 'net_income']),
+  group: z.enum([
+    'revenue',
+    'cogs',
+    'gross_profit',
+    'expenses',
+    'operating_profit',
+    'other',
+    'net_income'
+  ]),
   sub_group: z.string().optional(), // "Food Sales", "Beverage Sales", etc.
   amount: Amount,
   percentage: z.number().optional(), // % of revenue
@@ -251,31 +263,39 @@ export const TransactionDetail = z.object({
     reference_number: z.string().optional(),
     metadata: z.record(z.any()).optional()
   }),
-  lines: z.array(z.object({
-    line_number: z.number().int().positive(),
-    line_type: z.string(),
-    entity_id: z.string().uuid(),
-    entity_name: z.string(),
-    description: z.string(),
-    quantity: z.number().optional(),
-    unit_amount: Amount.optional(),
-    line_amount: Amount,
-    smart_code: z.string(),
-    metadata: z.record(z.any()).optional()
-  })),
-  related_entities: z.array(z.object({
-    entity_id: z.string().uuid(),
-    entity_type: z.string(),
-    entity_name: z.string(),
-    role: z.string() // "customer", "staff", "product", "service", etc.
-  })),
-  auto_journal_entries: z.array(z.object({
-    account_code: z.string(),
-    account_name: z.string(),
-    debit_amount: Amount.optional(),
-    credit_amount: Amount.optional(),
-    smart_code: z.string()
-  })).optional()
+  lines: z.array(
+    z.object({
+      line_number: z.number().int().positive(),
+      line_type: z.string(),
+      entity_id: z.string().uuid(),
+      entity_name: z.string(),
+      description: z.string(),
+      quantity: z.number().optional(),
+      unit_amount: Amount.optional(),
+      line_amount: Amount,
+      smart_code: z.string(),
+      metadata: z.record(z.any()).optional()
+    })
+  ),
+  related_entities: z.array(
+    z.object({
+      entity_id: z.string().uuid(),
+      entity_type: z.string(),
+      entity_name: z.string(),
+      role: z.string() // "customer", "staff", "product", "service", etc.
+    })
+  ),
+  auto_journal_entries: z
+    .array(
+      z.object({
+        account_code: z.string(),
+        account_name: z.string(),
+        debit_amount: Amount.optional(),
+        credit_amount: Amount.optional(),
+        smart_code: z.string()
+      })
+    )
+    .optional()
 })
 
 export type TransactionDetail = z.infer<typeof TransactionDetail>
@@ -327,27 +347,30 @@ export const validateDrillDownFilters = (data: unknown): DrillDownFilters => {
 export const ReportCalculations = {
   // Calculate totals for sales rows
   calculateSalesTotals: (rows: SalesRow[]) => {
-    return rows.reduce((acc, row) => ({
-      service_net: acc.service_net + row.service_net,
-      product_net: acc.product_net + row.product_net,
-      tips: acc.tips + row.tips,
-      vat: acc.vat + row.vat,
-      gross: acc.gross + row.gross,
-      txn_count: acc.txn_count + row.txn_count
-    }), {
-      service_net: 0,
-      product_net: 0,
-      tips: 0,
-      vat: 0,
-      gross: 0,
-      txn_count: 0
-    })
+    return rows.reduce(
+      (acc, row) => ({
+        service_net: acc.service_net + row.service_net,
+        product_net: acc.product_net + row.product_net,
+        tips: acc.tips + row.tips,
+        vat: acc.vat + row.vat,
+        gross: acc.gross + row.gross,
+        txn_count: acc.txn_count + row.txn_count
+      }),
+      {
+        service_net: 0,
+        product_net: 0,
+        tips: 0,
+        vat: 0,
+        gross: 0,
+        txn_count: 0
+      }
+    )
   },
 
   // Calculate P&L subtotals by group
   calculatePnLSubtotals: (rows: PnLRow[]) => {
     const subtotals = new Map<string, number>()
-    
+
     for (const row of rows) {
       if (!row.is_subtotal) {
         const current = subtotals.get(row.group) || 0
@@ -361,32 +384,42 @@ export const ReportCalculations = {
       expenses: subtotals.get('expenses') || 0,
       other: subtotals.get('other') || 0,
       gross_profit: Math.abs(subtotals.get('revenue') || 0) - (subtotals.get('cogs') || 0),
-      operating_profit: Math.abs(subtotals.get('revenue') || 0) - (subtotals.get('cogs') || 0) - (subtotals.get('expenses') || 0),
-      net_income: Math.abs(subtotals.get('revenue') || 0) - (subtotals.get('cogs') || 0) - (subtotals.get('expenses') || 0) + (subtotals.get('other') || 0)
+      operating_profit:
+        Math.abs(subtotals.get('revenue') || 0) -
+        (subtotals.get('cogs') || 0) -
+        (subtotals.get('expenses') || 0),
+      net_income:
+        Math.abs(subtotals.get('revenue') || 0) -
+        (subtotals.get('cogs') || 0) -
+        (subtotals.get('expenses') || 0) +
+        (subtotals.get('other') || 0)
     }
   },
 
   // Validate balance sheet equation
   validateBalanceEquation: (rows: BalanceRow[], tolerance: number = 0.01) => {
-    const totals = rows.reduce((acc, row) => {
-      if (!row.is_subtotal) {
-        switch (row.group) {
-          case 'assets':
-            acc.assets += row.amount
-            break
-          case 'liabilities':
-            acc.liabilities += row.amount
-            break
-          case 'equity':
-            acc.equity += row.amount
-            break
+    const totals = rows.reduce(
+      (acc, row) => {
+        if (!row.is_subtotal) {
+          switch (row.group) {
+            case 'assets':
+              acc.assets += row.amount
+              break
+            case 'liabilities':
+              acc.liabilities += row.amount
+              break
+            case 'equity':
+              acc.equity += row.amount
+              break
+          }
         }
-      }
-      return acc
-    }, { assets: 0, liabilities: 0, equity: 0 })
+        return acc
+      },
+      { assets: 0, liabilities: 0, equity: 0 }
+    )
 
     const difference = totals.assets - (totals.liabilities + totals.equity)
-    
+
     return {
       is_balanced: Math.abs(difference) <= tolerance,
       difference,
@@ -400,7 +433,7 @@ export const ReportCalculations = {
   calculateSalesMix: (serviceNet: number, productNet: number) => {
     const total = serviceNet + productNet
     if (total === 0) return { service_percent: 0, product_percent: 0 }
-    
+
     return {
       service_percent: Math.round((serviceNet / total) * 100 * 100) / 100, // Round to 2 decimals
       product_percent: Math.round((productNet / total) * 100 * 100) / 100
@@ -420,7 +453,9 @@ export const ReportCalculations = {
   // Calculate percentage with safe division
   calculatePercentage: (numerator: number, denominator: number, decimals: number = 2) => {
     if (denominator === 0) return 0
-    return Math.round((numerator / denominator) * 100 * Math.pow(10, decimals)) / Math.pow(10, decimals)
+    return (
+      Math.round((numerator / denominator) * 100 * Math.pow(10, decimals)) / Math.pow(10, decimals)
+    )
   }
 }
 

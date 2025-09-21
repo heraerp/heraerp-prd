@@ -1,12 +1,24 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { assertOrgId, isCRMSmartCode } from '@/lib/smart-codes/crm-catalog'
-import type { Activity, CRMQuery, Funnel, Opportunity, PipelineSummary, Lead, PageResult, Account } from './types'
+import type {
+  Activity,
+  CRMQuery,
+  Funnel,
+  Opportunity,
+  PipelineSummary,
+  Lead,
+  PageResult,
+  Account
+} from './types'
 
 // Shared helpers
 function parseArray(val?: string | string[]) {
   if (!val) return undefined
   if (Array.isArray(val)) return val
-  return val.split(',').map(s => s.trim()).filter(Boolean)
+  return val
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
 }
 
 function paginate<T>(items: T[], page = 1, pageSize = 20): PageResult<T> {
@@ -29,7 +41,11 @@ async function loadDynamicMap(entityIds: string[], orgId: string) {
   const map = new Map<string, Record<string, any>>()
   for (const row of data || []) {
     const key = row.entity_id as string
-    const value = row.field_value_text ?? row.field_value_number ?? row.field_value_date ?? row.field_value_boolean
+    const value =
+      row.field_value_text ??
+      row.field_value_number ??
+      row.field_value_date ??
+      row.field_value_boolean
     if (!map.has(key)) map.set(key, {})
     map.get(key)![row.field_name] = value
   }
@@ -66,7 +82,7 @@ export async function listLeads(q: CRMQuery): Promise<PageResult<Lead>> {
     source: dyn.get(r.id)?.source,
     amount: Number(dyn.get(r.id)?.amount) || undefined,
     created_at: r.created_at as string,
-    updated_at: r.updated_at as string,
+    updated_at: r.updated_at as string
   }))
 
   // server-side filters based on dynamic fields
@@ -107,11 +123,12 @@ export async function listOpportunities(q: CRMQuery): Promise<PageResult<Opportu
     owner_id: dyn.get(r.id)?.owner_id,
     account_id: dyn.get(r.id)?.account_id,
     created_at: r.created_at as string,
-    updated_at: r.updated_at as string,
+    updated_at: r.updated_at as string
   }))
 
   const owners2 = parseArray(q.owner)
-  if (owners2 && owners2.length) items = items.filter(i => i.owner_id && owners2.includes(i.owner_id))
+  if (owners2 && owners2.length)
+    items = items.filter(i => i.owner_id && owners2.includes(i.owner_id))
   const stages = parseArray(q.stage)
   if (stages?.length) items = items.filter(i => i.stage && stages.includes(i.stage))
 
@@ -146,11 +163,12 @@ export async function listActivities(q: CRMQuery): Promise<PageResult<Activity>>
     status: (dyn.get(r.id)?.status || 'pending') as Activity['status'],
     account_id: dyn.get(r.id)?.account_id,
     contact_id: dyn.get(r.id)?.contact_id,
-    created_at: r.created_at as string,
+    created_at: r.created_at as string
   }))
 
   const owners3 = parseArray(q.owner)
-  if (owners3 && owners3.length) items = items.filter(i => i.assigned_to && owners3.includes(i.assigned_to))
+  if (owners3 && owners3.length)
+    items = items.filter(i => i.assigned_to && owners3.includes(i.assigned_to))
   if (q.type) items = items.filter(i => i.activity_type === q.type)
   if (q.status) items = items.filter(i => i.status === q.status)
 
@@ -185,7 +203,7 @@ export async function listAccounts(q: CRMQuery): Promise<PageResult<Account>> {
     employees: Number(dyn.get(r.id)?.employees) || undefined,
     status: dyn.get(r.id)?.status || 'active',
     created_at: r.created_at as string,
-    updated_at: r.updated_at as string,
+    updated_at: r.updated_at as string
   }))
 
   return paginate(items, q.page, q.pageSize)
@@ -204,7 +222,7 @@ export async function pipelineSummary(q: CRMQuery): Promise<PipelineSummary> {
   const byStage = Array.from(by.values()).sort((a, b) => b.amount - a.amount)
   const totals = {
     count: opps.total,
-    amount: byStage.reduce((s, r) => s + r.amount, 0),
+    amount: byStage.reduce((s, r) => s + r.amount, 0)
   }
   return { byStage, totals }
 }
@@ -214,15 +232,29 @@ export async function funnel(q: CRMQuery): Promise<Funnel> {
   const opps = await listOpportunities({ ...q, page: 1, pageSize: 10000 })
 
   const leadCount = leads.total
-  const qualified = leads.items.filter(l => (l.stage || '').toLowerCase().includes('qualified')).length
+  const qualified = leads.items.filter(l =>
+    (l.stage || '').toLowerCase().includes('qualified')
+  ).length
   const oppCount = opps.total
   const won = opps.items.filter(o => (o.stage || '').toLowerCase().includes('won')).length
 
   const stages = [
     { name: 'Lead', count: leadCount },
-    { name: 'Qualified', count: qualified, rate: leadCount ? Math.round((qualified / leadCount) * 100) : 0 },
-    { name: 'Opportunity', count: oppCount, rate: qualified ? Math.round((oppCount / Math.max(qualified, 1)) * 100) : 0 },
-    { name: 'Won', count: won, rate: oppCount ? Math.round((won / Math.max(oppCount, 1)) * 100) : 0 },
+    {
+      name: 'Qualified',
+      count: qualified,
+      rate: leadCount ? Math.round((qualified / leadCount) * 100) : 0
+    },
+    {
+      name: 'Opportunity',
+      count: oppCount,
+      rate: qualified ? Math.round((oppCount / Math.max(qualified, 1)) * 100) : 0
+    },
+    {
+      name: 'Won',
+      count: won,
+      rate: oppCount ? Math.round((won / Math.max(oppCount, 1)) * 100) : 0
+    }
   ]
   const conversionRate = leadCount ? Math.round((won / leadCount) * 100) : 0
   return { stages, conversionRate }

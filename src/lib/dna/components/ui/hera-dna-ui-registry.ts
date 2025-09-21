@@ -1,7 +1,7 @@
 /**
  * HERA DNA UI COMPONENT REGISTRY
  * Smart Code: HERA.DNA.UI.REGISTRY.v1
- * 
+ *
  * Enterprise-grade UI component library with glassmorphism design
  * All components include dark mode support and are linked to corresponding hooks
  */
@@ -21,7 +21,7 @@ export const HERA_GLASS_THEME = {
     danger: 'bg-gradient-to-br from-red-500/10 to-rose-500/10 backdrop-blur-xl',
     info: 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-xl'
   },
-  
+
   // Borders
   border: {
     light: 'border border-gray-200/50',
@@ -32,7 +32,7 @@ export const HERA_GLASS_THEME = {
     danger: 'border border-red-500/20',
     info: 'border border-blue-500/20'
   },
-  
+
   // Shadows
   shadow: {
     sm: 'shadow-sm shadow-black/5',
@@ -287,7 +287,9 @@ export const TransactionDashboardPattern = {
  * Glass Card Utility Classes
  * Smart Code: HERA.DNA.UI.UTIL.GLASS.V1
  */
-export const glassCardClasses = (variant: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' = 'default') => {
+export const glassCardClasses = (
+  variant: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' = 'default'
+) => {
   const baseClasses = 'rounded-lg transition-all duration-200'
   const variantClasses = {
     default: `${HERA_GLASS_THEME.glass.light} dark:${HERA_GLASS_THEME.glass.dark} ${HERA_GLASS_THEME.border.light} dark:${HERA_GLASS_THEME.border.dark}`,
@@ -297,7 +299,7 @@ export const glassCardClasses = (variant: 'default' | 'primary' | 'success' | 'w
     danger: `${HERA_GLASS_THEME.glass.danger} ${HERA_GLASS_THEME.border.danger}`,
     info: `${HERA_GLASS_THEME.glass.info} ${HERA_GLASS_THEME.border.info}`
   }
-  
+
   return `${baseClasses} ${variantClasses[variant]} ${HERA_GLASS_THEME.shadow.md}`
 }
 
@@ -305,15 +307,22 @@ export const glassCardClasses = (variant: 'default' | 'primary' | 'success' | 'w
  * Glass Button Utility Classes
  * Smart Code: HERA.DNA.UI.UTIL.BUTTON.V1
  */
-export const glassButtonClasses = (variant: 'primary' | 'secondary' | 'danger' | 'ghost' = 'primary') => {
-  const baseClasses = 'px-4 py-2 rounded-lg font-medium transition-all duration-200 backdrop-blur-xl'
+export const glassButtonClasses = (
+  variant: 'primary' | 'secondary' | 'danger' | 'ghost' = 'primary'
+) => {
+  const baseClasses =
+    'px-4 py-2 rounded-lg font-medium transition-all duration-200 backdrop-blur-xl'
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-violet-600/90 to-purple-600/90 text-white hover:from-violet-700/90 hover:to-purple-700/90 shadow-lg',
-    secondary: 'bg-white/20 dark:bg-gray-800/20 text-gray-900 dark:text-gray-100 border border-gray-200/50 dark:border-gray-700/50 hover:bg-white/30 dark:hover:bg-gray-800/30',
-    danger: 'bg-gradient-to-r from-red-600/90 to-rose-600/90 text-white hover:from-red-700/90 hover:to-rose-700/90',
-    ghost: 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100/20 dark:hover:bg-gray-800/20'
+    primary:
+      'bg-gradient-to-r from-violet-600/90 to-purple-600/90 text-white hover:from-violet-700/90 hover:to-purple-700/90 shadow-lg',
+    secondary:
+      'bg-white/20 dark:bg-gray-800/20 text-gray-900 dark:text-gray-100 border border-gray-200/50 dark:border-gray-700/50 hover:bg-white/30 dark:hover:bg-gray-800/30',
+    danger:
+      'bg-gradient-to-r from-red-600/90 to-rose-600/90 text-white hover:from-red-700/90 hover:to-rose-700/90',
+    ghost:
+      'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100/20 dark:hover:bg-gray-800/20'
   }
-  
+
   return `${baseClasses} ${variantClasses[variant]}`
 }
 
@@ -333,20 +342,20 @@ export { ThemeProviderDNA } from '@/lib/dna/components/ThemeProviderDNA'
 
 /**
  * Example: Customer List with Glass UI
- * 
- * import { 
- *   CardDNA, 
- *   ScrollAreaDNA, 
- *   FormFieldDNA, 
+ *
+ * import {
+ *   CardDNA,
+ *   ScrollAreaDNA,
+ *   FormFieldDNA,
  *   BadgeDNA,
- *   PrimaryButtonDNA 
+ *   PrimaryButtonDNA
  * } from '@/lib/dna/components/ui/hera-dna-ui-registry'
  * import { useReadEntities } from '@/lib/dna/hooks/hera-dna-hook-registry'
- * 
+ *
  * function CustomerList() {
  *   const readEntities = useReadEntities()
  *   const [customers, setCustomers] = useState([])
- *   
+ *
  *   return (
  *     <CardDNA title="Customers" icon={Users}>
  *       <ScrollAreaDNA height="h-96">
@@ -371,23 +380,23 @@ export const HERA_DNA_UI_SMART_CODES = {
   // Layout
   'HERA.DNA.UI.HEADER.GLASS.V1': 'Page header with glassmorphism',
   'HERA.DNA.UI.BACKGROUND.GRADIENT.V1': 'Animated gradient background',
-  
+
   // Cards
   'HERA.DNA.UI.CARD.GLASS.V1': 'Base glass card component',
   'HERA.DNA.UI.CARD.INFO.V1': 'Info variant card',
   'HERA.DNA.UI.CARD.SUCCESS.V1': 'Success variant card',
   'HERA.DNA.UI.CARD.WARNING.V1': 'Warning variant card',
   'HERA.DNA.UI.CARD.DANGER.V1': 'Danger variant card',
-  
+
   // Stats
   'HERA.DNA.UI.STAT.CARD.V1': 'Statistics display card',
   'HERA.DNA.UI.STAT.MINI.V1': 'Compact stat card',
   'HERA.DNA.UI.DASHBOARD.ASSESSMENT.V1': 'Assessment dashboard',
-  
+
   // Forms
   'HERA.DNA.UI.FORM.FIELD.V1': 'Universal form field',
   'HERA.DNA.UI.INPUT.GLASS.V1': 'Glass effect input',
-  
+
   // Buttons
   'HERA.DNA.UI.BUTTON.BASE.V1': 'Base button component',
   'HERA.DNA.UI.BUTTON.PRIMARY.V1': 'Primary action button',
@@ -395,25 +404,25 @@ export const HERA_DNA_UI_SMART_CODES = {
   'HERA.DNA.UI.BUTTON.DANGER.V1': 'Danger action button',
   'HERA.DNA.UI.BUTTON.GHOST.V1': 'Ghost style button',
   'HERA.DNA.UI.BUTTON.ADVANCED.V1': 'Advanced button features',
-  
+
   // Badges
   'HERA.DNA.UI.BADGE.BASE.V1': 'Base badge component',
   'HERA.DNA.UI.BADGE.SUCCESS.V1': 'Success status badge',
   'HERA.DNA.UI.BADGE.WARNING.V1': 'Warning status badge',
   'HERA.DNA.UI.BADGE.DANGER.V1': 'Danger status badge',
   'HERA.DNA.UI.BADGE.INFO.V1': 'Info status badge',
-  
+
   // Scroll & Lists
   'HERA.DNA.UI.SCROLL.AREA.V1': 'Custom scroll area',
-  
+
   // Mobile
   'HERA.DNA.UI.MOBILE.SHEET.V1': 'Mobile bottom sheet',
-  
+
   // Patterns
   'HERA.DNA.UI.PATTERN.ENTITY.LIST.V1': 'Entity list pattern',
   'HERA.DNA.UI.PATTERN.ENTITY.FORM.V1': 'Entity form pattern',
   'HERA.DNA.UI.PATTERN.TXN.DASHBOARD.V1': 'Transaction dashboard pattern',
-  
+
   // Utilities
   'HERA.DNA.UI.UTIL.GLASS.V1': 'Glass card utilities',
   'HERA.DNA.UI.UTIL.BUTTON.V1': 'Button style utilities',

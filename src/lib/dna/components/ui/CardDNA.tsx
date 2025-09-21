@@ -24,21 +24,21 @@ interface CardDNAProps {
 export function CardDNA({
   title,
   icon: Icon,
-  iconColor = "text-violet-600 dark:text-violet-400",
-  iconBgColor = "bg-violet-100 dark:bg-violet-900",
+  iconColor = 'text-violet-600 dark:text-violet-400',
+  iconBgColor = 'bg-violet-100 dark:bg-violet-900',
   children,
   className,
   hoverable = true,
-  borderColor = "hover:border-violet-200 dark:hover:border-violet-800",
+  borderColor = 'hover:border-violet-200 dark:hover:border-violet-800',
   onClick
 }: CardDNAProps) {
   return (
-    <Card 
+    <Card
       className={cn(
-        "border-2 transition-all",
+        'border-2 transition-all',
         hoverable && borderColor,
-        hoverable && "hover:shadow-md",
-        onClick && "cursor-pointer",
+        hoverable && 'hover:shadow-md',
+        onClick && 'cursor-pointer',
         className
       )}
       onClick={onClick}
@@ -47,27 +47,26 @@ export function CardDNA({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
             {Icon && (
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center",
-                iconBgColor
-              )}>
-                <Icon className={cn("w-4 h-4", iconColor)} />
+              <div
+                className={cn('w-8 h-8 rounded-full flex items-center justify-center', iconBgColor)}
+              >
+                <Icon className={cn('w-4 h-4', iconColor)} />
               </div>
             )}
             <span className="text-base font-medium">{title}</span>
           </CardTitle>
         </CardHeader>
       )}
-      
-      <CardContent className={!title ? "pt-6" : ""}>
-        {children}
-      </CardContent>
+
+      <CardContent className={!title ? 'pt-6' : ''}>{children}</CardContent>
     </Card>
   )
 }
 
 // Preset card types
-export function InfoCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>) {
+export function InfoCardDNA(
+  props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>
+) {
   return (
     <CardDNA
       {...props}
@@ -78,7 +77,9 @@ export function InfoCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor
   )
 }
 
-export function SuccessCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>) {
+export function SuccessCardDNA(
+  props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>
+) {
   return (
     <CardDNA
       {...props}
@@ -89,7 +90,9 @@ export function SuccessCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgCo
   )
 }
 
-export function WarningCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>) {
+export function WarningCardDNA(
+  props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>
+) {
   return (
     <CardDNA
       {...props}
@@ -100,7 +103,9 @@ export function WarningCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgCo
   )
 }
 
-export function DangerCardDNA(props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>) {
+export function DangerCardDNA(
+  props: Omit<CardDNAProps, 'iconColor' | 'iconBgColor' | 'borderColor'>
+) {
   return (
     <CardDNA
       {...props}

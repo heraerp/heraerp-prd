@@ -216,7 +216,7 @@ class UniversalAPIv2 {
           // Skip undefined/null values
           return
         }
-        
+
         if (Array.isArray(value)) {
           if (value.length === 0) {
             // Empty array: no records can match, short-circuit
@@ -1378,7 +1378,10 @@ class UniversalAPIv2 {
     }
   }
 
-  async getDynamicData(organizationId: string, fieldName: string): Promise<UniversalResponse<DynamicData>> {
+  async getDynamicData(
+    organizationId: string,
+    fieldName: string
+  ): Promise<UniversalResponse<DynamicData>> {
     try {
       const orgId = organizationId || this.ensureOrganizationId()
 
@@ -1398,15 +1401,16 @@ class UniversalAPIv2 {
       const { result, executionTime } = await this.executeWithTiming(async () => {
         // Always use the organization-aware client
         const client = getSupabaseWithOrg(orgId)
-        
+
         // Use RLS-safe query wrapper
         const data = await wrapRLSQuery(
-          () => client
-            .from('core_dynamic_data')
-            .select('*')
-            .eq('organization_id', orgId)
-            .eq('field_name', fieldName)
-            .maybeSingle(),
+          () =>
+            client
+              .from('core_dynamic_data')
+              .select('*')
+              .eq('organization_id', orgId)
+              .eq('field_name', fieldName)
+              .maybeSingle(),
           { table: 'core_dynamic_data', field: fieldName }
         )
 
@@ -1447,7 +1451,7 @@ class UniversalAPIv2 {
       const { result, executionTime } = await this.executeWithTiming(async () => {
         // Use organization-aware Supabase client for RLS
         const orgSupabase = getSupabaseWithOrg(id)
-        
+
         const { data, error } = await orgSupabase
           .from('core_organizations')
           .select('*')
@@ -1457,8 +1461,13 @@ class UniversalAPIv2 {
         // Don't throw error if no record found or RLS issue - just return null
         if (error) {
           // Handle app.current_org RLS errors gracefully
-          if (error.message?.includes('app.current_org') || error.message?.includes('unrecognized configuration parameter')) {
-            console.warn('⚠️ RLS policy issue detected, returning null. Please update RLS policies in Supabase Dashboard.')
+          if (
+            error.message?.includes('app.current_org') ||
+            error.message?.includes('unrecognized configuration parameter')
+          ) {
+            console.warn(
+              '⚠️ RLS policy issue detected, returning null. Please update RLS policies in Supabase Dashboard.'
+            )
             return null
           }
           // PGRST116 = no rows found
@@ -2023,10 +2032,10 @@ class UniversalAPIv2 {
           }
 
           let query = supabase.from(table).select('*')
-          
+
           // Always apply organization filter first (HERA Rule 3)
           query = query.eq('organization_id', options.organizationId || this.organizationId)
-          
+
           // Apply additional filters
           if (filter) {
             Object.entries(filter).forEach(([key, value]) => {

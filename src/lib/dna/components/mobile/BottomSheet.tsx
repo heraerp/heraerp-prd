@@ -380,11 +380,7 @@ export const BottomSheet = forwardRef<BottomSheetRef, BottomSheetProps>(
                         )}
                         aria-label="Close"
                       >
-                        {closeButton === 'icon' ? (
-                          <X className="h-5 w-5" />
-                        ) : (
-                          'Close'
-                        )}
+                        {closeButton === 'icon' ? <X className="h-5 w-5" /> : 'Close'}
                       </button>
                     )}
                   </div>
@@ -453,7 +449,7 @@ export function useBottomSheet(initialOpen = false) {
 
   const open = useCallback(() => setIsOpen(true), [])
   const close = useCallback(() => setIsOpen(false), [])
-  const toggle = useCallback(() => setIsOpen((prev) => !prev), [])
+  const toggle = useCallback(() => setIsOpen(prev => !prev), [])
 
   return {
     isOpen,

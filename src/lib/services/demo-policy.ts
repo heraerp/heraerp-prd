@@ -60,7 +60,7 @@ export async function checkDemoWritePolicy(
   organizationId?: string
 ): Promise<DemoWriteCheck> {
   const apiClient = createApiClient()
-  
+
   // Not in demo mode? Allow all
   if (!apiClient.isDemoMode()) {
     return { allowed: true }
@@ -116,7 +116,7 @@ export async function demoSafeApiCall<T>(
   organizationId?: string
 ): Promise<T> {
   const check = await checkDemoWritePolicy(action, entityType, organizationId)
-  
+
   if (!check.allowed) {
     throw new Error(`Demo Policy: ${check.reason}`)
   }
@@ -133,7 +133,7 @@ export function useDemoPolicy() {
 
   return {
     isDemoMode,
-    checkPolicy: (action: string, entityType?: string) => 
+    checkPolicy: (action: string, entityType?: string) =>
       checkDemoWritePolicy(action, entityType, apiClient.getOrganizationId()),
     safeCall: <T>(action: string, apiCall: () => Promise<T>, entityType?: string) =>
       demoSafeApiCall(action, apiCall, entityType, apiClient.getOrganizationId())

@@ -2,7 +2,7 @@
  * Tests for hardened Playbook Entities implementation
  */
 
-import { 
+import {
   searchAppointments,
   groupDynamicByEntity,
   coerceDynValue,
@@ -82,23 +82,27 @@ describe('Playbook Entities - Hardened Implementation', () => {
         organization_id: 'test-org',
         entity_id: ['entity-3', 'entity-4', 'entity-5']
       })
-      
+
       expect(result.total).toBe(10)
     })
 
     it('should apply date filters correctly', async () => {
-      const mockEntities = [{
-        id: 'entity-1',
-        organization_id: 'test-org',
-        entity_type: 'appointment',
-        entity_name: 'Test Appointment'
-      }]
+      const mockEntities = [
+        {
+          id: 'entity-1',
+          organization_id: 'test-org',
+          entity_type: 'appointment',
+          entity_name: 'Test Appointment'
+        }
+      ]
 
-      const mockDynamicData = [{
-        entity_id: 'entity-1',
-        field_name: 'start_time',
-        field_value_text: '2024-01-15T10:00:00Z'
-      }]
+      const mockDynamicData = [
+        {
+          entity_id: 'entity-1',
+          field_name: 'start_time',
+          field_value_text: '2024-01-15T10:00:00Z'
+        }
+      ]
 
       ;(universalApi.read as jest.Mock)
         .mockResolvedValueOnce({
@@ -126,43 +130,59 @@ describe('Playbook Entities - Hardened Implementation', () => {
   describe('Helper Functions', () => {
     describe('coerceDynValue', () => {
       it('should handle JSON values', () => {
-        expect(testHelpers.coerceDynValue({
-          field_value_json: '["service1", "service2"]'
-        })).toEqual(['service1', 'service2'])
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_json: '["service1", "service2"]'
+          })
+        ).toEqual(['service1', 'service2'])
 
-        expect(testHelpers.coerceDynValue({
-          field_value_json: ['already', 'parsed']
-        })).toEqual(['already', 'parsed'])
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_json: ['already', 'parsed']
+          })
+        ).toEqual(['already', 'parsed'])
       })
 
       it('should handle number values', () => {
-        expect(testHelpers.coerceDynValue({
-          field_value_number: 100.50
-        })).toBe(100.50)
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_number: 100.5
+          })
+        ).toBe(100.5)
 
-        expect(testHelpers.coerceDynValue({
-          field_value_number: '100.50'
-        })).toBe(100.50)
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_number: '100.50'
+          })
+        ).toBe(100.5)
       })
 
       it('should handle boolean values', () => {
-        expect(testHelpers.coerceDynValue({
-          field_value_boolean: true
-        })).toBe(true)
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_boolean: true
+          })
+        ).toBe(true)
 
-        expect(testHelpers.coerceDynValue({
-          field_value_boolean: 0
-        })).toBe(false)
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_boolean: 0
+          })
+        ).toBe(false)
       })
 
       it('should handle date and text values', () => {
-        expect(testHelpers.coerceDynValue({
-          field_value_date: '2024-01-15'
-        })).toBe('2024-01-15')
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_date: '2024-01-15'
+          })
+        ).toBe('2024-01-15')
 
-        expect(testHelpers.coerceDynValue({
-          field_value_text: 'Hello World'
-        })).toBe('Hello World')
+        expect(
+          testHelpers.coerceDynValue({
+            field_value_text: 'Hello World'
+          })
+        ).toBe('Hello World')
       })
 
       it('should return null for empty values', () => {
@@ -175,7 +195,7 @@ describe('Playbook Entities - Hardened Implementation', () => {
         const rows = [
           { entity_id: 'e1', field_name: 'status', field_value_text: 'booked' },
           { entity_id: 'e1', field_name: 'price', field_value_number: 100 },
-          { entity_id: 'e2', field_name: 'status', field_value_text: 'completed' },
+          { entity_id: 'e2', field_name: 'status', field_value_text: 'completed' }
         ]
 
         const grouped = testHelpers.groupDynamicByEntity(rows)
@@ -306,12 +326,11 @@ describe('Playbook Entities - Hardened Implementation', () => {
 
   describe('Empty Array Handling', () => {
     it('should handle empty entity_id arrays gracefully', async () => {
-      ;(universalApi.read as jest.Mock)
-        .mockResolvedValueOnce({
-          success: true,
-          data: [], // No entities
-          error: null
-        })
+      ;(universalApi.read as jest.Mock).mockResolvedValueOnce({
+        success: true,
+        data: [], // No entities
+        error: null
+      })
 
       const result = await searchAppointments({
         organization_id: 'test-org'

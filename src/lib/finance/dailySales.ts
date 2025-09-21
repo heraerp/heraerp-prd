@@ -1,6 +1,6 @@
 /**
  * HERA Finance DNA - Daily Sales to GL Journal Posting
- * 
+ *
  * Aggregates daily POS sales by branch and creates balanced GL journals
  * using Finance DNA's Account Derivation Engine and Auto-Posting Engine.
  */
@@ -102,11 +102,15 @@ export async function summarizeSalesByBranchDay({
       table: 'universal_transactions',
       filters: [
         { field: 'organization_id', operator: 'eq', value: organization_id },
-        { field: 'smart_code', operator: 'in', value: [
-          'HERA.SALON.SALES.ORDER.SERVICE.v1',
-          'HERA.SALON.SALES.ORDER.PRODUCT.v1',
-          'HERA.SALON.POS.TXN.SALE.V1'
-        ]},
+        {
+          field: 'smart_code',
+          operator: 'in',
+          value: [
+            'HERA.SALON.SALES.ORDER.SERVICE.v1',
+            'HERA.SALON.SALES.ORDER.PRODUCT.v1',
+            'HERA.SALON.POS.TXN.SALE.V1'
+          ]
+        },
         { field: 'when_ts', operator: 'gte', value: dayStart },
         { field: 'when_ts', operator: 'lt', value: dayEnd },
         { field: 'status', operator: 'eq', value: 'posted' }
@@ -118,7 +122,7 @@ export async function summarizeSalesByBranchDay({
     // Get transaction lines for all sales
     const transactionIds = transactions.map(t => t.id)
     let lines: any[] = []
-    
+
     if (transactionIds.length > 0) {
       const linesResponse = await universalApi.read({
         table: 'universal_transaction_lines',
@@ -146,11 +150,11 @@ export async function summarizeSalesByBranchDay({
     // Process each transaction
     transactions.forEach(transaction => {
       const transactionLines = lines.filter(l => l.transaction_id === transaction.id)
-      
+
       transactionLines.forEach(line => {
         const amount = line.line_amount || 0
         const metadata = line.metadata || {}
-        
+
         // Categorize based on smart codes and metadata
         switch (line.smart_code) {
           case 'HERA.SALON.SVC.LINE.STANDARD.V1':
@@ -208,10 +212,11 @@ export async function summarizeSalesByBranchDay({
       totals,
       transactionCount: transactions.length
     }
-
   } catch (error) {
     console.error('Error summarizing daily sales:', error)
-    throw new Error(`Failed to summarize sales: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to summarize sales: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -228,8 +233,18 @@ export function buildDailyJournalPayload(
 
   // Helper to create GL line
   const GL = {
-    dr: (account_id: string, amount: number) => ({ account_id, debit: amount, credit: 0, dr: amount }),
-    cr: (account_id: string, amount: number) => ({ account_id, debit: 0, credit: amount, cr: amount })
+    dr: (account_id: string, amount: number) => ({
+      account_id,
+      debit: amount,
+      credit: 0,
+      dr: amount
+    }),
+    cr: (account_id: string, amount: number) => ({
+      account_id,
+      debit: 0,
+      credit: amount,
+      cr: amount
+    })
   }
 
   // Payment clearings (debit - money coming in)
@@ -271,7 +286,7 @@ export function buildDailyJournalPayload(
   const totalDebits = lines.reduce((sum, line) => sum + line.debit, 0)
   const totalCredits = lines.reduce((sum, line) => sum + line.credit, 0)
   const difference = totalDebits - totalCredits
-  
+
   if (Math.abs(difference) > 0.01) {
     // Add rounding difference
     if (difference > 0) {
@@ -330,8 +345,16 @@ export async function postDailySalesJournal(payload: DailyJournalPayload): Promi
         { field: 'organization_id', operator: 'eq', value: payload.header.organization_id },
         { field: 'smart_code', operator: 'eq', value: 'HERA.FINANCE.JOURNAL.DAILY_SALES.v1' },
         { field: 'branch_id', operator: 'eq', value: payload.header.branch_id },
-        { field: 'when_ts', operator: 'gte', value: payload.header.when_ts.slice(0, 10) + 'T00:00:00Z' },
-        { field: 'when_ts', operator: 'lt', value: payload.header.when_ts.slice(0, 10) + 'T23:59:59Z' }
+        {
+          field: 'when_ts',
+          operator: 'gte',
+          value: payload.header.when_ts.slice(0, 10) + 'T00:00:00Z'
+        },
+        {
+          field: 'when_ts',
+          operator: 'lt',
+          value: payload.header.when_ts.slice(0, 10) + 'T23:59:59Z'
+        }
       ]
     })
 
@@ -348,7 +371,7 @@ export async function postDailySalesJournal(payload: DailyJournalPayload): Promi
       payload.header.organization_id,
       payload.header.when_ts.slice(0, 10)
     )
-    
+
     if (!fiscalCheck.isOpen) {
       throw new Error(`Cannot post to closed fiscal period: ${fiscalCheck.reason}`)
     }
@@ -381,7 +404,6 @@ export async function postDailySalesJournal(payload: DailyJournalPayload): Promi
       success: true,
       transaction_id: transactionId
     }
-
   } catch (error) {
     console.error('Error posting daily sales journal:', error)
     return {
@@ -409,7 +431,7 @@ async function checkFiscalPeriodOpen(
     })
 
     const periods = periodsResponse?.data || []
-    
+
     // Find period containing the date
     for (const period of periods) {
       const dynamicResponse = await universalApi.read({
@@ -423,7 +445,7 @@ async function checkFiscalPeriodOpen(
 
       const dynamicFields = dynamicResponse?.data || []
       const fields: any = {}
-      
+
       dynamicFields.forEach(field => {
         fields[field.field_name] = field.field_value_text || field.field_value_date
       })
@@ -443,7 +465,6 @@ async function checkFiscalPeriodOpen(
       isOpen: false,
       reason: 'No fiscal period found for the specified date'
     }
-
   } catch (error) {
     console.error('Error checking fiscal period:', error)
     return {
@@ -464,17 +485,19 @@ export async function getDailyPostingStatus({
   organization_id: string
   branch_ids: string[]
   days: string[]
-}): Promise<Array<{
-  branch_id: string
-  day: string
-  posted: boolean
-  total_amount?: number
-  transaction_count?: number
-  transaction_id?: string
-}>> {
+}): Promise<
+  Array<{
+    branch_id: string
+    day: string
+    posted: boolean
+    total_amount?: number
+    transaction_count?: number
+    transaction_id?: string
+  }>
+> {
   try {
     universalApi.setOrganizationId(organization_id)
-    
+
     const results = []
 
     for (const branch_id of branch_ids) {
@@ -492,7 +515,7 @@ export async function getDailyPostingStatus({
         })
 
         const journal = journalResponse?.data?.[0]
-        
+
         if (journal) {
           results.push({
             branch_id,
@@ -505,7 +528,7 @@ export async function getDailyPostingStatus({
           // Get sales summary to show potential totals
           const dayStart = day + 'T00:00:00Z'
           const dayEnd = day + 'T23:59:59Z'
-          
+
           try {
             const summary = await summarizeSalesByBranchDay({
               organization_id,
@@ -513,7 +536,7 @@ export async function getDailyPostingStatus({
               dayStart,
               dayEnd
             })
-            
+
             results.push({
               branch_id,
               day,
@@ -535,7 +558,6 @@ export async function getDailyPostingStatus({
     }
 
     return results
-
   } catch (error) {
     console.error('Error getting daily posting status:', error)
     throw error

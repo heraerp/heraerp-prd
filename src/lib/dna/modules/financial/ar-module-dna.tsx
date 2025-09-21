@@ -554,10 +554,12 @@ export function ARModule({
                           </div>
                           <div className="grid grid-cols-4 gap-4 text-sm">
                             <div>
-                              <span className="text-muted-foreground">Code:</span> {customer.customerCode}
+                              <span className="text-muted-foreground">Code:</span>{' '}
+                              {customer.customerCode}
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Terms:</span> {customer.paymentTerms}
+                              <span className="text-muted-foreground">Terms:</span>{' '}
+                              {customer.paymentTerms}
                             </div>
                             <div>
                               <span className="text-muted-foreground">Credit Limit:</span> ₹
@@ -992,7 +994,9 @@ export function ARModule({
                           <div className="flex items-center justify-between">
                             <div>
                               <h4 className="font-medium">Metro Cash & Carry</h4>
-                              <p className="text-sm text-muted-foreground">90+ days overdue - ₹43,000</p>
+                              <p className="text-sm text-muted-foreground">
+                                90+ days overdue - ₹43,000
+                              </p>
                               <div className="flex gap-2 mt-2">
                                 <Badge variant="destructive">High Priority</Badge>
                                 {industrySpecific.freezerDepositTracking && (

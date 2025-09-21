@@ -18,7 +18,10 @@ export { HeraInputDNA, type HeraInputDNAProps } from './ui/hera-input-dna'
 
 // Layouts
 export { HeraSidebarDNA, type HeraSidebarDNAProps } from './layout/hera-sidebar-dna'
-export { GlassmorphicDarkLayout, type GlassmorphicDarkLayoutProps } from './layouts/GlassmorphicDarkLayout'
+export {
+  GlassmorphicDarkLayout,
+  type GlassmorphicDarkLayoutProps
+} from './layouts/GlassmorphicDarkLayout'
 
 // Theme System
 export { ThemeProviderDNA, type ThemeProviderDNAProps } from '../theme/theme-provider-dna'
@@ -28,8 +31,8 @@ export { ThemeProviderDNA, type ThemeProviderDNAProps } from '../theme/theme-pro
 // ================================================================================
 
 // Enterprise Data Management
-export { 
-  EnterpriseCard, 
+export {
+  EnterpriseCard,
   type EnterpriseCardProps,
   EnterpriseDashboard,
   type EnterpriseDashboardProps,
@@ -38,7 +41,7 @@ export {
 } from './enterprise'
 
 // Enterprise Data Table
-export { 
+export {
   EnterpriseDataTable,
   type EnterpriseDataTableProps,
   type EnterpriseTableColumn,
@@ -46,11 +49,11 @@ export {
 } from './organisms/EnterpriseDataTable'
 
 // ================================================================================
-// BUSINESS LOGIC COMPONENTS  
+// BUSINESS LOGIC COMPONENTS
 // ================================================================================
 
 // Transaction Flow
-export { 
+export {
   UniversalTransactionFlow,
   type UniversalTransactionFlowProps,
   type TransactionStep,
@@ -110,7 +113,10 @@ export { ChatInterfaceDNA, type ChatInterfaceDNAProps } from './chat-interface-d
 export { DocumentNumberingDNA, type DocumentNumberingDNAProps } from './document-numbering-dna'
 
 // Assessment Dashboard
-export { AssessmentDashboardDNA, type AssessmentDashboardDNAProps } from './ui/assessment-dashboard-dna'
+export {
+  AssessmentDashboardDNA,
+  type AssessmentDashboardDNAProps
+} from './ui/assessment-dashboard-dna'
 
 // Production UI Pattern
 export { ProductionUIPattern, type ProductionUIPatternProps } from './production-ui-pattern'
@@ -152,7 +158,7 @@ export * from '../examples/stat-card-usage'
 export const HERA_DNA_CATEGORIES = {
   CORE_UI: [
     'StatCardDNA',
-    'MiniStatCardDNA', 
+    'MiniStatCardDNA',
     'HeraButtonDNA',
     'HeraInputDNA',
     'HeraSidebarDNA',
@@ -161,7 +167,7 @@ export const HERA_DNA_CATEGORIES = {
   ],
   ENTERPRISE: [
     'EnterpriseCard',
-    'EnterpriseDashboard', 
+    'EnterpriseDashboard',
     'EnterpriseStatsCard',
     'EnterpriseDataTable'
   ],
@@ -171,10 +177,7 @@ export const HERA_DNA_CATEGORIES = {
     'EntityQuickView',
     'SmartCodePicker'
   ],
-  MOBILE: [
-    'BottomSheet',
-    'PullToRefresh'
-  ],
+  MOBILE: ['BottomSheet', 'PullToRefresh'],
   SPECIALIZED: [
     'ChatInterfaceDNA',
     'DocumentNumberingDNA',
@@ -192,23 +195,23 @@ export const HERA_DNA_REGISTRY = {
   'hera-input': () => import('./ui/hera-input-dna'),
   'hera-sidebar': () => import('./layout/hera-sidebar-dna'),
   'glassmorphic-layout': () => import('./layouts/GlassmorphicDarkLayout'),
-  
+
   // Enterprise Components
   'enterprise-card': () => import('./enterprise/EnterpriseCard'),
   'enterprise-dashboard': () => import('./enterprise/EnterpriseDashboard'),
   'enterprise-stats-card': () => import('./enterprise/EnterpriseStatsCard'),
   'enterprise-data-table': () => import('./organisms/EnterpriseDataTable'),
-  
+
   // Business Logic Components
   'transaction-flow': () => import('./transaction/UniversalTransactionFlow'),
   'universal-search': () => import('./search/UniversalSearch'),
   'entity-quick-view': () => import('./entity/EntityQuickView'),
   'smart-code-picker': () => import('./smart-code/SmartCodePicker'),
-  
+
   // Mobile Components
   'bottom-sheet': () => import('./mobile/BottomSheet'),
   'pull-to-refresh': () => import('./mobile/PullToRefresh'),
-  
+
   // Specialized Components
   'chat-interface': () => import('./chat-interface-dna'),
   'document-numbering': () => import('./document-numbering-dna'),
@@ -241,7 +244,7 @@ export const HERA_DNA_SMART_CODES = {
 // Type definitions for the export system
 export type HeraDNACategory = keyof typeof HERA_DNA_CATEGORIES
 export type HeraDNAComponentKey = keyof typeof HERA_DNA_REGISTRY
-export type HeraDNAComponent = typeof HERA_DNA_CATEGORIES[HeraDNACategory][number]
+export type HeraDNAComponent = (typeof HERA_DNA_CATEGORIES)[HeraDNACategory][number]
 
 // ================================================================================
 // BACKWARDS COMPATIBILITY

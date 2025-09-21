@@ -7,12 +7,12 @@
 // ================================================================================
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import { 
-  THEME_VARIANTS, 
-  ThemeVariant, 
-  ThemeConfiguration, 
+import {
+  THEME_VARIANTS,
+  ThemeVariant,
+  ThemeConfiguration,
   generateCSSVariables,
-  getThemeVariant 
+  getThemeVariant
 } from './universal-theme-variants'
 
 // ================================================================================
@@ -23,12 +23,12 @@ interface UniversalThemeContextType {
   currentTheme: ThemeVariant
   themeConfig: ThemeConfiguration
   availableThemes: ThemeVariant[]
-  
+
   // Theme management
   setTheme: (variantId: string, config?: ThemeConfiguration['customizations']) => void
   applyThemeFromConfig: (configRules: UniversalConfigurationRules) => void
   resetToDefault: () => void
-  
+
   // Utilities
   getColorShade: (color: 'main' | 'accent', shade: keyof ThemeVariant['main']) => string
   getSemanticColor: (semantic: keyof ThemeVariant['semantic']) => string
@@ -110,58 +110,66 @@ export function UniversalThemeProvider({
   const [themeConfig, setThemeConfig] = useState<ThemeConfiguration>(DEFAULT_THEME_CONFIG)
 
   // Apply theme from configuration rules
-  const applyThemeFromConfig = useCallback((rules: UniversalConfigurationRules) => {
-    let selectedVariant = defaultVariant
+  const applyThemeFromConfig = useCallback(
+    (rules: UniversalConfigurationRules) => {
+      let selectedVariant = defaultVariant
 
-    // 1. Check if industry-specific theme should be enforced
-    if (rules.businessRules?.enforceIndustryTheme && rules.industryType) {
-      selectedVariant = INDUSTRY_THEME_MAPPING[rules.industryType] || defaultVariant
-    }
-    // 2. Apply user preferences if allowed
-    else if (rules.userPreferences?.themeVariant && !rules.businessRules?.enforceIndustryTheme) {
-      // Check if the preferred variant is in allowed list
-      if (!rules.businessRules?.availableVariants || 
-          rules.businessRules.availableVariants.includes(rules.userPreferences.themeVariant)) {
-        selectedVariant = rules.userPreferences.themeVariant
+      // 1. Check if industry-specific theme should be enforced
+      if (rules.businessRules?.enforceIndustryTheme && rules.industryType) {
+        selectedVariant = INDUSTRY_THEME_MAPPING[rules.industryType] || defaultVariant
       }
-    }
-    // 3. Fall back to industry recommendation
-    else if (rules.industryType) {
-      selectedVariant = INDUSTRY_THEME_MAPPING[rules.industryType] || defaultVariant
-    }
-
-    const theme = getThemeVariant(selectedVariant)
-    if (theme) {
-      setCurrentTheme(theme)
-      setThemeConfig({
-        variant: selectedVariant,
-        customizations: {
-          ...DEFAULT_THEME_CONFIG.customizations,
-          borderRadius: rules.userPreferences?.highContrast ? 'none' : 'md',
-          shadows: rules.userPreferences?.highContrast ? 'lg' : 'md'
+      // 2. Apply user preferences if allowed
+      else if (rules.userPreferences?.themeVariant && !rules.businessRules?.enforceIndustryTheme) {
+        // Check if the preferred variant is in allowed list
+        if (
+          !rules.businessRules?.availableVariants ||
+          rules.businessRules.availableVariants.includes(rules.userPreferences.themeVariant)
+        ) {
+          selectedVariant = rules.userPreferences.themeVariant
         }
-      })
-    }
-  }, [defaultVariant])
+      }
+      // 3. Fall back to industry recommendation
+      else if (rules.industryType) {
+        selectedVariant = INDUSTRY_THEME_MAPPING[rules.industryType] || defaultVariant
+      }
+
+      const theme = getThemeVariant(selectedVariant)
+      if (theme) {
+        setCurrentTheme(theme)
+        setThemeConfig({
+          variant: selectedVariant,
+          customizations: {
+            ...DEFAULT_THEME_CONFIG.customizations,
+            borderRadius: rules.userPreferences?.highContrast ? 'none' : 'md',
+            shadows: rules.userPreferences?.highContrast ? 'lg' : 'md'
+          }
+        })
+      }
+    },
+    [defaultVariant]
+  )
 
   // Set theme programmatically
-  const setTheme = useCallback((variantId: string, customizations?: ThemeConfiguration['customizations']) => {
-    const theme = getThemeVariant(variantId)
-    if (theme) {
-      setCurrentTheme(theme)
-      const newConfig: ThemeConfiguration = {
-        variant: variantId,
-        customizations: {
-          ...DEFAULT_THEME_CONFIG.customizations,
-          ...customizations
+  const setTheme = useCallback(
+    (variantId: string, customizations?: ThemeConfiguration['customizations']) => {
+      const theme = getThemeVariant(variantId)
+      if (theme) {
+        setCurrentTheme(theme)
+        const newConfig: ThemeConfiguration = {
+          variant: variantId,
+          customizations: {
+            ...DEFAULT_THEME_CONFIG.customizations,
+            ...customizations
+          }
         }
+        setThemeConfig(newConfig)
+
+        // Notify parent component
+        onThemeChange?.(theme, newConfig)
       }
-      setThemeConfig(newConfig)
-      
-      // Notify parent component
-      onThemeChange?.(theme, newConfig)
-    }
-  }, [onThemeChange])
+    },
+    [onThemeChange]
+  )
 
   // Reset to default theme
   const resetToDefault = useCallback(() => {
@@ -169,17 +177,23 @@ export function UniversalThemeProvider({
   }, [setTheme])
 
   // Utility functions
-  const getColorShade = useCallback((color: 'main' | 'accent', shade: keyof ThemeVariant['main']) => {
-    return currentTheme[color][shade]
-  }, [currentTheme])
+  const getColorShade = useCallback(
+    (color: 'main' | 'accent', shade: keyof ThemeVariant['main']) => {
+      return currentTheme[color][shade]
+    },
+    [currentTheme]
+  )
 
-  const getSemanticColor = useCallback((semantic: keyof ThemeVariant['semantic']) => {
-    return currentTheme.semantic[semantic]
-  }, [currentTheme])
+  const getSemanticColor = useCallback(
+    (semantic: keyof ThemeVariant['semantic']) => {
+      return currentTheme.semantic[semantic]
+    },
+    [currentTheme]
+  )
 
   const generateThemeClasses = useCallback(() => {
     const { main, accent } = currentTheme
-    
+
     return {
       // Background classes
       'bg-main-50': main[50],
@@ -187,18 +201,18 @@ export function UniversalThemeProvider({
       'bg-main-500': main[500],
       'bg-accent-50': accent[50],
       'bg-accent-500': accent[500],
-      
+
       // Text classes
       'text-main-500': main[500],
       'text-main-900': main[900],
       'text-accent-500': accent[500],
       'text-accent-900': accent[900],
-      
+
       // Border classes
       'border-main-200': main[200],
       'border-main-500': main[500],
       'border-accent-500': accent[500],
-      
+
       // Hover classes
       'hover:bg-main-600': main[600],
       'hover:bg-accent-600': accent[600],
@@ -218,7 +232,7 @@ export function UniversalThemeProvider({
   useEffect(() => {
     const cssVariables = generateCSSVariables(currentTheme, themeConfig.customizations)
     const root = document.documentElement
-    
+
     Object.entries(cssVariables).forEach(([property, value]) => {
       root.style.setProperty(property, value)
     })
@@ -251,9 +265,7 @@ export function UniversalThemeProvider({
   }
 
   return (
-    <UniversalThemeContext.Provider value={contextValue}>
-      {children}
-    </UniversalThemeContext.Provider>
+    <UniversalThemeContext.Provider value={contextValue}>{children}</UniversalThemeContext.Provider>
   )
 }
 
@@ -274,18 +286,18 @@ export function useUniversalTheme() {
 // ================================================================================
 
 // Theme selector component for admin interfaces
-export function ThemeSelector({ 
-  onThemeSelect, 
+export function ThemeSelector({
+  onThemeSelect,
   allowedVariants,
-  className 
-}: { 
+  className
+}: {
   onThemeSelect?: (variantId: string) => void
   allowedVariants?: string[]
-  className?: string 
+  className?: string
 }) {
   const { currentTheme, setTheme, availableThemes } = useUniversalTheme()
-  
-  const filteredThemes = allowedVariants 
+
+  const filteredThemes = allowedVariants
     ? availableThemes.filter(theme => allowedVariants.includes(theme.id))
     : availableThemes
 
@@ -296,24 +308,25 @@ export function ThemeSelector({
 
   return (
     <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${className}`}>
-      {filteredThemes.map((theme) => (
+      {filteredThemes.map(theme => (
         <button
           key={theme.id}
           onClick={() => handleThemeChange(theme.id)}
           className={`
             p-4 rounded-lg border-2 transition-all duration-200
-            ${currentTheme.id === theme.id 
-              ? 'border-primary ring-2 ring-primary/20' 
-              : 'border-border hover:border-primary/50'
+            ${
+              currentTheme.id === theme.id
+                ? 'border-primary ring-2 ring-primary/20'
+                : 'border-border hover:border-primary/50'
             }
           `}
         >
           <div className="flex items-center gap-3 mb-2">
-            <div 
+            <div
               className="w-6 h-6 rounded-full border"
               style={{ backgroundColor: theme.main[500] }}
             />
-            <div 
+            <div
               className="w-6 h-6 rounded-full border"
               style={{ backgroundColor: theme.accent[500] }}
             />
@@ -329,15 +342,15 @@ export function ThemeSelector({
 }
 
 // Theme preview component
-export function ThemePreview({ 
-  variant, 
-  className 
-}: { 
+export function ThemePreview({
+  variant,
+  className
+}: {
   variant: ThemeVariant
-  className?: string 
+  className?: string
 }) {
   return (
-    <div 
+    <div
       className={`p-4 rounded-lg border ${className}`}
       style={{
         backgroundColor: variant.semantic.background,
@@ -346,7 +359,7 @@ export function ThemePreview({
       }}
     >
       <div className="space-y-3">
-        <div 
+        <div
           className="px-3 py-1.5 rounded text-sm font-medium"
           style={{
             backgroundColor: variant.semantic.primary,
@@ -355,7 +368,7 @@ export function ThemePreview({
         >
           Primary Button
         </div>
-        <div 
+        <div
           className="px-3 py-1.5 rounded text-sm"
           style={{
             backgroundColor: variant.semantic.secondary,
@@ -376,8 +389,4 @@ export function ThemePreview({
 }
 
 // Export types for external use
-export type { 
-  UniversalConfigurationRules, 
-  ThemeConfiguration, 
-  UniversalThemeContextType 
-}
+export type { UniversalConfigurationRules, ThemeConfiguration, UniversalThemeContextType }

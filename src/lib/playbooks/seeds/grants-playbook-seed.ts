@@ -1,41 +1,47 @@
 /**
  * HERA Playbooks Grants Application Seed Data
- * 
+ *
  * Creates a comprehensive grants application playbook demonstrating
  * all features including human tasks, approvals, system integrations,
  * and complex workflows.
  */
-import { universalApi } from '@/lib/universal-api';
-import { PlaybookSmartCodes } from '../smart-codes/playbook-smart-codes';
+import { universalApi } from '@/lib/universal-api'
+import { PlaybookSmartCodes } from '../smart-codes/playbook-smart-codes'
 
 export interface GrantsPlaybookSeedResult {
-  playbook_id: string;
-  playbook_name: string;
+  playbook_id: string
+  playbook_name: string
   steps: Array<{
-    step_id: string;
-    step_name: string;
-    step_type: string;
-  }>;
+    step_id: string
+    step_name: string
+    step_type: string
+  }>
   contracts: {
-    input_contract_id: string;
-    output_contract_id: string;
-  };
+    input_contract_id: string
+    output_contract_id: string
+  }
   policies: {
-    sla_policy_id: string;
-    approval_policy_id: string;
-    segregation_policy_id: string;
-  };
+    sla_policy_id: string
+    approval_policy_id: string
+    segregation_policy_id: string
+  }
 }
 
-export async function seedGrantsPlaybook(organizationId: string): Promise<GrantsPlaybookSeedResult> {
-  console.log('Seeding Grants Application playbook...');
-  
+export async function seedGrantsPlaybook(
+  organizationId: string
+): Promise<GrantsPlaybookSeedResult> {
+  console.log('Seeding Grants Application playbook...')
+
   // Set organization context
-  universalApi.setOrganizationId(organizationId);
-  
+  universalApi.setOrganizationId(organizationId)
+
   // 1. Create the playbook definition entity
-  const playbookSmartCode = PlaybookSmartCodes.forPlaybookDefinition('PUBLICSECTOR', 'GRANTS_APPLICATION', '1');
-  
+  const playbookSmartCode = PlaybookSmartCodes.forPlaybookDefinition(
+    'PUBLICSECTOR',
+    'GRANTS_APPLICATION',
+    '1'
+  )
+
   const playbook = await universalApi.createEntity({
     entity_type: 'playbook',
     entity_name: 'Federal Grants Application Process',
@@ -44,7 +50,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
     metadata: {
       industry: 'PUBLICSECTOR',
       module: 'GRANTS',
-      description: 'Complete workflow for federal grant applications including eligibility, submission, review, and award processing',
+      description:
+        'Complete workflow for federal grant applications including eligibility, submission, review, and award processing',
       version: '1.0',
       status: 'active',
       tags: ['grants', 'federal', 'application', 'compliance'],
@@ -53,8 +60,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
       compliance_frameworks: ['2 CFR 200', 'FAR', 'FFATA'],
       automation_level: 'semi_automated'
     }
-  });
-  
+  })
+
   // 2. Create input contract
   const inputContract = await universalApi.createEntity({
     entity_type: 'contract',
@@ -137,7 +144,13 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
               properties: {
                 document_type: {
                   type: 'string',
-                  enum: ['budget_justification', 'organization_chart', 'letters_of_support', 'resumes', 'other']
+                  enum: [
+                    'budget_justification',
+                    'organization_chart',
+                    'letters_of_support',
+                    'resumes',
+                    'other'
+                  ]
                 },
                 file_url: { type: 'string', format: 'uri' },
                 file_name: { type: 'string' }
@@ -147,8 +160,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         }
       }
     }
-  });
-  
+  })
+
   // 3. Create output contract
   const outputContract = await universalApi.createEntity({
     entity_type: 'contract',
@@ -213,8 +226,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         }
       }
     }
-  });
-  
+  })
+
   // 4. Create SLA Policy
   const slaPolicy = await universalApi.createEntity({
     entity_type: 'policy',
@@ -247,8 +260,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         ]
       }
     }
-  });
-  
+  })
+
   // 5. Create Approval Policy
   const approvalPolicy = await universalApi.createEntity({
     entity_type: 'policy',
@@ -283,8 +296,8 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         ]
       }
     }
-  });
-  
+  })
+
   // 6. Create Segregation of Duties Policy
   const segregationPolicy = await universalApi.createEntity({
     entity_type: 'policy',
@@ -314,11 +327,11 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         ]
       }
     }
-  });
-  
+  })
+
   // 7. Create playbook steps
-  const steps = [];
-  
+  const steps = []
+
   // Step 1: Eligibility Pre-Check (System)
   const step1 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -350,9 +363,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         retry_delay_seconds: 60
       }
     }
-  });
-  steps.push(step1);
-  
+  })
+  steps.push(step1)
+
   // Step 2: Document Collection (Human)
   const step2 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -383,9 +396,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         ]
       }
     }
-  });
-  steps.push(step2);
-  
+  })
+  steps.push(step2)
+
   // Step 3: Document Validation (AI)
   const step3 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -416,9 +429,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         'No prohibited content detected'
       ]
     }
-  });
-  steps.push(step3);
-  
+  })
+  steps.push(step3)
+
   // Step 4: Compliance Review (Human)
   const step4 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -446,9 +459,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         'Conflict of interest forms completed'
       ]
     }
-  });
-  steps.push(step4);
-  
+  })
+  steps.push(step4)
+
   // Step 5: Technical Review Panel (Human - Quorum)
   const step5 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -476,9 +489,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         impact: { weight: 0.2, max_score: 100 }
       }
     }
-  });
-  steps.push(step5);
-  
+  })
+  steps.push(step5)
+
   // Step 6: Budget Review (Human)
   const step6 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -501,9 +514,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         'All costs must be allowable under 2 CFR 200'
       ]
     }
-  });
-  steps.push(step6);
-  
+  })
+  steps.push(step6)
+
   // Step 7: Risk Assessment (System)
   const step7 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -530,9 +543,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         mitigation_recommendations: { type: 'array' }
       }
     }
-  });
-  steps.push(step7);
-  
+  })
+  steps.push(step7)
+
   // Step 8: Executive Approval (Human)
   const step8 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -552,9 +565,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         use_policy: 'GRANTS_APPROVAL_V1' // References approval policy
       }
     }
-  });
-  steps.push(step8);
-  
+  })
+  steps.push(step8)
+
   // Step 9: Award Letter Generation (System)
   const step9 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -576,9 +589,9 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         'Performance period must be specified'
       ]
     }
-  });
-  steps.push(step9);
-  
+  })
+  steps.push(step9)
+
   // Step 10: Notification & Portal Update (External)
   const step10 = await universalApi.createEntity({
     entity_type: 'playbook_step',
@@ -606,24 +619,24 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
         }
       }
     }
-  });
-  steps.push(step10);
-  
+  })
+  steps.push(step10)
+
   // 8. Create step relationships (dependencies)
   // All steps depend on previous step completion (sequential workflow)
   for (let i = 1; i < steps.length; i++) {
     await universalApi.createRelationship({
       from_entity_id: steps[i].id,
-      to_entity_id: steps[i-1].id,
+      to_entity_id: steps[i - 1].id,
       relationship_type: 'depends_on',
       smart_code: 'HERA.PLAYBOOK.STEP.DEPENDS.ON.V1',
       metadata: {
         dependency_type: 'completion',
-        description: `Step ${i+1} depends on completion of Step ${i}`
+        description: `Step ${i + 1} depends on completion of Step ${i}`
       }
-    });
+    })
   }
-  
+
   // Add conditional dependency: Step 9 (Award Generation) only runs if Step 8 approval is positive
   await universalApi.createRelationship({
     from_entity_id: step9.id,
@@ -639,46 +652,46 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
       },
       description: 'Award generation only proceeds if executive approval is granted'
     }
-  });
-  
+  })
+
   // 9. Link contracts and policies to playbook
   await universalApi.createRelationship({
     from_entity_id: playbook.id,
     to_entity_id: inputContract.id,
     relationship_type: 'has_contract',
     smart_code: 'HERA.PLAYBOOK.HAS.CONTRACT.INPUT.V1'
-  });
-  
+  })
+
   await universalApi.createRelationship({
     from_entity_id: playbook.id,
     to_entity_id: outputContract.id,
     relationship_type: 'has_contract',
     smart_code: 'HERA.PLAYBOOK.HAS.CONTRACT.OUTPUT.V1'
-  });
-  
+  })
+
   await universalApi.createRelationship({
     from_entity_id: playbook.id,
     to_entity_id: slaPolicy.id,
     relationship_type: 'has_policy',
     smart_code: 'HERA.PLAYBOOK.HAS.POLICY.SLA.V1'
-  });
-  
+  })
+
   await universalApi.createRelationship({
     from_entity_id: playbook.id,
     to_entity_id: approvalPolicy.id,
     relationship_type: 'has_policy',
     smart_code: 'HERA.PLAYBOOK.HAS.POLICY.APPROVAL.V1'
-  });
-  
+  })
+
   await universalApi.createRelationship({
     from_entity_id: playbook.id,
     to_entity_id: segregationPolicy.id,
     relationship_type: 'has_policy',
     smart_code: 'HERA.PLAYBOOK.HAS.POLICY.SEGREGATION.V1'
-  });
-  
-  console.log('Grants playbook seeded successfully');
-  
+  })
+
+  console.log('Grants playbook seeded successfully')
+
   return {
     playbook_id: playbook.id,
     playbook_name: playbook.entity_name,
@@ -696,5 +709,5 @@ export async function seedGrantsPlaybook(organizationId: string): Promise<Grants
       approval_policy_id: approvalPolicy.id,
       segregation_policy_id: segregationPolicy.id
     }
-  };
+  }
 }

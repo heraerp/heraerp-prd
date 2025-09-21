@@ -27,20 +27,20 @@ describe('ApiClient', () => {
   describe('organization context', () => {
     it('should initialize with demo mode by default', () => {
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       expect(client.isDemoMode()).toBe(true)
       expect(client.getOrganizationId()).toBe('e3a9ff9e-bb83-43a8-b062-b85e7a2b4258')
     })
 
     it('should detect tenant mode from headers', () => {
-      vi.spyOn(sessionStorage, 'getItem').mockImplementation((key) => {
+      vi.spyOn(sessionStorage, 'getItem').mockImplementation(key => {
         if (key === 'x-hera-org-mode') return 'tenant'
         if (key === 'x-hera-tenant-slug') return 'acme'
         return null
       })
-      
+
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       expect(client.isDemoMode()).toBe(false)
     })
 
@@ -50,18 +50,18 @@ describe('ApiClient', () => {
         ok: true,
         json: async () => mockOrg
       } as Response)
-      
-      vi.spyOn(sessionStorage, 'getItem').mockImplementation((key) => {
+
+      vi.spyOn(sessionStorage, 'getItem').mockImplementation(key => {
         if (key === 'x-hera-org-mode') return 'tenant'
         if (key === 'x-hera-tenant-slug') return 'acme'
         return null
       })
-      
+
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       // Wait for initialization
       await new Promise(resolve => setTimeout(resolve, 100))
-      
+
       expect(client.getOrganizationId()).toBe('org-123')
       expect(client.getTenantBranding()).toEqual({ companyName: 'Acme Salon' })
     })
@@ -73,14 +73,14 @@ describe('ApiClient', () => {
         ok: true,
         json: async () => ({ success: true })
       } as Response)
-      
-      const client = new ApiClient({ 
+
+      const client = new ApiClient({
         baseUrl: 'http://localhost:3000',
         organizationId: 'org-456'
       })
-      
+
       await client.get('/api/test')
-      
+
       expect(fetch).toHaveBeenCalledWith(
         expect.any(URL),
         expect.objectContaining({
@@ -96,14 +96,14 @@ describe('ApiClient', () => {
         ok: true,
         json: async () => ({ success: true })
       } as Response)
-      
-      const client = new ApiClient({ 
+
+      const client = new ApiClient({
         baseUrl: 'http://localhost:3000',
         organizationId: 'org-789'
       })
-      
+
       await client.get('/api/entities', { type: 'customer' })
-      
+
       const calledUrl = vi.mocked(fetch).mock.calls[0][0] as URL
       expect(calledUrl.searchParams.get('organization_id')).toBe('org-789')
       expect(calledUrl.searchParams.get('type')).toBe('customer')
@@ -114,21 +114,19 @@ describe('ApiClient', () => {
         ok: true,
         json: async () => ({ id: 'entity-123' })
       } as Response)
-      
-      const client = new ApiClient({ 
+
+      const client = new ApiClient({
         baseUrl: 'http://localhost:3000',
         organizationId: 'org-999'
       })
-      
-      await client.post('/api/entities', { 
+
+      await client.post('/api/entities', {
         name: 'Test Customer',
         type: 'customer'
       })
-      
-      const body = JSON.parse(
-        vi.mocked(fetch).mock.calls[0][1]?.body as string
-      )
-      
+
+      const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]?.body as string)
+
       expect(body).toEqual({
         name: 'Test Customer',
         type: 'customer',
@@ -143,33 +141,33 @@ describe('ApiClient', () => {
         statusText: 'Forbidden',
         text: async () => JSON.stringify({ message: 'Access denied' })
       } as Response)
-      
+
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       await expect(client.get('/api/protected')).rejects.toThrow('Access denied')
     })
   })
 
   describe('demo mode detection', () => {
     it('should identify demo mode correctly', () => {
-      vi.spyOn(sessionStorage, 'getItem').mockImplementation((key) => {
+      vi.spyOn(sessionStorage, 'getItem').mockImplementation(key => {
         if (key === 'x-hera-org-mode') return 'demo'
         return null
       })
-      
+
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       expect(client.isDemoMode()).toBe(true)
     })
 
     it('should identify tenant mode correctly', () => {
-      vi.spyOn(sessionStorage, 'getItem').mockImplementation((key) => {
+      vi.spyOn(sessionStorage, 'getItem').mockImplementation(key => {
         if (key === 'x-hera-org-mode') return 'tenant'
         return null
       })
-      
+
       const client = new ApiClient({ baseUrl: 'http://localhost:3000' })
-      
+
       expect(client.isDemoMode()).toBe(false)
     })
   })

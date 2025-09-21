@@ -28,10 +28,7 @@ export function useFinanceRulesApi(organizationId: string) {
 
       try {
         // Get all dynamic data with FIN_DNA.RULES. prefix
-        const allData = await universalApi.getDynamicDataByPrefix(
-          organizationId,
-          RULE_KEY_PREFIX
-        )
+        const allData = await universalApi.getDynamicDataByPrefix(organizationId, RULE_KEY_PREFIX)
 
         // Filter and parse as PostingRule
         return Object.entries(allData || {})
@@ -127,12 +124,7 @@ export function useFinanceRulesApi(organizationId: string) {
         updated_at: new Date().toISOString()
       }
 
-      await universalApi.setDynamicData(
-        organizationId,
-        newRule.key,
-        newRule,
-        RULE_SMART_CODE
-      )
+      await universalApi.setDynamicData(organizationId, newRule.key, newRule, RULE_SMART_CODE)
 
       return newRule
     },

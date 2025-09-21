@@ -45,7 +45,7 @@ export const luxuryStyles = {
     backgroundColor: LUXURY_COLORS.black,
     minHeight: '100vh'
   },
-  
+
   // Card styling
   card: {
     backgroundColor: LUXURY_COLORS.charcoal,
@@ -53,12 +53,12 @@ export const luxuryStyles = {
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
     borderRadius: '0.75rem'
   },
-  
+
   cardHover: {
     borderColor: LUXURY_COLORS.gold,
     boxShadow: '0 4px 6px rgba(212, 175, 55, 0.1)'
   },
-  
+
   // Button styling
   primaryButton: {
     background: `linear-gradient(90deg, ${LUXURY_COLORS.gold} 0%, ${LUXURY_COLORS.goldDark} 100%)`,
@@ -67,12 +67,12 @@ export const luxuryStyles = {
     border: 'none',
     boxShadow: '0 2px 4px rgba(212, 175, 55, 0.2)'
   },
-  
+
   primaryButtonHover: {
     background: `linear-gradient(90deg, ${LUXURY_COLORS.goldDark} 0%, ${LUXURY_COLORS.bronze} 100%)`,
     boxShadow: '0 4px 6px rgba(212, 175, 55, 0.3)'
   },
-  
+
   // Text colors
   text: {
     primary: LUXURY_COLORS.champagne,
@@ -80,24 +80,24 @@ export const luxuryStyles = {
     muted: LUXURY_COLORS.bronze,
     accent: LUXURY_COLORS.gold
   },
-  
+
   // Icon backgrounds
   iconBackground: (color: keyof typeof LUXURY_COLORS) => ({
     backgroundColor: `rgba(${hexToRgb(LUXURY_COLORS[color])}, 0.1)`,
     color: LUXURY_COLORS[color]
   }),
-  
+
   // Dropdown styling
   dropdown: {
     backgroundColor: LUXURY_COLORS.charcoal,
     border: `1px solid rgba(212, 175, 55, 0.2)`,
     color: LUXURY_COLORS.lightText
   },
-  
+
   dropdownHover: {
     backgroundColor: 'rgba(212, 175, 55, 0.1)'
   },
-  
+
   // Badge variants
   badge: {
     gold: {
@@ -129,7 +129,7 @@ export const luxuryStyles = {
 function hexToRgb(hex: string): string {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   if (!result) return '0, 0, 0'
-  
+
   return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
 }
 
@@ -156,7 +156,8 @@ export const luxuryGradients = {
 export const luxuryClasses = {
   page: 'min-h-screen bg-[#0B0B0B]',
   card: 'bg-[#1A1A1A] border border-[#D4AF37]/20 shadow-sm hover:border-[#D4AF37] hover:shadow-md transition-all',
-  primaryButton: 'bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-[#0B0B0B] hover:from-[#B8860B] hover:to-[#8C7853] font-medium',
+  primaryButton:
+    'bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-[#0B0B0B] hover:from-[#B8860B] hover:to-[#8C7853] font-medium',
   text: {
     primary: 'text-[#F5E6C8]',
     secondary: 'text-[#E0E0E0]',

@@ -13,7 +13,7 @@ describe('ServiceFormSchema', () => {
       commission_type: 'percent',
       commission_value: 20,
       description: 'Professional haircut with styling',
-      requires_equipment: false,
+      requires_equipment: false
     }
 
     const result = ServiceFormSchema.parse(valid)
@@ -25,7 +25,7 @@ describe('ServiceFormSchema', () => {
       name: 'Basic Cut',
       duration_mins: 30,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     const result = ServiceFormSchema.parse(minimal)
@@ -39,7 +39,7 @@ describe('ServiceFormSchema', () => {
       name: 'Test Service',
       duration_mins: 30,
       price: -50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     expect(() => ServiceFormSchema.parse(invalid)).toThrow()
@@ -50,7 +50,7 @@ describe('ServiceFormSchema', () => {
       name: 'Test Service',
       duration_mins: 3,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     expect(() => ServiceFormSchema.parse(invalid)).toThrow()
@@ -61,7 +61,7 @@ describe('ServiceFormSchema', () => {
       name: 'Test Service',
       duration_mins: 500,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     expect(() => ServiceFormSchema.parse(invalid)).toThrow()
@@ -72,7 +72,7 @@ describe('ServiceFormSchema', () => {
       name: 'A',
       duration_mins: 30,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     expect(() => ServiceFormSchema.parse(invalid)).toThrow('Name is too short')
@@ -84,7 +84,7 @@ describe('ServiceFormSchema', () => {
       code: 'SVC 001', // Space not allowed
       duration_mins: 30,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     expect(() => ServiceFormSchema.parse(invalid)).toThrow('Letters, numbers, - or _ only')
@@ -96,7 +96,7 @@ describe('ServiceFormSchema', () => {
       code: '',
       duration_mins: 30,
       price: 50,
-      currency: 'AED',
+      currency: 'AED'
     }
 
     const result = ServiceFormSchema.parse(valid)
@@ -104,28 +104,32 @@ describe('ServiceFormSchema', () => {
   })
 
   it('validates tax rate range', () => {
-    expect(() => ServiceFormSchema.parse({
-      name: 'Test',
-      duration_mins: 30,
-      price: 50,
-      currency: 'AED',
-      tax_rate: -1,
-    })).toThrow()
+    expect(() =>
+      ServiceFormSchema.parse({
+        name: 'Test',
+        duration_mins: 30,
+        price: 50,
+        currency: 'AED',
+        tax_rate: -1
+      })
+    ).toThrow()
 
-    expect(() => ServiceFormSchema.parse({
-      name: 'Test',
-      duration_mins: 30,
-      price: 50,
-      currency: 'AED',
-      tax_rate: 101,
-    })).toThrow()
+    expect(() =>
+      ServiceFormSchema.parse({
+        name: 'Test',
+        duration_mins: 30,
+        price: 50,
+        currency: 'AED',
+        tax_rate: 101
+      })
+    ).toThrow()
 
     const valid = ServiceFormSchema.parse({
       name: 'Test',
       duration_mins: 30,
       price: 50,
       currency: 'AED',
-      tax_rate: 50,
+      tax_rate: 50
     })
     expect(valid.tax_rate).toBe(50)
   })
@@ -137,7 +141,7 @@ describe('ServiceFormSchema', () => {
       price: 50,
       currency: 'AED',
       commission_type: 'percent',
-      commission_value: 20,
+      commission_value: 20
     })
     expect(percent.commission_type).toBe('percent')
     expect(percent.commission_value).toBe(20)
@@ -148,32 +152,36 @@ describe('ServiceFormSchema', () => {
       price: 50,
       currency: 'AED',
       commission_type: 'flat',
-      commission_value: 15,
+      commission_value: 15
     })
     expect(flat.commission_type).toBe('flat')
     expect(flat.commission_value).toBe(15)
   })
 
   it('validates currency code length', () => {
-    expect(() => ServiceFormSchema.parse({
-      name: 'Test',
-      duration_mins: 30,
-      price: 50,
-      currency: 'US', // Too short
-    })).toThrow()
+    expect(() =>
+      ServiceFormSchema.parse({
+        name: 'Test',
+        duration_mins: 30,
+        price: 50,
+        currency: 'US' // Too short
+      })
+    ).toThrow()
 
-    expect(() => ServiceFormSchema.parse({
-      name: 'Test',
-      duration_mins: 30,
-      price: 50,
-      currency: 'USDD', // Too long
-    })).toThrow()
+    expect(() =>
+      ServiceFormSchema.parse({
+        name: 'Test',
+        duration_mins: 30,
+        price: 50,
+        currency: 'USDD' // Too long
+      })
+    ).toThrow()
 
     const valid = ServiceFormSchema.parse({
       name: 'Test',
       duration_mins: 30,
       price: 50,
-      currency: 'USD',
+      currency: 'USD'
     })
     expect(valid.currency).toBe('USD')
   })

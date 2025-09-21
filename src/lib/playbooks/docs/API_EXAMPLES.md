@@ -3,6 +3,7 @@
 Complete API reference with copy-paste ready examples for the HERA Playbooks DNA system.
 
 ## Table of Contents
+
 - [Authentication](#authentication)
 - [Create Playbook with Inlined Steps](#create-playbook-with-inlined-steps)
 - [Create Playbook Run](#create-playbook-run)
@@ -26,6 +27,7 @@ Content-Type: application/json
 ## Create Playbook with Inlined Steps
 
 ### Request
+
 **POST** `/api/v1/playbooks`
 
 ```bash
@@ -250,6 +252,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -278,6 +281,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -296,6 +300,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ## Create Playbook Run
 
 ### Request
+
 **POST** `/api/v1/playbook-runs`
 
 ```bash
@@ -333,6 +338,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs \
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -401,6 +407,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs \
 ## Execute Step Completion
 
 ### Request
+
 **POST** `/api/v1/playbook-runs/{run_id}/steps/{step_id}/complete`
 
 ```bash
@@ -449,6 +456,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/steps/ste
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -494,6 +502,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/steps/ste
 ## Send Signals to Runs
 
 ### Request - Pause Run
+
 **POST** `/api/v1/playbook-runs/{run_id}/signal`
 
 ```bash
@@ -518,6 +527,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/signal \
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -549,6 +559,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/signal \
 ```
 
 ### Request - Cancel Run
+
 **POST** `/api/v1/playbook-runs/{run_id}/signal`
 
 ```bash
@@ -574,6 +585,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/signal \
 ## Query Run Timeline
 
 ### Request
+
 **GET** `/api/v1/playbook-runs/{run_id}/timeline?include_system_events=true`
 
 ```bash
@@ -582,6 +594,7 @@ curl -X GET "https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/timeline?
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -689,6 +702,7 @@ curl -X GET "https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/timeline?
 ## Get Metrics and Analytics
 
 ### Request - Playbook Performance Metrics
+
 **GET** `/api/v1/playbooks/{playbook_id}/metrics?period=30d`
 
 ```bash
@@ -697,6 +711,7 @@ curl -X GET "https://api.heraerp.com/api/v1/playbooks/pb_123e4567/metrics?period
 ```
 
 ### Response
+
 ```json
 {
   "success": true,
@@ -775,6 +790,7 @@ curl -X GET "https://api.heraerp.com/api/v1/playbooks/pb_123e4567/metrics?period
 ```
 
 ### Request - Run Analytics
+
 **POST** `/api/v1/analytics/playbook-runs`
 
 ```bash
@@ -1213,6 +1229,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -1246,6 +1263,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -1279,6 +1297,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs/run_456e7890/steps/ste
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -1329,6 +1348,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -1387,6 +1407,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -1405,6 +1426,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
 ## Common Headers and Authentication
 
 ### Required Headers for All Requests
+
 ```http
 Authorization: Bearer YOUR_JWT_TOKEN
 Content-Type: application/json
@@ -1413,6 +1435,7 @@ X-Request-ID: req_unique_identifier
 ```
 
 ### JWT Token Claims
+
 ```json
 {
   "sub": "user_123",
@@ -1434,6 +1457,7 @@ X-Request-ID: req_unique_identifier
 ```
 
 ### Rate Limiting Headers (Response)
+
 ```http
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 998

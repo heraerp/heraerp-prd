@@ -25,7 +25,7 @@ export class MockApiClient extends ApiClient {
       roles: ['owner'],
       organization_id: 'org-hairtalkz-001',
       created_at: new Date().toISOString(),
-      last_login: new Date().toISOString(),
+      last_login: new Date().toISOString()
     }
 
     this.mockData.set('users', [
@@ -35,15 +35,15 @@ export class MockApiClient extends ApiClient {
         email: 'manager@hairtalkz.com',
         name: 'Emma Rodriguez',
         roles: ['manager'],
-        organization_id: 'org-hairtalkz-001',
+        organization_id: 'org-hairtalkz-001'
       },
       {
         id: 'user-003',
         email: 'stylist@hairtalkz.com',
         name: 'Lisa Chen',
         roles: ['stylist'],
-        organization_id: 'org-hairtalkz-001',
-      },
+        organization_id: 'org-hairtalkz-001'
+      }
     ])
 
     // Mock dashboard metrics
@@ -51,17 +51,17 @@ export class MockApiClient extends ApiClient {
       todaysSales: {
         amount: 3250.75,
         currency: 'AED',
-        change: 18.5,
+        change: 18.5
       },
       upcomingAppointments: {
         count: 8,
-        next: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
+        next: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString() // 2 hours from now
       },
       lowStock: {
         count: 3,
-        items: ['Shampoo - Moisturizing', 'Hair Color - Blonde #7', 'Nail Polish - Red'],
+        items: ['Shampoo - Moisturizing', 'Hair Color - Blonde #7', 'Nail Polish - Red']
       },
-      organization_id: 'org-hairtalkz-001',
+      organization_id: 'org-hairtalkz-001'
     })
   }
 
@@ -96,11 +96,11 @@ export class MockApiClient extends ApiClient {
 
   private async handleMockLogin(body: any): Promise<LoginResponse> {
     const { email, password } = body as { email: string; password: string }
-    
+
     // Simulate authentication logic
     const users = this.mockData.get('users') as User[]
     const user = users.find(u => u.email === email)
-    
+
     if (!user) {
       throw new Error('Invalid email or password')
     }
@@ -121,7 +121,7 @@ export class MockApiClient extends ApiClient {
     return {
       token,
       user,
-      expires_at: expiresAt,
+      expires_at: expiresAt
     }
   }
 
@@ -132,34 +132,36 @@ export class MockApiClient extends ApiClient {
     return Promise.resolve()
   }
 
-  private async handleMockDashboardMetrics(params?: Record<string, any>): Promise<DashboardMetrics> {
+  private async handleMockDashboardMetrics(
+    params?: Record<string, any>
+  ): Promise<DashboardMetrics> {
     const orgId = params?.organization_id || this.currentUser?.organization_id
-    
+
     if (!orgId) {
       throw new Error('Organization ID required')
     }
 
     const metrics = this.mockData.get('dashboard-metrics') as DashboardMetrics
-    
+
     // Simulate some variance in the data
     const variance = () => (Math.random() - 0.5) * 0.1 // ±5% variance
-    
+
     return {
       ...metrics,
       todaysSales: {
         ...metrics.todaysSales,
         amount: metrics.todaysSales.amount * (1 + variance()),
-        change: metrics.todaysSales.change! * (1 + variance()),
+        change: metrics.todaysSales.change! * (1 + variance())
       },
       upcomingAppointments: {
         ...metrics.upcomingAppointments,
-        count: Math.max(0, metrics.upcomingAppointments.count + Math.floor(variance() * 10)),
+        count: Math.max(0, metrics.upcomingAppointments.count + Math.floor(variance() * 10))
       },
       lowStock: {
         ...metrics.lowStock,
-        count: Math.max(0, metrics.lowStock.count + Math.floor(variance() * 5)),
+        count: Math.max(0, metrics.lowStock.count + Math.floor(variance() * 5))
       },
-      organization_id: orgId,
+      organization_id: orgId
     }
   }
 

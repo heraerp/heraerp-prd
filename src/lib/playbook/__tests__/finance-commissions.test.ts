@@ -3,11 +3,7 @@
  * Tests the commission calculation and validation logic
  */
 
-import { 
-  postEventWithBranch, 
-  postPosSaleWithCommission,
-  validators 
-} from '../finance-commissions'
+import { postEventWithBranch, postPosSaleWithCommission, validators } from '../finance-commissions'
 
 const { assertBranchOnEvent, assertCommissionOnPosSale, validateBalancedLines } = validators
 
@@ -145,7 +141,9 @@ describe('POS Posting Wrapper Tests', () => {
 
       const result = assertCommissionOnPosSale(transactionData)
       expect(result.isValid).toBe(false)
-      expect(result.errors).toContain('Transaction must be a POS sale to require commission validation')
+      expect(result.errors).toContain(
+        'Transaction must be a POS sale to require commission validation'
+      )
     })
 
     it('should fail when no service lines with stylists', () => {
@@ -172,7 +170,9 @@ describe('POS Posting Wrapper Tests', () => {
 
       const result = assertCommissionOnPosSale(transactionData)
       expect(result.isValid).toBe(false)
-      expect(result.errors).toContain('POS sale must have at least one service line with assigned stylist')
+      expect(result.errors).toContain(
+        'POS sale must have at least one service line with assigned stylist'
+      )
     })
 
     it('should fail when service line missing stylist_id', () => {
@@ -448,7 +448,9 @@ describe('POS Posting Wrapper Tests', () => {
       expect(balanceValidation.isValid).toBe(true)
 
       // All validations should pass for a properly structured POS sale
-      expect(branchValidation.isValid && commissionValidation.isValid && balanceValidation.isValid).toBe(true)
+      expect(
+        branchValidation.isValid && commissionValidation.isValid && balanceValidation.isValid
+      ).toBe(true)
     })
   })
 })

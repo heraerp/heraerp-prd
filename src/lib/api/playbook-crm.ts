@@ -1,4 +1,12 @@
-import type { CRMQuery, PageResult, Lead, Opportunity, Activity, PipelineSummary, Funnel } from '@/lib/playbook/crm/types'
+import type {
+  CRMQuery,
+  PageResult,
+  Lead,
+  Opportunity,
+  Activity,
+  PipelineSummary,
+  Funnel
+} from '@/lib/playbook/crm/types'
 
 const base = '/api/playbook/crm'
 
@@ -37,5 +45,5 @@ export const playbookCrmApi = {
     const res = await fetch(`${base}/funnel?${toParams(q)}`, { cache: 'no-store' })
     if (!res.ok) throw new Error('Failed to load funnel')
     return res.json()
-  },
+  }
 }

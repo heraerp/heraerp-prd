@@ -353,11 +353,19 @@ export function HeraChatInterface({
             )}
             <div>
               <h1
-                className={cn('text-xl font-semibold', isDarkMode ? 'text-foreground' : 'text-gray-900')}
+                className={cn(
+                  'text-xl font-semibold',
+                  isDarkMode ? 'text-foreground' : 'text-gray-900'
+                )}
               >
                 {title}
               </h1>
-              <p className={cn('text-sm', isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground')}>
+              <p
+                className={cn(
+                  'text-sm',
+                  isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground'
+                )}
+              >
                 {subtitle}
               </p>
             </div>
@@ -428,7 +436,10 @@ export function HeraChatInterface({
                             )}
                           >
                             <action.icon
-                              className={cn('h-3 w-3', isDarkMode ? 'text-foreground' : 'text-gray-700')}
+                              className={cn(
+                                'h-3 w-3',
+                                isDarkMode ? 'text-foreground' : 'text-gray-700'
+                              )}
                             />
                           </div>
                           <div className="text-left">
@@ -440,7 +451,9 @@ export function HeraChatInterface({
                             >
                               {action.label}
                             </div>
-                            <div className="text-[10px] text-muted-foreground">{action.description}</div>
+                            <div className="text-[10px] text-muted-foreground">
+                              {action.description}
+                            </div>
                           </div>
                         </Button>
                       ))}
@@ -480,9 +493,7 @@ export function HeraChatInterface({
                           key={idx}
                           className={cn(
                             'p-2 rounded border',
-                            isDarkMode
-                              ? 'bg-[#323232] border-[#3a3a3a]'
-                              : 'bg-muted border-border'
+                            isDarkMode ? 'bg-[#323232] border-[#3a3a3a]' : 'bg-muted border-border'
                           )}
                         >
                           <div className="flex items-center gap-1.5">
@@ -765,7 +776,10 @@ export function HeraChatInterface({
                     )}
                   >
                     <p
-                      className={cn('text-xs mb-2', isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground')}
+                      className={cn(
+                        'text-xs mb-2',
+                        isDarkMode ? 'text-muted-foreground' : 'text-muted-foreground'
+                      )}
                     >
                       Try these examples:
                     </p>

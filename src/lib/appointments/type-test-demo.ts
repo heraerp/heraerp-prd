@@ -4,13 +4,13 @@
 // Demonstrates TypeScript type safety for appointment system
 // ================================================================================
 
-import type { 
-  DraftInput, 
-  LineInput, 
-  AppointmentStatus, 
+import type {
+  DraftInput,
+  LineInput,
+  AppointmentStatus,
   SmartCodes,
-  Customer, 
-  Service, 
+  Customer,
+  Service,
   CartItem,
   AppointmentRecord
 } from './types'
@@ -43,14 +43,14 @@ const validLines: LineInput = {
       type: 'SERVICE',
       entityId: 'service-hair-cut',
       qty: 1,
-      unitAmount: 65.00,
+      unitAmount: 65.0,
       durationMin: 45
     },
     {
-      type: 'PRODUCT', 
+      type: 'PRODUCT',
       entityId: 'product-shampoo',
       qty: 2,
-      unitAmount: 25.00
+      unitAmount: 25.0
       // durationMin is optional for products
     }
   ]
@@ -86,7 +86,7 @@ const hairCutService: Service = {
   entity_name: 'Premium Hair Cut',
   entity_code: 'SVC-HAIRCUT',
   metadata: {
-    price: 65.00,
+    price: 65.0,
     duration_minutes: 45,
     category: 'styling'
   }
@@ -119,7 +119,7 @@ const appointmentRecord: AppointmentRecord = {
   id: 'apt-20240115-001',
   transaction_date: '2024-01-15T10:00:00.000Z',
   transaction_code: 'APT-20240115-001',
-  total_amount: 115.50,
+  total_amount: 115.5,
   metadata: {
     status: 'CONFIRMED',
     customer_name: 'Sarah Johnson',
@@ -153,32 +153,43 @@ export type TypeSafetyTests = {
     startAt: string
     durationMin: number
     customerEntityId: string
-  } ? true : 'Missing required fields'
-  
+  }
+    ? true
+    : 'Missing required fields'
+
   lineInputHasCorrectStructure: LineInput['items'][0] extends {
     type: 'SERVICE' | 'PRODUCT'
     entityId: string
     qty: number
     unitAmount: number
-  } ? true : 'Incorrect item structure'
-  
-  smartCodesAreReadonly: SmartCodes['APPOINTMENT_HEADER'] extends string 
-    ? true : 'Smart codes should be strings'
-  
-  statusUnionIsCorrect: AppointmentStatus extends 
-    'DRAFT' | 'CONFIRMED' | 'IN_SERVICE' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW'
-    ? true : 'Status union incomplete'
+  }
+    ? true
+    : 'Incorrect item structure'
+
+  smartCodesAreReadonly: SmartCodes['APPOINTMENT_HEADER'] extends string
+    ? true
+    : 'Smart codes should be strings'
+
+  statusUnionIsCorrect: AppointmentStatus extends
+    | 'DRAFT'
+    | 'CONFIRMED'
+    | 'IN_SERVICE'
+    | 'COMPLETED'
+    | 'CANCELLED'
+    | 'NO_SHOW'
+    ? true
+    : 'Status union incomplete'
 }
 
 // Verify all types pass
 const typeTests: TypeSafetyTests = {
   draftHasRequiredFields: true,
-  lineInputHasCorrectStructure: true, 
+  lineInputHasCorrectStructure: true,
   smartCodesAreReadonly: true,
   statusUnionIsCorrect: true
 }
 
-export { 
+export {
   validDraft,
   draftWithOptionals,
   validLines,

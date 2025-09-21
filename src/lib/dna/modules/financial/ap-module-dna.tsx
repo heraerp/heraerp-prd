@@ -450,10 +450,12 @@ export function APModule({
                           </div>
                           <div className="grid grid-cols-3 gap-4 text-sm">
                             <div>
-                              <span className="text-muted-foreground">Code:</span> {vendor.vendorCode}
+                              <span className="text-muted-foreground">Code:</span>{' '}
+                              {vendor.vendorCode}
                             </div>
                             <div>
-                              <span className="text-muted-foreground">Terms:</span> {vendor.paymentTerms}
+                              <span className="text-muted-foreground">Terms:</span>{' '}
+                              {vendor.paymentTerms}
                             </div>
                             <div>
                               <span className="text-muted-foreground">Credit Limit:</span> $

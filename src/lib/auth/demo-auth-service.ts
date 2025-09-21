@@ -60,7 +60,7 @@ class DemoAuthService {
       const response = await fetch('/api/v1/demo/initialize', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ demoType })
       })
@@ -75,7 +75,7 @@ class DemoAuthService {
       }
 
       const result = await response.json()
-      
+
       if (!result.success) {
         return result
       }
@@ -87,12 +87,11 @@ class DemoAuthService {
       })
 
       return result
-
     } catch (error) {
       console.error('💥 Demo session initialization error:', error)
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       }
     }
   }
@@ -118,9 +117,9 @@ class DemoAuthService {
 
       if (error || !userEntity) {
         console.error('❌ HERA user entity not found:', error)
-        return { 
-          success: false, 
-          error: `Demo user not found: ${supabaseUserId}` 
+        return {
+          success: false,
+          error: `Demo user not found: ${supabaseUserId}`
         }
       }
 
@@ -141,12 +140,11 @@ class DemoAuthService {
           expires_at: ''
         }
       }
-
     } catch (error) {
       console.error('💥 HERA user resolution error:', error)
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'User resolution failed' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'User resolution failed'
       }
     }
   }
@@ -155,8 +153,8 @@ class DemoAuthService {
    * Log demo session start as universal transaction (Audit Trail)
    */
   private async logDemoSessionStart(
-    userEntityId: string, 
-    organizationId: string, 
+    userEntityId: string,
+    organizationId: string,
     demoType: DemoUserType
   ): Promise<void> {
     try {
@@ -166,36 +164,34 @@ class DemoAuthService {
         return
       }
 
-      const { error } = await supabase
-        .from('universal_transactions')
-        .insert({
-          organization_id: organizationId,
-          transaction_type: 'demo_session_start',
-          smart_code: 'HERA.SEC.DEMO.SESSION.START.V1',
-          source_entity_id: userEntityId,
-          total_amount: 0,
-          transaction_status: 'completed',
-          ai_confidence: 1.0,
-          ai_classification: {
-            category: 'demo_session',
-            type: 'authentication'
-          },
-          ai_insights: {
-            demo_type: demoType,
-            session_purpose: 'demonstration',
-            security_level: 'demo'
-          },
-          business_context: {
-            demo_user: true,
-            session_type: 'demonstration',
-            expires_after: '30_minutes'
-          },
-          metadata: {
-            demo_type: demoType,
-            session_start: new Date().toISOString(),
-            user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : 'server'
-          }
-        })
+      const { error } = await supabase.from('universal_transactions').insert({
+        organization_id: organizationId,
+        transaction_type: 'demo_session_start',
+        smart_code: 'HERA.SEC.DEMO.SESSION.START.V1',
+        source_entity_id: userEntityId,
+        total_amount: 0,
+        transaction_status: 'completed',
+        ai_confidence: 1.0,
+        ai_classification: {
+          category: 'demo_session',
+          type: 'authentication'
+        },
+        ai_insights: {
+          demo_type: demoType,
+          session_purpose: 'demonstration',
+          security_level: 'demo'
+        },
+        business_context: {
+          demo_user: true,
+          session_type: 'demonstration',
+          expires_after: '30_minutes'
+        },
+        metadata: {
+          demo_type: demoType,
+          session_start: new Date().toISOString(),
+          user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : 'server'
+        }
+      })
 
       if (error) {
         console.error('⚠️ Demo session audit log failed:', error)
@@ -203,7 +199,6 @@ class DemoAuthService {
       } else {
         console.log('📊 Demo session logged for audit trail')
       }
-
     } catch (error) {
       console.error('💥 Demo session audit error:', error)
       // Don't fail the session for audit log issues
@@ -233,7 +228,6 @@ class DemoAuthService {
         localStorage.setItem('hera_session_context', JSON.stringify(sessionContext))
         console.log('🔐 HERA Session context set:', sessionContext)
       }
-
     } catch (error) {
       console.error('💥 Session context setup error:', error)
     }
@@ -244,9 +238,10 @@ class DemoAuthService {
    */
   hasScope(requiredScope: string, userScopes: string[]): boolean {
     // Exact match or wildcard match
-    return userScopes.some(scope => 
-      scope === requiredScope || 
-      scope.endsWith('*') && requiredScope.startsWith(scope.slice(0, -1))
+    return userScopes.some(
+      scope =>
+        scope === requiredScope ||
+        (scope.endsWith('*') && requiredScope.startsWith(scope.slice(0, -1)))
     )
   }
 
@@ -261,10 +256,9 @@ class DemoAuthService {
   } | null {
     try {
       if (typeof window === 'undefined') return null
-      
+
       const contextStr = localStorage.getItem('hera_session_context')
       return contextStr ? JSON.parse(contextStr) : null
-      
     } catch (error) {
       console.error('💥 Session context retrieval error:', error)
       return null
@@ -277,19 +271,18 @@ class DemoAuthService {
   async clearDemoSession(): Promise<void> {
     try {
       const supabase = this.getSupabaseClient()
-      
+
       // Sign out from Supabase if available
       if (supabase) {
         await supabase.auth.signOut()
       }
-      
+
       // Clear session context
       if (typeof window !== 'undefined') {
         localStorage.removeItem('hera_session_context')
       }
-      
+
       console.log('🧹 Demo session cleared')
-      
     } catch (error) {
       console.error('💥 Session clearing error:', error)
     }

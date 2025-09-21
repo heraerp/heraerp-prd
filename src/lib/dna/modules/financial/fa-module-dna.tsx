@@ -799,7 +799,8 @@ export function FAModule({
                             </div>
                             <div className="grid grid-cols-4 gap-4 text-sm">
                               <div>
-                                <span className="text-muted-foreground">Code:</span> {asset.assetCode}
+                                <span className="text-muted-foreground">Code:</span>{' '}
+                                {asset.assetCode}
                               </div>
                               <div>
                                 <span className="text-muted-foreground">Location:</span>{' '}
@@ -1116,7 +1117,9 @@ export function FAModule({
                               <td className="py-2">
                                 <div>
                                   <div className="font-medium">{asset.assetCode}</div>
-                                  <div className="text-xs text-muted-foreground">{asset.assetName}</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {asset.assetName}
+                                  </div>
                                 </div>
                               </td>
                               <td className="py-2 text-right">

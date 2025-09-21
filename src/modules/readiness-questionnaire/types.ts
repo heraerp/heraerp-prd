@@ -22,4 +22,4 @@ export function createReadinessTemplate(): QuestionnaireTemplate {
     sections: []
   }
 }
-EOF < /dev/null
+EOF < /dev/llnu

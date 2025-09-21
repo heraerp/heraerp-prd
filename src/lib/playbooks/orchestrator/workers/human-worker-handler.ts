@@ -1,61 +1,61 @@
 /**
  * HERA Playbooks Human Worker Handler
- * 
+ *
  * Handles human task assignment, notifications, role-based access control,
  * and approval workflows with time tracking and performance measurement.
  */
 
-import { universalApi } from '@/lib/universal-api';
-import { ExecutionResult } from '../playbook-orchestrator-daemon';
-import { PlaybookSmartCodes } from '../../smart-codes/playbook-smart-codes';
+import { universalApi } from '@/lib/universal-api'
+import { ExecutionResult } from '../playbook-orchestrator-daemon'
+import { PlaybookSmartCodes } from '../../smart-codes/playbook-smart-codes'
 
 export interface HumanStepRequest {
-  step_id: string;
-  step_name: string;
-  step_type: 'human';
-  worker_type: string;
-  input_data: Record<string, any>;
-  metadata: Record<string, any>;
+  step_id: string
+  step_name: string
+  step_type: 'human'
+  worker_type: string
+  input_data: Record<string, any>
+  metadata: Record<string, any>
   run_context: {
-    run_id: string;
-    playbook_id: string;
-    organization_id: string;
-    execution_context: Record<string, any>;
-  };
+    run_id: string
+    playbook_id: string
+    organization_id: string
+    execution_context: Record<string, any>
+  }
 }
 
 export interface HumanTaskAssignment {
-  task_id: string;
-  step_id: string;
-  assigned_to: string | null;
-  assigned_role: string;
-  status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'escalated';
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  due_date: string;
-  estimated_duration_minutes: number;
-  created_at: string;
-  assigned_at?: string;
-  started_at?: string;
-  completed_at?: string;
+  task_id: string
+  step_id: string
+  assigned_to: string | null
+  assigned_role: string
+  status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'escalated'
+  priority: 'low' | 'normal' | 'high' | 'urgent'
+  due_date: string
+  estimated_duration_minutes: number
+  created_at: string
+  assigned_at?: string
+  started_at?: string
+  completed_at?: string
 }
 
 export interface HumanWorkerConfig {
-  assignment_strategy: 'round_robin' | 'skill_based' | 'workload_balanced' | 'manual';
-  auto_assignment_enabled: boolean;
-  escalation_timeout_minutes: number;
-  notification_channels: string[];
-  approval_threshold: number;
-  max_concurrent_tasks_per_user: number;
-  skill_matching_enabled: boolean;
+  assignment_strategy: 'round_robin' | 'skill_based' | 'workload_balanced' | 'manual'
+  auto_assignment_enabled: boolean
+  escalation_timeout_minutes: number
+  notification_channels: string[]
+  approval_threshold: number
+  max_concurrent_tasks_per_user: number
+  skill_matching_enabled: boolean
 }
 
 /**
  * HumanWorkerHandler - Human task management and workflow orchestration
  */
 export class HumanWorkerHandler {
-  private config: HumanWorkerConfig;
-  private pendingTasks = new Map<string, HumanTaskAssignment>();
-  private activeTasks = new Map<string, HumanTaskAssignment>();
+  private config: HumanWorkerConfig
+  private pendingTasks = new Map<string, HumanTaskAssignment>()
+  private activeTasks = new Map<string, HumanTaskAssignment>()
 
   constructor(config?: Partial<HumanWorkerConfig>) {
     this.config = {
@@ -67,26 +67,26 @@ export class HumanWorkerHandler {
       max_concurrent_tasks_per_user: 5,
       skill_matching_enabled: true,
       ...config
-    };
+    }
   }
 
   /**
    * Execute human step - creates task assignment and manages workflow
    */
   async executeStep(request: HumanStepRequest): Promise<ExecutionResult> {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     try {
-      console.log(`Human worker processing: ${request.step_name} (${request.worker_type})`);
+      console.log(`Human worker processing: ${request.step_name} (${request.worker_type})`)
 
       // Set organization context
-      universalApi.setOrganizationId(request.run_context.organization_id);
+      universalApi.setOrganizationId(request.run_context.organization_id)
 
       // Create human task assignment
-      const taskAssignment = await this.createTaskAssignment(request);
+      const taskAssignment = await this.createTaskAssignment(request)
 
       // Handle different human worker types
-      const result = await this.routeToHumanWorker(request, taskAssignment);
+      const result = await this.routeToHumanWorker(request, taskAssignment)
 
       return {
         success: true,
@@ -96,10 +96,9 @@ export class HumanWorkerHandler {
           worker_id: `human-${taskAssignment.task_id}`,
           worker_type: request.worker_type
         }
-      };
-
+      }
     } catch (error) {
-      console.error(`Human worker error for ${request.step_name}:`, error);
+      console.error(`Human worker error for ${request.step_name}:`, error)
 
       return {
         success: false,
@@ -113,7 +112,7 @@ export class HumanWorkerHandler {
           recoverable: true // Human errors are generally recoverable
         },
         duration_ms: Date.now() - startTime
-      };
+      }
     }
   }
 
@@ -121,11 +120,11 @@ export class HumanWorkerHandler {
    * Create task assignment in HERA universal tables
    */
   private async createTaskAssignment(request: HumanStepRequest): Promise<HumanTaskAssignment> {
-    const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const requiredRoles = request.metadata.required_roles || ['user'];
-    const priority = this.determinePriority(request);
-    const estimatedDuration = request.metadata.estimated_duration_minutes || 30;
-    
+    const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const requiredRoles = request.metadata.required_roles || ['user']
+    const priority = this.determinePriority(request)
+    const estimatedDuration = request.metadata.estimated_duration_minutes || 30
+
     // Create task as universal_transaction
     const taskTransaction = await universalApi.createTransaction({
       transaction_type: 'human_task',
@@ -150,7 +149,7 @@ export class HumanWorkerHandler {
         created_at: new Date().toISOString(),
         due_date: new Date(Date.now() + estimatedDuration * 60 * 1000).toISOString()
       }
-    });
+    })
 
     const taskAssignment: HumanTaskAssignment = {
       task_id: taskId,
@@ -162,53 +161,52 @@ export class HumanWorkerHandler {
       due_date: new Date(Date.now() + estimatedDuration * 60 * 1000).toISOString(),
       estimated_duration_minutes: estimatedDuration,
       created_at: new Date().toISOString()
-    };
+    }
 
-    this.pendingTasks.set(taskId, taskAssignment);
+    this.pendingTasks.set(taskId, taskAssignment)
 
     // Attempt auto-assignment if enabled
     if (this.config.auto_assignment_enabled) {
-      await this.attemptAutoAssignment(taskAssignment, requiredRoles);
+      await this.attemptAutoAssignment(taskAssignment, requiredRoles)
     }
 
     // Send notifications
-    await this.sendTaskNotifications(taskAssignment, 'task_created');
+    await this.sendTaskNotifications(taskAssignment, 'task_created')
 
-    return taskAssignment;
+    return taskAssignment
   }
 
   /**
    * Route to specific human worker implementation
    */
   private async routeToHumanWorker(
-    request: HumanStepRequest, 
+    request: HumanStepRequest,
     taskAssignment: HumanTaskAssignment
   ): Promise<{ output_data: Record<string, any> }> {
-    
     switch (request.worker_type) {
       case 'approval_manager':
-        return await this.executeApprovalManager(request, taskAssignment);
-      
+        return await this.executeApprovalManager(request, taskAssignment)
+
       case 'document_reviewer':
-        return await this.executeDocumentReviewer(request, taskAssignment);
-      
+        return await this.executeDocumentReviewer(request, taskAssignment)
+
       case 'data_entry_specialist':
-        return await this.executeDataEntrySpecialist(request, taskAssignment);
-      
+        return await this.executeDataEntrySpecialist(request, taskAssignment)
+
       case 'quality_inspector':
-        return await this.executeQualityInspector(request, taskAssignment);
-      
+        return await this.executeQualityInspector(request, taskAssignment)
+
       case 'customer_service_rep':
-        return await this.executeCustomerServiceRep(request, taskAssignment);
-      
+        return await this.executeCustomerServiceRep(request, taskAssignment)
+
       case 'financial_analyst':
-        return await this.executeFinancialAnalyst(request, taskAssignment);
-      
+        return await this.executeFinancialAnalyst(request, taskAssignment)
+
       case 'project_manager':
-        return await this.executeProjectManager(request, taskAssignment);
-      
+        return await this.executeProjectManager(request, taskAssignment)
+
       default:
-        return await this.executeGenericHumanTask(request, taskAssignment);
+        return await this.executeGenericHumanTask(request, taskAssignment)
     }
   }
 
@@ -216,10 +214,9 @@ export class HumanWorkerHandler {
    * Approval manager workflow
    */
   private async executeApprovalManager(
-    request: HumanStepRequest, 
+    request: HumanStepRequest,
     taskAssignment: HumanTaskAssignment
   ): Promise<{ output_data: Record<string, any> }> {
-    
     const approvalRequest = {
       approval_type: request.metadata.approval_type || 'general',
       approval_amount: request.input_data.amount || 0,
@@ -227,10 +224,10 @@ export class HumanWorkerHandler {
       requires_approvals: this.config.approval_threshold,
       approval_deadline: taskAssignment.due_date,
       escalation_path: request.metadata.escalation_path || []
-    };
+    }
 
     // Create approval workflow
-    const approvalWorkflow = await this.createApprovalWorkflow(approvalRequest, taskAssignment);
+    const approvalWorkflow = await this.createApprovalWorkflow(approvalRequest, taskAssignment)
 
     return {
       output_data: {
@@ -243,22 +240,25 @@ export class HumanWorkerHandler {
         workflow_type: 'approval_manager',
         tracking_url: `/tasks/${taskAssignment.task_id}`
       }
-    };
+    }
   }
 
   /**
    * Document reviewer workflow
    */
   private async executeDocumentReviewer(
-    request: HumanStepRequest, 
+    request: HumanStepRequest,
     taskAssignment: HumanTaskAssignment
   ): Promise<{ output_data: Record<string, any> }> {
-    
-    const documents = request.input_data.documents || [];
-    const reviewCriteria = request.metadata.review_criteria || ['completeness', 'accuracy', 'compliance'];
+    const documents = request.input_data.documents || []
+    const reviewCriteria = request.metadata.review_criteria || [
+      'completeness',
+      'accuracy',
+      'compliance'
+    ]
 
     // Create document review checklist
-    const reviewChecklist = await this.createDocumentReviewChecklist(documents, reviewCriteria);
+    const reviewChecklist = await this.createDocumentReviewChecklist(documents, reviewCriteria)
 
     return {
       output_data: {
@@ -271,23 +271,26 @@ export class HumanWorkerHandler {
         workflow_type: 'document_reviewer',
         tracking_url: `/tasks/${taskAssignment.task_id}`
       }
-    };
+    }
   }
 
   /**
    * Data entry specialist workflow
    */
   private async executeDataEntrySpecialist(
-    request: HumanStepRequest, 
+    request: HumanStepRequest,
     taskAssignment: HumanTaskAssignment
   ): Promise<{ output_data: Record<string, any> }> {
-    
-    const dataTemplate = request.metadata.data_template || {};
-    const validationRules = request.metadata.validation_rules || [];
-    const requiredFields = request.metadata.required_fields || [];
+    const dataTemplate = request.metadata.data_template || {}
+    const validationRules = request.metadata.validation_rules || []
+    const requiredFields = request.metadata.required_fields || []
 
     // Create data entry form
-    const dataEntryForm = await this.createDataEntryForm(dataTemplate, validationRules, requiredFields);
+    const dataEntryForm = await this.createDataEntryForm(
+      dataTemplate,
+      validationRules,
+      requiredFields
+    )
 
     return {
       output_data: {
@@ -301,18 +304,17 @@ export class HumanWorkerHandler {
         workflow_type: 'data_entry_specialist',
         tracking_url: `/tasks/${taskAssignment.task_id}`
       }
-    };
+    }
   }
 
   /**
    * Generic human task workflow
    */
   private async executeGenericHumanTask(
-    request: HumanStepRequest, 
+    request: HumanStepRequest,
     taskAssignment: HumanTaskAssignment
   ): Promise<{ output_data: Record<string, any> }> {
-    
-    console.log(`Creating generic human task: ${request.worker_type}`);
+    console.log(`Creating generic human task: ${request.worker_type}`)
 
     // Create basic task structure
     const taskStructure = {
@@ -322,7 +324,7 @@ export class HumanWorkerHandler {
       estimated_duration: taskAssignment.estimated_duration_minutes,
       required_skills: request.metadata.required_skills || [],
       priority: taskAssignment.priority
-    };
+    }
 
     return {
       output_data: {
@@ -334,54 +336,56 @@ export class HumanWorkerHandler {
         workflow_type: request.worker_type,
         tracking_url: `/tasks/${taskAssignment.task_id}`
       }
-    };
+    }
   }
 
   // Helper methods
 
   private determinePriority(request: HumanStepRequest): 'low' | 'normal' | 'high' | 'urgent' {
-    const runPriority = request.run_context.execution_context?.priority;
-    const stepPriority = request.metadata.priority;
-    
-    if (stepPriority === 'urgent' || runPriority === 'critical') return 'urgent';
-    if (stepPriority === 'high' || runPriority === 'high') return 'high';
-    if (stepPriority === 'low' || runPriority === 'low') return 'low';
-    
-    return 'normal';
+    const runPriority = request.run_context.execution_context?.priority
+    const stepPriority = request.metadata.priority
+
+    if (stepPriority === 'urgent' || runPriority === 'critical') return 'urgent'
+    if (stepPriority === 'high' || runPriority === 'high') return 'high'
+    if (stepPriority === 'low' || runPriority === 'low') return 'low'
+
+    return 'normal'
   }
 
   private async attemptAutoAssignment(
-    taskAssignment: HumanTaskAssignment, 
+    taskAssignment: HumanTaskAssignment,
     requiredRoles: string[]
   ): Promise<void> {
-    
     // Find eligible users based on roles and workload
-    const eligibleUsers = await this.findEligibleUsers(requiredRoles, taskAssignment);
-    
+    const eligibleUsers = await this.findEligibleUsers(requiredRoles, taskAssignment)
+
     if (eligibleUsers.length > 0) {
-      let selectedUser;
-      
+      let selectedUser
+
       switch (this.config.assignment_strategy) {
         case 'round_robin':
-          selectedUser = await this.selectUserRoundRobin(eligibleUsers);
-          break;
+          selectedUser = await this.selectUserRoundRobin(eligibleUsers)
+          break
         case 'skill_based':
-          selectedUser = await this.selectUserBySkill(eligibleUsers, taskAssignment);
-          break;
+          selectedUser = await this.selectUserBySkill(eligibleUsers, taskAssignment)
+          break
         case 'workload_balanced':
-          selectedUser = await this.selectUserByWorkload(eligibleUsers);
-          break;
+          selectedUser = await this.selectUserByWorkload(eligibleUsers)
+          break
         default:
-          selectedUser = eligibleUsers[0];
+          selectedUser = eligibleUsers[0]
       }
-      
+
       if (selectedUser) {
-        await this.assignTaskToUser(taskAssignment, selectedUser);
+        await this.assignTaskToUser(taskAssignment, selectedUser)
       }
     }
   }
 
-  private async findEligibleUsers(requiredRoles: string[], taskAssignment: HumanTaskAssignment): Promise<any[]> {
+  private async findEligibleUsers(
+    requiredRoles: string[],
+    taskAssignment: HumanTaskAssignment
+  ): Promise<any[]> {
     // Query users with required roles
     const usersResult = await universalApi.queryEntities({
       filters: {
@@ -390,73 +394,73 @@ export class HumanWorkerHandler {
         status: 'active'
       },
       limit: 50
-    });
+    })
 
     // Filter by role compatibility and workload
-    const eligibleUsers = [];
-    
+    const eligibleUsers = []
+
     for (const user of usersResult.data) {
-      const userRoles = user.metadata?.roles || [];
-      const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
-      
+      const userRoles = user.metadata?.roles || []
+      const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role))
+
       if (hasRequiredRole) {
-        const currentWorkload = await this.getUserCurrentWorkload(user.id);
+        const currentWorkload = await this.getUserCurrentWorkload(user.id)
         if (currentWorkload < this.config.max_concurrent_tasks_per_user) {
           eligibleUsers.push({
             ...user,
             current_workload: currentWorkload
-          });
+          })
         }
       }
     }
 
-    return eligibleUsers;
+    return eligibleUsers
   }
 
   private async selectUserRoundRobin(users: any[]): Promise<any> {
     // Simple round-robin selection (would use persistent state in production)
-    return users[0];
+    return users[0]
   }
 
   private async selectUserBySkill(users: any[], taskAssignment: HumanTaskAssignment): Promise<any> {
     // Score users by skill match
     const scoredUsers = users.map(user => {
-      const userSkills = user.metadata?.skills || [];
-      const requiredSkills = taskAssignment.step_id || []; // Would get from step metadata
-      
-      const skillScore = this.calculateSkillMatch(userSkills, requiredSkills);
-      
+      const userSkills = user.metadata?.skills || []
+      const requiredSkills = taskAssignment.step_id || [] // Would get from step metadata
+
+      const skillScore = this.calculateSkillMatch(userSkills, requiredSkills)
+
       return {
         ...user,
         skill_score: skillScore
-      };
-    });
+      }
+    })
 
     // Sort by skill score and select highest
-    scoredUsers.sort((a, b) => b.skill_score - a.skill_score);
-    return scoredUsers[0];
+    scoredUsers.sort((a, b) => b.skill_score - a.skill_score)
+    return scoredUsers[0]
   }
 
   private async selectUserByWorkload(users: any[]): Promise<any> {
     // Select user with lowest current workload
-    users.sort((a, b) => a.current_workload - b.current_workload);
-    return users[0];
+    users.sort((a, b) => a.current_workload - b.current_workload)
+    return users[0]
   }
 
   private async assignTaskToUser(taskAssignment: HumanTaskAssignment, user: any): Promise<void> {
-    taskAssignment.assigned_to = user.id;
-    taskAssignment.status = 'assigned';
-    taskAssignment.assigned_at = new Date().toISOString();
-    
+    taskAssignment.assigned_to = user.id
+    taskAssignment.status = 'assigned'
+    taskAssignment.assigned_at = new Date().toISOString()
+
     // Move from pending to active
-    this.pendingTasks.delete(taskAssignment.task_id);
-    this.activeTasks.set(taskAssignment.task_id, taskAssignment);
-    
+    this.pendingTasks.delete(taskAssignment.task_id)
+    this.activeTasks.set(taskAssignment.task_id, taskAssignment)
+
     // Update in database
-    await this.updateTaskAssignment(taskAssignment);
-    
+    await this.updateTaskAssignment(taskAssignment)
+
     // Send assignment notification
-    await this.sendTaskNotifications(taskAssignment, 'task_assigned');
+    await this.sendTaskNotifications(taskAssignment, 'task_assigned')
   }
 
   private async getUserCurrentWorkload(userId: string): Promise<number> {
@@ -466,23 +470,22 @@ export class HumanWorkerHandler {
         'metadata->>assigned_to': userId,
         'metadata->>status': ['assigned', 'in_progress']
       }
-    });
+    })
 
-    return activeTasksResult.data.length;
+    return activeTasksResult.data.length
   }
 
   private calculateSkillMatch(userSkills: string[], requiredSkills: string[]): number {
-    if (requiredSkills.length === 0) return 50; // Neutral score
-    
-    const matchCount = requiredSkills.filter(skill => userSkills.includes(skill)).length;
-    return (matchCount / requiredSkills.length) * 100;
+    if (requiredSkills.length === 0) return 50 // Neutral score
+
+    const matchCount = requiredSkills.filter(skill => userSkills.includes(skill)).length
+    return (matchCount / requiredSkills.length) * 100
   }
 
   private async createApprovalWorkflow(
-    approvalRequest: any, 
+    approvalRequest: any,
     taskAssignment: HumanTaskAssignment
   ): Promise<any> {
-    
     return {
       approval_id: `approval_${taskAssignment.task_id}`,
       approval_type: approvalRequest.approval_type,
@@ -492,7 +495,7 @@ export class HumanWorkerHandler {
       approvers: [],
       approval_deadline: approvalRequest.approval_deadline,
       created_at: new Date().toISOString()
-    };
+    }
   }
 
   private async createDocumentReviewChecklist(documents: any[], criteria: string[]): Promise<any> {
@@ -510,10 +513,14 @@ export class HumanWorkerHandler {
       })),
       overall_status: 'pending',
       created_at: new Date().toISOString()
-    };
+    }
   }
 
-  private async createDataEntryForm(template: any, validationRules: any[], requiredFields: string[]): Promise<any> {
+  private async createDataEntryForm(
+    template: any,
+    validationRules: any[],
+    requiredFields: string[]
+  ): Promise<any> {
     return {
       form_id: `form_${Date.now()}`,
       template,
@@ -526,7 +533,7 @@ export class HumanWorkerHandler {
       })),
       completion_status: 'pending',
       created_at: new Date().toISOString()
-    };
+    }
   }
 
   private async updateTaskAssignment(taskAssignment: HumanTaskAssignment): Promise<void> {
@@ -537,10 +544,10 @@ export class HumanWorkerHandler {
         'metadata->>task_id': taskAssignment.task_id
       },
       limit: 1
-    });
+    })
 
     if (taskResult.data.length > 0) {
-      const taskTransaction = taskResult.data[0];
+      const taskTransaction = taskResult.data[0]
       await universalApi.updateTransaction(taskTransaction.id, {
         metadata: {
           ...taskTransaction.metadata,
@@ -549,13 +556,16 @@ export class HumanWorkerHandler {
           assigned_at: taskAssignment.assigned_at,
           updated_at: new Date().toISOString()
         }
-      });
+      })
     }
   }
 
-  private async sendTaskNotifications(taskAssignment: HumanTaskAssignment, eventType: string): Promise<void> {
-    console.log(`Sending ${eventType} notification for task ${taskAssignment.task_id}`);
-    
+  private async sendTaskNotifications(
+    taskAssignment: HumanTaskAssignment,
+    eventType: string
+  ): Promise<void> {
+    console.log(`Sending ${eventType} notification for task ${taskAssignment.task_id}`)
+
     // Create notification record
     await universalApi.createTransaction({
       transaction_type: 'notification',
@@ -570,59 +580,98 @@ export class HumanWorkerHandler {
         message: this.generateNotificationMessage(taskAssignment, eventType),
         sent_at: new Date().toISOString()
       }
-    });
+    })
   }
 
-  private generateNotificationMessage(taskAssignment: HumanTaskAssignment, eventType: string): string {
+  private generateNotificationMessage(
+    taskAssignment: HumanTaskAssignment,
+    eventType: string
+  ): string {
     switch (eventType) {
       case 'task_created':
-        return `New task created: ${taskAssignment.step_id} (Priority: ${taskAssignment.priority})`;
+        return `New task created: ${taskAssignment.step_id} (Priority: ${taskAssignment.priority})`
       case 'task_assigned':
-        return `Task assigned to you: ${taskAssignment.step_id} (Due: ${taskAssignment.due_date})`;
+        return `Task assigned to you: ${taskAssignment.step_id} (Due: ${taskAssignment.due_date})`
       case 'task_escalated':
-        return `Task escalated: ${taskAssignment.step_id} (Overdue)`;
+        return `Task escalated: ${taskAssignment.step_id} (Overdue)`
       default:
-        return `Task update: ${taskAssignment.step_id}`;
+        return `Task update: ${taskAssignment.step_id}`
     }
   }
 
   private categorizeError(error: any): string {
-    if (error.message?.includes('assignment')) return 'ASSIGNMENT_ERROR';
-    if (error.message?.includes('permission')) return 'PERMISSION_ERROR';
-    if (error.message?.includes('notification')) return 'NOTIFICATION_ERROR';
-    if (error.message?.includes('workload')) return 'WORKLOAD_ERROR';
-    return 'HUMAN_WORKFLOW_ERROR';
+    if (error.message?.includes('assignment')) return 'ASSIGNMENT_ERROR'
+    if (error.message?.includes('permission')) return 'PERMISSION_ERROR'
+    if (error.message?.includes('notification')) return 'NOTIFICATION_ERROR'
+    if (error.message?.includes('workload')) return 'WORKLOAD_ERROR'
+    return 'HUMAN_WORKFLOW_ERROR'
   }
 
   // Additional worker type handlers
 
-  private async executeQualityInspector(request: HumanStepRequest, taskAssignment: HumanTaskAssignment): Promise<{ output_data: Record<string, any> }> {
-    return { output_data: { task_created: true, task_id: taskAssignment.task_id, workflow_type: 'quality_inspector' } };
+  private async executeQualityInspector(
+    request: HumanStepRequest,
+    taskAssignment: HumanTaskAssignment
+  ): Promise<{ output_data: Record<string, any> }> {
+    return {
+      output_data: {
+        task_created: true,
+        task_id: taskAssignment.task_id,
+        workflow_type: 'quality_inspector'
+      }
+    }
   }
 
-  private async executeCustomerServiceRep(request: HumanStepRequest, taskAssignment: HumanTaskAssignment): Promise<{ output_data: Record<string, any> }> {
-    return { output_data: { task_created: true, task_id: taskAssignment.task_id, workflow_type: 'customer_service_rep' } };
+  private async executeCustomerServiceRep(
+    request: HumanStepRequest,
+    taskAssignment: HumanTaskAssignment
+  ): Promise<{ output_data: Record<string, any> }> {
+    return {
+      output_data: {
+        task_created: true,
+        task_id: taskAssignment.task_id,
+        workflow_type: 'customer_service_rep'
+      }
+    }
   }
 
-  private async executeFinancialAnalyst(request: HumanStepRequest, taskAssignment: HumanTaskAssignment): Promise<{ output_data: Record<string, any> }> {
-    return { output_data: { task_created: true, task_id: taskAssignment.task_id, workflow_type: 'financial_analyst' } };
+  private async executeFinancialAnalyst(
+    request: HumanStepRequest,
+    taskAssignment: HumanTaskAssignment
+  ): Promise<{ output_data: Record<string, any> }> {
+    return {
+      output_data: {
+        task_created: true,
+        task_id: taskAssignment.task_id,
+        workflow_type: 'financial_analyst'
+      }
+    }
   }
 
-  private async executeProjectManager(request: HumanStepRequest, taskAssignment: HumanTaskAssignment): Promise<{ output_data: Record<string, any> }> {
-    return { output_data: { task_created: true, task_id: taskAssignment.task_id, workflow_type: 'project_manager' } };
+  private async executeProjectManager(
+    request: HumanStepRequest,
+    taskAssignment: HumanTaskAssignment
+  ): Promise<{ output_data: Record<string, any> }> {
+    return {
+      output_data: {
+        task_created: true,
+        task_id: taskAssignment.task_id,
+        workflow_type: 'project_manager'
+      }
+    }
   }
 
   /**
    * Get worker status and metrics
    */
   getWorkerStatus(): {
-    pending_tasks: number;
-    active_tasks: number;
-    config: HumanWorkerConfig;
+    pending_tasks: number
+    active_tasks: number
+    config: HumanWorkerConfig
     assignment_metrics: {
-      auto_assignment_rate: number;
-      avg_assignment_time_minutes: number;
-    };
+      auto_assignment_rate: number
+      avg_assignment_time_minutes: number
+    }
   } {
     return {
       pending_tasks: this.pendingTasks.size,
@@ -632,6 +681,6 @@ export class HumanWorkerHandler {
         auto_assignment_rate: 75, // Would calculate from historical data
         avg_assignment_time_minutes: 15 // Would calculate from historical data
       }
-    };
+    }
   }
 }

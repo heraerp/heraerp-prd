@@ -11,11 +11,7 @@ export {
   useBottomSheet
 } from './BottomSheet'
 
-export {
-  PullToRefresh,
-  type PullToRefreshProps,
-  type PullToRefreshHandle
-} from './PullToRefresh'
+export { PullToRefresh, type PullToRefreshProps, type PullToRefreshHandle } from './PullToRefresh'
 
 // Mobile component registry
 export const MOBILE_COMPONENTS = {

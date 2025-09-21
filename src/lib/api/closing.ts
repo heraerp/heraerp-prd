@@ -172,7 +172,7 @@ export function useClosingApi(organizationId: string) {
         if (result) {
           return ClosingWorkflow.parse(result)
         }
-        
+
         // Return default workflow if none exists
         return {
           organization_id: organizationId,
@@ -242,7 +242,12 @@ export function useClosingApi(organizationId: string) {
   })
 
   const updateWorkflowStep = useMutation({
-    mutationFn: async ({ stepId, status, journalEntryId, errorMessage }: {
+    mutationFn: async ({
+      stepId,
+      status,
+      journalEntryId,
+      errorMessage
+    }: {
       stepId: string
       status: WorkflowStatus['_type']
       journalEntryId?: string
@@ -351,7 +356,7 @@ export function useClosingApi(organizationId: string) {
 
         // For each branch, get their closing status
         const branchStatuses = await Promise.all(
-          branches.map(async (branch) => {
+          branches.map(async branch => {
             // Get branch-specific workflow status
             const branchWorkflow = await universalApi.getDynamicData(
               branch.id,
@@ -393,21 +398,26 @@ export function useClosingApi(organizationId: string) {
   // ==================== HELPER FUNCTIONS ====================
 
   const canStartClosing = (checklistComplete: boolean, allPeriodsClosed: boolean) => {
-    return checklistComplete && allPeriodsClosed && 
-           (!getWorkflow.data || getWorkflow.data.status === 'pending' || getWorkflow.data.status === 'error')
+    return (
+      checklistComplete &&
+      allPeriodsClosed &&
+      (!getWorkflow.data ||
+        getWorkflow.data.status === 'pending' ||
+        getWorkflow.data.status === 'error')
+    )
   }
 
   const getCurrentStep = () => {
     const workflow = getWorkflow.data
     if (!workflow) return null
-    
+
     return workflow.steps.find(step => step.status === 'in_progress')
   }
 
   const getStepProgress = () => {
     const workflow = getWorkflow.data
     if (!workflow) return 0
-    
+
     const completedSteps = workflow.steps.filter(step => step.status === 'done').length
     return Math.round((completedSteps / workflow.steps.length) * 100)
   }
@@ -415,7 +425,7 @@ export function useClosingApi(organizationId: string) {
   const simulateClosingStep = async (stepId: string) => {
     // Simulate step processing
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     // Create mock journal entry
     const je = await universalApi.createTransaction({
       organization_id: organizationId,

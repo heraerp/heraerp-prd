@@ -1,6 +1,6 @@
 /**
  * HERA Finance DNA - Owner Expenses Management
- * 
+ *
  * Handles owner expense capture with attachments and automatic GL posting
  * using Finance DNA's Account Derivation Engine.
  */
@@ -79,7 +79,7 @@ export async function createExpense(request: CreateExpenseRequest): Promise<{
       request.organization_id,
       request.when_ts.slice(0, 10)
     )
-    
+
     if (!fiscalCheck.isOpen) {
       throw new Error(`Cannot post to closed fiscal period: ${fiscalCheck.reason}`)
     }
@@ -96,7 +96,6 @@ export async function createExpense(request: CreateExpenseRequest): Promise<{
     }
 
     return result
-
   } catch (error) {
     console.error('Error creating expense:', error)
     return {
@@ -139,7 +138,10 @@ function validateExpenseRequest(request: CreateExpenseRequest): {
     errors.push('At least one expense line is required')
   }
 
-  if (['cash', 'bank', 'credit_card'].includes(request.payment_method) && !request.payment_account_id) {
+  if (
+    ['cash', 'bank', 'credit_card'].includes(request.payment_method) &&
+    !request.payment_account_id
+  ) {
     errors.push('Payment account is required for cash/bank/credit card payments')
   }
 
@@ -165,7 +167,9 @@ function validateExpenseRequest(request: CreateExpenseRequest): {
 /**
  * Builds expense journal payload
  */
-async function buildExpenseJournalPayload(request: CreateExpenseRequest): Promise<ExpenseJournalPayload> {
+async function buildExpenseJournalPayload(
+  request: CreateExpenseRequest
+): Promise<ExpenseJournalPayload> {
   const lines = []
   let totalAmount = 0
   let lineNumber = 1
@@ -309,7 +313,6 @@ async function postExpenseJournal(payload: ExpenseJournalPayload): Promise<{
       success: true,
       transaction_id: transactionId
     }
-
   } catch (error) {
     console.error('Error posting expense journal:', error)
     return {
@@ -403,7 +406,7 @@ async function checkFiscalPeriodOpen(
     })
 
     const periods = periodsResponse?.data || []
-    
+
     for (const period of periods) {
       const dynamicResponse = await universalApi.read({
         table: 'core_dynamic_data',
@@ -416,7 +419,7 @@ async function checkFiscalPeriodOpen(
 
       const dynamicFields = dynamicResponse?.data || []
       const fields: any = {}
-      
+
       dynamicFields.forEach(field => {
         fields[field.field_name] = field.field_value_text || field.field_value_date
       })
@@ -433,7 +436,6 @@ async function checkFiscalPeriodOpen(
     }
 
     return { isOpen: true } // Default to open if no periods configured
-
   } catch (error) {
     console.error('Error checking fiscal period:', error)
     return { isOpen: true } // Default to open on error
@@ -490,7 +492,7 @@ export async function getExpenseHistory({
 
     // Get line counts for each expense
     const expensesWithCounts = await Promise.all(
-      expenses.map(async (expense) => {
+      expenses.map(async expense => {
         const linesResponse = await universalApi.read({
           table: 'universal_transaction_lines',
           filters: [
@@ -516,7 +518,6 @@ export async function getExpenseHistory({
       expenses: expensesWithCounts,
       total: expenses.length
     }
-
   } catch (error) {
     console.error('Error getting expense history:', error)
     return {

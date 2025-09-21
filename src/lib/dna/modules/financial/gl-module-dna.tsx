@@ -660,7 +660,9 @@ export function GLModule({
                             <DollarSign className="h-4 w-4 text-muted-foreground" />
                             <div>
                               <div className="font-medium">{account.accountCode}</div>
-                              <div className="text-sm text-muted-foreground">{account.accountName}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {account.accountName}
+                              </div>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -728,7 +730,9 @@ export function GLModule({
                         <Calculator className="h-8 w-8 text-purple-500" />
                         <div>
                           <h3 className="font-semibold">Cold Chain Analysis</h3>
-                          <p className="text-sm text-muted-foreground">Temperature impact on costs</p>
+                          <p className="text-sm text-muted-foreground">
+                            Temperature impact on costs
+                          </p>
                         </div>
                       </div>
                     </CardContent>
@@ -747,7 +751,9 @@ export function GLModule({
                         <Calendar className="h-8 w-8 text-orange-500" />
                         <div>
                           <h3 className="font-semibold">Seasonal Variance</h3>
-                          <p className="text-sm text-muted-foreground">Seasonal performance analysis</p>
+                          <p className="text-sm text-muted-foreground">
+                            Seasonal performance analysis
+                          </p>
                         </div>
                       </div>
                     </CardContent>

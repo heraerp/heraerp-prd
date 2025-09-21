@@ -83,7 +83,7 @@ interface RestaurantDashboardProps {
 // ================================================================================
 
 const mockMetrics: RestaurantMetrics = {
-  dailySales: 8750.50,
+  dailySales: 8750.5,
   dailySalesChange: 12.5,
   ordersToday: 145,
   ordersChange: 8.2,
@@ -98,9 +98,9 @@ const mockMenuItems: MenuItem[] = [
     id: 'menu-1',
     name: 'Margherita Pizza',
     category: 'Pizza',
-    price: 18.00,
+    price: 18.0,
     orderCount: 23,
-    revenue: 414.00,
+    revenue: 414.0,
     profitMargin: 68.5,
     status: 'available'
   },
@@ -108,9 +108,9 @@ const mockMenuItems: MenuItem[] = [
     id: 'menu-2',
     name: 'Caesar Salad',
     category: 'Salads',
-    price: 14.00,
+    price: 14.0,
     orderCount: 18,
-    revenue: 252.00,
+    revenue: 252.0,
     profitMargin: 72.1,
     status: 'available'
   },
@@ -118,9 +118,9 @@ const mockMenuItems: MenuItem[] = [
     id: 'menu-3',
     name: 'Grilled Salmon',
     category: 'Seafood',
-    price: 28.00,
+    price: 28.0,
     orderCount: 12,
-    revenue: 336.00,
+    revenue: 336.0,
     profitMargin: 58.3,
     status: 'low_stock'
   },
@@ -128,9 +128,9 @@ const mockMenuItems: MenuItem[] = [
     id: 'menu-4',
     name: 'Tiramisu',
     category: 'Desserts',
-    price: 12.00,
+    price: 12.0,
     orderCount: 15,
-    revenue: 180.00,
+    revenue: 180.0,
     profitMargin: 78.9,
     status: 'available'
   },
@@ -138,9 +138,9 @@ const mockMenuItems: MenuItem[] = [
     id: 'menu-5',
     name: 'Lobster Bisque',
     category: 'Soups',
-    price: 16.00,
+    price: 16.0,
     orderCount: 8,
-    revenue: 128.00,
+    revenue: 128.0,
     profitMargin: 65.2,
     status: 'out_of_stock'
   }
@@ -151,7 +151,7 @@ const mockRecentOrders: RecentOrder[] = [
     id: 'ord-001',
     table: 'Table 7',
     items: 3,
-    total: 67.50,
+    total: 67.5,
     status: 'preparing',
     time: '2 min ago',
     server: 'Maria'
@@ -160,7 +160,7 @@ const mockRecentOrders: RecentOrder[] = [
     id: 'ord-002',
     table: 'Table 12',
     items: 2,
-    total: 45.00,
+    total: 45.0,
     status: 'ready',
     time: '5 min ago',
     server: 'John'
@@ -178,7 +178,7 @@ const mockRecentOrders: RecentOrder[] = [
     id: 'ord-004',
     table: 'Table 15',
     items: 1,
-    total: 18.00,
+    total: 18.0,
     status: 'paid',
     time: '12 min ago',
     server: 'Carlos'
@@ -226,10 +226,7 @@ const getStatusIcon = (status: string) => {
 // MAIN COMPONENT
 // ================================================================================
 
-export function RestaurantDashboard({ 
-  organizationId,
-  className 
-}: RestaurantDashboardProps) {
+export function RestaurantDashboard({ organizationId, className }: RestaurantDashboardProps) {
   const [metrics, setMetrics] = useState<RestaurantMetrics>(mockMetrics)
   const [menuItems, setMenuItems] = useState<MenuItem[]>(mockMenuItems)
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>(mockRecentOrders)
@@ -240,7 +237,7 @@ export function RestaurantDashboard({
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 60000)
-    
+
     return () => clearInterval(timer)
   }, [])
 
@@ -267,11 +264,7 @@ export function RestaurantDashboard({
     {
       accessorKey: 'orderCount',
       header: 'Orders',
-      cell: ({ row }: { row: any }) => (
-        <div className="text-center">
-          {row.original.orderCount}
-        </div>
-      )
+      cell: ({ row }: { row: any }) => <div className="text-center">{row.original.orderCount}</div>
     },
     {
       accessorKey: 'revenue',
@@ -312,7 +305,8 @@ export function RestaurantDashboard({
             Restaurant Dashboard
           </h1>
           <p className="text-muted-foreground">
-            Mario's Authentic Italian Restaurant • {currentTime.toLocaleDateString()} {currentTime.toLocaleTimeString()}
+            Mario's Authentic Italian Restaurant • {currentTime.toLocaleDateString()}{' '}
+            {currentTime.toLocaleTimeString()}
           </p>
         </div>
         <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
@@ -331,7 +325,11 @@ export function RestaurantDashboard({
           <StatCardDNA
             title="Daily Sales"
             value={formatCurrency(metrics.dailySales)}
-            trend={metrics.dailySalesChange > 0 ? `+${metrics.dailySalesChange}%` : `${metrics.dailySalesChange}%`}
+            trend={
+              metrics.dailySalesChange > 0
+                ? `+${metrics.dailySalesChange}%`
+                : `${metrics.dailySalesChange}%`
+            }
             trendDirection={metrics.dailySalesChange > 0 ? 'up' : 'down'}
             icon={DollarSign}
             description="Today's total revenue"
@@ -346,7 +344,9 @@ export function RestaurantDashboard({
           <StatCardDNA
             title="Orders Today"
             value={metrics.ordersToday.toString()}
-            trend={metrics.ordersChange > 0 ? `+${metrics.ordersChange}%` : `${metrics.ordersChange}%`}
+            trend={
+              metrics.ordersChange > 0 ? `+${metrics.ordersChange}%` : `${metrics.ordersChange}%`
+            }
             trendDirection={metrics.ordersChange > 0 ? 'up' : 'down'}
             icon={ShoppingCart}
             description="Total orders served"
@@ -376,7 +376,11 @@ export function RestaurantDashboard({
           <StatCardDNA
             title="Table Occupancy"
             value={`${metrics.tableOccupancy}%`}
-            trend={metrics.occupancyChange > 0 ? `+${metrics.occupancyChange}%` : `${metrics.occupancyChange}%`}
+            trend={
+              metrics.occupancyChange > 0
+                ? `+${metrics.occupancyChange}%`
+                : `${metrics.occupancyChange}%`
+            }
             trendDirection={metrics.occupancyChange > 0 ? 'up' : 'down'}
             icon={Users}
             description="Current capacity usage"
@@ -396,7 +400,7 @@ export function RestaurantDashboard({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentOrders.map((order) => {
+              {recentOrders.map(order => {
                 const StatusIcon = getStatusIcon(order.status)
                 return (
                   <div
@@ -404,15 +408,20 @@ export function RestaurantDashboard({
                     className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        order.status === 'preparing' ? 'bg-blue-100 text-blue-600' :
-                        order.status === 'ready' ? 'bg-orange-100 text-orange-600' :
-                        order.status === 'served' ? 'bg-purple-100 text-purple-600' :
-                        'bg-green-100 text-green-600'
-                      }`}>
+                      <div
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          order.status === 'preparing'
+                            ? 'bg-blue-100 text-blue-600'
+                            : order.status === 'ready'
+                              ? 'bg-orange-100 text-orange-600'
+                              : order.status === 'served'
+                                ? 'bg-purple-100 text-purple-600'
+                                : 'bg-green-100 text-green-600'
+                        }`}
+                      >
                         <StatusIcon className="w-5 h-5" />
                       </div>
-                      
+
                       <div>
                         <p className="font-medium">{order.table}</p>
                         <p className="text-sm text-muted-foreground">
@@ -420,7 +429,7 @@ export function RestaurantDashboard({
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="text-right">
                       <p className="font-medium">{formatCurrency(order.total)}</p>
                       <p className="text-sm text-muted-foreground">{order.time}</p>

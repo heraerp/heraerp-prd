@@ -72,27 +72,27 @@ export interface UniversalSearchProps {
   // Core configuration
   placeholder?: string
   scopes?: SearchScope[]
-  
+
   // Features
   aiSuggestions?: boolean
   recentSearches?: boolean
   popularSearches?: boolean
   voiceSearch?: boolean
   commandPalette?: boolean
-  
+
   // Data source
   searchEndpoint?: string
   staticResults?: SearchResult[]
-  
+
   // Behavior
   debounceMs?: number
   maxResults?: number
   minQueryLength?: number
-  
+
   // Callbacks
   onSelect: (result: SearchResult) => void
   onSearch?: (query: string) => void
-  
+
   // Customization
   className?: string
   theme?: 'default' | 'minimal' | 'command'
@@ -180,35 +180,34 @@ const mockPopularSearches: SearchResult[] = [
 
 class SearchEngine {
   private staticResults: SearchResult[]
-  
+
   constructor(staticResults: SearchResult[] = []) {
     this.staticResults = staticResults
   }
-  
+
   async search(
     query: string,
     scopes: SearchScope[],
     maxResults: number = 20
   ): Promise<SearchResult[]> {
     if (!query || query.length < 2) return []
-    
+
     const lowerQuery = query.toLowerCase()
     const enabledScopes = scopes.filter(s => s.enabled).map(s => s.id)
-    
+
     // In real app, this would be an API call
     // For demo, we'll use fuzzy search on static data
     const results = this.staticResults
       .filter(result => {
         // Check scope
         if (!enabledScopes.includes(result.type)) return false
-        
+
         // Fuzzy search on title, subtitle, description
-        const searchableText = [
-          result.title,
-          result.subtitle,
-          result.description
-        ].filter(Boolean).join(' ').toLowerCase()
-        
+        const searchableText = [result.title, result.subtitle, result.description]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+
         return searchableText.includes(lowerQuery)
       })
       .map(result => ({
@@ -217,28 +216,28 @@ class SearchEngine {
       }))
       .sort((a, b) => (b.score || 0) - (a.score || 0))
       .slice(0, maxResults)
-    
+
     return results
   }
-  
+
   private calculateScore(result: SearchResult, query: string): number {
     let score = 0
     const lowerQuery = query.toLowerCase()
     const lowerTitle = result.title.toLowerCase()
-    
+
     // Exact match
     if (lowerTitle === lowerQuery) score += 100
-    
+
     // Starts with query
     if (lowerTitle.startsWith(lowerQuery)) score += 50
-    
+
     // Contains query
     if (lowerTitle.includes(lowerQuery)) score += 25
-    
+
     // Recent/popular boost
     if (result.metadata?.isRecent) score += 20
     if (result.metadata?.isPopular) score += 15
-    
+
     return score
   }
 }
@@ -250,22 +249,22 @@ class SearchEngine {
 const getAISuggestions = async (query: string): Promise<string[]> => {
   // In real app, this would call AI API
   // For demo, return intelligent suggestions based on query
-  
+
   const suggestions: Record<string, string[]> = {
-    'revenue': ['Show revenue report', 'Compare revenue by month', 'Top revenue customers'],
-    'customer': ['Add new customer', 'View customer list', 'Customer payment history'],
-    'invoice': ['Create invoice', 'Pending invoices', 'Invoice template settings'],
-    'inventory': ['Low stock items', 'Inventory valuation', 'Stock movement report']
+    revenue: ['Show revenue report', 'Compare revenue by month', 'Top revenue customers'],
+    customer: ['Add new customer', 'View customer list', 'Customer payment history'],
+    invoice: ['Create invoice', 'Pending invoices', 'Invoice template settings'],
+    inventory: ['Low stock items', 'Inventory valuation', 'Stock movement report']
   }
-  
+
   const lowerQuery = query.toLowerCase()
-  
+
   for (const [key, values] of Object.entries(suggestions)) {
     if (lowerQuery.includes(key)) {
       return values
     }
   }
-  
+
   return []
 }
 
@@ -324,41 +323,38 @@ export function UniversalSearch({
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isListening, setIsListening] = useState(false)
-  
+
   // Refs
   const inputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
-  
+
   // Hooks
   const router = useRouter()
   const { toast } = useToast()
   const debouncedQuery = useDebounce(query, debounceMs)
-  
+
   // Search engine
-  const searchEngine = useMemo(
-    () => new SearchEngine(staticResults),
-    [staticResults]
-  )
-  
+  const searchEngine = useMemo(() => new SearchEngine(staticResults), [staticResults])
+
   // Keyboard shortcut
   useEffect(() => {
     if (!commandPalette) return
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
         setIsOpen(true)
       }
-      
+
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false)
       }
     }
-    
+
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [commandPalette, isOpen])
-  
+
   // Search effect
   useEffect(() => {
     const performSearch = async () => {
@@ -367,25 +363,21 @@ export function UniversalSearch({
         setAiSuggestedQueries([])
         return
       }
-      
+
       setIsLoading(true)
-      
+
       try {
         // Perform search
-        const searchResults = await searchEngine.search(
-          debouncedQuery,
-          scopes,
-          maxResults
-        )
-        
+        const searchResults = await searchEngine.search(debouncedQuery, scopes, maxResults)
+
         setResults(searchResults)
-        
+
         // Get AI suggestions
         if (aiSuggestions) {
           const suggestions = await getAISuggestions(debouncedQuery)
           setAiSuggestedQueries(suggestions)
         }
-        
+
         // Call external search handler
         if (onSearch) {
           onSearch(debouncedQuery)
@@ -401,10 +393,19 @@ export function UniversalSearch({
         setIsLoading(false)
       }
     }
-    
+
     performSearch()
-  }, [debouncedQuery, searchEngine, scopes, maxResults, minQueryLength, aiSuggestions, onSearch, toast])
-  
+  }, [
+    debouncedQuery,
+    searchEngine,
+    scopes,
+    maxResults,
+    minQueryLength,
+    aiSuggestions,
+    onSearch,
+    toast
+  ])
+
   // Voice search
   const startVoiceSearch = useCallback(() => {
     if (!voiceSearch || typeof window === 'undefined') {
@@ -412,7 +413,7 @@ export function UniversalSearch({
     }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    
+
     if (!SpeechRecognition) {
       toast({
         title: 'Voice Search Unavailable',
@@ -421,22 +422,22 @@ export function UniversalSearch({
       })
       return
     }
-    
+
     const recognition = new SpeechRecognition()
     recognition.continuous = false
     recognition.interimResults = false
     recognition.lang = 'en-US'
-    
+
     recognition.onstart = () => {
       setIsListening(true)
     }
-    
+
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript
       setQuery(transcript)
       setIsListening(false)
     }
-    
+
     recognition.onerror = () => {
       setIsListening(false)
       toast({
@@ -445,15 +446,15 @@ export function UniversalSearch({
         variant: 'destructive'
       })
     }
-    
+
     recognition.onend = () => {
       setIsListening(false)
     }
-    
+
     recognition.start()
     recognitionRef.current = recognition
   }, [voiceSearch, toast])
-  
+
   // Stop voice search
   const stopVoiceSearch = useCallback(() => {
     if (recognitionRef.current) {
@@ -461,55 +462,61 @@ export function UniversalSearch({
       setIsListening(false)
     }
   }, [])
-  
+
   // Handle selection
-  const handleSelect = useCallback((result: SearchResult) => {
-    setIsOpen(false)
-    setQuery('')
-    
-    // Save to recent searches (in real app)
-    // localStorage.setItem('recentSearches', ...)
-    
-    if (result.url) {
-      router.push(result.url)
-    } else if (result.action) {
-      result.action()
-    }
-    
-    onSelect(result)
-  }, [router, onSelect])
-  
+  const handleSelect = useCallback(
+    (result: SearchResult) => {
+      setIsOpen(false)
+      setQuery('')
+
+      // Save to recent searches (in real app)
+      // localStorage.setItem('recentSearches', ...)
+
+      if (result.url) {
+        router.push(result.url)
+      } else if (result.action) {
+        result.action()
+      }
+
+      onSelect(result)
+    },
+    [router, onSelect]
+  )
+
   // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    const totalResults = allResults.reduce((sum, section) => sum + section.items.length, 0)
-    
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        setSelectedIndex(prev => (prev + 1) % Math.max(1, totalResults))
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        setSelectedIndex(prev => (prev - 1 + totalResults) % Math.max(1, totalResults))
-        break
-      case 'Enter':
-        e.preventDefault()
-        if (totalResults > 0) {
-          let currentIndex = 0
-          for (const section of allResults) {
-            for (const item of section.items) {
-              if (currentIndex === selectedIndex) {
-                handleSelect(item)
-                return
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const totalResults = allResults.reduce((sum, section) => sum + section.items.length, 0)
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault()
+          setSelectedIndex(prev => (prev + 1) % Math.max(1, totalResults))
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          setSelectedIndex(prev => (prev - 1 + totalResults) % Math.max(1, totalResults))
+          break
+        case 'Enter':
+          e.preventDefault()
+          if (totalResults > 0) {
+            let currentIndex = 0
+            for (const section of allResults) {
+              for (const item of section.items) {
+                if (currentIndex === selectedIndex) {
+                  handleSelect(item)
+                  return
+                }
+                currentIndex++
               }
-              currentIndex++
             }
           }
-        }
-        break
-    }
-  }, [selectedIndex, handleSelect])
-  
+          break
+      }
+    },
+    [selectedIndex, handleSelect]
+  )
+
   // Get all results to display
   const allResults = useMemo(() => {
     const sections: Array<{
@@ -517,7 +524,7 @@ export function UniversalSearch({
       items: SearchResult[]
       icon: React.ComponentType<{ className?: string }>
     }> = []
-    
+
     // Current search results
     if (results.length > 0) {
       sections.push({
@@ -526,7 +533,7 @@ export function UniversalSearch({
         icon: Search
       })
     }
-    
+
     // AI suggestions
     if (aiSuggestedQueries.length > 0 && query.length >= minQueryLength) {
       sections.push({
@@ -542,7 +549,7 @@ export function UniversalSearch({
         icon: Sparkles
       })
     }
-    
+
     // Show recent/popular when no query
     if (query.length < minQueryLength) {
       if (recentSearches && mockRecentSearches.length > 0) {
@@ -552,7 +559,7 @@ export function UniversalSearch({
           icon: Clock
         })
       }
-      
+
       if (popularSearches && mockPopularSearches.length > 0) {
         sections.push({
           title: 'Popular',
@@ -561,15 +568,15 @@ export function UniversalSearch({
         })
       }
     }
-    
+
     return sections
   }, [results, aiSuggestedQueries, query, minQueryLength, recentSearches, popularSearches])
-  
+
   // Render search result item
   const renderSearchItem = (result: SearchResult, index: number) => {
     const Icon = result.icon || categoryIcons[result.category] || FileText
     const isSelected = index === selectedIndex
-    
+
     return (
       <div
         key={result.id}
@@ -580,13 +587,15 @@ export function UniversalSearch({
           isSelected && 'bg-accent text-accent-foreground'
         )}
       >
-        <div className={cn(
-          'w-10 h-10 rounded-lg flex items-center justify-center',
-          'bg-primary/10 text-primary'
-        )}>
+        <div
+          className={cn(
+            'w-10 h-10 rounded-lg flex items-center justify-center',
+            'bg-primary/10 text-primary'
+          )}
+        >
           <Icon className="w-5 h-5" />
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="font-medium truncate">{result.title}</p>
@@ -597,17 +606,15 @@ export function UniversalSearch({
             )}
           </div>
           {result.subtitle && (
-            <p className="text-sm text-muted-foreground truncate">
-              {result.subtitle}
-            </p>
+            <p className="text-sm text-muted-foreground truncate">{result.subtitle}</p>
           )}
         </div>
-        
+
         <ChevronRight className="w-4 h-4 text-muted-foreground" />
       </div>
     )
   }
-  
+
   return (
     <>
       {/* Trigger Button/Input */}
@@ -622,9 +629,7 @@ export function UniversalSearch({
           )}
         >
           <Search className="w-4 h-4 text-muted-foreground mr-2" />
-          <span className="flex-1 text-sm text-muted-foreground">
-            {placeholder}
-          </span>
+          <span className="flex-1 text-sm text-muted-foreground">{placeholder}</span>
           {commandPalette && (
             <div className="flex items-center gap-1">
               <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
@@ -634,14 +639,11 @@ export function UniversalSearch({
           )}
         </div>
       </div>
-      
+
       {/* Search Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
-          className={cn(
-            'max-w-2xl p-0 gap-0',
-            position === 'top' && 'top-[20%] translate-y-0'
-          )}
+          className={cn('max-w-2xl p-0 gap-0', position === 'top' && 'top-[20%] translate-y-0')}
         >
           <div className="rounded-lg border shadow-lg">
             {/* Search Input */}
@@ -651,12 +653,12 @@ export function UniversalSearch({
                 ref={inputRef}
                 placeholder={placeholder}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={e => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 className="flex h-12 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-0 focus-visible:ring-0"
                 autoFocus
               />
-              
+
               {/* Voice Search Button */}
               {voiceSearch && (
                 <button
@@ -671,7 +673,7 @@ export function UniversalSearch({
                   <Mic className="w-4 h-4" />
                 </button>
               )}
-              
+
               {/* Clear Button */}
               {query && (
                 <button
@@ -682,7 +684,7 @@ export function UniversalSearch({
                 </button>
               )}
             </div>
-            
+
             {/* Scope Filters */}
             {scopes.length > 1 && (
               <div className="flex items-center gap-2 p-3 border-b">
@@ -705,7 +707,7 @@ export function UniversalSearch({
                 })}
               </div>
             )}
-            
+
             {/* Results */}
             <ScrollArea className="max-h-[400px] p-2">
               {isLoading && (
@@ -721,37 +723,34 @@ export function UniversalSearch({
                   ))}
                 </div>
               )}
-              
+
               {!isLoading && allResults.length === 0 && query.length >= minQueryLength && (
                 <div className="p-8 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    No results found for "{query}"
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Try a different search term
-                  </p>
+                  <p className="text-sm text-muted-foreground">No results found for "{query}"</p>
+                  <p className="text-xs text-muted-foreground mt-2">Try a different search term</p>
                 </div>
               )}
-              
-              {!isLoading && allResults.map((section, sectionIndex) => {
-                let currentIndex = 0
-                
-                return (
-                  <div key={sectionIndex} className="mb-4">
-                    <div className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
-                      <section.icon className="w-3 h-3" />
-                      {section.title}
+
+              {!isLoading &&
+                allResults.map((section, sectionIndex) => {
+                  let currentIndex = 0
+
+                  return (
+                    <div key={sectionIndex} className="mb-4">
+                      <div className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-muted-foreground">
+                        <section.icon className="w-3 h-3" />
+                        {section.title}
+                      </div>
+                      <div>
+                        {section.items.map(item => {
+                          const itemIndex = currentIndex++
+                          return renderSearchItem(item, itemIndex)
+                        })}
+                      </div>
                     </div>
-                    <div>
-                      {section.items.map((item) => {
-                        const itemIndex = currentIndex++
-                        return renderSearchItem(item, itemIndex)
-                      })}
-                    </div>
-                  </div>
-                )
-              })}
-              
+                  )
+                })}
+
               {!isLoading && query.length < minQueryLength && allResults.length === 0 && (
                 <div className="p-8 text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-muted mx-auto flex items-center justify-center">
@@ -766,7 +765,7 @@ export function UniversalSearch({
                 </div>
               )}
             </ScrollArea>
-            
+
             {/* Footer */}
             <div className="border-t p-2">
               <div className="flex items-center justify-between px-2 text-xs text-muted-foreground">

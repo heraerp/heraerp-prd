@@ -4,7 +4,7 @@
 // Dynamic navigation based on user roles
 // ================================================================================
 
-import { 
+import {
   Home,
   Calendar,
   CreditCard,
@@ -35,7 +35,7 @@ export interface NavItem {
  */
 export function navItems(role: Role): NavItem[] {
   const roleNav = ROLE_NAVIGATION[role] || []
-  
+
   // Map string icons to actual components
   return roleNav.map(item => ({
     ...item,
@@ -62,7 +62,7 @@ function getIconComponent(iconName: string): any {
     Lock,
     FileText
   }
-  
+
   return icons[iconName] || Home
 }
 

@@ -20,7 +20,11 @@ import { usePathname } from 'next/navigation'
 
 export function useDemoOrganization() {
   const pathname = usePathname()
-  const { organization: currentOrganization, isLoading: isLoadingOrgs, isAuthenticated } = useHERAAuth()
+  const {
+    organization: currentOrganization,
+    isLoading: isLoadingOrgs,
+    isAuthenticated
+  } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
   const [demoOrgLoading, setDemoOrgLoading] = useState(true)
 
@@ -82,7 +86,9 @@ export function OrganizationInfo({
         <span className="text-muted-foreground dark:text-muted-foreground">Organization:</span>{' '}
         <span className="font-medium text-gray-900 dark:text-foreground">{name}</span>
       </p>
-      <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">Organization ID: {id}</p>
+      <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+        Organization ID: {id}
+      </p>
     </div>
   )
 }

@@ -15,16 +15,16 @@ let currentOrgId: string | null = null
  */
 export function getSupabaseWithOrg(organizationId?: string): SupabaseClient {
   const baseClient = getSupabase()
-  
+
   // If no organization ID, return base client
   if (!organizationId) {
     return baseClient
   }
-  
+
   // Update the organization context if different
   if (currentOrgId !== organizationId) {
     currentOrgId = organizationId
-    
+
     // Set custom headers on the existing client
     // Note: This modifies the singleton client's headers
     if (baseClient && typeof baseClient.rest !== 'undefined') {
@@ -33,7 +33,7 @@ export function getSupabaseWithOrg(organizationId?: string): SupabaseClient {
       if (restClient && restClient.headers) {
         restClient.headers['X-Organization-Id'] = organizationId
       }
-      
+
       // Update headers for Realtime if needed
       const realtimeClient = (baseClient as any).realtime
       if (realtimeClient && realtimeClient.headers) {
@@ -41,7 +41,7 @@ export function getSupabaseWithOrg(organizationId?: string): SupabaseClient {
       }
     }
   }
-  
+
   return baseClient
 }
 
@@ -65,10 +65,10 @@ export async function queryWithOrgContext<T>(
   queryFn: (client: SupabaseClient) => Promise<T>
 ): Promise<T> {
   const client = getSupabaseWithOrg(organizationId)
-  
+
   // Try to set organization context
   await setOrgContext(client, organizationId)
-  
+
   // Execute the query
   return queryFn(client)
 }

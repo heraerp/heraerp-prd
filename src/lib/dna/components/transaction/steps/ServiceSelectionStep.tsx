@@ -7,15 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  Search,
-  Clock,
-  DollarSign,
-  Star,
-  Info,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react'
+import { Search, Clock, DollarSign, Star, Info, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { TransactionStepProps } from '../UniversalTransactionFlow'
 
@@ -93,53 +85,57 @@ export function ServiceSelectionStep({
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [expandedServices, setExpandedServices] = useState<Set<string>>(new Set())
-  
+
   const selectedServices = data.services || []
-  
+
   // Get unique categories
   const categories = Array.from(new Set(mockServices.map(s => s.category)))
-  
+
   // Filter services
   const filteredServices = mockServices.filter(service => {
-    const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         service.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      service.description?.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = !selectedCategory || service.category === selectedCategory
-    
+
     return matchesSearch && matchesCategory
   })
-  
+
   // Group services by category
-  const groupedServices = filteredServices.reduce((acc, service) => {
-    if (!acc[service.category]) acc[service.category] = []
-    acc[service.category].push(service)
-    return acc
-  }, {} as Record<string, Service[]>)
-  
+  const groupedServices = filteredServices.reduce(
+    (acc, service) => {
+      if (!acc[service.category]) acc[service.category] = []
+      acc[service.category].push(service)
+      return acc
+    },
+    {} as Record<string, Service[]>
+  )
+
   // Calculate totals
   const totalDuration = selectedServices.reduce((sum, serviceId) => {
     const service = mockServices.find(s => s.id === serviceId)
     return sum + (service?.duration || 0)
   }, 0)
-  
+
   const totalPrice = selectedServices.reduce((sum, serviceId) => {
     const service = mockServices.find(s => s.id === serviceId)
     return sum + (service?.price || 0)
   }, 0)
-  
+
   const handleServiceToggle = (serviceId: string) => {
     if (readonly) return
-    
+
     const newServices = selectedServices.includes(serviceId)
       ? selectedServices.filter(id => id !== serviceId)
       : [...selectedServices, serviceId]
-    
-    onChange({ 
+
+    onChange({
       services: newServices,
       estimatedDuration: totalDuration,
       estimatedPrice: totalPrice
     })
   }
-  
+
   const toggleExpanded = (serviceId: string) => {
     setExpandedServices(prev => {
       const newSet = new Set(prev)
@@ -151,7 +147,7 @@ export function ServiceSelectionStep({
       return newSet
     })
   }
-  
+
   const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
@@ -160,7 +156,7 @@ export function ServiceSelectionStep({
     }
     return `${mins}m`
   }
-  
+
   return (
     <div className="space-y-4">
       {/* Search and Filter */}
@@ -171,12 +167,12 @@ export function ServiceSelectionStep({
             type="text"
             placeholder="Search services..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
             disabled={readonly}
           />
         </div>
-        
+
         {/* Category Filter */}
         <div className="flex gap-2 flex-wrap">
           <Button
@@ -200,7 +196,7 @@ export function ServiceSelectionStep({
           ))}
         </div>
       </div>
-      
+
       {/* Services List */}
       <ScrollArea className="h-[400px] pr-4">
         <div className="space-y-4">
@@ -209,19 +205,16 @@ export function ServiceSelectionStep({
               <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
                 {category}
               </h4>
-              
+
               <div className="space-y-2">
                 {services.map(service => {
                   const isSelected = selectedServices.includes(service.id)
                   const isExpanded = expandedServices.has(service.id)
-                  
+
                   return (
                     <Card
                       key={service.id}
-                      className={cn(
-                        'transition-all',
-                        isSelected && 'border-primary bg-primary/5'
-                      )}
+                      className={cn('transition-all', isSelected && 'border-primary bg-primary/5')}
                     >
                       <div className="p-4">
                         <div className="flex items-start gap-3">
@@ -231,7 +224,7 @@ export function ServiceSelectionStep({
                             disabled={readonly}
                             className="mt-1"
                           />
-                          
+
                           <div className="flex-1 space-y-2">
                             <div className="flex items-start justify-between">
                               <div>
@@ -244,14 +237,14 @@ export function ServiceSelectionStep({
                                     </Badge>
                                   )}
                                 </div>
-                                
+
                                 {service.description && (
                                   <p className="text-sm text-muted-foreground mt-1">
                                     {service.description}
                                   </p>
                                 )}
                               </div>
-                              
+
                               <div className="text-right">
                                 <p className="font-semibold">${service.price}</p>
                                 <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -260,7 +253,7 @@ export function ServiceSelectionStep({
                                 </p>
                               </div>
                             </div>
-                            
+
                             {/* Expandable Details */}
                             <button
                               onClick={() => toggleExpanded(service.id)}
@@ -274,7 +267,7 @@ export function ServiceSelectionStep({
                                 <ChevronDown className="w-3 h-3" />
                               )}
                             </button>
-                            
+
                             {isExpanded && (
                               <Card className="p-3 bg-muted/50">
                                 <div className="text-sm space-y-1">
@@ -295,7 +288,7 @@ export function ServiceSelectionStep({
           ))}
         </div>
       </ScrollArea>
-      
+
       {/* Selection Summary */}
       {selectedServices.length > 0 && (
         <Card className="p-4 bg-primary/5 border-primary/20">
@@ -315,11 +308,9 @@ export function ServiceSelectionStep({
           </div>
         </Card>
       )}
-      
+
       {/* Validation Error */}
-      {errors.services && (
-        <p className="text-sm text-destructive">{errors.services}</p>
-      )}
+      {errors.services && <p className="text-sm text-destructive">{errors.services}</p>}
     </div>
   )
 }

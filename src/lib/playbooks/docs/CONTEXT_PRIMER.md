@@ -27,7 +27,7 @@ entities:
   - entity_type: customer
     fields: [...] → core_dynamic_data
 
-# Relationships → core_relationships  
+# Relationships → core_relationships
 relationships:
   - type: belongs_to
     from: customer
@@ -47,12 +47,13 @@ orchestrations:
 
 ```typescript
 // Examples:
-'HERA.CRM.CUST.ENT.PROF.V1'      // Customer entity
-'HERA.CRM.SALE.TXN.ORDER.V1'     // Sales transaction
-'HERA.CRM.REL.CUST.GROUP.V1'     // Customer relationship
+'HERA.CRM.CUST.ENT.PROF.V1' // Customer entity
+'HERA.CRM.SALE.TXN.ORDER.V1' // Sales transaction
+'HERA.CRM.REL.CUST.GROUP.V1' // Customer relationship
 ```
 
 **Critical Rules**:
+
 - 6-10 segments, uppercase, ends with `.V1` (not `.v1`)
 - Use existing families - don't invent new ones
 - Every entity, transaction, and line MUST have a valid smart_code
@@ -160,7 +161,7 @@ const result = await dnaService.processOrchestration({
 
 // 3. Transaction Processing
 - Creates header in universal_transactions
-- Creates lines in universal_transaction_lines  
+- Creates lines in universal_transaction_lines
 - Updates entities via relationships
 - Maintains complete audit trail
 ```
@@ -221,7 +222,7 @@ const customer = await dnaService.processEntityCreation({
     }
   },
   organizationId: 'org-uuid'
-});
+})
 ```
 
 ### Creating a Transaction
@@ -245,7 +246,7 @@ const order = await dnaService.processTransaction({
     ]
   },
   organizationId: 'org-uuid'
-});
+})
 ```
 
 ### Running Reports
@@ -261,7 +262,7 @@ const report = await dnaService.executeReport({
     customer_id: 'optional-filter'
   },
   organizationId: 'org-uuid'
-});
+})
 ```
 
 ## ⚠️ Common Gotchas
@@ -270,10 +271,10 @@ const report = await dnaService.executeReport({
 
 ```typescript
 // Always validate smart codes
-import { validateSmartCode } from '@/lib/dna/utils/smartCodeValidator';
+import { validateSmartCode } from '@/lib/dna/utils/smartCodeValidator'
 
 if (!validateSmartCode(smartCode)) {
-  throw new Error(`Invalid smart code: ${smartCode}`);
+  throw new Error(`Invalid smart code: ${smartCode}`)
 }
 ```
 
@@ -282,7 +283,7 @@ if (!validateSmartCode(smartCode)) {
 ```typescript
 // Always check organization context
 if (!organizationId) {
-  return new Response('No organization context', { status: 400 });
+  return new Response('No organization context', { status: 400 })
 }
 ```
 
@@ -294,7 +295,7 @@ const result = await supabase.rpc('process_orchestration', {
   p_module: 'crm',
   p_orchestration: orchestrationData,
   p_organization_id: organizationId
-});
+})
 ```
 
 ### 4. Dynamic Field Types

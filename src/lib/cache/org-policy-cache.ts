@@ -20,14 +20,14 @@ const CACHE_TTL_MS = 60 * 1000 // 60 seconds
 export async function getOrgPolicy(organizationId: string): Promise<OrgPolicy> {
   const cached = policyCache.get(organizationId)
   const now = Date.now()
-  
-  if (cached && (now - cached.cachedAt) < CACHE_TTL_MS) {
+
+  if (cached && now - cached.cachedAt < CACHE_TTL_MS) {
     return cached
   }
-  
+
   // Default policy for Hair Talkz (can be made database-driven later)
   const policy: OrgPolicy = {
-    vatRate: 0.20, // 20% VAT standard for UK
+    vatRate: 0.2, // 20% VAT standard for UK
     rounding: 'ROUND',
     discountCaps: {
       maxPercent: 50,
@@ -36,7 +36,7 @@ export async function getOrgPolicy(organizationId: string): Promise<OrgPolicy> {
     currency: 'GBP',
     cachedAt: now
   }
-  
+
   policyCache.set(organizationId, policy)
   return policy
 }

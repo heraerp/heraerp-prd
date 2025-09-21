@@ -77,7 +77,7 @@ export function useStaffUtilization({ organizationId, date }: StaffUtilizationPa
       // 1. Get staff entities (entity_type = 'employee', role includes 'stylist')
       // 2. Get appointments for the date
       // 3. Calculate utilization based on booked hours vs available hours
-      
+
       // For now, return mock data
       return {
         staff: mockStaffData

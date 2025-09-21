@@ -48,21 +48,17 @@ const DEFAULT_POLICIES = {
 export async function getSafeOrgPolicy(organizationId: string, policyName: string): Promise<any> {
   try {
     console.log(`💰 Getting ${policyName} policy:`, { organizationId })
-    
-    const result = await universalApi.getDynamicData(
-      organizationId,
-      `${policyName}.v1`
-    )
-    
+
+    const result = await universalApi.getDynamicData(organizationId, `${policyName}.v1`)
+
     // If we got data, return it
     if (result.success && result.data?.field_value_json) {
       return result.data.field_value_json
     }
-    
+
     // Return defaults if no data (due to RLS or missing record)
     console.log(`📦 Using default ${policyName} policy (RLS safe mode)`)
     return DEFAULT_POLICIES[policyName as keyof typeof DEFAULT_POLICIES] || {}
-    
   } catch (error) {
     console.warn(`⚠️ Failed to get ${policyName} policy, using defaults:`, error)
     return DEFAULT_POLICIES[policyName as keyof typeof DEFAULT_POLICIES] || {}
@@ -72,6 +68,7 @@ export async function getSafeOrgPolicy(organizationId: string, policyName: strin
 // Export convenient functions for each policy type
 export const getSalesPolicy = (orgId: string) => getSafeOrgPolicy(orgId, 'SALES_POLICY')
 export const getInventoryPolicy = (orgId: string) => getSafeOrgPolicy(orgId, 'INVENTORY_POLICY')
-export const getNotificationPolicy = (orgId: string) => getSafeOrgPolicy(orgId, 'NOTIFICATION_POLICY')
+export const getNotificationPolicy = (orgId: string) =>
+  getSafeOrgPolicy(orgId, 'NOTIFICATION_POLICY')
 export const getSystemSettings = (orgId: string) => getSafeOrgPolicy(orgId, 'SYSTEM_SETTINGS')
 export const getRoleGrants = (orgId: string) => getSafeOrgPolicy(orgId, 'ROLE_GRANTS')

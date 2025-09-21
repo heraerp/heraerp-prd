@@ -63,7 +63,6 @@ UniversalRenderer (Main Component)
 
 ```tsx
 import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
-
 ;<UniversalRenderer
   smartCode="HERA.FURN.BOM.ITEM.PRODUCT.v1"
   viewType="detail"

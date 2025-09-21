@@ -22,7 +22,14 @@ export interface ConfigurationRule {
 }
 
 export interface ConfigurationCondition {
-  type: 'organization' | 'industry' | 'user_role' | 'business_size' | 'feature_flag' | 'time_based' | 'custom'
+  type:
+    | 'organization'
+    | 'industry'
+    | 'user_role'
+    | 'business_size'
+    | 'feature_flag'
+    | 'time_based'
+    | 'custom'
   operator: 'equals' | 'contains' | 'in' | 'not_in' | 'greater_than' | 'less_than' | 'between'
   field: string
   value: any
@@ -370,20 +377,18 @@ export const UNIVERSAL_CONFIGURATION_RULES: ConfigurationRule[] = [
 
 export class UniversalConfigurationEngine {
   private rules: ConfigurationRule[]
-  
+
   constructor(customRules: ConfigurationRule[] = []) {
-    this.rules = [...UNIVERSAL_CONFIGURATION_RULES, ...customRules]
-      .sort((a, b) => b.priority - a.priority) // Higher priority first
+    this.rules = [...UNIVERSAL_CONFIGURATION_RULES, ...customRules].sort(
+      (a, b) => b.priority - a.priority
+    ) // Higher priority first
   }
 
   /**
    * Evaluate configuration rules and return applicable theme and feature settings
    */
-  async evaluateConfiguration(
-    organizationProfile: OrganizationProfile,
-    userProfile: UserProfile
-  ) {
-    const applicableRules = this.rules.filter(rule => 
+  async evaluateConfiguration(organizationProfile: OrganizationProfile, userProfile: UserProfile) {
+    const applicableRules = this.rules.filter(rule =>
       this.evaluateConditions(rule.conditions, organizationProfile, userProfile)
     )
 
@@ -423,7 +428,7 @@ export class UniversalConfigurationEngine {
     organizationProfile: OrganizationProfile,
     userProfile: UserProfile
   ): boolean {
-    return conditions.every(condition => 
+    return conditions.every(condition =>
       this.evaluateCondition(condition, organizationProfile, userProfile)
     )
   }
@@ -450,9 +455,10 @@ export class UniversalConfigurationEngine {
         contextValue = organizationProfile.businessSize
         break
       case 'user_role':
-        contextValue = condition.field === 'role' 
-          ? userProfile.role 
-          : this.getNestedValue(userProfile, condition.field)
+        contextValue =
+          condition.field === 'role'
+            ? userProfile.role
+            : this.getNestedValue(userProfile, condition.field)
         break
       case 'feature_flag':
         contextValue = organizationProfile.features?.includes(condition.field)
@@ -462,7 +468,12 @@ export class UniversalConfigurationEngine {
     }
 
     // Apply operator
-    return this.applyOperator(contextValue, condition.operator, condition.value, condition.caseSensitive)
+    return this.applyOperator(
+      contextValue,
+      condition.operator,
+      condition.value,
+      condition.caseSensitive
+    )
   }
 
   /**
@@ -493,9 +504,11 @@ export class UniversalConfigurationEngine {
       case 'less_than':
         return Number(contextValue) < Number(expectedValue)
       case 'between':
-        return Array.isArray(expectedValue) && 
-               Number(contextValue) >= Number(expectedValue[0]) && 
-               Number(contextValue) <= Number(expectedValue[1])
+        return (
+          Array.isArray(expectedValue) &&
+          Number(contextValue) >= Number(expectedValue[0]) &&
+          Number(contextValue) <= Number(expectedValue[1])
+        )
       default:
         return false
     }
@@ -583,11 +596,31 @@ export class ConfigurationPersistence {
       })
 
       // Save configuration data as dynamic fields
-      await universalApi.setDynamicField(configEntity.id, 'theme_variant', configuration.theme.variant)
-      await universalApi.setDynamicField(configEntity.id, 'theme_customizations', JSON.stringify(configuration.theme.customizations))
-      await universalApi.setDynamicField(configEntity.id, 'features', JSON.stringify(configuration.features))
-      await universalApi.setDynamicField(configEntity.id, 'branding', JSON.stringify(configuration.branding))
-      await universalApi.setDynamicField(configEntity.id, 'applied_rules', JSON.stringify(appliedRules))
+      await universalApi.setDynamicField(
+        configEntity.id,
+        'theme_variant',
+        configuration.theme.variant
+      )
+      await universalApi.setDynamicField(
+        configEntity.id,
+        'theme_customizations',
+        JSON.stringify(configuration.theme.customizations)
+      )
+      await universalApi.setDynamicField(
+        configEntity.id,
+        'features',
+        JSON.stringify(configuration.features)
+      )
+      await universalApi.setDynamicField(
+        configEntity.id,
+        'branding',
+        JSON.stringify(configuration.branding)
+      )
+      await universalApi.setDynamicField(
+        configEntity.id,
+        'applied_rules',
+        JSON.stringify(appliedRules)
+      )
 
       return configEntity
     } catch (error) {
