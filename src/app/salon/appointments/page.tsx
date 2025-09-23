@@ -146,7 +146,7 @@ function SalonAppointmentsContent() {
     total,
     loading,
     error,
-    organizationId,
+    organizationId: playbookOrgId,
     refresh
   } = useAppointmentsPlaybook({
     ...getDateRange(),
@@ -171,7 +171,7 @@ function SalonAppointmentsContent() {
   }
 
   // Get effective organization ID
-  const effectiveOrgId = organizationId || localOrgId
+  const effectiveOrgId = organizationId || playbookOrgId || localOrgId
 
   // Three-layer authorization pattern (adapted for demo mode)
   // Layer 1: Authentication check (skip for demo mode)
