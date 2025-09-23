@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function GET(request: NextRequest) {
   try {
-    // Fixed organization ID for Michele's salon
+    // Fixed organization ID for Hair Talkz salon
     const organizationId = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
 
     // Call the PostgreSQL function

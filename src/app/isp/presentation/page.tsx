@@ -33,7 +33,7 @@ export default function ISPPresentation() {
       id: 'challenge',
       content: (
         <div className="flex flex-col justify-center h-full">
-          <h2 className="text-5xl font-bold mb-8 text-center" style={{ color: '#C8102E' }}>
+          <h2 className="text-5xl font-bold mb-8 text-center" style={{ color: '#E85D75' }}>
             The ISP Challenge
           </h2>
           <div className="grid md:grid-cols-2 gap-8 mt-8">
@@ -66,7 +66,7 @@ export default function ISPPresentation() {
       id: 'solution',
       content: (
         <div className="flex flex-col justify-center h-full">
-          <h2 className="text-5xl font-bold mb-8 text-center" style={{ color: '#1C1F66' }}>
+          <h2 className="text-5xl font-bold mb-8 text-center" style={{ color: '#5457A6' }}>
             The HERA Solution
           </h2>
           <p className="text-2xl text-center mb-12 text-white/90">
@@ -97,7 +97,7 @@ export default function ISPPresentation() {
       id: 'features',
       content: (
         <div className="flex flex-col justify-center h-full">
-          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#C8102E' }}>
+          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#E85D75' }}>
             ISP-Specific Features
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -156,7 +156,7 @@ export default function ISPPresentation() {
       id: 'impact',
       content: (
         <div className="flex flex-col justify-center h-full">
-          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#1C1F66' }}>
+          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#5457A6' }}>
             Transformational Impact
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -191,7 +191,7 @@ export default function ISPPresentation() {
       id: 'implementation',
       content: (
         <div className="flex flex-col justify-center h-full">
-          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#C8102E' }}>
+          <h2 className="text-5xl font-bold mb-10 text-center" style={{ color: '#E85D75' }}>
             Implementation Timeline
           </h2>
           <div className="max-w-4xl mx-auto w-full">
@@ -233,7 +233,7 @@ export default function ISPPresentation() {
       id: 'cta',
       content: (
         <div className="flex flex-col items-center justify-center h-full text-center">
-          <h2 className="text-5xl md:text-6xl font-bold mb-8" style={{ color: '#1C1F66' }}>
+          <h2 className="text-5xl md:text-6xl font-bold mb-8" style={{ color: '#5457A6' }}>
             Ready to Transform?
           </h2>
           <p className="text-2xl mb-12 text-white/90 max-w-3xl">

@@ -1,5 +1,5 @@
 // HERA Database Types - Auto-generated from actual schema
-// Generated: 2025-09-23T21:27:26.204Z
+// Generated: 2025-09-23T22:49:10.670Z
 // Run 'node mcp-server/schema-introspection.js' to update
 
 export interface CoreOrganizations {
@@ -170,11 +170,12 @@ export type EntityStatus = 'active' | 'inactive' | 'deleted' | 'draft'
 export type TransactionStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'failed'
 
 // Type Guards
-export const isDeleted = (entity: { status?: string }): boolean => entity.status === 'deleted'
+export const isDeleted = (entity: { status?: string }): boolean => 
+  entity.status === 'deleted'
 
-export const isActive = (entity: { status?: string }): boolean =>
+export const isActive = (entity: { status?: string }): boolean => 
   entity.status !== 'deleted' && entity.status !== 'inactive'
 
 // Column existence helpers
-export const hasColumn = (obj: any, column: string): boolean =>
+export const hasColumn = (obj: any, column: string): boolean => 
   obj && typeof obj === 'object' && column in obj

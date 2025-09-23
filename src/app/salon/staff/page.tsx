@@ -49,7 +49,8 @@ const COLORS = {
   lightText: '#E0E0E0',
   charcoalDark: '#0F0F0F',
   charcoalLight: '#232323',
-  emerald: '#0F6F5C'
+  emerald: '#0F6F5C',
+  rose: '#E8B4B8'
 }
 
 interface Staff {
@@ -454,7 +455,8 @@ function StaffContent() {
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
 
         {/* Stats Cards */}
