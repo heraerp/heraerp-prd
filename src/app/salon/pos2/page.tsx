@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 import { universalApi } from '@/lib/universal-api-v2'
 import { flags } from '@/config/flags'
-import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
+import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
 import { CatalogPane } from '@/components/salon/pos2/CatalogPane'
 import { CartSidebar } from '@/components/salon/pos2/CartSidebar'
 import { PaymentDialog } from '@/components/salon/pos2/PaymentDialog'
@@ -46,7 +46,7 @@ const COLORS = {
 }
 
 function POS2Content() {
-  const { user, organization } = useHERAAuth()
+  const { user, organizationId } = useSalonContext()
   const [localOrgId, setLocalOrgId] = useState<string | null>(null)
   const [commissionsEnabled, setCommissionsEnabled] = useState(true)
 
@@ -58,7 +58,7 @@ function POS2Content() {
     }
   }, [])
 
-  const organizationId = organization?.id || localOrgId
+  const effectiveOrgId = organizationId || localOrgId
   const [selectedBranch, setSelectedBranch] = useState<string>('')
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
@@ -69,11 +69,11 @@ function POS2Content() {
   // Load commission settings
   useEffect(() => {
     const loadCommissionSettings = async () => {
-      if (!organizationId) return
+      if (!effectiveOrgId) return
 
       try {
-        universalApi.setOrganizationId(organizationId)
-        const orgResponse = await universalApi.getEntity(organizationId)
+        universalApi.setOrganizationId(effectiveOrgId)
+        const orgResponse = await universalApi.getEntity(effectiveOrgId)
 
         if (orgResponse.success && orgResponse.data) {
           // Type-safe access to settings
@@ -89,10 +89,10 @@ function POS2Content() {
     }
 
     loadCommissionSettings()
-  }, [organizationId])
+  }, [effectiveOrgId])
 
   // Always call hooks - pass empty string if no org ID to satisfy hooks rules
-  const posTicketResult = usePosTicket(organizationId || 'demo-org')
+  const posTicketResult = usePosTicket(effectiveOrgId || 'demo-org')
   const {
     ticket,
     addLineItem,
@@ -106,10 +106,10 @@ function POS2Content() {
     calculateTotals
   } = posTicketResult
 
-  const appointmentLookupResult = useAppointmentLookup(organizationId || 'demo-org')
+  const appointmentLookupResult = useAppointmentLookup(effectiveOrgId || 'demo-org')
   const { loadAppointment } = appointmentLookupResult
 
-  const customerLookupResult = useCustomerLookup(organizationId || 'demo-org')
+  const customerLookupResult = useCustomerLookup(effectiveOrgId || 'demo-org')
   const { searchCustomers } = customerLookupResult
 
   // Keyboard shortcuts
@@ -178,7 +178,7 @@ function POS2Content() {
 
   const totals = calculateTotals()
 
-  if (!organizationId) {
+  if (!effectiveOrgId) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -320,7 +320,7 @@ function POS2Content() {
             {/* Left Pane - Catalog */}
             <div className="flex-1 min-w-0 border-r" style={{ borderColor: COLORS.bronze + '20' }}>
               <CatalogPane
-                organizationId={organizationId}
+                organizationId={effectiveOrgId}
                 onAddItem={addLineItem}
                 currentCustomerId={ticket.customer_id}
                 currentAppointmentId={ticket.appointment_id}
@@ -451,7 +451,7 @@ function POS2Content() {
           <CustomerSearchModal
             open={isCustomerSearchOpen}
             onClose={() => setIsCustomerSearchOpen(false)}
-            organizationId={organizationId || ''}
+            organizationId={effectiveOrgId || ''}
             onCustomerSelect={handleCustomerSelect}
             onAppointmentSelect={handleAppointmentSelect}
           />
@@ -474,7 +474,7 @@ function POS2Content() {
             onClose={() => setIsPaymentOpen(false)}
             ticket={ticket}
             totals={totals}
-            organizationId={organizationId}
+            organizationId={effectiveOrgId}
             onComplete={handlePaymentComplete}
           />
 
@@ -508,8 +508,8 @@ function POS2Content() {
 
 export default function SalonPOS2Page() {
   return (
-    <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
+    <SimpleSalonGuard requiredRoles={['owner', 'receptionist', 'admin']}>
       <POS2Content />
-    </SalonAuthGuard>
+    </SimpleSalonGuard>
   )
 }
