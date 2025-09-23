@@ -15,7 +15,7 @@ interface SalonAuthGuardProps {
 }
 
 // Hair Talkz Salon Organization ID
-const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
+const SALON_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Michele's salon
 
 // Role-based route permissions
 const ROUTE_PERMISSIONS: Record<string, string[]> = {

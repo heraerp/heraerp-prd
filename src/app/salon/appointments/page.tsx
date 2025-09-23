@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 import { useAppointmentsPlaybook } from '@/hooks/useAppointmentsPlaybook'
 import { AppointmentStatus } from '@/lib/playbook/entities'
 import { format, startOfDay, endOfDay, addDays } from 'date-fns'
@@ -55,7 +55,7 @@ import { toast } from '@/hooks/use-toast'
 import { PageLayout } from '@/components/universal/PageLayout'
 import { PageHeader, PageHeaderButton } from '@/components/universal/PageHeader'
 import { NewAppointmentModal } from '@/components/salon/appointments/NewAppointmentModal'
-import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
+import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   booked: {
@@ -92,7 +92,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }>
 
 function SalonAppointmentsContent() {
   const router = useRouter()
-  const { organization, isAuthenticated, isLoading: contextLoading } = useHERAAuth()
+  const { organizationId, isAuthenticated, isLoading: contextLoading } = useSalonContext()
 
   // State for filters
   const [searchTerm, setSearchTerm] = useState('')
@@ -467,8 +467,8 @@ function SalonAppointmentsContent() {
 
 export default function SalonAppointmentsPage() {
   return (
-    <SalonAuthGuard requiredRoles={['Owner', 'Receptionist', 'Administrator']}>
+    <SimpleSalonGuard requiredRoles={['owner', 'receptionist', 'admin']}>
       <SalonAppointmentsContent />
-    </SalonAuthGuard>
+    </SimpleSalonGuard>
   )
 }
