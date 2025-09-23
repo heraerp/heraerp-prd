@@ -83,9 +83,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data)
   } catch (err) {
     console.error('Unexpected error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

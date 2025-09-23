@@ -18,18 +18,15 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching KPIs:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch KPIs' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch KPIs' }, { status: 500 })
     }
 
     // Transform the data for the frontend
     const kpis = data?.[0] || {}
-    
+
     // Use demo data if no real data is available
     const isDemoMode = !kpis.monthly_revenue_aed || Number(kpis.monthly_revenue_aed) === 0
-    
+
     return NextResponse.json({
       monthlyRevenue: {
         amount: isDemoMode ? 62000 : Number(kpis.monthly_revenue_aed),
@@ -55,9 +52,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (err) {
     console.error('Unexpected error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
