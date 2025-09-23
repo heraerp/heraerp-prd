@@ -20,13 +20,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { formatDistanceToNow } from 'date-fns'
-import {
-  Edit,
-  Trash2,
-  Archive,
-  ArchiveRestore,
-  MoreVertical
-} from 'lucide-react'
+import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -72,7 +66,7 @@ export function CategoryList({
   }
 
   return (
-    <div 
+    <div
       className="rounded-lg overflow-hidden"
       style={{
         backgroundColor: COLORS.charcoalLight + '95',
@@ -81,7 +75,7 @@ export function CategoryList({
     >
       <Table>
         <TableHeader>
-          <TableRow 
+          <TableRow
             className="border-b hover:bg-transparent"
             style={{ borderColor: COLORS.bronze + '33' }}
           >
@@ -99,13 +93,13 @@ export function CategoryList({
             const isArchived = category.status === 'archived'
 
             return (
-              <TableRow 
+              <TableRow
                 key={category.id}
                 className={cn(
-                  "border-b transition-colors group",
-                  index % 2 === 0 ? "bg-gray-50/5" : "bg-transparent",
-                  "hover:bg-cyan-100/10",
-                  isArchived && "opacity-60"
+                  'border-b transition-colors group',
+                  index % 2 === 0 ? 'bg-gray-50/5' : 'bg-transparent',
+                  'hover:bg-cyan-100/10',
+                  isArchived && 'opacity-60'
                 )}
                 style={{ borderColor: COLORS.bronze + '20' }}
               >
@@ -123,7 +117,10 @@ export function CategoryList({
                     <div>
                       <p style={{ color: COLORS.champagne }}>{category.entity_name}</p>
                       {category.description && (
-                        <p className="text-sm opacity-60 mt-0.5" style={{ color: COLORS.lightText }}>
+                        <p
+                          className="text-sm opacity-60 mt-0.5"
+                          style={{ color: COLORS.lightText }}
+                        >
                           {category.description}
                         </p>
                       )}
@@ -138,15 +135,13 @@ export function CategoryList({
                 </TableCell>
 
                 <TableCell>
-                  <span style={{ color: COLORS.lightText }}>
-                    {category.sort_order}
-                  </span>
+                  <span style={{ color: COLORS.lightText }}>{category.sort_order}</span>
                 </TableCell>
 
                 <TableCell>
                   {isArchived ? (
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="bg-gray-500/20 text-gray-400 border-gray-500/30"
                     >
                       Archived
@@ -182,11 +177,14 @@ export function CategoryList({
                         <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent 
+                    <DropdownMenuContent
                       align="end"
-                      style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        border: `1px solid ${COLORS.bronze}33`
+                      }}
                     >
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => onEdit(category)}
                         style={{ color: COLORS.lightText }}
                         className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
@@ -194,9 +192,9 @@ export function CategoryList({
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-                      
+
                       {isArchived ? (
                         <DropdownMenuItem
                           onClick={() => onRestore(category)}
@@ -216,9 +214,9 @@ export function CategoryList({
                           Archive
                         </DropdownMenuItem>
                       )}
-                      
+
                       <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-                      
+
                       <DropdownMenuItem
                         onClick={() => onDelete(category)}
                         className="hover:!bg-red-900/20 hover:!text-red-300"
@@ -237,8 +235,8 @@ export function CategoryList({
 
           {categories.length === 0 && (
             <TableRow>
-              <TableCell 
-                colSpan={6} 
+              <TableCell
+                colSpan={6}
                 className="h-32 text-center"
                 style={{ color: COLORS.lightText, opacity: 0.5 }}
               >

@@ -88,7 +88,7 @@ export function UniversalConfigManager({
   showAnalytics = false,
   analyticsConfig
 }: UniversalConfigManagerProps) {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const DEFAULT_ORG_ID =
     process.env.NEXT_PUBLIC_DEFAULT_ORGANIZATION_ID || '550e8400-e29b-41d4-a716-446655440000'
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID

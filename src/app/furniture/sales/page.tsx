@@ -39,7 +39,7 @@ import { SalesPageSkeleton } from '@/components/furniture/SalesPageSkeleton'
 export default function FurnitureSales() {
   const pathname = usePathname()
 
-  const { currentOrganization, isLoadingOrgs, isAuthenticated  } = useHERAAuth()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useHERAAuth()
 
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 

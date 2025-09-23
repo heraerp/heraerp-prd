@@ -13,13 +13,13 @@ export function useSalonOrgId() {
     if (typeof window !== 'undefined') {
       // Get org ID from hostname or path
       const detectedOrgId = getSalonOrgId(window.location.hostname, window.location.pathname)
-      
+
       // Also check localStorage for override
       const storedOrgId = localStorage.getItem('organizationId')
-      
+
       // Priority: stored > detected > default
       const finalOrgId = storedOrgId || detectedOrgId || HAIRTALKZ_ORG_ID
-      
+
       console.log('Organization ID detection:', {
         hostname: window.location.hostname,
         pathname: window.location.pathname,
@@ -27,7 +27,7 @@ export function useSalonOrgId() {
         stored: storedOrgId,
         final: finalOrgId
       })
-      
+
       setOrgId(finalOrgId)
       setIsLoading(false)
     }

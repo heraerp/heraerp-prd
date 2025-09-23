@@ -35,7 +35,13 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   owner: [
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
-    { title: 'Appointments', href: '/salon/appointments', icon: Calendar, badge: '3', badgeColor: LUXE_COLORS.emerald },
+    {
+      title: 'Appointments',
+      href: '/salon/appointments',
+      icon: Calendar,
+      badge: '3',
+      badgeColor: LUXE_COLORS.emerald
+    },
     { title: 'POS', href: '/salon/pos2', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
@@ -45,16 +51,28 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
     { title: 'Reports', href: '/salon/reports', icon: BarChart3 }
   ],
-  
+
   receptionist: [
     { title: 'Dashboard', href: '/salon/receptionist/dashboard', icon: Home },
-    { title: 'Appointments', href: '/salon/appointments', icon: Calendar, badge: '3', badgeColor: LUXE_COLORS.emerald },
+    {
+      title: 'Appointments',
+      href: '/salon/appointments',
+      icon: Calendar,
+      badge: '3',
+      badgeColor: LUXE_COLORS.emerald
+    },
     { title: 'POS', href: '/salon/pos2', icon: CreditCard },
     { title: 'Customers', href: '/salon/customers', icon: Users },
     { title: 'Services', href: '/salon/services', icon: Scissors },
-    { title: 'WhatsApp', href: '/salon/whatsapp', icon: MessageCircle, badge: '5', badgeColor: LUXE_COLORS.gold }
+    {
+      title: 'WhatsApp',
+      href: '/salon/whatsapp',
+      icon: MessageCircle,
+      badge: '5',
+      badgeColor: LUXE_COLORS.gold
+    }
   ],
-  
+
   accountant: [
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
     { title: 'Finance', href: '/salon/finance', icon: DollarSign },
@@ -67,7 +85,7 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
     { title: 'Balance Sheet', href: '/salon/reports/balance-sheet', icon: Scale },
     { title: 'Reports', href: '/salon/reports', icon: TrendingUp }
   ],
-  
+
   admin: [
     { title: 'Dashboard', href: '/salon/admin/dashboard', icon: Home },
     { title: 'Users', href: '/salon/settings#users', icon: Users },
@@ -83,10 +101,10 @@ const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
 
 export default function SalonRoleBasedDarkSidebar() {
   const { role, isLoading } = useSalonContext()
-  
+
   if (isLoading) {
     return (
-      <div 
+      <div
         className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r flex items-center justify-center"
         style={{
           backgroundColor: LUXE_COLORS.charcoal,
@@ -97,11 +115,11 @@ export default function SalonRoleBasedDarkSidebar() {
       </div>
     )
   }
-  
+
   // Get role-specific items or default to owner
   const userRole = role?.toLowerCase() as keyof typeof roleBasedSidebarItems
   const sidebarItems = roleBasedSidebarItems[userRole] || roleBasedSidebarItems.owner
-  
+
   // Pass the role-specific items to the base sidebar
   return <SalonDarkSidebar items={sidebarItems} />
 }

@@ -82,7 +82,7 @@ const availableApps: AppOption[] = [
 
 export default function SetupPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, currentOrganization  } = useHERAAuth()
+  const { isAuthenticated, isLoading: authLoading, currentOrganization } = useHERAAuth()
   const [selectedApp, setSelectedApp] = useState<string | null>(null)
 
   useEffect(() => {

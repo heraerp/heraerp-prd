@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils'
 
 // Remove old GLAccount interface as we're using GLAccountNode from the service
 export default function ChartOfAccounts() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
 
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 

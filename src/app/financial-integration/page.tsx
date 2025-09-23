@@ -18,7 +18,7 @@ import { Settings, Send, BarChart3, Shield, Zap, Globe, Brain, CheckCircle2 } fr
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function FinancialIntegrationPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [selectedTab, setSelectedTab] = useState('overview')
   const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 

@@ -78,7 +78,7 @@ export function HeraMCPChat({
   className,
   showDebugInfo = false
 }: HeraMCPChatProps) {
-  const { currentOrganization, organizations  } = useHERAAuth()
+  const { currentOrganization, organizations } = useHERAAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)

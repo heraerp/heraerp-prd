@@ -127,7 +127,7 @@ export function SalonAuthGuard({
   const checkRouteAccess = (role: string) => {
     // Normalize role to handle case variations
     const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()
-    
+
     // Check if owner-only access is required
     if (requireOwnerOnly && normalizedRole !== 'Owner') {
       setAccessDenied(true)
@@ -136,9 +136,7 @@ export function SalonAuthGuard({
 
     // Check required roles from props (case-insensitive)
     if (requiredRoles.length > 0) {
-      const hasRequiredRole = requiredRoles.some(r => 
-        r.toLowerCase() === role.toLowerCase()
-      )
+      const hasRequiredRole = requiredRoles.some(r => r.toLowerCase() === role.toLowerCase())
       if (!hasRequiredRole) {
         setAccessDenied(true)
         return
@@ -148,9 +146,7 @@ export function SalonAuthGuard({
     // Check route-based permissions
     const allowedRoles = ROUTE_PERMISSIONS[pathname]
     if (allowedRoles) {
-      const hasRouteAccess = allowedRoles.some(r => 
-        r.toLowerCase() === role.toLowerCase()
-      )
+      const hasRouteAccess = allowedRoles.some(r => r.toLowerCase() === role.toLowerCase())
       if (!hasRouteAccess) {
         setAccessDenied(true)
         return

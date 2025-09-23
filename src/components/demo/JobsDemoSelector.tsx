@@ -103,7 +103,7 @@ export default function JobsDemoSelector() {
   const [mounted, setMounted] = useState(false)
   const [selectedDemo, setSelectedDemo] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { login  } = useHERAAuth()
+  const { login } = useHERAAuth()
   const router = useRouter()
 
   useEffect(() => {

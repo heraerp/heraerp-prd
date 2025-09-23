@@ -74,27 +74,76 @@ const ROLE_FEATURES = {
 // Widget data (in production, this would come from API)
 const WIDGET_DATA = {
   // Financial widgets
-  revenue: { title: 'Monthly Revenue', value: 'AED 125,000', change: '+12%', icon: DollarSign, color: LUXE_COLORS.gold },
-  expenses: { title: 'Total Expenses', value: 'AED 75,000', change: '-5%', icon: Receipt, color: LUXE_COLORS.ruby },
-  profit: { title: 'Net Profit', value: 'AED 50,000', change: '+18%', icon: TrendingUp, color: LUXE_COLORS.emerald },
+  revenue: {
+    title: 'Monthly Revenue',
+    value: 'AED 125,000',
+    change: '+12%',
+    icon: DollarSign,
+    color: LUXE_COLORS.gold
+  },
+  expenses: {
+    title: 'Total Expenses',
+    value: 'AED 75,000',
+    change: '-5%',
+    icon: Receipt,
+    color: LUXE_COLORS.ruby
+  },
+  profit: {
+    title: 'Net Profit',
+    value: 'AED 50,000',
+    change: '+18%',
+    icon: TrendingUp,
+    color: LUXE_COLORS.emerald
+  },
   vat: { title: 'VAT Collected', value: 'AED 6,250', icon: FileText, color: LUXE_COLORS.plum },
-  pending: { title: 'Pending Payments', value: 'AED 15,000', icon: Clock, color: LUXE_COLORS.orange },
-  
+  pending: {
+    title: 'Pending Payments',
+    value: 'AED 15,000',
+    icon: Clock,
+    color: LUXE_COLORS.orange
+  },
+
   // Operational widgets
-  appointments: { title: "Today's Appointments", value: '12', icon: Calendar, color: LUXE_COLORS.gold },
-  customers: { title: 'Active Customers', value: '348', change: '+23', icon: Users, color: LUXE_COLORS.emerald },
+  appointments: {
+    title: "Today's Appointments",
+    value: '12',
+    icon: Calendar,
+    color: LUXE_COLORS.gold
+  },
+  customers: {
+    title: 'Active Customers',
+    value: '348',
+    change: '+23',
+    icon: Users,
+    color: LUXE_COLORS.emerald
+  },
   staff: { title: 'Staff Members', value: '15', icon: Users, color: LUXE_COLORS.plum },
   inventory: { title: 'Low Stock Items', value: '7', icon: Package, color: LUXE_COLORS.ruby },
-  
+
   // Reception widgets
-  todayAppointments: { title: "Today's Appointments", value: '12', icon: Calendar, color: LUXE_COLORS.gold },
+  todayAppointments: {
+    title: "Today's Appointments",
+    value: '12',
+    icon: Calendar,
+    color: LUXE_COLORS.gold
+  },
   walkIns: { title: 'Walk-ins Waiting', value: '3', icon: Clock, color: LUXE_COLORS.orange },
   checkedIn: { title: 'Checked In', value: '8', icon: CheckCircle, color: LUXE_COLORS.emerald },
-  todayRevenue: { title: "Today's Revenue", value: 'AED 3,450', icon: DollarSign, color: LUXE_COLORS.gold },
-  
+  todayRevenue: {
+    title: "Today's Revenue",
+    value: 'AED 3,450',
+    icon: DollarSign,
+    color: LUXE_COLORS.gold
+  },
+
   // Admin widgets
   activeUsers: { title: 'Active Users', value: '24', icon: Users, color: LUXE_COLORS.emerald },
-  systemStatus: { title: 'System Status', value: 'Healthy', icon: CheckCircle, color: LUXE_COLORS.emerald },
+  systemStatus: {
+    title: 'System Status',
+    value: 'Healthy',
+    icon: CheckCircle,
+    color: LUXE_COLORS.emerald
+  },
   backups: { title: 'Last Backup', value: '2 hours ago', icon: Package, color: LUXE_COLORS.plum },
   security: { title: 'Security Alerts', value: '0', icon: Shield, color: LUXE_COLORS.emerald }
 }
@@ -102,7 +151,7 @@ const WIDGET_DATA = {
 export function UnifiedDashboard() {
   const { role, user, isLoading, isAuthenticated } = useSalonContext()
   const router = useRouter()
-  
+
   // Redirect to role-specific dashboards
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -117,7 +166,7 @@ export function UnifiedDashboard() {
 
   if (isLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
@@ -129,20 +178,25 @@ export function UnifiedDashboard() {
   if (!isAuthenticated || !role) {
     console.log('Dashboard auth check failed:', { isAuthenticated, role, user })
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
-        <Card className="max-w-md w-full border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
+        <Card
+          className="max-w-md w-full border-0"
+          style={{ backgroundColor: LUXE_COLORS.charcoalLight }}
+        >
           <CardContent className="p-8 text-center">
             <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
             <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
               Authentication Required
             </h3>
             <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
-              {!isAuthenticated ? 'Please log in to access the dashboard.' : 'No role assigned. Please contact your administrator.'}
+              {!isAuthenticated
+                ? 'Please log in to access the dashboard.'
+                : 'No role assigned. Please contact your administrator.'}
             </p>
-            <Button 
+            <Button
               onClick={() => router.push('/salon/auth')}
               className="w-full"
               style={{
@@ -168,29 +222,29 @@ export function UnifiedDashboard() {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 
-            className="text-3xl font-light mb-2"
-            style={{ color: LUXE_COLORS.gold }}
-          >
+          <h1 className="text-3xl font-light mb-2" style={{ color: LUXE_COLORS.gold }}>
             Welcome back, {user?.user_metadata?.full_name || 'User'}
           </h1>
-          <p 
-            className="text-sm"
-            style={{ color: LUXE_COLORS.bronze }}
-          >
-            {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard • {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            {role.charAt(0).toUpperCase() + role.slice(1)} Dashboard •{' '}
+            {new Date().toLocaleDateString('en-US', {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
           </p>
         </div>
 
         {/* Widgets Grid - Dynamic based on role */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {widgets.map((widgetKey) => {
+          {widgets.map(widgetKey => {
             const widget = WIDGET_DATA[widgetKey as keyof typeof WIDGET_DATA]
             if (!widget) return null
             const Icon = widget.icon
 
             return (
-              <Card 
+              <Card
                 key={widgetKey}
                 className="border-0 hover:scale-[1.02] transition-transform cursor-pointer"
                 style={{
@@ -208,10 +262,12 @@ export function UnifiedDashboard() {
                         {widget.value}
                       </p>
                       {widget.change && (
-                        <p 
-                          className="text-xs mt-1" 
-                          style={{ 
-                            color: widget.change.startsWith('+') ? LUXE_COLORS.emerald : LUXE_COLORS.ruby 
+                        <p
+                          className="text-xs mt-1"
+                          style={{
+                            color: widget.change.startsWith('+')
+                              ? LUXE_COLORS.emerald
+                              : LUXE_COLORS.ruby
                           }}
                         >
                           {widget.change} from last month
@@ -227,7 +283,7 @@ export function UnifiedDashboard() {
         </div>
 
         {/* Quick Actions - Dynamic based on role */}
-        <Card 
+        <Card
           className="border-0 mb-8"
           style={{
             backgroundColor: LUXE_COLORS.charcoalLight,
@@ -242,7 +298,7 @@ export function UnifiedDashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {quickLinks.map((link) => {
+              {quickLinks.map(link => {
                 const Icon = link.icon
                 return (
                   <Link
@@ -258,9 +314,9 @@ export function UnifiedDashboard() {
                       <Icon className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
                       <span style={{ color: LUXE_COLORS.champagne }}>{link.title}</span>
                     </div>
-                    <ArrowRight 
-                      className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" 
-                      style={{ color: LUXE_COLORS.gold }} 
+                    <ArrowRight
+                      className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ color: LUXE_COLORS.gold }}
                     />
                   </Link>
                 )
@@ -271,7 +327,7 @@ export function UnifiedDashboard() {
 
         {/* Role-specific content sections */}
         {userRole === 'owner' && (
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -294,7 +350,7 @@ export function UnifiedDashboard() {
         )}
 
         {userRole === 'receptionist' && (
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -313,9 +369,13 @@ export function UnifiedDashboard() {
                   <div className="flex justify-between items-center">
                     <div>
                       <p style={{ color: LUXE_COLORS.champagne }}>Sarah Johnson - Hair Color</p>
-                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>2:00 PM with Emma</p>
+                      <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                        2:00 PM with Emma
+                      </p>
                     </div>
-                    <Button size="sm" variant="outline">Check In</Button>
+                    <Button size="sm" variant="outline">
+                      Check In
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -324,7 +384,7 @@ export function UnifiedDashboard() {
         )}
 
         {userRole === 'accountant' && (
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -339,11 +399,17 @@ export function UnifiedDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                <div
+                  className="flex items-center gap-3 p-3 rounded"
+                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                >
                   <AlertCircle className="h-5 w-5" style={{ color: LUXE_COLORS.orange }} />
                   <span style={{ color: LUXE_COLORS.champagne }}>VAT return due in 5 days</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                <div
+                  className="flex items-center gap-3 p-3 rounded"
+                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                >
                   <Receipt className="h-5 w-5" style={{ color: LUXE_COLORS.plum }} />
                   <span style={{ color: LUXE_COLORS.champagne }}>15 invoices pending approval</span>
                 </div>
@@ -353,7 +419,7 @@ export function UnifiedDashboard() {
         )}
 
         {userRole === 'admin' && (
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -368,14 +434,20 @@ export function UnifiedDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                <div
+                  className="flex items-center justify-between p-3 rounded"
+                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                >
                   <span style={{ color: LUXE_COLORS.champagne }}>Database Status</span>
                   <span className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} />
                     <span style={{ color: LUXE_COLORS.emerald }}>Healthy</span>
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                <div
+                  className="flex items-center justify-between p-3 rounded"
+                  style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                >
                   <span style={{ color: LUXE_COLORS.champagne }}>API Performance</span>
                   <span style={{ color: LUXE_COLORS.gold }}>98.5% uptime</span>
                 </div>

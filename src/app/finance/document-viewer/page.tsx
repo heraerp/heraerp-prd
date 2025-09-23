@@ -126,7 +126,8 @@ interface SearchCriteria {
 
 export default function FinancialDocumentViewer() {
   const router = useRouter()
-  const { user, organizations, currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { user, organizations, currentOrganization, isAuthenticated, contextLoading } =
+    useHERAAuth()
 
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
     organizationId: currentOrganization?.id || '',

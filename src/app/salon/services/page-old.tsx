@@ -44,7 +44,7 @@ function SalonServicesPageContent() {
   const { organization, isLoading: authLoading } = useHERAAuth()
   const organizationId = organization?.id || ''
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
-  
+
   // Fetch categories for filtering
   const { categories: categoryList } = useCategoriesPlaybook({
     organizationId,
@@ -122,7 +122,7 @@ function SalonServicesPageContent() {
       editingService ? 'Updating service...' : 'Creating service...',
       'Please wait while we save your changes'
     )
-    
+
     try {
       if (editingService) {
         await updateOne(editingService.id, data)
@@ -158,18 +158,18 @@ function SalonServicesPageContent() {
   const handleConfirmDelete = async () => {
     setIsDeleting(true)
     const loadingId = showLoading(
-      servicesToDelete.length > 1 
-        ? `Deleting ${servicesToDelete.length} services...` 
+      servicesToDelete.length > 1
+        ? `Deleting ${servicesToDelete.length} services...`
         : 'Deleting service...',
       'This action cannot be undone'
     )
-    
+
     try {
       await deleteMany(servicesToDelete.map(s => s.id))
       removeToast(loadingId)
       showSuccess(
-        servicesToDelete.length > 1 
-          ? `${servicesToDelete.length} services deleted` 
+        servicesToDelete.length > 1
+          ? `${servicesToDelete.length} services deleted`
           : 'Service deleted',
         servicesToDelete.length > 1
           ? 'The selected services have been permanently removed'
@@ -195,7 +195,7 @@ function SalonServicesPageContent() {
       `Archiving ${ids.length} service${ids.length > 1 ? 's' : ''}...`,
       'Moving to archived status'
     )
-    
+
     try {
       await archiveMany(ids)
       removeToast(loadingId)
@@ -216,7 +216,7 @@ function SalonServicesPageContent() {
       `Restoring ${ids.length} service${ids.length > 1 ? 's' : ''}...`,
       'Moving to active status'
     )
-    
+
     try {
       await restoreMany(ids)
       removeToast(loadingId)

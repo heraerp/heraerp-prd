@@ -56,10 +56,10 @@ interface AppointmentCard {
 
 function AppointmentStatusBadge({ status }: { status: AppointmentCard['status'] }) {
   const colors = {
-    'upcoming': { bg: `${COLORS.sapphire}20`, text: COLORS.sapphire, label: 'Upcoming' },
+    upcoming: { bg: `${COLORS.sapphire}20`, text: COLORS.sapphire, label: 'Upcoming' },
     'in-progress': { bg: `${COLORS.emerald}20`, text: COLORS.emerald, label: 'In Progress' },
-    'completed': { bg: `${COLORS.bronze}20`, text: COLORS.bronze, label: 'Completed' },
-    'cancelled': { bg: `${COLORS.ruby}20`, text: COLORS.ruby, label: 'Cancelled' }
+    completed: { bg: `${COLORS.bronze}20`, text: COLORS.bronze, label: 'Completed' },
+    cancelled: { bg: `${COLORS.ruby}20`, text: COLORS.ruby, label: 'Cancelled' }
   }
 
   const config = colors[status]
@@ -107,16 +107,13 @@ function StatCard({
             <Icon className="h-5 w-5" />
           </div>
           <div>
-            <p 
+            <p
               className="text-xs font-light uppercase tracking-wider"
               style={{ color: COLORS.bronze }}
             >
               {label}
             </p>
-            <p 
-              className="text-xl font-light"
-              style={{ color: COLORS.champagne }}
-            >
+            <p className="text-xl font-light" style={{ color: COLORS.champagne }}>
               {value}
             </p>
           </div>
@@ -135,7 +132,7 @@ export default function ReceptionistDashboard() {
   useEffect(() => {
     checkAuth()
     loadAppointments()
-    
+
     // Update time every minute
     const timer = setInterval(() => {
       setCurrentTime(new Date())
@@ -145,31 +142,34 @@ export default function ReceptionistDashboard() {
   }, [])
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
     if (!session?.user) {
       router.push('/salon/auth')
       return
     }
 
     const userMetadata = session.user.user_metadata
-    const userRole = userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
-    
+    const userRole =
+      userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
+
     // Check organization
     if (userMetadata?.organization_id !== HAIRTALKZ_ORG_ID) {
       router.push('/salon/auth')
       return
     }
-    
+
     // Check role
     if (userRole && userRole !== 'receptionist') {
       // Redirect to appropriate dashboard based on role
       const redirectMap: Record<string, string> = {
-        'owner': '/salon/dashboard',
-        'accountant': '/salon/accountant',
-        'admin': '/salon/admin'
+        owner: '/salon/dashboard',
+        accountant: '/salon/accountant',
+        admin: '/salon/admin'
       }
-      
+
       const redirectPath = redirectMap[userRole] || '/salon/auth'
       router.push(redirectPath)
       return
@@ -221,7 +221,7 @@ export default function ReceptionistDashboard() {
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.charcoal }}
       >
@@ -233,37 +233,34 @@ export default function ReceptionistDashboard() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
       {/* Header */}
-      <div 
+      <div
         className="border-b px-6 py-4"
-        style={{ 
+        style={{
           backgroundColor: COLORS.charcoalLight,
           borderColor: `${COLORS.bronze}20`
         }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 
-              className="text-2xl font-light tracking-wider"
-              style={{ color: COLORS.champagne }}
-            >
+            <h1 className="text-2xl font-light tracking-wider" style={{ color: COLORS.champagne }}>
               Reception Dashboard
             </h1>
-            <p 
+            <p
               className="text-sm font-light mt-1 flex items-center gap-2"
               style={{ color: COLORS.bronze }}
             >
               <Clock className="h-4 w-4" />
-              {currentTime.toLocaleString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+              {currentTime.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit'
               })}
             </p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -279,7 +276,7 @@ export default function ReceptionistDashboard() {
                 New Customer
               </Link>
             </Button>
-            
+
             <Button
               className="font-light"
               style={{
@@ -306,24 +303,14 @@ export default function ReceptionistDashboard() {
             value="18"
             color={COLORS.sapphire}
           />
-          <StatCard
-            icon={Users}
-            label="Walk-ins Today"
-            value="5"
-            color={COLORS.emerald}
-          />
+          <StatCard icon={Users} label="Walk-ins Today" value="5" color={COLORS.emerald} />
           <StatCard
             icon={DollarSign}
             label="Today's Revenue"
             value="AED 8,450"
             color={COLORS.gold}
           />
-          <StatCard
-            icon={MessageSquare}
-            label="Pending Messages"
-            value="3"
-            color={COLORS.plum}
-          />
+          <StatCard icon={MessageSquare} label="Pending Messages" value="3" color={COLORS.plum} />
         </div>
 
         {/* Main Content Grid */}
@@ -338,7 +325,7 @@ export default function ReceptionistDashboard() {
             >
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle 
+                  <CardTitle
                     className="text-lg font-light tracking-wider"
                     style={{ color: COLORS.champagne }}
                   >
@@ -351,9 +338,7 @@ export default function ReceptionistDashboard() {
                     style={{ color: COLORS.bronze }}
                     asChild
                   >
-                    <Link href="/salon/appointments">
-                      View All
-                    </Link>
+                    <Link href="/salon/appointments">View All</Link>
                   </Button>
                 </div>
               </CardHeader>
@@ -371,7 +356,7 @@ export default function ReceptionistDashboard() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <div className="flex items-center gap-3">
-                            <span 
+                            <span
                               className="text-lg font-medium"
                               style={{ color: COLORS.champagne }}
                             >
@@ -379,28 +364,19 @@ export default function ReceptionistDashboard() {
                             </span>
                             <AppointmentStatusBadge status={appointment.status} />
                           </div>
-                          <h4 
-                            className="font-medium mt-1"
-                            style={{ color: COLORS.lightText }}
-                          >
+                          <h4 className="font-medium mt-1" style={{ color: COLORS.lightText }}>
                             {appointment.clientName}
                           </h4>
                         </div>
-                        <span
-                          className="text-lg font-light"
-                          style={{ color: COLORS.gold }}
-                        >
+                        <span className="text-lg font-light" style={{ color: COLORS.gold }}>
                           AED {appointment.amount}
                         </span>
                       </div>
-                      
-                      <p 
-                        className="text-sm font-light"
-                        style={{ color: COLORS.bronze }}
-                      >
+
+                      <p className="text-sm font-light" style={{ color: COLORS.bronze }}>
                         {appointment.service} • with {appointment.stylist}
                       </p>
-                      
+
                       <div className="flex items-center gap-2 mt-3">
                         {appointment.status === 'upcoming' && (
                           <>
@@ -474,7 +450,7 @@ export default function ReceptionistDashboard() {
               }}
             >
               <CardHeader>
-                <CardTitle 
+                <CardTitle
                   className="text-lg font-light tracking-wider"
                   style={{ color: COLORS.champagne }}
                 >
@@ -497,7 +473,7 @@ export default function ReceptionistDashboard() {
                       Process Payment
                     </Link>
                   </Button>
-                  
+
                   <Button
                     className="w-full justify-start font-light"
                     variant="outline"
@@ -512,7 +488,7 @@ export default function ReceptionistDashboard() {
                       View Calendar
                     </Link>
                   </Button>
-                  
+
                   <Button
                     className="w-full justify-start font-light"
                     variant="outline"
@@ -539,7 +515,7 @@ export default function ReceptionistDashboard() {
               }}
             >
               <CardHeader>
-                <CardTitle 
+                <CardTitle
                   className="text-lg font-light tracking-wider"
                   style={{ color: COLORS.champagne }}
                 >
@@ -569,10 +545,7 @@ export default function ReceptionistDashboard() {
                           {walkin.service}
                         </p>
                       </div>
-                      <span 
-                        className="text-xs"
-                        style={{ color: COLORS.gold }}
-                      >
+                      <span className="text-xs" style={{ color: COLORS.gold }}>
                         {walkin.wait}
                       </span>
                     </div>

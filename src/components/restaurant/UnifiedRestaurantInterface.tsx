@@ -68,7 +68,7 @@ interface UnifiedView {
 }
 
 export function UnifiedRestaurantInterface() {
-  const { user, organization, logout  } = useHERAAuth()
+  const { user, organization, logout } = useHERAAuth()
   const [selectedView, setSelectedView] = useState('overview')
   const [searchQuery, setSearchQuery] = useState('')
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false)

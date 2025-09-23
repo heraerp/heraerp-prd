@@ -26,7 +26,7 @@ function SimpleAppointmentDashboard({ organizationId }: { organizationId: string
 const DEFAULT_SALON_ORG_ID = '550e8400-e29b-41d4-a716-446655440000'
 
 export default function SalonAppointmentsPage() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)
   const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(true)
 

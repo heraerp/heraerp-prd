@@ -31,8 +31,10 @@ export function useSalonAuth(): SalonAuth {
 
   const checkAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
       if (!session?.user) {
         window.location.href = '/salon/auth'
         return
@@ -41,7 +43,7 @@ export function useSalonAuth(): SalonAuth {
       const storedRole = localStorage.getItem('salonRole')
       const storedOrgId = localStorage.getItem('organizationId')
       const storedPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
-      
+
       if (storedOrgId !== HAIRTALKZ_ORG_ID) {
         window.location.href = '/salon/auth'
         return

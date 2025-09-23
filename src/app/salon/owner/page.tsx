@@ -89,7 +89,7 @@ function MetricCard({
         }}
       />
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle 
+        <CardTitle
           className="text-sm font-light tracking-wider uppercase"
           style={{ color: COLORS.bronze }}
         >
@@ -106,22 +106,19 @@ function MetricCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div 
-          className="text-3xl font-light tracking-wide"
-          style={{ color: COLORS.champagne }}
-        >
+        <div className="text-3xl font-light tracking-wide" style={{ color: COLORS.champagne }}>
           {value}
         </div>
         {subtitle && (
-          <p 
-            className="text-xs mt-2 font-light"
-            style={{ color: `${COLORS.bronze}90` }}
-          >
+          <p className="text-xs mt-2 font-light" style={{ color: `${COLORS.bronze}90` }}>
             {subtitle}
           </p>
         )}
         {trend && (
-          <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: `1px solid ${COLORS.bronze}20` }}>
+          <div
+            className="flex items-center gap-2 mt-3 pt-3"
+            style={{ borderTop: `1px solid ${COLORS.bronze}20` }}
+          >
             {trend.isUp ? (
               <ArrowUpRight className="h-4 w-4" style={{ color: COLORS.emerald }} />
             ) : (
@@ -159,7 +156,7 @@ function QuickActionButton({
         className="group cursor-pointer transition-all duration-300 hover:scale-[1.02]"
         style={{
           backgroundColor: COLORS.charcoalLight,
-          border: `1px solid ${COLORS.bronze}20`,
+          border: `1px solid ${COLORS.bronze}20`
         }}
       >
         <CardContent className="p-6 text-center">
@@ -172,17 +169,11 @@ function QuickActionButton({
           >
             <Icon className="h-7 w-7" style={{ color: COLORS.black }} />
           </div>
-          <h3 
-            className="font-medium tracking-wide mb-1"
-            style={{ color: COLORS.champagne }}
-          >
+          <h3 className="font-medium tracking-wide mb-1" style={{ color: COLORS.champagne }}>
             {label}
           </h3>
           {description && (
-            <p 
-              className="text-xs font-light"
-              style={{ color: `${COLORS.bronze}80` }}
-            >
+            <p className="text-xs font-light" style={{ color: `${COLORS.bronze}80` }}>
               {description}
             </p>
           )}
@@ -214,27 +205,30 @@ export default function HairTalkzOwnerDashboard() {
 
   const checkAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
       if (!session?.user) {
         router.replace('/salon/auth')
         return
       }
 
       const userMetadata = session.user.user_metadata
-      const userRole = userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
-      
+      const userRole =
+        userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
+
       // Just set the username, don't redirect if already on the right page
       setUserName(userMetadata.full_name || localStorage.getItem('salonUserName') || 'Owner')
-      
+
       // Only redirect if user has wrong role
       if (userRole && userRole !== 'owner') {
         const redirectMap: Record<string, string> = {
-          'receptionist': '/salon/receptionist',
-          'accountant': '/salon/accountant',
-          'admin': '/salon/admin'
+          receptionist: '/salon/receptionist',
+          accountant: '/salon/accountant',
+          admin: '/salon/admin'
         }
-        
+
         const redirectPath = redirectMap[userRole]
         if (redirectPath) {
           router.replace(redirectPath)
@@ -249,36 +243,42 @@ export default function HairTalkzOwnerDashboard() {
   const loadDashboardData = async () => {
     try {
       universalApi.setOrganizationId(HAIRTALKZ_ORG_ID)
-      
+
       // Load today's transactions
       const todayStart = new Date()
       todayStart.setHours(0, 0, 0, 0)
-      
+
       // Get transactions for revenue
       const { data: transactions } = await universalApi.read('universal_transactions')
-      const todayTransactions = transactions?.filter((t: any) => 
-        new Date(t.created_at) >= todayStart && 
-        t.transaction_type === 'sale'
-      ) || []
-      
+      const todayTransactions =
+        transactions?.filter(
+          (t: any) => new Date(t.created_at) >= todayStart && t.transaction_type === 'sale'
+        ) || []
+
       const monthStart = new Date()
       monthStart.setDate(1)
       monthStart.setHours(0, 0, 0, 0)
-      
-      const monthTransactions = transactions?.filter((t: any) => 
-        new Date(t.created_at) >= monthStart && 
-        t.transaction_type === 'sale'
-      ) || []
+
+      const monthTransactions =
+        transactions?.filter(
+          (t: any) => new Date(t.created_at) >= monthStart && t.transaction_type === 'sale'
+        ) || []
 
       // Calculate metrics
-      const todayRevenue = todayTransactions.reduce((sum: number, t: any) => sum + (t.total_amount || 0), 0)
-      const monthlyRevenue = monthTransactions.reduce((sum: number, t: any) => sum + (t.total_amount || 0), 0)
+      const todayRevenue = todayTransactions.reduce(
+        (sum: number, t: any) => sum + (t.total_amount || 0),
+        0
+      )
+      const monthlyRevenue = monthTransactions.reduce(
+        (sum: number, t: any) => sum + (t.total_amount || 0),
+        0
+      )
 
       // Get entities for other metrics
       const { data: entities } = await universalApi.read('core_entities')
       const customers = entities?.filter((e: any) => e.entity_type === 'customer') || []
-      const newCustomersThisMonth = customers.filter((c: any) => 
-        new Date(c.created_at) >= monthStart
+      const newCustomersThisMonth = customers.filter(
+        (c: any) => new Date(c.created_at) >= monthStart
       ).length
 
       // Mock some data for demo
@@ -301,7 +301,7 @@ export default function HairTalkzOwnerDashboard() {
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.charcoal }}
       >
@@ -313,30 +313,27 @@ export default function HairTalkzOwnerDashboard() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
       {/* Header */}
-      <div 
+      <div
         className="border-b px-8 py-6"
-        style={{ 
+        style={{
           backgroundColor: COLORS.charcoalLight,
           borderColor: `${COLORS.bronze}20`
         }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-light tracking-wider flex items-center gap-3"
               style={{ color: COLORS.champagne }}
             >
               <Crown className="h-8 w-8" style={{ color: COLORS.gold }} />
               Welcome back, Michele
             </h1>
-            <p 
-              className="text-sm font-light mt-1"
-              style={{ color: COLORS.bronze }}
-            >
+            <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
               Here's your salon performance overview
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -352,7 +349,7 @@ export default function HairTalkzOwnerDashboard() {
                 View Reports
               </Link>
             </Button>
-            
+
             <Button
               className="font-light"
               style={{
@@ -383,7 +380,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom={COLORS.emerald}
             gradientTo={COLORS.gold}
           />
-          
+
           <MetricCard
             title="Monthly Revenue"
             value={`AED ${dashboardData.monthlyRevenue.toLocaleString()}`}
@@ -393,7 +390,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom={COLORS.gold}
             gradientTo={COLORS.goldDark}
           />
-          
+
           <MetricCard
             title="Active Appointments"
             value={dashboardData.activeAppointments}
@@ -402,7 +399,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom={COLORS.plum}
             gradientTo="#9333EA"
           />
-          
+
           <MetricCard
             title="New Customers"
             value={dashboardData.newCustomers}
@@ -424,7 +421,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom="#10B981"
             gradientTo="#059669"
           />
-          
+
           <MetricCard
             title="Products Sold"
             value={dashboardData.productsSold}
@@ -434,7 +431,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom="#F59E0B"
             gradientTo="#D97706"
           />
-          
+
           <MetricCard
             title="Average Rating"
             value={dashboardData.averageRating}
@@ -443,7 +440,7 @@ export default function HairTalkzOwnerDashboard() {
             gradientFrom="#EAB308"
             gradientTo="#CA8A04"
           />
-          
+
           <MetricCard
             title="Pending Payments"
             value={dashboardData.pendingPayments}
@@ -456,13 +453,13 @@ export default function HairTalkzOwnerDashboard() {
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 
+          <h2
             className="text-xl font-light tracking-wider mb-6"
             style={{ color: COLORS.champagne }}
           >
             Quick Actions
           </h2>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <QuickActionButton
               icon={FileText}
@@ -470,21 +467,21 @@ export default function HairTalkzOwnerDashboard() {
               href="/salon/reports/branch-pnl"
               description="View today's performance"
             />
-            
+
             <QuickActionButton
               icon={BarChart3}
               label="P&L Statement"
               href="/salon-data/financials/p&l"
               description="Monthly profit & loss"
             />
-            
+
             <QuickActionButton
               icon={Building}
               label="Balance Sheet"
               href="/salon-data/financials/bs"
               description="Financial position"
             />
-            
+
             <QuickActionButton
               icon={Users}
               label="Staff Performance"
@@ -510,17 +507,37 @@ export default function HairTalkzOwnerDashboard() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { time: '10 mins ago', action: 'New appointment booked', client: 'Sarah Johnson', service: 'Hair Color & Style' },
-                { time: '25 mins ago', action: 'Payment received', amount: 'AED 450', method: 'Credit Card' },
-                { time: '1 hour ago', action: 'Product sale', product: 'Luxury Hair Serum', qty: '2 units' },
-                { time: '2 hours ago', action: 'Staff check-in', staff: 'Maria Lopez', role: 'Senior Stylist' }
+                {
+                  time: '10 mins ago',
+                  action: 'New appointment booked',
+                  client: 'Sarah Johnson',
+                  service: 'Hair Color & Style'
+                },
+                {
+                  time: '25 mins ago',
+                  action: 'Payment received',
+                  amount: 'AED 450',
+                  method: 'Credit Card'
+                },
+                {
+                  time: '1 hour ago',
+                  action: 'Product sale',
+                  product: 'Luxury Hair Serum',
+                  qty: '2 units'
+                },
+                {
+                  time: '2 hours ago',
+                  action: 'Staff check-in',
+                  staff: 'Maria Lopez',
+                  role: 'Senior Stylist'
+                }
               ].map((activity, idx) => (
-                <div 
+                <div
                   key={idx}
                   className="flex items-start gap-4 pb-4"
                   style={{ borderBottom: idx < 3 ? `1px solid ${COLORS.bronze}20` : undefined }}
                 >
-                  <div 
+                  <div
                     className="text-xs font-light"
                     style={{ color: COLORS.bronze, minWidth: '80px' }}
                   >
@@ -530,10 +547,7 @@ export default function HairTalkzOwnerDashboard() {
                     <p style={{ color: COLORS.champagne }} className="text-sm">
                       {activity.action}
                     </p>
-                    <p 
-                      className="text-xs font-light mt-1"
-                      style={{ color: `${COLORS.bronze}80` }}
-                    >
+                    <p className="text-xs font-light mt-1" style={{ color: `${COLORS.bronze}80` }}>
                       {activity.client && `Client: ${activity.client}`}
                       {activity.service && ` • ${activity.service}`}
                       {activity.amount && `Amount: ${activity.amount}`}

@@ -142,7 +142,7 @@ export function EmployeeManagerView({
   businessType,
   organizations = []
 }: EmployeeManagerViewProps) {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [selectedTab, setSelectedTab] = useState<'calendar' | 'requests' | 'team'>('calendar')
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>(mockLeaveRequests)
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'denied'>('all')

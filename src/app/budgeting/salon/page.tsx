@@ -56,7 +56,7 @@ interface SalonBudgetData {
 
 export default function SalonBudgetingPage() {
   const router = useRouter()
-  const { isAuthenticated  } = useHERAAuth()
+  const { isAuthenticated } = useHERAAuth()
   const { organizationId, loading: contextLoading } = useUserContext()
   const [budgetData, setBudgetData] = useState<SalonBudgetData | null>(null)
   const [isLoading, setIsLoading] = useState(true)

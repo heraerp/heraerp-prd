@@ -3,7 +3,7 @@ export const HAIRTALKZ_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Michel
 
 // Organization mapping for subdomain routing
 export const SALON_ORG_MAPPING = {
-  'hairtalkz': '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
+  hairtalkz: '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
   'hairtalkz.localhost': '378f24fb-d496-4ff7-8afa-ea34895a0eb8',
   'hairtalkz.heraerp.com': '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
 }
@@ -18,12 +18,12 @@ export function getSalonOrgId(hostname?: string, pathname?: string): string {
       }
     }
   }
-  
+
   // Check path-based routing (for localhost development)
   if (pathname?.startsWith('/~hairtalkz')) {
     return HAIRTALKZ_ORG_ID
   }
-  
+
   // Default to HairTalkz org ID
   return HAIRTALKZ_ORG_ID
 }

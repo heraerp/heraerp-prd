@@ -84,7 +84,7 @@ interface O2CMetrics {
 }
 
 export function O2CDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [metrics, setMetrics] = useState<O2CMetrics | null>(null)
   const [recentTransactions, setRecentTransactions] = useState<any[]>([])
   const [revenueChart, setRevenueChart] = useState<any[]>([])

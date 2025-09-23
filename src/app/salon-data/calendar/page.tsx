@@ -8,7 +8,7 @@ import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SalonDataCalendarPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
 
   // Sample organization data for demo
   const salonOrganizations = [

@@ -24,7 +24,7 @@ import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { cn } from '@/lib/utils'
 
 export default function ProductionPlanningPage() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
 
   // Show loading state

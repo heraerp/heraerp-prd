@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ChefHat, Utensils, Loader2, AlertCircle } from 'lucide-react'
 
 export function RestaurantLogin() {
-  const { login, isLoading  } = useHERAAuth()
+  const { login, isLoading } = useHERAAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')

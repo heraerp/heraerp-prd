@@ -80,7 +80,7 @@ interface Analytics {
 }
 
 export default function WhatsAppMessagesPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [loading, setLoading] = useState(false)

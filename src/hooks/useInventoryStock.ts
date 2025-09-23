@@ -33,13 +33,13 @@ export function useInventoryStock({
         const response = await fetch('/api/playbook/inventory/stock/query', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             organization_id: organizationId,
             product_ids: productIds,
             branch_id: branchId
-          }),
+          })
         })
 
         if (!response.ok) {
@@ -47,15 +47,22 @@ export function useInventoryStock({
         }
 
         const data = await response.json()
-        
+
         // Convert array response to object keyed by product_id
         const stockMap: StockLevels = {}
         if (data.stock_levels && Array.isArray(data.stock_levels)) {
-          data.stock_levels.forEach((item: { product_id: string; stock_on_hand: number; entity_name?: string; attributes?: any }) => {
-            stockMap[item.product_id] = item.stock_on_hand
-          })
+          data.stock_levels.forEach(
+            (item: {
+              product_id: string
+              stock_on_hand: number
+              entity_name?: string
+              attributes?: any
+            }) => {
+              stockMap[item.product_id] = item.stock_on_hand
+            }
+          )
         }
-        
+
         setStockLevels(stockMap)
       } catch (err) {
         console.error('Failed to fetch stock levels:', err)

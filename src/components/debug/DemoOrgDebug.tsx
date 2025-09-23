@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function DemoOrgDebug() {
-  const { user, currentOrganization, organizations, isAuthenticated, isLoading  } = useHERAAuth()
+  const { user, currentOrganization, organizations, isAuthenticated, isLoading } = useHERAAuth()
   const [pathname, setPathname] = useState<string>('')
 
   useEffect(() => {

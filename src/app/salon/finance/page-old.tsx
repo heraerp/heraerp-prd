@@ -77,7 +77,7 @@ interface ExpenseLine {
 }
 
 export default function SalonFinancePage() {
-  const { currentOrganization, isAuthenticated  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
   const { toast } = useToast()
 
   // State for daily posting

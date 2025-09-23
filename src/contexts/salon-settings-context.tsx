@@ -111,7 +111,7 @@ interface SalonSettingsProviderProps {
 }
 
 export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
 
   const [settings, setSettings] = useState<SalonSettings | null>(null)

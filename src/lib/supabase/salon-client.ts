@@ -34,21 +34,24 @@ export const salonSupabase = createClient<Database>(supabaseUrl, supabaseAnonKey
 export async function recoverSalonSession() {
   try {
     // First try to get existing session
-    const { data: { session }, error } = await salonSupabase.auth.getSession()
-    
+    const {
+      data: { session },
+      error
+    } = await salonSupabase.auth.getSession()
+
     if (session) {
       console.log('Salon session active:', session.user.email)
       return session
     }
-    
+
     // Try to refresh if no session
     const { data: refreshData, error: refreshError } = await salonSupabase.auth.refreshSession()
-    
+
     if (refreshData.session) {
       console.log('Salon session recovered:', refreshData.session.user.email)
       return refreshData.session
     }
-    
+
     console.log('No salon session available')
     return null
   } catch (err) {

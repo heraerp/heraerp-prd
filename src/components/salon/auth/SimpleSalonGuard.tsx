@@ -32,10 +32,11 @@ export function SimpleSalonGuard({ children, requiredRoles = [] }: SimpleSalonGu
   const router = useRouter()
   const pathname = usePathname()
   const { isLoading, isAuthenticated, role, user } = useSalonContext()
-  
+
   // Debug mode - check localStorage
-  const debugMode = typeof window !== 'undefined' && localStorage.getItem('salonDebugMode') === 'true'
-  
+  const debugMode =
+    typeof window !== 'undefined' && localStorage.getItem('salonDebugMode') === 'true'
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       console.log('SimpleSalonGuard: Not authenticated, redirecting to auth')
@@ -59,34 +60,50 @@ export function SimpleSalonGuard({ children, requiredRoles = [] }: SimpleSalonGu
 
   // Check role permissions
   const userRole = role?.toLowerCase() || ''
-  
+
   // Skip permission checks in debug mode
   if (debugMode) {
     console.log('SimpleSalonGuard: Debug mode enabled, skipping permission checks')
     return <>{children}</>
   }
-  
+
   // Check required roles from props
   if (requiredRoles.length > 0) {
     const hasRequiredRole = requiredRoles.some(r => r.toLowerCase() === userRole)
     if (!hasRequiredRole) {
-      return <AccessDenied userRole={role} userName={user?.user_metadata?.full_name} pathname={pathname} />
+      return (
+        <AccessDenied
+          userRole={role}
+          userName={user?.user_metadata?.full_name}
+          pathname={pathname}
+        />
+      )
     }
   }
-  
+
   // Check route-based permissions
   const allowedRoles = ROUTE_PERMISSIONS[pathname]
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    return <AccessDenied userRole={role} userName={user?.user_metadata?.full_name} pathname={pathname} />
+    return (
+      <AccessDenied userRole={role} userName={user?.user_metadata?.full_name} pathname={pathname} />
+    )
   }
 
   // All checks passed
   return <>{children}</>
 }
 
-function AccessDenied({ userRole, userName, pathname }: { userRole?: string | null, userName?: string, pathname?: string }) {
+function AccessDenied({
+  userRole,
+  userName,
+  pathname
+}: {
+  userRole?: string | null
+  userName?: string
+  pathname?: string
+}) {
   const router = useRouter()
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -102,13 +119,12 @@ function AccessDenied({ userRole, userName, pathname }: { userRole?: string | nu
           </p>
 
           <p className="text-sm text-muted-foreground mb-2">
-            Logged in as: <span className="font-medium">{userName || 'User'}</span> ({userRole || 'Unknown'})
+            Logged in as: <span className="font-medium">{userName || 'User'}</span> (
+            {userRole || 'Unknown'})
           </p>
-          
+
           {pathname && (
-            <p className="text-xs text-muted-foreground mb-6">
-              Trying to access: {pathname}
-            </p>
+            <p className="text-xs text-muted-foreground mb-6">Trying to access: {pathname}</p>
           )}
 
           <div className="space-y-3">
@@ -118,7 +134,7 @@ function AccessDenied({ userRole, userName, pathname }: { userRole?: string | nu
             >
               Go to Dashboard
             </button>
-            
+
             <button
               onClick={() => {
                 localStorage.setItem('salonDebugMode', 'true')

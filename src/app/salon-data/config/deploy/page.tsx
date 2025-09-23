@@ -16,7 +16,7 @@ import Link from 'next/link'
 function DeploymentContent() {
   const searchParams = useSearchParams()
   const ruleId = searchParams.get('rule')
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const { getRule } = useUCRMCP()
   const [rule, setRule] = useState<any>(null)
   const [loading, setLoading] = useState(true)

@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Loader2,
   Eye,
@@ -132,7 +138,7 @@ function getRolePermissions(role: string): string[] {
       'manage_api_keys'
     ]
   }
-  
+
   return permissions[role] || []
 }
 
@@ -152,19 +158,22 @@ export function HairTalkzAuth() {
 
   const checkAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
       if (session?.user) {
         const userMetadata = session.user.user_metadata
         const storedRole = localStorage.getItem('salonRole')
         const storedOrgId = localStorage.getItem('organizationId')
-        
+
         // Check if user has complete auth setup
-        const hasCompleteAuth = storedOrgId === HAIRTALKZ_ORG_ID && 
-                                storedRole && 
-                                userMetadata?.role &&
-                                userMetadata?.organization_id === HAIRTALKZ_ORG_ID
-        
+        const hasCompleteAuth =
+          storedOrgId === HAIRTALKZ_ORG_ID &&
+          storedRole &&
+          userMetadata?.role &&
+          userMetadata?.organization_id === HAIRTALKZ_ORG_ID
+
         if (hasCompleteAuth) {
           const roleConfig = USER_ROLES.find(r => r.value === storedRole.toLowerCase())
           if (roleConfig) {
@@ -179,7 +188,7 @@ export function HairTalkzAuth() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!email || !password || !selectedRole) {
       toast({
         title: 'Missing Information',
@@ -220,25 +229,27 @@ export function HairTalkzAuth() {
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
         localStorage.setItem('salonRole', selectedRole)
         localStorage.setItem('userPermissions', JSON.stringify(getRolePermissions(selectedRole)))
-        
+
         // Get redirect path based on role
         const roleConfig = USER_ROLES.find(r => r.value === selectedRole)
         const redirectPath = roleConfig?.redirectPath || '/salon/dashboard'
-        
+
         // Refresh session to ensure JWT contains updated metadata
-        const { data: { session: refreshedSession } } = await supabase.auth.refreshSession()
-        
+        const {
+          data: { session: refreshedSession }
+        } = await supabase.auth.refreshSession()
+
         if (refreshedSession) {
           // JWT now contains role information in user_metadata
           console.log('JWT Token updated with role:', refreshedSession.user.user_metadata.role)
           console.log('JWT Token permissions:', refreshedSession.user.user_metadata.permissions)
         }
-        
+
         toast({
           title: 'Welcome to HairTalkz',
-          description: `Logged in as ${roleConfig?.label}`,
+          description: `Logged in as ${roleConfig?.label}`
         })
-        
+
         router.push(redirectPath)
       }
     } catch (error: any) {
@@ -254,9 +265,9 @@ export function HairTalkzAuth() {
   }
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center p-4"
-      style={{ 
+      style={{
         backgroundColor: COLORS.black,
         backgroundImage: `radial-gradient(circle at 20% 50%, ${COLORS.charcoal} 0%, ${COLORS.black} 50%)`
       }}
@@ -265,7 +276,7 @@ export function HairTalkzAuth() {
         {/* Logo & Title */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center mb-6">
-            <div 
+            <div
               className="h-20 w-20 rounded-full flex items-center justify-center"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
@@ -275,8 +286,8 @@ export function HairTalkzAuth() {
               <Crown className="h-10 w-10" style={{ color: COLORS.black }} />
             </div>
           </div>
-          
-          <h1 
+
+          <h1
             className="text-5xl font-light mb-3 tracking-wider"
             style={{
               background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
@@ -287,8 +298,8 @@ export function HairTalkzAuth() {
           >
             HAIRTALKZ
           </h1>
-          
-          <p 
+
+          <p
             className="text-lg font-light tracking-widest uppercase"
             style={{ color: COLORS.bronze }}
           >
@@ -297,8 +308,8 @@ export function HairTalkzAuth() {
         </div>
 
         {/* Login Form */}
-        <form 
-          onSubmit={handleLogin} 
+        <form
+          onSubmit={handleLogin}
           className="space-y-6 p-8 rounded-2xl"
           style={{
             backgroundColor: COLORS.charcoalLight,
@@ -308,8 +319,8 @@ export function HairTalkzAuth() {
         >
           {/* Email Input */}
           <div className="space-y-2">
-            <Label 
-              htmlFor="email" 
+            <Label
+              htmlFor="email"
               className="text-sm font-light tracking-wider uppercase"
               style={{ color: COLORS.bronze }}
             >
@@ -320,7 +331,7 @@ export function HairTalkzAuth() {
               type="email"
               placeholder="your@email.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               disabled={loading}
               className="h-12 px-4 font-light"
               style={{
@@ -333,8 +344,8 @@ export function HairTalkzAuth() {
 
           {/* Password Input */}
           <div className="space-y-2">
-            <Label 
-              htmlFor="password" 
+            <Label
+              htmlFor="password"
               className="text-sm font-light tracking-wider uppercase"
               style={{ color: COLORS.bronze }}
             >
@@ -346,7 +357,7 @@ export function HairTalkzAuth() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 disabled={loading}
                 className="h-12 px-4 pr-12 font-light"
                 style={{
@@ -368,15 +379,15 @@ export function HairTalkzAuth() {
 
           {/* Role Selection */}
           <div className="space-y-2">
-            <Label 
-              htmlFor="role" 
+            <Label
+              htmlFor="role"
               className="text-sm font-light tracking-wider uppercase"
               style={{ color: COLORS.bronze }}
             >
               Access Level
             </Label>
             <Select value={selectedRole} onValueChange={setSelectedRole} disabled={loading}>
-              <SelectTrigger 
+              <SelectTrigger
                 className="h-12 font-light"
                 style={{
                   backgroundColor: COLORS.charcoal,
@@ -386,7 +397,7 @@ export function HairTalkzAuth() {
               >
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>
-              <SelectContent 
+              <SelectContent
                 className="hera-select-content hairtalkz-select-content"
                 style={{
                   backgroundColor: COLORS.charcoalLight,
@@ -394,8 +405,8 @@ export function HairTalkzAuth() {
                 }}
               >
                 {USER_ROLES.map(role => (
-                  <SelectItem 
-                    key={role.value} 
+                  <SelectItem
+                    key={role.value}
                     value={role.value}
                     className="cursor-pointer hera-select-item"
                     style={{
@@ -403,18 +414,10 @@ export function HairTalkzAuth() {
                     }}
                   >
                     <div className="flex items-center gap-3">
-                      <role.icon 
-                        className="h-4 w-4" 
-                        style={{ color: COLORS.gold }} 
-                      />
+                      <role.icon className="h-4 w-4" style={{ color: COLORS.gold }} />
                       <div>
-                        <div style={{ color: COLORS.champagne }}>
-                          {role.label}
-                        </div>
-                        <div 
-                          className="text-xs"
-                          style={{ color: COLORS.bronze }}
-                        >
+                        <div style={{ color: COLORS.champagne }}>{role.label}</div>
+                        <div className="text-xs" style={{ color: COLORS.bronze }}>
                           {role.description}
                         </div>
                       </div>
@@ -427,15 +430,15 @@ export function HairTalkzAuth() {
 
           {/* Remember Me */}
           <div className="flex items-center space-x-3">
-            <Checkbox 
-              id="remember" 
+            <Checkbox
+              id="remember"
               checked={rememberMe}
-              onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+              onCheckedChange={checked => setRememberMe(checked as boolean)}
               disabled={loading}
               className="border-bronze data-[state=checked]:bg-gold data-[state=checked]:border-gold"
             />
-            <Label 
-              htmlFor="remember" 
+            <Label
+              htmlFor="remember"
               className="text-sm font-light cursor-pointer"
               style={{ color: COLORS.bronze }}
             >
@@ -453,13 +456,13 @@ export function HairTalkzAuth() {
               color: COLORS.black,
               boxShadow: '0 0 30px rgba(212, 175, 55, 0.3)'
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={e => {
               if (!loading) {
                 e.currentTarget.style.backgroundColor = COLORS.goldDark
                 e.currentTarget.style.boxShadow = '0 0 40px rgba(212, 175, 55, 0.5)'
               }
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={e => {
               if (!loading) {
                 e.currentTarget.style.backgroundColor = COLORS.gold
                 e.currentTarget.style.boxShadow = '0 0 30px rgba(212, 175, 55, 0.3)'
@@ -482,12 +485,12 @@ export function HairTalkzAuth() {
 
           {/* Forgot Password */}
           <div className="text-center">
-            <a 
-              href="#" 
+            <a
+              href="#"
               className="text-sm font-light transition-colors hover:underline"
               style={{ color: COLORS.bronze }}
-              onMouseEnter={(e) => e.currentTarget.style.color = COLORS.gold}
-              onMouseLeave={(e) => e.currentTarget.style.color = COLORS.bronze}
+              onMouseEnter={e => (e.currentTarget.style.color = COLORS.gold)}
+              onMouseLeave={e => (e.currentTarget.style.color = COLORS.bronze)}
             >
               Forgot your password?
             </a>
@@ -496,18 +499,12 @@ export function HairTalkzAuth() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p 
-            className="text-xs font-light"
-            style={{ color: COLORS.bronze + '80' }}
-          >
+          <p className="text-xs font-light" style={{ color: COLORS.bronze + '80' }}>
             Protected by enterprise-grade security
           </p>
           <div className="mt-2 flex items-center justify-center gap-2">
             <Sparkles className="h-3 w-3" style={{ color: COLORS.gold }} />
-            <p 
-              className="text-xs font-light tracking-wider"
-              style={{ color: COLORS.bronze }}
-            >
+            <p className="text-xs font-light tracking-wider" style={{ color: COLORS.bronze }}>
               Powered by HERA ERP
             </p>
             <Sparkles className="h-3 w-3" style={{ color: COLORS.gold }} />

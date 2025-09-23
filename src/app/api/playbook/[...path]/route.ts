@@ -12,7 +12,7 @@ const ALLOWED_PATHS = [
   '/core_organizations',
   '/core_entities',
   '/core_relationships',
-  '/v1/salon/appointments', // Legacy endpoints
+  '/v1/salon/appointments' // Legacy endpoints
 ]
 
 // Security: Body size limit (1MB)
@@ -42,14 +42,14 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path: st
   // Await params as required by Next.js 15
   const { path } = await params
   const subpath = '/' + (path?.join('/') || '')
-  
+
   // Check if this is a local compat endpoint (bypass proxy)
   const localEndpoints = ['/entities', '/dynamic_data', '/transactions', '/relationships']
   if (localEndpoints.some(ep => subpath.startsWith(ep))) {
     // Local endpoints handle these directly, return 404 here
     return new NextResponse('Not Found', { status: 404 })
   }
-  
+
   // Check environment variables for proxy mode
   if (!BASE || !KEY) {
     return NextResponse.json(
@@ -60,14 +60,15 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path: st
 
   try {
     // Build the target URL
-    
+
     // Security: Validate path is allowed
-    const isAllowed = ALLOWED_PATHS.some(allowed => 
-      subpath === allowed || 
-      subpath.startsWith(allowed + '/') ||
-      subpath.startsWith(allowed + '?')
+    const isAllowed = ALLOWED_PATHS.some(
+      allowed =>
+        subpath === allowed ||
+        subpath.startsWith(allowed + '/') ||
+        subpath.startsWith(allowed + '?')
     )
-    
+
     if (!isAllowed) {
       console.error(`[Playbook Proxy] Blocked unauthorized path: ${subpath}`)
       return NextResponse.json(
@@ -75,7 +76,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path: st
         { status: 403 }
       )
     }
-    
+
     const url = new URL(subpath, BASE)
 
     // Forward query parameters
@@ -99,19 +100,16 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path: st
       ...init.headers,
       'X-Correlation-ID': correlationId
     }
-    
+
     // Forward body for methods that support it
     if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) {
       try {
         // Security: Check body size
         const contentLength = req.headers.get('content-length')
         if (contentLength && parseInt(contentLength) > MAX_BODY_SIZE) {
-          return NextResponse.json(
-            { error: 'Request body too large' },
-            { status: 413 }
-          )
+          return NextResponse.json({ error: 'Request body too large' }, { status: 413 })
         }
-        
+
         const body = await req.text()
         if (body) {
           init.body = body
@@ -128,7 +126,7 @@ async function handle(req: NextRequest, { params }: { params: Promise<{ path: st
 
     // Make the upstream request
     const response = await fetch(url.toString(), init)
-    
+
     console.log(`[Playbook Proxy] [${correlationId}] Response ${response.status}`)
 
     // Get the response body

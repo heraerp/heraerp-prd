@@ -1268,7 +1268,7 @@ const CustomerDetailModal = ({
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonCustomersPage() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<{

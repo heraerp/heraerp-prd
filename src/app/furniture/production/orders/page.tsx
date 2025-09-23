@@ -32,7 +32,7 @@ import { useUniversalData } from '@/lib/dna/patterns/universal-api-loading-patte
 import { cn } from '@/lib/utils'
 
 export default function ProductionOrdersPage() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
   const [searchTerm, setSearchTerm] = useState('')
 

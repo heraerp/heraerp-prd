@@ -10,7 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Calendar, Clock, User, Phone, Mail, DollarSign, FileText, ChevronLeft } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
@@ -37,11 +43,11 @@ export default function NewAppointmentPage() {
   const router = useRouter()
   const { currentOrganization, contextLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id || DEFAULT_SALON_ORG_ID
-  
+
   const [loading, setLoading] = useState(false)
   const [services, setServices] = useState<Service[]>([])
   const [stylists, setStylists] = useState<Stylist[]>([])
-  
+
   // Form state
   const [formData, setFormData] = useState({
     clientName: '',
@@ -58,9 +64,9 @@ export default function NewAppointmentPage() {
   useEffect(() => {
     const loadData = async () => {
       if (!organizationId) return
-      
+
       const supabase = getSupabase()
-      
+
       // Load services
       const { data: servicesData } = await supabase
         .from('core_entities')
@@ -69,7 +75,7 @@ export default function NewAppointmentPage() {
         .eq('entity_type', 'service')
         .eq('status', 'active')
         .order('entity_name')
-      
+
       // Load stylists
       const { data: stylistsData } = await supabase
         .from('core_entities')
@@ -78,12 +84,14 @@ export default function NewAppointmentPage() {
         .eq('entity_type', 'staff')
         .eq('status', 'active')
         .order('entity_name')
-      
+
       if (servicesData) {
         const servicesWithPricing = servicesData.map(service => {
           const priceField = service.core_dynamic_data?.find((f: any) => f.field_name === 'price')
-          const durationField = service.core_dynamic_data?.find((f: any) => f.field_name === 'duration')
-          
+          const durationField = service.core_dynamic_data?.find(
+            (f: any) => f.field_name === 'duration'
+          )
+
           return {
             id: service.id,
             entity_name: service.entity_name,
@@ -93,33 +101,38 @@ export default function NewAppointmentPage() {
         })
         setServices(servicesWithPricing as Service[])
       }
-      
+
       if (stylistsData) {
         setStylists(stylistsData as Stylist[])
       }
     }
-    
+
     loadData()
   }, [organizationId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!formData.clientName || !formData.clientPhone || !formData.serviceId || !formData.stylistId) {
+
+    if (
+      !formData.clientName ||
+      !formData.clientPhone ||
+      !formData.serviceId ||
+      !formData.stylistId
+    ) {
       toast.error('Please fill in all required fields')
       return
     }
-    
+
     setLoading(true)
-    
+
     try {
       const selectedService = services.find(s => s.id === formData.serviceId)
       const selectedStylist = stylists.find(s => s.id === formData.stylistId)
-      
+
       if (!selectedService || !selectedStylist) {
         throw new Error('Invalid service or stylist selection')
       }
-      
+
       const result = await createIntegratedAppointment({
         organizationId,
         clientName: formData.clientName,
@@ -135,7 +148,7 @@ export default function NewAppointmentPage() {
         duration: selectedService.duration,
         notes: formData.notes
       })
-      
+
       if (result.success) {
         toast.success('Appointment booked successfully!')
         router.push('/salon-data/appointments')
@@ -169,12 +182,8 @@ export default function NewAppointmentPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-              New Appointment
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Book a new appointment for a client
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">New Appointment</h1>
+            <p className="text-muted-foreground mt-1">Book a new appointment for a client</p>
           </div>
         </div>
 
@@ -189,7 +198,7 @@ export default function NewAppointmentPage() {
               {/* Client Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Client Information</h3>
-                
+
                 <div className="grid gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="clientName">
@@ -201,13 +210,13 @@ export default function NewAppointmentPage() {
                         id="clientName"
                         placeholder="Enter client name"
                         value={formData.clientName}
-                        onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                        onChange={e => setFormData({ ...formData, clientName: e.target.value })}
                         className="pl-10"
                         required
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="clientPhone">
@@ -220,13 +229,13 @@ export default function NewAppointmentPage() {
                           type="tel"
                           placeholder="+971 50 123 4567"
                           value={formData.clientPhone}
-                          onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                          onChange={e => setFormData({ ...formData, clientPhone: e.target.value })}
                           className="pl-10"
                           required
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid gap-2">
                       <Label htmlFor="clientEmail">Email (Optional)</Label>
                       <div className="relative">
@@ -236,7 +245,7 @@ export default function NewAppointmentPage() {
                           type="email"
                           placeholder="client@example.com"
                           value={formData.clientEmail}
-                          onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
+                          onChange={e => setFormData({ ...formData, clientEmail: e.target.value })}
                           className="pl-10"
                         />
                       </div>
@@ -248,15 +257,15 @@ export default function NewAppointmentPage() {
               {/* Service Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Service Details</h3>
-                
+
                 <div className="grid gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="service">
                       Service <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
-                      value={formData.serviceId} 
-                      onValueChange={(value) => setFormData({ ...formData, serviceId: value })}
+                    <Select
+                      value={formData.serviceId}
+                      onValueChange={value => setFormData({ ...formData, serviceId: value })}
                     >
                       <SelectTrigger id="service">
                         <SelectValue placeholder="Select a service" />
@@ -275,14 +284,14 @@ export default function NewAppointmentPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid gap-2">
                     <Label htmlFor="stylist">
                       Stylist <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
-                      value={formData.stylistId} 
-                      onValueChange={(value) => setFormData({ ...formData, stylistId: value })}
+                    <Select
+                      value={formData.stylistId}
+                      onValueChange={value => setFormData({ ...formData, stylistId: value })}
                     >
                       <SelectTrigger id="stylist">
                         <SelectValue placeholder="Select a stylist" />
@@ -296,7 +305,7 @@ export default function NewAppointmentPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="date">
@@ -308,13 +317,13 @@ export default function NewAppointmentPage() {
                           id="date"
                           type="date"
                           value={formData.date}
-                          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                          onChange={e => setFormData({ ...formData, date: e.target.value })}
                           className="pl-10"
                           required
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid gap-2">
                       <Label htmlFor="time">
                         Time <span className="text-red-500">*</span>
@@ -325,21 +334,21 @@ export default function NewAppointmentPage() {
                           id="time"
                           type="time"
                           value={formData.time}
-                          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                          onChange={e => setFormData({ ...formData, time: e.target.value })}
                           className="pl-10"
                           required
                         />
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid gap-2">
                     <Label htmlFor="notes">Notes (Optional)</Label>
                     <Textarea
                       id="notes"
                       placeholder="Any special requests or notes..."
                       value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      onChange={e => setFormData({ ...formData, notes: e.target.value })}
                       rows={3}
                     />
                   </div>
@@ -382,10 +391,12 @@ export default function NewAppointmentPage() {
           {/* Actions */}
           <div className="flex justify-end gap-4 mt-6">
             <Link href="/salon-data/appointments">
-              <Button variant="outline" type="button">Cancel</Button>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
             </Link>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
             >

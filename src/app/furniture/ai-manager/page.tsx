@@ -231,7 +231,7 @@ const MANAGEMENT_CATEGORIES = [
 export default function FurnitureAIManagerPage() {
   const router = useRouter()
 
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
 
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 

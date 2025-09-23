@@ -13,16 +13,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Category } from '@/types/salon-category'
-import {
-  Loader2,
-  Save,
-  X,
-  Tag,
-  FileText,
-  Palette,
-  Hash,
-  Sparkles
-} from 'lucide-react'
+import { Loader2, Save, X, Tag, FileText, Palette, Hash, Sparkles } from 'lucide-react'
 import {
   PrimaryButtonDNA,
   SecondaryButtonDNA,
@@ -72,22 +63,29 @@ const PRESET_COLORS = [
   '#F39C12', // Orange
   '#E74C3C', // Red
   '#95A5A6', // Gray
-  '#27AE60'  // Green
+  '#27AE60' // Green
 ]
 
 // Available icons for categories
 const AVAILABLE_ICONS = [
-  'Tag', 'Scissors', 'Sparkles', 'Star', 'Heart', 
-  'Palette', 'Brush', 'Droplet', 'Sun', 'Moon',
-  'Zap', 'Flame', 'Gift', 'Crown', 'Diamond'
+  'Tag',
+  'Scissors',
+  'Sparkles',
+  'Star',
+  'Heart',
+  'Palette',
+  'Brush',
+  'Droplet',
+  'Sun',
+  'Moon',
+  'Zap',
+  'Flame',
+  'Gift',
+  'Crown',
+  'Diamond'
 ]
 
-export function CategoryModal({
-  open,
-  onClose,
-  category,
-  onSave
-}: CategoryModalProps) {
+export function CategoryModal({ open, onClose, category, onSave }: CategoryModalProps) {
   const [saving, setSaving] = React.useState(false)
 
   const {
@@ -194,7 +192,10 @@ export function CategoryModal({
                   borderColor: watchedColor + '40'
                 }}
               >
-                <Label className="text-xs uppercase tracking-wider mb-3 block" style={{ color: COLORS.bronze }}>
+                <Label
+                  className="text-xs uppercase tracking-wider mb-3 block"
+                  style={{ color: COLORS.bronze }}
+                >
                   Preview
                 </Label>
                 <div className="flex items-center gap-3">
@@ -318,11 +319,18 @@ export function CategoryModal({
                           onClick={() => setValue('icon', iconName)}
                           className="p-3 rounded-lg border transition-all"
                           style={{
-                            backgroundColor: watchedIcon === iconName ? watchedColor + '20' : COLORS.black + '40',
-                            borderColor: watchedIcon === iconName ? watchedColor : COLORS.bronze + '33'
+                            backgroundColor:
+                              watchedIcon === iconName ? watchedColor + '20' : COLORS.black + '40',
+                            borderColor:
+                              watchedIcon === iconName ? watchedColor : COLORS.bronze + '33'
                           }}
                         >
-                          <Icon className="w-5 h-5 mx-auto" style={{ color: watchedIcon === iconName ? watchedColor : COLORS.lightText }} />
+                          <Icon
+                            className="w-5 h-5 mx-auto"
+                            style={{
+                              color: watchedIcon === iconName ? watchedColor : COLORS.lightText
+                            }}
+                          />
                         </button>
                       )
                     })}

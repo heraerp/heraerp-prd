@@ -14,14 +14,16 @@ const ROLE_ROUTES = {
 export async function salonAuthMiddleware(req: NextRequest) {
   const res = NextResponse.next()
   const pathname = req.nextUrl.pathname
-  
+
   // Allow public routes
   if (PUBLIC_ROUTES.includes(pathname)) {
     return res
   }
 
   const supabase = createMiddlewareClient({ req, res })
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session }
+  } = await supabase.auth.getSession()
 
   // Redirect to auth if not authenticated
   if (!session) {
@@ -44,10 +46,10 @@ export async function salonAuthMiddleware(req: NextRequest) {
 
   // Get allowed routes for user's role
   const allowedRoutes = ROLE_ROUTES[userRole as keyof typeof ROLE_ROUTES] || []
-  
+
   // Check if current path is allowed for user's role
   const isAllowed = allowedRoutes.some(route => pathname.startsWith(route))
-  
+
   if (!isAllowed) {
     // Redirect to user's default route
     const defaultRoutes = {
@@ -56,7 +58,7 @@ export async function salonAuthMiddleware(req: NextRequest) {
       accountant: '/salon/finance',
       admin: '/salon/settings'
     }
-    
+
     const defaultRoute = defaultRoutes[userRole as keyof typeof defaultRoutes]
     if (defaultRoute) {
       return NextResponse.redirect(new URL(defaultRoute, req.url))

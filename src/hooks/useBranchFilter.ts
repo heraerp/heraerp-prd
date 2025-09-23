@@ -38,7 +38,7 @@ export function useBranchFilter(
   defaultBranchId?: string,
   persistKey?: string
 ): UseBranchFilterReturn {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [branchId, setBranchIdState] = useState<string | undefined>(defaultBranchId)
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
@@ -117,7 +117,7 @@ export function useBranchFilter(
  * Allows selecting multiple branches for comparison
  */
 export function useBranchComparison() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [selectedBranches, setSelectedBranches] = useState<Set<string>>(new Set())
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)

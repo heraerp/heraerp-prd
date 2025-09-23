@@ -7,22 +7,20 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSessio
 
 function getOrgFromRequest(req: NextRequest) {
   // Prefer what your auth layer resolved (cookie/claims). As a fallback, accept query param.
-  const org = req.nextUrl.searchParams.get('organization_id')
-    || req.headers.get('x-hera-org')
-    || req.cookies.get('HERA_ORG_ID')?.value
-    || req.cookies.get('hera-organization-id')?.value
-    || null
+  const org =
+    req.nextUrl.searchParams.get('organization_id') ||
+    req.headers.get('x-hera-org') ||
+    req.cookies.get('HERA_ORG_ID')?.value ||
+    req.cookies.get('hera-organization-id')?.value ||
+    null
   return org && /^[0-9a-f-]{36}$/i.test(org) ? org : null
 }
 
-export async function PATCH(
-  req: NextRequest, 
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: entityId } = await params
     const orgId = getOrgFromRequest(req)
-    
+
     if (!orgId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -32,10 +30,10 @@ export async function PATCH(
     }
 
     const body = await req.json()
-    
+
     // Build update payload with proper field mapping
     const updatePayload: any = {}
-    
+
     // Map common aliases
     if (body.name !== undefined) updatePayload.entity_name = body.name
     if (body.entity_name !== undefined) updatePayload.entity_name = body.entity_name
@@ -45,10 +43,11 @@ export async function PATCH(
     if (body.metadata !== undefined) updatePayload.metadata = body.metadata
     if (body.tags !== undefined) updatePayload.tags = body.tags
     if (body.business_rules !== undefined) updatePayload.business_rules = body.business_rules
-    
+
     // Check if we have either entity updates or dynamic data updates
-    const hasDynamicUpdates = body.price !== undefined || body.duration_mins !== undefined || body.category !== undefined
-    
+    const hasDynamicUpdates =
+      body.price !== undefined || body.duration_mins !== undefined || body.category !== undefined
+
     if (Object.keys(updatePayload).length === 0 && !hasDynamicUpdates) {
       return NextResponse.json({ error: 'No fields to update' }, { status: 400 })
     }
@@ -60,7 +59,7 @@ export async function PATCH(
       .eq('id', entityId)
       .eq('organization_id', orgId)
       .single()
-      
+
     if (fetchError || !existingEntity) {
       return NextResponse.json({ error: 'Entity not found or access denied' }, { status: 404 })
     }
@@ -74,23 +73,23 @@ export async function PATCH(
         .eq('organization_id', orgId) // Critical: ensure org isolation
         .select('*')
         .single()
-      
+
       if (error) {
         console.error('[Playbook Entities] Update error:', error)
         throw error
       }
-      
+
       if (!data) {
         return NextResponse.json({ error: 'Entity not found or access denied' }, { status: 404 })
       }
-      
+
       console.log(`[Playbook Entities] Updated entity ${entityId} for org ${orgId}`)
     }
 
     // Update dynamic data fields if provided
     if (hasDynamicUpdates) {
       console.log(`[Playbook Entities] Updating dynamic data for entity ${entityId}`)
-      
+
       // Price update
       if (body.price !== undefined) {
         const priceData = {
@@ -105,18 +104,16 @@ export async function PATCH(
           },
           smart_code: 'HERA.SALON.SERVICE.CATALOG.PRICE.v1'
         }
-        
-        const { error: priceError } = await supabase
-          .from('core_dynamic_data')
-          .upsert(priceData, {
-            onConflict: 'organization_id,entity_id,field_name'
-          })
-          
+
+        const { error: priceError } = await supabase.from('core_dynamic_data').upsert(priceData, {
+          onConflict: 'organization_id,entity_id,field_name'
+        })
+
         if (priceError) {
           console.error('[Playbook Entities] Price update error:', priceError)
         }
       }
-      
+
       // Duration update
       if (body.duration_mins !== undefined) {
         const durationData = {
@@ -127,18 +124,18 @@ export async function PATCH(
           field_value_number: body.duration_mins,
           smart_code: 'HERA.SALON.SERVICE.CATALOG.DURATION.v1'
         }
-        
+
         const { error: durationError } = await supabase
           .from('core_dynamic_data')
           .upsert(durationData, {
             onConflict: 'organization_id,entity_id,field_name'
           })
-          
+
         if (durationError) {
           console.error('[Playbook Entities] Duration update error:', durationError)
         }
       }
-      
+
       // Category update
       if (body.category !== undefined) {
         const categoryData = {
@@ -149,19 +146,19 @@ export async function PATCH(
           field_value_text: body.category,
           smart_code: 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1'
         }
-        
+
         const { error: categoryError } = await supabase
           .from('core_dynamic_data')
           .upsert(categoryData, {
             onConflict: 'organization_id,entity_id,field_name'
           })
-          
+
         if (categoryError) {
           console.error('[Playbook Entities] Category update error:', categoryError)
         }
       }
     }
-    
+
     // Fetch the updated entity and its dynamic data
     const { data: updatedEntity } = await supabase
       .from('core_entities')
@@ -169,7 +166,7 @@ export async function PATCH(
       .eq('id', entityId)
       .eq('organization_id', orgId)
       .single()
-    
+
     // Fetch dynamic data
     const { data: dynamicData } = await supabase
       .from('core_dynamic_data')
@@ -177,7 +174,7 @@ export async function PATCH(
       .eq('entity_id', entityId)
       .eq('organization_id', orgId)
       .in('field_name', ['service.base_price', 'service.duration_min', 'service.category'])
-    
+
     // Transform response to match playbook format
     const response = {
       id: updatedEntity.id,
@@ -192,7 +189,7 @@ export async function PATCH(
       business_rules: updatedEntity.business_rules,
       tags: updatedEntity.tags
     }
-    
+
     // Add dynamic data to response
     if (dynamicData) {
       dynamicData.forEach(field => {
@@ -206,7 +203,7 @@ export async function PATCH(
         }
       })
     }
-    
+
     return NextResponse.json(response, { status: 200 })
   } catch (e: any) {
     console.error('[Playbook Entities] Update error:', e)
@@ -214,14 +211,11 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: entityId } = await params
     const orgId = getOrgFromRequest(req)
-    
+
     if (!orgId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -238,18 +232,18 @@ export async function DELETE(
       .eq('organization_id', orgId)
       .select('id')
       .single()
-    
+
     if (error) {
       console.error('[Playbook Entities] Delete error:', error)
       throw error
     }
-    
+
     if (!data) {
       return NextResponse.json({ error: 'Entity not found or access denied' }, { status: 404 })
     }
-    
+
     console.log(`[Playbook Entities] Deleted entity ${entityId} for org ${orgId}`)
-    
+
     return NextResponse.json({ success: true, id: entityId }, { status: 200 })
   } catch (e: any) {
     console.error('[Playbook Entities] Delete error:', e)
@@ -257,14 +251,11 @@ export async function DELETE(
   }
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: entityId } = await params
     const orgId = getOrgFromRequest(req)
-    
+
     if (!orgId) {
       return NextResponse.json({ error: 'organization_id required' }, { status: 400 })
     }
@@ -279,16 +270,16 @@ export async function GET(
       .eq('id', entityId)
       .eq('organization_id', orgId)
       .single()
-    
+
     if (error) {
       console.error('[Playbook Entities] Get error:', error)
       throw error
     }
-    
+
     if (!data) {
       return NextResponse.json({ error: 'Entity not found or access denied' }, { status: 404 })
     }
-    
+
     // Transform response to match playbook format
     const response = {
       id: data.id,
@@ -303,7 +294,7 @@ export async function GET(
       business_rules: data.business_rules,
       tags: data.tags
     }
-    
+
     return NextResponse.json(response, { status: 200 })
   } catch (e: any) {
     console.error('[Playbook Entities] Get error:', e)

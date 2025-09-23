@@ -11,10 +11,7 @@ import {
 import { AlertTriangle, Trash2, X } from 'lucide-react'
 import { Category } from '@/types/salon-category'
 import * as Icons from 'lucide-react'
-import {
-  PrimaryButtonDNA,
-  SecondaryButtonDNA
-} from '@/lib/dna/components/ui'
+import { PrimaryButtonDNA, SecondaryButtonDNA } from '@/lib/dna/components/ui'
 
 interface DeleteCategoryDialogProps {
   open: boolean
@@ -71,9 +68,7 @@ export function DeleteCategoryDialog({
                 {hasServices ? 'Cannot Delete Category' : 'Delete Category?'}
               </DialogTitle>
               <DialogDescription style={{ color: COLORS.lightText, opacity: 0.8 }} className="mt-1">
-                {hasServices 
-                  ? 'This category has linked services'
-                  : 'This action cannot be undone'}
+                {hasServices ? 'This category has linked services' : 'This action cannot be undone'}
               </DialogDescription>
             </div>
           </div>
@@ -142,9 +137,7 @@ export function DeleteCategoryDialog({
                       {category.entity_name}
                     </h4>
                     {category.entity_code && (
-                      <p className="text-xs font-mono opacity-60">
-                        {category.entity_code}
-                      </p>
+                      <p className="text-xs font-mono opacity-60">{category.entity_code}</p>
                     )}
                   </div>
                 </div>
@@ -154,10 +147,7 @@ export function DeleteCategoryDialog({
                   </p>
                 )}
               </div>
-              <p
-                className="mt-4 text-sm font-medium"
-                style={{ color: COLORS.rose }}
-              >
+              <p className="mt-4 text-sm font-medium" style={{ color: COLORS.rose }}>
                 ⚠️ This will permanently delete this category.
               </p>
             </div>
@@ -165,12 +155,7 @@ export function DeleteCategoryDialog({
         </div>
 
         <div className="flex justify-end gap-3 pt-2">
-          <SecondaryButtonDNA
-            type="button"
-            icon={X}
-            onClick={onClose}
-            disabled={loading}
-          >
+          <SecondaryButtonDNA type="button" icon={X} onClick={onClose} disabled={loading}>
             {hasServices ? 'Close' : 'Cancel'}
           </SecondaryButtonDNA>
           {!hasServices && (

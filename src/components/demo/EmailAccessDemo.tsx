@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Mail, User, Calendar, Shield, CheckCircle, Clock, Send } from 'lucide-react'
 
 export function EmailAccessDemo() {
-  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining  } = useHERAAuth()
+  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining } = useHERAAuth()
   const [testEmail, setTestEmail] = useState('')
   const [emailFeatures, setEmailFeatures] = useState<string[]>([])
 

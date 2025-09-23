@@ -434,7 +434,7 @@ export function HeraDnaUniversalResourceCalendar({
     resource: `HERA.${businessType.toUpperCase()}.RESOURCE.ENT.v1`
   }
 }: HeraDnaUniversalResourceCalendarProps) {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedView, setSelectedView] = useState<'day' | 'week' | 'month'>('week')
   const [viewMode, setViewMode] = useState<'single' | 'resource'>('resource')

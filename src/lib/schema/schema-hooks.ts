@@ -157,7 +157,7 @@ export function useSmartCodeDefinition(smartCode: string) {
  * Hook to get organization system configuration
  */
 export function useOrganizationConfig(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -174,7 +174,7 @@ export function useOrganizationConfig(organizationId?: string) {
  */
 export function useUpdateOrganizationConfig() {
   const queryClient = useQueryClient()
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
 
   return useMutation({
     mutationFn: ({
@@ -197,7 +197,7 @@ export function useUpdateOrganizationConfig() {
  * Hook to get user entity field selections
  */
 export function useEntityFieldSelections(organizationId?: string, entityType?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -214,7 +214,7 @@ export function useEntityFieldSelections(organizationId?: string, entityType?: s
  */
 export function useUpdateEntityFieldSelection() {
   const queryClient = useQueryClient()
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
 
   return useMutation({
     mutationFn: (selection: Partial<UserEntityFieldSelection>) =>
@@ -243,7 +243,7 @@ export function useDynamicFormConfigurations(
   entityType?: string,
   formType?: string
 ) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -260,7 +260,7 @@ export function useDynamicFormConfigurations(
  */
 export function useUpdateDynamicFormConfiguration() {
   const queryClient = useQueryClient()
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
 
   return useMutation({
     mutationFn: (formConfig: Partial<DynamicFormConfiguration>) =>
@@ -281,7 +281,7 @@ export function useUpdateDynamicFormConfiguration() {
  * Hook to get complete system schema for organization
  */
 export function useCompleteSystemSchema(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -301,7 +301,7 @@ export function useEffectiveFieldConfiguration(
   selectionType: 'form' | 'table' | 'search' | 'report' = 'form',
   organizationId?: string
 ) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -321,7 +321,7 @@ export function useEffectiveFieldConfiguration(
  * Hook to check if organization has a feature enabled
  */
 export function useFeatureFlag(featureName: string, organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -337,7 +337,7 @@ export function useFeatureFlag(featureName: string, organizationId?: string) {
  * Hook to validate organization configuration
  */
 export function useValidateOrganizationConfig(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -353,7 +353,7 @@ export function useValidateOrganizationConfig(organizationId?: string) {
  * Hook to get components filtered by organization configuration
  */
 export function useEnabledComponents(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   const { data: orgConfig } = useOrganizationConfig(orgId)
@@ -383,7 +383,7 @@ export function useEnabledComponents(organizationId?: string) {
  * Hook to get entity types enabled for organization
  */
 export function useEnabledEntityTypes(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   const { data: orgConfig } = useOrganizationConfig(orgId)
@@ -409,7 +409,7 @@ export function useEnabledEntityTypes(organizationId?: string) {
  * Hook to warm up cache for organization
  */
 export function useWarmUpCache(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useMutation({
@@ -454,7 +454,7 @@ export function useEntityFormSchema(
   formType: 'create' | 'edit' | 'view' = 'create',
   organizationId?: string
 ) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   // Get all the data needed for form rendering
@@ -489,7 +489,7 @@ export function useEntityFormSchema(
  * Hook to get everything needed to render an entity table
  */
 export function useEntityTableSchema(entityType: string, organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   const entityDefinition = useEntityTypeDefinitions()
@@ -509,7 +509,7 @@ export function useEntityTableSchema(entityType: string, organizationId?: string
  * Hook to get data quality metrics from self-governing standards
  */
 export function useDataQualityMetrics(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return useQuery({
@@ -525,7 +525,7 @@ export function useDataQualityMetrics(organizationId?: string) {
  * Hook for schema administration interface with self-governing integration
  */
 export function useSchemaAdministration(organizationId?: string) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const orgId = organizationId || user?.organization_id
 
   return {

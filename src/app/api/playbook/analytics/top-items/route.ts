@@ -10,10 +10,7 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
 
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const supabase = createServerClient()
@@ -21,7 +18,8 @@ export async function GET(req: NextRequest) {
     // Fetch transaction lines with entity info
     let query = supabase
       .from('universal_transaction_lines')
-      .select(`
+      .select(
+        `
         line_entity_id,
         quantity,
         unit_price,
@@ -38,7 +36,8 @@ export async function GET(req: NextRequest) {
           entity_name,
           entity_type
         )
-      `)
+      `
+      )
       .eq('universal_transactions.organization_id', orgId)
       .eq('universal_transactions.transaction_type', 'sale')
       .in('core_entities.entity_type', ['product', 'salon_service', 'service', 'svc'])
@@ -61,15 +60,18 @@ export async function GET(req: NextRequest) {
     }
 
     // Group by entity and calculate totals
-    const itemStats = new Map<string, {
-      item_id: string
-      item_name: string
-      entity_type: string
-      times_sold: Set<string>
-      total_quantity: number
-      total_revenue: number
-      unit_prices: number[]
-    }>()
+    const itemStats = new Map<
+      string,
+      {
+        item_id: string
+        item_name: string
+        entity_type: string
+        times_sold: Set<string>
+        total_quantity: number
+        total_revenue: number
+        unit_prices: number[]
+      }
+    >()
 
     lines?.forEach(line => {
       const entity = line.core_entities
@@ -103,9 +105,10 @@ export async function GET(req: NextRequest) {
         times_sold: item.times_sold.size,
         total_quantity: item.total_quantity,
         total_revenue: item.total_revenue,
-        average_price: item.unit_prices.length > 0
-          ? item.unit_prices.reduce((a, b) => a + b, 0) / item.unit_prices.length
-          : 0
+        average_price:
+          item.unit_prices.length > 0
+            ? item.unit_prices.reduce((a, b) => a + b, 0) / item.unit_prices.length
+            : 0
       }))
       .sort((a, b) => b.total_revenue - a.total_revenue)
       .slice(0, limit)

@@ -193,7 +193,7 @@ const apps: AppCard[] = [
 
 export default function AppsPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, currentOrganization, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, isLoading, currentOrganization, contextLoading } = useHERAAuth()
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>(
     'all'
   )

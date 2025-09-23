@@ -30,7 +30,7 @@ import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isAuthenticated, organizations  } = useHERAAuth()
+  const { login, isAuthenticated, organizations } = useHERAAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

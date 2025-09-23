@@ -37,7 +37,7 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function RestaurantIntegratedDashboard() {
   const [activeModule, setActiveModule] = useState('dashboard')
-  const { organization  } = useHERAAuth()
+  const { organization } = useHERAAuth()
 
   // HERA Integration Status
   const heraIntegrations = [

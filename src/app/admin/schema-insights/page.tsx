@@ -1,70 +1,86 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Loader2, Database, AlertCircle, CheckCircle, Info, TrendingUp, Building2, Hash } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Progress } from '@/components/ui/progress';
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Loader2,
+  Database,
+  AlertCircle,
+  CheckCircle,
+  Info,
+  TrendingUp,
+  Building2,
+  Hash
+} from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Progress } from '@/components/ui/progress'
 
 export default function SchemaInsightsPage() {
-  const [analysis, setAnalysis] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchAnalysis = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
       const response = await fetch('/api/admin/schema-analysis-simple', {
         headers: {
           'x-admin-api-key': 'test-key'
         }
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (data.success) {
-        setAnalysis(data.analysis);
+        setAnalysis(data.analysis)
       } else {
-        throw new Error(data.error || 'Failed to analyze schema');
+        throw new Error(data.error || 'Failed to analyze schema')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      setError(err instanceof Error ? err.message : 'Unknown error occurred')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchAnalysis();
-  }, []);
+    fetchAnalysis()
+  }, [])
 
   const getRecommendationIcon = (type: string) => {
     switch (type) {
       case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'warning':
-        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
+        return <AlertCircle className="h-4 w-4 text-yellow-600" />
       case 'error':
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
+        return <AlertCircle className="h-4 w-4 text-red-600" />
       default:
-        return <Info className="h-4 w-4 text-blue-600" />;
+        return <Info className="h-4 w-4 text-blue-600" />
     }
-  };
+  }
 
   const formatNumber = (num: number) => {
-    return num.toLocaleString();
-  };
+    return num.toLocaleString()
+  }
 
   if (loading) {
     return (
@@ -74,7 +90,7 @@ export default function SchemaInsightsPage() {
           <p>Analyzing database schema...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -89,11 +105,11 @@ export default function SchemaInsightsPage() {
           Retry Analysis
         </Button>
       </div>
-    );
+    )
   }
 
   if (!analysis) {
-    return null;
+    return null
   }
 
   return (
@@ -101,9 +117,7 @@ export default function SchemaInsightsPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Schema Insights</h1>
-          <p className="text-gray-500">
-            Comprehensive analysis of your HERA database
-          </p>
+          <p className="text-gray-500">Comprehensive analysis of your HERA database</p>
         </div>
         <Button onClick={fetchAnalysis} disabled={loading}>
           <Database className="mr-2 h-4 w-4" />
@@ -142,7 +156,7 @@ export default function SchemaInsightsPage() {
             <CardDescription>Data Status</CardDescription>
           </CardHeader>
           <CardContent>
-            <Badge 
+            <Badge
               variant={analysis.summary?.hasData ? 'default' : 'secondary'}
               className={analysis.summary?.hasData ? 'bg-green-100 text-green-800' : ''}
             >
@@ -184,9 +198,7 @@ export default function SchemaInsightsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Table Overview</CardTitle>
-              <CardDescription>
-                Core HERA tables and their current state
-              </CardDescription>
+              <CardDescription>Core HERA tables and their current state</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -225,9 +237,7 @@ export default function SchemaInsightsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Organizations</CardTitle>
-                <CardDescription>
-                  Active organizations in the system
-                </CardDescription>
+                <CardDescription>Active organizations in the system</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -307,8 +317,10 @@ export default function SchemaInsightsPage() {
                           <span className="font-mono">{type.type}</span>
                           <span>{formatNumber(type.count)} entities</span>
                         </div>
-                        <Progress 
-                          value={(type.count / analysis.dataProfile.core_entities.totalEntities) * 100} 
+                        <Progress
+                          value={
+                            (type.count / analysis.dataProfile.core_entities.totalEntities) * 100
+                          }
                           className="h-2"
                         />
                       </div>
@@ -350,9 +362,13 @@ export default function SchemaInsightsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex gap-1 flex-wrap">
-                      {analysis.dataProfile.universal_transactions.currencies.map((currency: string) => (
-                        <Badge key={currency} variant="secondary">{currency}</Badge>
-                      ))}
+                      {analysis.dataProfile.universal_transactions.currencies.map(
+                        (currency: string) => (
+                          <Badge key={currency} variant="secondary">
+                            {currency}
+                          </Badge>
+                        )
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -372,15 +388,22 @@ export default function SchemaInsightsPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {analysis.dataProfile.universal_transactions.topTransactionTypes.map((type: any) => (
-                        <TableRow key={type.type}>
-                          <TableCell className="font-mono">{type.type}</TableCell>
-                          <TableCell>{formatNumber(type.count)}</TableCell>
-                          <TableCell>
-                            {((type.count / analysis.dataProfile.universal_transactions.totalTransactions) * 100).toFixed(1)}%
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {analysis.dataProfile.universal_transactions.topTransactionTypes.map(
+                        (type: any) => (
+                          <TableRow key={type.type}>
+                            <TableCell className="font-mono">{type.type}</TableCell>
+                            <TableCell>{formatNumber(type.count)}</TableCell>
+                            <TableCell>
+                              {(
+                                (type.count /
+                                  analysis.dataProfile.universal_transactions.totalTransactions) *
+                                100
+                              ).toFixed(1)}
+                              %
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )}
                     </TableBody>
                   </Table>
                 </CardContent>
@@ -445,13 +468,19 @@ export default function SchemaInsightsPage() {
                           <TableCell>{formatNumber(field.count)}</TableCell>
                           <TableCell>
                             {analysis.dataProfile.dynamicFieldTypes?.[field.field] ? (
-                              <Badge 
+                              <Badge
                                 variant="secondary"
                                 className={
-                                  analysis.dataProfile.dynamicFieldTypes[field.field].primaryType === 'text' ? 'bg-blue-100 text-blue-800' :
-                                  analysis.dataProfile.dynamicFieldTypes[field.field].primaryType === 'number' ? 'bg-green-100 text-green-800' :
-                                  analysis.dataProfile.dynamicFieldTypes[field.field].primaryType === 'json' ? 'bg-purple-100 text-purple-800' :
-                                  ''
+                                  analysis.dataProfile.dynamicFieldTypes[field.field]
+                                    .primaryType === 'text'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : analysis.dataProfile.dynamicFieldTypes[field.field]
+                                          .primaryType === 'number'
+                                      ? 'bg-green-100 text-green-800'
+                                      : analysis.dataProfile.dynamicFieldTypes[field.field]
+                                            .primaryType === 'json'
+                                        ? 'bg-purple-100 text-purple-800'
+                                        : ''
                                 }
                               >
                                 {analysis.dataProfile.dynamicFieldTypes[field.field].primaryType}
@@ -468,22 +497,20 @@ export default function SchemaInsightsPage() {
               </Card>
 
               {/* Branch field analysis */}
-              {(analysis.dataProfile.dynamicFieldTypes?.branch_id || 
+              {(analysis.dataProfile.dynamicFieldTypes?.branch_id ||
                 analysis.dataProfile.dynamicFieldTypes?.branch_code ||
                 analysis.dataProfile.dynamicFieldTypes?.branch_name) && (
                 <Card>
                   <CardHeader>
                     <CardTitle>Branch Field Analysis</CardTitle>
-                    <CardDescription>
-                      How branch data is stored in dynamic fields
-                    </CardDescription>
+                    <CardDescription>How branch data is stored in dynamic fields</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {['branch_id', 'branch_code', 'branch_name'].map((fieldName) => {
-                        const fieldData = analysis.dataProfile.dynamicFieldTypes?.[fieldName];
-                        if (!fieldData) return null;
-                        
+                      {['branch_id', 'branch_code', 'branch_name'].map(fieldName => {
+                        const fieldData = analysis.dataProfile.dynamicFieldTypes?.[fieldName]
+                        if (!fieldData) return null
+
                         return (
                           <div key={fieldName} className="border rounded-lg p-4">
                             <h4 className="font-mono font-medium mb-2">{fieldName}</h4>
@@ -501,18 +528,19 @@ export default function SchemaInsightsPage() {
                               <div className="mt-2">
                                 <p className="text-sm text-gray-500 mb-1">Type Usage</p>
                                 <div className="flex gap-2">
-                                  {Object.entries(fieldData.typeUsage).map(([type, count]) => (
-                                    count > 0 && (
-                                      <Badge key={type} variant="secondary" className="text-xs">
-                                        {type}: {count}
-                                      </Badge>
-                                    )
-                                  ))}
+                                  {Object.entries(fieldData.typeUsage).map(
+                                    ([type, count]) =>
+                                      count > 0 && (
+                                        <Badge key={type} variant="secondary" className="text-xs">
+                                          {type}: {count}
+                                        </Badge>
+                                      )
+                                  )}
                                 </div>
                               </div>
                             )}
                           </div>
-                        );
+                        )
                       })}
                     </div>
                   </CardContent>
@@ -526,9 +554,7 @@ export default function SchemaInsightsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Branch Analysis</CardTitle>
-              <CardDescription>
-                How branches are implemented in this system
-              </CardDescription>
+              <CardDescription>How branches are implemented in this system</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Branch Entities */}
@@ -553,7 +579,9 @@ export default function SchemaInsightsPage() {
                           <TableCell className="font-mono">{branch.code || '-'}</TableCell>
                           <TableCell>
                             {branch.metadata ? (
-                              <pre className="text-xs">{JSON.stringify(branch.metadata, null, 2)}</pre>
+                              <pre className="text-xs">
+                                {JSON.stringify(branch.metadata, null, 2)}
+                              </pre>
                             ) : (
                               '-'
                             )}
@@ -578,17 +606,16 @@ export default function SchemaInsightsPage() {
                   <Hash className="h-4 w-4" />
                   Dynamic Field Implementation
                 </h4>
-                {(analysis.dataProfile?.dynamicFieldTypes?.branch_id || 
-                  analysis.dataProfile?.dynamicFieldTypes?.branch_code ||
-                  analysis.dataProfile?.dynamicFieldTypes?.branch_name) ? (
+                {analysis.dataProfile?.dynamicFieldTypes?.branch_id ||
+                analysis.dataProfile?.dynamicFieldTypes?.branch_code ||
+                analysis.dataProfile?.dynamicFieldTypes?.branch_name ? (
                   <Alert className="bg-green-50 border-green-200">
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <AlertDescription className="text-green-800">
-                      Branch data is stored in core_dynamic_data using fields: {
-                        ['branch_id', 'branch_code', 'branch_name']
-                          .filter(f => analysis.dataProfile?.dynamicFieldTypes?.[f])
-                          .join(', ')
-                      }
+                      Branch data is stored in core_dynamic_data using fields:{' '}
+                      {['branch_id', 'branch_code', 'branch_name']
+                        .filter(f => analysis.dataProfile?.dynamicFieldTypes?.[f])
+                        .join(', ')}
                     </AlertDescription>
                   </Alert>
                 ) : (
@@ -605,7 +632,8 @@ export default function SchemaInsightsPage() {
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h4 className="font-medium mb-2">Implementation Approach</h4>
                 <p className="text-sm text-gray-600">
-                  Based on the analysis, branches in this HERA instance are likely implemented using:
+                  Based on the analysis, branches in this HERA instance are likely implemented
+                  using:
                 </p>
                 <ul className="mt-2 space-y-1 text-sm">
                   {analysis.insights?.branches?.length > 0 && (
@@ -614,15 +642,15 @@ export default function SchemaInsightsPage() {
                       <span>Branch entities in core_entities table</span>
                     </li>
                   )}
-                  {(analysis.dataProfile?.dynamicFieldTypes?.branch_id || 
+                  {(analysis.dataProfile?.dynamicFieldTypes?.branch_id ||
                     analysis.dataProfile?.dynamicFieldTypes?.branch_code) && (
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
                       <span>Dynamic fields for branch assignment to other entities</span>
                     </li>
                   )}
-                  {analysis.dataProfile?.core_relationships?.topRelationshipTypes?.some(
-                    (r: any) => r.type.toLowerCase().includes('branch')
+                  {analysis.dataProfile?.core_relationships?.topRelationshipTypes?.some((r: any) =>
+                    r.type.toLowerCase().includes('branch')
                   ) && (
                     <li className="flex items-start gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
@@ -640,9 +668,7 @@ export default function SchemaInsightsPage() {
             <Card key={tableName}>
               <CardHeader>
                 <CardTitle className="font-mono">{tableName}</CardTitle>
-                <CardDescription>
-                  Sample records from this table
-                </CardDescription>
+                <CardDescription>Sample records from this table</CardDescription>
               </CardHeader>
               <CardContent>
                 {data && (data as any[]).length > 0 ? (
@@ -660,5 +686,5 @@ export default function SchemaInsightsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

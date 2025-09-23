@@ -8,7 +8,7 @@ import '@/app/isp/isp-progress.css'
 
 // Configure NProgress
 if (typeof window !== 'undefined') {
-  NProgress.configure({ 
+  NProgress.configure({
     showSpinner: false,
     trickleSpeed: 200,
     minimum: 0.3

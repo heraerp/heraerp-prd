@@ -50,7 +50,7 @@ const BUSINESS_TYPES = [
 
 export default function CreateOrganizationPage() {
   const router = useRouter()
-  const { createOrganization, checkSubdomainAvailability, isAuthenticated  } = useHERAAuth()
+  const { createOrganization, checkSubdomainAvailability, isAuthenticated } = useHERAAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

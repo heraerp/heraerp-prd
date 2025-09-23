@@ -43,7 +43,7 @@ interface SchemaAdministrationProps {
 }
 
 export default function SchemaAdministration({ organizationId }: SchemaAdministrationProps) {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [searchTerm, setSearchTerm] = useState('')
 

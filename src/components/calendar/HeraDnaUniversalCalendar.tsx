@@ -205,7 +205,7 @@ export function HeraDnaUniversalCalendar({
   onEventDelete,
   onAvailabilityCheck
 }: HeraDnaCalendarProps) {
-  const { currentOrganization, isAuthenticated  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
 
   // State management
   const [currentView, setCurrentView] = useState(initialView)

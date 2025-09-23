@@ -6,7 +6,7 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { formatCurrency, getOrganizationCurrency, getCurrencyConfig } from '@/lib/currency'
 
 export function useOrganizationCurrency() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
 
   const currencyCode = getOrganizationCurrency(currentOrganization)
   const currencyConfig = getCurrencyConfig(currencyCode)

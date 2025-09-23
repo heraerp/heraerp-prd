@@ -66,7 +66,7 @@ export function useServicesPlaybook({
       }
 
       // Map sort parameter to server format
-      let serverSort: "name_asc" | "name_desc" | "updated_desc" | "updated_asc" | undefined
+      let serverSort: 'name_asc' | 'name_desc' | 'updated_desc' | 'updated_asc' | undefined
       if (sort) {
         const [field, direction] = sort.split(':')
         if (field === 'name') {
@@ -82,16 +82,16 @@ export function useServicesPlaybook({
         limit: pageSize,
         offset
       }
-      
+
       // Only add optional params if they have values
       if (debouncedQuery) params.q = debouncedQuery
       if (status !== 'all') params.status = status
       if (categoryId) params.category = categoryId
       if (branchId) params.branchId = branchId
       if (serverSort) params.sort = serverSort
-      
+
       const { items: rawServices, total_count } = await fetchSalonServices(params)
-      
+
       console.log('Raw services from API:', rawServices)
 
       // Server now handles all filtering including branch
@@ -102,25 +102,29 @@ export function useServicesPlaybook({
       const enrichedItems = filteredServices.map((service): ServiceWithDynamicData => {
         // Extract values from dynamic data (no metadata fallback)
         // Price is now a JSON object from service.base_price
-        const priceData = service.price as { amount?: number; currency_code?: string; tax_inclusive?: boolean } | null
+        const priceData = service.price as {
+          amount?: number
+          currency_code?: string
+          tax_inclusive?: boolean
+        } | null
         const priceValue = priceData?.amount ?? service.base_fee ?? 0
         const currency = priceData?.currency_code ?? 'AED'
-        
+
         // Duration is now a direct number from service.duration_minutes
         const duration = service.duration_minutes ?? 0
-        
+
         // Category is a direct string value
         const category = service.category ?? null
-        
+
         const result: ServiceWithDynamicData = {
           // Core entity fields
           id: service.id,
           organization_id: organizationId,
-          smart_code: service.smartCode,  // The salon.ts mapRowToService maps smart_code to smartCode
+          smart_code: service.smartCode, // The salon.ts mapRowToService maps smart_code to smartCode
           name: service.name,
           status: service.status as 'active' | 'archived'
         }
-        
+
         // Add optional fields only if they have values
         if (service.code) result.code = service.code
         if (duration > 0) result.duration_mins = Number(duration)
@@ -129,16 +133,16 @@ export function useServicesPlaybook({
         if (currency) result.currency = currency
         if (service.created_at) result.created_at = service.created_at
         if (service.updated_at) result.updated_at = service.updated_at
-        
+
         // Always add metadata
         result.metadata = {
           ...(category ? { category } : {}),
           ...(priceData ? { price: priceValue, currency: currency } : {})
         }
-        
+
         return result
       })
-      
+
       console.log('Enriched items:', enrichedItems)
 
       setItems(enrichedItems)
@@ -177,12 +181,12 @@ export function useServicesPlaybook({
           organization_id: organizationId,
           name: data.name
         }
-        
+
         if (data.code) createParams.code = data.code
         if (data.duration_mins) createParams.duration_mins = data.duration_mins
         if (data.category) createParams.category = data.category
         if (data.metadata) createParams.metadata = data.metadata
-        
+
         const serviceResult = await createService(createParams)
 
         if (!serviceResult.ok) {
@@ -206,7 +210,11 @@ export function useServicesPlaybook({
 
         if (data.duration_mins !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.DURATION.v1', data.duration_mins)
+            upsertDynamicData(
+              service.id,
+              'HERA.SALON.SERVICE.CATALOG.DURATION.v1',
+              data.duration_mins
+            )
           )
         }
 
@@ -340,11 +348,11 @@ export function useServicesPlaybook({
     async (id: string) => {
       try {
         const result = await deleteService(id)
-        
+
         if (!result.ok) {
           throw new Error(result.error || 'Failed to delete service')
         }
-        
+
         // Success handled by parent component
         await fetchServices() // Refresh list
       } catch (error) {
@@ -379,14 +387,7 @@ export function useServicesPlaybook({
 
   // Export CSV helper
   const exportCSV = useCallback(() => {
-    const headers = [
-      'Name',
-      'Code',
-      'Category',
-      'Duration (mins)',
-      'Price',
-      'Status'
-    ]
+    const headers = ['Name', 'Code', 'Category', 'Duration (mins)', 'Price', 'Status']
     const rows = items.map(item => [
       item.name,
       item.code || '',

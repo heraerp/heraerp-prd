@@ -333,7 +333,7 @@ const getStockStatus = (current: number, reorderPoint: number) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonInventoryManagement() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
 
   // State Management

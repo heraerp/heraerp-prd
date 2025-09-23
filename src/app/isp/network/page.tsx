@@ -508,9 +508,7 @@ export default function NetworkPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5E6C8]">
-            Network Operations Center
-          </h1>
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">Network Operations Center</h1>
           <p className="text-foreground/60 mt-1">
             Real-time network monitoring and infrastructure management
           </p>

@@ -18,7 +18,7 @@ function CustomizeTemplateContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const templateId = searchParams.get('template')
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const { listTemplates, cloneTemplate, loading } = useUCRMCP()
   const { toast } = useToast()
   const [template, setTemplate] = useState<any>(null)

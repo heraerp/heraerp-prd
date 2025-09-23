@@ -165,7 +165,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             setState(prev => ({ ...prev, organization }))
           } else if (sessionData.organization_id) {
             // 2) Use organization from session if available
-            console.log('📍 HERA Auth: Using organization from session:', sessionData.organization_id)
+            console.log(
+              '📍 HERA Auth: Using organization from session:',
+              sessionData.organization_id
+            )
             organization = {
               id: sessionData.organization_id,
               name: 'Hair Talkz Salon (Demo)',
@@ -178,7 +181,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             // 3) Try to get from server
             console.log('🔍 HERA Auth: Fetching organization context from server...')
             try {
-              const orgContext = await fetch('/api/auth/org-context', { 
+              const orgContext = await fetch('/api/auth/org-context', {
                 cache: 'no-store',
                 credentials: 'include' // Include cookies in the request
               }).then(r => r.json())
@@ -311,7 +314,7 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const logout = async () => {
     try {
       await demoAuthService.clearDemoSession()
-      
+
       // Clear the org cookie
       if (typeof document !== 'undefined') {
         document.cookie = 'HERA_ORG_ID=; Path=/; Max-Age=0; SameSite=Lax'

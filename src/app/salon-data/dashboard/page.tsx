@@ -17,7 +17,7 @@ import { AlertsStrip } from '@/components/dashboard/AlertsStrip'
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 
 export default function SalonDemoDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [demoOrganizationId, setDemoOrganizationId] = useState<string | null>(null)
 
   // Check if this is a demo session

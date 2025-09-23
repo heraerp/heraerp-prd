@@ -27,7 +27,7 @@ import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils/format'
 
 export default function AccountantDashboard() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id || ''
 
   // Fetch financial data

@@ -35,7 +35,7 @@ interface P2PMetrics {
 }
 
 export function P2PDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [metrics, setMetrics] = useState<P2PMetrics>({
     activeSuppliers: 0,
     pendingPRs: 0,

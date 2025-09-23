@@ -13,22 +13,22 @@ interface OptimizedNavigationLinkProps {
   prefetch?: boolean
 }
 
-export default function OptimizedNavigationLink({ 
-  href, 
-  children, 
-  className, 
+export default function OptimizedNavigationLink({
+  href,
+  children,
+  className,
   onClick,
-  prefetch = true 
+  prefetch = true
 }: OptimizedNavigationLinkProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    
+
     // Call onClick if provided (for closing mobile menu)
     onClick?.()
-    
+
     // Use transition for smoother navigation
     startTransition(() => {
       router.push(href)
@@ -36,12 +36,9 @@ export default function OptimizedNavigationLink({
   }
 
   return (
-    <Link 
-      href={href} 
-      className={cn(
-        className,
-        isPending && 'opacity-50 pointer-events-none'
-      )}
+    <Link
+      href={href}
+      className={cn(className, isPending && 'opacity-50 pointer-events-none')}
       onClick={handleClick}
       prefetch={prefetch}
     >

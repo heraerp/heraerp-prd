@@ -193,7 +193,7 @@ const compensationTypes = [
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonPayrollSystem() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
 
   // State Management

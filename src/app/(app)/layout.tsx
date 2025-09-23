@@ -23,7 +23,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { user, currentOrganization, signOut  } = useHERAAuth()
+  const { user, currentOrganization, signOut } = useHERAAuth()
   const { hasRole } = usePermissions()
   const apiClient = createApiClient()
 

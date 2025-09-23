@@ -12,10 +12,7 @@ export async function GET(req: NextRequest) {
     const entityType = searchParams.get('entityType')
 
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const supabase = createServerClient()
@@ -24,7 +21,8 @@ export async function GET(req: NextRequest) {
     // Build base query
     let query = supabase
       .from('universal_transaction_lines')
-      .select(`
+      .select(
+        `
         id,
         quantity,
         unit_price,
@@ -43,7 +41,9 @@ export async function GET(req: NextRequest) {
           entity_name,
           entity_type
         )
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' }
+      )
       .eq('universal_transactions.organization_id', orgId)
       .neq('universal_transactions.status', 'cancelled')
 
@@ -75,19 +75,20 @@ export async function GET(req: NextRequest) {
     }
 
     // Transform the data to match expected format
-    const items = lines?.map(line => ({
-      id: line.id,
-      transaction_date: line.universal_transactions?.transaction_date,
-      transaction_code: line.universal_transactions?.transaction_code,
-      transaction_type: line.universal_transactions?.transaction_type,
-      item_name: line.core_entities?.entity_name || null,
-      entity_type: line.core_entities?.entity_type || null,
-      quantity: line.quantity,
-      unit_price: line.unit_price,
-      line_amount: line.line_amount,
-      smart_code: line.smart_code,
-      metadata: line.metadata
-    })) || []
+    const items =
+      lines?.map(line => ({
+        id: line.id,
+        transaction_date: line.universal_transactions?.transaction_date,
+        transaction_code: line.universal_transactions?.transaction_code,
+        transaction_type: line.universal_transactions?.transaction_type,
+        item_name: line.core_entities?.entity_name || null,
+        entity_type: line.core_entities?.entity_type || null,
+        quantity: line.quantity,
+        unit_price: line.unit_price,
+        line_amount: line.line_amount,
+        smart_code: line.smart_code,
+        metadata: line.metadata
+      })) || []
 
     const totalPages = Math.ceil((count || 0) / pageSize)
 

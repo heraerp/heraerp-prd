@@ -20,14 +20,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { formatDistanceToNow } from 'date-fns'
-import {
-  Edit,
-  Trash2,
-  Archive,
-  ArchiveRestore,
-  MoreVertical,
-  Package
-} from 'lucide-react'
+import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Package } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface ProductListProps {
@@ -91,7 +84,7 @@ export function ProductList({
   }
 
   return (
-    <div 
+    <div
       className="rounded-lg overflow-hidden"
       style={{
         backgroundColor: COLORS.charcoalLight + '95',
@@ -100,7 +93,7 @@ export function ProductList({
     >
       <Table>
         <TableHeader>
-          <TableRow 
+          <TableRow
             className="border-b hover:bg-transparent"
             style={{ borderColor: COLORS.bronze + '33' }}
           >
@@ -120,13 +113,13 @@ export function ProductList({
             const stockValue = (product.price || 0) * product.qty_on_hand
 
             return (
-              <TableRow 
+              <TableRow
                 key={product.id}
                 className={cn(
-                  "border-b transition-colors group",
-                  index % 2 === 0 ? "bg-gray-50/5" : "bg-transparent",
-                  "hover:bg-cyan-100/10",
-                  isArchived && "opacity-60"
+                  'border-b transition-colors group',
+                  index % 2 === 0 ? 'bg-gray-50/5' : 'bg-transparent',
+                  'hover:bg-cyan-100/10',
+                  isArchived && 'opacity-60'
                 )}
                 style={{ borderColor: COLORS.bronze + '20' }}
               >
@@ -144,7 +137,10 @@ export function ProductList({
                     <div>
                       <p style={{ color: COLORS.champagne }}>{product.entity_name}</p>
                       {product.entity_code && (
-                        <p className="text-sm opacity-60 mt-0.5" style={{ color: COLORS.lightText }}>
+                        <p
+                          className="text-sm opacity-60 mt-0.5"
+                          style={{ color: COLORS.lightText }}
+                        >
                           {product.entity_code}
                         </p>
                       )}
@@ -154,7 +150,10 @@ export function ProductList({
 
                 <TableCell>
                   {product.category ? (
-                    <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                    <Badge
+                      variant="secondary"
+                      className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                    >
                       {product.category}
                     </Badge>
                   ) : (
@@ -177,10 +176,10 @@ export function ProductList({
                 </TableCell>
 
                 <TableCell>
-                  <span 
+                  <span
                     className={cn(
-                      "font-semibold",
-                      product.qty_on_hand < 10 ? "text-red-400" : "text-green-400"
+                      'font-semibold',
+                      product.qty_on_hand < 10 ? 'text-red-400' : 'text-green-400'
                     )}
                   >
                     {product.qty_on_hand}
@@ -195,8 +194,8 @@ export function ProductList({
 
                 <TableCell>
                   {isArchived ? (
-                    <Badge 
-                      variant="secondary" 
+                    <Badge
+                      variant="secondary"
                       className="bg-gray-500/20 text-gray-400 border-gray-500/30"
                     >
                       Archived
@@ -213,7 +212,9 @@ export function ProductList({
 
                 <TableCell>
                   <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
-                    {product.updated_at ? formatDistanceToNow(new Date(product.updated_at), { addSuffix: true }) : 'Unknown'}
+                    {product.updated_at
+                      ? formatDistanceToNow(new Date(product.updated_at), { addSuffix: true })
+                      : 'Unknown'}
                   </span>
                 </TableCell>
 
@@ -228,11 +229,14 @@ export function ProductList({
                         <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent 
+                    <DropdownMenuContent
                       align="end"
-                      style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        border: `1px solid ${COLORS.bronze}33`
+                      }}
                     >
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => onEdit(product)}
                         style={{ color: COLORS.lightText }}
                         className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
@@ -240,9 +244,9 @@ export function ProductList({
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
-                      
+
                       <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-                      
+
                       {isArchived ? (
                         <DropdownMenuItem
                           onClick={() => onRestore(product)}
@@ -262,9 +266,9 @@ export function ProductList({
                           Archive
                         </DropdownMenuItem>
                       )}
-                      
+
                       <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-                      
+
                       <DropdownMenuItem
                         onClick={() => onDelete(product)}
                         className="hover:!bg-red-900/20 hover:!text-red-300"
@@ -282,8 +286,8 @@ export function ProductList({
 
           {products.length === 0 && (
             <TableRow>
-              <TableCell 
-                colSpan={8} 
+              <TableCell
+                colSpan={8}
                 className="h-32 text-center"
                 style={{ color: COLORS.lightText, opacity: 0.5 }}
               >
@@ -316,9 +320,9 @@ function ProductCard({
   return (
     <div
       className={cn(
-        "relative p-6 rounded-xl transition-all duration-200",
-        "hover:shadow-xl hover:scale-[1.02]",
-        isArchived && "opacity-60"
+        'relative p-6 rounded-xl transition-all duration-200',
+        'hover:shadow-xl hover:scale-[1.02]',
+        isArchived && 'opacity-60'
       )}
       style={{
         backgroundColor: COLORS.charcoalLight,
@@ -351,7 +355,7 @@ function ProductCard({
         >
           <Package className="w-6 h-6" style={{ color: COLORS.gold }} />
         </div>
-        
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -361,11 +365,11 @@ function ProductCard({
               <MoreVertical className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent 
+          <DropdownMenuContent
             align="end"
             style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
           >
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={() => onEdit(product)}
               style={{ color: COLORS.lightText }}
               className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
@@ -373,9 +377,9 @@ function ProductCard({
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            
+
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            
+
             {isArchived ? (
               <DropdownMenuItem
                 onClick={() => onRestore(product)}
@@ -395,9 +399,9 @@ function ProductCard({
                 Archive
               </DropdownMenuItem>
             )}
-            
+
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            
+
             <DropdownMenuItem
               onClick={() => onDelete(product)}
               className="hover:!bg-red-900/20 hover:!text-red-300"
@@ -411,17 +415,14 @@ function ProductCard({
       </div>
 
       {/* Product Name */}
-      <h3 
-        className="font-semibold text-lg mb-2"
-        style={{ color: COLORS.champagne }}
-      >
+      <h3 className="font-semibold text-lg mb-2" style={{ color: COLORS.champagne }}>
         {product.entity_name}
       </h3>
 
       {/* Category */}
       {product.category && (
-        <Badge 
-          variant="secondary" 
+        <Badge
+          variant="secondary"
           className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
         >
           {product.category}
@@ -442,10 +443,10 @@ function ProductCard({
           <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
             Stock
           </p>
-          <p 
+          <p
             className={cn(
-              "font-semibold",
-              product.qty_on_hand < 10 ? "text-red-400" : "text-green-400"
+              'font-semibold',
+              product.qty_on_hand < 10 ? 'text-red-400' : 'text-green-400'
             )}
           >
             {product.qty_on_hand}
@@ -461,20 +462,14 @@ function ProductCard({
         <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.6 }}>
           Total Value
         </span>
-        <span 
-          className="font-semibold"
-          style={{ color: COLORS.champagne }}
-        >
+        <span className="font-semibold" style={{ color: COLORS.champagne }}>
           AED {stockValue.toFixed(2)}
         </span>
       </div>
 
       {/* Code */}
       {product.entity_code && (
-        <p 
-          className="text-xs mt-2 font-mono"
-          style={{ color: COLORS.bronze, opacity: 0.6 }}
-        >
+        <p className="text-xs mt-2 font-mono" style={{ color: COLORS.bronze, opacity: 0.6 }}>
           {product.entity_code}
         </p>
       )}

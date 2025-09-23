@@ -20,7 +20,7 @@ export async function listItems(params: {
         sort: params.sort || 'updated_at:desc',
         limit: params.limit ?? 25,
         offset: params.offset ?? 0,
-        ...(params.status && params.status !== 'all' ? { status: params.status } : {}),
+        ...(params.status && params.status !== 'all' ? { status: params.status } : {})
       },
       params.branch_id
     )
@@ -49,7 +49,7 @@ export async function listItems(params: {
 
     pbLog('listItems success:', {
       count: enrichedItems.length,
-      total: result.total,
+      total: result.total
     })
 
     return { ok: true, data: { items: enrichedItems, total: result.total } } as const
@@ -58,7 +58,7 @@ export async function listItems(params: {
     return {
       ok: false,
       data: { items: [], total: 0 },
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -85,7 +85,7 @@ export async function createItem(payload: {
 
     const json = await pb('/entities', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('createItem success:', json)
@@ -95,7 +95,7 @@ export async function createItem(payload: {
     pbLog('createItem error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -118,7 +118,7 @@ export async function updateItem(
 
     const json = await pb(`/entities/${id}`, {
       method: 'PATCH',
-      body: patch,
+      body: patch
     })
 
     pbLog('updateItem success:', json)
@@ -128,7 +128,7 @@ export async function updateItem(
     pbLog('updateItem error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -153,12 +153,12 @@ export async function getStockLevel(params: {
 
     const json = await pb('/dynamic_data/query', {
       method: 'POST',
-      body,
+      body
     })
 
     // Transform to Record format
     const stockLevels: Record<string, StockLevel> = {}
-    
+
     if (json.data) {
       if (Array.isArray(json.data)) {
         // Handle array format
@@ -176,7 +176,7 @@ export async function getStockLevel(params: {
     }
 
     pbLog('getStockLevel success:', {
-      items: Object.keys(stockLevels).length,
+      items: Object.keys(stockLevels).length
     })
 
     return { ok: true, data: stockLevels } as const
@@ -185,7 +185,7 @@ export async function getStockLevel(params: {
     return {
       ok: false,
       data: {},
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -195,14 +195,14 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     const body = {
       entity_id,
       smart_code,
-      data,
+      data
     }
 
     pbLog('upsertDynamicData request:', body)
 
     const json = await pb('/dynamic_data/upsert', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('upsertDynamicData success:', json)
@@ -212,15 +212,12 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     pbLog('upsertDynamicData error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
 
-export async function getValuationConfig(params: {
-  organization_id: string
-  item_ids?: string[]
-}) {
+export async function getValuationConfig(params: { organization_id: string; item_ids?: string[] }) {
   try {
     const body = {
       entity_ids: [params.organization_id, ...(params.item_ids || [])],
@@ -231,7 +228,7 @@ export async function getValuationConfig(params: {
 
     const json = await pb('/dynamic_data/query', {
       method: 'POST',
-      body,
+      body
     })
 
     const data = json.data || {}
@@ -255,7 +252,7 @@ export async function getValuationConfig(params: {
     return {
       ok: false,
       data: { method: 'WAC' as const, item_overrides: {} },
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }

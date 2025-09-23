@@ -73,9 +73,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold text-white">
-                      India Vision
-                    </h1>
+                    <h1 className="text-lg font-bold text-white">India Vision</h1>
                     <p className="text-xs bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent font-medium">
                       ISP Management System
                     </p>
@@ -86,7 +84,12 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                   className="lg:hidden text-slate-400 hover:text-white transition-colors p-1"
                 >
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -104,9 +107,10 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                       className={`
                         flex items-center space-x-3 px-3 py-2.5 rounded-lg
                         text-sm font-medium transition-all duration-200
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 text-white shadow-lg shadow-[#E91E63]/20' 
-                          : 'text-slate-300 hover:text-white hover:bg-white/5'
+                        ${
+                          isActive
+                            ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 text-white shadow-lg shadow-[#E91E63]/20'
+                            : 'text-slate-300 hover:text-white hover:bg-white/5'
                         }
                       `}
                     >

@@ -28,7 +28,7 @@ export default function ProductDetailPage() {
   const router = useRouter()
 
   const productId = params.id as string
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
 
   const [loading, setLoading] = useState(true)
 

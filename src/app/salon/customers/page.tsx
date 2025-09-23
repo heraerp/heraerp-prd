@@ -80,10 +80,11 @@ export default function SalonCustomersPage() {
   const getEffectiveOrgId = () => {
     if (currentOrganization?.id) return currentOrganization.id
 
-    // Check if we're on hairtalkz subdomain
+    // Check if we're on hairtalkz or heratalkz subdomain
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
-      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
+      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost' ||
+          hostname.startsWith('heratalkz.') || hostname === 'heratalkz.localhost') {
         return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
       }
     }
@@ -204,7 +205,9 @@ export default function SalonCustomersPage() {
   const isHairTalkzSubdomain =
     typeof window !== 'undefined' &&
     (window.location.hostname.startsWith('hairtalkz.') ||
-      window.location.hostname === 'hairtalkz.localhost')
+      window.location.hostname === 'hairtalkz.localhost' ||
+      window.location.hostname.startsWith('heratalkz.') ||
+      window.location.hostname === 'heratalkz.localhost')
 
   if (authLoading && !isHairTalkzSubdomain) {
     return (

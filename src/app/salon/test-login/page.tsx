@@ -7,9 +7,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/luxe-c
 
 // Test user credentials
 const TEST_USERS = [
-  { email: 'owner@hairtalkz.ae', password: 'HairTalkz@2025', role: 'owner', name: 'Michele Rodriguez' },
-  { email: 'receptionist@hairtalkz.ae', password: 'Reception@2025', role: 'receptionist', name: 'Sarah Johnson' },
-  { email: 'accountant@hairtalkz.ae', password: 'Finance@2025', role: 'accountant', name: 'Michael Chen' },
+  {
+    email: 'owner@hairtalkz.ae',
+    password: 'HairTalkz@2025',
+    role: 'owner',
+    name: 'Michele Rodriguez'
+  },
+  {
+    email: 'receptionist@hairtalkz.ae',
+    password: 'Reception@2025',
+    role: 'receptionist',
+    name: 'Sarah Johnson'
+  },
+  {
+    email: 'accountant@hairtalkz.ae',
+    password: 'Finance@2025',
+    role: 'accountant',
+    name: 'Michael Chen'
+  },
   { email: 'admin@hairtalkz.ae', password: 'Admin@2025', role: 'admin', name: 'David Thompson' }
 ]
 
@@ -23,7 +38,9 @@ export default function TestLoginPage() {
   const checkCurrentSession = async () => {
     setLoading(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       if (session) {
         setCurrentUser(session.user)
         setStatus(`Currently logged in as: ${session.user.email}`)
@@ -37,14 +54,14 @@ export default function TestLoginPage() {
     setLoading(false)
   }
 
-  const testLogin = async (user: typeof TEST_USERS[0]) => {
+  const testLogin = async (user: (typeof TEST_USERS)[0]) => {
     setLoading(true)
     setStatus(`Testing login for ${user.role}...`)
-    
+
     try {
       // First sign out any existing user
       await supabase.auth.signOut()
-      
+
       // Then sign in with test user
       const { data, error } = await supabase.auth.signInWithPassword({
         email: user.email,
@@ -58,18 +75,18 @@ export default function TestLoginPage() {
         localStorage.setItem('organizationId', HAIRTALKZ_ORG_ID)
         localStorage.setItem('salonRole', user.role)
         localStorage.setItem('salonUserName', user.name)
-        
+
         setStatus(`✅ Login successful! Role: ${user.role}`)
         setCurrentUser(data.session.user)
-        
+
         // Show redirect path
         const redirectMap: Record<string, string> = {
-          'owner': '/salon/dashboard',
-          'receptionist': '/salon/receptionist',
-          'accountant': '/salon/accountant',
-          'admin': '/salon/admin'
+          owner: '/salon/dashboard',
+          receptionist: '/salon/receptionist',
+          accountant: '/salon/accountant',
+          admin: '/salon/admin'
         }
-        
+
         setTimeout(() => {
           window.location.href = redirectMap[user.role] || '/salon/dashboard'
         }, 2000)
@@ -99,7 +116,7 @@ export default function TestLoginPage() {
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8">HairTalkz Test Login Page</h1>
-        
+
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Current Session</CardTitle>
@@ -108,22 +125,22 @@ export default function TestLoginPage() {
             <Button onClick={checkCurrentSession} disabled={loading} className="mb-4">
               Check Current Session
             </Button>
-            
+
             {currentUser && (
               <div className="space-y-2 mb-4">
                 <p className="text-sm">Email: {currentUser.email}</p>
                 <p className="text-sm">ID: {currentUser.id}</p>
                 <p className="text-sm">Role: {currentUser.user_metadata?.role || 'Not set'}</p>
-                <p className="text-sm">Org ID: {currentUser.user_metadata?.organization_id || 'Not set'}</p>
+                <p className="text-sm">
+                  Org ID: {currentUser.user_metadata?.organization_id || 'Not set'}
+                </p>
               </div>
             )}
-            
+
             {status && (
-              <div className="p-4 bg-gray-800 rounded text-white font-mono text-sm">
-                {status}
-              </div>
+              <div className="p-4 bg-gray-800 rounded text-white font-mono text-sm">{status}</div>
             )}
-            
+
             {currentUser && (
               <Button onClick={signOut} variant="destructive" className="mt-4">
                 Sign Out
@@ -138,17 +155,13 @@ export default function TestLoginPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {TEST_USERS.map((user) => (
+              {TEST_USERS.map(user => (
                 <div key={user.email} className="border rounded-lg p-4">
                   <h3 className="font-semibold text-lg mb-2">{user.role.toUpperCase()}</h3>
                   <p className="text-sm text-gray-600 mb-1">Name: {user.name}</p>
                   <p className="text-sm text-gray-600 mb-1">Email: {user.email}</p>
                   <p className="text-sm text-gray-600 mb-3">Password: {user.password}</p>
-                  <Button 
-                    onClick={() => testLogin(user)} 
-                    disabled={loading}
-                    className="w-full"
-                  >
+                  <Button onClick={() => testLogin(user)} disabled={loading} className="w-full">
                     Login as {user.role}
                   </Button>
                 </div>

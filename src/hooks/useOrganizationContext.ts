@@ -31,7 +31,7 @@ export function useOrganizationContext(): {
   error: string | null
 } {
   const pathname = usePathname()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useHERAAuth()
   const [organization, setOrganization] = useState<OrganizationInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

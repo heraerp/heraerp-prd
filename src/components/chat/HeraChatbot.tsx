@@ -28,7 +28,7 @@ export function HeraChatbot({
   position = 'bottom-right',
   theme = 'light'
 }: HeraChatbotProps) {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')

@@ -12,12 +12,12 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDailySalesReport } from '@/lib/api/financial-reports'
-import { 
-  Calendar, 
-  DollarSign, 
-  TrendingUp, 
-  ShoppingBag, 
-  Users, 
+import {
+  Calendar,
+  DollarSign,
+  TrendingUp,
+  ShoppingBag,
+  Users,
   Clock,
   Download,
   Printer,
@@ -44,21 +44,21 @@ const formatCurrency = (amount: number, currency: string = 'AED'): string => {
 export default function DailySalesReportPage() {
   const { currentOrganization, contextLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id || DEFAULT_SALON_ORG_ID
-  
+
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
-  
+
   // Fetch real sales data
   const { data, isLoading, error, refetch } = useDailySalesReport(organizationId, selectedDate)
-  
+
   const handlePrint = () => {
     window.print()
   }
-  
+
   const handleExport = () => {
     // In a real implementation, this would generate a CSV or PDF
     console.log('Exporting report...')
   }
-  
+
   if (contextLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -66,7 +66,7 @@ export default function DailySalesReportPage() {
       </div>
     )
   }
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-50/30 dark:from-gray-900 dark:to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -89,11 +89,7 @@ export default function DailySalesReportPage() {
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </Button>
-            <Button
-              variant="outline"
-              onClick={handlePrint}
-              className="bg-background dark:bg-muted"
-            >
+            <Button variant="outline" onClick={handlePrint} className="bg-background dark:bg-muted">
               <Printer className="w-4 h-4 mr-2" />
               Print
             </Button>
@@ -106,7 +102,7 @@ export default function DailySalesReportPage() {
             </Button>
           </div>
         </div>
-        
+
         {/* Date Selector */}
         <Card className="bg-background dark:bg-muted">
           <CardContent className="p-6">
@@ -115,7 +111,7 @@ export default function DailySalesReportPage() {
               <Input
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                onChange={e => setSelectedDate(e.target.value)}
                 className="w-auto"
                 max={new Date().toISOString().split('T')[0]}
               />
@@ -125,17 +121,15 @@ export default function DailySalesReportPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Error State */}
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Error loading sales data: {error.message}
-            </AlertDescription>
+            <AlertDescription>Error loading sales data: {error.message}</AlertDescription>
           </Alert>
         )}
-        
+
         {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -149,7 +143,7 @@ export default function DailySalesReportPage() {
             ))}
           </div>
         )}
-        
+
         {/* Sales Summary Cards */}
         {data && (
           <>
@@ -170,7 +164,7 @@ export default function DailySalesReportPage() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-background dark:bg-muted">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -180,17 +174,16 @@ export default function DailySalesReportPage() {
                         {formatCurrency(data.summary.serviceRevenue)}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {data.summary.serviceRevenue > 0 
+                        {data.summary.serviceRevenue > 0
                           ? `${((data.summary.serviceRevenue / data.summary.totalSales) * 100).toFixed(1)}% of total`
-                          : '0% of total'
-                        }
+                          : '0% of total'}
                       </p>
                     </div>
                     <Scissors className="w-8 h-8 text-purple-500" />
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-background dark:bg-muted">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -200,17 +193,16 @@ export default function DailySalesReportPage() {
                         {formatCurrency(data.summary.productRevenue)}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {data.summary.productRevenue > 0 
+                        {data.summary.productRevenue > 0
                           ? `${((data.summary.productRevenue / data.summary.totalSales) * 100).toFixed(1)}% of total`
-                          : '0% of total'
-                        }
+                          : '0% of total'}
                       </p>
                     </div>
                     <Package className="w-8 h-8 text-blue-500" />
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-background dark:bg-muted">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
@@ -219,16 +211,14 @@ export default function DailySalesReportPage() {
                       <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {formatCurrency(data.summary.averageTicket)}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Per transaction
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">Per transaction</p>
                     </div>
                     <TrendingUp className="w-8 h-8 text-emerald-500" />
                   </div>
                 </CardContent>
               </Card>
             </div>
-            
+
             {/* Sales by Hour Chart */}
             <Card className="bg-background dark:bg-muted">
               <CardHeader>
@@ -244,12 +234,10 @@ export default function DailySalesReportPage() {
                     const sales = data.summary.salesByHour.get(hourKey) || 0
                     const maxSales = Math.max(...Array.from(data.summary.salesByHour.values()))
                     const percentage = maxSales > 0 ? (sales / maxSales) * 100 : 0
-                    
+
                     return (
                       <div key={hour} className="flex items-center gap-3">
-                        <span className="text-sm text-muted-foreground w-16">
-                          {hourKey}
-                        </span>
+                        <span className="text-sm text-muted-foreground w-16">{hourKey}</span>
                         <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-6 relative">
                           <div
                             className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
@@ -265,7 +253,7 @@ export default function DailySalesReportPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Sales by Stylist */}
             <Card className="bg-background dark:bg-muted">
               <CardHeader>
@@ -279,7 +267,10 @@ export default function DailySalesReportPage() {
                   {Array.from(data.summary.salesByStylist.values())
                     .sort((a, b) => b.revenue - a.revenue)
                     .map(stylist => (
-                      <div key={stylist.name} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div
+                        key={stylist.name}
+                        className="flex items-center justify-between p-3 rounded-lg border"
+                      >
                         <div>
                           <p className="font-medium">{stylist.name}</p>
                           <p className="text-sm text-muted-foreground">
@@ -297,7 +288,7 @@ export default function DailySalesReportPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Transaction Details */}
             <Card className="bg-background dark:bg-muted">
               <CardHeader>
@@ -330,13 +321,9 @@ export default function DailySalesReportPage() {
                           <td className="py-3 px-4">
                             {txn.source_entity?.entity_name || 'Walk-in'}
                           </td>
+                          <td className="py-3 px-4">{txn.target_entity?.entity_name || '-'}</td>
                           <td className="py-3 px-4">
-                            {txn.target_entity?.entity_name || '-'}
-                          </td>
-                          <td className="py-3 px-4">
-                            <Badge variant="secondary">
-                              {txn.transaction_type}
-                            </Badge>
+                            <Badge variant="secondary">{txn.transaction_type}</Badge>
                           </td>
                           <td className="py-3 px-4 text-right font-medium">
                             {formatCurrency(txn.total_amount)}

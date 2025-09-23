@@ -550,7 +550,7 @@ const getSectionColor = (section: string) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonBalanceSheetPage() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState<
     'current' | 'prior_month' | 'prior_year' | 'custom'

@@ -42,7 +42,7 @@ import {
 } from 'recharts'
 
 function CRMDashboard() {
-  const { user, currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
+  const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useHERAAuth()
   const [stats, setStats] = useState<any>(null)
   const [recentActivities, setRecentActivities] = useState<any[]>([])
   const [topOpportunities, setTopOpportunities] = useState<any[]>([])

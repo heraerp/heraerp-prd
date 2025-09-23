@@ -17,7 +17,9 @@ export function StatusToastProvider({ children }: { children: React.ReactNode })
   const { toasts, showSuccess, showError, showWarning, showLoading, removeToast } = useStatusToast()
 
   return (
-    <StatusToastContext.Provider value={{ showSuccess, showError, showWarning, showLoading, removeToast }}>
+    <StatusToastContext.Provider
+      value={{ showSuccess, showError, showWarning, showLoading, removeToast }}
+    >
       {children}
       <StatusToast toasts={toasts} onRemove={removeToast} />
     </StatusToastContext.Provider>

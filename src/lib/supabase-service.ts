@@ -25,9 +25,9 @@ export const getSupabaseService = () => {
 
 // Helper to execute raw SQL with proper error handling
 export async function executeSQL<T = any>(
-  sql: string, 
+  sql: string,
   params: any[] = []
-): Promise<{ data: T | null, error: Error | null }> {
+): Promise<{ data: T | null; error: Error | null }> {
   try {
     const supabase = getSupabaseService()
     const { data, error } = await supabase.rpc('execute_sql', {
@@ -41,9 +41,9 @@ export async function executeSQL<T = any>(
 
     return { data, error: null }
   } catch (err) {
-    return { 
-      data: null, 
-      error: err instanceof Error ? err : new Error('Unknown error') 
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error('Unknown error')
     }
   }
 }

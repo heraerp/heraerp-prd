@@ -20,7 +20,7 @@ import { getSupportedCurrencies } from '@/lib/currency'
 import { Globe, Save } from 'lucide-react'
 
 export function CurrencySettings() {
-  const { currentOrganization, refreshOrganizations  } = useHERAAuth()
+  const { currentOrganization, refreshOrganizations } = useHERAAuth()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [selectedCurrency, setSelectedCurrency] = useState(

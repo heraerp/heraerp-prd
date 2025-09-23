@@ -74,14 +74,14 @@ function StatusIndicator({ status }: { status: SystemStatus['status'] }) {
     warning: COLORS.orange,
     error: COLORS.ruby
   }
-  
+
   return (
     <div className="flex items-center gap-2">
-      <div 
+      <div
         className="h-2 w-2 rounded-full animate-pulse"
         style={{ backgroundColor: colors[status] }}
       />
-      <span 
+      <span
         className="text-xs font-light uppercase tracking-wider"
         style={{ color: colors[status] }}
       >
@@ -93,7 +93,7 @@ function StatusIndicator({ status }: { status: SystemStatus['status'] }) {
 
 function SystemCard({ system }: { system: SystemStatus }) {
   const Icon = system.icon
-  
+
   return (
     <Card
       style={{
@@ -114,17 +114,14 @@ function SystemCard({ system }: { system: SystemStatus }) {
           </div>
           <StatusIndicator status={system.status} />
         </div>
-        
-        <h3 
+
+        <h3
           className="text-sm font-light tracking-wider uppercase mb-1"
           style={{ color: COLORS.bronze }}
         >
           {system.label}
         </h3>
-        <p 
-          className="text-lg font-light"
-          style={{ color: COLORS.champagne }}
-        >
+        <p className="text-lg font-light" style={{ color: COLORS.champagne }}>
           {system.value}
         </p>
       </CardContent>
@@ -160,7 +157,7 @@ function UserRow({ user }: { user: User }) {
           </p>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-6">
         <div className="text-right">
           <p style={{ color: COLORS.champagne }} className="text-sm">
@@ -170,7 +167,7 @@ function UserRow({ user }: { user: User }) {
             Last active: {user.lastActive}
           </p>
         </div>
-        
+
         <div
           className={`px-3 py-1 rounded-full text-xs font-medium ${
             user.status === 'active'
@@ -180,12 +177,8 @@ function UserRow({ user }: { user: User }) {
         >
           {user.status}
         </div>
-        
-        <Button
-          size="sm"
-          variant="ghost"
-          style={{ color: COLORS.bronze }}
-        >
+
+        <Button size="sm" variant="ghost" style={{ color: COLORS.bronze }}>
           <MoreVertical className="h-4 w-4" />
         </Button>
       </div>
@@ -197,7 +190,7 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  
+
   const systemStatuses: SystemStatus[] = [
     {
       label: 'Database',
@@ -266,46 +259,50 @@ export default function AdminDashboard() {
   }, [])
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
     if (!session?.user) {
       router.push('/salon/auth')
       return
     }
 
     const userMetadata = session.user.user_metadata
-    const userRole = userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
-    
+    const userRole =
+      userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
+
     // Check organization
     if (userMetadata?.organization_id !== HAIRTALKZ_ORG_ID) {
       router.push('/salon/auth')
       return
     }
-    
+
     // Check role
     if (userRole && userRole !== 'admin' && userRole !== 'administrator') {
       // Redirect to appropriate dashboard based on role
       const redirectMap: Record<string, string> = {
-        'owner': '/salon/dashboard',
-        'receptionist': '/salon/receptionist',
-        'accountant': '/salon/accountant'
+        owner: '/salon/dashboard',
+        receptionist: '/salon/receptionist',
+        accountant: '/salon/accountant'
       }
-      
+
       const redirectPath = redirectMap[userRole] || '/salon/auth'
       router.push(redirectPath)
       return
     }
   }
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.charcoal }}
       >
@@ -317,30 +314,27 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
       {/* Header */}
-      <div 
+      <div
         className="border-b px-8 py-6"
-        style={{ 
+        style={{
           backgroundColor: COLORS.charcoalLight,
           borderColor: `${COLORS.bronze}20`
         }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-light tracking-wider flex items-center gap-3"
               style={{ color: COLORS.champagne }}
             >
               <Shield className="h-8 w-8" style={{ color: COLORS.gold }} />
               System Administration
             </h1>
-            <p 
-              className="text-sm font-light mt-1"
-              style={{ color: COLORS.bronze }}
-            >
+            <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
               Manage users, settings, and system configuration
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -353,7 +347,7 @@ export default function AdminDashboard() {
               <Download className="h-4 w-4 mr-2" />
               Export Logs
             </Button>
-            
+
             <Button
               className="font-light"
               style={{
@@ -371,13 +365,13 @@ export default function AdminDashboard() {
       <div className="p-8">
         {/* System Status */}
         <div className="mb-8">
-          <h2 
+          <h2
             className="text-xl font-light tracking-wider mb-6"
             style={{ color: COLORS.champagne }}
           >
             System Status
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {systemStatuses.map((system, idx) => (
               <SystemCard key={idx} system={system} />
@@ -394,7 +388,7 @@ export default function AdminDashboard() {
             }}
           >
             <CardHeader>
-              <CardTitle 
+              <CardTitle
                 className="text-lg font-light tracking-wider"
                 style={{ color: COLORS.champagne }}
               >
@@ -413,7 +407,7 @@ export default function AdminDashboard() {
                 <Database className="h-4 w-4 mr-3" />
                 Backup Database
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -425,7 +419,7 @@ export default function AdminDashboard() {
                 <RefreshCw className="h-4 w-4 mr-3" />
                 Restore Database
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -447,7 +441,7 @@ export default function AdminDashboard() {
             }}
           >
             <CardHeader>
-              <CardTitle 
+              <CardTitle
                 className="text-lg font-light tracking-wider"
                 style={{ color: COLORS.champagne }}
               >
@@ -466,7 +460,7 @@ export default function AdminDashboard() {
                 <Lock className="h-4 w-4 mr-3" />
                 Password Policy
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -478,7 +472,7 @@ export default function AdminDashboard() {
                 <Key className="h-4 w-4 mr-3" />
                 API Keys
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -500,7 +494,7 @@ export default function AdminDashboard() {
             }}
           >
             <CardHeader>
-              <CardTitle 
+              <CardTitle
                 className="text-lg font-light tracking-wider"
                 style={{ color: COLORS.champagne }}
               >
@@ -522,7 +516,7 @@ export default function AdminDashboard() {
                   WhatsApp Config
                 </Link>
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -534,7 +528,7 @@ export default function AdminDashboard() {
                 <CreditCard className="h-4 w-4 mr-3" />
                 Payment Gateway
               </Button>
-              
+
               <Button
                 className="w-full justify-start font-light"
                 variant="outline"
@@ -559,23 +553,23 @@ export default function AdminDashboard() {
         >
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle 
+              <CardTitle
                 className="text-xl font-light tracking-wider"
                 style={{ color: COLORS.champagne }}
               >
                 User Management
               </CardTitle>
-              
+
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Search 
+                  <Search
                     className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4"
                     style={{ color: COLORS.bronze }}
                   />
                   <Input
                     placeholder="Search users..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10 h-10 w-64 font-light"
                     style={{
                       backgroundColor: COLORS.charcoal,
@@ -584,7 +578,7 @@ export default function AdminDashboard() {
                     }}
                   />
                 </div>
-                
+
                 <Button
                   className="font-light"
                   style={{
@@ -616,7 +610,7 @@ export default function AdminDashboard() {
           }}
         >
           <CardHeader>
-            <CardTitle 
+            <CardTitle
               className="text-xl font-light tracking-wider flex items-center gap-3"
               style={{ color: COLORS.champagne }}
             >
@@ -665,19 +659,14 @@ export default function AdminDashboard() {
                   {alert.type === 'info' && (
                     <AlertCircle className="h-5 w-5 mt-0.5" style={{ color: COLORS.sapphire }} />
                   )}
-                  
+
                   <div className="flex-1">
-                    <p style={{ color: COLORS.lightText }}>
-                      {alert.message}
-                    </p>
-                    <p 
-                      className="text-sm font-light mt-1"
-                      style={{ color: COLORS.bronze }}
-                    >
+                    <p style={{ color: COLORS.lightText }}>{alert.message}</p>
+                    <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
                       {alert.time}
                     </p>
                   </div>
-                  
+
                   {alert.action && (
                     <Button
                       size="sm"

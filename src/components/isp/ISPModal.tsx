@@ -11,13 +11,7 @@ interface ISPModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
-export function ISPModal({
-  isOpen,
-  onClose,
-  title,
-  children,
-  size = 'md'
-}: ISPModalProps) {
+export function ISPModal({ isOpen, onClose, title, children, size = 'md' }: ISPModalProps) {
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -53,17 +47,16 @@ export function ISPModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-background/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" onClick={onClose} />
+
       {/* Modal */}
-      <div className={`relative w-full ${sizeClasses[size]} mx-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300`}>
+      <div
+        className={`relative w-full ${sizeClasses[size]} mx-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300`}
+      >
         <div className="relative bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl">
           {/* Gradient glow effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC]/30 via-[#E91E63]/30 to-[#FFD700]/30 rounded-2xl blur opacity-40" />
-          
+
           {/* Content */}
           <div className="relative">
             {/* Header */}
@@ -76,11 +69,9 @@ export function ISPModal({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            
+
             {/* Body */}
-            <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-              {children}
-            </div>
+            <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">{children}</div>
           </div>
         </div>
       </div>

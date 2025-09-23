@@ -34,7 +34,7 @@ export const ProductFormSchema = z.object({
   price: z.number().min(0, 'Price must be positive').optional(),
   currency: z.string().length(3, 'Currency must be 3 characters').default('AED'),
   description: z.string().max(1000, 'Description too long').optional(),
-  requires_inventory: z.boolean().default(false),
+  requires_inventory: z.boolean().default(false)
 })
 
 export type ProductForm = z.infer<typeof ProductFormSchema>

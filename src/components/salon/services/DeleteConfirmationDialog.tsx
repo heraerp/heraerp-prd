@@ -10,10 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { AlertTriangle, Trash2, X, CheckCircle } from 'lucide-react'
 import { ServiceWithDynamicData } from '@/schemas/service'
-import {
-  PrimaryButtonDNA,
-  SecondaryButtonDNA
-} from '@/lib/dna/components/ui'
+import { PrimaryButtonDNA, SecondaryButtonDNA } from '@/lib/dna/components/ui'
 
 interface DeleteConfirmationDialogProps {
   open: boolean
@@ -87,23 +84,18 @@ export function DeleteConfirmationDialog({
                   border: `1px solid ${COLORS.bronze}33`
                 }}
               >
-                {services.map((service) => (
+                {services.map(service => (
                   <div
                     key={service.id}
                     className="text-sm flex items-center justify-between"
                     style={{ color: COLORS.champagne }}
                   >
                     <span className="font-medium">{service.name}</span>
-                    {service.code && (
-                      <span className="text-xs opacity-60">({service.code})</span>
-                    )}
+                    {service.code && <span className="text-xs opacity-60">({service.code})</span>}
                   </div>
                 ))}
               </div>
-              <p
-                className="mt-4 text-sm font-medium"
-                style={{ color: COLORS.rose }}
-              >
+              <p className="mt-4 text-sm font-medium" style={{ color: COLORS.rose }}>
                 ⚠️ This will remove all service history and cannot be recovered.
               </p>
             </div>
@@ -147,10 +139,7 @@ export function DeleteConfirmationDialog({
                   )}
                 </div>
               </div>
-              <p
-                className="mt-4 text-sm font-medium"
-                style={{ color: COLORS.rose }}
-              >
+              <p className="mt-4 text-sm font-medium" style={{ color: COLORS.rose }}>
                 ⚠️ This will permanently delete this service and all associated data.
               </p>
             </div>
@@ -158,12 +147,7 @@ export function DeleteConfirmationDialog({
         </div>
 
         <div className="flex justify-end gap-3 pt-2">
-          <SecondaryButtonDNA
-            type="button"
-            icon={X}
-            onClick={onClose}
-            disabled={loading}
-          >
+          <SecondaryButtonDNA type="button" icon={X} onClick={onClose} disabled={loading}>
             Cancel
           </SecondaryButtonDNA>
           <PrimaryButtonDNA

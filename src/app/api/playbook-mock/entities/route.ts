@@ -11,7 +11,7 @@ const MOCK_SERVICES = [
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 45,
-      price: 65.00,
+      price: 65.0,
       category: 'Hair Services',
       description: 'Professional haircut with styling'
     },
@@ -28,7 +28,7 @@ const MOCK_SERVICES = [
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 120,
-      price: 125.00,
+      price: 125.0,
       category: 'Color Services',
       description: 'Full hair color service with professional products'
     },
@@ -45,7 +45,7 @@ const MOCK_SERVICES = [
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 180,
-      price: 175.00,
+      price: 175.0,
       category: 'Color Services',
       description: 'Professional highlighting service'
     },
@@ -62,7 +62,7 @@ const MOCK_SERVICES = [
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 30,
-      price: 45.00,
+      price: 45.0,
       category: 'Hair Services',
       description: 'Professional blow dry and styling'
     },
@@ -72,14 +72,14 @@ const MOCK_SERVICES = [
   },
   {
     id: 'b3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e',
-    entity_type: 'service',  
+    entity_type: 'service',
     entity_code: 'SVC-SALON-005',
     entity_name: 'Balayage',
     smart_code: 'HERA.SALON.SERVICE.V1',
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 240,
-      price: 250.00,
+      price: 250.0,
       category: 'Color Services',
       description: 'Hand-painted highlighting technique for natural look'
     },
@@ -96,7 +96,7 @@ const MOCK_SERVICES = [
     organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0',
     metadata: {
       duration: 30,
-      price: 50.00,
+      price: 50.0,
       category: 'Hair Treatments',
       description: 'Intensive moisture treatment for damaged hair'
     },
@@ -108,32 +108,32 @@ const MOCK_SERVICES = [
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  
+
   const organizationId = searchParams.get('organization_id')
   const type = searchParams.get('type')
   const status = searchParams.get('status') || 'active'
   const limit = parseInt(searchParams.get('limit') || '25')
   const offset = parseInt(searchParams.get('offset') || '0')
-  
+
   // Filter services
   let filtered = MOCK_SERVICES
-  
+
   if (organizationId) {
     filtered = filtered.filter(s => s.organization_id === organizationId)
   }
-  
+
   if (type) {
     filtered = filtered.filter(s => s.smart_code === type)
   }
-  
+
   if (status && status !== 'all') {
     filtered = filtered.filter(s => s.status === status)
   }
-  
+
   // Apply pagination
   const total = filtered.length
   const items = filtered.slice(offset, offset + limit)
-  
+
   return NextResponse.json({
     items,
     total,

@@ -16,7 +16,9 @@ export default function AuthTestPage() {
   }, [])
 
   const loadSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
     setSession(session)
     setLoading(false)
   }
@@ -29,21 +31,21 @@ export default function AuthTestPage() {
 
   const navigateBasedOnRole = () => {
     const role = session?.user?.user_metadata?.role || localStorage.getItem('salonRole')
-    
+
     const routes: Record<string, string> = {
       owner: '/salon/dashboard',
       receptionist: '/salon/pos2',
       accountant: '/salon/finance',
       admin: '/salon/settings'
     }
-    
+
     const route = routes[role?.toLowerCase()] || '/salon/dashboard'
     router.push(route)
   }
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.black }}
       >
@@ -53,20 +55,17 @@ export default function AuthTestPage() {
   }
 
   return (
-    <div 
+    <div
       className="min-h-screen p-8"
       style={{ backgroundColor: LUXE_COLORS.black, color: LUXE_COLORS.champagne }}
     >
-      <h1 
-        className="text-2xl mb-8"
-        style={{ color: LUXE_COLORS.gold }}
-      >
+      <h1 className="text-2xl mb-8" style={{ color: LUXE_COLORS.gold }}>
         HairTalkz Auth Test
       </h1>
 
-      <div 
+      <div
         className="p-6 rounded-lg mb-8"
-        style={{ 
+        style={{
           backgroundColor: LUXE_COLORS.charcoalLight,
           border: `1px solid ${LUXE_COLORS.bronze}50`
         }}
@@ -74,7 +73,7 @@ export default function AuthTestPage() {
         <h2 className="text-xl mb-4" style={{ color: LUXE_COLORS.gold }}>
           Session Info
         </h2>
-        
+
         {session ? (
           <>
             <p>✅ Authenticated</p>
@@ -88,9 +87,9 @@ export default function AuthTestPage() {
         )}
       </div>
 
-      <div 
+      <div
         className="p-6 rounded-lg mb-8"
-        style={{ 
+        style={{
           backgroundColor: LUXE_COLORS.charcoalLight,
           border: `1px solid ${LUXE_COLORS.bronze}50`
         }}
@@ -98,14 +97,14 @@ export default function AuthTestPage() {
         <h2 className="text-xl mb-4" style={{ color: LUXE_COLORS.gold }}>
           LocalStorage
         </h2>
-        
+
         <p>Organization ID: {localStorage.getItem('organizationId') || 'Not set'}</p>
         <p>Role: {localStorage.getItem('salonRole') || 'Not set'}</p>
         <p>Permissions: {localStorage.getItem('userPermissions') || 'Not set'}</p>
       </div>
 
       <div className="flex gap-4">
-        <Button 
+        <Button
           onClick={() => router.push('/salon/auth')}
           style={{
             backgroundColor: LUXE_COLORS.bronze,
@@ -114,10 +113,10 @@ export default function AuthTestPage() {
         >
           Go to Login
         </Button>
-        
+
         {session && (
           <>
-            <Button 
+            <Button
               onClick={navigateBasedOnRole}
               style={{
                 backgroundColor: LUXE_COLORS.gold,
@@ -126,11 +125,8 @@ export default function AuthTestPage() {
             >
               Go to My Dashboard
             </Button>
-            
-            <Button 
-              onClick={signOut}
-              variant="destructive"
-            >
+
+            <Button onClick={signOut} variant="destructive">
               Sign Out
             </Button>
           </>

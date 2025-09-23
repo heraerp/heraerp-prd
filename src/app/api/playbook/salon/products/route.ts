@@ -16,7 +16,7 @@ const queryParamsSchema = z.object({
   branch_id: z.string().uuid().optional(),
   sort: z.enum(['name_asc', 'name_desc', 'updated_desc', 'updated_asc']).default('name_asc'),
   limit: z.coerce.number().int().min(1).max(500).default(100),
-  offset: z.coerce.number().int().min(0).default(0),
+  offset: z.coerce.number().int().min(0).default(0)
 })
 
 // Product creation schema
@@ -27,7 +27,7 @@ const createProductSchema = z.object({
   price: z.number().min(0).optional(),
   currency: z.string().length(3).default('AED'),
   description: z.string().trim().max(1000).optional(),
-  requires_inventory: z.boolean().default(false),
+  requires_inventory: z.boolean().default(false)
 })
 
 // Product update schema
@@ -37,12 +37,9 @@ export async function GET(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const organizationId = authResult.organizationId
@@ -60,11 +57,11 @@ export async function GET(request: NextRequest) {
     url.searchParams.set('organization_id', organizationId)
     url.searchParams.set('limit', params.limit.toString())
     url.searchParams.set('offset', params.offset.toString())
-    
+
     if (params.status !== 'all') {
       url.searchParams.set('status', params.status)
     }
-    
+
     if (params.branch_id) {
       url.searchParams.set('branch_entity_id', params.branch_id)
     }
@@ -86,7 +83,7 @@ export async function GET(request: NextRequest) {
     // Transform the response to match expected product format
     const items = (data.items || []).map((product: any) => {
       const attributes = product.attributes || {}
-      
+
       return {
         id: product.id,
         entity_name: product.entity_name,
@@ -101,20 +98,21 @@ export async function GET(request: NextRequest) {
         currency: attributes['product.currency'] || 'AED',
         requires_inventory: attributes['product.requires_inventory'] || false,
         created_at: product.created_at || null,
-        updated_at: product.updated_at || null,
+        updated_at: product.updated_at || null
       }
     })
 
     // Apply client-side filtering for category if needed
-    const filteredItems = params.category 
+    const filteredItems = params.category
       ? items.filter((item: any) => item.category === params.category)
       : items
 
     // Apply client-side search if needed
     const searchedItems = params.q
-      ? filteredItems.filter((item: any) => 
-          item.entity_name.toLowerCase().includes(params.q!.toLowerCase()) ||
-          (item.entity_code && item.entity_code.toLowerCase().includes(params.q!.toLowerCase()))
+      ? filteredItems.filter(
+          (item: any) =>
+            item.entity_name.toLowerCase().includes(params.q!.toLowerCase()) ||
+            (item.entity_code && item.entity_code.toLowerCase().includes(params.q!.toLowerCase()))
         )
       : filteredItems
 
@@ -122,7 +120,7 @@ export async function GET(request: NextRequest) {
     const sortedItems = [...searchedItems].sort((a: any, b: any) => {
       const field = params.sort.includes('name') ? 'entity_name' : 'updated_at'
       const order = params.sort.includes('desc') ? -1 : 1
-      
+
       if (a[field] < b[field]) return -1 * order
       if (a[field] > b[field]) return 1 * order
       return 0
@@ -134,10 +132,9 @@ export async function GET(request: NextRequest) {
       limit: params.limit,
       offset: params.offset
     })
-
   } catch (error) {
     console.error('Salon products API error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid query parameters', details: error.errors },
@@ -145,10 +142,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -156,17 +150,14 @@ export async function POST(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const organizationId = authResult.organizationId
     const body = await request.json()
-    
+
     // Validate the request body
     const productData = createProductSchema.parse(body)
 
@@ -200,7 +191,7 @@ export async function POST(request: NextRequest) {
 
     // Create dynamic data fields for product attributes
     const dynamicFields = []
-    
+
     if (productData.price !== undefined) {
       dynamicFields.push({
         organization_id: organizationId,
@@ -258,9 +249,7 @@ export async function POST(request: NextRequest) {
 
     // Insert dynamic fields if any
     if (dynamicFields.length > 0) {
-      const { error: dynamicError } = await supabase
-        .from('core_dynamic_data')
-        .insert(dynamicFields)
+      const { error: dynamicError } = await supabase.from('core_dynamic_data').insert(dynamicFields)
 
       if (dynamicError) {
         console.error('Failed to create product dynamic data:', dynamicError)
@@ -268,18 +257,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
-      id: product.id,
-      entity_name: product.entity_name,
-      entity_code: product.entity_code,
-      status: product.status,
-      smart_code: product.smart_code,
-      ...productData
-    }, { status: 201 })
-
+    return NextResponse.json(
+      {
+        id: product.id,
+        entity_name: product.entity_name,
+        entity_code: product.entity_code,
+        status: product.status,
+        smart_code: product.smart_code,
+        ...productData
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Create product error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid product data', details: error.errors },
@@ -287,10 +278,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -298,29 +286,23 @@ export async function PATCH(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const organizationId = authResult.organizationId
     const body = await request.json()
-    
+
     // Extract product ID from URL
     const url = new URL(request.url)
     const pathSegments = url.pathname.split('/')
     const productId = pathSegments[pathSegments.length - 1]
-    
+
     if (!productId || !productId.match(/^[0-9a-f-]{36}$/i)) {
-      return NextResponse.json(
-        { error: 'Invalid product ID' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 })
     }
-    
+
     // Validate the request body
     const productData = updateProductSchema.parse(body)
 
@@ -350,7 +332,7 @@ export async function PATCH(request: NextRequest) {
 
     // Update dynamic data fields
     const dynamicUpdates = []
-    
+
     if (productData.price !== undefined) {
       dynamicUpdates.push({
         field_name: 'product.price',
@@ -403,21 +385,18 @@ export async function PATCH(request: NextRequest) {
 
     // Update each dynamic field
     for (const update of dynamicUpdates) {
-      await supabase
-        .from('core_dynamic_data')
-        .upsert({
-          organization_id: organizationId,
-          entity_id: productId,
-          ...update,
-          smart_code: `HERA.SALON.PRODUCT.${update.field_name.split('.')[1].toUpperCase()}.V1`
-        })
+      await supabase.from('core_dynamic_data').upsert({
+        organization_id: organizationId,
+        entity_id: productId,
+        ...update,
+        smart_code: `HERA.SALON.PRODUCT.${update.field_name.split('.')[1].toUpperCase()}.V1`
+      })
     }
 
     return NextResponse.json({ success: true })
-
   } catch (error) {
     console.error('Update product error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid product data', details: error.errors },
@@ -425,10 +404,7 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -436,26 +412,20 @@ export async function DELETE(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const organizationId = authResult.organizationId
-    
+
     // Extract product ID from URL
     const url = new URL(request.url)
     const pathSegments = url.pathname.split('/')
     const productId = pathSegments[pathSegments.length - 1]
-    
+
     if (!productId || !productId.match(/^[0-9a-f-]{36}$/i)) {
-      return NextResponse.json(
-        { error: 'Invalid product ID' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 })
     }
 
     // Get Supabase service client
@@ -471,10 +441,7 @@ export async function DELETE(request: NextRequest) {
       .single()
 
     if (fetchError || !product) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
     // Delete dynamic data first
@@ -500,12 +467,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true })
-
   } catch (error) {
     console.error('Delete product error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

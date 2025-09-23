@@ -23,7 +23,7 @@ export async function listProducts(params: {
         offset: params.offset ?? 0,
         ...(params.status && params.status !== 'all' ? { status: params.status } : {}),
         ...(params.category_id ? { category_id: params.category_id } : {}),
-        ...(params.brand_id ? { brand_id: params.brand_id } : {}),
+        ...(params.brand_id ? { brand_id: params.brand_id } : {})
       },
       params.branch_id
     )
@@ -35,7 +35,7 @@ export async function listProducts(params: {
 
     pbLog('listProducts success:', {
       count: result.items.length,
-      total: result.total,
+      total: result.total
     })
 
     return { ok: true, data: result } as const
@@ -44,7 +44,7 @@ export async function listProducts(params: {
     return {
       ok: false,
       data: { items: [], total: 0 },
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -60,14 +60,14 @@ export async function createProduct(payload: {
     const body = {
       ...payload,
       smart_code: heraCode('HERA.SALON.PRODUCT.V1'),
-      status: payload.status || 'active',
+      status: payload.status || 'active'
     }
 
     pbLog('createProduct request:', body)
 
     const json = await pb('/entities', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('createProduct success:', json)
@@ -77,7 +77,7 @@ export async function createProduct(payload: {
     pbLog('createProduct error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -96,7 +96,7 @@ export async function updateProduct(
 
     const json = await pb(`/entities/${id}`, {
       method: 'PATCH',
-      body: patch,
+      body: patch
     })
 
     pbLog('updateProduct success:', json)
@@ -106,7 +106,7 @@ export async function updateProduct(
     pbLog('updateProduct error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -120,14 +120,14 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     const body = {
       entity_id,
       smart_code,
-      data,
+      data
     }
 
     pbLog('upsertDynamicData request:', body)
 
     const json = await pb('/dynamic_data/upsert', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('upsertDynamicData success:', json)
@@ -137,19 +137,28 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     pbLog('upsertDynamicData error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
 
-export async function getDynamicData(entity_ids: string[], smart_code: string, organization_id?: string) {
+export async function getDynamicData(
+  entity_ids: string[],
+  smart_code: string,
+  organization_id?: string
+) {
   try {
     pbLog('getDynamicData request:', { entity_ids: entity_ids.length, smart_code, organization_id })
 
     // Get organization ID from cookie if not provided
-    const orgId = organization_id || (typeof document !== 'undefined' ? 
-      document.cookie.split('; ').find(row => row.startsWith('hera-organization-id='))?.split('=')[1] : 
-      undefined)
+    const orgId =
+      organization_id ||
+      (typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('hera-organization-id='))
+            ?.split('=')[1]
+        : undefined)
 
     if (!orgId) {
       throw new Error('Organization ID is required')
@@ -158,7 +167,7 @@ export async function getDynamicData(entity_ids: string[], smart_code: string, o
     const data = await getDD(entity_ids, smart_code, orgId)
 
     pbLog('getDynamicData success:', {
-      entities: Object.keys(data).length,
+      entities: Object.keys(data).length
     })
 
     return { ok: true, data } as const

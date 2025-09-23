@@ -40,7 +40,7 @@ export default function SalonSettingsPage() {
 
   if (authLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
@@ -58,23 +58,18 @@ export default function SalonSettingsPage() {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 
-            className="text-3xl font-light mb-2"
-            style={{ color: LUXE_COLORS.gold }}
-          >
+          <h1 className="text-3xl font-light mb-2" style={{ color: LUXE_COLORS.gold }}>
             System Settings
           </h1>
-          <p 
-            className="text-sm"
-            style={{ color: LUXE_COLORS.bronze }}
-          >
-            Configure system settings and manage users for {user?.user_metadata?.full_name || 'Administrator'}
+          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+            Configure system settings and manage users for{' '}
+            {user?.user_metadata?.full_name || 'Administrator'}
           </p>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList 
+          <TabsList
             className="bg-transparent border"
             style={{ borderColor: `${LUXE_COLORS.bronze}30` }}
           >
@@ -87,7 +82,7 @@ export default function SalonSettingsPage() {
           <TabsContent value="general">
             <div className="grid gap-6">
               {/* Salon Information */}
-              <Card 
+              <Card
                 className="border-0"
                 style={{
                   backgroundColor: LUXE_COLORS.charcoalLight,
@@ -104,7 +99,7 @@ export default function SalonSettingsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label style={{ color: LUXE_COLORS.bronze }}>Salon Name</Label>
-                      <Input 
+                      <Input
                         value="HairTalkz"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
@@ -115,7 +110,7 @@ export default function SalonSettingsPage() {
                     </div>
                     <div>
                       <Label style={{ color: LUXE_COLORS.bronze }}>Phone Number</Label>
-                      <Input 
+                      <Input
                         value="+971 4 123 4567"
                         style={{
                           backgroundColor: LUXE_COLORS.charcoal,
@@ -127,7 +122,7 @@ export default function SalonSettingsPage() {
                   </div>
                   <div>
                     <Label style={{ color: LUXE_COLORS.bronze }}>Address</Label>
-                    <Input 
+                    <Input
                       value="123 Sheikh Zayed Road, Dubai, UAE"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
@@ -146,7 +141,7 @@ export default function SalonSettingsPage() {
               </Card>
 
               {/* Business Hours */}
-              <Card 
+              <Card
                 className="border-0"
                 style={{
                   backgroundColor: LUXE_COLORS.charcoalLight,
@@ -161,7 +156,15 @@ export default function SalonSettingsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
+                    {[
+                      'Monday',
+                      'Tuesday',
+                      'Wednesday',
+                      'Thursday',
+                      'Friday',
+                      'Saturday',
+                      'Sunday'
+                    ].map(day => (
                       <div key={day} className="flex items-center justify-between">
                         <span style={{ color: LUXE_COLORS.champagne }}>{day}</span>
                         <div className="flex items-center gap-4">
@@ -177,7 +180,7 @@ export default function SalonSettingsPage() {
           </TabsContent>
 
           <TabsContent value="users">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -195,36 +198,60 @@ export default function SalonSettingsPage() {
                   {/* User List */}
                   <div className="space-y-2">
                     {[
-                      { name: 'Michele Rodriguez', email: 'owner@hairtalkz.ae', role: 'Owner', status: 'Active' },
-                      { name: 'Sarah Johnson', email: 'receptionist@hairtalkz.ae', role: 'Receptionist', status: 'Active' },
-                      { name: 'Michael Chen', email: 'accountant@hairtalkz.ae', role: 'Accountant', status: 'Active' },
-                      { name: 'David Thompson', email: 'admin@hairtalkz.ae', role: 'Admin', status: 'Active' }
+                      {
+                        name: 'Michele Rodriguez',
+                        email: 'owner@hairtalkz.ae',
+                        role: 'Owner',
+                        status: 'Active'
+                      },
+                      {
+                        name: 'Sarah Johnson',
+                        email: 'receptionist@hairtalkz.ae',
+                        role: 'Receptionist',
+                        status: 'Active'
+                      },
+                      {
+                        name: 'Michael Chen',
+                        email: 'accountant@hairtalkz.ae',
+                        role: 'Accountant',
+                        status: 'Active'
+                      },
+                      {
+                        name: 'David Thompson',
+                        email: 'admin@hairtalkz.ae',
+                        role: 'Admin',
+                        status: 'Active'
+                      }
                     ].map(user => (
-                      <div 
-                        key={user.email} 
+                      <div
+                        key={user.email}
                         className="flex items-center justify-between p-4 rounded-lg"
                         style={{ backgroundColor: LUXE_COLORS.charcoal }}
                       >
                         <div>
                           <div style={{ color: LUXE_COLORS.champagne }}>{user.name}</div>
-                          <div className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{user.email}</div>
+                          <div className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                            {user.email}
+                          </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <span 
+                          <span
                             className="text-sm px-2 py-1 rounded"
-                            style={{ 
+                            style={{
                               backgroundColor: LUXE_COLORS.emerald + '20',
                               color: LUXE_COLORS.emerald
                             }}
                           >
                             {user.status}
                           </span>
-                          <span className="text-sm" style={{ color: LUXE_COLORS.gold }}>{user.role}</span>
+                          <span className="text-sm" style={{ color: LUXE_COLORS.gold }}>
+                            {user.role}
+                          </span>
                         </div>
                       </div>
                     ))}
                   </div>
-                  
+
                   <div className="flex justify-end">
                     <Button style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
                       <Users className="h-4 w-4 mr-2" />
@@ -239,7 +266,7 @@ export default function SalonSettingsPage() {
           <TabsContent value="security">
             <div className="grid gap-6">
               {/* Password Policy */}
-              <Card 
+              <Card
                 className="border-0"
                 style={{
                   backgroundColor: LUXE_COLORS.charcoalLight,
@@ -255,9 +282,9 @@ export default function SalonSettingsPage() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label style={{ color: LUXE_COLORS.champagne }}>Minimum password length</Label>
-                    <Input 
-                      type="number" 
-                      value="8" 
+                    <Input
+                      type="number"
+                      value="8"
                       className="w-20"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
@@ -267,11 +294,15 @@ export default function SalonSettingsPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label style={{ color: LUXE_COLORS.champagne }}>Require uppercase letters</Label>
+                    <Label style={{ color: LUXE_COLORS.champagne }}>
+                      Require uppercase letters
+                    </Label>
                     <Switch defaultChecked />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label style={{ color: LUXE_COLORS.champagne }}>Require special characters</Label>
+                    <Label style={{ color: LUXE_COLORS.champagne }}>
+                      Require special characters
+                    </Label>
                     <Switch defaultChecked />
                   </div>
                   <div className="flex items-center justify-between">
@@ -282,7 +313,7 @@ export default function SalonSettingsPage() {
               </Card>
 
               {/* Session Management */}
-              <Card 
+              <Card
                 className="border-0"
                 style={{
                   backgroundColor: LUXE_COLORS.charcoalLight,
@@ -297,10 +328,12 @@ export default function SalonSettingsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label style={{ color: LUXE_COLORS.champagne }}>Session timeout (minutes)</Label>
-                    <Input 
-                      type="number" 
-                      value="30" 
+                    <Label style={{ color: LUXE_COLORS.champagne }}>
+                      Session timeout (minutes)
+                    </Label>
+                    <Input
+                      type="number"
+                      value="30"
                       className="w-20"
                       style={{
                         backgroundColor: LUXE_COLORS.charcoal,
@@ -310,7 +343,9 @@ export default function SalonSettingsPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label style={{ color: LUXE_COLORS.champagne }}>Enable two-factor authentication</Label>
+                    <Label style={{ color: LUXE_COLORS.champagne }}>
+                      Enable two-factor authentication
+                    </Label>
                     <Switch />
                   </div>
                   <div className="flex justify-end">
@@ -325,7 +360,7 @@ export default function SalonSettingsPage() {
           </TabsContent>
 
           <TabsContent value="integrations">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -342,7 +377,7 @@ export default function SalonSettingsPage() {
                 <div>
                   <Label style={{ color: LUXE_COLORS.bronze }}>API Key</Label>
                   <div className="flex gap-2 mt-2">
-                    <Input 
+                    <Input
                       value="sk_live_****************************"
                       readOnly
                       style={{
@@ -356,7 +391,7 @@ export default function SalonSettingsPage() {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="space-y-4 pt-4">
                   <h3 className="text-lg font-medium" style={{ color: LUXE_COLORS.champagne }}>
                     Active Integrations
@@ -368,7 +403,7 @@ export default function SalonSettingsPage() {
                       { name: 'SMS Provider', status: 'Not Connected', icon: '📱' },
                       { name: 'Email Service', status: 'Connected', icon: '✉️' }
                     ].map(integration => (
-                      <div 
+                      <div
                         key={integration.name}
                         className="flex items-center justify-between p-3 rounded"
                         style={{ backgroundColor: LUXE_COLORS.charcoal }}
@@ -377,10 +412,13 @@ export default function SalonSettingsPage() {
                           <span>{integration.icon}</span>
                           <span style={{ color: LUXE_COLORS.champagne }}>{integration.name}</span>
                         </div>
-                        <span 
+                        <span
                           className="text-sm"
-                          style={{ 
-                            color: integration.status === 'Connected' ? LUXE_COLORS.emerald : LUXE_COLORS.bronze
+                          style={{
+                            color:
+                              integration.status === 'Connected'
+                                ? LUXE_COLORS.emerald
+                                : LUXE_COLORS.bronze
                           }}
                         >
                           {integration.status}

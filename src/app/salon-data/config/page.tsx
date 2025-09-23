@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 
 export default function SalonConfigurationPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const organizationId = currentOrganization?.id || 'demo-salon'
 

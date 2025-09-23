@@ -26,7 +26,7 @@ import {
 
 export default function FinancialDashboard() {
   const router = useRouter()
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
 
   const financialModules = [
     {

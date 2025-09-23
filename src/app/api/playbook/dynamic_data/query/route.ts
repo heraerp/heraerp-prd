@@ -10,12 +10,7 @@ export async function POST(req: NextRequest) {
     const rid = `pb_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
     const body = await req.json()
 
-    const {
-      organization_id,
-      smart_code,
-      entity_ids = [],
-      limit = 1000,
-    } = body || {}
+    const { organization_id, smart_code, entity_ids = [], limit = 1000 } = body || {}
 
     if (!organization_id || !smart_code || !Array.isArray(entity_ids)) {
       return NextResponse.json(
@@ -40,7 +35,7 @@ export async function POST(req: NextRequest) {
           'smart_code',
           'smart_code_status',
           'validation_status',
-          'updated_at',
+          'updated_at'
         ].join(',')
       )
       .eq('organization_id', organization_id)
@@ -55,22 +50,23 @@ export async function POST(req: NextRequest) {
 
     // Build the data object grouped by entity_id and field_name
     const dataMap: Record<string, Record<string, any>> = {}
-    
-    for (const row of (data ?? [])) {
+
+    for (const row of data ?? []) {
       const unified =
         row.field_value_number ??
         row.field_value_text ??
         row.field_value_boolean ??
         row.field_value_date ??
-        row.field_value_json ?? null
+        row.field_value_json ??
+        null
 
       if (!dataMap[row.entity_id]) {
         dataMap[row.entity_id] = {}
       }
-      
+
       // Store with uppercase field name as expected by UI
       const fieldName = row.field_name.toUpperCase()
-      
+
       // Handle specific smart codes with their expected shapes
       if (smart_code === 'HERA.SALON.SERVICE.PRICE.V1' && fieldName === 'PRICE') {
         dataMap[row.entity_id][fieldName] = {
@@ -131,7 +127,10 @@ export async function POST(req: NextRequest) {
           smart_code: row.smart_code,
           updated_at: row.updated_at
         }
-      } else if (smart_code === 'HERA.SALON.PRODUCT.REORDER_LEVEL.V1' && fieldName === 'REORDER_LEVEL') {
+      } else if (
+        smart_code === 'HERA.SALON.PRODUCT.REORDER_LEVEL.V1' &&
+        fieldName === 'REORDER_LEVEL'
+      ) {
         dataMap[row.entity_id][fieldName] = {
           value: row.field_value_number ?? 10,
           min_stock: row.field_value_json?.min_stock ?? 5,
@@ -145,7 +144,7 @@ export async function POST(req: NextRequest) {
       } else {
         // Generic handling
         dataMap[row.entity_id][fieldName] = {
-          value: unified,                     // what the UI expects
+          value: unified, // what the UI expects
           number: row.field_value_number ?? null,
           text: row.field_value_text ?? null,
           boolean: row.field_value_boolean ?? null,
@@ -164,9 +163,6 @@ export async function POST(req: NextRequest) {
     )
   } catch (e: any) {
     console.error('[Playbook compat][dynamic_data/query] fatal', e)
-    return NextResponse.json(
-      { error: e?.message ?? 'Unexpected error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: e?.message ?? 'Unexpected error' }, { status: 500 })
   }
 }

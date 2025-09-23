@@ -119,7 +119,7 @@ const EXAMPLE_PROMPTS = [
 ]
 
 export default function DigitalAccountantPage() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const organizationId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000' // Fallback for testing
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [messages, setMessages] = useState<Message[]>([

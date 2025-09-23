@@ -12,7 +12,7 @@ export default function DemoInitPage() {
     async function initializeDemo() {
       try {
         console.log('🚀 Starting demo initialization...')
-        
+
         // Call the demo initialization API
         const response = await fetch('/api/v1/demo/initialize', {
           method: 'POST',
@@ -28,10 +28,10 @@ export default function DemoInitPage() {
         if (result.success) {
           setStatus('success')
           setMessage('Demo session initialized! Redirecting...')
-          
+
           // Set the organization cookie manually as backup
-          document.cookie = `HERA_ORG_ID=${result.user.organization_id}; Path=/; Max-Age=${60*60*24*365}; SameSite=Lax`
-          
+          document.cookie = `HERA_ORG_ID=${result.user.organization_id}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax`
+
           // Redirect after a short delay
           setTimeout(() => {
             router.push('/salon/dashboard')
@@ -62,31 +62,51 @@ export default function DemoInitPage() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Setting Up Demo</h2>
               </>
             )}
-            
+
             {status === 'success' && (
               <>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    className="w-6 h-6 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Success!</h2>
               </>
             )}
-            
+
             {status === 'error' && (
               <>
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                  <svg
+                    className="w-6 h-6 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
               </>
             )}
-            
+
             <p className="text-gray-600">{message}</p>
-            
+
             {status === 'error' && (
               <div className="mt-6">
                 <button
@@ -99,7 +119,7 @@ export default function DemoInitPage() {
             )}
           </div>
         </div>
-        
+
         {/* Debug info */}
         {process.env.NODE_ENV === 'development' && (
           <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs text-gray-600 font-mono">

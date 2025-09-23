@@ -210,7 +210,7 @@ const financeModules: FinanceModule[] = [
 
 export default function FinanceDashboard() {
   const router = useRouter()
-  const { user, currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
+  const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useHERAAuth()
   const [financeData, setFinanceData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

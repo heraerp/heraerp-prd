@@ -28,7 +28,7 @@ import Link from 'next/link'
 
 export default function GetStartedPage() {
   const router = useRouter()
-  const { login, register, isAuthenticated  } = useHERAAuth()
+  const { login, register, isAuthenticated } = useHERAAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

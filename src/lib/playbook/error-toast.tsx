@@ -13,7 +13,7 @@ export interface PlaybookError {
  */
 export function showPlaybookError(error: PlaybookError | string | Error) {
   const errorData = normalizeError(error)
-  
+
   toast.error(
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
@@ -21,9 +21,7 @@ export function showPlaybookError(error: PlaybookError | string | Error) {
         <span className="font-medium">{getErrorTitle(errorData)}</span>
       </div>
       <p className="text-sm opacity-90">{errorData.message}</p>
-      {errorData.context && (
-        <p className="text-xs opacity-70 mt-1">{errorData.context}</p>
-      )}
+      {errorData.context && <p className="text-xs opacity-70 mt-1">{errorData.context}</p>}
       {errorData.retryable && (
         <p className="text-xs opacity-70 mt-1">Please try again in a moment.</p>
       )}
@@ -42,10 +40,10 @@ function normalizeError(error: PlaybookError | string | Error): PlaybookError {
   if (typeof error === 'string') {
     return { message: error }
   }
-  
+
   if (error instanceof Error) {
     const message = error.message
-    
+
     // Check for specific error patterns
     if (message.includes('timeout')) {
       return {
@@ -55,7 +53,7 @@ function normalizeError(error: PlaybookError | string | Error): PlaybookError {
         retryable: true
       }
     }
-    
+
     if (message.includes('fetch failed') || message.includes('network')) {
       return {
         message: 'Network connection error',
@@ -64,7 +62,7 @@ function normalizeError(error: PlaybookError | string | Error): PlaybookError {
         retryable: true
       }
     }
-    
+
     if (message.includes('HTTP 5')) {
       return {
         message: 'Server error',
@@ -73,7 +71,7 @@ function normalizeError(error: PlaybookError | string | Error): PlaybookError {
         retryable: true
       }
     }
-    
+
     if (message.includes('missing') || message.includes('required')) {
       return {
         message: 'Missing required information',
@@ -82,10 +80,10 @@ function normalizeError(error: PlaybookError | string | Error): PlaybookError {
         retryable: false
       }
     }
-    
+
     return { message }
   }
-  
+
   return error
 }
 

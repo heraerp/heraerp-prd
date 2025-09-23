@@ -6,19 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Product, ProductForm, ProductFormSchema } from '@/types/salon-product'
 import { useCategoriesPlaybook } from '@/hooks/useCategoriesPlaybook'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -29,7 +24,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { Package, X } from 'lucide-react'
 
@@ -52,12 +47,7 @@ const COLORS = {
   charcoalLight: '#232323'
 }
 
-export function ProductModal({
-  open,
-  onClose,
-  product,
-  onSave
-}: ProductModalProps) {
+export function ProductModal({ open, onClose, product, onSave }: ProductModalProps) {
   const { organization } = useHERAAuth()
   const organizationId = organization?.id || ''
 
@@ -77,7 +67,7 @@ export function ProductModal({
       price: undefined,
       currency: 'AED',
       description: '',
-      requires_inventory: false,
+      requires_inventory: false
     }
   })
 
@@ -91,7 +81,7 @@ export function ProductModal({
         price: product.price || undefined,
         currency: product.currency || 'AED',
         description: product.description || '',
-        requires_inventory: product.requires_inventory || false,
+        requires_inventory: product.requires_inventory || false
       })
     } else {
       form.reset({
@@ -101,7 +91,7 @@ export function ProductModal({
         price: undefined,
         currency: 'AED',
         description: '',
-        requires_inventory: false,
+        requires_inventory: false
       })
     }
   }, [product, form])
@@ -123,7 +113,7 @@ export function ProductModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent 
+      <DialogContent
         className="max-w-2xl max-h-[90vh] overflow-y-auto"
         style={{
           backgroundColor: COLORS.charcoal,
@@ -145,10 +135,7 @@ export function ProductModal({
                 <Package className="w-5 h-5" style={{ color: COLORS.gold }} />
               </div>
               <div>
-                <DialogTitle 
-                  className="text-xl font-semibold"
-                  style={{ color: COLORS.champagne }}
-                >
+                <DialogTitle className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
                   {product ? 'Edit Product' : 'Create Product'}
                 </DialogTitle>
                 <p className="text-sm opacity-60 mt-1" style={{ color: COLORS.lightText }}>
@@ -181,16 +168,14 @@ export function ProductModal({
               <h3 className="font-medium mb-4" style={{ color: COLORS.champagne }}>
                 Basic Information
               </h3>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>
-                        Product Name *
-                      </FormLabel>
+                      <FormLabel style={{ color: COLORS.lightText }}>Product Name *</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -208,9 +193,7 @@ export function ProductModal({
                   name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>
-                        Product Code
-                      </FormLabel>
+                      <FormLabel style={{ color: COLORS.lightText }}>Product Code</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -230,13 +213,8 @@ export function ProductModal({
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>
-                        Category
-                      </FormLabel>
-                      <Select
-                        value={field.value || ''}
-                        onValueChange={field.onChange}
-                      >
+                      <FormLabel style={{ color: COLORS.lightText }}>Category</FormLabel>
+                      <Select value={field.value || ''} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger className="bg-background/50 border-border">
                             <SelectValue placeholder="Select category" />
@@ -261,9 +239,7 @@ export function ProductModal({
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: COLORS.lightText }}>
-                        Price (AED)
-                      </FormLabel>
+                      <FormLabel style={{ color: COLORS.lightText }}>Price (AED)</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -271,7 +247,7 @@ export function ProductModal({
                           step="0.01"
                           placeholder="0.00"
                           className="bg-background/50 border-border"
-                          onChange={(e) => {
+                          onChange={e => {
                             const value = e.target.value
                             field.onChange(value === '' ? undefined : parseFloat(value))
                           }}
@@ -296,7 +272,7 @@ export function ProductModal({
               <h3 className="font-medium mb-4" style={{ color: COLORS.champagne }}>
                 Description
               </h3>
-              
+
               <FormField
                 control={form.control}
                 name="description"
@@ -326,25 +302,20 @@ export function ProductModal({
               <h3 className="font-medium mb-4" style={{ color: COLORS.champagne }}>
                 Inventory Settings
               </h3>
-              
+
               <FormField
                 control={form.control}
                 name="requires_inventory"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel style={{ color: COLORS.lightText }}>
-                        Track Inventory
-                      </FormLabel>
+                      <FormLabel style={{ color: COLORS.lightText }}>Track Inventory</FormLabel>
                       <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
                         Enable stock tracking for this product
                       </p>
                     </div>
                     <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -371,10 +342,13 @@ export function ProductModal({
                 }}
                 className="hover:opacity-90 transition-opacity"
               >
-                {form.formState.isSubmitting 
-                  ? (product ? 'Updating...' : 'Creating...') 
-                  : (product ? 'Update Product' : 'Create Product')
-                }
+                {form.formState.isSubmitting
+                  ? product
+                    ? 'Updating...'
+                    : 'Creating...'
+                  : product
+                    ? 'Update Product'
+                    : 'Create Product'}
               </Button>
             </div>
           </form>

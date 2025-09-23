@@ -5,7 +5,8 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 
 export default function TestSalonPage() {
-  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs  } = useHERAAuth()
+  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs } =
+    useHERAAuth()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white p-8">

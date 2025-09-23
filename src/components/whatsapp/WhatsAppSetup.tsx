@@ -24,7 +24,7 @@ import { createWhatsAppClient } from '@/lib/whatsapp/whatsapp-client'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function WhatsAppSetup() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [setupComplete, setSetupComplete] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('')

@@ -42,7 +42,7 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
@@ -75,16 +75,45 @@ export default function AdminDashboard() {
   }
 
   const recentActivities = [
-    { id: 1, type: 'user_login', user: 'receptionist@hairtalkz.ae', time: '5 mins ago', status: 'success' },
+    {
+      id: 1,
+      type: 'user_login',
+      user: 'receptionist@hairtalkz.ae',
+      time: '5 mins ago',
+      status: 'success'
+    },
     { id: 2, type: 'backup', user: 'System', time: '2 hours ago', status: 'success' },
-    { id: 3, type: 'user_created', user: 'admin@hairtalkz.ae', time: '3 hours ago', status: 'success' },
-    { id: 4, type: 'permission_change', user: 'owner@hairtalkz.ae', time: '5 hours ago', status: 'warning' },
-    { id: 5, type: 'api_key_generated', user: 'admin@hairtalkz.ae', time: '1 day ago', status: 'success' }
+    {
+      id: 3,
+      type: 'user_created',
+      user: 'admin@hairtalkz.ae',
+      time: '3 hours ago',
+      status: 'success'
+    },
+    {
+      id: 4,
+      type: 'permission_change',
+      user: 'owner@hairtalkz.ae',
+      time: '5 hours ago',
+      status: 'warning'
+    },
+    {
+      id: 5,
+      type: 'api_key_generated',
+      user: 'admin@hairtalkz.ae',
+      time: '1 day ago',
+      status: 'success'
+    }
   ]
 
   const securityAlerts = [
     { id: 1, level: 'info', message: 'Scheduled security scan completed', time: '1 hour ago' },
-    { id: 2, level: 'warning', message: '3 failed login attempts from IP 192.168.1.100', time: '3 hours ago' },
+    {
+      id: 2,
+      level: 'warning',
+      message: '3 failed login attempts from IP 192.168.1.100',
+      time: '3 hours ago'
+    },
     { id: 3, level: 'success', message: 'SSL certificate renewed successfully', time: '2 days ago' }
   ]
 
@@ -95,17 +124,12 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 
-                className="text-3xl font-light mb-2"
-                style={{ color: LUXE_COLORS.gold }}
-              >
+              <h1 className="text-3xl font-light mb-2" style={{ color: LUXE_COLORS.gold }}>
                 System Administration
               </h1>
-              <p 
-                className="text-sm"
-                style={{ color: LUXE_COLORS.bronze }}
-              >
-                Welcome back, {user?.user_metadata?.full_name || 'Administrator'} • System Overview & Management
+              <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                Welcome back, {user?.user_metadata?.full_name || 'Administrator'} • System Overview
+                & Management
               </p>
             </div>
             <div className="flex gap-2">
@@ -113,7 +137,10 @@ export default function AdminDashboard() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+              <Button
+                size="sm"
+                style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 System Report
               </Button>
@@ -123,7 +150,7 @@ export default function AdminDashboard() {
 
         {/* System Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -148,7 +175,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -164,7 +191,10 @@ export default function AdminDashboard() {
                   <p className="text-3xl font-light mt-1" style={{ color: LUXE_COLORS.emerald }}>
                     {systemStats.systemUptime}
                   </p>
-                  <p className="text-xs mt-2 flex items-center gap-1" style={{ color: LUXE_COLORS.emerald }}>
+                  <p
+                    className="text-xs mt-2 flex items-center gap-1"
+                    style={{ color: LUXE_COLORS.emerald }}
+                  >
                     <CheckCircle className="h-3 w-3" />
                     All systems operational
                   </p>
@@ -174,7 +204,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -199,7 +229,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -215,11 +245,11 @@ export default function AdminDashboard() {
                   <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.plum }}>
                     {systemStats.lastBackup}
                   </p>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     className="mt-2"
-                    style={{ 
+                    style={{
                       borderColor: LUXE_COLORS.plum,
                       color: LUXE_COLORS.plum,
                       height: '24px',
@@ -238,7 +268,7 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
           <Link href="/salon/settings#users" className="block">
-            <Card 
+            <Card
               className="border-0 hover:scale-[1.02] transition-transform cursor-pointer h-full"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -246,7 +276,7 @@ export default function AdminDashboard() {
               }}
             >
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div 
+                <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
                   style={{
                     backgroundColor: `${LUXE_COLORS.gold}20`,
@@ -255,14 +285,18 @@ export default function AdminDashboard() {
                 >
                   <Users className="h-6 w-6" style={{ color: LUXE_COLORS.gold }} />
                 </div>
-                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>User Management</h3>
-                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>Add, edit, remove users</p>
+                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  User Management
+                </h3>
+                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                  Add, edit, remove users
+                </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/salon/settings#security" className="block">
-            <Card 
+            <Card
               className="border-0 hover:scale-[1.02] transition-transform cursor-pointer h-full"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -270,7 +304,7 @@ export default function AdminDashboard() {
               }}
             >
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div 
+                <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
                   style={{
                     backgroundColor: `${LUXE_COLORS.emerald}20`,
@@ -279,14 +313,18 @@ export default function AdminDashboard() {
                 >
                   <Shield className="h-6 w-6" style={{ color: LUXE_COLORS.emerald }} />
                 </div>
-                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>Security Settings</h3>
-                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>Passwords & permissions</p>
+                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  Security Settings
+                </h3>
+                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                  Passwords & permissions
+                </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/salon/backup" className="block">
-            <Card 
+            <Card
               className="border-0 hover:scale-[1.02] transition-transform cursor-pointer h-full"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -294,7 +332,7 @@ export default function AdminDashboard() {
               }}
             >
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div 
+                <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
                   style={{
                     backgroundColor: `${LUXE_COLORS.plum}20`,
@@ -303,14 +341,18 @@ export default function AdminDashboard() {
                 >
                   <Database className="h-6 w-6" style={{ color: LUXE_COLORS.plum }} />
                 </div>
-                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>Database Backup</h3>
-                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>Backup & restore data</p>
+                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  Database Backup
+                </h3>
+                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                  Backup & restore data
+                </p>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/salon/settings#integrations" className="block">
-            <Card 
+            <Card
               className="border-0 hover:scale-[1.02] transition-transform cursor-pointer h-full"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -318,7 +360,7 @@ export default function AdminDashboard() {
               }}
             >
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div 
+                <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
                   style={{
                     backgroundColor: `${LUXE_COLORS.ruby}20`,
@@ -327,8 +369,12 @@ export default function AdminDashboard() {
                 >
                   <Key className="h-6 w-6" style={{ color: LUXE_COLORS.ruby }} />
                 </div>
-                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>API Management</h3>
-                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>Keys & integrations</p>
+                <h3 className="font-medium" style={{ color: LUXE_COLORS.champagne }}>
+                  API Management
+                </h3>
+                <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                  Keys & integrations
+                </p>
               </CardContent>
             </Card>
           </Link>
@@ -336,7 +382,7 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* System Health */}
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -357,7 +403,10 @@ export default function AdminDashboard() {
                     <Database className="h-4 w-4" style={{ color: LUXE_COLORS.bronze }} />
                     <span style={{ color: LUXE_COLORS.champagne }}>Database</span>
                   </div>
-                  <span className="text-sm flex items-center gap-2" style={{ color: LUXE_COLORS.emerald }}>
+                  <span
+                    className="text-sm flex items-center gap-2"
+                    style={{ color: LUXE_COLORS.emerald }}
+                  >
                     <CheckCircle className="h-3 w-3" />
                     Healthy • {systemHealth.database.latency}
                   </span>
@@ -374,7 +423,10 @@ export default function AdminDashboard() {
                     <Wifi className="h-4 w-4" style={{ color: LUXE_COLORS.bronze }} />
                     <span style={{ color: LUXE_COLORS.champagne }}>API Server</span>
                   </div>
-                  <span className="text-sm flex items-center gap-2" style={{ color: LUXE_COLORS.emerald }}>
+                  <span
+                    className="text-sm flex items-center gap-2"
+                    style={{ color: LUXE_COLORS.emerald }}
+                  >
                     <CheckCircle className="h-3 w-3" />
                     {systemHealth.api.uptime} uptime
                   </span>
@@ -395,8 +447,8 @@ export default function AdminDashboard() {
                     {systemHealth.storage.used} / {systemHealth.storage.total}
                   </span>
                 </div>
-                <Progress 
-                  value={systemHealth.storage.percent} 
+                <Progress
+                  value={systemHealth.storage.percent}
                   className="h-2"
                   style={{ backgroundColor: LUXE_COLORS.charcoal }}
                 />
@@ -413,8 +465,8 @@ export default function AdminDashboard() {
                     {systemHealth.memory.used} / {systemHealth.memory.total}
                   </span>
                 </div>
-                <Progress 
-                  value={systemHealth.memory.percent} 
+                <Progress
+                  value={systemHealth.memory.percent}
                   className="h-2"
                   style={{ backgroundColor: LUXE_COLORS.charcoal }}
                 />
@@ -425,7 +477,7 @@ export default function AdminDashboard() {
           {/* Security & Activity */}
           <div className="space-y-6">
             {/* Security Alerts */}
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -449,17 +501,33 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {securityAlerts.map(alert => (
-                  <div 
+                  <div
                     key={alert.id}
                     className="flex items-start gap-3 p-3 rounded-lg"
                     style={{ backgroundColor: LUXE_COLORS.charcoal }}
                   >
-                    {alert.level === 'success' && <CheckCircle className="h-4 w-4 mt-0.5" style={{ color: LUXE_COLORS.emerald }} />}
-                    {alert.level === 'warning' && <AlertTriangle className="h-4 w-4 mt-0.5" style={{ color: LUXE_COLORS.orange }} />}
-                    {alert.level === 'info' && <Bell className="h-4 w-4 mt-0.5" style={{ color: LUXE_COLORS.plum }} />}
+                    {alert.level === 'success' && (
+                      <CheckCircle
+                        className="h-4 w-4 mt-0.5"
+                        style={{ color: LUXE_COLORS.emerald }}
+                      />
+                    )}
+                    {alert.level === 'warning' && (
+                      <AlertTriangle
+                        className="h-4 w-4 mt-0.5"
+                        style={{ color: LUXE_COLORS.orange }}
+                      />
+                    )}
+                    {alert.level === 'info' && (
+                      <Bell className="h-4 w-4 mt-0.5" style={{ color: LUXE_COLORS.plum }} />
+                    )}
                     <div className="flex-1">
-                      <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>{alert.message}</p>
-                      <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>{alert.time}</p>
+                      <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
+                        {alert.message}
+                      </p>
+                      <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                        {alert.time}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -467,7 +535,7 @@ export default function AdminDashboard() {
             </Card>
 
             {/* Recent Activity */}
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -492,22 +560,27 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {recentActivities.map(activity => (
-                  <div 
+                  <div
                     key={activity.id}
                     className="flex items-center justify-between p-3 rounded-lg"
                     style={{ backgroundColor: LUXE_COLORS.charcoal }}
                   >
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-2 h-2 rounded-full"
                         style={{
-                          backgroundColor: activity.status === 'success' ? LUXE_COLORS.emerald : 
-                                         activity.status === 'warning' ? LUXE_COLORS.orange : LUXE_COLORS.ruby
+                          backgroundColor:
+                            activity.status === 'success'
+                              ? LUXE_COLORS.emerald
+                              : activity.status === 'warning'
+                                ? LUXE_COLORS.orange
+                                : LUXE_COLORS.ruby
                         }}
                       />
                       <div>
                         <p className="text-sm" style={{ color: LUXE_COLORS.champagne }}>
-                          {activity.type.replace(/_/g, ' ').charAt(0).toUpperCase() + activity.type.replace(/_/g, ' ').slice(1)}
+                          {activity.type.replace(/_/g, ' ').charAt(0).toUpperCase() +
+                            activity.type.replace(/_/g, ' ').slice(1)}
                         </p>
                         <p className="text-xs" style={{ color: LUXE_COLORS.bronze }}>
                           {activity.user} • {activity.time}

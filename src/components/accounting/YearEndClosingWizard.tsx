@@ -66,7 +66,7 @@ export function YearEndClosingWizard({
   fiscalYear = new Date().getFullYear(),
   onComplete
 }: YearEndClosingWizardProps) {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [activeStep, setActiveStep] = useState<'review' | 'checklist' | 'closing' | 'complete'>(
     'review'
   )

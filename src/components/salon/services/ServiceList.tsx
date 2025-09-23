@@ -224,7 +224,7 @@ export function ServiceList({
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       onClick={() => onDelete([service.id])}
                       className="text-red-400"
                     >

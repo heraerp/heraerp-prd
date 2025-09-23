@@ -35,7 +35,7 @@ export interface SimulationResult {
 }
 
 export function useUCRMCP() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

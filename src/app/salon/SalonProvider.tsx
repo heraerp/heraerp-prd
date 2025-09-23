@@ -21,10 +21,10 @@ const SalonContext = createContext<SalonContextType | undefined>(undefined)
 export function SalonProvider({ children }: { children: React.ReactNode }) {
   // Maintain session across navigations
   useSalonSession()
-  
+
   // Check for organization ID from middleware headers or use default
   const [orgId, setOrgId] = useState(HAIRTALKZ_ORG_ID)
-  
+
   const [context, setContext] = useState<SalonContextType>({
     organizationId: orgId,
     organization: { id: orgId, name: 'HairTalkz' },
@@ -42,11 +42,14 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       console.log('Detected organization ID:', detectedOrgId)
       setOrgId(detectedOrgId)
     }
-    
+
     // Refresh session on mount
     const refreshSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
         if (error) {
           console.error('Session refresh error:', error)
         }
@@ -57,18 +60,20 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
         console.error('Failed to refresh session:', err)
       }
     }
-    
+
     refreshSession()
     loadContext()
-    
+
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, { 
-        hasSession: !!session, 
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, {
+        hasSession: !!session,
         userEmail: session?.user?.email,
         metadata: session?.user?.user_metadata
       })
-      
+
       if (event === 'SIGNED_IN' && session) {
         // Reload context when user signs in
         loadContext()
@@ -83,7 +88,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
           isLoading: false,
           isAuthenticated: false
         })
-        
+
         // Only redirect if not already on auth page
         if (window.location.pathname !== '/salon/auth') {
           window.location.href = '/salon/auth'
@@ -93,7 +98,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
         loadContext()
       }
     })
-    
+
     return () => {
       subscription.unsubscribe()
     }
@@ -103,32 +108,35 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
     try {
       // First check if we're on the auth page - don't redirect if we are
       const isAuthPage = window.location.pathname === '/salon/auth'
-      
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabase.auth.getSession()
+
       // If there's a session error, log it but don't immediately redirect
       if (sessionError) {
         console.error('Session error:', sessionError)
       }
-      
+
       // If no session and not on auth page, try harder to recover
       if (!session?.user && !isAuthPage) {
         // Check localStorage for stored auth data first
         const storedRole = localStorage.getItem('salonRole')
         const storedOrgId = localStorage.getItem('organizationId')
-        
+
         console.log('No session found, checking recovery options...', {
           hasStoredRole: !!storedRole,
           hasStoredOrgId: !!storedOrgId,
           pathname: window.location.pathname
         })
-        
+
         // If we have stored auth data, don't immediately redirect - give session time to recover
         if (storedRole && storedOrgId) {
           console.log('Session not found but localStorage has auth data - waiting for recovery...')
           // Set a temporary loading state
           setContext(prev => ({ ...prev, isLoading: true }))
-          
+
           // Try to refresh the session first
           try {
             const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
@@ -141,10 +149,12 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
           } catch (err) {
             console.error('Session refresh failed:', err)
           }
-          
+
           // Give Supabase one more chance to recover the session
           setTimeout(async () => {
-            const { data: { session: recoveredSession } } = await supabase.auth.getSession()
+            const {
+              data: { session: recoveredSession }
+            } = await supabase.auth.getSession()
             if (!recoveredSession?.user) {
               console.log('Session recovery failed, redirecting to auth...')
               // Now redirect if session still not recovered
@@ -163,7 +173,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
           return
         }
       }
-      
+
       // If we're on auth page without a session, just set loading to false
       if (!session?.user && isAuthPage) {
         setContext(prev => ({ ...prev, isLoading: false }))
@@ -172,17 +182,17 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
 
       // Add a small delay to ensure localStorage is properly set after login
       await new Promise(resolve => setTimeout(resolve, 100))
-      
+
       const storedRole = localStorage.getItem('salonRole') || session?.user?.user_metadata?.role
       const storedPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
-      
+
       console.log('Loading context - stored role:', storedRole)
       console.log('Loading context - user metadata:', session?.user?.user_metadata)
       console.log('Loading context - session user:', session?.user?.email)
-      
+
       // Use the detected org ID
       const finalOrgId = orgId // Already set by getSalonOrgId
-      
+
       setContext({
         organizationId: finalOrgId,
         organization: { id: finalOrgId, name: 'HairTalkz' },
@@ -205,7 +215,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
 
   if (context.isLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
@@ -214,11 +224,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
-  return (
-    <SalonContext.Provider value={context}>
-      {children}
-    </SalonContext.Provider>
-  )
+  return <SalonContext.Provider value={context}>{children}</SalonContext.Provider>
 }
 
 export function useSalonContext() {

@@ -47,7 +47,7 @@ interface AuditEvent {
 }
 
 export default function AuditStreamPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [events, setEvents] = useState<AuditEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [streaming, setStreaming] = useState(false)

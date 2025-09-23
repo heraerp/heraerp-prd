@@ -57,7 +57,7 @@ interface FinancialMetric {
 
 function FinancialCard({ metric }: { metric: FinancialMetric }) {
   const Icon = metric.icon
-  
+
   return (
     <Card
       className="hover:scale-[1.02] transition-all duration-300"
@@ -70,16 +70,13 @@ function FinancialCard({ metric }: { metric: FinancialMetric }) {
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p 
+            <p
               className="text-sm font-light tracking-wider uppercase mb-2"
               style={{ color: COLORS.bronze }}
             >
               {metric.label}
             </p>
-            <p 
-              className="text-3xl font-light tracking-wide"
-              style={{ color: COLORS.champagne }}
-            >
+            <p className="text-3xl font-light tracking-wide" style={{ color: COLORS.champagne }}>
               {metric.value}
             </p>
           </div>
@@ -93,7 +90,7 @@ function FinancialCard({ metric }: { metric: FinancialMetric }) {
             <Icon className="h-6 w-6" style={{ color: COLORS.black }} />
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {metric.isPositive ? (
             <ArrowUpRight className="h-4 w-4" style={{ color: COLORS.emerald }} />
@@ -148,20 +145,14 @@ function ReportButton({
               <Icon className="h-6 w-6" />
             </div>
             <div className="flex-1">
-              <h3 
-                className="font-medium mb-1"
-                style={{ color: COLORS.champagne }}
-              >
+              <h3 className="font-medium mb-1" style={{ color: COLORS.champagne }}>
                 {label}
               </h3>
-              <p 
-                className="text-sm font-light"
-                style={{ color: `${COLORS.bronze}90` }}
-              >
+              <p className="text-sm font-light" style={{ color: `${COLORS.bronze}90` }}>
                 {description}
               </p>
             </div>
-            <ArrowUpRight 
+            <ArrowUpRight
               className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ color: COLORS.gold }}
             />
@@ -214,31 +205,34 @@ export default function AccountantDashboard() {
   }, [])
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    
+    const {
+      data: { session }
+    } = await supabase.auth.getSession()
+
     if (!session?.user) {
       router.push('/salon/auth')
       return
     }
 
     const userMetadata = session.user.user_metadata
-    const userRole = userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
-    
+    const userRole =
+      userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
+
     // Check organization
     if (userMetadata?.organization_id !== HAIRTALKZ_ORG_ID) {
       router.push('/salon/auth')
       return
     }
-    
+
     // Check role
     if (userRole && userRole !== 'accountant') {
       // Redirect to appropriate dashboard based on role
       const redirectMap: Record<string, string> = {
-        'owner': '/salon/dashboard',
-        'receptionist': '/salon/receptionist',
-        'admin': '/salon/admin'
+        owner: '/salon/dashboard',
+        receptionist: '/salon/receptionist',
+        admin: '/salon/admin'
       }
-      
+
       const redirectPath = redirectMap[userRole] || '/salon/auth'
       router.push(redirectPath)
       return
@@ -247,7 +241,7 @@ export default function AccountantDashboard() {
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.charcoal }}
       >
@@ -259,30 +253,27 @@ export default function AccountantDashboard() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
       {/* Header */}
-      <div 
+      <div
         className="border-b px-8 py-6"
-        style={{ 
+        style={{
           backgroundColor: COLORS.charcoalLight,
           borderColor: `${COLORS.bronze}20`
         }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 
+            <h1
               className="text-3xl font-light tracking-wider flex items-center gap-3"
               style={{ color: COLORS.champagne }}
             >
               <Calculator className="h-8 w-8" style={{ color: COLORS.gold }} />
               Financial Dashboard
             </h1>
-            <p 
-              className="text-sm font-light mt-1"
-              style={{ color: COLORS.bronze }}
-            >
+            <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
               {currentPeriod} • HairTalkz Salon Financial Overview
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -295,7 +286,7 @@ export default function AccountantDashboard() {
               <Calendar className="h-4 w-4 mr-2" />
               Select Period
             </Button>
-            
+
             <Button
               className="font-light"
               style={{
@@ -328,7 +319,7 @@ export default function AccountantDashboard() {
             }}
           >
             <CardHeader>
-              <CardTitle 
+              <CardTitle
                 className="text-xl font-light tracking-wider flex items-center gap-3"
                 style={{ color: COLORS.champagne }}
               >
@@ -346,20 +337,14 @@ export default function AccountantDashboard() {
                 ].map((item, idx) => (
                   <div key={idx}>
                     <div className="flex items-center justify-between mb-2">
-                      <span 
-                        className="text-sm font-light"
-                        style={{ color: COLORS.lightText }}
-                      >
+                      <span className="text-sm font-light" style={{ color: COLORS.lightText }}>
                         {item.category}
                       </span>
-                      <span 
-                        className="text-sm font-medium"
-                        style={{ color: COLORS.champagne }}
-                      >
+                      <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
                         {item.amount}
                       </span>
                     </div>
-                    <div 
+                    <div
                       className="w-full h-2 rounded-full overflow-hidden"
                       style={{ backgroundColor: COLORS.charcoal }}
                     >
@@ -371,10 +356,7 @@ export default function AccountantDashboard() {
                         }}
                       />
                     </div>
-                    <p 
-                      className="text-xs font-light mt-1"
-                      style={{ color: COLORS.bronze }}
-                    >
+                    <p className="text-xs font-light mt-1" style={{ color: COLORS.bronze }}>
                       {item.percentage}% of total revenue
                     </p>
                   </div>
@@ -391,7 +373,7 @@ export default function AccountantDashboard() {
             }}
           >
             <CardHeader>
-              <CardTitle 
+              <CardTitle
                 className="text-xl font-light tracking-wider flex items-center gap-3"
                 style={{ color: COLORS.champagne }}
               >
@@ -407,7 +389,7 @@ export default function AccountantDashboard() {
                   { category: 'Rent & Utilities', amount: 'AED 12,000', trend: 'stable' },
                   { category: 'Marketing', amount: 'AED 6,450', trend: 'down' }
                 ].map((expense, idx) => (
-                  <div 
+                  <div
                     key={idx}
                     className="flex items-center justify-between p-3 rounded-lg"
                     style={{
@@ -416,16 +398,10 @@ export default function AccountantDashboard() {
                     }}
                   >
                     <div>
-                      <p 
-                        className="font-medium"
-                        style={{ color: COLORS.lightText }}
-                      >
+                      <p className="font-medium" style={{ color: COLORS.lightText }}>
                         {expense.category}
                       </p>
-                      <p 
-                        className="text-sm font-light"
-                        style={{ color: COLORS.bronze }}
-                      >
+                      <p className="text-sm font-light" style={{ color: COLORS.bronze }}>
                         {expense.amount}
                       </p>
                     </div>
@@ -449,13 +425,13 @@ export default function AccountantDashboard() {
 
         {/* Financial Reports */}
         <div className="mb-8">
-          <h2 
+          <h2
             className="text-xl font-light tracking-wider mb-6"
             style={{ color: COLORS.champagne }}
           >
             Financial Reports
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <ReportButton
               icon={FileText}
@@ -464,7 +440,7 @@ export default function AccountantDashboard() {
               href="/salon/reports/branch-pnl"
               color={COLORS.emerald}
             />
-            
+
             <ReportButton
               icon={BarChart3}
               label="Profit & Loss Statement"
@@ -472,7 +448,7 @@ export default function AccountantDashboard() {
               href="/salon-data/financials/p&l"
               color={COLORS.gold}
             />
-            
+
             <ReportButton
               icon={Building}
               label="Balance Sheet"
@@ -480,7 +456,7 @@ export default function AccountantDashboard() {
               href="/salon-data/financials/bs"
               color={COLORS.sapphire}
             />
-            
+
             <ReportButton
               icon={Receipt}
               label="VAT Report"
@@ -488,7 +464,7 @@ export default function AccountantDashboard() {
               href="/salon/finance"
               color={COLORS.plum}
             />
-            
+
             <ReportButton
               icon={FileSpreadsheet}
               label="Cash Flow Statement"
@@ -496,7 +472,7 @@ export default function AccountantDashboard() {
               href="/salon/finance"
               color={COLORS.bronze}
             />
-            
+
             <ReportButton
               icon={CreditCard}
               label="Payroll Report"
@@ -515,7 +491,7 @@ export default function AccountantDashboard() {
           }}
         >
           <CardHeader>
-            <CardTitle 
+            <CardTitle
               className="text-xl font-light tracking-wider flex items-center gap-3"
               style={{ color: COLORS.champagne }}
             >
@@ -542,20 +518,15 @@ export default function AccountantDashboard() {
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <CheckCircle 
-                      className="h-5 w-5 mt-0.5" 
-                      style={{ 
-                        color: action.priority === 'high' ? COLORS.ruby : COLORS.bronze 
-                      }} 
+                    <CheckCircle
+                      className="h-5 w-5 mt-0.5"
+                      style={{
+                        color: action.priority === 'high' ? COLORS.ruby : COLORS.bronze
+                      }}
                     />
                     <div>
-                      <p style={{ color: COLORS.lightText }}>
-                        {action.task}
-                      </p>
-                      <p 
-                        className="text-sm font-light mt-1"
-                        style={{ color: COLORS.bronze }}
-                      >
+                      <p style={{ color: COLORS.lightText }}>{action.task}</p>
+                      <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
                         {action.due}
                       </p>
                     </div>

@@ -83,7 +83,7 @@ const AVAILABLE_APPS = [
 
 export default function OrganizationAppsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const { organizations, isAuthenticated, refreshOrganizations, session  } = useHERAAuth()
+  const { organizations, isAuthenticated, refreshOrganizations, session } = useHERAAuth()
   const [selectedApps, setSelectedApps] = useState<string[]>([])
   const [isInstalling, setIsInstalling] = useState(false)
   const [error, setError] = useState('')

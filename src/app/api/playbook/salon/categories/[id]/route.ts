@@ -13,17 +13,17 @@ const updateCategorySchema = z.object({
   name: z.string().min(1).max(50).optional(),
   code: z.string().min(1).max(50).optional(),
   description: z.string().max(200).nullable().optional(),
-  color: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-F]{6}$/i)
+    .optional(),
   icon: z.string().optional(),
   sort_order: z.number().int().min(0).optional(),
   status: z.enum(['active', 'archived']).optional()
 })
 
 // GET /api/playbook/salon/categories/[id]
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authResult = await verifyAuth(request)
     if (!authResult || !authResult.organizationId) {
@@ -98,7 +98,6 @@ export async function GET(
       sort_order: dynamicFields.sort_order || 0,
       description: dynamicFields.description || null
     })
-
   } catch (error) {
     console.error('Get category error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -106,10 +105,7 @@ export async function GET(
 }
 
 // PATCH /api/playbook/salon/categories/[id]
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authResult = await verifyAuth(request)
     if (!authResult || !authResult.organizationId) {
@@ -169,10 +165,7 @@ export async function PATCH(
 
       if (updateError) {
         console.error('Error updating category:', updateError)
-        return NextResponse.json(
-          { error: 'Failed to update category' },
-          { status: 500 }
-        )
+        return NextResponse.json({ error: 'Failed to update category' }, { status: 500 })
       }
     }
 
@@ -229,7 +222,10 @@ export async function PATCH(
         .from('core_dynamic_data')
         .delete()
         .eq('entity_id', categoryId)
-        .in('field_name', dynamicUpdates.map(d => d.field_name))
+        .in(
+          'field_name',
+          dynamicUpdates.map(d => d.field_name)
+        )
 
       // Insert new values
       const { error: dynamicError } = await supabase
@@ -242,10 +238,9 @@ export async function PATCH(
     }
 
     return NextResponse.json({ success: true })
-
   } catch (error) {
     console.error('Update category error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },
@@ -258,10 +253,7 @@ export async function PATCH(
 }
 
 // DELETE /api/playbook/salon/categories/[id]
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authResult = await verifyAuth(request)
     if (!authResult || !authResult.organizationId) {
@@ -296,19 +288,16 @@ export async function DELETE(
 
     if (serviceCount && serviceCount > 0) {
       return NextResponse.json(
-        { 
+        {
           error: 'Cannot delete category with linked services',
-          service_count: serviceCount 
+          service_count: serviceCount
         },
         { status: 400 }
       )
     }
 
     // Delete dynamic data first
-    await supabase
-      .from('core_dynamic_data')
-      .delete()
-      .eq('entity_id', categoryId)
+    await supabase.from('core_dynamic_data').delete().eq('entity_id', categoryId)
 
     // Delete the category entity
     const { error: deleteError } = await supabase
@@ -318,14 +307,10 @@ export async function DELETE(
 
     if (deleteError) {
       console.error('Error deleting category:', deleteError)
-      return NextResponse.json(
-        { error: 'Failed to delete category' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
-
   } catch (error) {
     console.error('Delete category error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

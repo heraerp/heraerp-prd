@@ -41,7 +41,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
 
     // Verify real JWT token
     const validation = await jwtService.validateToken(token)
-    
+
     if (!validation.valid || !validation.payload) {
       return null
     }

@@ -150,7 +150,7 @@ const FURNITURE_QUICK_EXPENSES = [
 export default function FurnitureDigitalAccountantPage() {
   const router = useRouter()
 
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
 
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 

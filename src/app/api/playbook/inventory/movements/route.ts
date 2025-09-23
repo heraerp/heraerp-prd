@@ -12,10 +12,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
 
     if (!organization_id) {
-      return NextResponse.json(
-        { error: 'organization_id is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
     }
 
     const supabase = createServiceSupabaseClient()
@@ -23,7 +20,8 @@ export async function GET(request: NextRequest) {
     // Build query
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_code,
         transaction_type,
@@ -47,7 +45,8 @@ export async function GET(request: NextRequest) {
           entity_name,
           entity_code
         )
-      `)
+      `
+      )
       .eq('organization_id', organization_id)
       .in('transaction_type', ['goods_receipt', 'stock_adjustment', 'sale', 'stock_transfer'])
       .order('transaction_date', { ascending: false })
@@ -68,34 +67,34 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching stock movements:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch stock movements' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch stock movements' }, { status: 500 })
     }
 
     // Transform the data to a cleaner format
-    const formattedMovements = movements?.map(movement => {
-      const lines = movement.universal_transaction_lines || []
-      return lines.map((line: any) => ({
-        id: line.id,
-        transaction_id: movement.id,
-        transaction_code: movement.transaction_code,
-        transaction_type: movement.transaction_type,
-        transaction_date: movement.transaction_date,
-        product_id: line.line_entity_id,
-        quantity: line.quantity,
-        unit_price: line.unit_price,
-        total_value: line.line_amount,
-        from_location: movement.from_entity?.entity_name || 'External',
-        to_location: movement.to_entity?.entity_name || 'External',
-        created_at: movement.created_at,
-        metadata: {
-          ...movement.metadata,
-          ...line.metadata
-        }
-      }))
-    }).flat() || []
+    const formattedMovements =
+      movements
+        ?.map(movement => {
+          const lines = movement.universal_transaction_lines || []
+          return lines.map((line: any) => ({
+            id: line.id,
+            transaction_id: movement.id,
+            transaction_code: movement.transaction_code,
+            transaction_type: movement.transaction_type,
+            transaction_date: movement.transaction_date,
+            product_id: line.line_entity_id,
+            quantity: line.quantity,
+            unit_price: line.unit_price,
+            total_value: line.line_amount,
+            from_location: movement.from_entity?.entity_name || 'External',
+            to_location: movement.to_entity?.entity_name || 'External',
+            created_at: movement.created_at,
+            metadata: {
+              ...movement.metadata,
+              ...line.metadata
+            }
+          }))
+        })
+        .flat() || []
 
     return NextResponse.json({
       movements: formattedMovements,
@@ -105,9 +104,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Stock movements error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

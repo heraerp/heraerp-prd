@@ -54,7 +54,7 @@ export function Guard({
 }: GuardProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, isAuthenticated, isLoading, isLoadingOrgs  } = useHERAAuth()
+  const { user, isAuthenticated, isLoading, isLoadingOrgs } = useHERAAuth()
   const contextLoading = isLoading || isLoadingOrgs
   const [isInitialized, setIsInitialized] = useState(false)
 
@@ -227,7 +227,7 @@ export function withGuard<P extends object>(
 
 // Utility hooks for permission checking
 export function usePermissions() {
-  const { user, isAuthenticated  } = useHERAAuth()
+  const { user, isAuthenticated } = useHERAAuth()
 
   const hasRole = (role: string): boolean => {
     return isAuthenticated && user ? user.role === role : false
@@ -281,7 +281,7 @@ export type Role = (typeof ROLES)[keyof typeof ROLES]
 
 // Hook for route guard
 export function useRouteGuard(): { allowed: boolean; redirect: string } {
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
   const pathname = usePathname()
 
   const role = (user?.role || 'customer') as RBACRole
@@ -294,7 +294,7 @@ export function useRouteGuard(): { allowed: boolean; redirect: string } {
 // Hook to redirect to role landing
 export function useRoleLanding() {
   const router = useRouter()
-  const { user  } = useHERAAuth()
+  const { user } = useHERAAuth()
 
   const redirectToLanding = () => {
     const role = (user?.role || 'customer') as RBACRole

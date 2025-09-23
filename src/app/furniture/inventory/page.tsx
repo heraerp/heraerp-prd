@@ -139,7 +139,7 @@ const stockColumns = [
 ]
 
 export default function FurnitureInventory() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const { stockData, movements, metrics, loading, refresh } = useInventoryData(organizationId)
 

@@ -1,167 +1,174 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Loader2, Database, Key, Link2, Search, FileJson, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Loader2, Database, Key, Link2, Search, FileJson, AlertCircle } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface SchemaAnalysis {
-  timestamp: string;
+  timestamp: string
   database: {
-    version: string;
-    schemas: string[];
-  };
-  tables: Record<string, TableInfo>;
-  relationships: RelationshipInfo[];
-  indexes: IndexInfo[];
-  constraints: ConstraintInfo[];
-  dataProfiling: Record<string, TableProfile>;
-  dynamicDataTypes: DynamicDataType[];
-  sampleData: Record<string, any[]>;
+    version: string
+    schemas: string[]
+  }
+  tables: Record<string, TableInfo>
+  relationships: RelationshipInfo[]
+  indexes: IndexInfo[]
+  constraints: ConstraintInfo[]
+  dataProfiling: Record<string, TableProfile>
+  dynamicDataTypes: DynamicDataType[]
+  sampleData: Record<string, any[]>
 }
 
 interface TableInfo {
-  name: string;
-  schema: string;
-  rowCount: number;
-  estimatedSize: string;
-  columns: ColumnInfo[];
-  primaryKeys: string[];
-  foreignKeys: ForeignKeyInfo[];
+  name: string
+  schema: string
+  rowCount: number
+  estimatedSize: string
+  columns: ColumnInfo[]
+  primaryKeys: string[]
+  foreignKeys: ForeignKeyInfo[]
 }
 
 interface ColumnInfo {
-  name: string;
-  dataType: string;
-  isNullable: boolean;
-  defaultValue: string | null;
-  maxLength: number | null;
-  numericPrecision: number | null;
-  numericScale: number | null;
-  isIdentity: boolean;
-  identityGeneration: string | null;
+  name: string
+  dataType: string
+  isNullable: boolean
+  defaultValue: string | null
+  maxLength: number | null
+  numericPrecision: number | null
+  numericScale: number | null
+  isIdentity: boolean
+  identityGeneration: string | null
 }
 
 interface RelationshipInfo {
-  constraintName: string;
-  sourceTable: string;
-  sourceColumns: string[];
-  targetTable: string;
-  targetColumns: string[];
-  updateRule: string;
-  deleteRule: string;
+  constraintName: string
+  sourceTable: string
+  sourceColumns: string[]
+  targetTable: string
+  targetColumns: string[]
+  updateRule: string
+  deleteRule: string
 }
 
 interface IndexInfo {
-  schemaName: string;
-  tableName: string;
-  indexName: string;
-  indexType: string;
-  columns: string[];
-  isUnique: boolean;
-  isPrimary: boolean;
-  isPartial: boolean;
-  indexDefinition: string;
+  schemaName: string
+  tableName: string
+  indexName: string
+  indexType: string
+  columns: string[]
+  isUnique: boolean
+  isPrimary: boolean
+  isPartial: boolean
+  indexDefinition: string
 }
 
 interface ConstraintInfo {
-  schemaName: string;
-  tableName: string;
-  constraintName: string;
-  constraintType: string;
-  definition: string;
+  schemaName: string
+  tableName: string
+  constraintName: string
+  constraintType: string
+  definition: string
 }
 
 interface TableProfile {
-  tableName: string;
-  rowCount: number;
-  nullCounts: Record<string, number>;
-  distinctCounts: Record<string, number>;
-  minMaxValues: Record<string, { min: any; max: any }>;
+  tableName: string
+  rowCount: number
+  nullCounts: Record<string, number>
+  distinctCounts: Record<string, number>
+  minMaxValues: Record<string, { min: any; max: any }>
 }
 
 interface DynamicDataType {
-  fieldName: string;
+  fieldName: string
   dataTypes: Array<{
-    type: string;
-    count: number;
-    percentage: number;
-  }>;
-  sampleValues: any[];
+    type: string
+    count: number
+    percentage: number
+  }>
+  sampleValues: any[]
 }
 
 interface ForeignKeyInfo {
-  column: string;
-  referencesTable: string;
-  referencesColumn: string;
+  column: string
+  referencesTable: string
+  referencesColumn: string
 }
 
 export default function SchemaAnalysisPage() {
-  const [analysis, setAnalysis] = useState<SchemaAnalysis | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedTable, setSelectedTable] = useState<string>('');
+  const [analysis, setAnalysis] = useState<SchemaAnalysis | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedTable, setSelectedTable] = useState<string>('')
 
   const fetchAnalysis = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
       const response = await fetch('/api/admin/schema-analysis', {
         headers: {
           'x-admin-api-key': process.env.NEXT_PUBLIC_ADMIN_API_KEY || 'test-key'
         }
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (data.success) {
-        setAnalysis(data.analysis);
+        setAnalysis(data.analysis)
         // Select the first table by default
-        const tables = Object.keys(data.analysis.tables);
+        const tables = Object.keys(data.analysis.tables)
         if (tables.length > 0) {
-          setSelectedTable(tables[0]);
+          setSelectedTable(tables[0])
         }
       } else {
-        throw new Error(data.error || 'Failed to analyze schema');
+        throw new Error(data.error || 'Failed to analyze schema')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      setError(err instanceof Error ? err.message : 'Unknown error occurred')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchAnalysis();
-  }, []);
+    fetchAnalysis()
+  }, [])
 
   const getDataTypeColor = (dataType: string): string => {
     const typeColors: Record<string, string> = {
-      'uuid': 'bg-purple-100 text-purple-800',
-      'text': 'bg-blue-100 text-blue-800',
+      uuid: 'bg-purple-100 text-purple-800',
+      text: 'bg-blue-100 text-blue-800',
       'character varying': 'bg-blue-100 text-blue-800',
-      'integer': 'bg-green-100 text-green-800',
-      'bigint': 'bg-green-100 text-green-800',
-      'numeric': 'bg-green-100 text-green-800',
-      'boolean': 'bg-yellow-100 text-yellow-800',
+      integer: 'bg-green-100 text-green-800',
+      bigint: 'bg-green-100 text-green-800',
+      numeric: 'bg-green-100 text-green-800',
+      boolean: 'bg-yellow-100 text-yellow-800',
       'timestamp with time zone': 'bg-orange-100 text-orange-800',
       'timestamp without time zone': 'bg-orange-100 text-orange-800',
-      'jsonb': 'bg-indigo-100 text-indigo-800',
-      'json': 'bg-indigo-100 text-indigo-800'
-    };
+      jsonb: 'bg-indigo-100 text-indigo-800',
+      json: 'bg-indigo-100 text-indigo-800'
+    }
 
-    return typeColors[dataType.toLowerCase()] || 'bg-gray-100 text-gray-800';
-  };
+    return typeColors[dataType.toLowerCase()] || 'bg-gray-100 text-gray-800'
+  }
 
   const renderTableDetails = (table: TableInfo) => (
     <div className="space-y-6">
@@ -216,7 +223,7 @@ export default function SchemaAnalysisPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {table.columns.map((column) => (
+              {table.columns.map(column => (
                 <TableRow key={column.name}>
                   <TableCell className="font-mono">
                     {column.name}
@@ -228,7 +235,8 @@ export default function SchemaAnalysisPage() {
                     <Badge className={getDataTypeColor(column.dataType)} variant="secondary">
                       {column.dataType}
                       {column.maxLength && ` (${column.maxLength})`}
-                      {column.numericPrecision && ` (${column.numericPrecision},${column.numericScale || 0})`}
+                      {column.numericPrecision &&
+                        ` (${column.numericPrecision},${column.numericScale || 0})`}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -236,9 +244,7 @@ export default function SchemaAnalysisPage() {
                       {column.isNullable ? 'NULL' : 'NOT NULL'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {column.defaultValue || '-'}
-                  </TableCell>
+                  <TableCell className="font-mono text-sm">{column.defaultValue || '-'}</TableCell>
                   <TableCell>
                     {column.isIdentity && (
                       <Badge className="bg-purple-100 text-purple-800" variant="secondary">
@@ -281,19 +287,19 @@ export default function SchemaAnalysisPage() {
         </Card>
       )}
     </div>
-  );
+  )
 
   const renderSampleData = (tableName: string, data: any[]) => {
-    if (!data || data.length === 0) return <p className="text-gray-500">No sample data available</p>;
+    if (!data || data.length === 0) return <p className="text-gray-500">No sample data available</p>
 
-    const columns = Object.keys(data[0]);
+    const columns = Object.keys(data[0])
 
     return (
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              {columns.map((col) => (
+              {columns.map(col => (
                 <TableHead key={col} className="font-mono">
                   {col}
                 </TableHead>
@@ -303,7 +309,7 @@ export default function SchemaAnalysisPage() {
           <TableBody>
             {data.map((row, index) => (
               <TableRow key={index}>
-                {columns.map((col) => (
+                {columns.map(col => (
                   <TableCell key={col} className="font-mono text-sm">
                     {row[col] === null ? (
                       <span className="text-gray-400">NULL</span>
@@ -319,8 +325,8 @@ export default function SchemaAnalysisPage() {
           </TableBody>
         </Table>
       </div>
-    );
-  };
+    )
+  }
 
   if (loading) {
     return (
@@ -330,7 +336,7 @@ export default function SchemaAnalysisPage() {
           <p>Analyzing database schema...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -345,11 +351,11 @@ export default function SchemaAnalysisPage() {
           Retry Analysis
         </Button>
       </div>
-    );
+    )
   }
 
   if (!analysis) {
-    return null;
+    return null
   }
 
   return (
@@ -412,7 +418,7 @@ export default function SchemaAnalysisPage() {
               <CardContent>
                 <ScrollArea className="h-[600px]">
                   <div className="space-y-2">
-                    {Object.values(analysis.tables).map((table) => (
+                    {Object.values(analysis.tables).map(table => (
                       <Button
                         key={table.name}
                         variant={selectedTable === table.name ? 'default' : 'outline'}
@@ -431,9 +437,9 @@ export default function SchemaAnalysisPage() {
               </CardContent>
             </Card>
             <div className="col-span-3">
-              {selectedTable && analysis.tables[selectedTable] && (
-                renderTableDetails(analysis.tables[selectedTable])
-              )}
+              {selectedTable &&
+                analysis.tables[selectedTable] &&
+                renderTableDetails(analysis.tables[selectedTable])}
             </div>
           </div>
         </TabsContent>
@@ -442,9 +448,7 @@ export default function SchemaAnalysisPage() {
           <Card>
             <CardHeader>
               <CardTitle>Foreign Key Relationships</CardTitle>
-              <CardDescription>
-                All foreign key constraints in the database
-              </CardDescription>
+              <CardDescription>All foreign key constraints in the database</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -459,16 +463,12 @@ export default function SchemaAnalysisPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {analysis.relationships.map((rel) => (
+                  {analysis.relationships.map(rel => (
                     <TableRow key={rel.constraintName}>
                       <TableCell className="font-mono">{rel.sourceTable}</TableCell>
-                      <TableCell className="font-mono">
-                        {rel.sourceColumns.join(', ')}
-                      </TableCell>
+                      <TableCell className="font-mono">{rel.sourceColumns.join(', ')}</TableCell>
                       <TableCell className="font-mono">{rel.targetTable}</TableCell>
-                      <TableCell className="font-mono">
-                        {rel.targetColumns.join(', ')}
-                      </TableCell>
+                      <TableCell className="font-mono">{rel.targetColumns.join(', ')}</TableCell>
                       <TableCell>
                         <Badge variant="outline">{rel.updateRule}</Badge>
                       </TableCell>
@@ -487,9 +487,7 @@ export default function SchemaAnalysisPage() {
           <Card>
             <CardHeader>
               <CardTitle>Dynamic Data Field Types</CardTitle>
-              <CardDescription>
-                Analysis of field types stored in core_dynamic_data
-              </CardDescription>
+              <CardDescription>Analysis of field types stored in core_dynamic_data</CardDescription>
             </CardHeader>
             <CardContent>
               {analysis.dynamicDataTypes.length > 0 ? (
@@ -501,12 +499,12 @@ export default function SchemaAnalysisPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {analysis.dynamicDataTypes.map((field) => (
+                    {analysis.dynamicDataTypes.map(field => (
                       <TableRow key={field.fieldName}>
                         <TableCell className="font-mono">{field.fieldName}</TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            {field.dataTypes.map((type) => (
+                            {field.dataTypes.map(type => (
                               <div key={type.type} className="flex items-center space-x-2">
                                 <Badge className={getDataTypeColor(type.type)} variant="secondary">
                                   {type.type}
@@ -534,13 +532,9 @@ export default function SchemaAnalysisPage() {
             <Card key={tableName}>
               <CardHeader>
                 <CardTitle>{tableName}</CardTitle>
-                <CardDescription>
-                  Sample of up to 5 records from this table
-                </CardDescription>
+                <CardDescription>Sample of up to 5 records from this table</CardDescription>
               </CardHeader>
-              <CardContent>
-                {renderSampleData(tableName, data)}
-              </CardContent>
+              <CardContent>{renderSampleData(tableName, data)}</CardContent>
             </Card>
           ))}
         </TabsContent>
@@ -549,9 +543,7 @@ export default function SchemaAnalysisPage() {
           <Card>
             <CardHeader>
               <CardTitle>Database Indexes</CardTitle>
-              <CardDescription>
-                All indexes defined in the database
-              </CardDescription>
+              <CardDescription>All indexes defined in the database</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -566,7 +558,7 @@ export default function SchemaAnalysisPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {analysis.indexes.map((index) => (
+                  {analysis.indexes.map(index => (
                     <TableRow key={`${index.tableName}-${index.indexName}`}>
                       <TableCell className="font-mono">{index.tableName}</TableCell>
                       <TableCell className="font-mono text-sm">{index.indexName}</TableCell>
@@ -574,13 +566,19 @@ export default function SchemaAnalysisPage() {
                         <Badge variant="outline">{index.indexType}</Badge>
                       </TableCell>
                       <TableCell>
-                        {index.isUnique && <Badge className="bg-blue-100 text-blue-800">UNIQUE</Badge>}
+                        {index.isUnique && (
+                          <Badge className="bg-blue-100 text-blue-800">UNIQUE</Badge>
+                        )}
                       </TableCell>
                       <TableCell>
-                        {index.isPrimary && <Badge className="bg-yellow-100 text-yellow-800">PRIMARY</Badge>}
+                        {index.isPrimary && (
+                          <Badge className="bg-yellow-100 text-yellow-800">PRIMARY</Badge>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <code className="text-xs">{index.indexDefinition.substring(0, 100)}...</code>
+                        <code className="text-xs">
+                          {index.indexDefinition.substring(0, 100)}...
+                        </code>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -591,5 +589,5 @@ export default function SchemaAnalysisPage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

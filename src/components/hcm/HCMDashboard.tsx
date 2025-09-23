@@ -50,7 +50,7 @@ interface DepartmentStats {
 }
 
 export function HCMDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [metrics, setMetrics] = useState<HCMMetrics>({
     totalEmployees: 0,
     activeEmployees: 0,

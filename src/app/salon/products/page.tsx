@@ -10,17 +10,7 @@ import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDi
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { Product } from '@/types/salon-product'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { 
-  Plus, 
-  Grid3X3, 
-  List, 
-  Package,
-  Search,
-  Download,
-  Building2,
-  Filter,
-  X
-} from 'lucide-react'
+import { Plus, Grid3X3, List, Package, Search, Download, Building2, Filter, X } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -91,17 +81,19 @@ function SalonProductsPageContent() {
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      if (!product.entity_name.toLowerCase().includes(query) &&
-          !product.entity_code?.toLowerCase().includes(query)) {
+      if (
+        !product.entity_name.toLowerCase().includes(query) &&
+        !product.entity_code?.toLowerCase().includes(query)
+      ) {
         return false
       }
     }
-    
+
     // Category filter
     if (categoryFilter && product.category !== categoryFilter) {
       return false
     }
-    
+
     return true
   })
 
@@ -111,7 +103,7 @@ function SalonProductsPageContent() {
       editingProduct ? 'Updating product...' : 'Creating product...',
       'Please wait while we save your changes'
     )
-    
+
     try {
       if (editingProduct) {
         await updateProduct(editingProduct.id, data)
@@ -147,26 +139,17 @@ function SalonProductsPageContent() {
     if (!productToDelete) return
 
     setIsDeleting(true)
-    const loadingId = showLoading(
-      'Deleting product...',
-      'This action cannot be undone'
-    )
-    
+    const loadingId = showLoading('Deleting product...', 'This action cannot be undone')
+
     try {
       await deleteProduct(productToDelete.id)
       removeToast(loadingId)
-      showSuccess(
-        'Product deleted',
-        `${productToDelete.entity_name} has been permanently removed`
-      )
+      showSuccess('Product deleted', `${productToDelete.entity_name} has been permanently removed`)
       setDeleteDialogOpen(false)
       setProductToDelete(null)
     } catch (error: any) {
       removeToast(loadingId)
-      showError(
-        'Failed to delete product',
-        error.message || 'Please try again'
-      )
+      showError('Failed to delete product', error.message || 'Please try again')
     } finally {
       setIsDeleting(false)
     }
@@ -177,7 +160,7 @@ function SalonProductsPageContent() {
       `${product.status === 'archived' ? 'Restoring' : 'Archiving'} product...`,
       'Please wait'
     )
-    
+
     try {
       await archiveProduct(product.id, product.status !== 'archived')
       removeToast(loadingId)
@@ -203,7 +186,10 @@ function SalonProductsPageContent() {
 
   // Calculate stats
   const activeCount = products.filter(p => p.status === 'active').length
-  const totalValue = products.reduce((sum, product) => sum + ((product.price || 0) * product.qty_on_hand), 0)
+  const totalValue = products.reduce(
+    (sum, product) => sum + (product.price || 0) * product.qty_on_hand,
+    0
+  )
   const lowStockCount = products.filter(p => p.qty_on_hand < 10).length
 
   return (
@@ -213,7 +199,8 @@ function SalonProductsPageContent() {
         <div
           className="absolute inset-0 pointer-events-none opacity-30"
           style={{
-            background: 'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
+            background:
+              'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
           }}
         />
 
@@ -337,7 +324,10 @@ function SalonProductsPageContent() {
           {/* Filters and View Options */}
           <div className="mx-6 mt-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Tabs value={includeArchived ? 'all' : 'active'} onValueChange={(v) => setIncludeArchived(v === 'all')}>
+              <Tabs
+                value={includeArchived ? 'all' : 'active'}
+                onValueChange={v => setIncludeArchived(v === 'all')}
+              >
                 <TabsList style={{ backgroundColor: COLORS.charcoalLight }}>
                   <TabsTrigger value="active">Active</TabsTrigger>
                   <TabsTrigger value="all">All Products</TabsTrigger>
@@ -402,7 +392,9 @@ function SalonProductsPageContent() {
                 <SelectContent>
                   <SelectItem value="">All categories</SelectItem>
                   {categories.map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -414,19 +406,27 @@ function SalonProductsPageContent() {
             {isLoading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Package className="w-12 h-12 mx-auto mb-3 animate-pulse" style={{ color: COLORS.gold }} />
+                  <Package
+                    className="w-12 h-12 mx-auto mb-3 animate-pulse"
+                    style={{ color: COLORS.gold }}
+                  />
                   <p style={{ color: COLORS.lightText }}>Loading products...</p>
                 </div>
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Package className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: COLORS.gold }} />
+                  <Package
+                    className="w-12 h-12 mx-auto mb-3 opacity-30"
+                    style={{ color: COLORS.gold }}
+                  />
                   <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
                     {searchQuery || categoryFilter ? 'No products found' : 'No products yet'}
                   </p>
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
-                    {searchQuery || categoryFilter ? 'Try adjusting your search or filters' : 'Create your first product to start managing inventory'}
+                    {searchQuery || categoryFilter
+                      ? 'Try adjusting your search or filters'
+                      : 'Create your first product to start managing inventory'}
                   </p>
                   {!searchQuery && !categoryFilter && (
                     <button

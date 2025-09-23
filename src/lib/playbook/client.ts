@@ -1,11 +1,11 @@
 /**
  * Unified Playbook API Client
- * 
+ *
  * This client handles all communication with the Playbook API through our secure proxy.
  * It provides consistent error handling, response parsing, and timeout management.
  */
 
-export type ListShape<T> = { 
+export type ListShape<T> = {
   items?: T[]
   rows?: T[]
   data?: T[]
@@ -31,7 +31,7 @@ function generateCorrelationId(): string {
 
 /**
  * Universal Playbook API client
- * 
+ *
  * @param path - API path (e.g., '/entities', '/universal_transactions')
  * @param options - Request options
  * @returns Typed JSON response
@@ -43,7 +43,7 @@ export async function pb<T = any>(
     method = 'GET',
     body,
     timeoutMs = 12_000,
-    correlationId,
+    correlationId
   }: {
     query?: Record<string, any>
     method?: string
@@ -65,7 +65,7 @@ export async function pb<T = any>(
   // Setup timeout
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
-  
+
   pbLog(`[${corrId}] Request:`, { path, method, query, hasBody: !!body })
 
   try {
@@ -75,10 +75,10 @@ export async function pb<T = any>(
       cache: 'no-store',
       headers: {
         ...(body ? { 'Content-Type': 'application/json' } : {}),
-        'X-Correlation-ID': corrId,
+        'X-Correlation-ID': corrId
       },
       body: body ? JSON.stringify(body) : undefined,
-      signal: controller.signal,
+      signal: controller.signal
     })
 
     clearTimeout(timeoutId)
@@ -86,7 +86,7 @@ export async function pb<T = any>(
     // Parse response
     const text = await response.text()
     const json = text ? JSON.parse(text) : {}
-    
+
     pbLog(`[${corrId}] Response:`, { status: response.status, hasData: !!json })
 
     // Handle errors
@@ -98,9 +98,9 @@ export async function pb<T = any>(
     return json as T
   } catch (error) {
     clearTimeout(timeoutId)
-    
+
     pbLog(`[${corrId}] Error:`, error)
-    
+
     // Enhance error message
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
@@ -118,15 +118,15 @@ export async function pb<T = any>(
 export async function getDD(entity_ids: string[], smart_code: string, organization_id: string) {
   const result = await pb<{ data?: Record<string, Record<string, any>> }>('/dynamic_data/query', {
     method: 'POST',
-    body: { entity_ids, smart_code, organization_id },
+    body: { entity_ids, smart_code, organization_id }
   })
-  
+
   // The endpoint now returns data as a map of entity_id -> field_name -> field_data
   // We need to extract just the field we're looking for based on the smart_code
   const fieldName = smart_code.split('.').slice(-2, -1)[0].toUpperCase() // e.g., PRICE, TAX, COMMISSION
-  
+
   const data: Record<string, any> = {}
-  
+
   if (result.data && typeof result.data === 'object') {
     // For each entity, get the specific field data
     Object.entries(result.data).forEach(([entityId, fields]) => {
@@ -135,7 +135,7 @@ export async function getDD(entity_ids: string[], smart_code: string, organizati
       }
     })
   }
-  
+
   return data
 }
 
@@ -177,7 +177,7 @@ interface RetryConfig {
 const defaultRetryConfig: RetryConfig = {
   maxRetries: 3,
   retryDelay: 1000,
-  retryOn: (error) => {
+  retryOn: error => {
     // Retry on network errors and 5xx server errors
     if (error.name === 'AbortError') return false // Don't retry timeouts
     if (error.message?.includes('fetch failed')) return true
@@ -196,7 +196,7 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * Universal Playbook API client with retry support
- * 
+ *
  * @param path - API path (e.g., '/entities', '/universal_transactions')
  * @param options - Request options including retry configuration
  * @returns Typed JSON response
@@ -215,26 +215,23 @@ export async function pbWithRetry<T = any>(
   const { retry = {}, ...pbOptions } = options
   const config = { ...defaultRetryConfig, ...retry }
   const corrId = pbOptions.correlationId || generateCorrelationId()
-  
+
   // Only retry GET requests or explicitly marked idempotent operations
   const canRetry = pbOptions.method === 'GET' || config.idempotent
   const maxAttempts = canRetry ? (config.maxRetries ?? 0) + 1 : 1
-  
+
   let lastError: Error | undefined
-  
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       pbLog(`[${corrId}] Attempt ${attempt}/${maxAttempts} for ${path}`)
       return await pb<T>(path, { ...pbOptions, correlationId: corrId })
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error))
-      
+
       // Check if we should retry
-      const shouldRetry = 
-        attempt < maxAttempts && 
-        canRetry && 
-        config.retryOn?.(lastError)
-      
+      const shouldRetry = attempt < maxAttempts && canRetry && config.retryOn?.(lastError)
+
       if (shouldRetry) {
         const delay = config.retryDelay ?? 1000
         pbLog(`Retrying after ${delay}ms due to: ${lastError.message}`)
@@ -244,6 +241,6 @@ export async function pbWithRetry<T = any>(
       }
     }
   }
-  
+
   throw lastError || new Error('Max retries exceeded')
 }

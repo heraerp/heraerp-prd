@@ -71,7 +71,7 @@ const statusColors = {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 export default function FiscalDashboardPage() {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [selectedPeriod, setSelectedPeriod] = useState('2025-01')
   const [periodStatus, setPeriodStatus] = useState<FiscalPeriod | null>(null)
   const [closingSteps, setClosingSteps] = useState<ClosingStep[]>([])

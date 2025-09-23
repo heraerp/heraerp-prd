@@ -47,7 +47,7 @@ export default function HairTalkzLanding() {
             filter: 'brightness(0.3) sepia(0.2)'
           }}
         >
-          <div 
+          <div
             className="absolute inset-0"
             style={{
               background: `linear-gradient(to bottom, ${COLORS.black}80 0%, ${COLORS.charcoal}90 100%)`
@@ -58,16 +58,16 @@ export default function HairTalkzLanding() {
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="text-center px-4 max-w-5xl mx-auto">
             <div className="mb-8 flex justify-center">
-              <Crown 
-                className="h-16 w-16 mb-4" 
-                style={{ 
+              <Crown
+                className="h-16 w-16 mb-4"
+                style={{
                   color: COLORS.gold,
                   filter: 'drop-shadow(0 0 20px rgba(212, 175, 55, 0.5))'
-                }} 
+                }}
               />
             </div>
-            
-            <h1 
+
+            <h1
               className="text-6xl md:text-8xl font-light mb-6 tracking-wider"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 50%, ${COLORS.champagne} 100%)`,
@@ -79,17 +79,17 @@ export default function HairTalkzLanding() {
             >
               HAIRTALKZ
             </h1>
-            
-            <p 
+
+            <p
               className="text-2xl md:text-3xl font-light mb-12 tracking-widest uppercase"
               style={{ color: COLORS.bronze }}
             >
               Where Luxury Meets Excellence
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="px-12 py-6 text-lg font-light tracking-wider uppercase transition-all duration-300"
                 style={{
                   backgroundColor: COLORS.gold,
@@ -97,11 +97,11 @@ export default function HairTalkzLanding() {
                   border: `1px solid ${COLORS.gold}`,
                   boxShadow: '0 0 30px rgba(212, 175, 55, 0.3)'
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={e => {
                   e.currentTarget.style.backgroundColor = COLORS.goldDark
                   e.currentTarget.style.boxShadow = '0 0 40px rgba(212, 175, 55, 0.5)'
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                   e.currentTarget.style.backgroundColor = COLORS.gold
                   e.currentTarget.style.boxShadow = '0 0 30px rgba(212, 175, 55, 0.3)'
                 }}
@@ -112,7 +112,7 @@ export default function HairTalkzLanding() {
                   Book Appointment
                 </Link>
               </Button>
-              
+
               <Button
                 size="lg"
                 variant="outline"
@@ -122,11 +122,11 @@ export default function HairTalkzLanding() {
                   color: COLORS.champagne,
                   border: `1px solid ${COLORS.bronze}`
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={e => {
                   e.currentTarget.style.backgroundColor = `${COLORS.bronze}20`
                   e.currentTarget.style.borderColor = COLORS.gold
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                   e.currentTarget.style.backgroundColor = 'transparent'
                   e.currentTarget.style.borderColor = COLORS.bronze
                 }}
@@ -140,26 +140,23 @@ export default function HairTalkzLanding() {
             </div>
           </div>
         </div>
-        
+
         {/* Scroll indicator */}
         <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronRight 
-            className="h-8 w-8 rotate-90" 
-            style={{ color: COLORS.bronze }}
-          />
+          <ChevronRight className="h-8 w-8 rotate-90" style={{ color: COLORS.bronze }} />
         </div>
       </section>
 
       {/* Luxe Services Section */}
       <section className="py-24 px-4" style={{ backgroundColor: COLORS.charcoal }}>
         <div className="max-w-7xl mx-auto">
-          <h2 
+          <h2
             className="text-5xl font-light text-center mb-20 tracking-wider uppercase"
             style={{ color: COLORS.champagne }}
           >
             Signature Services
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
               {
@@ -181,8 +178,8 @@ export default function HairTalkzLanding() {
                 price: 'From AED 600'
               }
             ].map((service, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="group relative overflow-hidden transition-all duration-500 hover:transform hover:scale-105"
                 style={{
                   backgroundColor: COLORS.charcoalLight,
@@ -190,37 +187,31 @@ export default function HairTalkzLanding() {
                   borderRadius: '8px'
                 }}
               >
-                <div 
+                <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     background: `radial-gradient(circle at center, ${COLORS.gold}10 0%, transparent 70%)`
                   }}
                 />
-                
+
                 <div className="relative p-10">
-                  <service.icon 
+                  <service.icon
                     className="w-14 h-14 mb-6 transition-all duration-300 group-hover:scale-110"
-                    style={{ 
+                    style={{
                       color: COLORS.gold,
                       filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.3))'
                     }}
                   />
-                  <h3 
+                  <h3
                     className="text-2xl font-light mb-4 tracking-wide"
                     style={{ color: COLORS.champagne }}
                   >
                     {service.title}
                   </h3>
-                  <p 
-                    className="mb-6 font-light leading-relaxed"
-                    style={{ color: COLORS.bronze }}
-                  >
+                  <p className="mb-6 font-light leading-relaxed" style={{ color: COLORS.bronze }}>
                     {service.description}
                   </p>
-                  <p 
-                    className="text-xl font-light tracking-wider"
-                    style={{ color: COLORS.gold }}
-                  >
+                  <p className="text-xl font-light tracking-wider" style={{ color: COLORS.gold }}>
                     {service.price}
                   </p>
                 </div>
@@ -231,9 +222,9 @@ export default function HairTalkzLanding() {
       </section>
 
       {/* Excellence Stats */}
-      <section 
+      <section
         className="py-20 px-4"
-        style={{ 
+        style={{
           backgroundColor: COLORS.black,
           backgroundImage: `linear-gradient(90deg, ${COLORS.bronze}10 1px, transparent 1px)`,
           backgroundSize: '100px 100%'
@@ -241,13 +232,13 @@ export default function HairTalkzLanding() {
       >
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div className="group cursor-pointer">
-            <div 
+            <div
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
               15+
             </div>
-            <div 
+            <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
@@ -255,13 +246,13 @@ export default function HairTalkzLanding() {
             </div>
           </div>
           <div className="group cursor-pointer">
-            <div 
+            <div
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
               50K+
             </div>
-            <div 
+            <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
@@ -269,13 +260,13 @@ export default function HairTalkzLanding() {
             </div>
           </div>
           <div className="group cursor-pointer">
-            <div 
+            <div
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
               4.9
             </div>
-            <div 
+            <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
@@ -283,13 +274,13 @@ export default function HairTalkzLanding() {
             </div>
           </div>
           <div className="group cursor-pointer">
-            <div 
+            <div
               className="text-5xl font-light mb-4 transition-all duration-300 group-hover:scale-110"
               style={{ color: COLORS.gold }}
             >
               40+
             </div>
-            <div 
+            <div
               className="text-sm uppercase tracking-widest font-light"
               style={{ color: COLORS.bronze }}
             >
@@ -302,20 +293,20 @@ export default function HairTalkzLanding() {
       {/* Contact Section */}
       <section className="py-24 px-4" style={{ backgroundColor: COLORS.charcoal }}>
         <div className="max-w-6xl mx-auto text-center">
-          <h2 
+          <h2
             className="text-5xl font-light mb-16 tracking-wider uppercase"
             style={{ color: COLORS.champagne }}
           >
             Visit Our Sanctuary
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div className="group">
-              <MapPin 
+              <MapPin
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
-              <h3 
+              <h3
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
@@ -329,13 +320,13 @@ export default function HairTalkzLanding() {
                 Dubai, UAE
               </p>
             </div>
-            
+
             <div className="group">
-              <Clock 
+              <Clock
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
-              <h3 
+              <h3
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
@@ -349,13 +340,13 @@ export default function HairTalkzLanding() {
                 By Appointment Only
               </p>
             </div>
-            
+
             <div className="group">
-              <Phone 
+              <Phone
                 className="w-10 h-10 mx-auto mb-6 transition-transform duration-300 group-hover:scale-110"
                 style={{ color: COLORS.gold }}
               />
-              <h3 
+              <h3
                 className="text-xl font-light mb-4 tracking-wide"
                 style={{ color: COLORS.champagne }}
               >
@@ -371,8 +362,8 @@ export default function HairTalkzLanding() {
             </div>
           </div>
 
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="px-16 py-7 text-lg font-light tracking-wider uppercase"
             style={{
               backgroundColor: COLORS.gold,
@@ -390,18 +381,15 @@ export default function HairTalkzLanding() {
       </section>
 
       {/* Footer */}
-      <footer 
+      <footer
         className="py-10 px-4"
-        style={{ 
+        style={{
           backgroundColor: COLORS.black,
           borderTop: `1px solid ${COLORS.bronze}30`
         }}
       >
         <div className="max-w-7xl mx-auto text-center">
-          <p 
-            className="text-sm font-light tracking-wider"
-            style={{ color: COLORS.bronze }}
-          >
+          <p className="text-sm font-light tracking-wider" style={{ color: COLORS.bronze }}>
             © 2025 HAIRTALKZ. A Luxury Experience by HERA ERP.
           </p>
         </div>

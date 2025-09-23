@@ -31,19 +31,20 @@ function getFieldNameFromSmartCode(smartCode: string): string {
     'HERA.SALON.SERVICE.DYN.TAX.v1': 'service.tax',
     'HERA.SALON.SERVICE.DYN.COMMISSION.v1': 'service.commission',
     'HERA.SALON.SERVICE.DYN.DURATION.v1': 'service.duration_min',
-    'HERA.SALON.SERVICE.DYN.CATEGORY.v1': 'service.category',
+    'HERA.SALON.SERVICE.DYN.CATEGORY.v1': 'service.category'
   }
-  
+
   // Return mapped field name or extract from smart code
   return mappings[smartCode] || smartCode.split('.').slice(-2)[0].toLowerCase()
 }
 
 function orgFrom(req: NextRequest) {
-  const org = req.nextUrl.searchParams.get('organization_id')
-    || req.headers.get('x-hera-org')
-    || req.cookies.get('HERA_ORG_ID')?.value
-    || req.cookies.get('hera-organization-id')?.value
-    || null
+  const org =
+    req.nextUrl.searchParams.get('organization_id') ||
+    req.headers.get('x-hera-org') ||
+    req.cookies.get('HERA_ORG_ID')?.value ||
+    req.cookies.get('hera-organization-id')?.value ||
+    null
   return org && /^[0-9a-f-]{36}$/i.test(org) ? org : null
 }
 
@@ -69,12 +70,18 @@ export async function POST(req: NextRequest) {
       rows = body.rows.map((r: any) => ({
         entity_id: r.entity_id,
         smart_code: body.smart_code,
-        data: r.data,
+        data: r.data
       }))
     } else if (body.entity_id && body.smart_code && body.data !== undefined) {
       rows = [{ entity_id: body.entity_id, smart_code: body.smart_code, data: body.data }]
     } else {
-      return NextResponse.json({ error: 'Invalid payload. Provide (entity_id, smart_code, data) or { smart_code, rows:[{entity_id,data}] }' }, { status: 400 })
+      return NextResponse.json(
+        {
+          error:
+            'Invalid payload. Provide (entity_id, smart_code, data) or { smart_code, rows:[{entity_id,data}] }'
+        },
+        { status: 400 }
+      )
     }
 
     // Add org and prepare payload with proper field mapping
@@ -89,7 +96,7 @@ export async function POST(req: NextRequest) {
         field_value_text: null as string | null,
         field_value_number: null as number | null,
         field_value_boolean: null as boolean | null,
-        field_value_date: null as string | null,
+        field_value_date: null as string | null
       }
 
       // Map data to appropriate field based on type
@@ -112,21 +119,20 @@ export async function POST(req: NextRequest) {
 
     // First try to delete existing records to avoid constraint issues
     for (const record of payload) {
-      await supa
-        .from('core_dynamic_data')
-        .delete()
-        .match({
-          organization_id: record.organization_id,
-          entity_id: record.entity_id,
-          field_name: record.field_name
-        })
+      await supa.from('core_dynamic_data').delete().match({
+        organization_id: record.organization_id,
+        entity_id: record.entity_id,
+        field_name: record.field_name
+      })
     }
 
     // Then insert new records
     const { data, error } = await supa
       .from('core_dynamic_data')
       .insert(payload)
-      .select('entity_id, field_name, field_value_json, field_value_text, field_value_number, field_value_boolean, field_value_date')
+      .select(
+        'entity_id, field_name, field_value_json, field_value_text, field_value_number, field_value_boolean, field_value_date'
+      )
 
     if (error) throw error
 

@@ -11,10 +11,10 @@ export default function SalonDemoInitPage() {
   useEffect(() => {
     async function setupSalonDemo() {
       console.log('🎯 Initializing salon demo session...')
-      
+
       // Initialize the demo session
       const success = await initializeDemo('salon-receptionist')
-      
+
       if (success) {
         console.log('✅ Demo session initialized, redirecting to dashboard...')
         // Small delay to ensure cookies are set

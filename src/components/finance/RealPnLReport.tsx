@@ -35,7 +35,15 @@ interface RealPnLReportProps {
 }
 
 interface PnLLine {
-  section: 'REVENUE' | 'COGS' | 'OPEX' | 'OTHER_INCOME' | 'OTHER_EXPENSE' | 'FINANCE_COST' | 'TAX' | 'KPI'
+  section:
+    | 'REVENUE'
+    | 'COGS'
+    | 'OPEX'
+    | 'OTHER_INCOME'
+    | 'OTHER_EXPENSE'
+    | 'FINANCE_COST'
+    | 'TAX'
+    | 'KPI'
   label: string
   amount: number
   percentage?: number
@@ -82,7 +90,7 @@ export function RealPnLReport({
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     new Set(['REVENUE', 'COGS', 'OPEX'])
   )
-  
+
   // Fetch real P&L data
   const { data, isLoading, error } = useRealPnLData({
     organizationId,
@@ -90,7 +98,7 @@ export function RealPnLReport({
     endDate,
     branchId
   })
-  
+
   const toggleSection = (section: string) => {
     const newExpanded = new Set(expandedSections)
     if (newExpanded.has(section)) {
@@ -100,7 +108,7 @@ export function RealPnLReport({
     }
     setExpandedSections(newExpanded)
   }
-  
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -115,7 +123,7 @@ export function RealPnLReport({
             </Card>
           ))}
         </div>
-        
+
         {/* Loading P&L Table */}
         <Card>
           <CardHeader>
@@ -135,31 +143,27 @@ export function RealPnLReport({
       </div>
     )
   }
-  
+
   if (error) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Error loading financial data: {error.message}
-        </AlertDescription>
+        <AlertDescription>Error loading financial data: {error.message}</AlertDescription>
       </Alert>
     )
   }
-  
+
   if (!data) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          No financial data available for the selected period
-        </AlertDescription>
+        <AlertDescription>No financial data available for the selected period</AlertDescription>
       </Alert>
     )
   }
-  
+
   const { revenue, expenses, kpis } = data
-  
+
   // Build P&L lines from real data
   const pnlLines: PnLLine[] = [
     // Revenue Section
@@ -173,24 +177,27 @@ export function RealPnLReport({
       section: 'REVENUE',
       label: 'Service Revenue',
       amount: revenue.serviceRevenue,
-      percentage: revenue.totalRevenue > 0 ? (revenue.serviceRevenue / revenue.totalRevenue) * 100 : 0,
+      percentage:
+        revenue.totalRevenue > 0 ? (revenue.serviceRevenue / revenue.totalRevenue) * 100 : 0,
       indent: 1
     },
     {
       section: 'REVENUE',
       label: 'Product Sales',
       amount: revenue.productRevenue,
-      percentage: revenue.totalRevenue > 0 ? (revenue.productRevenue / revenue.totalRevenue) * 100 : 0,
+      percentage:
+        revenue.totalRevenue > 0 ? (revenue.productRevenue / revenue.totalRevenue) * 100 : 0,
       indent: 1
     },
     {
       section: 'REVENUE',
       label: 'Other Revenue',
       amount: revenue.otherRevenue,
-      percentage: revenue.totalRevenue > 0 ? (revenue.otherRevenue / revenue.totalRevenue) * 100 : 0,
+      percentage:
+        revenue.totalRevenue > 0 ? (revenue.otherRevenue / revenue.totalRevenue) * 100 : 0,
       indent: 1
     },
-    
+
     // COGS Section
     {
       section: 'COGS',
@@ -205,7 +212,7 @@ export function RealPnLReport({
       percentage: kpis.cogs > 0 ? (expenses.productCost / kpis.cogs) * 100 : 0,
       indent: 1
     },
-    
+
     // Gross Profit
     {
       section: 'KPI',
@@ -214,7 +221,7 @@ export function RealPnLReport({
       percentage: kpis.gross_margin,
       isTotal: true
     },
-    
+
     // OPEX Section
     {
       section: 'OPEX',
@@ -257,7 +264,7 @@ export function RealPnLReport({
       percentage: kpis.opex > 0 ? (expenses.otherExpense / kpis.opex) * 100 : 0,
       indent: 1
     },
-    
+
     // EBITDA
     {
       section: 'KPI',
@@ -266,7 +273,7 @@ export function RealPnLReport({
       percentage: kpis.ebitda_margin,
       isTotal: true
     },
-    
+
     // Net Profit
     {
       section: 'KPI',
@@ -276,7 +283,7 @@ export function RealPnLReport({
       isTotal: true
     }
   ]
-  
+
   return (
     <div className="space-y-6">
       {/* KPI Cards */}
@@ -296,7 +303,7 @@ export function RealPnLReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -312,7 +319,7 @@ export function RealPnLReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -326,7 +333,7 @@ export function RealPnLReport({
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-background dark:bg-muted border-border dark:border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -346,7 +353,7 @@ export function RealPnLReport({
           </CardContent>
         </Card>
       </div>
-      
+
       {/* P&L Statement Table */}
       <Card className="bg-background dark:bg-muted border-border dark:border-border">
         <CardHeader>
@@ -390,9 +397,9 @@ export function RealPnLReport({
                 {pnlLines.map((line, index) => {
                   const isSection = line.isSubtotal && !line.isTotal
                   const shouldShow = !line.indent || expandedSections.has(line.section)
-                  
+
                   if (!shouldShow && !isSection && !line.isTotal) return null
-                  
+
                   return (
                     <tr
                       key={index}
@@ -441,12 +448,13 @@ export function RealPnLReport({
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Data Source Note */}
       <div className="text-sm text-muted-foreground text-center">
         <p>
-          Data sourced from {data.transactions.revenue.length + data.transactions.expenses.length} transactions
-          between {format(new Date(startDate), 'MMM d, yyyy')} and {format(new Date(endDate), 'MMM d, yyyy')}
+          Data sourced from {data.transactions.revenue.length + data.transactions.expenses.length}{' '}
+          transactions between {format(new Date(startDate), 'MMM d, yyyy')} and{' '}
+          {format(new Date(endDate), 'MMM d, yyyy')}
         </p>
       </div>
     </div>

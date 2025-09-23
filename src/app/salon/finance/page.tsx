@@ -58,7 +58,7 @@ export default function SalonFinancePage() {
 
   if (authLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.charcoal }}
       >
@@ -88,17 +88,12 @@ export default function SalonFinancePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 
-                className="text-3xl font-light mb-2"
-                style={{ color: LUXE_COLORS.gold }}
-              >
+              <h1 className="text-3xl font-light mb-2" style={{ color: LUXE_COLORS.gold }}>
                 Financial Management
               </h1>
-              <p 
-                className="text-sm"
-                style={{ color: LUXE_COLORS.bronze }}
-              >
-                Comprehensive financial reports and VAT compliance for {user?.user_metadata?.full_name || 'Accountant'}
+              <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                Comprehensive financial reports and VAT compliance for{' '}
+                {user?.user_metadata?.full_name || 'Accountant'}
               </p>
             </div>
             <div className="flex gap-2">
@@ -120,7 +115,7 @@ export default function SalonFinancePage() {
 
         {/* Financial Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -136,7 +131,10 @@ export default function SalonFinancePage() {
                   <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.gold }}>
                     AED {financialSummary.revenue.toLocaleString()}
                   </p>
-                  <p className="text-xs mt-1 flex items-center gap-1" style={{ color: LUXE_COLORS.emerald }}>
+                  <p
+                    className="text-xs mt-1 flex items-center gap-1"
+                    style={{ color: LUXE_COLORS.emerald }}
+                  >
                     <ArrowUpRight className="h-3 w-3" />
                     +12% from last month
                   </p>
@@ -146,7 +144,7 @@ export default function SalonFinancePage() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -162,7 +160,10 @@ export default function SalonFinancePage() {
                   <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.champagne }}>
                     AED {financialSummary.expenses.toLocaleString()}
                   </p>
-                  <p className="text-xs mt-1 flex items-center gap-1" style={{ color: LUXE_COLORS.ruby }}>
+                  <p
+                    className="text-xs mt-1 flex items-center gap-1"
+                    style={{ color: LUXE_COLORS.ruby }}
+                  >
                     <ArrowDownRight className="h-3 w-3" />
                     -5% from last month
                   </p>
@@ -172,7 +173,7 @@ export default function SalonFinancePage() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -197,7 +198,7 @@ export default function SalonFinancePage() {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="border-0"
             style={{
               backgroundColor: LUXE_COLORS.charcoalLight,
@@ -222,7 +223,7 @@ export default function SalonFinancePage() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList 
+          <TabsList
             className="bg-transparent border flex-wrap h-auto p-1"
             style={{ borderColor: `${LUXE_COLORS.bronze}30` }}
           >
@@ -261,7 +262,7 @@ export default function SalonFinancePage() {
           </TabsList>
 
           <TabsContent value="overview">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -278,20 +279,35 @@ export default function SalonFinancePage() {
                 <div className="space-y-6">
                   {/* Revenue Breakdown */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                    <h3
+                      className="text-lg font-medium mb-4 flex items-center gap-2"
+                      style={{ color: LUXE_COLORS.champagne }}
+                    >
                       <DollarSign className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
                       Revenue Breakdown
                     </h3>
                     <div className="space-y-2">
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Store className="h-4 w-4" />
                           Services
                         </span>
                         <span style={{ color: LUXE_COLORS.gold }}>AED 95,000</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Package className="h-4 w-4" />
                           Products
                         </span>
@@ -302,34 +318,61 @@ export default function SalonFinancePage() {
 
                   {/* Expense Categories */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                    <h3
+                      className="text-lg font-medium mb-4 flex items-center gap-2"
+                      style={{ color: LUXE_COLORS.champagne }}
+                    >
                       <Receipt className="h-5 w-5" style={{ color: LUXE_COLORS.ruby }} />
                       Expense Categories
                     </h3>
                     <div className="space-y-2">
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Users className="h-4 w-4" />
                           Staff Salaries
                         </span>
                         <span style={{ color: LUXE_COLORS.champagne }}>AED 45,000</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Building2 className="h-4 w-4" />
                           Rent & Utilities
                         </span>
                         <span style={{ color: LUXE_COLORS.champagne }}>AED 15,000</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Package className="h-4 w-4" />
                           Supplies
                         </span>
                         <span style={{ color: LUXE_COLORS.champagne }}>AED 10,000</span>
                       </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
-                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                      <div
+                        className="flex justify-between items-center p-3 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
+                        <span
+                          className="flex items-center gap-2"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
                           <Tag className="h-4 w-4" />
                           Marketing
                         </span>
@@ -343,7 +386,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="pnl">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -366,7 +409,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="vat">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -383,19 +426,31 @@ export default function SalonFinancePage() {
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Next VAT return due: {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                    Next VAT return due:{' '}
+                    {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
                   </AlertDescription>
                 </Alert>
                 <div className="mt-6 space-y-4">
-                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                  <div
+                    className="flex justify-between items-center p-4 rounded-lg"
+                    style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  >
                     <span style={{ color: LUXE_COLORS.champagne }}>Total VAT Collected</span>
-                    <span style={{ color: LUXE_COLORS.gold }}>AED {financialSummary.vat.toLocaleString()}</span>
+                    <span style={{ color: LUXE_COLORS.gold }}>
+                      AED {financialSummary.vat.toLocaleString()}
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                  <div
+                    className="flex justify-between items-center p-4 rounded-lg"
+                    style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  >
                     <span style={{ color: LUXE_COLORS.champagne }}>VAT on Purchases</span>
                     <span style={{ color: LUXE_COLORS.gold }}>AED 2,500</span>
                   </div>
-                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                  <div
+                    className="flex justify-between items-center p-4 rounded-lg"
+                    style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                  >
                     <span style={{ color: LUXE_COLORS.champagne }}>Net VAT Payable</span>
                     <span style={{ color: LUXE_COLORS.emerald }}>AED 3,750</span>
                   </div>
@@ -405,7 +460,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="expenses">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -425,7 +480,10 @@ export default function SalonFinancePage() {
                       <Search className="h-4 w-4 mr-2" />
                       Search
                     </Button>
-                    <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                    <Button
+                      size="sm"
+                      style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+                    >
                       <Receipt className="h-4 w-4 mr-2" />
                       Add Expense
                     </Button>
@@ -435,24 +493,65 @@ export default function SalonFinancePage() {
               <CardContent>
                 <div className="space-y-3">
                   {[
-                    { date: '2024-01-15', vendor: 'Beauty Supplies Co.', category: 'Inventory', amount: 2500, status: 'paid' },
-                    { date: '2024-01-14', vendor: 'DEWA', category: 'Utilities', amount: 850, status: 'pending' },
-                    { date: '2024-01-13', vendor: 'Marketing Agency', category: 'Marketing', amount: 1500, status: 'paid' },
-                    { date: '2024-01-12', vendor: 'Cleaning Services', category: 'Maintenance', amount: 500, status: 'paid' }
+                    {
+                      date: '2024-01-15',
+                      vendor: 'Beauty Supplies Co.',
+                      category: 'Inventory',
+                      amount: 2500,
+                      status: 'paid'
+                    },
+                    {
+                      date: '2024-01-14',
+                      vendor: 'DEWA',
+                      category: 'Utilities',
+                      amount: 850,
+                      status: 'pending'
+                    },
+                    {
+                      date: '2024-01-13',
+                      vendor: 'Marketing Agency',
+                      category: 'Marketing',
+                      amount: 1500,
+                      status: 'paid'
+                    },
+                    {
+                      date: '2024-01-12',
+                      vendor: 'Cleaning Services',
+                      category: 'Maintenance',
+                      amount: 500,
+                      status: 'paid'
+                    }
                   ].map((expense, idx) => (
-                    <div key={idx} className="p-4 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    <div
+                      key={idx}
+                      className="p-4 rounded-lg flex justify-between items-center"
+                      style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                    >
                       <div className="flex items-center gap-4">
                         <div>
                           <p style={{ color: LUXE_COLORS.champagne }}>{expense.vendor}</p>
-                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{expense.date} • {expense.category}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                            {expense.date} • {expense.category}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className={`text-xs px-2 py-1 rounded`} style={{
-                          backgroundColor: expense.status === 'paid' ? `${LUXE_COLORS.emerald}20` : `${LUXE_COLORS.orange}20`,
-                          color: expense.status === 'paid' ? LUXE_COLORS.emerald : LUXE_COLORS.orange
-                        }}>
-                          {expense.status === 'paid' ? <CheckCircle className="h-3 w-3 inline mr-1" /> : <Clock className="h-3 w-3 inline mr-1" />}
+                        <span
+                          className={`text-xs px-2 py-1 rounded`}
+                          style={{
+                            backgroundColor:
+                              expense.status === 'paid'
+                                ? `${LUXE_COLORS.emerald}20`
+                                : `${LUXE_COLORS.orange}20`,
+                            color:
+                              expense.status === 'paid' ? LUXE_COLORS.emerald : LUXE_COLORS.orange
+                          }}
+                        >
+                          {expense.status === 'paid' ? (
+                            <CheckCircle className="h-3 w-3 inline mr-1" />
+                          ) : (
+                            <Clock className="h-3 w-3 inline mr-1" />
+                          )}
                           {expense.status}
                         </span>
                         <span style={{ color: LUXE_COLORS.gold }}>AED {expense.amount}</span>
@@ -465,7 +564,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="invoices">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -480,7 +579,10 @@ export default function SalonFinancePage() {
                       Create and track customer invoices
                     </CardDescription>
                   </div>
-                  <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                  <Button
+                    size="sm"
+                    style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+                  >
                     <FileText className="h-4 w-4 mr-2" />
                     New Invoice
                   </Button>
@@ -489,26 +591,65 @@ export default function SalonFinancePage() {
               <CardContent>
                 <div className="space-y-3">
                   {[
-                    { number: 'INV-2024-001', customer: 'VIP Customer Group', amount: 12500, status: 'paid', dueDate: '2024-01-10' },
-                    { number: 'INV-2024-002', customer: 'Corporate Client A', amount: 8500, status: 'overdue', dueDate: '2024-01-05' },
-                    { number: 'INV-2024-003', customer: 'Wedding Party', amount: 15000, status: 'pending', dueDate: '2024-01-20' }
-                  ].map((invoice) => (
-                    <div key={invoice.number} className="p-4 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    {
+                      number: 'INV-2024-001',
+                      customer: 'VIP Customer Group',
+                      amount: 12500,
+                      status: 'paid',
+                      dueDate: '2024-01-10'
+                    },
+                    {
+                      number: 'INV-2024-002',
+                      customer: 'Corporate Client A',
+                      amount: 8500,
+                      status: 'overdue',
+                      dueDate: '2024-01-05'
+                    },
+                    {
+                      number: 'INV-2024-003',
+                      customer: 'Wedding Party',
+                      amount: 15000,
+                      status: 'pending',
+                      dueDate: '2024-01-20'
+                    }
+                  ].map(invoice => (
+                    <div
+                      key={invoice.number}
+                      className="p-4 rounded-lg flex justify-between items-center"
+                      style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                    >
                       <div>
                         <p style={{ color: LUXE_COLORS.champagne }}>{invoice.number}</p>
-                        <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{invoice.customer} • Due: {invoice.dueDate}</p>
+                        <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                          {invoice.customer} • Due: {invoice.dueDate}
+                        </p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className={`text-xs px-2 py-1 rounded`} style={{
-                          backgroundColor: invoice.status === 'paid' ? `${LUXE_COLORS.emerald}20` : 
-                                         invoice.status === 'overdue' ? `${LUXE_COLORS.ruby}20` : `${LUXE_COLORS.orange}20`,
-                          color: invoice.status === 'paid' ? LUXE_COLORS.emerald :
-                                invoice.status === 'overdue' ? LUXE_COLORS.ruby : LUXE_COLORS.orange
-                        }}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded`}
+                          style={{
+                            backgroundColor:
+                              invoice.status === 'paid'
+                                ? `${LUXE_COLORS.emerald}20`
+                                : invoice.status === 'overdue'
+                                  ? `${LUXE_COLORS.ruby}20`
+                                  : `${LUXE_COLORS.orange}20`,
+                            color:
+                              invoice.status === 'paid'
+                                ? LUXE_COLORS.emerald
+                                : invoice.status === 'overdue'
+                                  ? LUXE_COLORS.ruby
+                                  : LUXE_COLORS.orange
+                          }}
+                        >
                           {invoice.status}
                         </span>
                         <span style={{ color: LUXE_COLORS.gold }}>AED {invoice.amount}</span>
-                        <Button size="sm" variant="outline" style={{ borderColor: LUXE_COLORS.bronze }}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          style={{ borderColor: LUXE_COLORS.bronze }}
+                        >
                           <Printer className="h-4 w-4" />
                         </Button>
                       </div>
@@ -520,7 +661,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="cashflow">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -536,31 +677,46 @@ export default function SalonFinancePage() {
               <CardContent>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                    <h3
+                      className="text-lg font-medium mb-4 flex items-center gap-2"
+                      style={{ color: LUXE_COLORS.champagne }}
+                    >
                       <LineChart className="h-5 w-5" />
                       Cash Flow Summary
                     </h3>
                     <div className="space-y-3">
-                      <div className="p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                      <div
+                        className="p-4 rounded-lg"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
                         <div className="flex justify-between items-center mb-2">
                           <span style={{ color: LUXE_COLORS.bronze }}>Opening Balance</span>
                           <span style={{ color: LUXE_COLORS.champagne }}>AED 45,000</span>
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.emerald }}>
+                          <span
+                            className="flex items-center gap-2"
+                            style={{ color: LUXE_COLORS.emerald }}
+                          >
                             <ArrowUpRight className="h-4 w-4" />
                             Cash Inflows
                           </span>
                           <span style={{ color: LUXE_COLORS.emerald }}>+AED 125,000</span>
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.ruby }}>
+                          <span
+                            className="flex items-center gap-2"
+                            style={{ color: LUXE_COLORS.ruby }}
+                          >
                             <ArrowDownRight className="h-4 w-4" />
                             Cash Outflows
                           </span>
                           <span style={{ color: LUXE_COLORS.ruby }}>-AED 75,000</span>
                         </div>
-                        <div className="border-t pt-2 mt-2" style={{ borderColor: `${LUXE_COLORS.bronze}30` }}>
+                        <div
+                          className="border-t pt-2 mt-2"
+                          style={{ borderColor: `${LUXE_COLORS.bronze}30` }}
+                        >
                           <div className="flex justify-between items-center">
                             <span style={{ color: LUXE_COLORS.gold }}>Closing Balance</span>
                             <span style={{ color: LUXE_COLORS.gold }}>AED 95,000</span>
@@ -581,7 +737,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="payroll">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -596,7 +752,10 @@ export default function SalonFinancePage() {
                       Staff salaries and commission tracking
                     </CardDescription>
                   </div>
-                  <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                  <Button
+                    size="sm"
+                    style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}
+                  >
                     <Calculator className="h-4 w-4 mr-2" />
                     Calculate Payroll
                   </Button>
@@ -609,8 +768,12 @@ export default function SalonFinancePage() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Total Payroll</p>
-                            <p className="text-xl" style={{ color: LUXE_COLORS.gold }}>AED 45,000</p>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                              Total Payroll
+                            </p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.gold }}>
+                              AED 45,000
+                            </p>
                           </div>
                           <Users className="h-6 w-6" style={{ color: LUXE_COLORS.gold }} />
                         </div>
@@ -620,8 +783,12 @@ export default function SalonFinancePage() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Commissions</p>
-                            <p className="text-xl" style={{ color: LUXE_COLORS.emerald }}>AED 12,500</p>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                              Commissions
+                            </p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.emerald }}>
+                              AED 12,500
+                            </p>
                           </div>
                           <TrendingUp className="h-6 w-6" style={{ color: LUXE_COLORS.emerald }} />
                         </div>
@@ -631,8 +798,12 @@ export default function SalonFinancePage() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Next Payment</p>
-                            <p className="text-xl" style={{ color: LUXE_COLORS.champagne }}>5 Days</p>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                              Next Payment
+                            </p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.champagne }}>
+                              5 Days
+                            </p>
                           </div>
                           <Calendar className="h-6 w-6" style={{ color: LUXE_COLORS.champagne }} />
                         </div>
@@ -641,18 +812,46 @@ export default function SalonFinancePage() {
                   </div>
                   <div className="space-y-2">
                     {[
-                      { name: 'Emma Thompson', role: 'Senior Stylist', salary: 8000, commission: 2500, total: 10500 },
-                      { name: 'Sarah Johnson', role: 'Stylist', salary: 6000, commission: 1800, total: 7800 },
-                      { name: 'Maria Garcia', role: 'Receptionist', salary: 4500, commission: 0, total: 4500 }
-                    ].map((staff) => (
-                      <div key={staff.name} className="p-3 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                      {
+                        name: 'Emma Thompson',
+                        role: 'Senior Stylist',
+                        salary: 8000,
+                        commission: 2500,
+                        total: 10500
+                      },
+                      {
+                        name: 'Sarah Johnson',
+                        role: 'Stylist',
+                        salary: 6000,
+                        commission: 1800,
+                        total: 7800
+                      },
+                      {
+                        name: 'Maria Garcia',
+                        role: 'Receptionist',
+                        salary: 4500,
+                        commission: 0,
+                        total: 4500
+                      }
+                    ].map(staff => (
+                      <div
+                        key={staff.name}
+                        className="p-3 rounded-lg flex justify-between items-center"
+                        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                      >
                         <div>
                           <p style={{ color: LUXE_COLORS.champagne }}>{staff.name}</p>
-                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{staff.role}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                            {staff.role}
+                          </p>
                         </div>
                         <div className="flex gap-4 text-sm">
-                          <span style={{ color: LUXE_COLORS.bronze }}>Base: AED {staff.salary}</span>
-                          <span style={{ color: LUXE_COLORS.emerald }}>Comm: AED {staff.commission}</span>
+                          <span style={{ color: LUXE_COLORS.bronze }}>
+                            Base: AED {staff.salary}
+                          </span>
+                          <span style={{ color: LUXE_COLORS.emerald }}>
+                            Comm: AED {staff.commission}
+                          </span>
                           <span style={{ color: LUXE_COLORS.gold }}>Total: AED {staff.total}</span>
                         </div>
                       </div>
@@ -664,7 +863,7 @@ export default function SalonFinancePage() {
           </TabsContent>
 
           <TabsContent value="transactions">
-            <Card 
+            <Card
               className="border-0"
               style={{
                 backgroundColor: LUXE_COLORS.charcoalLight,
@@ -694,30 +893,75 @@ export default function SalonFinancePage() {
               <CardContent>
                 <div className="space-y-2">
                   {[
-                    { date: '2024-01-15 14:30', type: 'income', method: 'Card', description: 'Service - Hair Color', amount: 450 },
-                    { date: '2024-01-15 13:15', type: 'income', method: 'Cash', description: 'Product Sale - Shampoo', amount: 85 },
-                    { date: '2024-01-15 11:00', type: 'expense', method: 'Transfer', description: 'Supplier Payment', amount: -2500 },
-                    { date: '2024-01-15 10:30', type: 'income', method: 'Card', description: 'Service - Haircut', amount: 120 }
+                    {
+                      date: '2024-01-15 14:30',
+                      type: 'income',
+                      method: 'Card',
+                      description: 'Service - Hair Color',
+                      amount: 450
+                    },
+                    {
+                      date: '2024-01-15 13:15',
+                      type: 'income',
+                      method: 'Cash',
+                      description: 'Product Sale - Shampoo',
+                      amount: 85
+                    },
+                    {
+                      date: '2024-01-15 11:00',
+                      type: 'expense',
+                      method: 'Transfer',
+                      description: 'Supplier Payment',
+                      amount: -2500
+                    },
+                    {
+                      date: '2024-01-15 10:30',
+                      type: 'income',
+                      method: 'Card',
+                      description: 'Service - Haircut',
+                      amount: 120
+                    }
                   ].map((txn, idx) => (
-                    <div key={idx} className="p-3 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    <div
+                      key={idx}
+                      className="p-3 rounded-lg flex justify-between items-center"
+                      style={{ backgroundColor: LUXE_COLORS.charcoal }}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="p-2 rounded" style={{
-                          backgroundColor: txn.type === 'income' ? `${LUXE_COLORS.emerald}20` : `${LUXE_COLORS.ruby}20`
-                        }}>
-                          {txn.type === 'income' ? 
-                            <ArrowUpRight className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} /> :
-                            <ArrowDownRight className="h-4 w-4" style={{ color: LUXE_COLORS.ruby }} />
-                          }
+                        <div
+                          className="p-2 rounded"
+                          style={{
+                            backgroundColor:
+                              txn.type === 'income'
+                                ? `${LUXE_COLORS.emerald}20`
+                                : `${LUXE_COLORS.ruby}20`
+                          }}
+                        >
+                          {txn.type === 'income' ? (
+                            <ArrowUpRight
+                              className="h-4 w-4"
+                              style={{ color: LUXE_COLORS.emerald }}
+                            />
+                          ) : (
+                            <ArrowDownRight
+                              className="h-4 w-4"
+                              style={{ color: LUXE_COLORS.ruby }}
+                            />
+                          )}
                         </div>
                         <div>
                           <p style={{ color: LUXE_COLORS.champagne }}>{txn.description}</p>
-                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{txn.date} • {txn.method}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                            {txn.date} • {txn.method}
+                          </p>
                         </div>
                       </div>
-                      <span style={{ 
-                        color: txn.type === 'income' ? LUXE_COLORS.emerald : LUXE_COLORS.ruby,
-                        fontWeight: '500'
-                      }}>
+                      <span
+                        style={{
+                          color: txn.type === 'income' ? LUXE_COLORS.emerald : LUXE_COLORS.ruby,
+                          fontWeight: '500'
+                        }}
+                      >
                         {txn.type === 'income' ? '+' : ''}AED {Math.abs(txn.amount)}
                       </span>
                     </div>

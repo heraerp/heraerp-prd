@@ -13,7 +13,10 @@ const createCategorySchema = z.object({
   name: z.string().min(1).max(50),
   code: z.string().min(1).max(50).optional(),
   description: z.string().max(200).optional(),
-  color: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-F]{6}$/i)
+    .optional(),
   icon: z.string().optional(),
   sort_order: z.number().int().min(0).optional()
 })
@@ -53,7 +56,9 @@ export async function GET(request: NextRequest) {
 
     // Apply search filter
     if (params.q) {
-      categoriesQuery = categoriesQuery.or(`entity_name.ilike.%${params.q}%,entity_code.ilike.%${params.q}%`)
+      categoriesQuery = categoriesQuery.or(
+        `entity_name.ilike.%${params.q}%,entity_code.ilike.%${params.q}%`
+      )
     }
 
     const { data: categories, error: categoriesError } = await categoriesQuery
@@ -69,7 +74,7 @@ export async function GET(request: NextRequest) {
 
     // Step 2: Get service counts for each category
     const categoryIds = categories.map(c => c.id)
-    
+
     const { data: relationships, error: relError } = await supabase
       .from('core_relationships')
       .select('to_entity_id')
@@ -96,7 +101,12 @@ export async function GET(request: NextRequest) {
       .select('entity_id, field_name, field_value_text, field_value_number')
       .eq('organization_id', organizationId)
       .in('entity_id', categoryIds)
-      .in('field_name', ['category.color', 'category.icon', 'category.sort_order', 'category.description'])
+      .in('field_name', [
+        'category.color',
+        'category.icon',
+        'category.sort_order',
+        'category.description'
+      ])
 
     if (dynamicError) {
       console.error('Error fetching dynamic data:', dynamicError)
@@ -110,7 +120,7 @@ export async function GET(request: NextRequest) {
           dynamicDataMap.set(dd.entity_id, {})
         }
         const entityData = dynamicDataMap.get(dd.entity_id)
-        
+
         switch (dd.field_name) {
           case 'category.color':
             entityData.color = dd.field_value_text
@@ -167,10 +177,9 @@ export async function GET(request: NextRequest) {
       items: formattedCategories,
       total_count: formattedCategories.length
     })
-
   } catch (error) {
     console.error('Categories API error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid query parameters', details: error.errors },
@@ -207,15 +216,13 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (existing) {
-      return NextResponse.json(
-        { error: 'Category with this name already exists' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Category with this name already exists' }, { status: 400 })
     }
 
     // Create category entity
-    const categoryCode = validatedData.code || `cat-${validatedData.name.toLowerCase().replace(/\s+/g, '-')}`
-    
+    const categoryCode =
+      validatedData.code || `cat-${validatedData.name.toLowerCase().replace(/\s+/g, '-')}`
+
     const { data: category, error: createError } = await supabase
       .from('core_entities')
       .insert({
@@ -231,15 +238,12 @@ export async function POST(request: NextRequest) {
 
     if (createError) {
       console.error('Error creating category:', createError)
-      return NextResponse.json(
-        { error: 'Failed to create category' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create category' }, { status: 500 })
     }
 
     // Add dynamic data
     const dynamicInserts = []
-    
+
     if (validatedData.description) {
       dynamicInserts.push({
         organization_id: organizationId,
@@ -310,10 +314,9 @@ export async function POST(request: NextRequest) {
       sort_order: validatedData.sort_order || 0,
       description: validatedData.description || null
     })
-
   } catch (error) {
     console.error('Create category error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

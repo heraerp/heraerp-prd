@@ -415,9 +415,7 @@ export default function ISPAIManagerPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5E6C8]">
-            ISP AI Manager
-          </h1>
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">ISP AI Manager</h1>
           <p className="text-foreground/90 mt-1">
             Real-time insights and recommendations for broadband operations
           </p>

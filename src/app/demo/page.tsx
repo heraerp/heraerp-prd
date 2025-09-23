@@ -149,11 +149,13 @@ export default function DemoPage() {
         // Check localStorage for demo context
         let organizationId = localStorage.getItem('organizationId')
         const currentRole = localStorage.getItem('currentRole')
-        
+
         // Also check cookies if localStorage doesn't have it
         if (!organizationId) {
           const cookies = document.cookie.split('; ')
-          const orgCookie = cookies.find(c => c.startsWith('HERA_ORG_ID=') || c.startsWith('hera-organization-id='))
+          const orgCookie = cookies.find(
+            c => c.startsWith('HERA_ORG_ID=') || c.startsWith('hera-organization-id=')
+          )
           if (orgCookie) {
             organizationId = orgCookie.split('=')[1]
             // Store in localStorage for consistency
@@ -168,7 +170,10 @@ export default function DemoPage() {
 
         // Determine demo type based on organization ID
         let demoType = null
-        if (organizationId === 'hair-talkz-salon-org-uuid' || organizationId === '0fd09e31-d257-4329-97eb-7d7f522ed6f0') {
+        if (
+          organizationId === 'hair-talkz-salon-org-uuid' ||
+          organizationId === '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
+        ) {
           demoType = 'salon'
         } else if (organizationId === '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77') {
           demoType = 'civicflow'

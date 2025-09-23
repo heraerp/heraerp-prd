@@ -323,7 +323,7 @@ export default function SalonDarkSidebar({
     if (href !== '/salon-data' && pathname.startsWith(href)) return true
     return false
   }
-  
+
   // Use provided items or default sidebar items
   const navigationItems = items || sidebarItems
 

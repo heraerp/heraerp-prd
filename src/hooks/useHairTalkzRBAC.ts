@@ -25,20 +25,23 @@ export function useHairTalkzRBAC(): RBACContext {
   const loadRBACContext = async () => {
     try {
       // Get from session
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
       if (session?.user) {
         const userRole = session.user.user_metadata?.role || localStorage.getItem('salonRole')
-        const userPermissions = session.user.user_metadata?.permissions || 
+        const userPermissions =
+          session.user.user_metadata?.permissions ||
           JSON.parse(localStorage.getItem('userPermissions') || '[]')
-        
+
         setRole(userRole)
         setPermissions(userPermissions)
       } else {
         // Fallback to localStorage
         const storedRole = localStorage.getItem('salonRole')
         const storedPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
-        
+
         setRole(storedRole)
         setPermissions(storedPermissions)
       }

@@ -11,7 +11,7 @@ import { AlertCircle } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function UCRSettingsPage() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
 
   // Three-layer authorization pattern
   if (!isAuthenticated) {

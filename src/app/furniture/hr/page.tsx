@@ -176,7 +176,7 @@ const attendanceColumns = [
 ]
 
 export default function FurnitureHR() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 
   // Mock data for demonstration

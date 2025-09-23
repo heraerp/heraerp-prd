@@ -53,7 +53,7 @@ const appDescriptions = {
 
 export default function OrganizationDashboard() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated } = useHERAAuth()
   const [installedApps, setInstalledApps] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalUsers: 1,

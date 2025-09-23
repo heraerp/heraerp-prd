@@ -58,7 +58,12 @@ interface SelectFieldProps extends BaseFieldProps {
     icon?: string
   }>
   disabled?: boolean
-  renderOption?: (option: { value: string; label: string; color?: string; icon?: string }) => React.ReactNode
+  renderOption?: (option: {
+    value: string
+    label: string
+    color?: string
+    icon?: string
+  }) => React.ReactNode
 }
 
 type FormFieldDNAProps = InputFieldProps | TextareaFieldProps | SelectFieldProps

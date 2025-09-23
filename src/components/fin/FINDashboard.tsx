@@ -89,7 +89,7 @@ interface Period {
 }
 
 export default function FINDashboard() {
-  const { currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useHERAAuth()
   const [loading, setLoading] = useState(true)
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null)
   const [accountBalances, setAccountBalances] = useState<AccountBalance[]>([])

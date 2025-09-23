@@ -12,16 +12,21 @@ export default function DebugAuthPage() {
 
   useEffect(() => {
     // Get all cookies
-    const cookieObj = document.cookie.split('; ').reduce((acc, cookie) => {
-      const [key, value] = cookie.split('=')
-      if (key) acc[key] = value || ''
-      return acc
-    }, {} as Record<string, string>)
+    const cookieObj = document.cookie.split('; ').reduce(
+      (acc, cookie) => {
+        const [key, value] = cookie.split('=')
+        if (key) acc[key] = value || ''
+        return acc
+      },
+      {} as Record<string, string>
+    )
     setCookies(cookieObj)
 
     // Check Supabase session
     async function checkSupabase() {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
       setSupabaseSession(session)
     }
     checkSupabase()
@@ -35,13 +40,13 @@ export default function DebugAuthPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ demoType: 'salon-receptionist' })
       })
-      
+
       const result = await response.json()
       setInitResult(result)
-      
+
       if (result.success) {
         // Set the cookie manually
-        document.cookie = `HERA_ORG_ID=${result.user.organization_id}; Path=/; Max-Age=${60*60*24*365}; SameSite=Lax`
+        document.cookie = `HERA_ORG_ID=${result.user.organization_id}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax`
         // Refresh the page to pick up changes
         setTimeout(() => window.location.reload(), 1000)
       }
@@ -55,13 +60,13 @@ export default function DebugAuthPage() {
     Object.keys(cookies).forEach(key => {
       document.cookie = `${key}=; Path=/; Max-Age=0; SameSite=Lax`
     })
-    
+
     // Clear localStorage
     localStorage.clear()
-    
+
     // Sign out from Supabase
     supabase.auth.signOut()
-    
+
     setTimeout(() => window.location.reload(), 500)
   }
 
@@ -69,20 +74,24 @@ export default function DebugAuthPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Auth Debug Page</h1>
-        
+
         {/* HERA Auth Status */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">HERA Auth Provider Status</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Loading</label>
-              <div className={`px-2 py-1 rounded text-sm ${isLoading ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+              <div
+                className={`px-2 py-1 rounded text-sm ${isLoading ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}
+              >
                 {isLoading ? 'Yes' : 'No'}
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Authenticated</label>
-              <div className={`px-2 py-1 rounded text-sm ${isAuthenticated ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              <div
+                className={`px-2 py-1 rounded text-sm ${isAuthenticated ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+              >
                 {isAuthenticated ? 'Yes' : 'No'}
               </div>
             </div>
@@ -104,7 +113,9 @@ export default function DebugAuthPage() {
             {Object.entries(cookies).length > 0 ? (
               Object.entries(cookies).map(([key, value]) => (
                 <div key={key} className="flex items-center gap-4">
-                  <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded min-w-48">{key}</span>
+                  <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded min-w-48">
+                    {key}
+                  </span>
                   <span className="text-sm text-gray-600 truncate max-w-96">{value}</span>
                 </div>
               ))
@@ -119,9 +130,16 @@ export default function DebugAuthPage() {
           <h2 className="text-xl font-semibold mb-4">Supabase Session</h2>
           {supabaseSession ? (
             <div className="space-y-2">
-              <div><strong>User ID:</strong> {supabaseSession.user.id}</div>
-              <div><strong>Email:</strong> {supabaseSession.user.email}</div>
-              <div><strong>Expires:</strong> {new Date(supabaseSession.expires_at * 1000).toLocaleString()}</div>
+              <div>
+                <strong>User ID:</strong> {supabaseSession.user.id}
+              </div>
+              <div>
+                <strong>Email:</strong> {supabaseSession.user.email}
+              </div>
+              <div>
+                <strong>Expires:</strong>{' '}
+                {new Date(supabaseSession.expires_at * 1000).toLocaleString()}
+              </div>
             </div>
           ) : (
             <p className="text-gray-500">No Supabase session</p>
@@ -149,7 +167,7 @@ export default function DebugAuthPage() {
               Initialize Demo
             </button>
             <button
-              onClick={() => window.location.href = '/salon/services'}
+              onClick={() => (window.location.href = '/salon/services')}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
               Go to Services

@@ -27,7 +27,9 @@ export async function listAppointments(params: {
         ...(params.status ? { status: params.status } : { status: 'posted' }),
         ...(params.stylist_id ? { 'metadata.stylist_id': params.stylist_id } : {}),
         ...(params.customer_id ? { from_entity_id: params.customer_id } : {}),
-        ...(params.service_ids?.length ? { 'metadata.service_ids': params.service_ids.join(',') } : {}),
+        ...(params.service_ids?.length
+          ? { 'metadata.service_ids': params.service_ids.join(',') }
+          : {})
       },
       params.branch_id
     )
@@ -39,7 +41,7 @@ export async function listAppointments(params: {
 
     pbLog('listAppointments success:', {
       count: result.items.length,
-      total: result.total,
+      total: result.total
     })
 
     return { ok: true, data: result } as const
@@ -48,7 +50,7 @@ export async function listAppointments(params: {
     return {
       ok: false,
       data: { items: [], total: 0 },
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -66,7 +68,7 @@ export async function getAppointment(id: string) {
     pbLog('getAppointment error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -107,15 +109,15 @@ export async function createAppointment(payload: {
         end_time: payload.end_time,
         duration_mins: payload.duration_mins,
         notes: payload.notes,
-        branch_id: payload.branch_id,
-      },
+        branch_id: payload.branch_id
+      }
     }
 
     pbLog('createAppointment request:', body)
 
     const json = await pb('/universal_transactions', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('createAppointment success:', json)
@@ -125,7 +127,7 @@ export async function createAppointment(payload: {
     pbLog('createAppointment error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -147,19 +149,19 @@ export async function updateAppointment(
   try {
     // Build update payload
     const updates: any = {}
-    
+
     if (patch.appointment_date) {
       updates.transaction_date = patch.appointment_date
     }
-    
+
     if (patch.stylist_id) {
       updates.to_entity_id = patch.stylist_id
     }
-    
+
     if (patch.status) {
       updates.status = patch.status
     }
-    
+
     // Update metadata fields
     const metadataUpdates: any = {}
     if (patch.start_time) metadataUpdates.start_time = patch.start_time
@@ -169,7 +171,7 @@ export async function updateAppointment(
     if (patch.service_ids) metadataUpdates.service_ids = patch.service_ids
     if (patch.service_names) metadataUpdates.service_names = patch.service_names
     if (patch.notes !== undefined) metadataUpdates.notes = patch.notes
-    
+
     if (Object.keys(metadataUpdates).length > 0) {
       updates.metadata = metadataUpdates
     }
@@ -178,7 +180,7 @@ export async function updateAppointment(
 
     const json = await pb(`/universal_transactions/${id}`, {
       method: 'PATCH',
-      body: updates,
+      body: updates
     })
 
     pbLog('updateAppointment success:', json)
@@ -188,15 +190,15 @@ export async function updateAppointment(
     pbLog('updateAppointment error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
 
 export async function cancelAppointment(id: string, reason?: string) {
-  return updateAppointment(id, { 
+  return updateAppointment(id, {
     status: 'cancelled',
-    notes: reason,
+    notes: reason
   })
 }
 
@@ -213,18 +215,18 @@ export async function getAppointmentSlots(params: {
   const startHour = 9
   const endHour = 18
   const slotDuration = params.service_duration
-  
+
   for (let hour = startHour; hour < endHour; hour++) {
     for (let minute = 0; minute < 60; minute += slotDuration) {
       if (hour * 60 + minute + slotDuration <= endHour * 60) {
         slots.push({
           time: `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          available: true, // Would check against existing appointments
+          available: true // Would check against existing appointments
         })
       }
     }
   }
-  
+
   return { ok: true, data: slots } as const
 }
 
@@ -244,6 +246,6 @@ export async function getStylistSchedule(params: {
     start_date: params.start_date,
     end_date: params.end_date,
     stylist_id: params.stylist_id,
-    status: 'posted',
+    status: 'posted'
   })
 }

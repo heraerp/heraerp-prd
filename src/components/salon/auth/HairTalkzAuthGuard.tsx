@@ -34,27 +34,27 @@ const routeConfigs: RouteConfig[] = [
   { path: '/salon/owner', allowedRoles: ['owner', 'admin'] },
   { path: '/salon/staff', allowedRoles: ['owner', 'admin'] },
   { path: '/salon/settings', allowedRoles: ['owner', 'admin'] },
-  
+
   // Receptionist routes
   { path: '/salon/receptionist', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/appointments', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/customers', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/pos2', allowedRoles: ['receptionist', 'owner', 'admin'] },
   { path: '/salon/whatsapp', allowedRoles: ['receptionist', 'owner', 'admin'] },
-  
+
   // Accountant routes
   { path: '/salon/accountant', allowedRoles: ['accountant', 'owner', 'admin'] },
   { path: '/salon/finance', allowedRoles: ['accountant', 'owner', 'admin'] },
   { path: '/salon/reports', allowedRoles: ['accountant', 'owner', 'admin'] },
   { path: '/salon-data/financials', allowedRoles: ['accountant', 'owner', 'admin'] },
   { path: '/salon-data/payroll', allowedRoles: ['accountant', 'owner', 'admin'] },
-  
+
   // Admin routes
   { path: '/salon/admin', allowedRoles: ['admin'] },
-  
+
   // Common routes
   { path: '/salon/services', allowedRoles: ['receptionist', 'owner', 'admin'] },
-  { path: '/salon/products', allowedRoles: ['receptionist', 'owner', 'admin'] },
+  { path: '/salon/products', allowedRoles: ['receptionist', 'owner', 'admin'] }
 ]
 
 export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) {
@@ -70,15 +70,17 @@ export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) 
 
   const checkAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
       if (!session?.user) {
         router.push('/salon/auth')
         return
       }
 
       const userMetadata = session.user.user_metadata
-      
+
       // Check organization
       if (userMetadata?.organization_id !== HAIRTALKZ_ORG_ID) {
         router.push('/salon/auth')
@@ -89,9 +91,7 @@ export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) 
       setUserRole(role)
 
       // Check route authorization
-      const routeConfig = routeConfigs.find(config => 
-        pathname.startsWith(config.path)
-      )
+      const routeConfig = routeConfigs.find(config => pathname.startsWith(config.path))
 
       if (routeConfig && !routeConfig.allowedRoles.includes(role)) {
         // Redirect to role-specific dashboard
@@ -101,7 +101,7 @@ export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) 
           accountant: '/salon/accountant',
           admin: '/salon/admin'
         }
-        
+
         router.push(redirectMap[role] || '/salon/auth')
         return
       }
@@ -117,13 +117,13 @@ export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) 
 
   if (loading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: COLORS.charcoal }}
       >
         <div className="text-center">
           <div className="inline-flex items-center justify-center mb-6">
-            <div 
+            <div
               className="h-16 w-16 rounded-full flex items-center justify-center animate-pulse"
               style={{
                 background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
@@ -133,16 +133,10 @@ export function HairTalkzAuthGuard({ children }: { children: React.ReactNode }) 
               <Crown className="h-8 w-8" style={{ color: COLORS.black }} />
             </div>
           </div>
-          
-          <Loader2 
-            className="h-6 w-6 animate-spin mx-auto mb-4" 
-            style={{ color: COLORS.gold }} 
-          />
-          
-          <p 
-            style={{ color: COLORS.bronze }} 
-            className="font-light tracking-wider"
-          >
+
+          <Loader2 className="h-6 w-6 animate-spin mx-auto mb-4" style={{ color: COLORS.gold }} />
+
+          <p style={{ color: COLORS.bronze }} className="font-light tracking-wider">
             Authenticating...
           </p>
         </div>
@@ -165,7 +159,9 @@ export function useHairTalkzAuth() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
         if (session?.user) {
           setUser(session.user)
           setRole(session.user.user_metadata?.role?.toLowerCase() || null)

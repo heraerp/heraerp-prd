@@ -104,7 +104,7 @@ const glAccountColumns = [
 ]
 
 export default function FurnitureFinance() {
-  const { isAuthenticated, contextLoading  } = useHERAAuth()
+  const { isAuthenticated, contextLoading } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const { glAccounts, metrics, loading, refresh } = useFinanceData(organizationId)
   const [activeTab, setActiveTab] = useState('chart-of-accounts')

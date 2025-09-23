@@ -103,9 +103,9 @@ export function StatusToast({ toasts, onRemove }: StatusToastProps) {
             >
               <div
                 className={cn(
-                  "flex items-start gap-3 px-4 py-3 rounded-lg shadow-2xl",
-                  "min-w-[320px] max-w-[420px]",
-                  "backdrop-blur-md"
+                  'flex items-start gap-3 px-4 py-3 rounded-lg shadow-2xl',
+                  'min-w-[320px] max-w-[420px]',
+                  'backdrop-blur-md'
                 )}
                 style={{
                   backgroundColor: COLORS.charcoal + 'F5',
@@ -120,24 +120,18 @@ export function StatusToast({ toasts, onRemove }: StatusToastProps) {
                     border: `1px solid ${config.borderColor}40`
                   }}
                 >
-                  <Icon 
-                    className={cn("w-5 h-5", toast.type === 'loading' && "animate-spin")}
+                  <Icon
+                    className={cn('w-5 h-5', toast.type === 'loading' && 'animate-spin')}
                     style={{ color: config.iconColor }}
                   />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h4 
-                    className="font-medium text-sm"
-                    style={{ color: config.titleColor }}
-                  >
+                  <h4 className="font-medium text-sm" style={{ color: config.titleColor }}>
                     {toast.title}
                   </h4>
                   {toast.message && (
-                    <p 
-                      className="text-sm mt-0.5 opacity-80"
-                      style={{ color: COLORS.lightText }}
-                    >
+                    <p className="text-sm mt-0.5 opacity-80" style={{ color: COLORS.lightText }}>
                       {toast.message}
                     </p>
                   )}
@@ -174,21 +168,33 @@ export function useStatusToast() {
     setToasts(prev => prev.filter(toast => toast.id !== id))
   }, [])
 
-  const showSuccess = React.useCallback((title: string, message?: string) => {
-    return addToast({ type: 'success', title, message })
-  }, [addToast])
+  const showSuccess = React.useCallback(
+    (title: string, message?: string) => {
+      return addToast({ type: 'success', title, message })
+    },
+    [addToast]
+  )
 
-  const showError = React.useCallback((title: string, message?: string) => {
-    return addToast({ type: 'error', title, message })
-  }, [addToast])
+  const showError = React.useCallback(
+    (title: string, message?: string) => {
+      return addToast({ type: 'error', title, message })
+    },
+    [addToast]
+  )
 
-  const showWarning = React.useCallback((title: string, message?: string) => {
-    return addToast({ type: 'warning', title, message })
-  }, [addToast])
+  const showWarning = React.useCallback(
+    (title: string, message?: string) => {
+      return addToast({ type: 'warning', title, message })
+    },
+    [addToast]
+  )
 
-  const showLoading = React.useCallback((title: string, message?: string) => {
-    return addToast({ type: 'loading', title, message, duration: 0 })
-  }, [addToast])
+  const showLoading = React.useCallback(
+    (title: string, message?: string) => {
+      return addToast({ type: 'loading', title, message, duration: 0 })
+    },
+    [addToast]
+  )
 
   return {
     toasts,

@@ -43,7 +43,7 @@ import { cn } from '@/lib/utils'
 import { universalApi } from '@/lib/universal-api'
 
 export default function AuthenticatedRestaurantDashboard() {
-  const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user } = useHERAAuth()
 
   const router = useRouter()
   const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'branches' | 'settings'>(

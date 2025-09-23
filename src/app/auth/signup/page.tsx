@@ -16,7 +16,7 @@ import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SignUpPage() {
   const router = useRouter()
-  const { register  } = useHERAAuth()
+  const { register } = useHERAAuth()
 
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)

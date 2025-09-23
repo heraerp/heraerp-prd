@@ -22,10 +22,12 @@ const statusConfig = {
   confirmed: { label: 'Confirmed', color: 'bg-green-500', icon: CheckCircle },
   in_progress: { label: 'In Progress', color: 'bg-yellow-500', icon: Clock },
   completed: { label: 'Completed', color: 'bg-gray-500', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', color: 'bg-red-500', icon: AlertCircle },
+  cancelled: { label: 'Cancelled', color: 'bg-red-500', icon: AlertCircle }
 }
 
-export function AppointmentManagementDashboard({ organizationId }: AppointmentManagementDashboardProps) {
+export function AppointmentManagementDashboard({
+  organizationId
+}: AppointmentManagementDashboardProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
@@ -41,21 +43,25 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
 
   // Filter appointments based on search and status
   const filteredAppointments = appointments.filter(apt => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch =
+      searchTerm === '' ||
       apt.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       apt.stylist_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       apt.service_name.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesStatus = selectedStatus === 'all' || apt.status === selectedStatus
-    
+
     return matchesSearch && matchesStatus
   })
 
   // Group appointments by status for summary
-  const statusSummary = appointments.reduce((acc, apt) => {
-    acc[apt.status] = (acc[apt.status] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
+  const statusSummary = appointments.reduce(
+    (acc, apt) => {
+      acc[apt.status] = (acc[apt.status] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
 
   if (error) {
     return (
@@ -80,9 +86,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             Appointment Management
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage salon appointments and bookings
-          </p>
+          <p className="text-muted-foreground mt-1">Manage salon appointments and bookings</p>
         </div>
         <Link href="/salon-data/appointments/new">
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
@@ -97,13 +101,13 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
         {Object.entries(statusConfig).map(([status, config]) => {
           const Icon = config.icon
           const count = statusSummary[status] || 0
-          
+
           return (
-            <Card 
-              key={status} 
+            <Card
+              key={status}
               className={cn(
-                "cursor-pointer transition-all",
-                selectedStatus === status && "ring-2 ring-primary"
+                'cursor-pointer transition-all',
+                selectedStatus === status && 'ring-2 ring-primary'
               )}
               onClick={() => setSelectedStatus(selectedStatus === status ? 'all' : status)}
             >
@@ -113,7 +117,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
                     <p className="text-sm text-muted-foreground">{config.label}</p>
                     <p className="text-2xl font-bold">{count}</p>
                   </div>
-                  <Icon className={cn("h-8 w-8", config.color, "text-white rounded-full p-2")} />
+                  <Icon className={cn('h-8 w-8', config.color, 'text-white rounded-full p-2')} />
                 </div>
               </CardContent>
             </Card>
@@ -131,7 +135,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
                 <Input
                   placeholder="Search appointments..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -139,7 +143,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
             <Input
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={e => setSelectedDate(e.target.value)}
               className="w-auto"
             />
             <Button
@@ -183,18 +187,20 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredAppointments.map((appointment) => {
-                const statusInfo = statusConfig[appointment.status as keyof typeof statusConfig] || statusConfig.scheduled
+              {filteredAppointments.map(appointment => {
+                const statusInfo =
+                  statusConfig[appointment.status as keyof typeof statusConfig] ||
+                  statusConfig.scheduled
                 const StatusIcon = statusInfo.icon
                 const appointmentTime = new Date(appointment.datetime)
-                
+
                 return (
                   <div
                     key={appointment.id}
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={cn("p-2 rounded-full", statusInfo.color)}>
+                      <div className={cn('p-2 rounded-full', statusInfo.color)}>
                         <StatusIcon className="h-5 w-5 text-white" />
                       </div>
                       <div>
@@ -215,7 +221,7 @@ export function AppointmentManagementDashboard({ organizationId }: AppointmentMa
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className={cn(statusInfo.color, "text-white")}>
+                      <Badge className={cn(statusInfo.color, 'text-white')}>
                         {statusInfo.label}
                       </Badge>
                       <Link href={`/salon-data/appointments/${appointment.id}`}>

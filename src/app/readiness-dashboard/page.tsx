@@ -89,7 +89,7 @@ interface Session {
 }
 
 export default function ReadinessDashboardPage() {
-  const { currentOrganization, isAuthenticated, isLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, isLoading } = useHERAAuth()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)

@@ -34,7 +34,7 @@ export async function getDailyPostingSummary(params: {
       }
 
       pbLog('getDailyPostingSummary lines request:', linesQuery)
-      
+
       const linesJson = await pb('/universal_transaction_lines', { query: linesQuery })
       const linesResult = extractList(linesJson)
 
@@ -81,9 +81,11 @@ export async function getAccountBalances(params: {
       {
         entity_type: 'gl_account',
         organization_id: params.organization_id,
-        ...(params.account_codes?.length ? {
-          entity_code_in: params.account_codes.join(',')
-        } : {})
+        ...(params.account_codes?.length
+          ? {
+              entity_code_in: params.account_codes.join(',')
+            }
+          : {})
       },
       params.branch_id
     )
@@ -196,23 +198,23 @@ export async function getIncomeStatement(params: {
     })
 
     // Calculate net income
-    summary.net_income = 
-      summary.revenue - 
-      summary.cost_of_sales - 
-      summary.operating_expenses + 
-      summary.other_income - 
+    summary.net_income =
+      summary.revenue -
+      summary.cost_of_sales -
+      summary.operating_expenses +
+      summary.other_income -
       summary.other_expenses
 
     pbLog('getIncomeStatement success:', summary)
 
-    return { 
-      ok: true, 
-      data: { 
+    return {
+      ok: true,
+      data: {
         period: { start_date: params.start_date, end_date: params.end_date },
         summary,
         transactions: result.items,
         total_transactions: result.total
-      } 
+      }
     } as const
   } catch (error) {
     pbLog('getIncomeStatement error:', error)
@@ -350,7 +352,10 @@ export async function getCashFlow(params: {
 
     // Calculate net amounts
     Object.keys(cashFlow).forEach(category => {
-      if (category !== 'net_change' && typeof cashFlow[category as keyof typeof cashFlow] === 'object') {
+      if (
+        category !== 'net_change' &&
+        typeof cashFlow[category as keyof typeof cashFlow] === 'object'
+      ) {
         const cat = cashFlow[category as keyof typeof cashFlow]
         if ('inflows' in cat && 'outflows' in cat && 'net' in cat) {
           cat.net = cat.inflows - cat.outflows
@@ -396,7 +401,7 @@ export async function createJournalEntry(params: {
     // Validate entries balance
     const totalDebit = params.entries.reduce((sum, e) => sum + (e.debit || 0), 0)
     const totalCredit = params.entries.reduce((sum, e) => sum + (e.credit || 0), 0)
-    
+
     if (Math.abs(totalDebit - totalCredit) > 0.01) {
       throw new Error('Journal entry must balance (total debits must equal total credits)')
     }

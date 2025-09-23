@@ -276,7 +276,7 @@ const calculateTotal = (subtotal: number, tax: number, discount: number) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function DubaiPOSSystem() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
 
   // POS State

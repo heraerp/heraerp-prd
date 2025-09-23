@@ -28,7 +28,8 @@ import Link from 'next/link'
 export default function OrganizationLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading  } = useHERAAuth()
+  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading } =
+    useHERAAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
 

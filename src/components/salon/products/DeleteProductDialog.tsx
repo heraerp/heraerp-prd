@@ -10,7 +10,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { Trash2, Package, AlertTriangle } from 'lucide-react'
 
@@ -47,7 +47,7 @@ export function DeleteProductDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogContent 
+      <AlertDialogContent
         style={{
           backgroundColor: COLORS.charcoal,
           border: `1px solid ${COLORS.bronze}40`,
@@ -66,7 +66,7 @@ export function DeleteProductDialog({
               <AlertTriangle className="w-6 h-6 text-red-400" />
             </div>
             <div>
-              <AlertDialogTitle 
+              <AlertDialogTitle
                 className="text-xl font-semibold"
                 style={{ color: COLORS.champagne }}
               >
@@ -146,9 +146,7 @@ export function DeleteProductDialog({
               <div className="flex items-start gap-3">
                 <Trash2 className="w-5 h-5 text-red-400 mt-0.5" />
                 <div>
-                  <p className="font-medium text-red-400 mb-2">
-                    Warning: Permanent Deletion
-                  </p>
+                  <p className="font-medium text-red-400 mb-2">Warning: Permanent Deletion</p>
                   <ul className="text-sm space-y-1 opacity-80" style={{ color: COLORS.lightText }}>
                     <li>• Product information will be permanently removed</li>
                     <li>• Stock history and transaction records will remain for audit</li>
@@ -176,7 +174,7 @@ export function DeleteProductDialog({
               }}
             >
               <p className="text-sm opacity-70" style={{ color: COLORS.lightText }}>
-                <strong>Alternative:</strong> Consider archiving this product instead to preserve 
+                <strong>Alternative:</strong> Consider archiving this product instead to preserve
                 historical data while removing it from active use.
               </p>
             </div>

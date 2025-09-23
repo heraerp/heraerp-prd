@@ -39,7 +39,7 @@ const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 export default function SalonUCRSettings() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [salonConfig, setSalonConfig] = useState<any>({})
   const [configLoading, setConfigLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')

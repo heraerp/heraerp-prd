@@ -549,7 +549,7 @@ export function OwnerDashboard() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Analytics Section */}
       <AnalyticsSection organizationId={organizationId} />
     </div>

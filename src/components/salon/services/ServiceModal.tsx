@@ -62,26 +62,27 @@ export function ServiceModal({
   categories = []
 }: ServiceModalProps) {
   const [saving, setSaving] = React.useState(false)
-  
+
   // Get organization context
   const { organization } = useHERAAuth()
   const organizationId = organization?.id || ''
-  
+
   // Fetch categories dynamically
   const { categories: dynamicCategories, isLoading: categoriesLoading } = useCategoriesPlaybook({
     organizationId,
     includeArchived: false
   })
-  
+
   // Use dynamic categories or fallback to provided categories
-  const categoryOptions = dynamicCategories.length > 0 
-    ? dynamicCategories.map(cat => ({
-        value: cat.entity_name,
-        label: cat.entity_name,
-        color: cat.color,
-        icon: cat.icon
-      }))
-    : categories.map(cat => ({ value: cat, label: cat }))
+  const categoryOptions =
+    dynamicCategories.length > 0
+      ? dynamicCategories.map(cat => ({
+          value: cat.entity_name,
+          label: cat.entity_name,
+          color: cat.color,
+          icon: cat.icon
+        }))
+      : categories.map(cat => ({ value: cat, label: cat }))
 
   const {
     register,
@@ -217,9 +218,9 @@ export function ServiceModal({
                     value={watch('category') || ''}
                     onChange={value => setValue('category', value)}
                     options={categoryOptions}
-                    placeholder={categoriesLoading ? "Loading categories..." : "Select category"}
+                    placeholder={categoriesLoading ? 'Loading categories...' : 'Select category'}
                     disabled={categoriesLoading}
-                    renderOption={(option) => {
+                    renderOption={option => {
                       if (option.icon && option.color) {
                         const IconComponent = (Icons as any)[option.icon] || Icons.Tag
                         return (
@@ -231,7 +232,10 @@ export function ServiceModal({
                                 border: `1px solid ${option.color}40`
                               }}
                             >
-                              <IconComponent className="w-2.5 h-2.5" style={{ color: option.color }} />
+                              <IconComponent
+                                className="w-2.5 h-2.5"
+                                style={{ color: option.color }}
+                              />
                             </div>
                             <span>{option.label}</span>
                           </div>

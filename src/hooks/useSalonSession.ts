@@ -15,8 +15,11 @@ export function useSalonSession() {
     // Function to check and refresh session
     const checkSession = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        
+        const {
+          data: { session },
+          error
+        } = await supabase.auth.getSession()
+
         if (error) {
           console.error('Session check error:', error)
           return
@@ -27,7 +30,7 @@ export function useSalonSession() {
           const expiresAt = session.expires_at ? new Date(session.expires_at * 1000) : null
           const now = new Date()
           const timeUntilExpiry = expiresAt ? expiresAt.getTime() - now.getTime() : 0
-          
+
           // Refresh if less than 5 minutes until expiry
           if (timeUntilExpiry < 5 * 60 * 1000) {
             console.log('Session expiring soon, refreshing...')
@@ -68,7 +71,9 @@ export function useSalonSession() {
     const handleVisibilityChange = async () => {
       if (!document.hidden) {
         console.log('Tab became visible, checking session...')
-        const { data: { session } } = await supabase.auth.getSession()
+        const {
+          data: { session }
+        } = await supabase.auth.getSession()
         if (session) {
           console.log('Session active:', session.user.email)
         }

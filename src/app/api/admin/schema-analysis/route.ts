@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client with service role key for admin access
 const supabaseAdmin = createClient(
@@ -10,100 +10,100 @@ const supabaseAdmin = createClient(
       schema: 'public'
     }
   }
-);
+)
 
 interface SchemaAnalysis {
-  timestamp: string;
+  timestamp: string
   database: {
-    version: string;
-    schemas: string[];
-  };
-  tables: Record<string, TableInfo>;
-  relationships: RelationshipInfo[];
-  indexes: IndexInfo[];
-  constraints: ConstraintInfo[];
-  dataProfiling: Record<string, TableProfile>;
-  dynamicDataTypes: DynamicDataType[];
-  sampleData: Record<string, any[]>;
+    version: string
+    schemas: string[]
+  }
+  tables: Record<string, TableInfo>
+  relationships: RelationshipInfo[]
+  indexes: IndexInfo[]
+  constraints: ConstraintInfo[]
+  dataProfiling: Record<string, TableProfile>
+  dynamicDataTypes: DynamicDataType[]
+  sampleData: Record<string, any[]>
 }
 
 interface TableInfo {
-  name: string;
-  schema: string;
-  rowCount: number;
-  estimatedSize: string;
-  columns: ColumnInfo[];
-  primaryKeys: string[];
-  foreignKeys: ForeignKeyInfo[];
+  name: string
+  schema: string
+  rowCount: number
+  estimatedSize: string
+  columns: ColumnInfo[]
+  primaryKeys: string[]
+  foreignKeys: ForeignKeyInfo[]
 }
 
 interface ColumnInfo {
-  name: string;
-  dataType: string;
-  isNullable: boolean;
-  defaultValue: string | null;
-  maxLength: number | null;
-  numericPrecision: number | null;
-  numericScale: number | null;
-  isIdentity: boolean;
-  identityGeneration: string | null;
+  name: string
+  dataType: string
+  isNullable: boolean
+  defaultValue: string | null
+  maxLength: number | null
+  numericPrecision: number | null
+  numericScale: number | null
+  isIdentity: boolean
+  identityGeneration: string | null
 }
 
 interface RelationshipInfo {
-  constraintName: string;
-  sourceTable: string;
-  sourceColumns: string[];
-  targetTable: string;
-  targetColumns: string[];
-  updateRule: string;
-  deleteRule: string;
+  constraintName: string
+  sourceTable: string
+  sourceColumns: string[]
+  targetTable: string
+  targetColumns: string[]
+  updateRule: string
+  deleteRule: string
 }
 
 interface IndexInfo {
-  schemaName: string;
-  tableName: string;
-  indexName: string;
-  indexType: string;
-  columns: string[];
-  isUnique: boolean;
-  isPrimary: boolean;
-  isPartial: boolean;
-  indexDefinition: string;
+  schemaName: string
+  tableName: string
+  indexName: string
+  indexType: string
+  columns: string[]
+  isUnique: boolean
+  isPrimary: boolean
+  isPartial: boolean
+  indexDefinition: string
 }
 
 interface ConstraintInfo {
-  schemaName: string;
-  tableName: string;
-  constraintName: string;
-  constraintType: string;
-  definition: string;
+  schemaName: string
+  tableName: string
+  constraintName: string
+  constraintType: string
+  definition: string
 }
 
 interface TableProfile {
-  tableName: string;
-  rowCount: number;
-  nullCounts: Record<string, number>;
-  distinctCounts: Record<string, number>;
-  minMaxValues: Record<string, { min: any; max: any }>;
+  tableName: string
+  rowCount: number
+  nullCounts: Record<string, number>
+  distinctCounts: Record<string, number>
+  minMaxValues: Record<string, { min: any; max: any }>
 }
 
 interface DynamicDataType {
-  fieldName: string;
+  fieldName: string
   dataTypes: Array<{
-    type: string;
-    count: number;
-    percentage: number;
-  }>;
-  sampleValues: any[];
+    type: string
+    count: number
+    percentage: number
+  }>
+  sampleValues: any[]
 }
 
 export async function GET(request: NextRequest) {
   try {
     // Check for admin authentication (implement your auth check here)
     // For now, we'll use a simple API key check
-    const apiKey = request.headers.get('x-admin-api-key');
+    const apiKey = request.headers.get('x-admin-api-key')
     if (apiKey !== process.env.ADMIN_API_KEY) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const analysis: SchemaAnalysis = {
@@ -119,13 +119,13 @@ export async function GET(request: NextRequest) {
       dataProfiling: {},
       dynamicDataTypes: [],
       sampleData: {}
-    };
+    }
 
     // 1. Get PostgreSQL version - simplified
-    analysis.database.version = 'PostgreSQL (Supabase)';
+    analysis.database.version = 'PostgreSQL (Supabase)'
 
     // 2. Get all schemas - for now, we'll just use public schema
-    analysis.database.schemas = ['public'];
+    analysis.database.schemas = ['public']
 
     // 3. Get all tables with detailed column information
     const tablesQuery = `
@@ -148,50 +148,55 @@ export async function GET(request: NextRequest) {
       WHERE t.table_schema = 'public'
         AND t.table_type = 'BASE TABLE'
       ORDER BY t.table_name, c.ordinal_position
-    `;
+    `
 
-    const { data: columnsData, error: columnsError } = await supabaseAdmin.rpc('exec_sql', {
-      sql: tablesQuery
-    }).single();
+    const { data: columnsData, error: columnsError } = await supabaseAdmin
+      .rpc('exec_sql', {
+        sql: tablesQuery
+      })
+      .single()
 
     if (columnsError) {
-      console.error('Error fetching columns:', columnsError);
+      console.error('Error fetching columns:', columnsError)
       // Fallback to direct query
-      const { data: tables } = await supabaseAdmin.from('information_schema.tables')
+      const { data: tables } = await supabaseAdmin
+        .from('information_schema.tables')
         .select('table_name')
         .eq('table_schema', 'public')
-        .eq('table_type', 'BASE TABLE');
+        .eq('table_type', 'BASE TABLE')
 
       for (const table of tables || []) {
-        const { data: columns } = await supabaseAdmin.from('information_schema.columns')
+        const { data: columns } = await supabaseAdmin
+          .from('information_schema.columns')
           .select('*')
           .eq('table_schema', 'public')
-          .eq('table_name', table.table_name);
+          .eq('table_name', table.table_name)
 
         analysis.tables[table.table_name] = {
           name: table.table_name,
           schema: 'public',
           rowCount: 0,
           estimatedSize: 'Unknown',
-          columns: columns?.map(col => ({
-            name: col.column_name,
-            dataType: col.data_type,
-            isNullable: col.is_nullable === 'YES',
-            defaultValue: col.column_default,
-            maxLength: col.character_maximum_length,
-            numericPrecision: col.numeric_precision,
-            numericScale: col.numeric_scale,
-            isIdentity: col.is_identity === 'YES',
-            identityGeneration: col.identity_generation
-          })) || [],
+          columns:
+            columns?.map(col => ({
+              name: col.column_name,
+              dataType: col.data_type,
+              isNullable: col.is_nullable === 'YES',
+              defaultValue: col.column_default,
+              maxLength: col.character_maximum_length,
+              numericPrecision: col.numeric_precision,
+              numericScale: col.numeric_scale,
+              isIdentity: col.is_identity === 'YES',
+              identityGeneration: col.identity_generation
+            })) || [],
           primaryKeys: [],
           foreignKeys: []
-        };
+        }
       }
     } else if (columnsData) {
       // Process columns data
-      const tableMap: Record<string, TableInfo> = {};
-      
+      const tableMap: Record<string, TableInfo> = {}
+
       for (const row of columnsData) {
         if (!tableMap[row.table_name]) {
           tableMap[row.table_name] = {
@@ -202,7 +207,7 @@ export async function GET(request: NextRequest) {
             columns: [],
             primaryKeys: [],
             foreignKeys: []
-          };
+          }
         }
 
         tableMap[row.table_name].columns.push({
@@ -215,10 +220,10 @@ export async function GET(request: NextRequest) {
           numericScale: row.numeric_scale,
           isIdentity: row.is_identity === 'YES',
           identityGeneration: row.identity_generation
-        });
+        })
       }
 
-      analysis.tables = tableMap;
+      analysis.tables = tableMap
     }
 
     // 4. Get row counts for each table
@@ -226,11 +231,11 @@ export async function GET(request: NextRequest) {
       try {
         const { count } = await supabaseAdmin
           .from(tableName)
-          .select('*', { count: 'exact', head: true });
-        
-        analysis.tables[tableName].rowCount = count || 0;
+          .select('*', { count: 'exact', head: true })
+
+        analysis.tables[tableName].rowCount = count || 0
       } catch (error) {
-        console.error(`Error getting row count for ${tableName}:`, error);
+        console.error(`Error getting row count for ${tableName}:`, error)
       }
     }
 
@@ -246,22 +251,24 @@ export async function GET(request: NextRequest) {
       WHERE tc.table_schema = 'public'
         AND tc.constraint_type = 'PRIMARY KEY'
       ORDER BY tc.table_name, kcu.ordinal_position
-    `;
+    `
 
     try {
-      const { data: pkData } = await supabaseAdmin.rpc('exec_sql', {
-        sql: primaryKeysQuery
-      }).single();
+      const { data: pkData } = await supabaseAdmin
+        .rpc('exec_sql', {
+          sql: primaryKeysQuery
+        })
+        .single()
 
       if (pkData) {
         for (const row of pkData) {
           if (analysis.tables[row.table_name]) {
-            analysis.tables[row.table_name].primaryKeys.push(row.column_name);
+            analysis.tables[row.table_name].primaryKeys.push(row.column_name)
           }
         }
       }
     } catch (error) {
-      console.error('Error fetching primary keys:', error);
+      console.error('Error fetching primary keys:', error)
     }
 
     // 6. Get foreign key relationships
@@ -286,16 +293,18 @@ export async function GET(request: NextRequest) {
         AND rc.constraint_schema = tc.table_schema
       WHERE tc.table_schema = 'public'
         AND tc.constraint_type = 'FOREIGN KEY'
-    `;
+    `
 
     try {
-      const { data: fkData } = await supabaseAdmin.rpc('exec_sql', {
-        sql: foreignKeysQuery
-      }).single();
+      const { data: fkData } = await supabaseAdmin
+        .rpc('exec_sql', {
+          sql: foreignKeysQuery
+        })
+        .single()
 
       if (fkData) {
-        const fkMap: Record<string, RelationshipInfo> = {};
-        
+        const fkMap: Record<string, RelationshipInfo> = {}
+
         for (const row of fkData) {
           if (!fkMap[row.constraint_name]) {
             fkMap[row.constraint_name] = {
@@ -306,11 +315,11 @@ export async function GET(request: NextRequest) {
               targetColumns: [],
               updateRule: row.update_rule,
               deleteRule: row.delete_rule
-            };
+            }
           }
-          
-          fkMap[row.constraint_name].sourceColumns.push(row.source_column);
-          fkMap[row.constraint_name].targetColumns.push(row.target_column);
+
+          fkMap[row.constraint_name].sourceColumns.push(row.source_column)
+          fkMap[row.constraint_name].targetColumns.push(row.target_column)
 
           // Also add to table foreign keys
           if (analysis.tables[row.source_table]) {
@@ -318,14 +327,14 @@ export async function GET(request: NextRequest) {
               column: row.source_column,
               referencesTable: row.target_table,
               referencesColumn: row.target_column
-            } as any);
+            } as any)
           }
         }
 
-        analysis.relationships = Object.values(fkMap);
+        analysis.relationships = Object.values(fkMap)
       }
     } catch (error) {
-      console.error('Error fetching foreign keys:', error);
+      console.error('Error fetching foreign keys:', error)
     }
 
     // 7. Get indexes
@@ -338,12 +347,14 @@ export async function GET(request: NextRequest) {
       FROM pg_indexes
       WHERE schemaname = 'public'
       ORDER BY tablename, indexname
-    `;
+    `
 
     try {
-      const { data: indexData } = await supabaseAdmin.rpc('exec_sql', {
-        sql: indexesQuery
-      }).single();
+      const { data: indexData } = await supabaseAdmin
+        .rpc('exec_sql', {
+          sql: indexesQuery
+        })
+        .single()
 
       if (indexData) {
         analysis.indexes = indexData.map((row: any) => ({
@@ -356,10 +367,10 @@ export async function GET(request: NextRequest) {
           isPrimary: row.indexname.includes('pkey'),
           isPartial: row.indexdef.includes('WHERE'),
           indexDefinition: row.indexdef
-        }));
+        }))
       }
     } catch (error) {
-      console.error('Error fetching indexes:', error);
+      console.error('Error fetching indexes:', error)
     }
 
     // 8. Analyze core_dynamic_data field types
@@ -378,42 +389,64 @@ export async function GET(request: NextRequest) {
           GROUP BY field_name
           ORDER BY total_count DESC
           LIMIT 20
-        `;
+        `
 
-        const { data: ddData } = await supabaseAdmin.rpc('exec_sql', {
-          sql: dynamicDataQuery
-        }).single();
+        const { data: ddData } = await supabaseAdmin
+          .rpc('exec_sql', {
+            sql: dynamicDataQuery
+          })
+          .single()
 
         if (ddData) {
           analysis.dynamicDataTypes = ddData.map((row: any) => {
-            const types = [];
-            const total = row.total_count;
-            
+            const types = []
+            const total = row.total_count
+
             if (row.text_count > 0) {
-              types.push({ type: 'text', count: row.text_count, percentage: (row.text_count / total) * 100 });
+              types.push({
+                type: 'text',
+                count: row.text_count,
+                percentage: (row.text_count / total) * 100
+              })
             }
             if (row.number_count > 0) {
-              types.push({ type: 'number', count: row.number_count, percentage: (row.number_count / total) * 100 });
+              types.push({
+                type: 'number',
+                count: row.number_count,
+                percentage: (row.number_count / total) * 100
+              })
             }
             if (row.boolean_count > 0) {
-              types.push({ type: 'boolean', count: row.boolean_count, percentage: (row.boolean_count / total) * 100 });
+              types.push({
+                type: 'boolean',
+                count: row.boolean_count,
+                percentage: (row.boolean_count / total) * 100
+              })
             }
             if (row.date_count > 0) {
-              types.push({ type: 'date', count: row.date_count, percentage: (row.date_count / total) * 100 });
+              types.push({
+                type: 'date',
+                count: row.date_count,
+                percentage: (row.date_count / total) * 100
+              })
             }
             if (row.json_count > 0) {
-              types.push({ type: 'json', count: row.json_count, percentage: (row.json_count / total) * 100 });
+              types.push({
+                type: 'json',
+                count: row.json_count,
+                percentage: (row.json_count / total) * 100
+              })
             }
 
             return {
               fieldName: row.field_name,
               dataTypes: types,
               sampleValues: []
-            };
-          });
+            }
+          })
         }
       } catch (error) {
-        console.error('Error analyzing dynamic data types:', error);
+        console.error('Error analyzing dynamic data types:', error)
       }
     }
 
@@ -425,19 +458,16 @@ export async function GET(request: NextRequest) {
       'core_relationships',
       'universal_transactions',
       'universal_transaction_lines'
-    ];
+    ]
 
     for (const tableName of samplesToFetch) {
       if (analysis.tables[tableName]) {
         try {
-          const { data: sampleData } = await supabaseAdmin
-            .from(tableName)
-            .select('*')
-            .limit(5);
+          const { data: sampleData } = await supabaseAdmin.from(tableName).select('*').limit(5)
 
-          analysis.sampleData[tableName] = sampleData || [];
+          analysis.sampleData[tableName] = sampleData || []
         } catch (error) {
-          console.error(`Error fetching sample data for ${tableName}:`, error);
+          console.error(`Error fetching sample data for ${tableName}:`, error)
         }
       }
     }
@@ -451,7 +481,7 @@ export async function GET(request: NextRequest) {
           nullCounts: {},
           distinctCounts: {},
           minMaxValues: {}
-        };
+        }
 
         // Get distinct counts for key columns
         if (tableName === 'core_entities') {
@@ -459,12 +489,12 @@ export async function GET(request: NextRequest) {
             const { data: entityTypes } = await supabaseAdmin
               .from('core_entities')
               .select('entity_type')
-              .order('entity_type');
+              .order('entity_type')
 
-            const uniqueTypes = new Set(entityTypes?.map(e => e.entity_type));
-            profile.distinctCounts['entity_type'] = uniqueTypes.size;
+            const uniqueTypes = new Set(entityTypes?.map(e => e.entity_type))
+            profile.distinctCounts['entity_type'] = uniqueTypes.size
           } catch (error) {
-            console.error('Error profiling entity types:', error);
+            console.error('Error profiling entity types:', error)
           }
         }
 
@@ -473,30 +503,32 @@ export async function GET(request: NextRequest) {
             const { data: transactionTypes } = await supabaseAdmin
               .from('universal_transactions')
               .select('transaction_type')
-              .order('transaction_type');
+              .order('transaction_type')
 
-            const uniqueTypes = new Set(transactionTypes?.map(t => t.transaction_type));
-            profile.distinctCounts['transaction_type'] = uniqueTypes.size;
+            const uniqueTypes = new Set(transactionTypes?.map(t => t.transaction_type))
+            profile.distinctCounts['transaction_type'] = uniqueTypes.size
           } catch (error) {
-            console.error('Error profiling transaction types:', error);
+            console.error('Error profiling transaction types:', error)
           }
         }
 
-        analysis.dataProfiling[tableName] = profile;
+        analysis.dataProfiling[tableName] = profile
       }
     }
 
     return NextResponse.json({
       success: true,
       analysis
-    });
-
+    })
   } catch (error) {
-    console.error('Schema analysis error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to analyze schema',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    console.error('Schema analysis error:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to analyze schema',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }

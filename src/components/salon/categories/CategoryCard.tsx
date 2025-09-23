@@ -10,13 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import {
-  Edit,
-  Trash2,
-  Archive,
-  ArchiveRestore,
-  MoreVertical
-} from 'lucide-react'
+import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical } from 'lucide-react'
 import * as Icons from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -52,9 +46,9 @@ export function CategoryCard({
   return (
     <div
       className={cn(
-        "relative p-6 rounded-xl transition-all duration-200",
-        "hover:shadow-xl hover:scale-[1.02]",
-        isArchived && "opacity-60"
+        'relative p-6 rounded-xl transition-all duration-200',
+        'hover:shadow-xl hover:scale-[1.02]',
+        isArchived && 'opacity-60'
       )}
       style={{
         backgroundColor: COLORS.charcoalLight,
@@ -87,7 +81,7 @@ export function CategoryCard({
         >
           <IconComponent className="w-6 h-6" style={{ color: category.color }} />
         </div>
-        
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -97,11 +91,11 @@ export function CategoryCard({
               <MoreVertical className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent 
+          <DropdownMenuContent
             align="end"
             style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
           >
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={() => onEdit(category)}
               style={{ color: COLORS.lightText }}
               className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
@@ -109,9 +103,9 @@ export function CategoryCard({
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            
+
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            
+
             {isArchived ? (
               <DropdownMenuItem
                 onClick={() => onRestore(category)}
@@ -131,9 +125,9 @@ export function CategoryCard({
                 Archive
               </DropdownMenuItem>
             )}
-            
+
             <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
-            
+
             <DropdownMenuItem
               onClick={() => onDelete(category)}
               className="hover:!bg-red-900/20 hover:!text-red-300"
@@ -147,19 +141,13 @@ export function CategoryCard({
       </div>
 
       {/* Category Name */}
-      <h3 
-        className="font-semibold text-lg mb-2"
-        style={{ color: COLORS.champagne }}
-      >
+      <h3 className="font-semibold text-lg mb-2" style={{ color: COLORS.champagne }}>
         {category.entity_name}
       </h3>
 
       {/* Description */}
       {category.description && (
-        <p 
-          className="text-sm mb-4 line-clamp-2"
-          style={{ color: COLORS.lightText, opacity: 0.7 }}
-        >
+        <p className="text-sm mb-4 line-clamp-2" style={{ color: COLORS.lightText, opacity: 0.7 }}>
           {category.description}
         </p>
       )}
@@ -172,20 +160,14 @@ export function CategoryCard({
         <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.6 }}>
           Services
         </span>
-        <span 
-          className="font-semibold"
-          style={{ color: category.color }}
-        >
+        <span className="font-semibold" style={{ color: category.color }}>
           {category.service_count}
         </span>
       </div>
 
       {/* Code */}
       {category.entity_code && (
-        <p 
-          className="text-xs mt-2 font-mono"
-          style={{ color: COLORS.bronze, opacity: 0.6 }}
-        >
+        <p className="text-xs mt-2 font-mono" style={{ color: COLORS.bronze, opacity: 0.6 }}>
           {category.entity_code}
         </p>
       )}

@@ -144,7 +144,7 @@ const SALON_QUICK_PROMPTS: QuickPrompt[] = [
 
 export default function SalonDigitalAccountantPage() {
   const router = useRouter()
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [messages, setMessages] = useState<SalonMessage[]>([
     {
       id: '1',

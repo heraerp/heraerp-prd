@@ -43,7 +43,7 @@ import { useToast } from '@/hooks/use-toast'
 
 export default function ReadinessQuestionnairePage() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const { toast } = useToast()
   const [showWizard, setShowWizard] = useState(false)
   const [template, setTemplate] = useState<QuestionnaireTemplate | null>(null)

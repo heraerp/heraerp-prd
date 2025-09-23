@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react'
 
 export default function AuthHubPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, organizations  } = useHERAAuth()
+  const { isAuthenticated, isLoading, organizations } = useHERAAuth()
 
   useEffect(() => {
     if (!isLoading) {

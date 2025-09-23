@@ -47,7 +47,7 @@ interface QueryHistory {
 }
 
 export default function SupabaseSQLEditor() {
-  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, contextLoading } = useHERAAuth()
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<QueryResult | null>(null)
   const [isExecuting, setIsExecuting] = useState(false)

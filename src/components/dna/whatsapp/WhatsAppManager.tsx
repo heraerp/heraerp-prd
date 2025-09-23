@@ -85,7 +85,7 @@ export function WhatsAppManager({
   organizationId,
   industryType = 'generic'
 }: WhatsAppManagerProps) {
-  const { currentOrganization  } = useHERAAuth()
+  const { currentOrganization } = useHERAAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<Message[]>([])

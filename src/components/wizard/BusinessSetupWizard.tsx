@@ -173,7 +173,7 @@ const WIZARD_STEPS = [
 ]
 
 export const BusinessSetupWizard: React.FC = () => {
-  const { currentOrganization, user  } = useHERAAuth()
+  const { currentOrganization, user } = useHERAAuth()
   const [currentStep, setCurrentStep] = useState(0)
   const [wizardData, setWizardData] = useState<WizardData>({
     organizationBasics: {

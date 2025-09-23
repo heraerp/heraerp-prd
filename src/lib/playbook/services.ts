@@ -14,14 +14,14 @@ export async function listServices(params: {
   try {
     const query = withBranch(
       {
-        type: 'service',  // entity_type filter
+        type: 'service', // entity_type filter
         organization_id: params.organization_id,
         q: params.q,
         sort: params.sort || 'updated_at:desc',
         limit: params.limit ?? 25,
         offset: params.offset ?? 0,
         ...(params.status && params.status !== 'all' ? { status: params.status } : {}),
-        ...(params.category_id ? { category_id: params.category_id } : {}),
+        ...(params.category_id ? { category_id: params.category_id } : {})
       },
       params.branch_id
     )
@@ -33,7 +33,7 @@ export async function listServices(params: {
 
     pbLog('listServices success:', {
       count: result.items.length,
-      total: result.total,
+      total: result.total
     })
 
     return { ok: true, data: result } as const
@@ -42,7 +42,7 @@ export async function listServices(params: {
     return {
       ok: false,
       data: { items: [], total: 0 },
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -61,14 +61,14 @@ export async function createService(payload: {
       ...payload,
       smart_code: heraCode('HERA.SALON.SVC.CATALOG.STANDARD.v1'),
       entity_type: 'service', // Ensure entity_type is 'service' not 'svc'
-      status: payload.status || 'active',
+      status: payload.status || 'active'
     }
 
     pbLog('createService request:', body)
 
     const json = await pb('/entities', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('createService success:', json)
@@ -78,7 +78,7 @@ export async function createService(payload: {
     pbLog('createService error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -98,9 +98,13 @@ export async function updateService(
     pbLog('updateService request:', { id, patch })
 
     // Get organization ID from cookie
-    const orgId = typeof document !== 'undefined' ? 
-      document.cookie.split('; ').find(row => row.startsWith('hera-organization-id='))?.split('=')[1] : 
-      undefined
+    const orgId =
+      typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('hera-organization-id='))
+            ?.split('=')[1]
+        : undefined
 
     if (!orgId) {
       throw new Error('Organization ID is required')
@@ -115,7 +119,7 @@ export async function updateService(
 
     const json = await pb(`/entities/${id}?organization_id=${orgId}`, {
       method: 'PATCH',
-      body: entityPayload,
+      body: entityPayload
     })
 
     pbLog('updateService success:', json)
@@ -125,7 +129,7 @@ export async function updateService(
     pbLog('updateService error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -139,9 +143,13 @@ export async function deleteService(id: string) {
     pbLog('deleteService request:', { id })
 
     // Get organization ID from cookie
-    const orgId = typeof document !== 'undefined' ? 
-      document.cookie.split('; ').find(row => row.startsWith('hera-organization-id='))?.split('=')[1] : 
-      undefined
+    const orgId =
+      typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('hera-organization-id='))
+            ?.split('=')[1]
+        : undefined
 
     if (!orgId) {
       throw new Error('Organization ID is required')
@@ -158,7 +166,7 @@ export async function deleteService(id: string) {
     pbLog('deleteService error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
@@ -168,14 +176,14 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     const body = {
       entity_id,
       smart_code,
-      data,
+      data
     }
 
     pbLog('upsertDynamicData request:', body)
 
     const json = await pb('/dynamic_data/upsert', {
       method: 'POST',
-      body,
+      body
     })
 
     pbLog('upsertDynamicData success:', json)
@@ -185,19 +193,28 @@ export async function upsertDynamicData(entity_id: string, smart_code: string, d
     pbLog('upsertDynamicData error:', error)
     return {
       ok: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message : String(error)
     } as const
   }
 }
 
-export async function getDynamicData(entity_ids: string[], smart_code: string, organization_id?: string) {
+export async function getDynamicData(
+  entity_ids: string[],
+  smart_code: string,
+  organization_id?: string
+) {
   try {
     pbLog('getDynamicData request:', { entity_ids: entity_ids.length, smart_code, organization_id })
 
     // Get organization ID from cookie if not provided
-    const orgId = organization_id || (typeof document !== 'undefined' ? 
-      document.cookie.split('; ').find(row => row.startsWith('hera-organization-id='))?.split('=')[1] : 
-      undefined)
+    const orgId =
+      organization_id ||
+      (typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('hera-organization-id='))
+            ?.split('=')[1]
+        : undefined)
 
     if (!orgId) {
       throw new Error('Organization ID is required')
@@ -206,7 +223,7 @@ export async function getDynamicData(entity_ids: string[], smart_code: string, o
     const data = await getDD(entity_ids, smart_code, orgId)
 
     pbLog('getDynamicData success:', {
-      entities: Object.keys(data).length,
+      entities: Object.keys(data).length
     })
 
     return { ok: true, data } as const

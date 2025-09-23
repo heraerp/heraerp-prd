@@ -6,18 +6,18 @@ const DEMO_ORG_ID = process.env.DEMO_ORG_ID || ''
 export async function GET(req: NextRequest) {
   try {
     console.log('[org-context] Checking for organization...')
-    
+
     // 1) cookie?
     const cookieOrg = req.cookies.get('HERA_ORG_ID')?.value
     if (cookieOrg) {
       console.log('[org-context] Found organization in HERA_ORG_ID cookie:', cookieOrg)
-      return NextResponse.json({ 
-        organization: { 
+      return NextResponse.json({
+        organization: {
           id: cookieOrg,
           name: 'Hair Talkz Salon (Demo)',
           type: 'salon',
           industry: 'beauty_services'
-        } 
+        }
       })
     }
 
@@ -26,19 +26,22 @@ export async function GET(req: NextRequest) {
     // For now, just use DEMO fallback:
     if (DEMO_ORG_ID) {
       console.log('[org-context] Using DEMO_ORG_ID from environment:', DEMO_ORG_ID)
-      return NextResponse.json({ 
-        organization: { 
-          id: DEMO_ORG_ID, 
+      return NextResponse.json({
+        organization: {
+          id: DEMO_ORG_ID,
           name: 'Hair Talkz Salon (Demo)',
           type: 'salon',
           industry: 'beauty_services'
-        } 
+        }
       })
     }
 
     // 3) Try to find a demo organization from the session
     const sessionCookie = req.cookies.get('hera-demo-session')?.value
-    console.log('[org-context] Checking demo session cookie:', sessionCookie ? 'found' : 'not found')
+    console.log(
+      '[org-context] Checking demo session cookie:',
+      sessionCookie ? 'found' : 'not found'
+    )
     if (sessionCookie) {
       try {
         const decodedCookie = decodeURIComponent(sessionCookie)
@@ -46,7 +49,7 @@ export async function GET(req: NextRequest) {
         console.log('[org-context] Session data organization_id:', sessionData.organization_id)
         if (sessionData.organization_id) {
           console.log('[org-context] Found organization in session:', sessionData.organization_id)
-          
+
           // Also set the HERA_ORG_ID cookie for next time
           const response = NextResponse.json({
             organization: {
@@ -56,7 +59,7 @@ export async function GET(req: NextRequest) {
               industry: 'beauty_services'
             }
           })
-          
+
           // Set the cookie so next time we find it faster
           response.cookies.set('HERA_ORG_ID', sessionData.organization_id, {
             httpOnly: false,
@@ -65,7 +68,7 @@ export async function GET(req: NextRequest) {
             maxAge: 60 * 60 * 24 * 365, // 1 year
             path: '/'
           })
-          
+
           return response
         }
       } catch (e) {

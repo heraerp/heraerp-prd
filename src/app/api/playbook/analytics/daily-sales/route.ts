@@ -9,10 +9,7 @@ export async function GET(req: NextRequest) {
     const endDate = searchParams.get('endDate')
 
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
     }
 
     const supabase = createServerClient()
@@ -20,7 +17,8 @@ export async function GET(req: NextRequest) {
     // Fetch transactions with their lines
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_date,
         total_amount,
@@ -28,10 +26,11 @@ export async function GET(req: NextRequest) {
           line_amount,
           smart_code
         )
-      `)
+      `
+      )
       .eq('organization_id', orgId)
       .eq('transaction_type', 'sale')
-      // No status filtering - all completed sales are valid
+    // No status filtering - all completed sales are valid
 
     if (startDate) {
       query = query.gte('transaction_date', startDate)
@@ -51,18 +50,21 @@ export async function GET(req: NextRequest) {
     }
 
     // Group by date and calculate totals
-    const dailySales = new Map<string, {
-      sale_date: string
-      transaction_count: number
-      gross_sales: number
-      total_discounts: number
-      total_tax: number
-      net_sales: number
-    }>()
+    const dailySales = new Map<
+      string,
+      {
+        sale_date: string
+        transaction_count: number
+        gross_sales: number
+        total_discounts: number
+        total_tax: number
+        net_sales: number
+      }
+    >()
 
     transactions?.forEach(transaction => {
       const date = new Date(transaction.transaction_date).toISOString().split('T')[0]
-      
+
       if (!dailySales.has(date)) {
         dailySales.set(date, {
           sale_date: date,
@@ -91,7 +93,7 @@ export async function GET(req: NextRequest) {
     })
 
     // Convert to array and sort by date descending
-    const items = Array.from(dailySales.values()).sort((a, b) => 
+    const items = Array.from(dailySales.values()).sort((a, b) =>
       b.sale_date.localeCompare(a.sale_date)
     )
 

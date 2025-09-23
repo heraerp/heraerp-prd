@@ -7,7 +7,7 @@ import { playbookCrmApi } from '@/lib/api/playbook-crm'
 import { Button } from '@/components/ui/button'
 
 export default function CRMPipelineBoard() {
-  const { currentOrganization, isAuthenticated, isLoading  } = useHERAAuth()
+  const { currentOrganization, isAuthenticated, isLoading } = useHERAAuth()
   const [stages, setStages] = useState<{ id: string; name: string }[]>([])
   const [columns, setColumns] = useState<Record<string, any[]>>({})
   const [dragged, setDragged] = useState<{ id: string; from: string } | null>(null)

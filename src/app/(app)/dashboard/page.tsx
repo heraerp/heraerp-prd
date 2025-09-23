@@ -22,7 +22,7 @@ import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 import { DataDebugger } from '@/components/debug/DataDebugger'
 
 export default function SalonDashboard() {
-  const { currentOrganization, isLoading, isLoadingOrgs  } = useHERAAuth()
+  const { currentOrganization, isLoading, isLoadingOrgs } = useHERAAuth()
   const contextLoading = isLoading || isLoadingOrgs
 
   // Use the current organization or fallback to the demo salon org

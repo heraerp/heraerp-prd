@@ -41,7 +41,8 @@ const typeDescriptions = {
 
 export default function OrganizationSelectorPage() {
   const router = useRouter()
-  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs  } = useHERAAuth()
+  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs } =
+    useHERAAuth()
   const [switching, setSwitching] = useState<string | null>(null)
 
   useEffect(() => {

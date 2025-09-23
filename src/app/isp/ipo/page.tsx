@@ -376,9 +376,7 @@ export default function IPOPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5E6C8]">
-            IPO Preparation Dashboard
-          </h1>
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">IPO Preparation Dashboard</h1>
           <p className="text-foreground/60 mt-1">
             Track India Vision's journey to Initial Public Offering
           </p>

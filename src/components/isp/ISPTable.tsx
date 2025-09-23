@@ -19,10 +19,10 @@ interface ISPTableProps {
   className?: string
 }
 
-export function ISPTable({ 
-  data = [], 
-  columns = [], 
-  onEdit, 
+export function ISPTable({
+  data = [],
+  columns = [],
+  onEdit,
   onDelete,
   className = ''
 }: ISPTableProps) {
@@ -31,7 +31,7 @@ export function ISPTable({
   return (
     <div className={`relative overflow-hidden rounded-2xl ${className}`}>
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC]/20 via-[#E91E63]/20 to-[#FFD700]/20 rounded-2xl blur opacity-40" />
-      
+
       <div className="relative bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-2xl">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -52,12 +52,12 @@ export function ISPTable({
                 )}
               </tr>
             </thead>
-            
+
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td 
-                    colSpan={columns.length + (onEdit || onDelete ? 1 : 0)} 
+                  <td
+                    colSpan={columns.length + (onEdit || onDelete ? 1 : 0)}
                     className="text-center px-6 py-8 text-slate-400"
                   >
                     No data available
@@ -65,19 +65,16 @@ export function ISPTable({
                 </tr>
               ) : (
                 data.map((item, rowIndex) => (
-                  <tr 
+                  <tr
                     key={item.id || rowIndex}
                     className="border-b border-border/50 hover:bg-muted/5 transition-colors duration-200"
                   >
-                    {columns.map((column) => (
-                      <td 
-                        key={column.key} 
-                        className={`px-6 py-4 ${column.className || ''}`}
-                      >
+                    {columns.map(column => (
+                      <td key={column.key} className={`px-6 py-4 ${column.className || ''}`}>
                         {column.render ? column.render(item) : item[column.key]}
                       </td>
                     ))}
-                    
+
                     {(onEdit || onDelete) && (
                       <td className="text-right px-6 py-4">
                         <div className="relative inline-block">
@@ -87,11 +84,11 @@ export function ISPTable({
                           >
                             <MoreVertical className="h-4 w-4" />
                           </button>
-                          
+
                           {openMenuId === item.id && (
                             <>
-                              <div 
-                                className="fixed inset-0 z-10" 
+                              <div
+                                className="fixed inset-0 z-10"
                                 onClick={() => setOpenMenuId(null)}
                               />
                               <div className="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20 overflow-hidden">

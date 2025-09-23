@@ -47,7 +47,7 @@ export function JobsStyleLayout({
   showSidebar = true,
   headerActions
 }: JobsStyleLayoutProps) {
-  const { user, organization, logout  } = useHERAAuth()
+  const { user, organization, logout } = useHERAAuth()
   const pathname = usePathname()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)

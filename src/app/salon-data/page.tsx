@@ -66,7 +66,7 @@ import { cn } from '@/lib/utils'
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 
 export default function SalonModernDashboard() {
-  const { currentOrganization, contextLoading  } = useHERAAuth()
+  const { currentOrganization, contextLoading } = useHERAAuth()
   const [refreshing, setRefreshing] = useState(false)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)

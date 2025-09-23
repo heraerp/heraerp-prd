@@ -13,9 +13,9 @@ interface PermissionGuardProps {
   fallbackPath?: string
 }
 
-export function PermissionGuard({ 
-  children, 
-  requiredPermissions = [], 
+export function PermissionGuard({
+  children,
+  requiredPermissions = [],
   requireAny = true,
   fallbackPath = '/salon/auth'
 }: PermissionGuardProps) {
@@ -24,27 +24,33 @@ export function PermissionGuard({
 
   useEffect(() => {
     if (!isLoading && requiredPermissions.length > 0) {
-      const hasAccess = requireAny 
+      const hasAccess = requireAny
         ? hasAnyPermission(requiredPermissions)
         : hasAllPermissions(requiredPermissions)
-      
+
       if (!hasAccess) {
         console.warn('Access denied. Missing permissions:', requiredPermissions)
         router.replace(fallbackPath)
       }
     }
-  }, [isLoading, permissions, requiredPermissions, requireAny, fallbackPath, router, hasAnyPermission, hasAllPermissions])
+  }, [
+    isLoading,
+    permissions,
+    requiredPermissions,
+    requireAny,
+    fallbackPath,
+    router,
+    hasAnyPermission,
+    hasAllPermissions
+  ])
 
   if (isLoading) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: LUXE_COLORS.black }}
       >
-        <Loader2 
-          className="h-8 w-8 animate-spin" 
-          style={{ color: LUXE_COLORS.gold }}
-        />
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
       </div>
     )
   }
@@ -54,33 +60,27 @@ export function PermissionGuard({
     return <>{children}</>
   }
 
-  const hasAccess = requireAny 
+  const hasAccess = requireAny
     ? hasAnyPermission(requiredPermissions)
     : hasAllPermissions(requiredPermissions)
 
   if (!hasAccess) {
     return (
-      <div 
+      <div
         className="min-h-screen flex items-center justify-center p-4"
         style={{ backgroundColor: LUXE_COLORS.black }}
       >
-        <div 
+        <div
           className="text-center p-8 rounded-lg"
           style={{
             backgroundColor: LUXE_COLORS.charcoalLight,
             border: `1px solid ${LUXE_COLORS.bronze}50`
           }}
         >
-          <h1 
-            className="text-2xl font-light mb-4"
-            style={{ color: LUXE_COLORS.gold }}
-          >
+          <h1 className="text-2xl font-light mb-4" style={{ color: LUXE_COLORS.gold }}>
             Access Denied
           </h1>
-          <p 
-            className="text-sm"
-            style={{ color: LUXE_COLORS.bronze }}
-          >
+          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
             You don't have permission to access this page
           </p>
         </div>

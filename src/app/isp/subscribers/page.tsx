@@ -397,9 +397,7 @@ export default function SubscribersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#F5E6C8]">
-            Subscribers
-          </h1>
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">Subscribers</h1>
           <p className="text-slate-400 mt-1">Manage your broadband and cable TV subscribers</p>
         </div>
 

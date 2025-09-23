@@ -15,7 +15,7 @@ const HairTalkzOrgContext = createContext<HairTalkzOrgContextType | null>(null)
 
 export function HairTalkzOrgProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const { currentOrganization, isLoadingOrgs, isAuthenticated  } = useHERAAuth()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 
   // Use authenticated org if available, otherwise use demo org, fallback to Hair Talkz (Demo)

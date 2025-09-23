@@ -10,13 +10,7 @@ import { DeleteCategoryDialog } from '@/components/salon/categories/DeleteCatego
 import { StatusToastProvider, useSalonToast } from '@/components/salon/ui/StatusToastProvider'
 import { Category } from '@/types/salon-category'
 import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { 
-  Plus, 
-  Grid3X3, 
-  List, 
-  Tag,
-  Search
-} from 'lucide-react'
+import { Plus, Grid3X3, List, Tag, Search } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const COLORS = {
@@ -64,10 +58,11 @@ function SalonCategoriesPageContent() {
   })
 
   // Filter categories by search
-  const filteredCategories = categories.filter(category =>
-    category.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    category.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    category.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCategories = categories.filter(
+    category =>
+      category.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      category.entity_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      category.description?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   // CRUD handlers
@@ -76,7 +71,7 @@ function SalonCategoriesPageContent() {
       editingCategory ? 'Updating category...' : 'Creating category...',
       'Please wait while we save your changes'
     )
-    
+
     try {
       if (editingCategory) {
         await updateCategory(editingCategory.id, data)
@@ -112,11 +107,8 @@ function SalonCategoriesPageContent() {
     if (!categoryToDelete) return
 
     setIsDeleting(true)
-    const loadingId = showLoading(
-      'Deleting category...',
-      'This action cannot be undone'
-    )
-    
+    const loadingId = showLoading('Deleting category...', 'This action cannot be undone')
+
     try {
       await deleteCategory(categoryToDelete.id)
       removeToast(loadingId)
@@ -128,10 +120,7 @@ function SalonCategoriesPageContent() {
       setCategoryToDelete(null)
     } catch (error: any) {
       removeToast(loadingId)
-      showError(
-        'Failed to delete category',
-        error.message || 'Please try again'
-      )
+      showError('Failed to delete category', error.message || 'Please try again')
     } finally {
       setIsDeleting(false)
     }
@@ -142,7 +131,7 @@ function SalonCategoriesPageContent() {
       `${category.status === 'archived' ? 'Restoring' : 'Archiving'} category...`,
       'Please wait'
     )
-    
+
     try {
       await archiveCategory(category.id, category.status !== 'archived')
       removeToast(loadingId)
@@ -172,7 +161,8 @@ function SalonCategoriesPageContent() {
         <div
           className="absolute inset-0 pointer-events-none opacity-30"
           style={{
-            background: 'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
+            background:
+              'radial-gradient(ellipse at top right, rgba(212, 175, 55, 0.15), transparent 50%), radial-gradient(ellipse at bottom left, rgba(15, 111, 92, 0.1), transparent 50%)'
           }}
         />
 
@@ -279,7 +269,10 @@ function SalonCategoriesPageContent() {
 
           {/* Filters and View Options */}
           <div className="mx-6 mt-6 flex items-center justify-between">
-            <Tabs value={includeArchived ? 'all' : 'active'} onValueChange={(v) => setIncludeArchived(v === 'all')}>
+            <Tabs
+              value={includeArchived ? 'all' : 'active'}
+              onValueChange={v => setIncludeArchived(v === 'all')}
+            >
               <TabsList style={{ backgroundColor: COLORS.charcoalLight }}>
                 <TabsTrigger value="active">Active</TabsTrigger>
                 <TabsTrigger value="all">All Categories</TabsTrigger>
@@ -309,19 +302,27 @@ function SalonCategoriesPageContent() {
             {isLoading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Tag className="w-12 h-12 mx-auto mb-3 animate-pulse" style={{ color: COLORS.gold }} />
+                  <Tag
+                    className="w-12 h-12 mx-auto mb-3 animate-pulse"
+                    style={{ color: COLORS.gold }}
+                  />
                   <p style={{ color: COLORS.lightText }}>Loading categories...</p>
                 </div>
               </div>
             ) : filteredCategories.length === 0 ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Tag className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: COLORS.gold }} />
+                  <Tag
+                    className="w-12 h-12 mx-auto mb-3 opacity-30"
+                    style={{ color: COLORS.gold }}
+                  />
                   <p className="text-lg mb-1" style={{ color: COLORS.champagne }}>
                     {searchQuery ? 'No categories found' : 'No categories yet'}
                   </p>
                   <p className="text-sm opacity-60 mb-4" style={{ color: COLORS.lightText }}>
-                    {searchQuery ? 'Try adjusting your search' : 'Create your first category to organize services'}
+                    {searchQuery
+                      ? 'Try adjusting your search'
+                      : 'Create your first category to organize services'}
                   </p>
                   {!searchQuery && (
                     <button
