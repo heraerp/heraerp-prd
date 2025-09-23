@@ -2,9 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
-import { HAIRTALKZ_ORG_ID } from '@/lib/constants/salon'
+import { HAIRTALKZ_ORG_ID, getSalonOrgId, LUXE_COLORS } from '@/lib/constants/salon'
 import { Loader2 } from 'lucide-react'
-import { LUXE_COLORS } from '@/lib/constants/salon'
 
 interface SalonContextType {
   organizationId: string
@@ -33,23 +32,13 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
   })
 
   useEffect(() => {
-    // Check if we have a specific org ID from subdomain routing
-    const checkOrgFromSubdomain = () => {
-      if (typeof window !== 'undefined') {
-        const hostname = window.location.hostname
-        
-        // Check if running on hairtalkz subdomain (production or localhost)
-        if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
-          setOrgId('378f24fb-d496-4ff7-8afa-ea34895a0eb8')
-        } 
-        // Check for localhost development with path-based routing
-        else if (window.location.pathname.startsWith('/~hairtalkz')) {
-          setOrgId('378f24fb-d496-4ff7-8afa-ea34895a0eb8')
-        }
-      }
+    // Get organization ID based on current location
+    if (typeof window !== 'undefined') {
+      const detectedOrgId = getSalonOrgId(window.location.hostname, window.location.pathname)
+      console.log('Detected organization ID:', detectedOrgId)
+      setOrgId(detectedOrgId)
     }
     
-    checkOrgFromSubdomain()
     loadContext()
     
     // Listen for auth state changes
@@ -120,13 +109,8 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       console.log('Loading context - user metadata:', session?.user?.user_metadata)
       console.log('Loading context - session user:', session?.user?.email)
       
-      // Use the orgId that was set based on subdomain or path
-      const finalOrgId = typeof window !== 'undefined' && 
-        (window.location.hostname.startsWith('hairtalkz.') || 
-         window.location.hostname === 'hairtalkz.localhost' ||
-         window.location.pathname.startsWith('/~hairtalkz'))
-        ? '378f24fb-d496-4ff7-8afa-ea34895a0eb8' 
-        : orgId
+      // Use the detected org ID
+      const finalOrgId = orgId // Already set by getSalonOrgId
       
       setContext({
         organizationId: finalOrgId,
