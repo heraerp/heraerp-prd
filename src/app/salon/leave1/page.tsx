@@ -4,7 +4,17 @@ import React, { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Calendar, Users, FileText, Settings, Plus, Search, Download, ChevronLeft, User } from 'lucide-react'
+import {
+  Calendar,
+  Users,
+  FileText,
+  Settings,
+  Plus,
+  Search,
+  Download,
+  ChevronLeft,
+  User
+} from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
@@ -99,16 +109,20 @@ export default function LeaveManagementPage() {
   const getEffectiveOrgId = () => {
     if (organization?.id) return organization.id
     if (localOrgId) return localOrgId
-    
+
     // Check if we're on hairtalkz or heratalkz subdomain
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
-      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost' ||
-          hostname.startsWith('heratalkz.') || hostname === 'heratalkz.localhost') {
+      if (
+        hostname.startsWith('hairtalkz.') ||
+        hostname === 'hairtalkz.localhost' ||
+        hostname.startsWith('heratalkz.') ||
+        hostname === 'heratalkz.localhost'
+      ) {
         return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
       }
     }
-    
+
     return organization?.id || localOrgId
   }
 
@@ -187,7 +201,7 @@ export default function LeaveManagementPage() {
             <div className="flex items-center gap-2 flex-wrap">
               {/* Back to Staff */}
               <Button
-                onClick={() => window.location.href = '/salon/staff'}
+                onClick={() => (window.location.href = '/salon/staff')}
                 variant="outline"
                 className="border text-sm px-3 py-2"
                 style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}

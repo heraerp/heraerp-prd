@@ -128,8 +128,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     // Check if we're on hairtalkz or heratalkz subdomain
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname
-      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost' ||
-          hostname.startsWith('heratalkz.') || hostname === 'heratalkz.localhost') {
+      if (
+        hostname.startsWith('hairtalkz.') ||
+        hostname === 'hairtalkz.localhost' ||
+        hostname.startsWith('heratalkz.') ||
+        hostname === 'heratalkz.localhost'
+      ) {
         return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
       }
     }
@@ -662,10 +666,16 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     <div className="flex items-start gap-2">
                       <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5" />
                       <div className="text-sm">
-                        <p className="font-medium text-red-700 dark:text-red-300">This appointment has been cancelled</p>
+                        <p className="font-medium text-red-700 dark:text-red-300">
+                          This appointment has been cancelled
+                        </p>
                         {appointment.metadata?.cancelled_at && (
                           <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                            Cancelled on {format(new Date(appointment.metadata.cancelled_at), 'MMM d, yyyy at h:mm a')}
+                            Cancelled on{' '}
+                            {format(
+                              new Date(appointment.metadata.cancelled_at),
+                              'MMM d, yyyy at h:mm a'
+                            )}
                           </p>
                         )}
                       </div>
