@@ -1,6 +1,6 @@
 'use client'
 
-// Force dynamic rendering - Updated to fix build cache
+// Force dynamic rendering - Railway cache bust v1.2.2
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'

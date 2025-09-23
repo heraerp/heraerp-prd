@@ -195,6 +195,14 @@ export async function middleware(request: NextRequest) {
     if (subdomain === 'hairtalkz') {
       requestHeaders.set('x-hera-org-id', '378f24fb-d496-4ff7-8afa-ea34895a0eb8')
       requestHeaders.set('x-hera-org-mode', 'tenant')
+      
+      // If accessing root path on hairtalkz subdomain, redirect to /salon
+      if (pathname === '/' || pathname === '') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/salon'
+        return NextResponse.redirect(url)
+      }
+      
       // For hairtalkz, route /salon to the salon app
       if (pathname === '/salon' || pathname.startsWith('/salon/')) {
         const url = request.nextUrl.clone()
@@ -220,16 +228,18 @@ export async function middleware(request: NextRequest) {
 
 // Helper to extract subdomain
 function getSubdomain(hostname: string): string | null {
-  // Handle localhost with port - check for subdomain in path
-  if (hostname.includes('localhost')) {
-    // For localhost, we can use path-based routing like localhost:3000/~hairtalkz
-    return null
-  }
-
   // Remove port if present
   const host = hostname.split(':')[0]
   
-  // Split by dots
+  // Handle subdomain.localhost pattern
+  if (host.includes('.localhost')) {
+    const parts = host.split('.')
+    if (parts.length >= 2 && parts[0]) {
+      return parts[0] // Return subdomain from subdomain.localhost
+    }
+  }
+  
+  // Split by dots for production domains
   const parts = host.split('.')
   
   // Need at least subdomain.domain.tld

@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase/client'
 import { HAIRTALKZ_ORG_ID } from '@/lib/constants/salon'
 import { Loader2 } from 'lucide-react'
 import { LUXE_COLORS } from '@/lib/constants/salon'
-import { headers } from 'next/headers'
 
 interface SalonContextType {
   organizationId: string
@@ -37,8 +36,10 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
     // Check if we have a specific org ID from subdomain routing
     const checkOrgFromSubdomain = () => {
       if (typeof window !== 'undefined') {
-        // Check if running on hairtalkz subdomain
-        if (window.location.hostname.startsWith('hairtalkz.')) {
+        const hostname = window.location.hostname
+        
+        // Check if running on hairtalkz subdomain (production or localhost)
+        if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
           setOrgId('378f24fb-d496-4ff7-8afa-ea34895a0eb8')
         } 
         // Check for localhost development with path-based routing
@@ -66,7 +67,9 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       
       // Use the orgId that was set based on subdomain or path
       const finalOrgId = typeof window !== 'undefined' && 
-        (window.location.hostname.startsWith('hairtalkz.') || window.location.pathname.startsWith('/~hairtalkz'))
+        (window.location.hostname.startsWith('hairtalkz.') || 
+         window.location.hostname === 'hairtalkz.localhost' ||
+         window.location.pathname.startsWith('/~hairtalkz'))
         ? '378f24fb-d496-4ff7-8afa-ea34895a0eb8' 
         : orgId
       
