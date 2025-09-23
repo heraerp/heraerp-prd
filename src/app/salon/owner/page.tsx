@@ -1,568 +1,573 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/luxe-card'
-import { Button } from '@/components/ui/button'
-import {
-  TrendingUp,
-  Users,
-  DollarSign,
-  Calendar,
-  Star,
+import { useEffect, useState } from 'react'
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Calendar, 
+  Users, 
+  UserCheck, 
+  DollarSign, 
   Package,
-  UserCheck,
-  Clock,
-  Scissors,
   AlertCircle,
-  BarChart3,
-  ArrowUpRight,
-  ArrowDownRight,
-  Loader2,
-  Crown,
-  TrendingDown,
-  FileText,
-  Settings,
-  Building,
-  CreditCard,
-  Heart
+  RefreshCw
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { supabase } from '@/lib/supabase/client'
-import { universalApi } from '@/lib/universal-api'
-import Link from 'next/link'
+import { Line, Doughnut } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  ChartOptions
+} from 'chart.js'
 
-// Luxe color palette
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323',
-  plum: '#B794F4',
-  emerald: '#0F6F5C',
-  ruby: '#DC2626'
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+)
+
+interface KPIData {
+  monthlyRevenue: { amount: number; growth: number }
+  todaysAppointments: { count: number }
+  activeCustomers: { count: number; growth: number }
+  staffMembers: { count: number }
+  totalExpenses: { amount: number; growth: number }
+  lowStockItems: { count: number }
 }
 
-// Michele's salon organization ID
-const HAIRTALKZ_ORG_ID = '378f24fb-d496-4ff7-8afa-ea34895a0eb8'
+interface FinancialData {
+  month_name: string
+  month_start: string
+  total_revenue_aed: number
+  total_expenses_aed: number
+  net_profit_aed: number
+  profit_margin_percentage: number
+  top_services_revenue_aed: number
+  top_products_revenue_aed: number
+}
 
-interface MetricCardProps {
-  title: string
-  value: string | number
-  subtitle?: string
-  icon: React.ElementType
-  trend?: {
-    value: number
-    isUp: boolean
+interface InventoryItem {
+  product_id: string
+  product_name: string
+  current_stock: number
+  reorder_level: number
+  unit_of_measure: string
+  stock_status: 'low' | 'out_of_stock' | 'normal'
+}
+
+export default function OwnerDashboard() {
+  const [kpiData, setKpiData] = useState<KPIData | null>(null)
+  const [financialData, setFinancialData] = useState<FinancialData[]>([])
+  const [inventoryData, setInventoryData] = useState<InventoryItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [lastRefresh, setLastRefresh] = useState(new Date())
+
+  // Fetch all dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      // Fetch KPIs
+      const kpiResponse = await fetch('/api/dashboard/kpis')
+      if (!kpiResponse.ok) throw new Error('Failed to fetch KPIs')
+      const kpiData = await kpiResponse.json()
+      setKpiData(kpiData)
+
+      // Fetch Financial Data
+      const financialResponse = await fetch('/api/dashboard/financial')
+      if (!financialResponse.ok) throw new Error('Failed to fetch financial data')
+      const financialData = await financialResponse.json()
+      setFinancialData(financialData)
+
+      // Fetch Inventory Data
+      const inventoryResponse = await fetch('/api/dashboard/inventory')
+      if (!inventoryResponse.ok) throw new Error('Failed to fetch inventory data')
+      const inventoryData = await inventoryResponse.json()
+      setInventoryData(inventoryData.filter((item: InventoryItem) => 
+        item.stock_status === 'low' || item.stock_status === 'out_of_stock'
+      ))
+
+      setLastRefresh(new Date())
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
   }
-  gradientFrom?: string
-  gradientTo?: string
-}
 
-function MetricCard({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  trend,
-  gradientFrom = COLORS.gold,
-  gradientTo = COLORS.goldDark
-}: MetricCardProps) {
-  return (
-    <Card
-      className="relative overflow-hidden transition-all duration-300 hover:scale-[1.02]"
-      style={{
-        backgroundColor: COLORS.charcoalLight,
-        border: `1px solid ${COLORS.bronze}20`,
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
-      }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none opacity-10"
-        style={{
-          background: `radial-gradient(circle at 100% 0%, ${gradientFrom} 0%, transparent 50%)`
-        }}
-      />
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle
-          className="text-sm font-light tracking-wider uppercase"
-          style={{ color: COLORS.bronze }}
-        >
-          {title}
-        </CardTitle>
-        <div
-          className="h-10 w-10 rounded-lg flex items-center justify-center"
-          style={{
-            background: `linear-gradient(135deg, ${gradientFrom} 0%, ${gradientTo} 100%)`,
-            boxShadow: `0 2px 10px ${gradientFrom}40`
-          }}
-        >
-          <Icon className="h-5 w-5" style={{ color: COLORS.black }} />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-light tracking-wide" style={{ color: COLORS.champagne }}>
-          {value}
-        </div>
-        {subtitle && (
-          <p className="text-xs mt-2 font-light" style={{ color: `${COLORS.bronze}90` }}>
-            {subtitle}
-          </p>
-        )}
-        {trend && (
-          <div
-            className="flex items-center gap-2 mt-3 pt-3"
-            style={{ borderTop: `1px solid ${COLORS.bronze}20` }}
-          >
-            {trend.isUp ? (
-              <ArrowUpRight className="h-4 w-4" style={{ color: COLORS.emerald }} />
-            ) : (
-              <ArrowDownRight className="h-4 w-4" style={{ color: COLORS.ruby }} />
-            )}
-            <span
-              className="text-sm font-light"
-              style={{
-                color: trend.isUp ? COLORS.emerald : COLORS.ruby
-              }}
-            >
-              {trend.value}% from last month
-            </span>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-function QuickActionButton({
-  icon: Icon,
-  label,
-  href,
-  description
-}: {
-  icon: React.ElementType
-  label: string
-  href: string
-  description?: string
-}) {
-  return (
-    <Link href={href}>
-      <Card
-        className="group cursor-pointer transition-all duration-300 hover:scale-[1.02]"
-        style={{
-          backgroundColor: COLORS.charcoalLight,
-          border: `1px solid ${COLORS.bronze}20`
-        }}
-      >
-        <CardContent className="p-6 text-center">
-          <div
-            className="h-14 w-14 rounded-xl mx-auto mb-4 flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-            style={{
-              background: `linear-gradient(135deg, ${COLORS.bronze} 0%, ${COLORS.gold} 100%)`,
-              boxShadow: `0 2px 10px ${COLORS.gold}30`
-            }}
-          >
-            <Icon className="h-7 w-7" style={{ color: COLORS.black }} />
-          </div>
-          <h3 className="font-medium tracking-wide mb-1" style={{ color: COLORS.champagne }}>
-            {label}
-          </h3>
-          {description && (
-            <p className="text-xs font-light" style={{ color: `${COLORS.bronze}80` }}>
-              {description}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-    </Link>
-  )
-}
-
-export default function HairTalkzOwnerDashboard() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(true)
-  const [userName, setUserName] = useState('')
-  const [dashboardData, setDashboardData] = useState({
-    todayRevenue: 0,
-    monthlyRevenue: 0,
-    activeAppointments: 0,
-    newCustomers: 0,
-    staffPresent: 0,
-    productsSold: 0,
-    averageRating: 0,
-    pendingPayments: 0
-  })
-
+  // Initial fetch and auto-refresh every 5 minutes
   useEffect(() => {
-    checkAuth()
-    loadDashboardData()
+    fetchDashboardData()
+    const interval = setInterval(fetchDashboardData, 5 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
-  const checkAuth = async () => {
-    try {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-
-      if (!session?.user) {
-        router.replace('/salon/auth')
-        return
-      }
-
-      const userMetadata = session.user.user_metadata
-      const userRole =
-        userMetadata?.role?.toLowerCase() || localStorage.getItem('salonRole')?.toLowerCase()
-
-      // Just set the username, don't redirect if already on the right page
-      setUserName(userMetadata.full_name || localStorage.getItem('salonUserName') || 'Owner')
-
-      // Only redirect if user has wrong role
-      if (userRole && userRole !== 'owner') {
-        const redirectMap: Record<string, string> = {
-          receptionist: '/salon/receptionist',
-          accountant: '/salon/accountant',
-          admin: '/salon/admin'
-        }
-
-        const redirectPath = redirectMap[userRole]
-        if (redirectPath) {
-          router.replace(redirectPath)
-        }
-      }
-    } catch (error) {
-      console.error('Auth check error:', error)
-      router.replace('/salon/auth')
-    }
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-AE', {
+      style: 'currency',
+      currency: 'AED',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
   }
 
-  const loadDashboardData = async () => {
-    try {
-      universalApi.setOrganizationId(HAIRTALKZ_ORG_ID)
-
-      // Load today's transactions
-      const todayStart = new Date()
-      todayStart.setHours(0, 0, 0, 0)
-
-      // Get transactions for revenue
-      const { data: transactions } = await universalApi.read('universal_transactions')
-      const todayTransactions =
-        transactions?.filter(
-          (t: any) => new Date(t.created_at) >= todayStart && t.transaction_type === 'sale'
-        ) || []
-
-      const monthStart = new Date()
-      monthStart.setDate(1)
-      monthStart.setHours(0, 0, 0, 0)
-
-      const monthTransactions =
-        transactions?.filter(
-          (t: any) => new Date(t.created_at) >= monthStart && t.transaction_type === 'sale'
-        ) || []
-
-      // Calculate metrics
-      const todayRevenue = todayTransactions.reduce(
-        (sum: number, t: any) => sum + (t.total_amount || 0),
-        0
-      )
-      const monthlyRevenue = monthTransactions.reduce(
-        (sum: number, t: any) => sum + (t.total_amount || 0),
-        0
-      )
-
-      // Get entities for other metrics
-      const { data: entities } = await universalApi.read('core_entities')
-      const customers = entities?.filter((e: any) => e.entity_type === 'customer') || []
-      const newCustomersThisMonth = customers.filter(
-        (c: any) => new Date(c.created_at) >= monthStart
-      ).length
-
-      // Mock some data for demo
-      setDashboardData({
-        todayRevenue,
-        monthlyRevenue,
-        activeAppointments: 12,
-        newCustomers: newCustomersThisMonth || 47,
-        staffPresent: 8,
-        productsSold: 24,
-        averageRating: 4.9,
-        pendingPayments: 3
-      })
-    } catch (error) {
-      console.error('Error loading dashboard data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
+  // Format percentage with arrow
+  const formatGrowth = (percentage: number) => {
+    const isPositive = percentage >= 0
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: COLORS.charcoal }}
-      >
-        <Loader2 className="h-8 w-8 animate-spin" style={{ color: COLORS.gold }} />
+      <span className="flex items-center" style={{ 
+        color: isPositive ? '#0F6F5C' : '#FF6B6B' 
+      }}>
+        {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+        {Math.abs(percentage).toFixed(1)}%
+      </span>
+    )
+  }
+
+  // Chart data for revenue trends
+  const revenueChartData = {
+    labels: financialData.map(d => d.month_name).slice(-6),
+    datasets: [
+      {
+        label: 'Revenue',
+        data: financialData.map(d => d.total_revenue_aed).slice(-6),
+        borderColor: '#D4AF37',
+        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        tension: 0.4,
+        borderWidth: 2
+      },
+      {
+        label: 'Expenses',
+        data: financialData.map(d => d.total_expenses_aed).slice(-6),
+        borderColor: '#FF6B6B',
+        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+        tension: 0.4,
+        borderWidth: 2
+      },
+      {
+        label: 'Net Profit',
+        data: financialData.map(d => d.net_profit_aed).slice(-6),
+        borderColor: '#0F6F5C',
+        backgroundColor: 'rgba(15, 111, 92, 0.1)',
+        tension: 0.4,
+        borderWidth: 2
+      }
+    ]
+  }
+
+  const chartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          color: '#B8B8B8',
+          font: {
+            size: 12
+          }
+        }
+      },
+      title: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(26, 26, 26, 0.9)',
+        titleColor: '#F5E6C8',
+        bodyColor: '#B8B8B8',
+        borderColor: 'rgba(212, 175, 55, 0.3)',
+        borderWidth: 1
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#B8B8B8'
+        },
+        grid: {
+          color: 'rgba(184, 184, 184, 0.1)'
+        }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#B8B8B8',
+          callback: function(value) {
+            return formatCurrency(Number(value))
+          }
+        },
+        grid: {
+          color: 'rgba(184, 184, 184, 0.1)'
+        }
+      }
+    }
+  }
+
+  // Revenue breakdown chart data
+  const latestMonth = financialData[financialData.length - 1]
+  const revenueBreakdownData = latestMonth ? {
+    labels: ['Services', 'Products'],
+    datasets: [{
+      data: [
+        latestMonth.top_services_revenue_aed || 0,
+        latestMonth.top_products_revenue_aed || 0
+      ],
+      backgroundColor: ['#D4AF37', '#0F6F5C'],
+      borderWidth: 0
+    }]
+  } : null
+
+  const doughnutOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          color: '#B8B8B8',
+          font: {
+            size: 12
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(26, 26, 26, 0.9)',
+        titleColor: '#F5E6C8',
+        bodyColor: '#B8B8B8',
+        borderColor: 'rgba(212, 175, 55, 0.3)',
+        borderWidth: 1
+      }
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1A1A1A' }}>
+        <div className="text-center">
+          <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4" style={{ color: '#D4AF37' }} />
+          <p style={{ color: '#B8B8B8' }}>Loading dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#1A1A1A' }}>
+        <div className="text-center">
+          <AlertCircle className="w-8 h-8 mx-auto mb-4" style={{ color: '#FF6B6B' }} />
+          <p className="mb-4" style={{ color: '#FF6B6B' }}>{error}</p>
+          <button 
+            onClick={fetchDashboardData}
+            className="px-4 py-2 rounded-lg transition-all duration-300"
+            style={{ 
+              backgroundColor: 'rgba(212, 175, 55, 0.2)',
+              color: '#F5E6C8',
+              border: '1px solid rgba(212, 175, 55, 0.3)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.3)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)'
+            }}
+          >
+            Retry
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.charcoal }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#1A1A1A' }}>
       {/* Header */}
-      <div
-        className="border-b px-8 py-6"
-        style={{
-          backgroundColor: COLORS.charcoalLight,
-          borderColor: `${COLORS.bronze}20`
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1
-              className="text-3xl font-light tracking-wider flex items-center gap-3"
-              style={{ color: COLORS.champagne }}
-            >
-              <Crown className="h-8 w-8" style={{ color: COLORS.gold }} />
-              Welcome back, Michele
-            </h1>
-            <p className="text-sm font-light mt-1" style={{ color: COLORS.bronze }}>
-              Here's your salon performance overview
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              className="font-light"
-              style={{
-                borderColor: COLORS.bronze,
-                color: COLORS.champagne
+      <div style={{ 
+        backgroundColor: 'rgba(26, 26, 26, 0.95)',
+        borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold" style={{ color: '#F5E6C8' }}>Welcome back, Michele</h1>
+              <p style={{ color: '#B8B8B8' }}>Owner • {new Date().toLocaleDateString('en-AE', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</p>
+            </div>
+            <button
+              onClick={fetchDashboardData}
+              className="flex items-center px-4 py-2 text-sm transition-all duration-300 rounded-lg"
+              style={{ 
+                color: '#B8B8B8',
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                border: '1px solid rgba(212, 175, 55, 0.2)'
               }}
-              asChild
-            >
-              <Link href="/salon/reports/branch-pnl">
-                <FileText className="h-4 w-4 mr-2" />
-                View Reports
-              </Link>
-            </Button>
-
-            <Button
-              className="font-light"
-              style={{
-                backgroundColor: COLORS.gold,
-                color: COLORS.black
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.2)'
+                e.currentTarget.style.color = '#F5E6C8'
               }}
-              asChild
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(212, 175, 55, 0.1)'
+                e.currentTarget.style.color = '#B8B8B8'
+              }}
             >
-              <Link href="/salon/settings">
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Link>
-            </Button>
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Last updated: {lastRefresh.toLocaleTimeString('en-AE', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="p-8">
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <MetricCard
-            title="Today's Revenue"
-            value={`AED ${dashboardData.todayRevenue.toLocaleString()}`}
-            subtitle="12 transactions"
-            icon={DollarSign}
-            trend={{ value: 18, isUp: true }}
-            gradientFrom={COLORS.emerald}
-            gradientTo={COLORS.gold}
-          />
+      {/* KPI Cards */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Monthly Revenue */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }}>
+                <DollarSign className="w-6 h-6" style={{ color: '#D4AF37' }} />
+              </div>
+              {kpiData && formatGrowth(kpiData.monthlyRevenue.growth)}
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Monthly Revenue</h3>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
+              {kpiData && formatCurrency(kpiData.monthlyRevenue.amount)}
+            </p>
+          </div>
 
-          <MetricCard
-            title="Monthly Revenue"
-            value={`AED ${dashboardData.monthlyRevenue.toLocaleString()}`}
-            subtitle="Target: AED 180,000"
-            icon={TrendingUp}
-            trend={{ value: 24, isUp: true }}
-            gradientFrom={COLORS.gold}
-            gradientTo={COLORS.goldDark}
-          />
+          {/* Today's Appointments */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(15, 111, 92, 0.2)' }}>
+                <Calendar className="w-6 h-6" style={{ color: '#0F6F5C' }} />
+              </div>
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Today's Appointments</h3>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
+              {kpiData?.todaysAppointments.count || 0}
+            </p>
+          </div>
 
-          <MetricCard
-            title="Active Appointments"
-            value={dashboardData.activeAppointments}
-            subtitle="Next: 2:30 PM"
-            icon={Calendar}
-            gradientFrom={COLORS.plum}
-            gradientTo="#9333EA"
-          />
+          {/* Active Customers */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(15, 111, 92, 0.2)' }}>
+                <Users className="w-6 h-6" style={{ color: '#0F6F5C' }} />
+              </div>
+              {kpiData && kpiData.activeCustomers.growth > 0 && (
+                <span className="text-sm" style={{ color: '#0F6F5C' }}>
+                  +{kpiData.activeCustomers.growth} new
+                </span>
+              )}
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Active Customers</h3>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
+              {kpiData?.activeCustomers.count || 0}
+            </p>
+          </div>
 
-          <MetricCard
-            title="New Customers"
-            value={dashboardData.newCustomers}
-            subtitle="This month"
-            icon={Users}
-            trend={{ value: 12, isUp: true }}
-            gradientFrom="#06B6D4"
-            gradientTo="#0891B2"
-          />
-        </div>
+          {/* Staff Members */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(140, 120, 83, 0.2)' }}>
+                <UserCheck className="w-6 h-6" style={{ color: '#8C7853' }} />
+              </div>
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Staff Members</h3>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
+              {kpiData?.staffMembers.count || 0}
+            </p>
+          </div>
 
-        {/* Secondary Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <MetricCard
-            title="Staff Present"
-            value={`${dashboardData.staffPresent}/10`}
-            subtitle="2 on leave"
-            icon={UserCheck}
-            gradientFrom="#10B981"
-            gradientTo="#059669"
-          />
+          {/* Total Expenses */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(255, 107, 107, 0.2)' }}>
+                <DollarSign className="w-6 h-6" style={{ color: '#FF6B6B' }} />
+              </div>
+              {kpiData && formatGrowth(kpiData.totalExpenses.growth)}
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Total Expenses</h3>
+            <p className="text-2xl font-bold mt-1" style={{ color: '#F5E6C8' }}>
+              {kpiData && formatCurrency(kpiData.totalExpenses.amount)}
+            </p>
+          </div>
 
-          <MetricCard
-            title="Products Sold"
-            value={dashboardData.productsSold}
-            subtitle="Today"
-            icon={Package}
-            trend={{ value: 8, isUp: true }}
-            gradientFrom="#F59E0B"
-            gradientTo="#D97706"
-          />
-
-          <MetricCard
-            title="Average Rating"
-            value={dashboardData.averageRating}
-            subtitle="Last 30 days"
-            icon={Star}
-            gradientFrom="#EAB308"
-            gradientTo="#CA8A04"
-          />
-
-          <MetricCard
-            title="Pending Payments"
-            value={dashboardData.pendingPayments}
-            subtitle="AED 4,500"
-            icon={CreditCard}
-            gradientFrom="#EF4444"
-            gradientTo="#DC2626"
-          />
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <h2
-            className="text-xl font-light tracking-wider mb-6"
-            style={{ color: COLORS.champagne }}
-          >
-            Quick Actions
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <QuickActionButton
-              icon={FileText}
-              label="Daily Sales Report"
-              href="/salon/reports/branch-pnl"
-              description="View today's performance"
-            />
-
-            <QuickActionButton
-              icon={BarChart3}
-              label="P&L Statement"
-              href="/salon-data/financials/p&l"
-              description="Monthly profit & loss"
-            />
-
-            <QuickActionButton
-              icon={Building}
-              label="Balance Sheet"
-              href="/salon-data/financials/bs"
-              description="Financial position"
-            />
-
-            <QuickActionButton
-              icon={Users}
-              label="Staff Performance"
-              href="/salon/staff"
-              description="Team analytics"
-            />
+          {/* Low Stock Items */}
+          <div className="p-6 rounded-xl transition-all duration-300" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: kpiData && kpiData.lowStockItems.count > 0 
+              ? '2px solid rgba(255, 107, 107, 0.5)' 
+              : '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 rounded-lg" style={{ 
+                backgroundColor: kpiData && kpiData.lowStockItems.count > 0 
+                  ? 'rgba(255, 107, 107, 0.2)' 
+                  : 'rgba(184, 184, 184, 0.1)' 
+              }}>
+                <Package className="w-6 h-6" style={{ 
+                  color: kpiData && kpiData.lowStockItems.count > 0 ? '#FF6B6B' : '#B8B8B8' 
+                }} />
+              </div>
+              {kpiData && kpiData.lowStockItems.count > 0 && (
+                <span className="text-sm font-medium" style={{ color: '#FF6B6B' }}>Alert</span>
+              )}
+            </div>
+            <h3 className="text-sm font-medium" style={{ color: '#B8B8B8' }}>Low Stock Items</h3>
+            <p className="text-2xl font-bold mt-1" style={{ 
+              color: kpiData && kpiData.lowStockItems.count > 0 ? '#FF6B6B' : '#F5E6C8' 
+            }}>
+              {kpiData?.lowStockItems.count || 0}
+            </p>
           </div>
         </div>
 
-        {/* Recent Activity */}
-        <Card
-          style={{
-            backgroundColor: COLORS.charcoalLight,
-            border: `1px solid ${COLORS.bronze}20`
-          }}
-        >
-          <CardHeader>
-            <CardTitle className="text-xl font-light tracking-wider flex items-center gap-3">
-              <Clock className="h-5 w-5" style={{ color: COLORS.gold }} />
-              <span style={{ color: COLORS.champagne }}>Recent Activity</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  time: '10 mins ago',
-                  action: 'New appointment booked',
-                  client: 'Sarah Johnson',
-                  service: 'Hair Color & Style'
-                },
-                {
-                  time: '25 mins ago',
-                  action: 'Payment received',
-                  amount: 'AED 450',
-                  method: 'Credit Card'
-                },
-                {
-                  time: '1 hour ago',
-                  action: 'Product sale',
-                  product: 'Luxury Hair Serum',
-                  qty: '2 units'
-                },
-                {
-                  time: '2 hours ago',
-                  action: 'Staff check-in',
-                  staff: 'Maria Lopez',
-                  role: 'Senior Stylist'
-                }
-              ].map((activity, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-start gap-4 pb-4"
-                  style={{ borderBottom: idx < 3 ? `1px solid ${COLORS.bronze}20` : undefined }}
-                >
-                  <div
-                    className="text-xs font-light"
-                    style={{ color: COLORS.bronze, minWidth: '80px' }}
-                  >
-                    {activity.time}
-                  </div>
-                  <div className="flex-1">
-                    <p style={{ color: COLORS.champagne }} className="text-sm">
-                      {activity.action}
-                    </p>
-                    <p className="text-xs font-light mt-1" style={{ color: `${COLORS.bronze}80` }}>
-                      {activity.client && `Client: ${activity.client}`}
-                      {activity.service && ` • ${activity.service}`}
-                      {activity.amount && `Amount: ${activity.amount}`}
-                      {activity.method && ` • ${activity.method}`}
-                      {activity.product && `${activity.product}`}
-                      {activity.qty && ` • ${activity.qty}`}
-                      {activity.staff && `${activity.staff}`}
-                      {activity.role && ` • ${activity.role}`}
-                    </p>
-                  </div>
-                </div>
-              ))}
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Revenue Trends Chart */}
+          <div className="lg:col-span-2 p-6 rounded-xl" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#F5E6C8' }}>Financial Trends</h2>
+            <div className="h-64">
+              {financialData.length > 0 && (
+                <Line data={revenueChartData} options={chartOptions} />
+              )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          {/* Revenue Breakdown */}
+          <div className="p-6 rounded-xl" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#F5E6C8' }}>Revenue Breakdown</h2>
+            <div className="h-64">
+              {revenueBreakdownData && (
+                <Doughnut data={revenueBreakdownData} options={doughnutOptions} />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Low Stock Alert Table */}
+        {inventoryData.length > 0 && (
+          <div className="p-6 rounded-xl" style={{
+            backgroundColor: 'rgba(26, 26, 26, 0.8)',
+            border: '1px solid rgba(212, 175, 55, 0.15)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <h2 className="text-lg font-semibold mb-4 flex items-center" style={{ color: '#F5E6C8' }}>
+              <AlertCircle className="w-5 h-5 mr-2" style={{ color: '#FF6B6B' }} />
+              Inventory Alerts
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(212, 175, 55, 0.2)' }}>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" 
+                        style={{ color: '#B8B8B8' }}>
+                      Product
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" 
+                        style={{ color: '#B8B8B8' }}>
+                      Current Stock
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" 
+                        style={{ color: '#B8B8B8' }}>
+                      Reorder Level
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" 
+                        style={{ color: '#B8B8B8' }}>
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryData.map((item, index) => (
+                    <tr key={item.product_id} 
+                        style={{ borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" 
+                          style={{ color: '#F5E6C8' }}>
+                        {item.product_name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm" 
+                          style={{ color: '#B8B8B8' }}>
+                        {item.current_stock} {item.unit_of_measure}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm" 
+                          style={{ color: '#B8B8B8' }}>
+                        {item.reorder_level} {item.unit_of_measure}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style={{
+                          backgroundColor: item.stock_status === 'out_of_stock' 
+                            ? 'rgba(255, 107, 107, 0.2)' 
+                            : 'rgba(212, 175, 55, 0.2)',
+                          color: item.stock_status === 'out_of_stock' 
+                            ? '#FF6B6B' 
+                            : '#D4AF37',
+                          border: `1px solid ${item.stock_status === 'out_of_stock' 
+                            ? 'rgba(255, 107, 107, 0.3)' 
+                            : 'rgba(212, 175, 55, 0.3)'}`
+                        }}>
+                          {item.stock_status === 'out_of_stock' ? 'Out of Stock' : 'Low Stock'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

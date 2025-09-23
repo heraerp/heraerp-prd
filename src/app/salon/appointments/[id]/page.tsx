@@ -235,19 +235,29 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     loadAppointmentDetails()
   }, [organizationId, unwrappedParams.id])
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this appointment?')) return
+  const handleCancel = async () => {
+    if (!confirm('Are you sure you want to cancel this appointment?')) return
 
     setDeleting(true)
 
     try {
-      const response = await universalApi.delete('universal_transactions', unwrappedParams.id)
+      // Update the appointment status to cancelled
+      const updateData = {
+        metadata: {
+          ...appointment.metadata,
+          status: 'cancelled',
+          cancelled_at: new Date().toISOString(),
+          cancelled_by: 'user'
+        }
+      }
+
+      const response = await universalApi.updateTransaction(unwrappedParams.id, updateData)
       if (response.success) {
-        console.log('Success:', 'Appointment deleted successfully')
+        console.log('Success:', 'Appointment cancelled successfully')
         router.push('/salon/appointments')
       }
     } catch (error) {
-      console.error('Error:', 'Failed to delete appointment')
+      console.error('Error:', 'Failed to cancel appointment')
     } finally {
       setDeleting(false)
     }
@@ -367,12 +377,12 @@ export default function ViewAppointmentPage({ params }: PageProps) {
               </Button>
               <Button
                 variant="outline"
-                onClick={handleDelete}
-                disabled={deleting}
-                className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={handleCancel}
+                disabled={deleting || status === 'CANCELLED' || status === 'COMPLETED'}
+                className="gap-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50"
               >
-                <Trash2 className="w-4 h-4" />
-                Delete
+                <XCircle className="w-4 h-4" />
+                Cancel Appointment
               </Button>
             </div>
           </div>
@@ -646,6 +656,22 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                     </p>
                   </div>
                 )}
+
+                {status === 'CANCELLED' && (
+                  <div className="mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                    <div className="flex items-start gap-2">
+                      <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium text-red-700 dark:text-red-300">This appointment has been cancelled</p>
+                        {appointment.metadata?.cancelled_at && (
+                          <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                            Cancelled on {format(new Date(appointment.metadata.cancelled_at), 'MMM d, yyyy at h:mm a')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </Card>
 
@@ -694,13 +720,13 @@ export default function ViewAppointmentPage({ params }: PageProps) {
                 </Button>
 
                 <Button
-                  className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="w-full justify-start text-orange-600 hover:text-orange-700 hover:bg-orange-50"
                   variant="outline"
-                  onClick={handleDelete}
-                  disabled={deleting}
+                  onClick={handleCancel}
+                  disabled={deleting || status === 'CANCELLED' || status === 'COMPLETED'}
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete Appointment
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Cancel Appointment
                 </Button>
               </div>
             </Card>

@@ -73,6 +73,7 @@ export interface SidebarItem {
 // Main sidebar items (production ready)
 const sidebarItems: SidebarItem[] = [
   { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
+  { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
   {
     title: 'Appointments',
     href: '/salon/appointments',
@@ -115,6 +116,7 @@ const allApps: SidebarItem[] = [
   { title: 'Payroll', href: '/salon/payroll', icon: DollarSign },
 
   // Financial
+  { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
   { title: 'Finance', href: '/salon/finance', icon: TrendingDown },
   { title: 'P&L Report', href: '/salon/reports/pnl', icon: BarChart3 },
   { title: 'Balance Sheet', href: '/salon/reports/balance-sheet', icon: Scale },

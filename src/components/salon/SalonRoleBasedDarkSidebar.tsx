@@ -35,6 +35,7 @@ import { LUXE_COLORS } from '@/lib/constants/salon'
 const roleBasedSidebarItems: Record<string, SidebarItem[]> = {
   owner: [
     { title: 'Dashboard', href: '/salon/dashboard', icon: Home },
+    { title: 'Owner Dashboard', href: '/salon/owner', icon: TrendingUp },
     {
       title: 'Appointments',
       href: '/salon/appointments',
