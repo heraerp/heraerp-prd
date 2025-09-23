@@ -40,7 +40,7 @@ import {
   TrendingUp,
   Building
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { cn } from '@/lib/utils'
@@ -176,7 +176,7 @@ const attendanceColumns = [
 ]
 
 export default function FurnitureHR() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 
   // Mock data for demonstration

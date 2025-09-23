@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ChefHat, Utensils, Loader2, AlertCircle } from 'lucide-react'
 
 export function RestaurantLogin() {
-  const { login, isLoading } = useMultiOrgAuth()
+  const { login, isLoading  } = useHERAAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')

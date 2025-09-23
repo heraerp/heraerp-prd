@@ -30,7 +30,7 @@ import {
   Database,
   FileText
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface AuditEvent {
   id: string
@@ -47,7 +47,7 @@ interface AuditEvent {
 }
 
 export default function AuditStreamPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [events, setEvents] = useState<AuditEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [streaming, setStreaming] = useState(false)

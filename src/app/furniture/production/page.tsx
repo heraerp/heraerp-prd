@@ -24,13 +24,13 @@ import {
   Calendar
 } from 'lucide-react'
 import Link from 'next/link'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { cn } from '@/lib/utils'
 
 export default function FurnitureProduction() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
   const [activeTab, setActiveTab] = useState('overview')
 

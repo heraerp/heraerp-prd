@@ -33,11 +33,11 @@ import { RestaurantFinancialDashboard } from './RestaurantFinancialDashboard'
 import { RecipeCostingManager } from './RecipeCostingManager'
 import { KitchenDisplaySystem } from './KitchenDisplaySystem'
 import { universalApi } from '@/lib/universal-api'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function RestaurantIntegratedDashboard() {
   const [activeModule, setActiveModule] = useState('dashboard')
-  const { organization } = useMultiOrgAuth()
+  const { organization  } = useHERAAuth()
 
   // HERA Integration Status
   const heraIntegrations = [

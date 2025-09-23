@@ -28,7 +28,7 @@ import {
   RefreshCw
 } from 'lucide-react'
 import Link from 'next/link'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { cn } from '@/lib/utils'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
@@ -39,7 +39,7 @@ import { SalesPageSkeleton } from '@/components/furniture/SalesPageSkeleton'
 export default function FurnitureSales() {
   const pathname = usePathname()
 
-  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated  } = useHERAAuth()
 
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 

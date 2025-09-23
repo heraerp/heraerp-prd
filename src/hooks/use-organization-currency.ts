@@ -2,11 +2,11 @@
  * Hook to get organization currency settings
  */
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { formatCurrency, getOrganizationCurrency, getCurrencyConfig } from '@/lib/currency'
 
 export function useOrganizationCurrency() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
 
   const currencyCode = getOrganizationCurrency(currentOrganization)
   const currencyConfig = getCurrencyConfig(currencyCode)

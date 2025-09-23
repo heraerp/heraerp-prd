@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -144,7 +144,7 @@ const SALON_QUICK_PROMPTS: QuickPrompt[] = [
 
 export default function SalonDigitalAccountantPage() {
   const router = useRouter()
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [messages, setMessages] = useState<SalonMessage[]>([
     {
       id: '1',

@@ -79,9 +79,31 @@ async function runTests() {
     }
   })
 
-  // Test 4: Test error handling
+  // Test 4: Test security - blocked path
+  await testRequest('Blocked Path (Security)', {
+    url: '/api/playbook/admin/users' // Not in allowed paths
+  })
+  
+  // Test 5: Test correlation ID
+  await testRequest('With Correlation ID', {
+    url: `/api/playbook/entities?type=HERA.SALON.SERVICE.V1&organization_id=${organizationId}&limit=1`,
+    headers: {
+      'X-Correlation-ID': `test_${Date.now()}`
+    }
+  })
+  
+  // Test 6: Test large body rejection
+  await testRequest('Large Body (Security)', {
+    url: '/api/playbook/entities',
+    method: 'POST',
+    body: {
+      large_data: 'x'.repeat(1024 * 1024 + 1) // Over 1MB limit
+    }
+  })
+  
+  // Test 7: Test error handling
   await testRequest('Invalid Endpoint', {
-    url: '/api/playbook/invalid-endpoint'
+    url: '/api/playbook/v2/unknown' // Valid path prefix but non-existent
   })
 
   // Summary

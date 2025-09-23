@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { getOrganizationBranches } from '@/lib/guardrails/branch'
 
 export interface Branch {
@@ -38,7 +38,7 @@ export function useBranchFilter(
   defaultBranchId?: string,
   persistKey?: string
 ): UseBranchFilterReturn {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [branchId, setBranchIdState] = useState<string | undefined>(defaultBranchId)
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
@@ -117,7 +117,7 @@ export function useBranchFilter(
  * Allows selecting multiple branches for comparison
  */
 export function useBranchComparison() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [selectedBranches, setSelectedBranches] = useState<Set<string>>(new Set())
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)

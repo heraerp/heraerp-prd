@@ -33,7 +33,7 @@ import {
   Info
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   createFiscalYearManager,
   type ClosingResult,
@@ -66,7 +66,7 @@ export function YearEndClosingWizard({
   fiscalYear = new Date().getFullYear(),
   onComplete
 }: YearEndClosingWizardProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [activeStep, setActiveStep] = useState<'review' | 'checklist' | 'closing' | 'complete'>(
     'review'
   )

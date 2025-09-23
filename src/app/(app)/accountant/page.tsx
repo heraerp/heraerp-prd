@@ -17,7 +17,7 @@ import {
   ChevronRight,
   Download
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Guard } from '@/lib/auth/guard'
 import { useDashboardMetrics } from '@/lib/api/dashboard'
 import { useFinancialReports } from '@/lib/api/reports'
@@ -27,7 +27,7 @@ import Link from 'next/link'
 import { formatCurrency } from '@/lib/utils/format'
 
 export default function AccountantDashboard() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const organizationId = currentOrganization?.id || ''
 
   // Fetch financial data

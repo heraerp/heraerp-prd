@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,8 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Mail, User, Calendar, Shield, CheckCircle, Clock, Send } from 'lucide-react'
 
 export function EmailAccessDemo() {
-  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining } =
-    useMultiOrgAuth()
+  const { user, workspace, isAnonymous, isIdentified, saveWithEmail, daysRemaining  } = useHERAAuth()
   const [testEmail, setTestEmail] = useState('')
   const [emailFeatures, setEmailFeatures] = useState<string[]>([])
 

@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -210,7 +210,7 @@ const financeModules: FinanceModule[] = [
 
 export default function FinanceDashboard() {
   const router = useRouter()
-  const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { user, currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
   const [financeData, setFinanceData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

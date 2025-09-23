@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Info,
@@ -180,7 +180,7 @@ const DEMO_CONFIGS = [
 ]
 
 export default function UniversalUIDemo() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const [selectedConfig, setSelectedConfig] = useState<any>(DEMO_CONFIGS[0].items[0])
   const [selectedCategory, setSelectedCategory] = useState(DEMO_CONFIGS[0].category)
   const [demoEntityId, setDemoEntityId] = useState<string | undefined>()

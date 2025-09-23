@@ -73,9 +73,27 @@ const [activeTab, setActiveTab] = useState('current')
 
 const [loading, setLoading] = useState(false)
 
-const [error, setError] = useState('') // New Movement Form State
-  const [movementForm, setMovementForm] = useState({ movementType: 'transfer', fromLocation: '', toLocation: '', itemId: '', quantity: 1, reason: '' }) useEffect(() => { loadData(  ), []) useEffect(() => { if (selectedLocation) {
-  loadInventoryLevels(selectedLocation  ) }, [selectedLocation])
+const [error, setError] = useState('')
+
+  // New Movement Form State
+  const [movementForm, setMovementForm] = useState({ 
+    movementType: 'transfer', 
+    fromLocation: '', 
+    toLocation: '', 
+    itemId: '', 
+    quantity: 1, 
+    reason: '' 
+  })
+
+  useEffect(() => { 
+    loadData()
+  }, [])
+
+  useEffect(() => { 
+    if (selectedLocation) {
+      loadInventoryLevels(selectedLocation)
+    } 
+  }, [selectedLocation])
 
 const loadData = async () => { try { setLoading(true) // Load warehouse locations const locationsData = await universalApi.read({ table: 'core_entities', filter: { entity_type: 'warehouse' } }) setLocations(locationsData.data || []) // Load items (products and materials)
   const productsData = await universalApi.read({ table: 'core_entities', filter: { entity_type: 'furniture_product' } })

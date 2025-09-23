@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 /** * HERA Furniture AI Manager * Smart Code: HERA.FURNITURE.AI.MANAGER.v1 * * AI-powered business intelligence and management system * Natural language business operations for furniture manufacturers */
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -231,7 +231,7 @@ const MANAGEMENT_CATEGORIES = [
 export default function FurnitureAIManagerPage() {
   const router = useRouter()
 
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
 
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 

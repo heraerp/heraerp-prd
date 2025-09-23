@@ -44,7 +44,7 @@ import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { WhatsAppSetup } from '@/components/whatsapp/WhatsAppSetup'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface Conversation {
   id: string
@@ -80,7 +80,7 @@ interface Analytics {
 }
 
 export default function WhatsAppMessagesPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [loading, setLoading] = useState(false)

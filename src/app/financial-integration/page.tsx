@@ -15,10 +15,10 @@ import {
   DuplicateAlert
 } from '@/components/financial-integration'
 import { Settings, Send, BarChart3, Shield, Zap, Globe, Brain, CheckCircle2 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function FinancialIntegrationPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [selectedTab, setSelectedTab] = useState('overview')
   const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
 

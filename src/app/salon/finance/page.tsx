@@ -1,659 +1,740 @@
-/**
- * HERA Finance DNA - Salon Finance Management Page
- *
- * Daily Sales → GL Journals and Owner Expenses UI
- * Tabs: Daily Posting | Expenses
- */
-
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSalonContext } from '../SalonProvider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useToast } from '@/hooks/use-toast'
 import {
   Calendar,
-  CheckCircle,
-  AlertCircle,
   DollarSign,
   Receipt,
-  Upload,
-  Plus,
-  Trash2
+  TrendingUp,
+  TrendingDown,
+  FileText,
+  FileBarChart,
+  PieChart,
+  BarChart3,
+  LineChart,
+  Loader2,
+  AlertCircle,
+  CreditCard,
+  Building2,
+  Clipboard,
+  Clock,
+  CheckCircle,
+  ArrowUpRight,
+  ArrowDownRight,
+  Download,
+  Printer,
+  RefreshCw,
+  Search,
+  Calculator,
+  Package,
+  Users,
+  Store,
+  Tag,
+  ActivitySquare
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
-import { getDailyPostingStatus } from '@/lib/finance/dailySales'
-import { createExpense, getExpenseHistory } from '@/lib/finance/expenses'
-import { getGLAccounts } from '@/lib/finance/policy'
-import { PageLayout } from '@/components/universal/PageLayout'
-import { PageHeader } from '@/components/universal/PageHeader'
-
-interface DailyPostingStatusItem {
-  branch_id: string
-  day: string
-  posted: boolean
-  total_amount?: number
-  transaction_count?: number
-  transaction_id?: string
-}
-
-interface ExpenseHistoryItem {
-  id: string
-  date: string
-  vendor?: string
-  memo: string
-  total_amount: number
-  currency: string
-  status: string
-  line_count: number
-}
-
-interface GLAccount {
-  id: string
-  code: string
-  name: string
-  type: string
-}
-
-interface ExpenseLine {
-  account_id: string
-  amount: number
-  tax_rate?: number
-  description?: string
-  attachment_url?: string
-}
+import { LUXE_COLORS } from '@/lib/constants/salon'
+import { useRouter } from 'next/navigation'
 
 export default function SalonFinancePage() {
-  const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
-  const { toast } = useToast()
+  const { organizationId, role, user, isLoading: authLoading, isAuthenticated } = useSalonContext()
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState('overview')
 
-  // State for daily posting
-  const [dailyStatus, setDailyStatus] = useState<DailyPostingStatusItem[]>([])
-  const [isLoadingStatus, setIsLoadingStatus] = useState(true)
-  const [isPosting, setIsPosting] = useState(false)
-
-  // State for expenses
-  const [expenseHistory, setExpenseHistory] = useState<ExpenseHistoryItem[]>([])
-  const [isLoadingExpenses, setIsLoadingExpenses] = useState(true)
-  const [isCreatingExpense, setIsCreatingExpense] = useState(false)
-  const [glAccounts, setGLAccounts] = useState<GLAccount[]>([])
-
-  // Expense form state
-  const [expenseForm, setExpenseForm] = useState({
-    vendor: '',
-    memo: '',
-    payment_method: 'cash' as 'cash' | 'bank' | 'credit_card' | 'pay_later',
-    payment_account_id: '',
-    lines: [
-      { account_id: '', amount: 0, tax_rate: 5, description: '', attachment_url: '' }
-    ] as ExpenseLine[]
-  })
-
-  // Load data on mount
+  // Check if user has accountant role
   useEffect(() => {
-    if (currentOrganization?.id) {
-      loadDailyStatus()
-      loadExpenseHistory()
-      loadGLAccounts()
-    }
-  }, [currentOrganization?.id])
-
-  const loadDailyStatus = async () => {
-    if (!currentOrganization?.id) return
-
-    setIsLoadingStatus(true)
-    try {
-      // Get last 7 days
-      const days = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date()
-        date.setDate(date.getDate() - i)
-        return date.toISOString().slice(0, 10)
-      })
-
-      // Mock branch ID - in real implementation, get from organization
-      const branchIds = [currentOrganization.id] // Use org as branch for now
-
-      const status = await getDailyPostingStatus({
-        organization_id: currentOrganization.id,
-        branch_ids: branchIds,
-        days
-      })
-
-      setDailyStatus(status)
-    } catch (error) {
-      console.error('Error loading daily status:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to load daily posting status',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsLoadingStatus(false)
-    }
-  }
-
-  const loadExpenseHistory = async () => {
-    if (!currentOrganization?.id) return
-
-    setIsLoadingExpenses(true)
-    try {
-      const result = await getExpenseHistory({
-        organization_id: currentOrganization.id,
-        limit: 20
-      })
-
-      setExpenseHistory(result.expenses)
-    } catch (error) {
-      console.error('Error loading expense history:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to load expense history',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsLoadingExpenses(false)
-    }
-  }
-
-  const loadGLAccounts = async () => {
-    if (!currentOrganization?.id) return
-
-    try {
-      const accounts = await getGLAccounts(currentOrganization.id)
-      setGLAccounts(accounts)
-    } catch (error) {
-      console.error('Error loading GL accounts:', error)
-    }
-  }
-
-  const handlePostNow = async (branchId: string, day: string) => {
-    if (!currentOrganization?.id) return
-
-    setIsPosting(true)
-    try {
-      const response = await fetch('/api/finance/daily-post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          organization_id: currentOrganization.id,
-          branch_id: branchId,
-          day
-        })
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        toast({
-          title: 'Success',
-          description: `Daily sales journal posted for ${day}`
-        })
-        await loadDailyStatus() // Refresh status
-      } else {
-        throw new Error(result.error || 'Failed to post journal')
+    if (!authLoading && isAuthenticated) {
+      const userRole = role?.toLowerCase()
+      if (userRole !== 'accountant' && userRole !== 'owner') {
+        // Redirect non-accountants/owners
+        window.location.href = '/salon/auth'
       }
-    } catch (error) {
-      console.error('Error posting journal:', error)
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to post journal',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsPosting(false)
     }
-  }
+  }, [authLoading, isAuthenticated, role])
 
-  const handleCreateExpense = async () => {
-    if (!currentOrganization?.id) return
-
-    setIsCreatingExpense(true)
-    try {
-      const result = await createExpense({
-        organization_id: currentOrganization.id,
-        branch_id: currentOrganization.id, // Use org as branch for now
-        when_ts: new Date().toISOString(),
-        currency: 'AED',
-        vendor: expenseForm.vendor,
-        memo: expenseForm.memo,
-        payment_method: expenseForm.payment_method,
-        payment_account_id: expenseForm.payment_account_id || undefined,
-        lines: expenseForm.lines.filter(line => line.account_id && line.amount > 0)
-      })
-
-      if (result.success) {
-        toast({
-          title: 'Success',
-          description: 'Expense created and posted to GL'
-        })
-
-        // Reset form
-        setExpenseForm({
-          vendor: '',
-          memo: '',
-          payment_method: 'cash',
-          payment_account_id: '',
-          lines: [{ account_id: '', amount: 0, tax_rate: 5, description: '', attachment_url: '' }]
-        })
-
-        await loadExpenseHistory() // Refresh history
-      } else {
-        throw new Error(result.error || 'Failed to create expense')
-      }
-    } catch (error) {
-      console.error('Error creating expense:', error)
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create expense',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsCreatingExpense(false)
-    }
-  }
-
-  const addExpenseLine = () => {
-    setExpenseForm(prev => ({
-      ...prev,
-      lines: [
-        ...prev.lines,
-        { account_id: '', amount: 0, tax_rate: 5, description: '', attachment_url: '' }
-      ]
-    }))
-  }
-
-  const removeExpenseLine = (index: number) => {
-    setExpenseForm(prev => ({
-      ...prev,
-      lines: prev.lines.filter((_, i) => i !== index)
-    }))
-  }
-
-  const updateExpenseLine = (index: number, field: keyof ExpenseLine, value: any) => {
-    setExpenseForm(prev => ({
-      ...prev,
-      lines: prev.lines.map((line, i) => (i === index ? { ...line, [field]: value } : line))
-    }))
-  }
-
-  // Auth check
-  if (!isAuthenticated || !currentOrganization) {
+  if (authLoading) {
     return (
-      <Alert>
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Please log in and select an organization to access finance management.
-        </AlertDescription>
-      </Alert>
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+      </div>
     )
   }
 
-  const totalExpenseAmount = expenseForm.lines.reduce((sum, line) => {
-    const gross = line.amount || 0
-    const tax = gross * ((line.tax_rate || 0) / 100)
-    return sum + gross + tax
-  }, 0)
+  if (!isAuthenticated) {
+    return null
+  }
+
+  // Mock financial data
+  const financialSummary = {
+    revenue: 125000,
+    expenses: 75000,
+    profit: 50000,
+    profitMargin: 40,
+    vat: 6250,
+    pending: 15000
+  }
 
   return (
-    <PageLayout>
-      <PageHeader
-        title="Finance Management"
-        breadcrumbs={[
-          { label: 'HERA' },
-          { label: 'SALON OS' },
-          { label: 'Finance', isActive: true }
-        ]}
-      />
+    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+      <div className="container mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 
+                className="text-3xl font-light mb-2"
+                style={{ color: LUXE_COLORS.gold }}
+              >
+                Financial Management
+              </h1>
+              <p 
+                className="text-sm"
+                style={{ color: LUXE_COLORS.bronze }}
+              >
+                Comprehensive financial reports and VAT compliance for {user?.user_metadata?.full_name || 'Accountant'}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" style={{ borderColor: LUXE_COLORS.bronze }}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Button variant="outline" size="sm" style={{ borderColor: LUXE_COLORS.bronze }}>
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              <Button variant="outline" size="sm" style={{ borderColor: LUXE_COLORS.bronze }}>
+                <Calculator className="h-4 w-4 mr-2" />
+                Calculator
+              </Button>
+            </div>
+          </div>
+        </div>
 
-      <Tabs defaultValue="daily-posting" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="daily-posting" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            Daily Posting
-          </TabsTrigger>
-          <TabsTrigger value="expenses" className="flex items-center gap-2">
-            <Receipt className="h-4 w-4" />
-            Expenses
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="daily-posting" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Daily Sales Posting Status</CardTitle>
-              <CardDescription>
-                Last 7 days posting status per branch. Click "Post Now" to create GL journals.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoadingStatus ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <span className="ml-2">Loading status...</span>
+        {/* Financial Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card 
+            className="border-0"
+            style={{
+              backgroundColor: LUXE_COLORS.charcoalLight,
+              borderColor: `${LUXE_COLORS.bronze}30`
+            }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    Monthly Revenue
+                  </p>
+                  <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.gold }}>
+                    AED {financialSummary.revenue.toLocaleString()}
+                  </p>
+                  <p className="text-xs mt-1 flex items-center gap-1" style={{ color: LUXE_COLORS.emerald }}>
+                    <ArrowUpRight className="h-3 w-3" />
+                    +12% from last month
+                  </p>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {dailyStatus.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">
-                      No posting data available for the last 7 days.
-                    </p>
-                  ) : (
-                    <div className="grid gap-3">
-                      {dailyStatus.map(item => (
-                        <div
-                          key={`${item.branch_id}-${item.day}`}
-                          className="flex items-center justify-between p-4 border rounded-lg"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                              {item.posted ? (
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                              ) : (
-                                <AlertCircle className="h-5 w-5 text-orange-600" />
-                              )}
-                              <span className="font-medium">{item.day}</span>
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {item.transaction_count || 0} transactions
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="h-4 w-4" />
-                              <span>{(item.total_amount || 0).toFixed(2)} AED</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={item.posted ? 'default' : 'secondary'}>
-                              {item.posted ? 'Posted' : 'Pending'}
-                            </Badge>
-                            {!item.posted && (item.total_amount || 0) > 0 && (
-                              <Button
-                                size="sm"
-                                onClick={() => handlePostNow(item.branch_id, item.day)}
-                                disabled={isPosting}
-                              >
-                                {isPosting ? 'Posting...' : 'Post Now'}
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+                <DollarSign className="h-8 w-8 opacity-50" style={{ color: LUXE_COLORS.gold }} />
+              </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="expenses" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Create Expense Form */}
-            <Card>
+          <Card 
+            className="border-0"
+            style={{
+              backgroundColor: LUXE_COLORS.charcoalLight,
+              borderColor: `${LUXE_COLORS.bronze}30`
+            }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    Total Expenses
+                  </p>
+                  <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.champagne }}>
+                    AED {financialSummary.expenses.toLocaleString()}
+                  </p>
+                  <p className="text-xs mt-1 flex items-center gap-1" style={{ color: LUXE_COLORS.ruby }}>
+                    <ArrowDownRight className="h-3 w-3" />
+                    -5% from last month
+                  </p>
+                </div>
+                <Receipt className="h-8 w-8 opacity-50" style={{ color: LUXE_COLORS.ruby }} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-0"
+            style={{
+              backgroundColor: LUXE_COLORS.charcoalLight,
+              borderColor: `${LUXE_COLORS.bronze}30`
+            }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    Net Profit
+                  </p>
+                  <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.emerald }}>
+                    AED {financialSummary.profit.toLocaleString()}
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: LUXE_COLORS.bronze }}>
+                    {financialSummary.profitMargin}% margin
+                  </p>
+                </div>
+                <PieChart className="h-8 w-8 opacity-50" style={{ color: LUXE_COLORS.emerald }} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-0"
+            style={{
+              backgroundColor: LUXE_COLORS.charcoalLight,
+              borderColor: `${LUXE_COLORS.bronze}30`
+            }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>
+                    VAT Collected
+                  </p>
+                  <p className="text-2xl font-light mt-1" style={{ color: LUXE_COLORS.plum }}>
+                    AED {financialSummary.vat.toLocaleString()}
+                  </p>
+                </div>
+                <FileText className="h-8 w-8 opacity-50" style={{ color: LUXE_COLORS.plum }} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList 
+            className="bg-transparent border flex-wrap h-auto p-1"
+            style={{ borderColor: `${LUXE_COLORS.bronze}30` }}
+          >
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <PieChart className="h-4 w-4" />
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="pnl" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              P&L Report
+            </TabsTrigger>
+            <TabsTrigger value="vat" className="flex items-center gap-2">
+              <Clipboard className="h-4 w-4" />
+              VAT Reports
+            </TabsTrigger>
+            <TabsTrigger value="expenses" className="flex items-center gap-2">
+              <Receipt className="h-4 w-4" />
+              Expenses
+            </TabsTrigger>
+            <TabsTrigger value="invoices" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Invoices
+            </TabsTrigger>
+            <TabsTrigger value="cashflow" className="flex items-center gap-2">
+              <LineChart className="h-4 w-4" />
+              Cash Flow
+            </TabsTrigger>
+            <TabsTrigger value="payroll" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Payroll
+            </TabsTrigger>
+            <TabsTrigger value="transactions" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              Transactions
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
               <CardHeader>
-                <CardTitle>Create New Expense</CardTitle>
-                <CardDescription>
-                  Enter expense details with GL account allocation and attachments.
+                <CardTitle style={{ color: LUXE_COLORS.gold }}>Financial Overview</CardTitle>
+                <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                  Monthly financial performance summary
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Revenue Breakdown */}
                   <div>
-                    <Label htmlFor="vendor">Vendor</Label>
-                    <Input
-                      id="vendor"
-                      value={expenseForm.vendor}
-                      onChange={e => setExpenseForm(prev => ({ ...prev, vendor: e.target.value }))}
-                      placeholder="Vendor name"
-                    />
+                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                      <DollarSign className="h-5 w-5" style={{ color: LUXE_COLORS.gold }} />
+                      Revenue Breakdown
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Store className="h-4 w-4" />
+                          Services
+                        </span>
+                        <span style={{ color: LUXE_COLORS.gold }}>AED 95,000</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Package className="h-4 w-4" />
+                          Products
+                        </span>
+                        <span style={{ color: LUXE_COLORS.gold }}>AED 30,000</span>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Expense Categories */}
                   <div>
-                    <Label htmlFor="payment_method">Payment Method</Label>
-                    <Select
-                      value={expenseForm.payment_method}
-                      onValueChange={(value: any) =>
-                        setExpenseForm(prev => ({ ...prev, payment_method: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="cash">Cash</SelectItem>
-                        <SelectItem value="bank">Bank Transfer</SelectItem>
-                        <SelectItem value="credit_card">Credit Card</SelectItem>
-                        <SelectItem value="pay_later">Pay Later (AP)</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                      <Receipt className="h-5 w-5" style={{ color: LUXE_COLORS.ruby }} />
+                      Expense Categories
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Users className="h-4 w-4" />
+                          Staff Salaries
+                        </span>
+                        <span style={{ color: LUXE_COLORS.champagne }}>AED 45,000</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Building2 className="h-4 w-4" />
+                          Rent & Utilities
+                        </span>
+                        <span style={{ color: LUXE_COLORS.champagne }}>AED 15,000</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Package className="h-4 w-4" />
+                          Supplies
+                        </span>
+                        <span style={{ color: LUXE_COLORS.champagne }}>AED 10,000</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.bronze }}>
+                          <Tag className="h-4 w-4" />
+                          Marketing
+                        </span>
+                        <span style={{ color: LUXE_COLORS.champagne }}>AED 5,000</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                <div>
-                  <Label htmlFor="memo">Memo</Label>
-                  <Textarea
-                    id="memo"
-                    value={expenseForm.memo}
-                    onChange={e => setExpenseForm(prev => ({ ...prev, memo: e.target.value }))}
-                    placeholder="Description of the expense"
-                    rows={2}
-                  />
+          <TabsContent value="pnl">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <CardTitle style={{ color: LUXE_COLORS.gold }}>Profit & Loss Statement</CardTitle>
+                <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                  For the period ending {new Date().toLocaleDateString()}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8" style={{ color: LUXE_COLORS.bronze }}>
+                  <BarChart3 className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  <p>Detailed P&L report will be displayed here</p>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                {['cash', 'bank', 'credit_card'].includes(expenseForm.payment_method) && (
-                  <div>
-                    <Label htmlFor="payment_account">Payment Account</Label>
-                    <Select
-                      value={expenseForm.payment_account_id}
-                      onValueChange={value =>
-                        setExpenseForm(prev => ({ ...prev, payment_account_id: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select payment account" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {glAccounts
-                          .filter(acc => ['asset', 'bank', 'cash'].includes(acc.type.toLowerCase()))
-                          .map(account => (
-                            <SelectItem key={account.id} value={account.id}>
-                              {account.code} - {account.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
+          <TabsContent value="vat">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <CardTitle style={{ color: LUXE_COLORS.gold }}>VAT Compliance Reports</CardTitle>
+                <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                  VAT returns and compliance documentation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Next VAT return due: {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                  </AlertDescription>
+                </Alert>
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    <span style={{ color: LUXE_COLORS.champagne }}>Total VAT Collected</span>
+                    <span style={{ color: LUXE_COLORS.gold }}>AED {financialSummary.vat.toLocaleString()}</span>
                   </div>
-                )}
+                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    <span style={{ color: LUXE_COLORS.champagne }}>VAT on Purchases</span>
+                    <span style={{ color: LUXE_COLORS.gold }}>AED 2,500</span>
+                  </div>
+                  <div className="flex justify-between items-center p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                    <span style={{ color: LUXE_COLORS.champagne }}>Net VAT Payable</span>
+                    <span style={{ color: LUXE_COLORS.emerald }}>AED 3,750</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                {/* Expense Lines */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label>Expense Lines</Label>
-                    <Button type="button" variant="outline" size="sm" onClick={addExpenseLine}>
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add Line
+          <TabsContent value="expenses">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle style={{ color: LUXE_COLORS.gold }}>Expense Management</CardTitle>
+                    <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                      Track and categorize all business expenses
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" style={{ borderColor: LUXE_COLORS.bronze }}>
+                      <Search className="h-4 w-4 mr-2" />
+                      Search
+                    </Button>
+                    <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                      <Receipt className="h-4 w-4 mr-2" />
+                      Add Expense
                     </Button>
                   </div>
-
-                  {expenseForm.lines.map((line, index) => (
-                    <div key={index} className="border rounded-lg p-3 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Line {index + 1}</span>
-                        {expenseForm.lines.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeExpenseLine(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { date: '2024-01-15', vendor: 'Beauty Supplies Co.', category: 'Inventory', amount: 2500, status: 'paid' },
+                    { date: '2024-01-14', vendor: 'DEWA', category: 'Utilities', amount: 850, status: 'pending' },
+                    { date: '2024-01-13', vendor: 'Marketing Agency', category: 'Marketing', amount: 1500, status: 'paid' },
+                    { date: '2024-01-12', vendor: 'Cleaning Services', category: 'Maintenance', amount: 500, status: 'paid' }
+                  ].map((expense, idx) => (
+                    <div key={idx} className="p-4 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                      <div className="flex items-center gap-4">
                         <div>
-                          <Label>GL Account</Label>
-                          <Select
-                            value={line.account_id}
-                            onValueChange={value => updateExpenseLine(index, 'account_id', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select account" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {glAccounts
-                                .filter(acc => acc.type.toLowerCase() === 'expense')
-                                .map(account => (
-                                  <SelectItem key={account.id} value={account.id}>
-                                    {account.code} - {account.name}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label>Amount (excl. VAT)</Label>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            value={line.amount || ''}
-                            onChange={e =>
-                              updateExpenseLine(index, 'amount', parseFloat(e.target.value) || 0)
-                            }
-                            placeholder="0.00"
-                          />
+                          <p style={{ color: LUXE_COLORS.champagne }}>{expense.vendor}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{expense.date} • {expense.category}</p>
                         </div>
                       </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label>VAT Rate (%)</Label>
-                          <Input
-                            type="number"
-                            step="0.1"
-                            value={line.tax_rate || ''}
-                            onChange={e =>
-                              updateExpenseLine(index, 'tax_rate', parseFloat(e.target.value) || 0)
-                            }
-                            placeholder="5"
-                          />
-                        </div>
-                        <div>
-                          <Label>Description</Label>
-                          <Input
-                            value={line.description || ''}
-                            onChange={e => updateExpenseLine(index, 'description', e.target.value)}
-                            placeholder="Line description"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label>Attachment URL</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            value={line.attachment_url || ''}
-                            onChange={e =>
-                              updateExpenseLine(index, 'attachment_url', e.target.value)
-                            }
-                            placeholder="https://..."
-                          />
-                          <Button variant="outline" size="sm">
-                            <Upload className="h-4 w-4" />
-                          </Button>
-                        </div>
+                      <div className="flex items-center gap-4">
+                        <span className={`text-xs px-2 py-1 rounded`} style={{
+                          backgroundColor: expense.status === 'paid' ? `${LUXE_COLORS.emerald}20` : `${LUXE_COLORS.orange}20`,
+                          color: expense.status === 'paid' ? LUXE_COLORS.emerald : LUXE_COLORS.orange
+                        }}>
+                          {expense.status === 'paid' ? <CheckCircle className="h-3 w-3 inline mr-1" /> : <Clock className="h-3 w-3 inline mr-1" />}
+                          {expense.status}
+                        </span>
+                        <span style={{ color: LUXE_COLORS.gold }}>AED {expense.amount}</span>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                <div className="pt-4 border-t">
-                  <div className="flex items-center justify-between text-lg font-semibold">
-                    <span>Total Amount (incl. VAT):</span>
-                    <span>{totalExpenseAmount.toFixed(2)} AED</span>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={handleCreateExpense}
-                  disabled={
-                    isCreatingExpense ||
-                    !expenseForm.memo ||
-                    expenseForm.lines.every(l => !l.account_id || l.amount <= 0)
-                  }
-                  className="w-full"
-                >
-                  {isCreatingExpense ? 'Creating...' : 'Create Expense'}
-                </Button>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Expense History */}
-            <Card>
+          <TabsContent value="invoices">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
               <CardHeader>
-                <CardTitle>Recent Expenses</CardTitle>
-                <CardDescription>Last 20 expenses with GL posting status.</CardDescription>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle style={{ color: LUXE_COLORS.gold }}>Invoice Management</CardTitle>
+                    <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                      Create and track customer invoices
+                    </CardDescription>
+                  </div>
+                  <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    New Invoice
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
-                {isLoadingExpenses ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                    <span className="ml-2">Loading...</span>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {expenseHistory.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8">
-                        No expenses recorded yet.
-                      </p>
-                    ) : (
-                      expenseHistory.map(expense => (
-                        <div
-                          key={expense.id}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                        >
-                          <div>
-                            <div className="font-medium">{expense.memo}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {expense.date} • {expense.vendor || 'No vendor'} •{' '}
-                              {expense.line_count} line(s)
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-medium">
-                              {expense.total_amount.toFixed(2)} {expense.currency}
-                            </div>
-                            <Badge
-                              variant={expense.status === 'posted' ? 'default' : 'secondary'}
-                              className="text-xs"
-                            >
-                              {expense.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                )}
+                <div className="space-y-3">
+                  {[
+                    { number: 'INV-2024-001', customer: 'VIP Customer Group', amount: 12500, status: 'paid', dueDate: '2024-01-10' },
+                    { number: 'INV-2024-002', customer: 'Corporate Client A', amount: 8500, status: 'overdue', dueDate: '2024-01-05' },
+                    { number: 'INV-2024-003', customer: 'Wedding Party', amount: 15000, status: 'pending', dueDate: '2024-01-20' }
+                  ].map((invoice) => (
+                    <div key={invoice.number} className="p-4 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                      <div>
+                        <p style={{ color: LUXE_COLORS.champagne }}>{invoice.number}</p>
+                        <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{invoice.customer} • Due: {invoice.dueDate}</p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className={`text-xs px-2 py-1 rounded`} style={{
+                          backgroundColor: invoice.status === 'paid' ? `${LUXE_COLORS.emerald}20` : 
+                                         invoice.status === 'overdue' ? `${LUXE_COLORS.ruby}20` : `${LUXE_COLORS.orange}20`,
+                          color: invoice.status === 'paid' ? LUXE_COLORS.emerald :
+                                invoice.status === 'overdue' ? LUXE_COLORS.ruby : LUXE_COLORS.orange
+                        }}>
+                          {invoice.status}
+                        </span>
+                        <span style={{ color: LUXE_COLORS.gold }}>AED {invoice.amount}</span>
+                        <Button size="sm" variant="outline" style={{ borderColor: LUXE_COLORS.bronze }}>
+                          <Printer className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
-    </PageLayout>
+          </TabsContent>
+
+          <TabsContent value="cashflow">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <CardTitle style={{ color: LUXE_COLORS.gold }}>Cash Flow Statement</CardTitle>
+                <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                  Monitor cash inflows and outflows
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2" style={{ color: LUXE_COLORS.champagne }}>
+                      <LineChart className="h-5 w-5" />
+                      Cash Flow Summary
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <div className="flex justify-between items-center mb-2">
+                          <span style={{ color: LUXE_COLORS.bronze }}>Opening Balance</span>
+                          <span style={{ color: LUXE_COLORS.champagne }}>AED 45,000</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.emerald }}>
+                            <ArrowUpRight className="h-4 w-4" />
+                            Cash Inflows
+                          </span>
+                          <span style={{ color: LUXE_COLORS.emerald }}>+AED 125,000</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="flex items-center gap-2" style={{ color: LUXE_COLORS.ruby }}>
+                            <ArrowDownRight className="h-4 w-4" />
+                            Cash Outflows
+                          </span>
+                          <span style={{ color: LUXE_COLORS.ruby }}>-AED 75,000</span>
+                        </div>
+                        <div className="border-t pt-2 mt-2" style={{ borderColor: `${LUXE_COLORS.bronze}30` }}>
+                          <div className="flex justify-between items-center">
+                            <span style={{ color: LUXE_COLORS.gold }}>Closing Balance</span>
+                            <span style={{ color: LUXE_COLORS.gold }}>AED 95,000</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center py-4">
+                    <Button style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Full Report
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="payroll">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle style={{ color: LUXE_COLORS.gold }}>Payroll Management</CardTitle>
+                    <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                      Staff salaries and commission tracking
+                    </CardDescription>
+                  </div>
+                  <Button size="sm" style={{ backgroundColor: LUXE_COLORS.gold, color: LUXE_COLORS.black }}>
+                    <Calculator className="h-4 w-4 mr-2" />
+                    Calculate Payroll
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card style={{ backgroundColor: LUXE_COLORS.charcoal, border: 'none' }}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Total Payroll</p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.gold }}>AED 45,000</p>
+                          </div>
+                          <Users className="h-6 w-6" style={{ color: LUXE_COLORS.gold }} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card style={{ backgroundColor: LUXE_COLORS.charcoal, border: 'none' }}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Commissions</p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.emerald }}>AED 12,500</p>
+                          </div>
+                          <TrendingUp className="h-6 w-6" style={{ color: LUXE_COLORS.emerald }} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card style={{ backgroundColor: LUXE_COLORS.charcoal, border: 'none' }}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>Next Payment</p>
+                            <p className="text-xl" style={{ color: LUXE_COLORS.champagne }}>5 Days</p>
+                          </div>
+                          <Calendar className="h-6 w-6" style={{ color: LUXE_COLORS.champagne }} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'Emma Thompson', role: 'Senior Stylist', salary: 8000, commission: 2500, total: 10500 },
+                      { name: 'Sarah Johnson', role: 'Stylist', salary: 6000, commission: 1800, total: 7800 },
+                      { name: 'Maria Garcia', role: 'Receptionist', salary: 4500, commission: 0, total: 4500 }
+                    ].map((staff) => (
+                      <div key={staff.name} className="p-3 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                        <div>
+                          <p style={{ color: LUXE_COLORS.champagne }}>{staff.name}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{staff.role}</p>
+                        </div>
+                        <div className="flex gap-4 text-sm">
+                          <span style={{ color: LUXE_COLORS.bronze }}>Base: AED {staff.salary}</span>
+                          <span style={{ color: LUXE_COLORS.emerald }}>Comm: AED {staff.commission}</span>
+                          <span style={{ color: LUXE_COLORS.gold }}>Total: AED {staff.total}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <Card 
+              className="border-0"
+              style={{
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`
+              }}
+            >
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle style={{ color: LUXE_COLORS.gold }}>Transaction History</CardTitle>
+                    <CardDescription style={{ color: LUXE_COLORS.bronze }}>
+                      All financial transactions and payments
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" style={{ borderColor: LUXE_COLORS.bronze }}>
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Date Range
+                    </Button>
+                    <Button size="sm" variant="outline" style={{ borderColor: LUXE_COLORS.bronze }}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {[
+                    { date: '2024-01-15 14:30', type: 'income', method: 'Card', description: 'Service - Hair Color', amount: 450 },
+                    { date: '2024-01-15 13:15', type: 'income', method: 'Cash', description: 'Product Sale - Shampoo', amount: 85 },
+                    { date: '2024-01-15 11:00', type: 'expense', method: 'Transfer', description: 'Supplier Payment', amount: -2500 },
+                    { date: '2024-01-15 10:30', type: 'income', method: 'Card', description: 'Service - Haircut', amount: 120 }
+                  ].map((txn, idx) => (
+                    <div key={idx} className="p-3 rounded-lg flex justify-between items-center" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded" style={{
+                          backgroundColor: txn.type === 'income' ? `${LUXE_COLORS.emerald}20` : `${LUXE_COLORS.ruby}20`
+                        }}>
+                          {txn.type === 'income' ? 
+                            <ArrowUpRight className="h-4 w-4" style={{ color: LUXE_COLORS.emerald }} /> :
+                            <ArrowDownRight className="h-4 w-4" style={{ color: LUXE_COLORS.ruby }} />
+                          }
+                        </div>
+                        <div>
+                          <p style={{ color: LUXE_COLORS.champagne }}>{txn.description}</p>
+                          <p className="text-sm" style={{ color: LUXE_COLORS.bronze }}>{txn.date} • {txn.method}</p>
+                        </div>
+                      </div>
+                      <span style={{ 
+                        color: txn.type === 'income' ? LUXE_COLORS.emerald : LUXE_COLORS.ruby,
+                        fontWeight: '500'
+                      }}>
+                        {txn.type === 'income' ? '+' : ''}AED {Math.abs(txn.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Role and Permissions Info */}
+        <div className="mt-8 text-sm text-center" style={{ color: LUXE_COLORS.bronze }}>
+          Logged in as: {role?.toUpperCase()} • Organization: {organizationId}
+          <br />
+          Access: Financial Reports, VAT Compliance, P&L Statements
+        </div>
+      </div>
+    </div>
   )
 }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -28,8 +28,7 @@ import Link from 'next/link'
 export default function OrganizationLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading } =
-    useMultiOrgAuth()
+  const { currentOrganization, organizations, user, logout, switchOrganization, isLoading  } = useHERAAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
 

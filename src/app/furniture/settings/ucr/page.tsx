@@ -5,13 +5,13 @@ export const dynamic = 'force-dynamic'
 
 import React from 'react'
 import { UCRRuleManager } from '@/components/furniture/UCRRuleManager'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function UCRSettingsPage() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
 
   // Three-layer authorization pattern
   if (!isAuthenticated) {

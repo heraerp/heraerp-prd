@@ -1,12 +1,11 @@
 'use client'
 
 import React from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 
 export default function TestSalonPage() {
-  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs } =
-    useMultiOrgAuth()
+  const { user, currentOrganization, organizations, isAuthenticated, isLoading, isLoadingOrgs  } = useHERAAuth()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white p-8">

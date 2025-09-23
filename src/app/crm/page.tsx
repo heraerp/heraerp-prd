@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-states'
@@ -42,7 +42,7 @@ import {
 } from 'recharts'
 
 function CRMDashboard() {
-  const { user, currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { user, currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
   const [stats, setStats] = useState<any>(null)
   const [recentActivities, setRecentActivities] = useState<any[]>([])
   const [topOpportunities, setTopOpportunities] = useState<any[]>([])

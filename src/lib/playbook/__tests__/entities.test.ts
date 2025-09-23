@@ -20,7 +20,7 @@ const testHelpers = {
   toAppointmentDTO
 }
 
-jest.mock('@/src/lib/universal-api-v2')
+jest.mock('@/lib/universal-api-v2')
 
 describe('Playbook Entities - Hardened Implementation', () => {
   beforeEach(() => {

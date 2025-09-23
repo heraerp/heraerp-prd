@@ -35,7 +35,7 @@ import {
   Lock,
   Unlock
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { fiscalDashboard } from '@/lib/fiscal/fiscal-dashboard-service'
 import { smartCodeReporting } from '@/lib/financial/smart-code-reporting'
 import type {
@@ -71,7 +71,7 @@ const statusColors = {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 export default function FiscalDashboardPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [selectedPeriod, setSelectedPeriod] = useState('2025-01')
   const [periodStatus, setPeriodStatus] = useState<FiscalPeriod | null>(null)
   const [closingSteps, setClosingSteps] = useState<ClosingStep[]>([])

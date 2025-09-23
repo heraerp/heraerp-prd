@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useRef, useEffect } from 'react'
 import './digital-accountant.css'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -119,7 +119,7 @@ const EXAMPLE_PROMPTS = [
 ]
 
 export default function DigitalAccountantPage() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const organizationId = currentOrganization?.id || '550e8400-e29b-41d4-a716-446655440000' // Fallback for testing
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [messages, setMessages] = useState<Message[]>([

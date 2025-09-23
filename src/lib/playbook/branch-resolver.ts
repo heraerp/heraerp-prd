@@ -1,6 +1,6 @@
 'use client'
 
-import { universalApi } from '@/lib/universal-api-v2'
+import { universalApi } from '@/lib/universal-api'
 
 /**
  * Resolve a branch entity ID from various sources

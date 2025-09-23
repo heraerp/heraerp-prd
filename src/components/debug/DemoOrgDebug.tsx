@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function DemoOrgDebug() {
-  const { user, currentOrganization, organizations, isAuthenticated, isLoading } = useMultiOrgAuth()
+  const { user, currentOrganization, organizations, isAuthenticated, isLoading  } = useHERAAuth()
   const [pathname, setPathname] = useState<string>('')
 
   useEffect(() => {

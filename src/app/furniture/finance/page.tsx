@@ -36,7 +36,7 @@ import {
   Download,
   Plus
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { useFinanceData } from '@/lib/furniture/use-finance-data'
@@ -104,7 +104,7 @@ const glAccountColumns = [
 ]
 
 export default function FurnitureFinance() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const { glAccounts, metrics, loading, refresh } = useFinanceData(organizationId)
   const [activeTab, setActiveTab] = useState('chart-of-accounts')

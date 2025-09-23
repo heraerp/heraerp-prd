@@ -21,7 +21,7 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 const roleIcons = {
   owner: Crown,
@@ -41,8 +41,7 @@ const typeDescriptions = {
 
 export default function OrganizationSelectorPage() {
   const router = useRouter()
-  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs } =
-    useMultiOrgAuth()
+  const { user, organizations, switchOrganization, signOut, isAuthenticated, isLoadingOrgs  } = useHERAAuth()
   const [switching, setSwitching] = useState<string | null>(null)
 
   useEffect(() => {

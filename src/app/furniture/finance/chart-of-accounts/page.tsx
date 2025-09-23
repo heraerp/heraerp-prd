@@ -22,7 +22,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { UniversalReportEngine } from '@/lib/dna/urp/report-engine'
@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils'
 
 // Remove old GLAccount interface as we're using GLAccountNode from the service
 export default function ChartOfAccounts() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
 
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
 

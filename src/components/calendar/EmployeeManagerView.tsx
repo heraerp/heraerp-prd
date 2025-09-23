@@ -35,7 +35,7 @@ import {
   Briefcase
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { HeraDnaUniversalResourceCalendar } from '@/components/calendar/HeraDnaUniversalResourceCalendar'
 
 interface EmployeeManagerViewProps {
@@ -142,7 +142,7 @@ export function EmployeeManagerView({
   businessType,
   organizations = []
 }: EmployeeManagerViewProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [selectedTab, setSelectedTab] = useState<'calendar' | 'requests' | 'team'>('calendar')
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>(mockLeaveRequests)
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'denied'>('all')

@@ -56,7 +56,7 @@ export async function validateBranchExists(
   branch_id: string
 ): Promise<boolean> {
   try {
-    const { universalApi } = await import('@/src/lib/universal-api-v2')
+    const { universalApi } = await import('@/lib/universal-api-v2')
 
     universalApi.setOrganizationId(organization_id)
 
@@ -89,7 +89,7 @@ export async function getOrganizationBranches(
   organization_id: string
 ): Promise<Array<{ id: string; name: string; code?: string }>> {
   try {
-    const { universalApi } = await import('@/src/lib/universal-api-v2')
+    const { universalApi } = await import('@/lib/universal-api-v2')
 
     universalApi.setOrganizationId(organization_id)
 

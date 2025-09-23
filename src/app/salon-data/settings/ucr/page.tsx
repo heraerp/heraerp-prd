@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalConfigService } from '@/lib/universal-config/universal-config-service'
 import {
   Code,
@@ -39,7 +39,7 @@ const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 export default function SalonUCRSettings() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [salonConfig, setSalonConfig] = useState<any>({})
   const [configLoading, setConfigLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')

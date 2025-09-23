@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { BranchType, DateSelectionType, ExportFormat } from '@/types/salon.types'
@@ -550,7 +550,7 @@ const getSectionColor = (section: string) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonBalanceSheetPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState<
     'current' | 'prior_month' | 'prior_year' | 'custom'

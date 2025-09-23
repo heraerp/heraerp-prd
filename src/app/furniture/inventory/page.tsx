@@ -38,7 +38,7 @@ import {
   Minus,
   AlertCircle
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useFurnitureOrg, FurnitureOrgLoading } from '@/components/furniture/FurnitureOrgContext'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { useInventoryData } from '@/lib/furniture/use-inventory-data'
@@ -139,7 +139,7 @@ const stockColumns = [
 ]
 
 export default function FurnitureInventory() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useFurnitureOrg()
   const { stockData, movements, metrics, loading, refresh } = useInventoryData(organizationId)
 

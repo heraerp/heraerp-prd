@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { formatDate } from '@/lib/date-utils'
 import {
   BarChart3,
@@ -89,7 +89,7 @@ interface Session {
 }
 
 export default function ReadinessDashboardPage() {
-  const { currentOrganization, isAuthenticated, isLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, isLoading  } = useHERAAuth()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)

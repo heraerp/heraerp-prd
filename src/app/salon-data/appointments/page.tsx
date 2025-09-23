@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import dynamicImport from 'next/dynamic'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import type { Organization } from '@/types/salon.types'
 
 // Dynamically import the AppointmentManagementDashboard to avoid SSR issues
@@ -33,7 +33,7 @@ const AppointmentManagementDashboard = dynamicImport(
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 
 export default function SalonAppointmentsPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)
   const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(true)
 

@@ -11,9 +11,6 @@ export const ServiceFormSchema = z.object({
   category: z.string().optional(),
   price: z.number().min(0),
   currency: z.string().min(3).max(3).default('AED'),
-  tax_rate: z.number().min(0).max(100).optional(),
-  commission_type: z.enum(['flat', 'percent']).optional(),
-  commission_value: z.number().min(0).optional(),
   description: z.string().max(2000).optional(),
   requires_equipment: z.boolean().optional()
 })
@@ -37,7 +34,4 @@ export interface ServiceEntity {
 export interface ServiceWithDynamicData extends ServiceEntity {
   price?: number
   currency?: string
-  tax_rate?: number
-  commission_type?: 'flat' | 'percent'
-  commission_value?: number
 }

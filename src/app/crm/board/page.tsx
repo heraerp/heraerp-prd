@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { listStages } from '@/lib/playbook/crm/lookups'
 import { playbookCrmApi } from '@/lib/api/playbook-crm'
 import { Button } from '@/components/ui/button'
 
 export default function CRMPipelineBoard() {
-  const { currentOrganization, isAuthenticated, isLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, isLoading  } = useHERAAuth()
   const [stages, setStages] = useState<{ id: string; name: string }[]>([])
   const [columns, setColumns] = useState<Record<string, any[]>>({})
   const [dragged, setDragged] = useState<{ id: string; from: string } | null>(null)

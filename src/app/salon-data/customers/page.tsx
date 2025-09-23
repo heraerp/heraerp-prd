@@ -25,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import { CustomerWhatsAppActions } from '@/components/salon/whatsapp/CustomerWhatsAppActions'
@@ -1268,7 +1268,7 @@ const CustomerDetailModal = ({
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonCustomersPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilters, setSelectedFilters] = useState<{

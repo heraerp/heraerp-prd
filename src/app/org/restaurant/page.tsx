@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useRouter } from 'next/navigation'
 import {
   Building2,
@@ -43,7 +43,7 @@ import { cn } from '@/lib/utils'
 import { universalApi } from '@/lib/universal-api'
 
 export default function AuthenticatedRestaurantDashboard() {
-  const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, isLoading, isLoadingOrgs, user  } = useHERAAuth()
 
   const router = useRouter()
   const [selectedTab, setSelectedTab] = useState<'overview' | 'orders' | 'branches' | 'settings'>(

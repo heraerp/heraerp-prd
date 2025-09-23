@@ -20,7 +20,7 @@ import {
 import { universalApi } from '@/lib/universal-api'
 import { BOMExplorer } from '@/components/furniture/BOMExplorer'
 import { SupplierRelationships } from '@/components/furniture/SupplierRelationships'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -28,7 +28,7 @@ export default function ProductDetailPage() {
   const router = useRouter()
 
   const productId = params.id as string
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
 
   const [loading, setLoading] = useState(true)
 

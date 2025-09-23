@@ -23,7 +23,7 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import {
   Edit,
-  Copy,
+  Trash2,
   Archive,
   ArchiveRestore,
   MoreVertical,
@@ -40,7 +40,7 @@ interface ServiceListProps {
   onSelectAll: (checked: boolean) => void
   onSelectOne: (id: string, checked: boolean) => void
   onEdit: (service: ServiceWithDynamicData) => void
-  onDuplicate: (service: ServiceWithDynamicData) => void
+  onDelete: (ids: string[]) => void
   onArchive: (ids: string[]) => void
   onRestore: (ids: string[]) => void
 }
@@ -65,7 +65,7 @@ export function ServiceList({
   onSelectAll,
   onSelectOne,
   onEdit,
-  onDuplicate,
+  onDelete,
   onArchive,
   onRestore
 }: ServiceListProps) {
@@ -128,7 +128,7 @@ export function ServiceList({
     <div className="rounded-lg overflow-hidden" style={{ backgroundColor: COLORS.charcoal }}>
       <Table>
         <TableHeader>
-          <TableRow className="border-b" style={{ borderColor: COLORS.bronze + '33' }}>
+          <TableRow className="border-b" style={{ borderColor: COLORS.champagne + '44' }}>
             <TableHead className="w-12">
               <Checkbox
                 checked={allSelected || someSelected}
@@ -137,29 +137,17 @@ export function ServiceList({
                 className={someSelected && !allSelected ? 'data-[state=checked]:bg-primary/50' : ''}
               />
             </TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>Service</TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>Category</TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>
+            <TableHead className="!text-[#F5E6C8]">Service</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Category</TableHead>
+            <TableHead className="!text-[#F5E6C8]">
               <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
+                <Clock className="w-4 h-4 text-[#F5E6C8]" />
                 Duration
               </div>
             </TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>
-              <div className="flex items-center gap-1">
-                <DollarSign className="w-4 h-4" />
-                Price
-              </div>
-            </TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>Tax</TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>
-              <div className="flex items-center gap-1">
-                <Percent className="w-4 h-4" />
-                Commission
-              </div>
-            </TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>Status</TableHead>
-            <TableHead style={{ color: COLORS.bronze }}>Updated</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Price</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Status</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Updated</TableHead>
             <TableHead className="w-12"></TableHead>
           </TableRow>
         </TableHeader>
@@ -183,7 +171,7 @@ export function ServiceList({
               <TableCell>
                 <div>
                   <div className="font-medium" style={{ color: COLORS.champagne }}>
-                    {service.name}
+                    {service.name || service.entity_name || service.code || '-'}
                   </div>
                   {service.code && (
                     <div className="text-xs opacity-70" style={{ color: COLORS.lightText }}>
@@ -193,29 +181,19 @@ export function ServiceList({
                 </div>
               </TableCell>
               <TableCell>
-                {service.category ? (
+                {service.category || service.metadata?.category ? (
                   <Badge variant="secondary" className="bg-muted/50 text-muted-foreground">
-                    {service.category}
+                    {service.category || service.metadata?.category}
                   </Badge>
                 ) : (
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
               <TableCell style={{ color: COLORS.lightText }}>
-                {formatDuration(service.duration_mins)}
+                {formatDuration(service.duration_mins || service.metadata?.duration_mins)}
               </TableCell>
               <TableCell style={{ color: COLORS.champagne }}>
                 {formatPrice(service.price, service.currency)}
-              </TableCell>
-              <TableCell style={{ color: COLORS.lightText }}>
-                {service.tax_rate ? `${service.tax_rate}%` : '-'}
-              </TableCell>
-              <TableCell style={{ color: COLORS.lightText }}>
-                {formatCommission(
-                  service.commission_type,
-                  service.commission_value,
-                  service.currency
-                )}
               </TableCell>
               <TableCell>
                 <Badge
@@ -246,9 +224,12 @@ export function ServiceList({
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onDuplicate(service)}>
-                      <Copy className="mr-2 h-4 w-4" />
-                      Duplicate
+                    <DropdownMenuItem 
+                      onClick={() => onDelete([service.id])}
+                      className="text-red-400"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     {service.status === 'active' ? (

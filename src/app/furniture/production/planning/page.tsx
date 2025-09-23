@@ -18,13 +18,13 @@ import {
   Download,
   Plus
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useDemoOrganization } from '@/lib/dna/patterns/demo-org-pattern'
 import FurniturePageHeader from '@/components/furniture/FurniturePageHeader'
 import { cn } from '@/lib/utils'
 
 export default function ProductionPlanningPage() {
-  const { isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, contextLoading  } = useHERAAuth()
   const { organizationId, organizationName, orgLoading } = useDemoOrganization()
 
   // Show loading state

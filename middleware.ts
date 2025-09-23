@@ -98,6 +98,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ headers: requestHeaders })
   }
 
+  // Handle localhost development with path-based routing (e.g., localhost:3000/~hairtalkz/salon)
+  if (hostname.includes('localhost')) {
+    if (pathname.startsWith('/~hairtalkz')) {
+      // Set hairtalkz organization context
+      requestHeaders.set('x-hera-organization', 'hairtalkz')
+      requestHeaders.set('x-hera-org-id', '378f24fb-d496-4ff7-8afa-ea34895a0eb8')
+      requestHeaders.set('x-hera-org-mode', 'tenant')
+      
+      // Rewrite URL to remove the ~hairtalkz prefix
+      const url = request.nextUrl.clone()
+      url.pathname = pathname.replace('/~hairtalkz', '')
+      return NextResponse.rewrite(url, { headers: requestHeaders })
+    }
+  }
+
   // Parse subdomain
   const subdomain = getSubdomain(hostname)
   
@@ -176,6 +191,18 @@ export async function middleware(request: NextRequest) {
     // This is a customer organization
     requestHeaders.set('x-hera-organization', subdomain)
     
+    // Special handling for hairtalkz subdomain
+    if (subdomain === 'hairtalkz') {
+      requestHeaders.set('x-hera-org-id', '378f24fb-d496-4ff7-8afa-ea34895a0eb8')
+      requestHeaders.set('x-hera-org-mode', 'tenant')
+      // For hairtalkz, route /salon to the salon app
+      if (pathname === '/salon' || pathname.startsWith('/salon/')) {
+        const url = request.nextUrl.clone()
+        url.pathname = pathname
+        return NextResponse.rewrite(url, { headers: requestHeaders })
+      }
+    }
+    
     // Check if user is trying to access an auth-required page
     if (AUTH_REQUIRED_PATHS.some(path => pathname.startsWith(path))) {
       // These will be handled by auth guard in the app
@@ -193,8 +220,9 @@ export async function middleware(request: NextRequest) {
 
 // Helper to extract subdomain
 function getSubdomain(hostname: string): string | null {
-  // Handle localhost with port
+  // Handle localhost with port - check for subdomain in path
   if (hostname.includes('localhost')) {
+    // For localhost, we can use path-based routing like localhost:3000/~hairtalkz
     return null
   }
 

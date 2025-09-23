@@ -61,7 +61,11 @@
     "src/components_old/**/*",
     "src/app_old/**/*",
     "src/components/furniture/**/*",
+    "src/app/furniture/**/*",
     "dist/**/*",
-    ".next/**/*"
+    ".next/**/*",
+    "backups/**/*",
+    "app.backup/**/*",
+    "tests/**/*"
   ]
 }

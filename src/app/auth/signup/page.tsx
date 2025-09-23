@@ -12,11 +12,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, UserPlus, AlertCircle, ArrowRight } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SignUpPage() {
   const router = useRouter()
-  const { register } = useMultiOrgAuth()
+  const { register  } = useHERAAuth()
 
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)

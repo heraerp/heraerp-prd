@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Database,
   Play,
@@ -47,7 +47,7 @@ interface QueryHistory {
 }
 
 export default function SupabaseSQLEditor() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<QueryResult | null>(null)
   const [isExecuting, setIsExecuting] = useState(false)

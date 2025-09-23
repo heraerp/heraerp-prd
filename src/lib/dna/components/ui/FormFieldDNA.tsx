@@ -54,8 +54,11 @@ interface SelectFieldProps extends BaseFieldProps {
   options: Array<{
     value: string
     label: string
+    color?: string
+    icon?: string
   }>
   disabled?: boolean
+  renderOption?: (option: { value: string; label: string; color?: string; icon?: string }) => React.ReactNode
 }
 
 type FormFieldDNAProps = InputFieldProps | TextareaFieldProps | SelectFieldProps
@@ -115,7 +118,7 @@ export function FormFieldDNA(props: FormFieldDNAProps) {
             <SelectContent className="hera-select-content">
               {props.options.map(option => (
                 <SelectItem key={option.value} value={option.value} className="hera-select-item">
-                  {option.label}
+                  {props.renderOption ? props.renderOption(option) : option.label}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -36,14 +36,14 @@ import {
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSchemaAdministration } from '@/lib/schema/schema-hooks'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface SchemaAdministrationProps {
   organizationId?: string
 }
 
 export default function SchemaAdministration({ organizationId }: SchemaAdministrationProps) {
-  const { user } = useMultiOrgAuth()
+  const { user  } = useHERAAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [searchTerm, setSearchTerm] = useState('')
 

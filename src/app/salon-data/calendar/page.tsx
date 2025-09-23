@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic'
 
 import React from 'react'
 import { SalonResourceCalendar } from '@/components/salon/SalonResourceCalendar'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export default function SalonDataCalendarPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
 
   // Sample organization data for demo
   const salonOrganizations = [

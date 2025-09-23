@@ -148,11 +148,60 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
             expires_at: sessionData.expires_at
           }
 
-          const organization: HERAOrganization = {
-            id: sessionData.organization_id,
-            name: 'Hair Talkz Salon (Demo)',
-            type: 'salon',
-            industry: 'beauty_services'
+          // Try to get organization from multiple sources
+          let organization: HERAOrganization | null = null
+
+          // 1) First try cookie (check both possible names)
+          const cookieOrgId = getCookie('HERA_ORG_ID') || getCookie('hera-organization-id')
+          if (cookieOrgId) {
+            console.log('📍 HERA Auth: Found organization in cookie:', cookieOrgId)
+            organization = {
+              id: cookieOrgId,
+              name: 'Hair Talkz Salon (Demo)',
+              type: 'salon',
+              industry: 'beauty_services'
+            }
+            // Ensure the organization ID is saved
+            setState(prev => ({ ...prev, organization }))
+          } else if (sessionData.organization_id) {
+            // 2) Use organization from session if available
+            console.log('📍 HERA Auth: Using organization from session:', sessionData.organization_id)
+            organization = {
+              id: sessionData.organization_id,
+              name: 'Hair Talkz Salon (Demo)',
+              type: 'salon',
+              industry: 'beauty_services'
+            }
+            // Save to cookie for next time
+            setCookie('HERA_ORG_ID', sessionData.organization_id)
+          } else {
+            // 3) Try to get from server
+            console.log('🔍 HERA Auth: Fetching organization context from server...')
+            try {
+              const orgContext = await fetch('/api/auth/org-context', { 
+                cache: 'no-store',
+                credentials: 'include' // Include cookies in the request
+              }).then(r => r.json())
+              if (orgContext?.organization?.id) {
+                console.log('📍 HERA Auth: Got organization from server:', orgContext.organization)
+                organization = orgContext.organization
+                setCookie('HERA_ORG_ID', orgContext.organization.id)
+              } else {
+                console.error('❌ HERA Auth: No organization from server:', orgContext)
+              }
+            } catch (e) {
+              console.error('❌ Failed to fetch org context:', e)
+            }
+          }
+
+          if (!organization) {
+            console.error('❌ HERA Auth: No organization found for user')
+            setState(prev => ({
+              ...prev,
+              isLoading: false,
+              isAuthenticated: false
+            }))
+            return
           }
 
           setState({
@@ -228,6 +277,9 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
         industry: 'beauty_services'
       }
 
+      // Save organization ID to cookie
+      setCookie('HERA_ORG_ID', result.user.organization_id)
+
       const expiryTime = new Date(result.user.expires_at).getTime()
       const now = Date.now()
 
@@ -259,6 +311,11 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
   const logout = async () => {
     try {
       await demoAuthService.clearDemoSession()
+      
+      // Clear the org cookie
+      if (typeof document !== 'undefined') {
+        document.cookie = 'HERA_ORG_ID=; Path=/; Max-Age=0; SameSite=Lax'
+      }
 
       setState({
         user: null,
@@ -280,6 +337,10 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
 
   const handleSessionExpiry = async () => {
     console.log('⏰ HERA Auth: Session expired')
+    // Clear the org cookie too
+    if (typeof document !== 'undefined') {
+      document.cookie = 'HERA_ORG_ID=; Path=/; Max-Age=0; SameSite=Lax'
+    }
     await logout()
   }
 
@@ -297,6 +358,12 @@ export function HERAAuthProvider({ children }: HERAAuthProviderProps) {
       return parts.pop()?.split(';').shift() || null
     }
     return null
+  }
+
+  // Helper function to set cookie
+  const setCookie = (name: string, value: string): void => {
+    if (typeof document === 'undefined') return
+    document.cookie = `${name}=${value}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax`
   }
 
   const contextValue: HERAAuthContext = {

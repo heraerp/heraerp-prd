@@ -878,10 +878,9 @@ export default function SalonProfitLossPage() {
             </Badge>
           </div>
         </div>
-      </div>
     </TabsContent>
-          
-          <TabsContent value="real" className="space-y-6">
+    
+    <TabsContent value="real" className="space-y-6">
             {/* Real Data View */}
             <RealPnLReport
               organizationId={organizationId}

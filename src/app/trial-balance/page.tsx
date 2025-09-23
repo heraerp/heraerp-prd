@@ -17,7 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-// import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider' // Not needed - using default salon org
+// import { useHERAAuth } from '@/components/auth/HERAAuthProvider' // Not needed - using default salon org
 // import { useToast } from '@/components/ui/use-toast' // Not needed for static generation
 import {
   ChevronLeft,

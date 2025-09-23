@@ -2,11 +2,9 @@
 
 import React from 'react'
 import { usePathname } from 'next/navigation'
-import SalonRoleBasedSidebar from '@/components/salon/SalonRoleBasedSidebar'
-import SalonLuxeSidebar from '@/components/salon/SalonLuxeSidebar'
-import SalonDarkSidebar from '@/components/salon/SalonDarkSidebar'
-import { SalonAuthGuard, SalonRoleDisplay } from '@/components/salon/auth/SalonAuthGuard'
+import SalonRoleBasedDarkSidebar from '@/components/salon/SalonRoleBasedDarkSidebar'
 import { SalonNavbar } from '@/components/salon/SalonNavbar'
+import { SalonProvider } from './SalonProvider'
 
 export default function SalonLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -19,9 +17,9 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <SalonAuthGuard>
-      {/* Use narrow Teams-style sidebar */}
-      <SalonDarkSidebar />
+    <SalonProvider>
+      {/* Use role-based narrow Teams-style sidebar */}
+      <SalonRoleBasedDarkSidebar />
       {/* Sticky glassmorphism navbar */}
       <SalonNavbar />
       {/* reserve exactly the sidebar width and navbar height */}
@@ -36,6 +34,6 @@ export default function SalonLayout({ children }: { children: React.ReactNode })
       >
         {children}
       </main>
-    </SalonAuthGuard>
+    </SalonProvider>
   )
 }

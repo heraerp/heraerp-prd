@@ -44,7 +44,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface O2CMetrics {
   orders: {
@@ -84,7 +84,7 @@ interface O2CMetrics {
 }
 
 export function O2CDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const [metrics, setMetrics] = useState<O2CMetrics | null>(null)
   const [recentTransactions, setRecentTransactions] = useState<any[]>([])
   const [revenueChart, setRevenueChart] = useState<any[]>([])

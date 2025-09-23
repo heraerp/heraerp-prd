@@ -24,13 +24,13 @@ import {
   Building2,
   ChevronRight
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isAuthenticated, organizations } = useMultiOrgAuth()
+  const { login, isAuthenticated, organizations  } = useHERAAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

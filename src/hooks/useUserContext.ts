@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 interface UserContext {
   user: {
@@ -19,7 +19,7 @@ interface UserContext {
 }
 
 export function useUserContext() {
-  const { session, isAuthenticated } = useMultiOrgAuth()
+  const { session, isAuthenticated  } = useHERAAuth()
   const [userContext, setUserContext] = useState<UserContext | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

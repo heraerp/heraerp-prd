@@ -1,339 +1,164 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import React from 'react'
+import { useSalonContext } from '../SalonProvider'
 import { useServicesPlaybook } from '@/hooks/useServicesPlaybook'
-import { ServiceList } from '@/components/salon/services/ServiceList'
-import { ServiceModal } from '@/components/salon/services/ServiceModal'
-import { BulkActionsBar } from '@/components/salon/services/BulkActionsBar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { ServiceForm, ServiceWithDynamicData } from '@/schemas/service'
-import { Plus, Search, Scissors, Download, Building2, Filter, X } from 'lucide-react'
-import { toast } from 'sonner'
-import { PageHeader, PageHeaderSearch, PageHeaderButton } from '@/components/universal/PageHeader'
-import { useBranchFilter } from '@/hooks/useBranchFilter'
-
-const COLORS = {
-  black: '#0B0B0B',
-  charcoal: '#1A1A1A',
-  gold: '#D4AF37',
-  goldDark: '#B8860B',
-  champagne: '#F5E6C8',
-  bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  plum: '#B794F4',
-  rose: '#E8B4B8',
-  lightText: '#E0E0E0',
-  charcoalDark: '#0F0F0F',
-  charcoalLight: '#232323'
-}
+import { Plus, Search, Loader2 } from 'lucide-react'
+import { LUXE_COLORS } from '@/lib/constants/salon'
 
 export default function SalonServicesPage() {
-  const { organization } = useHERAAuth()
-  const organizationId = organization?.id || ''
-
-  // UI State
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'active' | 'archived' | 'all'>('active')
-  const [categoryFilter, setCategoryFilter] = useState<string>('')
-  const [sortBy, setSortBy] = useState('updated_at:desc')
-  const [page, setPage] = useState(1)
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingService, setEditingService] = useState<ServiceWithDynamicData | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
-
-  // Branch filter
-  const { branchId, branches, setBranchId, hasMultipleBranches } = useBranchFilter(
-    undefined,
-    'services'
-  )
-
+  const { organizationId, role, isLoading: authLoading, isAuthenticated } = useSalonContext()
+  const [searchQuery, setSearchQuery] = React.useState('')
+  
   // Fetch services data
   const {
     items: services,
-    total,
     isLoading,
-    error,
-    createOne,
-    updateOne,
-    archiveMany,
-    restoreMany,
-    exportCSV
+    error
   } = useServicesPlaybook({
     organizationId,
-    branchId,
     query: searchQuery,
-    status: statusFilter,
-    categoryId: categoryFilter,
-    page,
-    pageSize: 25,
-    sort: sortBy
+    status: 'active',
+    page: 1,
+    pageSize: 50
   })
 
-  // Get unique categories from services
-  const categories = Array.from(new Set(services.map(s => s.category).filter(Boolean))) as string[]
-
-  // Selection handlers
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedIds(new Set(services.map(s => s.id)))
-    } else {
-      setSelectedIds(new Set())
-    }
+  if (authLoading) {
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <Loader2 className="h-8 w-8 animate-spin" style={{ color: LUXE_COLORS.gold }} />
+      </div>
+    )
   }
 
-  const handleSelectOne = (id: string, checked: boolean) => {
-    const newSet = new Set(selectedIds)
-    if (checked) {
-      newSet.add(id)
-    } else {
-      newSet.delete(id)
-    }
-    setSelectedIds(newSet)
+  if (!isAuthenticated) {
+    return null
   }
-
-  // CRUD handlers
-  const handleSave = async (data: ServiceForm) => {
-    if (editingService) {
-      await updateOne(editingService.id, data)
-    } else {
-      await createOne(data)
-    }
-    setModalOpen(false)
-    setEditingService(null)
-  }
-
-  const handleEdit = (service: ServiceWithDynamicData) => {
-    setEditingService(service)
-    setModalOpen(true)
-  }
-
-  const handleDuplicate = (service: ServiceWithDynamicData) => {
-    const duplicated = { ...service, name: `${service.name} (Copy)`, code: undefined }
-    setEditingService(duplicated)
-    setModalOpen(true)
-  }
-
-  const handleBulkArchive = async () => {
-    const ids = Array.from(selectedIds)
-    await archiveMany(ids)
-    setSelectedIds(new Set())
-  }
-
-  const handleBulkRestore = async () => {
-    const ids = Array.from(selectedIds)
-    await restoreMany(ids)
-    setSelectedIds(new Set())
-  }
-
-  const handleExport = () => {
-    exportCSV()
-  }
-
-  // Header gradient style
-  const headerGradient = { backgroundColor: COLORS.charcoal } as React.CSSProperties
 
   return (
-    <div className="min-h-[100dvh]" style={{ backgroundColor: COLORS.black }}>
-      {/* Main content wrapper with charcoal background for depth */}
-      <div className="relative" style={{ minHeight: '100vh' }}>
-        {/* Subtle gradient overlay for depth */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: `radial-gradient(circle at 20% 80%, ${COLORS.gold}08 0%, transparent 50%),
-                           radial-gradient(circle at 80% 20%, ${COLORS.bronze}05 0%, transparent 50%),
-                           radial-gradient(circle at 40% 40%, ${COLORS.plum}03 0%, transparent 50%)`
-          }}
-        />
+    <div className="min-h-screen" style={{ backgroundColor: LUXE_COLORS.charcoal }}>
+      <div className="container mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 
+            className="text-3xl font-light mb-2"
+            style={{ color: LUXE_COLORS.gold }}
+          >
+            Services
+          </h1>
+          <p 
+            className="text-sm"
+            style={{ color: LUXE_COLORS.bronze }}
+          >
+            Manage your salon services and pricing
+          </p>
+        </div>
 
-        {/* Content container */}
-        <div
-          className="container mx-auto px-6 py-8 relative"
-          style={{
-            backgroundColor: COLORS.charcoal,
-            minHeight: '100vh',
-            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)'
-          }}
-        >
-          <PageHeader
-            title="Services"
-            breadcrumbs={[
-              { label: 'HERA' },
-              { label: 'SALON OS' },
-              { label: 'Services', isActive: true }
-            ]}
-            actions={
-              <>
-                <PageHeaderSearch
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search services..."
-                />
-                <PageHeaderButton
-                  variant="primary"
-                  icon={Plus}
-                  onClick={() => {
-                    setEditingService(null)
-                    setModalOpen(true)
-                  }}
-                >
-                  New Service
-                </PageHeaderButton>
-                <PageHeaderButton variant="secondary" icon={Download} onClick={handleExport} />
-              </>
-            }
-          />
-
-          {/* Error Banner */}
-          {error && (
-            <div
-              className="mt-4 text-sm px-3 py-2 rounded-lg border flex items-center gap-2"
+        {/* Search and Actions */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="relative flex-1 max-w-md">
+            <Search 
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" 
+              style={{ color: LUXE_COLORS.bronze }}
+            />
+            <Input
+              placeholder="Search services..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
               style={{
-                backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                borderColor: 'rgba(255, 0, 0, 0.3)',
-                color: COLORS.lightText
+                backgroundColor: LUXE_COLORS.charcoalLight,
+                border: `1px solid ${LUXE_COLORS.bronze}30`,
+                color: LUXE_COLORS.champagne
               }}
-            >
-              <X className="h-4 w-4" style={{ color: '#FF6B6B' }} />
-              {error}
-            </div>
-          )}
-
-          {/* Filters */}
-          <div className="py-4 border-b" style={{ borderColor: `${COLORS.bronze}33` }}>
-            <div className="flex items-center gap-4">
-              {/* Status Tabs */}
-              <Tabs value={statusFilter} onValueChange={v => setStatusFilter(v as any)}>
-                <TabsList className="bg-background/30">
-                  <TabsTrigger value="active">Active</TabsTrigger>
-                  <TabsTrigger value="archived">Archived</TabsTrigger>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              {/* Filter Chips */}
-              <div className="flex items-center gap-2 flex-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={showFilters ? 'text-foreground' : 'text-muted-foreground'}
-                >
-                  <Filter className="h-4 w-4 mr-1" />
-                  Filters
-                </Button>
-
-                {categoryFilter && (
-                  <Badge variant="secondary" className="gap-1 bg-muted/50">
-                    {categoryFilter}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setCategoryFilter('')} />
-                  </Badge>
-                )}
-              </div>
-
-              {/* Branch Selector */}
-              {hasMultipleBranches && (
-                <Select
-                  value={branchId || 'ALL'}
-                  onValueChange={value => setBranchId(value === 'ALL' ? undefined : value)}
-                >
-                  <SelectTrigger className="w-48 bg-background/30 border-border">
-                    <Building2 className="h-4 w-4 mr-2" />
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">All Branches</SelectItem>
-                    {branches.map(branch => (
-                      <SelectItem key={branch.id} value={branch.id}>
-                        {branch.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-
-              {/* Sort Dropdown */}
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48 bg-background/30 border-border">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name:asc">Name (A-Z)</SelectItem>
-                  <SelectItem value="name:desc">Name (Z-A)</SelectItem>
-                  <SelectItem value="updated_at:desc">Updated (Newest)</SelectItem>
-                  <SelectItem value="updated_at:asc">Updated (Oldest)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Expandable Filters */}
-            {showFilters && (
-              <div className="mt-4 pt-4 border-t border-border flex items-center gap-4">
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-48 bg-background/30 border-border">
-                    <SelectValue placeholder="All categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All categories</SelectItem>
-                    {categories.map(cat => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="py-6">
-            <ServiceList
-              services={services}
-              loading={isLoading}
-              selectedIds={selectedIds}
-              onSelectAll={handleSelectAll}
-              onSelectOne={handleSelectOne}
-              onEdit={handleEdit}
-              onDuplicate={handleDuplicate}
-              onArchive={archiveMany}
-              onRestore={restoreMany}
             />
           </div>
-
-          {/* Bulk Actions */}
-          <BulkActionsBar
-            selectedCount={selectedIds.size}
-            onArchive={handleBulkArchive}
-            onRestore={handleBulkRestore}
-            onExport={handleExport}
-            onClear={() => setSelectedIds(new Set())}
-            showRestore={statusFilter === 'archived'}
-          />
-
-          {/* Service Modal */}
-          <ServiceModal
-            open={modalOpen}
-            onClose={() => {
-              setModalOpen(false)
-              setEditingService(null)
+          
+          <Button
+            className="gap-2"
+            style={{
+              backgroundColor: LUXE_COLORS.gold,
+              color: LUXE_COLORS.black
             }}
-            service={editingService}
-            onSave={handleSave}
-            categories={categories}
-          />
+          >
+            <Plus className="h-4 w-4" />
+            New Service
+          </Button>
+        </div>
+
+        {/* Services List */}
+        <div 
+          className="rounded-lg overflow-hidden"
+          style={{
+            backgroundColor: LUXE_COLORS.charcoalLight,
+            border: `1px solid ${LUXE_COLORS.bronze}30`
+          }}
+        >
+          {isLoading ? (
+            <div className="p-8 text-center">
+              <Loader2 className="h-8 w-8 animate-spin mx-auto" style={{ color: LUXE_COLORS.gold }} />
+            </div>
+          ) : error ? (
+            <div className="p-8 text-center" style={{ color: LUXE_COLORS.bronze }}>
+              Error loading services
+            </div>
+          ) : services.length === 0 ? (
+            <div className="p-8 text-center" style={{ color: LUXE_COLORS.bronze }}>
+              No services found
+            </div>
+          ) : (
+            <div className="divide-y" style={{ borderColor: `${LUXE_COLORS.bronze}20` }}>
+              {services.map((service) => (
+                <div 
+                  key={service.id} 
+                  className="p-4 hover:bg-black/20 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 
+                        className="font-medium"
+                        style={{ color: LUXE_COLORS.champagne }}
+                      >
+                        {service.name}
+                      </h3>
+                      {service.description && (
+                        <p 
+                          className="text-sm mt-1"
+                          style={{ color: LUXE_COLORS.bronze }}
+                        >
+                          {service.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div 
+                        className="font-medium"
+                        style={{ color: LUXE_COLORS.gold }}
+                      >
+                        AED {service.price?.toFixed(2)}
+                      </div>
+                      <div 
+                        className="text-sm"
+                        style={{ color: LUXE_COLORS.bronze }}
+                      >
+                        {service.duration} min
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="mt-4 text-sm" style={{ color: LUXE_COLORS.bronze }}>
+          Organization: {organizationId} • Role: {role}
         </div>
       </div>
     </div>

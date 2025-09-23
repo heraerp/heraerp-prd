@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -82,7 +82,7 @@ const availableApps: AppOption[] = [
 
 export default function SetupPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, currentOrganization } = useMultiOrgAuth()
+  const { isAuthenticated, isLoading: authLoading, currentOrganization  } = useHERAAuth()
   const [selectedApp, setSelectedApp] = useState<string | null>(null)
 
   useEffect(() => {

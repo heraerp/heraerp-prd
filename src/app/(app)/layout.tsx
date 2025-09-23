@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthenticatedOnly, usePermissions } from '@/lib/auth/guard'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { navItems, getDefaultBranding } from '@/lib/config/navigation'
 import { createApiClient } from '@/lib/api/client'
 import { Menu, X, LogOut } from 'lucide-react'
@@ -23,7 +23,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { user, currentOrganization, signOut } = useMultiOrgAuth()
+  const { user, currentOrganization, signOut  } = useHERAAuth()
   const { hasRole } = usePermissions()
   const apiClient = createApiClient()
 

@@ -32,6 +32,9 @@ import {
   ScrollAreaDNA,
   BadgeDNA
 } from '@/lib/dna/components/ui'
+import { useCategoriesPlaybook } from '@/hooks/useCategoriesPlaybook'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import * as Icons from 'lucide-react'
 
 interface ServiceModalProps {
   open: boolean
@@ -56,9 +59,29 @@ export function ServiceModal({
   onClose,
   service,
   onSave,
-  categories = ['Hair', 'Color', 'Treatment', 'Styling', 'Nail', 'Spa']
+  categories = []
 }: ServiceModalProps) {
   const [saving, setSaving] = React.useState(false)
+  
+  // Get organization context
+  const { organization } = useHERAAuth()
+  const organizationId = organization?.id || ''
+  
+  // Fetch categories dynamically
+  const { categories: dynamicCategories, isLoading: categoriesLoading } = useCategoriesPlaybook({
+    organizationId,
+    includeArchived: false
+  })
+  
+  // Use dynamic categories or fallback to provided categories
+  const categoryOptions = dynamicCategories.length > 0 
+    ? dynamicCategories.map(cat => ({
+        value: cat.entity_name,
+        label: cat.entity_name,
+        color: cat.color,
+        icon: cat.icon
+      }))
+    : categories.map(cat => ({ value: cat, label: cat }))
 
   const {
     register,
@@ -77,34 +100,40 @@ export function ServiceModal({
       category: '',
       price: 0,
       currency: 'AED',
-      tax_rate: 5,
-      commission_type: 'percent',
-      commission_value: 20,
       description: '',
       requires_equipment: false
     }
   })
 
-  // Reset form when service changes
+  // Reset form when service changes or modal opens/closes
   React.useEffect(() => {
-    if (service) {
-      reset({
-        name: service.name,
-        code: service.code || '',
-        duration_mins: service.duration_mins || 30,
-        category: service.category || '',
-        price: service.price || 0,
-        currency: service.currency || 'AED',
-        tax_rate: service.tax_rate || 5,
-        commission_type: service.commission_type || 'percent',
-        commission_value: service.commission_value || 20,
-        description: service.metadata?.description || '',
-        requires_equipment: service.metadata?.requires_equipment || false
-      })
-    } else {
-      reset()
+    if (open) {
+      if (service) {
+        reset({
+          name: service.name,
+          code: service.code || '',
+          duration_mins: service.duration_mins || 30,
+          category: service.category || '',
+          price: service.price || 0,
+          currency: service.currency || 'AED',
+          description: service.metadata?.description || '',
+          requires_equipment: service.metadata?.requires_equipment || false
+        })
+      } else {
+        // Reset to default values for new service
+        reset({
+          name: '',
+          code: '',
+          duration_mins: 30,
+          category: '',
+          price: 0,
+          currency: 'AED',
+          description: '',
+          requires_equipment: false
+        })
+      }
     }
-  }, [service, reset])
+  }, [service, open, reset])
 
   const onSubmit = async (data: ServiceForm) => {
     setSaving(true)
@@ -112,13 +141,11 @@ export function ServiceModal({
       await onSave(data)
       onClose()
     } catch (error) {
-      // Error handled by parent
+      // Error handled by parent component
     } finally {
       setSaving(false)
     }
   }
-
-  const commissionType = watch('commission_type')
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -189,8 +216,29 @@ export function ServiceModal({
                     label="Category"
                     value={watch('category') || ''}
                     onChange={value => setValue('category', value)}
-                    options={categories.map(cat => ({ value: cat, label: cat }))}
-                    placeholder="Select category"
+                    options={categoryOptions}
+                    placeholder={categoriesLoading ? "Loading categories..." : "Select category"}
+                    disabled={categoriesLoading}
+                    renderOption={(option) => {
+                      if (option.icon && option.color) {
+                        const IconComponent = (Icons as any)[option.icon] || Icons.Tag
+                        return (
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-4 h-4 rounded flex items-center justify-center"
+                              style={{
+                                backgroundColor: option.color + '20',
+                                border: `1px solid ${option.color}40`
+                              }}
+                            >
+                              <IconComponent className="w-2.5 h-2.5" style={{ color: option.color }} />
+                            </div>
+                            <span>{option.label}</span>
+                          </div>
+                        )
+                      }
+                      return option.label
+                    }}
                   />
 
                   <FormFieldDNA
@@ -214,10 +262,9 @@ export function ServiceModal({
                 style={{ borderColor: COLORS.bronze + '33' }}
               >
                 <h3
-                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
+                  className="font-medium text-sm uppercase tracking-wider"
                   style={{ color: COLORS.bronze }}
                 >
-                  <DollarSign className="w-4 h-4" />
                   Pricing Configuration
                 </h3>
 
@@ -230,85 +277,8 @@ export function ServiceModal({
                     min={0}
                     step={0.01}
                     error={errors.price?.message}
-                    icon={DollarSign}
                     suffix="AED"
                     required
-                  />
-
-                  <FormFieldDNA
-                    type="number"
-                    label="Tax Rate"
-                    value={watch('tax_rate')?.toString() || '5'}
-                    onChange={value => setValue('tax_rate', parseFloat(value) || 0)}
-                    min={0}
-                    max={100}
-                    step={0.01}
-                    error={errors.tax_rate?.message}
-                    icon={Percent}
-                    suffix="%"
-                    helper="UAE VAT is 5%"
-                  />
-                </div>
-
-                {/* Price Preview */}
-                <div
-                  className="p-4 rounded-lg"
-                  style={{
-                    backgroundColor: COLORS.black + '30',
-                    border: '1px solid ' + COLORS.bronze + '33'
-                  }}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
-                      Total with Tax
-                    </span>
-                    <span className="text-lg font-semibold" style={{ color: COLORS.gold }}>
-                      AED {(watch('price') * (1 + (watch('tax_rate') || 0) / 100)).toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Commission */}
-              <div
-                className="space-y-4 pt-6 border-t"
-                style={{ borderColor: COLORS.bronze + '33' }}
-              >
-                <h3
-                  className="font-medium flex items-center gap-2 text-sm uppercase tracking-wider"
-                  style={{ color: COLORS.bronze }}
-                >
-                  <Percent className="w-4 h-4" />
-                  Commission Settings
-                </h3>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormFieldDNA
-                    type="select"
-                    label="Commission Type"
-                    value={watch('commission_type') || 'percent'}
-                    onChange={value => setValue('commission_type', value as 'flat' | 'percent')}
-                    options={[
-                      { value: 'percent', label: 'Percentage' },
-                      { value: 'flat', label: 'Flat Rate' }
-                    ]}
-                  />
-
-                  <FormFieldDNA
-                    type="number"
-                    label={`Commission Value`}
-                    value={watch('commission_value')?.toString() || '20'}
-                    onChange={value => setValue('commission_value', parseFloat(value) || 0)}
-                    min={0}
-                    max={commissionType === 'percent' ? 100 : undefined}
-                    step={0.01}
-                    error={errors.commission_value?.message}
-                    suffix={commissionType === 'percent' ? '%' : 'AED'}
-                    helper={
-                      commissionType === 'percent'
-                        ? 'Percentage of service price'
-                        : 'Fixed amount per service'
-                    }
                   />
                 </div>
               </div>

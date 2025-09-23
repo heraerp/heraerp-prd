@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useDebounce } from 'use-debounce'
 import {
-  listServices,
   createService,
   updateService,
   archiveService,
-  upsertDynamicData,
-  getDynamicData
+  deleteService,
+  upsertDynamicData
 } from '@/lib/playbook/services'
-import { ServiceEntity, ServiceWithDynamicData } from '@/schemas/service'
-import { toast } from 'sonner'
+import { ServiceWithDynamicData } from '@/schemas/service'
+import { showPlaybookError, showPlaybookSuccess } from '@/lib/playbook/error-toast'
+import { fetchSalonServices, getAuthToken } from '@/lib/api/salon'
 
 interface UseServicesPlaybookOptions {
   organizationId?: string
@@ -56,76 +56,98 @@ export function useServicesPlaybook({
     setError(null)
 
     try {
-      // Fetch services with new API format
-      const result = await listServices({
-        organization_id: organizationId,
-        branch_id: branchId || 'ALL',
-        q: debouncedQuery,
-        status,
-        category_id: categoryId,
-        sort,
-        limit: pageSize,
-        offset
-      })
-
-      if (!result.ok) {
-        setError(result.error || 'Failed to load services')
+      // Get auth token
+      const token = await getAuthToken()
+      if (!token) {
+        setError('Not authenticated')
         setItems([])
         setTotal(0)
         return
       }
 
-      const { items: services, total: totalCount } = result.data
-
-      // If no services, set empty and return
-      if (!services.length) {
-        setItems([])
-        setTotal(totalCount)
-        return
+      // Map sort parameter to server format
+      let serverSort: "name_asc" | "name_desc" | "updated_desc" | "updated_asc" | undefined
+      if (sort) {
+        const [field, direction] = sort.split(':')
+        if (field === 'name') {
+          serverSort = direction === 'asc' ? 'name_asc' : 'name_desc'
+        } else if (field === 'updated_at') {
+          serverSort = direction === 'asc' ? 'updated_asc' : 'updated_desc'
+        }
       }
 
-      // Get entity IDs
-      const entityIds = services.map((item: any) => item.id)
+      // Fetch services from Playbook server with server-side filtering
+      const params: Parameters<typeof fetchSalonServices>[0] = {
+        token,
+        limit: pageSize,
+        offset
+      }
+      
+      // Only add optional params if they have values
+      if (debouncedQuery) params.q = debouncedQuery
+      if (status !== 'all') params.status = status
+      if (categoryId) params.category = categoryId
+      if (branchId) params.branchId = branchId
+      if (serverSort) params.sort = serverSort
+      
+      const { items: rawServices, total_count } = await fetchSalonServices(params)
+      
+      console.log('Raw services from API:', rawServices)
 
-      // Fetch dynamic data in parallel - gracefully handle failures
-      const [priceData, taxData, commissionData] = await Promise.all([
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.PRICE.V1').catch(() => ({
-          ok: false,
-          data: {}
-        })),
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.TAX.V1').catch(() => ({
-          ok: false,
-          data: {}
-        })),
-        getDynamicData(entityIds, 'HERA.SALON.SERVICE.COMMISSION.V1').catch(() => ({
-          ok: false,
-          data: {}
-        }))
-      ])
+      // Server now handles all filtering including branch
+      // No client-side filtering needed anymore
+      let filteredServices = [...rawServices]
 
-      // Merge dynamic data with services
-      const enrichedItems = services.map((item: any) => {
-        const price = priceData.ok ? priceData.data[item.id] : null
-        const tax = taxData.ok ? taxData.data[item.id] : null
-        const commission = commissionData.ok ? commissionData.data[item.id] : null
-
-        return {
-          ...item,
-          price: price?.value,
-          currency: price?.currency || 'AED',
-          tax_rate: tax?.rate,
-          commission_type: commission?.type,
-          commission_value: commission?.value
-        } as ServiceWithDynamicData
+      // Map to ServiceWithDynamicData format expected by UI
+      const enrichedItems = filteredServices.map((service): ServiceWithDynamicData => {
+        // Extract values from dynamic data (no metadata fallback)
+        // Price is now a JSON object from service.base_price
+        const priceData = service.price as { amount?: number; currency_code?: string; tax_inclusive?: boolean } | null
+        const priceValue = priceData?.amount ?? service.base_fee ?? 0
+        const currency = priceData?.currency_code ?? 'AED'
+        
+        // Duration is now a direct number from service.duration_minutes
+        const duration = service.duration_minutes ?? 0
+        
+        // Category is a direct string value
+        const category = service.category ?? null
+        
+        const result: ServiceWithDynamicData = {
+          // Core entity fields
+          id: service.id,
+          organization_id: organizationId,
+          smart_code: service.smartCode,  // The salon.ts mapRowToService maps smart_code to smartCode
+          name: service.name,
+          status: service.status as 'active' | 'archived'
+        }
+        
+        // Add optional fields only if they have values
+        if (service.code) result.code = service.code
+        if (duration > 0) result.duration_mins = Number(duration)
+        if (category) result.category = category
+        if (priceValue > 0) result.price = Number(priceValue)
+        if (currency) result.currency = currency
+        if (service.created_at) result.created_at = service.created_at
+        if (service.updated_at) result.updated_at = service.updated_at
+        
+        // Always add metadata
+        result.metadata = {
+          ...(category ? { category } : {}),
+          ...(priceData ? { price: priceValue, currency: currency } : {})
+        }
+        
+        return result
       })
+      
+      console.log('Enriched items:', enrichedItems)
 
       setItems(enrichedItems)
-      setTotal(totalCount)
+      setTotal(total_count) // Use server-provided total count
     } catch (err) {
       console.error('Failed to fetch services:', err)
       const errorMessage = err instanceof Error ? err.message : 'Failed to load services'
       setError(errorMessage)
-      toast.error(errorMessage)
+      showPlaybookError(err instanceof Error ? err : errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -146,22 +168,22 @@ export function useServicesPlaybook({
       metadata?: any
       price?: number
       currency?: string
-      tax_rate?: number
-      commission_type?: 'flat' | 'percent'
-      commission_value?: number
     }) => {
       if (!organizationId) throw new Error('Organization ID required')
 
       try {
         // Create service entity
-        const serviceResult = await createService({
+        const createParams: Parameters<typeof createService>[0] = {
           organization_id: organizationId,
-          name: data.name,
-          code: data.code,
-          duration_mins: data.duration_mins,
-          category: data.category,
-          metadata: data.metadata
-        })
+          name: data.name
+        }
+        
+        if (data.code) createParams.code = data.code
+        if (data.duration_mins) createParams.duration_mins = data.duration_mins
+        if (data.category) createParams.category = data.category
+        if (data.metadata) createParams.metadata = data.metadata
+        
+        const serviceResult = await createService(createParams)
 
         if (!serviceResult.ok) {
           throw new Error(serviceResult.error || 'Failed to create service')
@@ -174,40 +196,34 @@ export function useServicesPlaybook({
 
         if (data.price !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.PRICE.V1', {
-              value: data.price,
-              currency: data.currency || 'AED',
-              effective_from: new Date().toISOString()
+            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.PRICE.v1', {
+              amount: data.price,
+              currency_code: data.currency || 'AED',
+              tax_inclusive: false
             })
           )
         }
 
-        if (data.tax_rate !== undefined) {
+        if (data.duration_mins !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.TAX.V1', {
-              rate: data.tax_rate
-            })
+            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.DURATION.v1', data.duration_mins)
           )
         }
 
-        if (data.commission_type && data.commission_value !== undefined) {
+        if (data.category) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.COMMISSION.V1', {
-              type: data.commission_type,
-              value: data.commission_value
-            })
+            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1', data.category)
           )
         }
 
         await Promise.all(dynamicPromises)
 
-        toast.success('Service created successfully')
+        // Success handled by parent component
         await fetchServices() // Refresh list
         return service
       } catch (error) {
         console.error('Failed to create service:', error)
-        const errorMessage = error instanceof Error ? error.message : 'Failed to create service'
-        toast.error(errorMessage)
+        showPlaybookError(error instanceof Error ? error : 'Failed to create service')
         throw error
       }
     },
@@ -226,15 +242,13 @@ export function useServicesPlaybook({
         metadata?: any
         price?: number
         currency?: string
-        tax_rate?: number
-        commission_type?: 'flat' | 'percent'
-        commission_value?: number
       }
     ) => {
       try {
         // Update service entity
-        const { price, currency, tax_rate, commission_type, commission_value, ...entityData } = data
+        const { price, currency, duration_mins, category, ...entityData } = data
 
+        // Update entity fields if there are any
         if (Object.keys(entityData).length > 0) {
           const updateResult = await updateService(id, entityData)
           if (!updateResult.ok) {
@@ -247,39 +261,33 @@ export function useServicesPlaybook({
 
         if (price !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.PRICE.V1', {
-              value: price,
-              currency: currency || 'AED',
-              effective_from: new Date().toISOString()
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.PRICE.v1', {
+              amount: price,
+              currency_code: currency || 'AED',
+              tax_inclusive: false
             })
           )
         }
 
-        if (tax_rate !== undefined) {
+        if (duration_mins !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.TAX.V1', {
-              rate: tax_rate
-            })
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.DURATION.v1', duration_mins)
           )
         }
 
-        if (commission_type && commission_value !== undefined) {
+        if (category !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.COMMISSION.V1', {
-              type: commission_type,
-              value: commission_value
-            })
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1', category)
           )
         }
 
         await Promise.all(dynamicPromises)
 
-        toast.success('Service updated successfully')
+        // Success handled by parent component
         await fetchServices() // Refresh list
       } catch (error) {
         console.error('Failed to update service:', error)
-        const errorMessage = error instanceof Error ? error.message : 'Failed to update service'
-        toast.error(errorMessage)
+        showPlaybookError(error instanceof Error ? error : 'Failed to update service')
         throw error
       }
     },
@@ -294,15 +302,13 @@ export function useServicesPlaybook({
         const failed = results.filter(r => !r.ok).length
 
         if (failed > 0) {
-          toast.warning(`Archived ${ids.length - failed} of ${ids.length} services`)
-        } else {
-          toast.success(`Archived ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+          throw new Error(`Failed to archive ${failed} of ${ids.length} services`)
         }
 
         await fetchServices()
       } catch (error) {
         console.error('Failed to archive services:', error)
-        toast.error('Failed to archive services')
+        showPlaybookError('Failed to archive services')
         throw error
       }
     },
@@ -316,15 +322,55 @@ export function useServicesPlaybook({
         const failed = results.filter(r => !r.ok).length
 
         if (failed > 0) {
-          toast.warning(`Restored ${ids.length - failed} of ${ids.length} services`)
-        } else {
-          toast.success(`Restored ${ids.length} service${ids.length === 1 ? '' : 's'}`)
+          throw new Error(`Failed to restore ${failed} of ${ids.length} services`)
         }
 
         await fetchServices()
       } catch (error) {
         console.error('Failed to restore services:', error)
-        toast.error('Failed to restore services')
+        showPlaybookError('Failed to restore services')
+        throw error
+      }
+    },
+    [fetchServices]
+  )
+
+  // Delete single service
+  const deleteOne = useCallback(
+    async (id: string) => {
+      try {
+        const result = await deleteService(id)
+        
+        if (!result.ok) {
+          throw new Error(result.error || 'Failed to delete service')
+        }
+        
+        // Success handled by parent component
+        await fetchServices() // Refresh list
+      } catch (error) {
+        console.error('Failed to delete service:', error)
+        showPlaybookError(error instanceof Error ? error : 'Failed to delete service')
+        throw error
+      }
+    },
+    [fetchServices]
+  )
+
+  // Delete multiple services
+  const deleteMany = useCallback(
+    async (ids: string[]) => {
+      try {
+        const results = await Promise.all(ids.map(id => deleteService(id)))
+        const failed = results.filter(r => !r.ok).length
+
+        if (failed > 0) {
+          throw new Error(`Failed to delete ${failed} of ${ids.length} services`)
+        }
+
+        await fetchServices()
+      } catch (error) {
+        console.error('Failed to delete services:', error)
+        showPlaybookError('Failed to delete services')
         throw error
       }
     },
@@ -339,8 +385,6 @@ export function useServicesPlaybook({
       'Category',
       'Duration (mins)',
       'Price',
-      'Tax Rate',
-      'Commission',
       'Status'
     ]
     const rows = items.map(item => [
@@ -349,10 +393,6 @@ export function useServicesPlaybook({
       item.category || '',
       item.duration_mins || '',
       item.price || '',
-      item.tax_rate ? `${item.tax_rate}%` : '',
-      item.commission_value
-        ? `${item.commission_value}${item.commission_type === 'percent' ? '%' : ` ${item.currency}`}`
-        : '',
       item.status
     ])
 
@@ -369,7 +409,7 @@ export function useServicesPlaybook({
     a.click()
     window.URL.revokeObjectURL(url)
 
-    toast.success('Services exported to CSV')
+    // Success handled by parent component
   }, [items])
 
   return {
@@ -379,8 +419,10 @@ export function useServicesPlaybook({
     error,
     createOne,
     updateOne,
+    deleteOne,
     archiveMany,
     restoreMany,
+    deleteMany,
     exportCSV,
     refetch: fetchServices
   }

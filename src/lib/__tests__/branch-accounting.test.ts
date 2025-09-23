@@ -89,7 +89,7 @@ describe('Branch Accounting', () => {
         data: { id: 'txn-123' }
       })
 
-      jest.mock('@/src/lib/universal-api-v2', () => ({
+      jest.mock('@/lib/universal-api-v2', () => ({
         universalApi: {
           setOrganizationId: jest.fn(),
           create: mockCreate
@@ -144,7 +144,7 @@ describe('Branch Accounting', () => {
           data: [{ id: 'branch-1', entity_name: 'Main Branch' }]
         })
 
-      jest.mock('@/src/lib/universal-api-v2', () => ({
+      jest.mock('@/lib/universal-api-v2', () => ({
         universalApi: {
           setOrganizationId: jest.fn(),
           read: mockRead
@@ -251,7 +251,7 @@ describe('Branch Accounting', () => {
         data: []
       })
 
-      jest.mock('@/src/lib/universal-api-v2', () => ({
+      jest.mock('@/lib/universal-api-v2', () => ({
         universalApi: {
           setOrganizationId: jest.fn(),
           read: mockRead

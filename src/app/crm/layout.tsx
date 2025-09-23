@@ -1,12 +1,12 @@
 'use client'
 
 import { CRMLayout } from '@/components/layout/crm-layout'
-import { MultiOrgAuthProvider } from '@/components/auth/MultiOrgAuthProvider'
+import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 
 export default function CRMRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <MultiOrgAuthProvider>
+    <HERAAuthProvider>
       <CRMLayout>{children}</CRMLayout>
-    </MultiOrgAuthProvider>
+    </HERAAuthProvider>
   )
 }

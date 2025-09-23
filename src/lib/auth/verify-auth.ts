@@ -1,39 +1,64 @@
 /**
- * Simple auth verification for API routes
+ * Auth verification for API routes
+ * Supports both demo sessions and real JWT tokens
  */
 
 import { NextRequest } from 'next/server'
+import { jwtService, type JWTPayload } from './jwt-service'
 
 export interface AuthUser {
   id: string
   email?: string
   organizationId?: string
+  roles?: string[]
+  permissions?: string[]
 }
 
 /**
  * Verify authentication from request headers
  */
 export async function verifyAuth(request: NextRequest): Promise<AuthUser | null> {
-  // Get auth token from headers
-  const authHeader = request.headers.get('authorization')
+  try {
+    // Get auth token from headers
+    const authHeader = request.headers.get('authorization')
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null
+    }
+
+    const token = authHeader.substring(7)
+
+    // Handle demo token
+    if (token === 'demo-token-salon-receptionist') {
+      return {
+        id: 'demo|salon-receptionist',
+        email: 'demo@herasalon.com',
+        organizationId: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon
+        roles: ['receptionist'],
+        permissions: ['read:services', 'write:services']
+      }
+    }
+
+    // Verify real JWT token
+    const validation = await jwtService.validateToken(token)
+    
+    if (!validation.valid || !validation.payload) {
+      return null
+    }
+
+    const payload = validation.payload
+
+    return {
+      id: payload.sub,
+      email: payload.email,
+      organizationId: payload.organization_id,
+      roles: payload.roles || [],
+      permissions: payload.permissions || []
+    }
+  } catch (error) {
+    console.error('Auth verification error:', error)
     return null
   }
-
-  const token = authHeader.substring(7)
-
-  // In a real implementation, this would verify the JWT token
-  // For now, return a mock user to allow the app to build
-  if (token) {
-    return {
-      id: 'mock-user-id',
-      email: 'user@example.com',
-      organizationId: request.headers.get('x-organization-id') || undefined
-    }
-  }
-
-  return null
 }
 
 /**

@@ -61,9 +61,18 @@ const [activeTab, setActiveTab] = useState('all')
 
 const [productionStatus, setProductionStatus] = useState<ProductionStatus>({ planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 })
 
-useEffect(() => { loadManufacturingOrders(  ), [])
+useEffect(() => { 
+  loadManufacturingOrders()
+}, [])
 
-const loadManufacturingOrders = async () => { try { setLoading(true) // Load manufacturing orders const ordersData = await universalApi.read({ table: 'universal_transactions', filter: { transaction_type: 'manufacturing_order' } })
+const loadManufacturingOrders = async () => { 
+  try { 
+    setLoading(true) 
+    // Load manufacturing orders 
+    const ordersData = await universalApi.read({ 
+      table: 'universal_transactions', 
+      filter: { transaction_type: 'manufacturing_order' } 
+    })
   const formattedOrders: ManufacturingOrder[] = [] const statusCounts: ProductionStatus = { planned: 0, in_progress: 0, quality_check: 0, completed: 0, total: 0 } for (const order of ordersData.data || []) { // Get product details const productData = await universalApi.read({ table: 'core_entities', filter: { id: order.reference_entity_id } })
   const product = productData.data?.[0] const metadata = order.metadata || {}
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // Default organization ID for development
 const DEFAULT_ORG_ID =
@@ -111,7 +111,7 @@ interface SalonSettingsProviderProps {
 }
 
 export function SalonSettingsProvider({ children }: SalonSettingsProviderProps) {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const organizationId = currentOrganization?.id || DEFAULT_ORG_ID
 
   const [settings, setSettings] = useState<SalonSettings | null>(null)

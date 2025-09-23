@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   getOrganizationContextFromURL,
   DEMO_ORGANIZATIONS,
@@ -31,7 +31,7 @@ export function useOrganizationContext(): {
   error: string | null
 } {
   const pathname = usePathname()
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
   const [organization, setOrganization] = useState<OrganizationInfo | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

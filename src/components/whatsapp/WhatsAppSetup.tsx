@@ -21,10 +21,10 @@ import {
   TrendingUp
 } from 'lucide-react'
 import { createWhatsAppClient } from '@/lib/whatsapp/whatsapp-client'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 export function WhatsAppSetup() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [setupComplete, setSetupComplete] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('')

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Package,
   Users,
@@ -53,7 +53,7 @@ const appDescriptions = {
 
 export default function OrganizationDashboard() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated  } = useHERAAuth()
   const [installedApps, setInstalledApps] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalUsers: 1,

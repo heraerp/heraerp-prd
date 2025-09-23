@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { CheckCircle, Circle, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 
 // Step Components
@@ -173,7 +173,7 @@ const WIZARD_STEPS = [
 ]
 
 export const BusinessSetupWizard: React.FC = () => {
-  const { currentOrganization, user } = useMultiOrgAuth()
+  const { currentOrganization, user  } = useHERAAuth()
   const [currentStep, setCurrentStep] = useState(0)
   const [wizardData, setWizardData] = useState<WizardData>({
     organizationBasics: {

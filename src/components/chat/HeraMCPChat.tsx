@@ -16,7 +16,7 @@ import {
   ChevronDown
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
@@ -78,7 +78,7 @@ export function HeraMCPChat({
   className,
   showDebugInfo = false
 }: HeraMCPChatProps) {
-  const { currentOrganization, organizations } = useMultiOrgAuth()
+  const { currentOrganization, organizations  } = useHERAAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
@@ -15,7 +15,7 @@ const HairTalkzOrgContext = createContext<HairTalkzOrgContextType | null>(null)
 
 export function HairTalkzOrgProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated  } = useHERAAuth()
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 
   // Use authenticated org if available, otherwise use demo org, fallback to Hair Talkz (Demo)

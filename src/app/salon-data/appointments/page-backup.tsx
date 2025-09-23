@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import type { Organization } from '@/types/salon.types'
 
 // Simple fallback component while we debug the import issue
@@ -26,7 +26,7 @@ function SimpleAppointmentDashboard({ organizationId }: { organizationId: string
 const DEFAULT_SALON_ORG_ID = '550e8400-e29b-41d4-a716-446655440000'
 
 export default function SalonAppointmentsPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)
   const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(true)
 

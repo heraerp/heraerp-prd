@@ -36,7 +36,7 @@ import {
   Zap,
   Hammer
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import Link from 'next/link'
 
 const BUSINESS_TYPES = [
@@ -50,7 +50,7 @@ const BUSINESS_TYPES = [
 
 export default function CreateOrganizationPage() {
   const router = useRouter()
-  const { createOrganization, checkSubdomainAvailability, isAuthenticated } = useMultiOrgAuth()
+  const { createOrganization, checkSubdomainAvailability, isAuthenticated  } = useHERAAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

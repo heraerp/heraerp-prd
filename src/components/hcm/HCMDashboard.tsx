@@ -23,7 +23,7 @@ import {
   Globe
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { formatCurrency } from '@/lib/utils'
 
@@ -50,7 +50,7 @@ interface DepartmentStats {
 }
 
 export function HCMDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const [metrics, setMetrics] = useState<HCMMetrics>({
     totalEmployees: 0,
     activeEmployees: 0,

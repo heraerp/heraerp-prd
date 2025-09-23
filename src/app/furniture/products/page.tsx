@@ -9,14 +9,14 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Package, ClipboardList, Ruler, Calculator, Plus } from 'lucide-react'
 import Link from 'next/link'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { getDemoOrganizationInfo } from '@/lib/demo-org-resolver'
 import { usePathname } from 'next/navigation'
 
 export default function FurnitureProducts() {
   const pathname = usePathname()
 
-  const { currentOrganization, isLoadingOrgs, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization, isLoadingOrgs, isAuthenticated  } = useHERAAuth()
 
   const [demoOrg, setDemoOrg] = useState<{ id: string; name: string } | null>(null)
 

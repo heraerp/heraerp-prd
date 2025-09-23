@@ -81,8 +81,9 @@ const sidebarItems: SidebarItem[] = [
     badgeColor: COLORS.emerald
   },
   { title: 'POS', href: '/salon/pos2', icon: CreditCard },
-  { title: 'Clients', href: '/salon/customers', icon: Users },
+  { title: 'Customers', href: '/salon/customers', icon: Users },
   { title: 'Services', href: '/salon/services', icon: Scissors },
+  { title: 'Products', href: '/salon/products', icon: ShoppingBag },
   { title: 'Inventory', href: '/salon/inventory', icon: Package },
   {
     title: 'WhatsApp',
@@ -307,8 +308,10 @@ function AppsModal({
 }
 
 export default function SalonDarkSidebar({
+  items,
   extraItems = [] as SidebarItem[]
 }: {
+  items?: SidebarItem[]
   extraItems?: SidebarItem[]
 }) {
   const pathname = usePathname()
@@ -320,6 +323,9 @@ export default function SalonDarkSidebar({
     if (href !== '/salon-data' && pathname.startsWith(href)) return true
     return false
   }
+  
+  // Use provided items or default sidebar items
+  const navigationItems = items || sidebarItems
 
   return (
     <div
@@ -366,7 +372,7 @@ export default function SalonDarkSidebar({
       {/* Navigation Items */}
       <nav className="flex-1 overflow-y-auto py-1">
         <div className="space-y-0">
-          {[...sidebarItems, ...extraItems].map(item => {
+          {[...navigationItems, ...extraItems].map(item => {
             const Icon = item.icon
             const active = isActive(item.href)
             // Use full titles now that we have more space

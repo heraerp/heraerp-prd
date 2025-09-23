@@ -8,8 +8,8 @@ import { useAppointmentsPlaybook } from '../useAppointmentsPlaybook'
 import * as PlaybookEntities from '@/lib/playbook/entities'
 
 // Mock the dependencies
-jest.mock('@/components/auth/MultiOrgAuthProvider', () => ({
-  useMultiOrgAuth: jest.fn(() => ({
+jest.mock('@/components/auth/HERAAuthProvider', () => ({
+  useHERAAuth: jest.fn(() => ({
     currentOrganization: { id: 'test-org-123' },
     isAuthenticated: true,
     isLoading: false

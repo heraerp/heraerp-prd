@@ -7,7 +7,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Calculator,
   FileText,
@@ -26,7 +26,7 @@ import {
 
 export default function FinancialDashboard() {
   const router = useRouter()
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
 
   const financialModules = [
     {

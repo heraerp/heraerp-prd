@@ -44,7 +44,7 @@ import {
   Bot
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { WhatsAppDNA, WHATSAPP_SMART_CODES } from '@/lib/dna/whatsapp/whatsapp-dna'
 
 interface Conversation {
@@ -85,7 +85,7 @@ export function WhatsAppManager({
   organizationId,
   industryType = 'generic'
 }: WhatsAppManagerProps) {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<Message[]>([])

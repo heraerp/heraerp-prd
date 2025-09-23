@@ -1,11 +1,7 @@
-import { SalonDemoAuth } from '@/components/salon/auth/SalonDemoAuth'
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Hair Talkz Salon - Login',
-  description: 'Access the Hair Talkz salon management system with role-based permissions'
-}
+import { HairTalkzAuthSimple } from '@/components/salon/auth/HairTalkzAuthSimple'
 
 export default function SalonAuthPage() {
-  return <SalonDemoAuth />
+  return <HairTalkzAuthSimple />
 }

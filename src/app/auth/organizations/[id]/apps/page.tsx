@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import {
   Package,
   Store,
@@ -83,7 +83,7 @@ const AVAILABLE_APPS = [
 
 export default function OrganizationAppsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const { organizations, isAuthenticated, refreshOrganizations, session } = useMultiOrgAuth()
+  const { organizations, isAuthenticated, refreshOrganizations, session  } = useHERAAuth()
   const [selectedApps, setSelectedApps] = useState<string[]>([])
   const [isInstalling, setIsInstalling] = useState(false)
   const [error, setError] = useState('')

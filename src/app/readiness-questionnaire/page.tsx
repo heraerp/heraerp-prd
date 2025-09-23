@@ -38,12 +38,12 @@ import type {
   QuestionnaireSession,
   SessionAPI
 } from '@/modules/readiness-questionnaire/types'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useToast } from '@/hooks/use-toast'
 
 export default function ReadinessQuestionnairePage() {
   const router = useRouter()
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const { toast } = useToast()
   const [showWizard, setShowWizard] = useState(false)
   const [template, setTemplate] = useState<QuestionnaireTemplate | null>(null)

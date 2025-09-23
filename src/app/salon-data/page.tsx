@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { salonApiClient } from '@/lib/salon/salon-api-client'
 // Import the glassmorphism modal with WSAG effects
 import { BookAppointmentModalGlass } from '@/components/salon/BookAppointmentModalGlass'
@@ -66,7 +66,7 @@ import { cn } from '@/lib/utils'
 const DEFAULT_SALON_ORG_ID = 'e3a9ff9e-bb83-43a8-b062-b85e7a2b4258'
 
 export default function SalonModernDashboard() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [refreshing, setRefreshing] = useState(false)
   const [isBookingOpen, setIsBookingOpen] = useState(false)
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)

@@ -7,7 +7,7 @@ import React, { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { UCRDeploymentManager } from '@/components/salon/UCRDeploymentManager'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Rocket, Loader2 } from 'lucide-react'
@@ -16,7 +16,7 @@ import Link from 'next/link'
 function DeploymentContent() {
   const searchParams = useSearchParams()
   const ruleId = searchParams.get('rule')
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const { getRule } = useUCRMCP()
   const [rule, setRule] = useState<any>(null)
   const [loading, setLoading] = useState(true)

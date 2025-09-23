@@ -5,14 +5,14 @@ export const dynamic = 'force-dynamic'
 
 import React, { useEffect, useState } from 'react'
 import { LeaveManagementDashboard } from '@/components/salon/leave/LeaveManagementDashboard'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import type { Organization } from '@/types/salon.types'
 
 // Default organization ID for salon - matches existing demo data
 const DEFAULT_SALON_ORG_ID = '550e8400-e29b-41d4-a716-446655440000'
 
 export default function SalonLeaveManagementPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [subdomainOrg, setSubdomainOrg] = useState<Organization | null>(null)
   const [loadingSubdomainOrg, setLoadingSubdomainOrg] = useState(true)
 

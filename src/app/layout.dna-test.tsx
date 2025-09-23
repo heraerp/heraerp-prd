@@ -3,7 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
 import { ThemeProviderDNA } from '@/lib/dna/theme/theme-provider-dna'
-import { MultiOrgAuthProvider } from '@/components/auth/MultiOrgAuthProvider'
+import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'
 import { ToastProvider } from '@/components/ui/use-toast'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
@@ -53,11 +53,11 @@ export default function RootLayout({
           {/* Add DNA theme provider as inner wrapper during migration */}
           <ThemeProviderDNA defaultTheme="ice-cream-enterprise" defaultMode="system">
             <QueryProvider>
-              <MultiOrgAuthProvider>
+              <HERAAuthProvider>
                 <DemoAuthHandler>
                   <ToastProvider>{children}</ToastProvider>
                 </DemoAuthHandler>
-              </MultiOrgAuthProvider>
+              </HERAAuthProvider>
             </QueryProvider>
           </ThemeProviderDNA>
         </HeraThemeProvider>

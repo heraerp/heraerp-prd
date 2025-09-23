@@ -56,7 +56,7 @@ import {
   Palette
 } from 'lucide-react'
 
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 
 // TypeScript Interfaces for HERA Calendar
 export interface HeraDnaCalendarProps {
@@ -205,7 +205,7 @@ export function HeraDnaUniversalCalendar({
   onEventDelete,
   onAvailabilityCheck
 }: HeraDnaCalendarProps) {
-  const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated  } = useHERAAuth()
 
   // State management
   const [currentView, setCurrentView] = useState(initialView)

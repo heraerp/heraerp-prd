@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { ContextualSidebar } from './ContextualSidebar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -47,7 +47,7 @@ export function JobsStyleLayout({
   showSidebar = true,
   headerActions
 }: JobsStyleLayoutProps) {
-  const { user, organization, logout } = useMultiOrgAuth()
+  const { user, organization, logout  } = useHERAAuth()
   const pathname = usePathname()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [darkMode, setDarkMode] = useState(false)

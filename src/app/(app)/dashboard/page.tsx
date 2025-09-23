@@ -8,7 +8,7 @@
 
 import React from 'react'
 import { Loader2 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { salonClasses } from '@/lib/theme/salon-theme'
 import { Guard } from '@/lib/auth/guard'
 import { KpiCards } from '@/components/dashboard/KpiCards'
@@ -22,7 +22,7 @@ import { DemoOrgDebug } from '@/components/debug/DemoOrgDebug'
 import { DataDebugger } from '@/components/debug/DataDebugger'
 
 export default function SalonDashboard() {
-  const { currentOrganization, isLoading, isLoadingOrgs } = useMultiOrgAuth()
+  const { currentOrganization, isLoading, isLoadingOrgs  } = useHERAAuth()
   const contextLoading = isLoading || isLoadingOrgs
 
   // Use the current organization or fallback to the demo salon org

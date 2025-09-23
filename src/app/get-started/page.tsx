@@ -23,12 +23,12 @@ import {
   Zap,
   Globe
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import Link from 'next/link'
 
 export default function GetStartedPage() {
   const router = useRouter()
-  const { login, register, isAuthenticated } = useMultiOrgAuth()
+  const { login, register, isAuthenticated  } = useHERAAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

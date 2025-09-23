@@ -19,7 +19,7 @@ import {
   Users
 } from 'lucide-react'
 import { universalApi } from '@/lib/universal-api'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { formatCurrency } from '@/lib/utils'
 
@@ -35,7 +35,7 @@ interface P2PMetrics {
 }
 
 export function P2PDashboard() {
-  const { currentOrganization, isAuthenticated, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
   const [metrics, setMetrics] = useState<P2PMetrics>({
     activeSuppliers: 0,
     pendingPRs: 0,

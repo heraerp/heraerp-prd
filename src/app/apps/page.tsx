@@ -32,7 +32,7 @@ import {
   AlertCircle,
   Snowflake
 } from 'lucide-react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import Link from 'next/link'
 
 interface AppCard {
@@ -193,7 +193,7 @@ const apps: AppCard[] = [
 
 export default function AppsPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { isAuthenticated, isLoading, currentOrganization, contextLoading  } = useHERAAuth()
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'industry' | 'universal' | 'ai'>(
     'all'
   )

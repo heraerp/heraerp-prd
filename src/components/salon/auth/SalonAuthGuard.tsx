@@ -20,7 +20,6 @@ const SALON_ORG_ID = '0fd09e31-d257-4329-97eb-7d7f522ed6f0'
 // Role-based route permissions
 const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/salon/dashboard': ['Owner', 'Administrator'],
-  '/salon/pos': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/pos2': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/customers': ['Owner', 'Receptionist', 'Administrator'],
   '/salon/appointments': ['Owner', 'Receptionist', 'Administrator'],
@@ -184,7 +183,7 @@ export function SalonAuthGuard({
                 onClick={() => {
                   const roleRedirects: Record<string, string> = {
                     Owner: '/salon/dashboard',
-                    Receptionist: '/salon/pos',
+                    Receptionist: '/salon/pos2',
                     Accountant: '/salon/finance',
                     Administrator: '/salon/settings'
                   }

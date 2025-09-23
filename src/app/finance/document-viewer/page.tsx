@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -126,8 +126,7 @@ interface SearchCriteria {
 
 export default function FinancialDocumentViewer() {
   const router = useRouter()
-  const { user, organizations, currentOrganization, isAuthenticated, contextLoading } =
-    useMultiOrgAuth()
+  const { user, organizations, currentOrganization, isAuthenticated, contextLoading  } = useHERAAuth()
 
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
     organizationId: currentOrganization?.id || '',

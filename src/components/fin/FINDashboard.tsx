@@ -45,7 +45,7 @@ import {
 } from 'lucide-react'
 import { formatDate } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface FinancialSummary {
@@ -89,7 +89,7 @@ interface Period {
 }
 
 export default function FINDashboard() {
-  const { currentOrganization, isAuthenticated, isLoading: authLoading } = useMultiOrgAuth()
+  const { currentOrganization, isAuthenticated, isLoading: authLoading  } = useHERAAuth()
   const [loading, setLoading] = useState(true)
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null)
   const [accountBalances, setAccountBalances] = useState<AccountBalance[]>([])

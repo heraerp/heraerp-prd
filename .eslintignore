@@ -1,0 +1,12 @@
+node_modules/
+.next/
+dist/
+build/
+coverage/
+*.d.ts
+src/components_old/
+backups/
+app.backup/
+tests/
+src/components/furniture/
+src/app/furniture/

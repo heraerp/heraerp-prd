@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import { PaymentWhatsAppActions } from '@/components/salon/whatsapp/PaymentWhatsAppActions'
@@ -276,7 +276,7 @@ const calculateTotal = (subtotal: number, tax: number, discount: number) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function DubaiPOSSystem() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [organizationId, setOrganizationId] = useState<string>('')
 
   // POS State

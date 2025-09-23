@@ -7,7 +7,7 @@ import React, { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { UCRTemplateCustomizer } from '@/components/salon/UCRTemplateCustomizer'
 import { useUCRMCP } from '@/lib/hooks/use-ucr-mcp'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,7 @@ function CustomizeTemplateContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const templateId = searchParams.get('template')
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const { listTemplates, cloneTemplate, loading } = useUCRMCP()
   const { toast } = useToast()
   const [template, setTemplate] = useState<any>(null)

@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { RulesList, RuleEditor, RulePreview } from '@/components/admin/config'
 import { RulesListMCP } from '@/components/admin/config/RulesListMCP'
 import { TestingSummaryCard } from '@/components/salon/TestingSummaryCard'
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 
 export default function SalonConfigurationPage() {
-  const { currentOrganization } = useMultiOrgAuth()
+  const { currentOrganization  } = useHERAAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const organizationId = currentOrganization?.id || 'demo-salon'
 

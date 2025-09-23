@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -68,7 +68,7 @@ interface UnifiedView {
 }
 
 export function UnifiedRestaurantInterface() {
-  const { user, organization, logout } = useMultiOrgAuth()
+  const { user, organization, logout  } = useHERAAuth()
   const [selectedView, setSelectedView] = useState('overview')
   const [searchQuery, setSearchQuery] = useState('')
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false)

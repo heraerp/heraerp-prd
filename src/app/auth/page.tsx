@@ -5,12 +5,12 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Loader2 } from 'lucide-react'
 
 export default function AuthHubPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading, organizations } = useMultiOrgAuth()
+  const { isAuthenticated, isLoading, organizations  } = useHERAAuth()
 
   useEffect(() => {
     if (!isLoading) {

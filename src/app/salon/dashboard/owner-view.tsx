@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/useToast'
+import { AnalyticsSection } from '@/components/salon/dashboard/AnalyticsSection'
 
 interface MetricCardProps {
   title: string
@@ -548,6 +549,9 @@ export function OwnerDashboard() {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Analytics Section */}
+      <AnalyticsSection organizationId={organizationId} />
     </div>
   )
 }

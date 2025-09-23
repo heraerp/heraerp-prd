@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { useUserContext } from '@/hooks/useUserContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -56,7 +56,7 @@ interface SalonBudgetData {
 
 export default function SalonBudgetingPage() {
   const router = useRouter()
-  const { isAuthenticated } = useMultiOrgAuth()
+  const { isAuthenticated  } = useHERAAuth()
   const { organizationId, loading: contextLoading } = useUserContext()
   const [budgetData, setBudgetData] = useState<SalonBudgetData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
