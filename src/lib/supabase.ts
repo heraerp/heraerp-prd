@@ -27,7 +27,7 @@ export const getSupabase = () => {
         autoRefreshToken: true,
         detectSessionInUrl: true,
         storageKey: 'hera-supabase-auth', // Consistent storage key
-        flowType: 'implicit' // Disable automatic session recovery
+        flowType: 'pkce' // Enable proper session recovery
       },
       global: {
         headers: {

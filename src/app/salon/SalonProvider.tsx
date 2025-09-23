@@ -39,11 +39,31 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       setOrgId(detectedOrgId)
     }
     
+    // Refresh session on mount
+    const refreshSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('Session refresh error:', error)
+        }
+        if (session) {
+          console.log('Session refreshed:', session.user.email)
+        }
+      } catch (err) {
+        console.error('Failed to refresh session:', err)
+      }
+    }
+    
+    refreshSession()
     loadContext()
     
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, { 
+        hasSession: !!session, 
+        userEmail: session?.user?.email,
+        metadata: session?.user?.user_metadata
+      })
       
       if (event === 'SIGNED_IN' && session) {
         // Reload context when user signs in
@@ -89,8 +109,33 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       
       // If no session and not on auth page, redirect
       if (!session?.user && !isAuthPage) {
-        window.location.href = '/salon/auth'
-        return
+        // Check localStorage for stored auth data first
+        const storedRole = localStorage.getItem('salonRole')
+        const storedOrgId = localStorage.getItem('organizationId')
+        
+        // If we have stored auth data, don't immediately redirect - give session time to recover
+        if (storedRole && storedOrgId) {
+          console.log('Session not found but localStorage has auth data - waiting for recovery...')
+          // Set a temporary loading state
+          setContext(prev => ({ ...prev, isLoading: true }))
+          
+          // Give Supabase a chance to recover the session
+          setTimeout(async () => {
+            const { data: { session: recoveredSession } } = await supabase.auth.getSession()
+            if (!recoveredSession?.user) {
+              // Now redirect if session still not recovered
+              window.location.href = '/salon/auth'
+            } else {
+              // Session recovered, reload context
+              loadContext()
+            }
+          }, 1000)
+          return
+        } else {
+          // No stored auth data, redirect immediately
+          window.location.href = '/salon/auth'
+          return
+        }
       }
       
       // If we're on auth page without a session, just set loading to false
