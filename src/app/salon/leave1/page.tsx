@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Calendar, Users, FileText, Settings, Plus, Search, Download } from 'lucide-react'
+import { Calendar, Users, FileText, Settings, Plus, Search, Download, ChevronLeft, User } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
@@ -185,6 +185,19 @@ export default function LeaveManagementPage() {
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Back to Staff */}
+              <Button
+                onClick={() => window.location.href = '/salon/staff'}
+                variant="outline"
+                className="border text-sm px-3 py-2"
+                style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
+              >
+                <ChevronLeft size={14} className="mr-1" />
+                <User size={14} className="mr-1" />
+                <span className="hidden sm:inline">Back to Staff</span>
+                <span className="sm:hidden">Staff</span>
+              </Button>
+
               {/* Branch Selector */}
               <select
                 className="px-3 py-1.5 rounded-lg bg-transparent border text-sm"

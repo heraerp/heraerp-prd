@@ -16,7 +16,9 @@ import {
   Users,
   Search,
   Edit,
-  Trash2
+  Trash2,
+  Palmtree,
+  ChevronRight
 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -276,20 +278,34 @@ function StaffContent() {
             </h1>
             <p style={{ color: COLORS.bronze }}>Manage your salon team members</p>
           </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                  color: COLORS.black,
-                  border: 'none'
-                }}
-                className="hover:opacity-90"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Staff Member
-              </Button>
-            </DialogTrigger>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => window.location.href = '/salon/leave1'}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
+                color: COLORS.champagne,
+                border: 'none'
+              }}
+              className="hover:opacity-90"
+            >
+              <Palmtree className="w-4 h-4 mr-2" />
+              Manage Leave
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  style={{
+                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                    color: COLORS.black,
+                    border: 'none'
+                  }}
+                  className="hover:opacity-90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Staff Member
+                </Button>
+              </DialogTrigger>
             <DialogContent
               style={{
                 backgroundColor: COLORS.charcoal,
@@ -561,9 +577,25 @@ function StaffContent() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg" style={{ color: COLORS.champagne }}>
-                        {member.entity_name}
-                      </h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-lg" style={{ color: COLORS.champagne }}>
+                          {member.entity_name}
+                        </h3>
+                        {member.dynamic_data?.on_leave && (
+                          <Badge
+                            className="ml-2"
+                            style={{
+                              backgroundColor: `${COLORS.rose}20`,
+                              color: COLORS.rose,
+                              border: `1px solid ${COLORS.rose}40`,
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            <Palmtree className="w-3 h-3 mr-1" />
+                            On Leave
+                          </Badge>
+                        )}
+                      </div>
                       <Badge
                         className="mt-1"
                         style={{
