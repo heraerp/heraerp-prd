@@ -16,7 +16,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useMultiOrgAuth } from '@/components/auth/MultiOrgAuthProvider'
+import { RealPnLReport } from '@/components/finance/RealPnLReport'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api'
 import { handleError } from '@/lib/salon/error-handler'
 import type { BranchType, PeriodType, ExportFormat } from '@/types/salon.types'
@@ -403,7 +404,7 @@ const getSectionColor = (section: string) => {
 // ----------------------------- Main Component ------------------------------------
 
 export default function SalonProfitLossPage() {
-  const { currentOrganization, contextLoading } = useMultiOrgAuth()
+  const { currentOrganization, contextLoading  } = useHERAAuth()
   const [loading, setLoading] = useState(false)
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('month')
   const [selectedBranch, setSelectedBranch] = useState<BranchType>('all')
@@ -613,8 +614,17 @@ export default function SalonProfitLossPage() {
           </CardContent>
         </Card>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Data Source Tabs */}
+        <Tabs defaultValue="mock" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+            <TabsTrigger value="mock">Mock Data (Demo)</TabsTrigger>
+            <TabsTrigger value="real">Real Data (Live)</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="mock" className="space-y-6">
+            {/* Mock Data View */}
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-background dark:bg-muted border-border dark:border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -846,8 +856,8 @@ export default function SalonProfitLossPage() {
           </CardContent>
         </Card>
 
-        {/* Report Metadata */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
+            {/* Report Metadata */}
+            <div className="flex items-center justify-between text-sm text-muted-foreground dark:text-muted-foreground">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Building className="w-4 h-4" />
@@ -868,6 +878,20 @@ export default function SalonProfitLossPage() {
             </Badge>
           </div>
         </div>
+      </div>
+    </TabsContent>
+          
+          <TabsContent value="real" className="space-y-6">
+            {/* Real Data View */}
+            <RealPnLReport
+              organizationId={organizationId}
+              startDate={periodStart}
+              endDate={periodEnd}
+              branchId={selectedBranch === 'all' ? undefined : selectedBranch}
+              currency="AED"
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )

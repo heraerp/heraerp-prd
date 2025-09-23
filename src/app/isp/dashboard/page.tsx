@@ -219,7 +219,7 @@ export default function ISPDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             ISP Dashboard
           </h1>
           <p className="text-foreground/60 mt-1">Real-time performance metrics and analytics</p>
@@ -303,7 +303,7 @@ export default function ISPDashboard() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none z-0" />
             <div className="relative z-10 bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground">
+                <h2 className="text-xl font-semibold text-[#F5E6C8]">
                   Revenue & Subscriber Growth
                 </h2>
                 <div className="flex items-center space-x-4 text-xs">
@@ -373,7 +373,7 @@ export default function ISPDashboard() {
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#E91E63] to-[#C2185B] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-6">Revenue Streams</h2>
+              <h2 className="text-xl font-semibold text-[#F5E6C8] mb-6">Revenue Streams</h2>
 
               <div className="w-full h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -428,7 +428,7 @@ export default function ISPDashboard() {
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#FFD700] to-[#0099CC] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-6">
+            <h2 className="text-xl font-semibold text-[#F5E6C8] mb-6">
               Regional Network Performance
             </h2>
 
@@ -464,7 +464,7 @@ export default function ISPDashboard() {
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0049B7] to-[#00DDFF] rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-foreground">Agent Network</h2>
+              <h2 className="text-xl font-semibold text-[#F5E6C8]">Agent Network</h2>
               <span className="text-sm text-[#fff685] font-medium">3,000+ Agents</span>
             </div>
 
@@ -503,7 +503,7 @@ export default function ISPDashboard() {
               <AlertCircle className="h-6 w-6 text-foreground" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-foreground mb-1">IPO Readiness Update</h3>
+              <h3 className="text-lg font-semibold text-[#F5E6C8] mb-1">IPO Readiness Update</h3>
               <p className="text-foreground/60 text-sm mb-3">
                 Your SEBI compliance score has improved to 8.5/10. Complete the pending audit
                 requirements to reach the target score of 9.0.

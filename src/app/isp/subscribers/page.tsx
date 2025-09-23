@@ -362,7 +362,7 @@ export default function SubscribersPage() {
         )
       case 'inactive':
         return (
-          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-gray-9000/10 border border-gray-500/20">
+          <div className="flex items-center space-x-1 px-3 py-1 rounded-full bg-muted/10 border border-border/20">
             <XCircle className="h-3 w-3 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">Inactive</span>
           </div>
@@ -397,10 +397,10 @@ export default function SubscribersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             Subscribers
           </h1>
-          <p className="text-foreground/60 mt-1">Manage your broadband and cable TV subscribers</p>
+          <p className="text-slate-400 mt-1">Manage your broadband and cable TV subscribers</p>
         </div>
 
         <button
@@ -419,11 +419,11 @@ export default function SubscribersPage() {
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-foreground/60 text-sm">Total Subscribers</p>
-                <p className="text-2xl font-bold text-foreground mt-1">45,832</p>
+                <p className="text-slate-400 text-sm">Total Subscribers</p>
+                <p className="text-2xl font-bold text-white mt-1">45,832</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg">
-                <Users className="h-6 w-6 text-foreground" />
+                <Users className="h-6 w-6 text-white" />
               </div>
             </div>
           </div>
@@ -434,11 +434,11 @@ export default function SubscribersPage() {
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-foreground/60 text-sm">Active</p>
-                <p className="text-2xl font-bold text-foreground mt-1">42,156</p>
+                <p className="text-slate-400 text-sm">Active</p>
+                <p className="text-2xl font-bold text-white mt-1">42,156</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-emerald-500 to-green-500 rounded-lg">
-                <CheckCircle className="h-6 w-6 text-foreground" />
+                <CheckCircle className="h-6 w-6 text-white" />
               </div>
             </div>
           </div>
@@ -449,8 +449,8 @@ export default function SubscribersPage() {
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-foreground/60 text-sm">New This Month</p>
-                <p className="text-2xl font-bold text-foreground mt-1">1,245</p>
+                <p className="text-slate-400 text-sm">New This Month</p>
+                <p className="text-2xl font-bold text-white mt-1">1,245</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#FFD700] to-[#0099CC] rounded-lg">
                 <TrendingUp className="h-6 w-6 text-[#0049B7]" />
@@ -464,11 +464,11 @@ export default function SubscribersPage() {
           <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-foreground/60 text-sm">Churn Rate</p>
-                <p className="text-2xl font-bold text-foreground mt-1">2.3%</p>
+                <p className="text-slate-400 text-sm">Churn Rate</p>
+                <p className="text-2xl font-bold text-white mt-1">2.3%</p>
               </div>
               <div className="p-2 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-lg">
-                <AlertCircle className="h-6 w-6 text-foreground" />
+                <AlertCircle className="h-6 w-6 text-white" />
               </div>
             </div>
           </div>
@@ -482,8 +482,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('all')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'all'
-                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-foreground shadow-lg shadow-[#0099CC]/40'
-                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
+                ? 'bg-gradient-to-r from-[#0099CC] to-[#0049B7] text-white shadow-lg shadow-[#0099CC]/40'
+                : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white'
             }`}
           >
             All
@@ -492,8 +492,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('active')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'active'
-                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-foreground shadow-lg shadow-emerald-500/40'
-                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
+                ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/40'
+                : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white'
             }`}
           >
             Active
@@ -502,8 +502,8 @@ export default function SubscribersPage() {
             onClick={() => setSelectedFilter('suspended')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
               selectedFilter === 'suspended'
-                ? 'bg-gradient-to-r from-[#E91E63] to-[#C2185B] text-foreground shadow-lg shadow-[#E91E63]/40'
-                : 'bg-background/50 text-foreground/60 hover:bg-background/20 hover:text-foreground'
+                ? 'bg-gradient-to-r from-[#E91E63] to-[#C2185B] text-white shadow-lg shadow-[#E91E63]/40'
+                : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white'
             }`}
           >
             Suspended
@@ -512,19 +512,19 @@ export default function SubscribersPage() {
 
         <div className="flex items-center space-x-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-foreground/40" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
             <input
               type="text"
               placeholder="Search subscribers..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-background/50 border border-border/10 rounded-lg text-foreground placeholder-white/40 focus:outline-none focus:border-[#0099CC]/50 focus:bg-background/10 transition-all duration-200"
+              className="pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#0099CC] focus:bg-slate-800 transition-all duration-200"
             />
           </div>
-          <button className="p-2 bg-background/50 border border-border/10 rounded-lg text-foreground/60 hover:bg-background/20 hover:text-foreground transition-all duration-200">
+          <button className="p-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all duration-200">
             <Filter className="h-5 w-5" />
           </button>
-          <button className="p-2 bg-background/50 border border-border/10 rounded-lg text-foreground/60 hover:bg-background/20 hover:text-foreground transition-all duration-200">
+          <button className="p-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-400 hover:bg-slate-700/50 hover:text-white transition-all duration-200">
             <Download className="h-5 w-5" />
           </button>
         </div>

@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Animation utilities for ISP module */
+@layer utilities {
+  .animate-reverse {
+    animation-direction: reverse;
+  }
+  .animate-delay-150 {
+    animation-delay: 150ms;
+  }
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+}
+
 /* Import Salon Theme Styles */
 @import '../styles/salon-theme.css';
 
@@ -2232,6 +2245,38 @@ html {
 /* ===============================================
    END HERA DNA DROPDOWN VISIBILITY FIX
    =============================================== */
+
+/* ===============================================
+   HAIRTALKZ LUXE SELECT DROPDOWN STYLING
+   =============================================== */
+.hairtalkz-select-content,
+.hairtalkz-select-content .hera-select-content {
+  background-color: #232323 !important; /* COLORS.charcoalLight */
+  border: 1px solid rgba(140, 120, 83, 0.5) !important; /* COLORS.bronze with 50% opacity */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+  color: #F5E6C8 !important; /* COLORS.champagne */
+}
+
+.hairtalkz-select-content [role="option"],
+.hairtalkz-select-content .hera-select-item {
+  background-color: transparent !important;
+  color: #F5E6C8 !important; /* COLORS.champagne */
+  transition: all 150ms ease-in-out !important;
+}
+
+.hairtalkz-select-content [role="option"]:hover,
+.hairtalkz-select-content [role="option"]:focus,
+.hairtalkz-select-content .hera-select-item:hover,
+.hairtalkz-select-content .hera-select-item:focus {
+  background-color: rgba(212, 175, 55, 0.1) !important; /* COLORS.gold with 10% opacity */
+  color: #D4AF37 !important; /* COLORS.gold */
+}
+
+.hairtalkz-select-content [role="option"][data-state="checked"],
+.hairtalkz-select-content .hera-select-item[data-state="checked"] {
+  background-color: rgba(212, 175, 55, 0.2) !important; /* COLORS.gold with 20% opacity */
+  color: #D4AF37 !important; /* COLORS.gold */
+}
 
 /* ===============================================
    HERA DARK INPUT FIELDS - LEAVE MANAGEMENT

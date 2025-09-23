@@ -508,7 +508,7 @@ export default function NetworkPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             Network Operations Center
           </h1>
           <p className="text-foreground/60 mt-1">
@@ -583,7 +583,7 @@ export default function NetworkPage() {
                     <Map className="h-5 w-5 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground">{region.name}</h3>
+                    <h3 className="text-lg font-semibold text-[#F5E6C8]">{region.name}</h3>
                     <p className="text-xs text-foreground/60">Region {region.code}</p>
                   </div>
                 </div>

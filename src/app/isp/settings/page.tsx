@@ -729,7 +729,7 @@ export default function SettingsPage() {
       {/* Sidebar Navigation */}
       <div className="w-64 space-y-2">
         <div className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-4">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Configuration</h2>
+          <h2 className="text-lg font-semibold text-[#F5E6C8] mb-4">Configuration</h2>
           <nav className="space-y-1">
             {configSections.map(section => {
               const Icon = section.icon
@@ -757,7 +757,7 @@ export default function SettingsPage() {
         {/* Save Status */}
         <div className="bg-background/5 backdrop-blur-xl border border-border/10 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-foreground">Save Status</h3>
+            <h3 className="text-sm font-medium text-[#F5E6C8]">Save Status</h3>
             {hasChanges && <span className="text-xs text-yellow-400">Unsaved changes</span>}
           </div>
 
@@ -806,7 +806,7 @@ export default function SettingsPage() {
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${activeConfig.color}`}>
                       <activeConfig.icon className="h-6 w-6 text-foreground" />
                     </div>
-                    <h1 className="text-2xl font-bold text-foreground">{activeConfig.title}</h1>
+                    <h1 className="text-2xl font-bold text-[#F5E6C8]">{activeConfig.title}</h1>
                   </div>
                   <p className="text-foreground/60">{activeConfig.description}</p>
                 </div>

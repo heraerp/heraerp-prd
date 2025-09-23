@@ -415,7 +415,7 @@ export default function ISPAIManagerPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/90 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             ISP AI Manager
           </h1>
           <p className="text-foreground/90 mt-1">

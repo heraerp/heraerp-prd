@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { NavigationLoadingProvider } from '@/components/navigation/NavigationLoadingProvider'
-import NavigationLink from '@/components/navigation/NavigationLink'
+import { OptimizedNavigationLoadingProvider } from '@/components/navigation/OptimizedNavigationLoadingProvider'
+import OptimizedNavigationLink from '@/components/navigation/OptimizedNavigationLink'
 import {
   Wifi,
   Users,
@@ -38,7 +38,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <NavigationLoadingProvider>
+    <OptimizedNavigationLoadingProvider>
       <div className="min-h-screen bg-gradient-to-br from-[#0049B7] via-slate-950 to-[#001A3D]">
         {/* Animated background elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -57,23 +57,23 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:block ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div className="h-full bg-gradient-to-b from-background/50 to-background/20 backdrop-blur-2xl border-r-[0.5px] border-border/20">
+          <div className="h-full bg-gradient-to-b from-slate-900/80 to-slate-950/80 backdrop-blur-2xl border-r border-slate-700/50">
             <div className="flex h-full flex-col">
               {/* Logo */}
-              <div className="flex h-16 items-center justify-between px-4 border-b-[0.5px] border-border/20">
+              <div className="flex h-16 items-center justify-between px-4 border-b border-slate-700/50">
                 <div className="flex items-center space-x-3">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-[#0099CC] to-[#0049B7] rounded-lg blur-lg opacity-80 animate-pulse" />
                     <div className="relative bg-gradient-to-br from-[#0099CC] to-[#0049B7] p-2 rounded-lg">
-                      <Radio className="h-6 w-6 text-foreground" />
+                      <Radio className="h-6 w-6 text-white" />
                     </div>
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+                    <h1 className="text-lg font-bold text-white">
                       India Vision
                     </h1>
                     <p className="text-xs bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent font-medium">
@@ -83,9 +83,11 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 </div>
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
+                  className="lg:hidden text-slate-400 hover:text-white transition-colors p-1"
                 >
-                  <Menu className="h-6 w-6" />
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
 
@@ -93,16 +95,24 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
               <nav className="flex-1 space-y-1 px-3 py-4">
                 {navigation.map((item, index) => {
                   const isActive = pathname === item.href
+                  const Icon = item.icon
                   return (
-                    <NavigationLink
+                    <OptimizedNavigationLink
                       key={item.name}
                       href={item.href}
-                      icon={item.icon}
-                      className="text-sm font-medium text-foreground/70 hover:text-foreground"
-                      activeClassName="!bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 !text-foreground shadow-lg shadow-[#E91E63]/30"
+                      onClick={() => setSidebarOpen(false)}
+                      className={`
+                        flex items-center space-x-3 px-3 py-2.5 rounded-lg
+                        text-sm font-medium transition-all duration-200
+                        ${isActive 
+                          ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#C2185B]/30 text-white shadow-lg shadow-[#E91E63]/20' 
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
+                        }
+                      `}
                     >
-                      {item.name}
-                    </NavigationLink>
+                      <Icon className={`h-5 w-5 ${isActive ? 'text-[#E91E63]' : ''}`} />
+                      <span>{item.name}</span>
+                    </OptimizedNavigationLink>
                   )
                 })}
               </nav>
@@ -111,34 +121,34 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
               <div className="p-4">
                 <div className="relative rounded-2xl overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#E91E63]/30 via-[#C2185B]/30 to-[#FFD700]/30 animate-gradient-shift" />
-                  <div className="relative bg-card backdrop-blur-xl p-4 border border-border">
+                  <div className="relative bg-slate-800/50 backdrop-blur-xl p-4 border border-slate-700/50">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#FFD700] to-[#0099CC]">
                           <Globe className="h-4 w-4 text-[#0049B7]" />
                         </div>
-                        <span className="text-sm font-semibold text-foreground">IPO Readiness</span>
+                        <span className="text-sm font-semibold text-white">IPO Readiness</span>
                       </div>
                       <span className="text-xs font-medium text-[#FFD700]">2028</span>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex justify-between text-xs">
-                        <span className="text-foreground/60">Progress</span>
+                        <span className="text-slate-400">Progress</span>
                         <span className="text-[#0099CC] font-medium">72%</span>
                       </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-2 rounded-full bg-slate-700 overflow-hidden">
                         <div className="h-full w-[72%] bg-gradient-to-r from-[#0099CC] via-[#FFD700] to-[#E91E63] animate-gradient-shift rounded-full" />
                       </div>
                     </div>
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       <div className="text-center">
-                        <p className="text-xs text-foreground/60">SEBI Score</p>
+                        <p className="text-xs text-slate-400">SEBI Score</p>
                         <p className="text-sm font-bold text-[#0099CC]">8.5/10</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-xs text-foreground/60">Compliance</p>
+                        <p className="text-xs text-slate-400">Compliance</p>
                         <p className="text-sm font-bold text-[#FFD700]">96%</p>
                       </div>
                     </div>
@@ -152,11 +162,11 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
         {/* Main content */}
         <div className="lg:pl-64">
           {/* Top bar */}
-          <header className="sticky top-0 z-20 bg-card backdrop-blur-2xl border-0">
+          <header className="sticky top-0 z-20 bg-slate-900/50 backdrop-blur-2xl border-b border-slate-700/50">
             <div className="flex h-16 items-center justify-between px-4 lg:px-6">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-foreground/60 hover:text-foreground transition-colors"
+                className="lg:hidden text-slate-400 hover:text-white transition-colors p-2"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -171,7 +181,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs text-foreground/60">Network</span>
+                    <span className="text-xs text-slate-400">Network</span>
                     <span className="text-xs font-semibold text-emerald-400">Operational</span>
                   </div>
                 </div>
@@ -180,7 +190,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#0099CC]/20 to-[#0049B7]/20 border border-[#0099CC]/30">
                   <Activity className="h-4 w-4 text-[#0099CC]" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-foreground/60">Active Users</span>
+                    <span className="text-xs text-slate-400">Active Users</span>
                     <span className="text-sm font-bold bg-gradient-to-r from-[#0099CC] to-[#FFD700] bg-clip-text text-transparent">
                       45,832
                     </span>
@@ -191,7 +201,7 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
                 <div className="hidden lg:flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E91E63]/20 to-[#C2185B]/20 border border-[#E91E63]/30">
                   <TrendingUp className="h-4 w-4 text-[#E91E63]" />
                   <div className="flex flex-col">
-                    <span className="text-xs text-foreground/60">Monthly Revenue</span>
+                    <span className="text-xs text-slate-400">Monthly Revenue</span>
                     <span className="text-sm font-bold bg-gradient-to-r from-[#E91E63] to-[#C2185B] bg-clip-text text-transparent">
                       ₹4.2 Cr
                     </span>
@@ -202,9 +212,9 @@ export default function ISPLayout({ children }: { children: React.ReactNode }) {
           </header>
 
           {/* Page content */}
-          <main className="p-4 lg:p-6">{children}</main>
+          <main className="relative p-4 lg:p-6">{children}</main>
         </div>
       </div>
-    </NavigationLoadingProvider>
+    </OptimizedNavigationLoadingProvider>
   )
 }

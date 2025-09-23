@@ -376,7 +376,7 @@ export default function IPOPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             IPO Preparation Dashboard
           </h1>
           <p className="text-foreground/60 mt-1">
@@ -404,7 +404,7 @@ export default function IPOPage() {
         <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">IPO Readiness Score</h2>
+              <h2 className="text-2xl font-semibold text-[#F5E6C8]">IPO Readiness Score</h2>
               <p className="text-foreground/60 mt-1">Overall preparedness for public listing</p>
             </div>
             <div className="text-right">
@@ -525,7 +525,7 @@ export default function IPOPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-foreground/60 text-sm font-medium mb-1">
-                      {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      {key.replace(/([A-Z])/g, ' ').replace(/^./, str => str.toUpperCase())}
                     </h3>
                     <p className="text-2xl font-bold text-foreground">
                       {metric.current}

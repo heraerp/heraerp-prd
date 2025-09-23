@@ -274,7 +274,7 @@ export default function BillingPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-white/80 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-[#F5E6C8]">
             Billing & Revenue
           </h1>
           <p className="text-foreground/60 mt-1">Manage invoices, payments, and revenue tracking</p>
@@ -338,7 +338,7 @@ export default function BillingPage() {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-[#0099CC] to-[#0049B7] rounded-2xl blur opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
             <div className="relative bg-background/50 backdrop-blur-xl border border-border/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground">
+                <h2 className="text-xl font-semibold text-[#F5E6C8]">
                   Billing & Collection Trend
                 </h2>
                 <div className="flex items-center space-x-4 text-xs">
