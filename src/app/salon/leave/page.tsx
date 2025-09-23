@@ -17,7 +17,24 @@ export default function SalonLeavePage() {
     }
   }, [])
 
-  const organizationId = organization?.id || localOrgId
+  // Check for Hair Talkz subdomain
+  const getEffectiveOrgId = () => {
+    if (organization?.id) return organization.id
+    if (localOrgId) return localOrgId
+    
+    // Check if we're on hairtalkz or heratalkz subdomain
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost' ||
+          hostname.startsWith('heratalkz.') || hostname === 'heratalkz.localhost') {
+        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
+      }
+    }
+    
+    return organization?.id || localOrgId
+  }
+
+  const organizationId = getEffectiveOrgId()
 
   return (
     <PageLayout>
