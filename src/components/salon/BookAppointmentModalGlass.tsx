@@ -403,7 +403,7 @@ export function BookAppointmentModalGlass({
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* Primary Light Orb */}
           <div
-            className="absolute w-96 h-96 rounded-full transition-all duration-[3000ms] ease-in-out"
+            className="absolute w-96 h-96 rounded-full transition-all duration-3000 ease-in-out"
             style={{
               background: `radial-gradient(circle, 
                 rgba(147, 51, 234, 0.15) 0%, 
@@ -420,7 +420,7 @@ export function BookAppointmentModalGlass({
 
           {/* Secondary Light Orb */}
           <div
-            className="absolute w-80 h-80 rounded-full transition-all duration-[4000ms] ease-in-out"
+            className="absolute w-80 h-80 rounded-full transition-all duration-4000 ease-in-out"
             style={{
               background: `radial-gradient(circle, 
                 rgba(59, 130, 246, 0.12) 0%, 

@@ -232,6 +232,12 @@ const config: Config = {
         'hera-lg': '16px',
         'hera-xl': '20px',
       },
+      
+      // Custom transition durations
+      transitionDuration: {
+        '3000': '3000ms',
+        '4000': '4000ms',
+      },
     },
   },
   plugins: [

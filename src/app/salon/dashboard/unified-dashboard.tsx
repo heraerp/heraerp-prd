@@ -127,7 +127,35 @@ export function UnifiedDashboard() {
   }
 
   if (!isAuthenticated || !role) {
-    return null
+    console.log('Dashboard auth check failed:', { isAuthenticated, role, user })
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: LUXE_COLORS.charcoal }}
+      >
+        <Card className="max-w-md w-full border-0" style={{ backgroundColor: LUXE_COLORS.charcoalLight }}>
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="h-12 w-12 mx-auto mb-4" style={{ color: LUXE_COLORS.gold }} />
+            <h3 className="text-xl mb-2" style={{ color: LUXE_COLORS.gold }}>
+              Authentication Required
+            </h3>
+            <p className="mb-6" style={{ color: LUXE_COLORS.bronze }}>
+              {!isAuthenticated ? 'Please log in to access the dashboard.' : 'No role assigned. Please contact your administrator.'}
+            </p>
+            <Button 
+              onClick={() => router.push('/salon/auth')}
+              className="w-full"
+              style={{
+                backgroundColor: LUXE_COLORS.gold,
+                color: LUXE_COLORS.charcoal
+              }}
+            >
+              Go to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   const userRole = role.toLowerCase() as keyof typeof ROLE_FEATURES

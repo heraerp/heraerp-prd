@@ -51,19 +51,74 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
     
     checkOrgFromSubdomain()
     loadContext()
+    
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event)
+      
+      if (event === 'SIGNED_IN' && session) {
+        // Reload context when user signs in
+        loadContext()
+      } else if (event === 'SIGNED_OUT') {
+        // Clear context when user signs out
+        setContext({
+          organizationId: orgId,
+          organization: { id: orgId, name: 'HairTalkz' },
+          role: null,
+          permissions: [],
+          user: null,
+          isLoading: false,
+          isAuthenticated: false
+        })
+        
+        // Only redirect if not already on auth page
+        if (window.location.pathname !== '/salon/auth') {
+          window.location.href = '/salon/auth'
+        }
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Token was refreshed, reload context to ensure everything is up to date
+        loadContext()
+      }
+    })
+    
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   const loadContext = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      // First check if we're on the auth page - don't redirect if we are
+      const isAuthPage = window.location.pathname === '/salon/auth'
       
-      if (!session?.user) {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      // If there's a session error, log it but don't immediately redirect
+      if (sessionError) {
+        console.error('Session error:', sessionError)
+      }
+      
+      // If no session and not on auth page, redirect
+      if (!session?.user && !isAuthPage) {
         window.location.href = '/salon/auth'
         return
       }
+      
+      // If we're on auth page without a session, just set loading to false
+      if (!session?.user && isAuthPage) {
+        setContext(prev => ({ ...prev, isLoading: false }))
+        return
+      }
 
-      const storedRole = localStorage.getItem('salonRole')
+      // Add a small delay to ensure localStorage is properly set after login
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      const storedRole = localStorage.getItem('salonRole') || session?.user?.user_metadata?.role
       const storedPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
+      
+      console.log('Loading context - stored role:', storedRole)
+      console.log('Loading context - user metadata:', session?.user?.user_metadata)
+      console.log('Loading context - session user:', session?.user?.email)
       
       // Use the orgId that was set based on subdomain or path
       const finalOrgId = typeof window !== 'undefined' && 
@@ -84,7 +139,12 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       })
     } catch (error) {
       console.error('Error loading salon context:', error)
-      window.location.href = '/salon/auth'
+      // Only redirect if not already on auth page
+      if (window.location.pathname !== '/salon/auth') {
+        window.location.href = '/salon/auth'
+      } else {
+        setContext(prev => ({ ...prev, isLoading: false }))
+      }
     }
   }
 
