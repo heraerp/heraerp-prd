@@ -148,11 +148,10 @@ export async function searchAppointments(
   universalApi.setOrganizationId(organization_id)
 
   // 1) Get appointment transactions for this org (appointments are stored as transactions)
+  // Note: transaction_type might be 'appointment' (lowercase) or 'APPOINTMENT' (uppercase)
   const transactionsResponse = await universalApi.read(
     'universal_transactions',
-    {
-      transaction_type: 'APPOINTMENT'
-    },
+    {},
     organization_id
   )
 
@@ -161,7 +160,10 @@ export async function searchAppointments(
     return { rows: [], total: 0 }
   }
 
-  const transactions = transactionsResponse.data
+  // Filter for appointment transactions (both uppercase and lowercase)
+  const transactions = transactionsResponse.data.filter(
+    (t: any) => t?.transaction_type?.toLowerCase() === 'appointment'
+  )
   let ids: string[] = transactions.map((t: any) => t?.id).filter(Boolean)
   const total = ids.length
 

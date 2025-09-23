@@ -76,7 +76,7 @@ export class AppointmentApi {
 
     const appointment = await this.api.createTransaction(
       {
-        transaction_type: 'appointment',
+        transaction_type: 'APPOINTMENT',
         smart_code: APPOINTMENT_SMART_CODES.APPOINTMENT_BOOKING,
         reference_number: `APT-${Date.now()}`,
         transaction_date: new Date().toISOString(),

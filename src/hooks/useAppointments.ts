@@ -60,8 +60,8 @@ export function useAppointments(options: UseAppointmentsOptions = {}) {
     revenueMonth: 0
   })
 
-  // Use provided organizationId or fallback to currentOrganization
-  const organizationId = options.organizationId || currentOrganization?.id
+  // Use provided organizationId or fallback to organization from auth
+  const organizationId = options.organizationId || organization?.id
 
   // Create a new appointment
   const createAppointment = useCallback(

@@ -51,7 +51,23 @@ export function NewAppointmentModal({
   onSuccess,
   organizationId
 }: NewAppointmentModalProps) {
-  const { createAppointment, loading } = useAppointments({ organizationId })
+  // Check for Hair Talkz subdomain
+  const getEffectiveOrgId = () => {
+    if (organizationId) return organizationId
+
+    // Check if we're on hairtalkz subdomain
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
+        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
+      }
+    }
+
+    return organizationId
+  }
+
+  const effectiveOrgId = getEffectiveOrgId()
+  const { createAppointment, loading } = useAppointments({ organizationId: effectiveOrgId })
   const [formLoading, setFormLoading] = useState(false)
 
   // Form state
@@ -73,15 +89,15 @@ export function NewAppointmentModal({
 
   // Fetch customers, services, and staff on mount
   useEffect(() => {
-    if (!organizationId) return
+    if (!effectiveOrgId) return
 
     const fetchData = async () => {
       setFormLoading(true)
       try {
         const [customersResp, servicesResp, staffResp] = await Promise.all([
-          universalApi.getEntities('customer', organizationId),
-          universalApi.getEntities('service', organizationId),
-          universalApi.getEntities('employee', organizationId)
+          universalApi.getEntities('customer', effectiveOrgId),
+          universalApi.getEntities('service', effectiveOrgId),
+          universalApi.getEntities('employee', effectiveOrgId)
         ])
 
         // Transform customers
@@ -108,20 +124,14 @@ export function NewAppointmentModal({
           )
         }
 
-        // Transform staff
+        // Transform staff - all employees are considered staff for salon
         if (staffResp.success && staffResp.data) {
           setStaff(
-            staffResp.data
-              .filter(
-                (e: any) =>
-                  (e.metadata as any)?.role === 'stylist' ||
-                  (e.metadata as any)?.department === 'salon'
-              )
-              .map((s: any) => ({
-                id: s.id,
-                name: s.entity_name,
-                specializations: (s.metadata as any)?.specializations
-              }))
+            staffResp.data.map((s: any) => ({
+              id: s.id,
+              name: s.entity_name,
+              specializations: (s.metadata as any)?.specializations || []
+            }))
           )
         }
       } catch (error) {
@@ -136,7 +146,7 @@ export function NewAppointmentModal({
     }
 
     fetchData()
-  }, [organizationId])
+  }, [effectiveOrgId])
 
   // Generate available time slots when staff and date are selected
   useEffect(() => {

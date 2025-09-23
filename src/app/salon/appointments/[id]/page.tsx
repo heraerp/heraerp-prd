@@ -73,11 +73,23 @@ const STATUS_CONFIG = {
       'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700',
     icon: AlertCircle
   },
+  BOOKED: {
+    label: 'Booked',
+    color:
+      'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
+    icon: Calendar
+  },
   CONFIRMED: {
     label: 'Confirmed',
     color:
       'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
     icon: CheckCircle
+  },
+  CHECKED_IN: {
+    label: 'Checked In',
+    color:
+      'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-700',
+    icon: User
   },
   IN_SERVICE: {
     label: 'In Service',
@@ -108,7 +120,23 @@ const STATUS_CONFIG = {
 export default function ViewAppointmentPage({ params }: PageProps) {
   const router = useRouter()
   const { organization } = useHERAAuth()
-  const organizationId = organization?.id
+
+  // Check for Hair Talkz subdomain
+  const getEffectiveOrgId = () => {
+    if (organization?.id) return organization.id
+
+    // Check if we're on hairtalkz subdomain
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
+        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
+      }
+    }
+
+    return organization?.id
+  }
+
+  const organizationId = getEffectiveOrgId()
   // const { toast } = useToast() // Removed for runtime compatibility
 
   // Unwrap params Promise for Next.js 15
@@ -134,10 +162,9 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
         console.log('📊 Loading appointment details for:', unwrappedParams.id)
 
-        // Load appointment
+        // Load appointment - Universal API filters by organization automatically
         const appointmentResponse = await universalApi.read('universal_transactions', {
-          id: unwrappedParams.id,
-          organization_id: organizationId
+          id: unwrappedParams.id
         })
 
         console.log('📅 Appointment response:', appointmentResponse)
@@ -149,8 +176,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           // Load customer details if available
           if (apt.source_entity_id) {
             const customerResponse = await universalApi.read('core_entities', {
-              id: apt.source_entity_id,
-              organization_id: organizationId
+              id: apt.source_entity_id
             })
             if (customerResponse.success && customerResponse.data?.length > 0) {
               setCustomer(customerResponse.data[0])
@@ -160,8 +186,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
           // Load stylist details if available
           if (apt.target_entity_id) {
             const stylistResponse = await universalApi.read('core_entities', {
-              id: apt.target_entity_id,
-              organization_id: organizationId
+              id: apt.target_entity_id
             })
             if (stylistResponse.success && stylistResponse.data?.length > 0) {
               setStylist(stylistResponse.data[0])
@@ -170,8 +195,7 @@ export default function ViewAppointmentPage({ params }: PageProps) {
 
           // Load transaction lines
           const linesResponse = await universalApi.read('universal_transaction_lines', {
-            transaction_id: unwrappedParams.id,
-            organization_id: organizationId
+            transaction_id: unwrappedParams.id
           })
 
           console.log('📝 Transaction lines response:', linesResponse)
@@ -180,10 +204,10 @@ export default function ViewAppointmentPage({ params }: PageProps) {
             // Load service/product details for each line
             const linesWithDetails = await Promise.all(
               linesResponse.data.map(async (line: any) => {
-                if (line.entity_id) {
+                if (line.entity_id || line.line_entity_id) {
+                  const entityId = line.entity_id || line.line_entity_id
                   const entityResponse = await universalApi.read('core_entities', {
-                    id: line.entity_id,
-                    organization_id: organizationId
+                    id: entityId
                   })
                   if (entityResponse.success && entityResponse.data?.length > 0) {
                     return { ...line, entity: entityResponse.data[0] }
@@ -290,9 +314,15 @@ export default function ViewAppointmentPage({ params }: PageProps) {
     )
   }
 
-  const appointmentDate = new Date(appointment.transaction_date)
-  const status = appointment.metadata?.status || 'DRAFT'
-  const totalDuration = appointment.metadata?.total_service_duration_minutes || 0
+  const appointmentDate =
+    appointment.metadata?.appointment_date && appointment.metadata?.appointment_time
+      ? new Date(
+          `${appointment.metadata.appointment_date}T${appointment.metadata.appointment_time}`
+        )
+      : new Date(appointment.transaction_date)
+  const status = appointment.metadata?.status?.toUpperCase() || 'DRAFT'
+  const totalDuration =
+    appointment.metadata?.duration || appointment.metadata?.total_service_duration_minutes || 60
 
   return (
     <div className="min-h-screen bg-background">

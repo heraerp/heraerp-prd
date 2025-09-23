@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 import { SalonAuthGuard } from '@/components/salon/auth/SalonAuthGuard'
 import { searchStaff } from '@/lib/playbook/entities'
 import { universalApi } from '@/lib/universal-api-v2'
@@ -67,19 +67,8 @@ interface StaffStats {
 }
 
 function StaffContent() {
-  const { user, organization } = useHERAAuth()
-  const [localOrgId, setLocalOrgId] = useState<string | null>(null)
+  const { user, organizationId } = useSalonContext()
   const { toast } = useToast()
-
-  // Get organization ID from localStorage for demo mode
-  useEffect(() => {
-    const storedOrgId = localStorage.getItem('organizationId')
-    if (storedOrgId) {
-      setLocalOrgId(storedOrgId)
-    }
-  }, [])
-
-  const organizationId = organization?.id || localOrgId
 
   const [staff, setStaff] = useState<Staff[]>([])
   const [loading, setLoading] = useState(true)
@@ -796,7 +785,7 @@ function StaffContent() {
 
 export default function StaffPage() {
   return (
-    <SalonAuthGuard requiredRoles={['Owner', 'Administrator']}>
+    <SalonAuthGuard requiredRoles={['Owner', 'Administrator', 'owner', 'administrator']}>
       <StaffContent />
     </SalonAuthGuard>
   )

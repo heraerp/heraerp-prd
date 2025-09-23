@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useSalonContext } from '@/app/salon/SalonProvider'
 import {
   Package2,
   TruckIcon,
@@ -41,8 +41,8 @@ const COLORS = {
 }
 
 export default function SalonInventoryPage() {
-  const { organization, isAuthenticated, contextLoading } = useHERAAuth()
-  const organizationId = organization?.id || ''
+  const { organization, organizationId, isAuthenticated, isLoading } = useSalonContext()
+  const contextLoading = isLoading
 
   const [activeTab, setActiveTab] = useState('items')
   const [searchQuery, setSearchQuery] = useState('')

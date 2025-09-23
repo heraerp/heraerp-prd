@@ -125,23 +125,36 @@ export function SalonAuthGuard({
   }
 
   const checkRouteAccess = (role: string) => {
+    // Normalize role to handle case variations
+    const normalizedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()
+    
     // Check if owner-only access is required
-    if (requireOwnerOnly && role !== 'Owner') {
+    if (requireOwnerOnly && normalizedRole !== 'Owner') {
       setAccessDenied(true)
       return
     }
 
-    // Check required roles from props
-    if (requiredRoles.length > 0 && !requiredRoles.includes(role)) {
-      setAccessDenied(true)
-      return
+    // Check required roles from props (case-insensitive)
+    if (requiredRoles.length > 0) {
+      const hasRequiredRole = requiredRoles.some(r => 
+        r.toLowerCase() === role.toLowerCase()
+      )
+      if (!hasRequiredRole) {
+        setAccessDenied(true)
+        return
+      }
     }
 
     // Check route-based permissions
     const allowedRoles = ROUTE_PERMISSIONS[pathname]
-    if (allowedRoles && !allowedRoles.includes(role)) {
-      setAccessDenied(true)
-      return
+    if (allowedRoles) {
+      const hasRouteAccess = allowedRoles.some(r => 
+        r.toLowerCase() === role.toLowerCase()
+      )
+      if (!hasRouteAccess) {
+        setAccessDenied(true)
+        return
+      }
     }
 
     setAccessDenied(false)

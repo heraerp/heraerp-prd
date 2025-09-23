@@ -75,7 +75,23 @@ export default function SalonCustomersPage() {
   const router = useRouter()
   const { toast } = useToast()
   const { currentOrganization, isLoading: authLoading } = useHERAAuth()
-  const organizationId = currentOrganization?.id
+
+  // Check for Hair Talkz subdomain
+  const getEffectiveOrgId = () => {
+    if (currentOrganization?.id) return currentOrganization.id
+
+    // Check if we're on hairtalkz subdomain
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname
+      if (hostname.startsWith('hairtalkz.') || hostname === 'hairtalkz.localhost') {
+        return '378f24fb-d496-4ff7-8afa-ea34895a0eb8' // Hair Talkz org ID
+      }
+    }
+
+    return currentOrganization?.id
+  }
+
+  const organizationId = getEffectiveOrgId()
 
   // State management
   const [searchTerm, setSearchTerm] = useState('')
@@ -184,8 +200,13 @@ export default function SalonCustomersPage() {
     }
   }
 
-  // Show loading state while auth is loading
-  if (authLoading) {
+  // Show loading state while auth is loading (but not if we have Hair Talkz subdomain)
+  const isHairTalkzSubdomain =
+    typeof window !== 'undefined' &&
+    (window.location.hostname.startsWith('hairtalkz.') ||
+      window.location.hostname === 'hairtalkz.localhost')
+
+  if (authLoading && !isHairTalkzSubdomain) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
