@@ -1,6 +1,6 @@
 'use client'
 
-// Force dynamic rendering
+// Force dynamic rendering - Updated to fix build cache
 export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
