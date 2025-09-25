@@ -2,6 +2,55 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ HERA FIELD PLACEMENT POLICY (MANDATORY - ENFORCE ALWAYS)
+
+**CRITICAL**: Default field placement policy for maintaining HERA's universal architecture integrity.
+
+### 🔒 Core Enforcement Rules:
+1. **Default to Dynamic Data**: Any new field → `core_dynamic_data`
+2. **Metadata Requires Justification**: Only if `metadata_category` ∈ {`system_ai`, `system_observability`, `system_audit`}
+3. **No Status in Metadata**: All lifecycle/state via `universal_transactions`
+4. **Business Data = Dynamic Data**: All business attributes, customer-configurable fields, reportable values
+
+### 🧭 Default Pattern (Use This):
+```typescript
+// ✅ CORRECT: New fields go to core_dynamic_data
+{
+  "organization_id": "...",
+  "entity_id": "...",
+  "field_name": "duration_minutes",
+  "field_type": "number",
+  "field_value_number": 60,
+  "smart_code": "HERA.SALON.APPT.DURATION.V1"
+}
+
+// ✅ ONLY ALLOWED: System metadata with explicit categorization
+{
+  "metadata": {
+    "metadata_category": "system_ai",
+    "ai_confidence": 0.92,
+    "ai_classification": "high_value_service"
+  }
+}
+```
+
+### 🚫 Auto-Block These Anti-Patterns:
+```typescript
+// ❌ WRONG: Business data in metadata without justification
+metadata: {
+  base_price: 99.99,        // → Should be core_dynamic_data
+  duration_minutes: 60,     // → Should be core_dynamic_data
+  category: "Hair Services", // → Should be core_dynamic_data
+  status: "active"          // → Should be universal_transactions
+}
+```
+
+### 📋 Claude Enforcement Actions:
+- **Auto-suggest Dynamic Data**: When uncategorized metadata fields detected
+- **Require metadata_category**: Before allowing any metadata usage
+- **Block Status Fields**: Redirect to `universal_transactions` pattern
+- **Validate Business Logic**: Ensure business fields use dynamic data
+
 ## 🧬 HERA DNA SMART CODE RULES (MANDATORY - READ ALWAYS)
 
 **CRITICAL**: Every entity, transaction, and line MUST have a valid smart_code. See `/docs/playbooks/_shared/SMART_CODE_GUIDE.md` for the complete guide.
@@ -408,15 +457,21 @@ node hera-cli.js query core_relationships  # View all relationships
 node check-schema.js                    # View actual table structures
 node hera-cli.js show-schema [table]    # Show table columns
 node hera-cli.js count <table>          # Count records in table
+
+# Field Placement Validation (NEW)
+node validate-field-placement.js <file> # Check field placement in code
+node fix-field-placement.js --dry-run   # Auto-fix field placement violations
+node hera-cli.js validate-smart-code "HERA.SALON.SVC.V1" # Check smart code format
 ```
 
 ### **🛡️ SACRED RULES - NEVER VIOLATE**
 1. **NO STATUS COLUMNS** - Use relationships table for status workflows
 2. **NO SCHEMA CHANGES** - Use core_dynamic_data for custom fields
-3. **ALWAYS USE ORGANIZATION_ID** - Multi-tenant isolation is sacred
-4. **USE CLI TOOLS FIRST** - Prevents memory issues and ensures consistency
-5. **SMART CODES REQUIRED** - Every operation needs intelligent context
-6. **SCHEMA-FIRST DEVELOPMENT** - Always validate actual database schema before coding
+3. **FIELD PLACEMENT POLICY** - Default to dynamic data, metadata requires justification
+4. **ALWAYS USE ORGANIZATION_ID** - Multi-tenant isolation is sacred
+5. **USE CLI TOOLS FIRST** - Prevents memory issues and ensures consistency
+6. **SMART CODES REQUIRED** - Every operation needs intelligent context
+7. **SCHEMA-FIRST DEVELOPMENT** - Always validate actual database schema before coding
 
 ## 🏗️ Schema-First Development (HERA DNA PRINCIPLE)
 
@@ -1210,6 +1265,7 @@ WHERE e.organization_id = ?
 - **ALWAYS use MultiOrgAuthProvider** - Never use old auth components
 - **ALWAYS include organization_id** - Every API call, every database query (SACRED)
 - **ALWAYS create a HERA task before coding** (entity_type='development_task')
+- **ALWAYS follow Field Placement Policy** - Default to `core_dynamic_data`, metadata requires justification
 - Store new business objects in `core_entities` with appropriate `entity_type` and `smart_code`
 - Use `core_dynamic_data` for custom fields instead of new columns
 - Leverage existing universal APIs before building new ones
@@ -1222,6 +1278,8 @@ WHERE e.organization_id = ?
 - **NEVER use old auth components** (DualAuthProvider, etc.) - Use MultiOrgAuthProvider
 - **NEVER bypass organization_id filtering** - This violates multi-tenancy (SACRED)
 - **NEVER code without a HERA task** - This violates the Meta principle
+- **NEVER put business fields in metadata without justification** - Use Field Placement Policy
+- **NEVER store status/lifecycle in metadata** - Use `universal_transactions` relationships
 - Create new tables for business objects that can fit in `core_entities`
 - Add columns to existing tables when `core_dynamic_data` suffices
 - Build separate API endpoints when universal APIs can handle the logic
