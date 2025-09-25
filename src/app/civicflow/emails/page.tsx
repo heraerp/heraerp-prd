@@ -1,64 +1,56 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { EmailSidebar } from '@/components/civicflow/emails/EmailSidebar';
-import { EmailList } from '@/components/civicflow/emails/EmailList';
-import { EmailView } from '@/components/civicflow/emails/EmailView';
-import { ComposeModal } from '@/components/civicflow/emails/ComposeModal';
-import { AiAssistantPanel } from '@/components/civicflow/emails/AiAssistantPanel';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { useHERAAuth } from '@/components/auth/HERAAuthProvider';
-import { useEmailList, useEmail } from '@/hooks/civicflow/useEmails';
-import { useOrgStore } from '@/state/org';
-import { 
-  Search,
-  Plus,
-  Settings,
-  Filter,
-  SortAsc,
-  Loader2,
-  Sparkles
-} from 'lucide-react';
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { EmailSidebar } from '@/components/civicflow/emails/EmailSidebar'
+import { EmailList } from '@/components/civicflow/emails/EmailList'
+import { EmailView } from '@/components/civicflow/emails/EmailView'
+import { ComposeModal } from '@/components/civicflow/emails/ComposeModal'
+import { AiAssistantPanel } from '@/components/civicflow/emails/AiAssistantPanel'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { useEmailList, useEmail } from '@/hooks/civicflow/useEmails'
+import { useOrgStore } from '@/state/org'
+import { Search, Plus, Settings, Filter, SortAsc, Loader2, Sparkles } from 'lucide-react'
 
-export type EmailFolder = 'inbox' | 'outbox' | 'drafts' | 'sent' | 'trash';
+export type EmailFolder = 'inbox' | 'outbox' | 'drafts' | 'sent' | 'trash'
 
 interface EmailFilters {
-  search: string;
-  dateRange: string;
-  priority: string;
-  tags: string[];
+  search: string
+  dateRange: string
+  priority: string
+  tags: string[]
 }
 
 export default function EmailsPage() {
-  const searchParams = useSearchParams();
-  const { currentOrgId } = useOrgStore();
-  
+  const searchParams = useSearchParams()
+  const { currentOrgId } = useOrgStore()
+
   // Use the demo org ID constant like other pages
-  const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
-  const organizationId = currentOrgId || DEMO_ORG_ID;
-  const isDemoMode = organizationId === DEMO_ORG_ID;
-  
-  const [currentFolder, setCurrentFolder] = useState<EmailFolder>('inbox');
-  const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null);
-  const [isComposeOpen, setIsComposeOpen] = useState(false);
-  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
+  const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
+  const organizationId = currentOrgId || DEMO_ORG_ID
+  const isDemoMode = organizationId === DEMO_ORG_ID
+
+  const [currentFolder, setCurrentFolder] = useState<EmailFolder>('inbox')
+  const [selectedEmailId, setSelectedEmailId] = useState<string | null>(null)
+  const [isComposeOpen, setIsComposeOpen] = useState(false)
+  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false)
   const [filters, setFilters] = useState<EmailFilters>({
     search: '',
     dateRange: 'all',
     priority: 'all',
     tags: []
-  });
+  })
 
   // Initialize folder from URL params
   useEffect(() => {
-    const folder = searchParams.get('folder') as EmailFolder;
+    const folder = searchParams.get('folder') as EmailFolder
     if (folder && ['inbox', 'outbox', 'drafts', 'sent', 'trash'].includes(folder)) {
-      setCurrentFolder(folder);
+      setCurrentFolder(folder)
     }
-  }, [searchParams]);
+  }, [searchParams])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -66,26 +58,26 @@ export default function EmailsPage() {
       if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
         switch (e.key.toLowerCase()) {
           case 'n':
-            e.preventDefault();
-            setIsComposeOpen(true);
-            break;
+            e.preventDefault()
+            setIsComposeOpen(true)
+            break
           case 's':
-            e.preventDefault();
+            e.preventDefault()
             // Save draft if compose is open
-            break;
+            break
           case 'enter':
             if (isComposeOpen) {
-              e.preventDefault();
+              e.preventDefault()
               // Send email
             }
-            break;
+            break
         }
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isComposeOpen]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isComposeOpen])
 
   const {
     data: emails,
@@ -95,32 +87,28 @@ export default function EmailsPage() {
     folder: currentFolder,
     filters,
     organizationId: organizationId
-  });
+  })
 
-  const {
-    data: selectedEmail,
-    isLoading: emailLoading
-  } = useEmail(selectedEmailId, {
+  const { data: selectedEmail, isLoading: emailLoading } = useEmail(selectedEmailId, {
     enabled: !!selectedEmailId
-  });
-
+  })
 
   const handleFolderChange = (folder: EmailFolder) => {
-    setCurrentFolder(folder);
-    setSelectedEmailId(null);
+    setCurrentFolder(folder)
+    setSelectedEmailId(null)
     // Update URL without page refresh
-    const url = new URL(window.location.href);
-    url.searchParams.set('folder', folder);
-    window.history.replaceState({}, '', url);
-  };
+    const url = new URL(window.location.href)
+    url.searchParams.set('folder', folder)
+    window.history.replaceState({}, '', url)
+  }
 
   const handleEmailSelect = (emailId: string) => {
-    setSelectedEmailId(emailId);
-  };
+    setSelectedEmailId(emailId)
+  }
 
   const handleFilterChange = (key: keyof EmailFilters, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
+    setFilters(prev => ({ ...prev, [key]: value }))
+  }
 
   return (
     <div className="flex h-screen bg-muted/50">
@@ -140,11 +128,7 @@ export default function EmailsPage() {
           {/* Email List Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2 mb-3">
-              <Button
-                onClick={() => setIsComposeOpen(true)}
-                className="flex-1"
-                size="sm"
-              >
+              <Button onClick={() => setIsComposeOpen(true)} className="flex-1" size="sm">
                 <Plus className="h-4 w-4 mr-2" />
                 Compose
               </Button>
@@ -157,14 +141,14 @@ export default function EmailsPage() {
                 <Sparkles className="h-4 w-4" />
               </Button>
             </div>
-            
+
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Search emails..."
                 value={filters.search}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
+                onChange={e => handleFilterChange('search', e.target.value)}
                 className="pl-10 pr-4"
               />
             </div>
@@ -220,8 +204,12 @@ export default function EmailsPage() {
                   email={selectedEmail}
                   onReply={() => setIsComposeOpen(true)}
                   onForward={() => setIsComposeOpen(true)}
-                  onDelete={() => {/* Handle delete */}}
-                  onMove={() => {/* Handle move */}}
+                  onDelete={() => {
+                    /* Handle delete */
+                  }}
+                  onMove={() => {
+                    /* Handle move */
+                  }}
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -235,9 +223,7 @@ export default function EmailsPage() {
                   <h2 className="text-xl font-semibold mb-2">
                     {currentFolder.charAt(0).toUpperCase() + currentFolder.slice(1)}
                   </h2>
-                  <p className="text-muted-foreground">
-                    Select an email to view its content
-                  </p>
+                  <p className="text-muted-foreground">Select an email to view its content</p>
                 </div>
               </div>
             )}
@@ -245,11 +231,8 @@ export default function EmailsPage() {
 
           {/* AI Assistant Panel */}
           {isAiPanelOpen && (
-            <div className="w-80 border-l border-gray-200 dark:border-gray-700">
-              <AiAssistantPanel
-                emailId={selectedEmailId}
-                onClose={() => setIsAiPanelOpen(false)}
-              />
+            <div className="w-80 border-l border-border">
+              <AiAssistantPanel emailId={selectedEmailId} onClose={() => setIsAiPanelOpen(false)} />
             </div>
           )}
         </div>
@@ -261,11 +244,11 @@ export default function EmailsPage() {
           organizationId={organizationId}
           onClose={() => setIsComposeOpen(false)}
           onSent={() => {
-            setIsComposeOpen(false);
+            setIsComposeOpen(false)
             // Refresh email list if needed
           }}
         />
       )}
     </div>
-  );
+  )
 }

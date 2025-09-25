@@ -1,31 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { isDemoMode } from '@/lib/demo-guard';
-import type { AnalyticsPanelData } from '@/types/analytics';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import { isDemoMode } from '@/lib/demo-guard'
+import type { AnalyticsPanelData } from '@/types/analytics'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID;
-    const searchParams = request.nextUrl.searchParams;
-    const isDemo = isDemoMode(orgId);
-    
+    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID
+    const searchParams = request.nextUrl.searchParams
+    const isDemo = isDemoMode(orgId)
+
     // Parse filters
     const filters = {
-      date_from: searchParams.get('date_from') || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+      date_from:
+        searchParams.get('date_from') ||
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       date_to: searchParams.get('date_to') || new Date().toISOString(),
       program_ids: searchParams.get('program_ids')?.split(','),
       channels: searchParams.get('channels')?.split(','),
       tags: searchParams.get('tags')?.split(','),
-      segment: searchParams.get('segment'),
-    };
+      segment: searchParams.get('segment')
+    }
 
     // In demo mode, return mock analytics data
     if (isDemo) {
@@ -40,18 +42,18 @@ export async function GET(request: NextRequest) {
           delivery_rate: 95,
           open_rate: 68.1,
           click_rate: 18.9,
-          trend: generateTrendData(30, 'deliverability'),
+          trend: generateTrendData(30, 'deliverability')
         },
         engagement_funnel: {
           stages: [
             { stage_name: 'Discover', count: 3456, percentage: 100, conversion_rate: 65 },
             { stage_name: 'Nurture', count: 2246, percentage: 65, conversion_rate: 48 },
             { stage_name: 'Active', count: 1078, percentage: 31.2, conversion_rate: 72 },
-            { stage_name: 'Champion', count: 776, percentage: 22.5, conversion_rate: 100 },
+            { stage_name: 'Champion', count: 776, percentage: 22.5, conversion_rate: 100 }
           ],
           total_journeys: 3456,
           avg_time_to_convert: 21.5,
-          trend: generateTrendData(30, 'engagement'),
+          trend: generateTrendData(30, 'engagement')
         },
         event_attendance: {
           total_events: 15,
@@ -64,9 +66,9 @@ export async function GET(request: NextRequest) {
             { type: 'Webinar', count: 6, attendance_rate: 85 },
             { type: 'Workshop', count: 4, attendance_rate: 75 },
             { type: 'Conference', count: 3, attendance_rate: 82 },
-            { type: 'Roundtable', count: 2, attendance_rate: 90 },
+            { type: 'Roundtable', count: 2, attendance_rate: 90 }
           ],
-          trend: generateTrendData(30, 'events'),
+          trend: generateTrendData(30, 'events')
         },
         journey_progression: {
           active_journeys: 2246,
@@ -76,15 +78,15 @@ export async function GET(request: NextRequest) {
             { stage_name: 'Discover', count: 1210, avg_score: 25 },
             { stage_name: 'Nurture', count: 1168, avg_score: 48 },
             { stage_name: 'Active', count: 302, avg_score: 72 },
-            { stage_name: 'Champion', count: 776, avg_score: 92 },
+            { stage_name: 'Champion', count: 776, avg_score: 92 }
           ],
           score_distribution: [
             { range: '0-25', count: 1210 },
             { range: '26-50', count: 1168 },
             { range: '51-75', count: 302 },
-            { range: '76-100', count: 776 },
+            { range: '76-100', count: 776 }
           ],
-          trend: generateTrendData(30, 'journey'),
+          trend: generateTrendData(30, 'journey')
         },
         kpi_contribution: {
           kpis: [
@@ -97,8 +99,8 @@ export async function GET(request: NextRequest) {
               contributors: [
                 { source: 'Grant Notifications', contribution: 450000, percentage: 54.5 },
                 { source: 'Funding Workshops', contribution: 225000, percentage: 27.3 },
-                { source: 'Direct Outreach', contribution: 150000, percentage: 18.2 },
-              ],
+                { source: 'Direct Outreach', contribution: 150000, percentage: 18.2 }
+              ]
             },
             {
               kpi_id: 'kpi-underserved',
@@ -109,8 +111,8 @@ export async function GET(request: NextRequest) {
               contributors: [
                 { source: 'Journey Progression', contribution: 35, percentage: 51.5 },
                 { source: 'Community Events', contribution: 20, percentage: 29.4 },
-                { source: 'Communications', contribution: 13, percentage: 19.1 },
-              ],
+                { source: 'Communications', contribution: 13, percentage: 19.1 }
+              ]
             },
             {
               kpi_id: 'kpi-effectiveness',
@@ -121,21 +123,21 @@ export async function GET(request: NextRequest) {
               contributors: [
                 { source: 'Advocacy Actions', contribution: 0.42, percentage: 53.8 },
                 { source: 'Journey Completion', contribution: 0.25, percentage: 32.1 },
-                { source: 'Event Participation', contribution: 0.11, percentage: 14.1 },
-              ],
-            },
+                { source: 'Event Participation', contribution: 0.11, percentage: 14.1 }
+              ]
+            }
           ],
           total_impact: 2750000,
-          trend: generateTrendData(30, 'kpi'),
-        },
-      };
+          trend: generateTrendData(30, 'kpi')
+        }
+      }
 
-      return NextResponse.json(mockData);
+      return NextResponse.json(mockData)
     }
 
     // Production: Fetch real analytics data
     // This would aggregate data from various tables using complex queries
-    
+
     // Fetch communication metrics
     const { data: comms } = await supabase
       .from('universal_transactions')
@@ -145,92 +147,95 @@ export async function GET(request: NextRequest) {
         'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.SENT.v1',
         'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.DELIVERED.v1',
         'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.OPENED.v1',
-        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.CLICKED.v1',
+        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.CLICKED.v1'
       ])
       .gte('created_at', filters.date_from)
-      .lte('created_at', filters.date_to);
+      .lte('created_at', filters.date_to)
 
     // Calculate deliverability metrics
-    const deliverability = calculateDeliverabilityMetrics(comms || []);
+    const deliverability = calculateDeliverabilityMetrics(comms || [])
 
     // Fetch engagement journey data
     const { data: journeys } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data(*),
         core_relationships!from_entity_id(*)
-      `)
+      `
+      )
       .eq('organization_id', orgId)
-      .eq('entity_type', 'engagement_journey');
+      .eq('entity_type', 'engagement_journey')
 
-    const engagement_funnel = calculateEngagementMetrics(journeys || []);
+    const engagement_funnel = calculateEngagementMetrics(journeys || [])
 
     // Fetch event data
     const { data: events } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data(*)
-      `)
+      `
+      )
       .eq('organization_id', orgId)
       .eq('entity_type', 'event')
       .gte('created_at', filters.date_from)
-      .lte('created_at', filters.date_to);
+      .lte('created_at', filters.date_to)
 
-    const event_attendance = calculateEventMetrics(events || []);
+    const event_attendance = calculateEventMetrics(events || [])
 
     // Fetch journey progression
-    const journey_progression = calculateJourneyProgression(journeys || []);
+    const journey_progression = calculateJourneyProgression(journeys || [])
 
     // Fetch KPI data
     const { data: kpis } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data(*)
-      `)
+      `
+      )
       .eq('organization_id', orgId)
-      .eq('entity_type', 'kpi');
+      .eq('entity_type', 'kpi')
 
-    const kpi_contribution = calculateKPIContribution(kpis || []);
+    const kpi_contribution = calculateKPIContribution(kpis || [])
 
     const analyticsData: AnalyticsPanelData = {
       deliverability,
       engagement_funnel,
       event_attendance,
       journey_progression,
-      kpi_contribution,
-    };
+      kpi_contribution
+    }
 
-    return NextResponse.json(analyticsData);
+    return NextResponse.json(analyticsData)
   } catch (error) {
-    console.error('Error fetching analytics:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch analytics data' },
-      { status: 500 }
-    );
+    console.error('Error fetching analytics:', error)
+    return NextResponse.json({ error: 'Failed to fetch analytics data' }, { status: 500 })
   }
 }
 
 // Helper functions
 
 function generateTrendData(days: number, type: string) {
-  const data = [];
-  const now = new Date();
-  
+  const data = []
+  const now = new Date()
+
   for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-    const baseValue = Math.random() * 100;
-    
+    const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
+    const baseValue = Math.random() * 100
+
     data.push({
       timestamp: date.toISOString(),
       value: Math.round(baseValue + Math.random() * 50),
-      label: date.toLocaleDateString(),
-    });
+      label: date.toLocaleDateString()
+    })
   }
-  
-  return data;
+
+  return data
 }
 
 function calculateDeliverabilityMetrics(comms: any[]) {
@@ -245,8 +250,8 @@ function calculateDeliverabilityMetrics(comms: any[]) {
     delivery_rate: 95,
     open_rate: 68.1,
     click_rate: 18.9,
-    trend: generateTrendData(30, 'deliverability'),
-  };
+    trend: generateTrendData(30, 'deliverability')
+  }
 }
 
 function calculateEngagementMetrics(journeys: any[]) {
@@ -256,12 +261,12 @@ function calculateEngagementMetrics(journeys: any[]) {
       { stage_name: 'Discover', count: 3456, percentage: 100, conversion_rate: 65 },
       { stage_name: 'Nurture', count: 2246, percentage: 65, conversion_rate: 48 },
       { stage_name: 'Active', count: 1078, percentage: 31.2, conversion_rate: 72 },
-      { stage_name: 'Champion', count: 776, percentage: 22.5, conversion_rate: 100 },
+      { stage_name: 'Champion', count: 776, percentage: 22.5, conversion_rate: 100 }
     ],
     total_journeys: journeys.length || 3456,
     avg_time_to_convert: 21.5,
-    trend: generateTrendData(30, 'engagement'),
-  };
+    trend: generateTrendData(30, 'engagement')
+  }
 }
 
 function calculateEventMetrics(events: any[]) {
@@ -277,10 +282,10 @@ function calculateEventMetrics(events: any[]) {
       { type: 'Webinar', count: 6, attendance_rate: 85 },
       { type: 'Workshop', count: 4, attendance_rate: 75 },
       { type: 'Conference', count: 3, attendance_rate: 82 },
-      { type: 'Roundtable', count: 2, attendance_rate: 90 },
+      { type: 'Roundtable', count: 2, attendance_rate: 90 }
     ],
-    trend: generateTrendData(30, 'events'),
-  };
+    trend: generateTrendData(30, 'events')
+  }
 }
 
 function calculateJourneyProgression(journeys: any[]) {
@@ -293,16 +298,16 @@ function calculateJourneyProgression(journeys: any[]) {
       { stage_name: 'Discover', count: 1210, avg_score: 25 },
       { stage_name: 'Nurture', count: 1168, avg_score: 48 },
       { stage_name: 'Active', count: 302, avg_score: 72 },
-      { stage_name: 'Champion', count: 776, avg_score: 92 },
+      { stage_name: 'Champion', count: 776, avg_score: 92 }
     ],
     score_distribution: [
       { range: '0-25', count: 1210 },
       { range: '26-50', count: 1168 },
       { range: '51-75', count: 302 },
-      { range: '76-100', count: 776 },
+      { range: '76-100', count: 776 }
     ],
-    trend: generateTrendData(30, 'journey'),
-  };
+    trend: generateTrendData(30, 'journey')
+  }
 }
 
 function calculateKPIContribution(kpis: any[]) {
@@ -318,8 +323,8 @@ function calculateKPIContribution(kpis: any[]) {
         contributors: [
           { source: 'Grant Notifications', contribution: 450000, percentage: 54.5 },
           { source: 'Funding Workshops', contribution: 225000, percentage: 27.3 },
-          { source: 'Direct Outreach', contribution: 150000, percentage: 18.2 },
-        ],
+          { source: 'Direct Outreach', contribution: 150000, percentage: 18.2 }
+        ]
       },
       {
         kpi_id: 'kpi-underserved',
@@ -330,11 +335,11 @@ function calculateKPIContribution(kpis: any[]) {
         contributors: [
           { source: 'Journey Progression', contribution: 35, percentage: 51.5 },
           { source: 'Community Events', contribution: 20, percentage: 29.4 },
-          { source: 'Communications', contribution: 13, percentage: 19.1 },
-        ],
-      },
+          { source: 'Communications', contribution: 13, percentage: 19.1 }
+        ]
+      }
     ],
     total_impact: 2750000,
-    trend: generateTrendData(30, 'kpi'),
-  };
+    trend: generateTrendData(30, 'kpi')
+  }
 }

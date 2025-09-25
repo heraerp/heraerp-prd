@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
-import { useAiAssist } from '@/hooks/civicflow/useEmails';
-import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
+import { Separator } from '@/components/ui/separator'
+import { useAiAssist } from '@/hooks/civicflow/useEmails'
+import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
 import {
   Sparkles,
   X,
@@ -26,58 +26,58 @@ import {
   Tag,
   Clock,
   BarChart3
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface AiAssistantPanelProps {
-  emailId: string | null;
-  onClose: () => void;
+  emailId: string | null
+  onClose: () => void
 }
 
-type AiTask = 'summarize' | 'classify' | 'suggest' | 'analyze' | 'extract';
+type AiTask = 'summarize' | 'classify' | 'suggest' | 'analyze' | 'extract'
 
 interface AiResponse {
-  task: AiTask;
-  result: any;
-  confidence: number;
-  processing_time: number;
-  timestamp: string;
+  task: AiTask
+  result: any
+  confidence: number
+  processing_time: number
+  timestamp: string
 }
 
 interface EmailSummary {
-  key_points: string[];
-  action_items: string[];
-  sentiment: 'positive' | 'neutral' | 'negative';
-  urgency: 'low' | 'medium' | 'high';
-  entities: string[];
+  key_points: string[]
+  action_items: string[]
+  sentiment: 'positive' | 'neutral' | 'negative'
+  urgency: 'low' | 'medium' | 'high'
+  entities: string[]
 }
 
 interface EmailClassification {
-  priority: 'urgent' | 'normal' | 'low';
-  category: string;
-  tags: string[];
-  confidence: number;
-  reasoning: string;
+  priority: 'urgent' | 'normal' | 'low'
+  category: string
+  tags: string[]
+  confidence: number
+  reasoning: string
 }
 
 interface SuggestedReply {
-  tone: 'professional' | 'friendly' | 'formal';
-  content: string;
-  confidence: number;
-  reasoning: string;
+  tone: 'professional' | 'friendly' | 'formal'
+  content: string
+  confidence: number
+  reasoning: string
 }
 
 export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
-  const { toast } = useToast();
-  const [activeTask, setActiveTask] = useState<AiTask | null>(null);
+  const { toast } = useToast()
+  const [activeTask, setActiveTask] = useState<AiTask | null>(null)
   const [responses, setResponses] = useState<Record<AiTask, AiResponse | null>>({
     summarize: null,
     classify: null,
     suggest: null,
     analyze: null,
     extract: null
-  });
+  })
 
-  const { mutateAsync: performAiTask, isPending } = useAiAssist();
+  const { mutateAsync: performAiTask, isPending } = useAiAssist()
 
   const handleAiTask = async (task: AiTask) => {
     if (!emailId) {
@@ -85,17 +85,17 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
         title: 'No email selected',
         description: 'Please select an email to use AI assistance.',
         variant: 'destructive'
-      });
-      return;
+      })
+      return
     }
 
-    setActiveTask(task);
+    setActiveTask(task)
 
     try {
       const response = await performAiTask({
         emailId,
         task
-      });
+      })
 
       setResponses(prev => ({
         ...prev,
@@ -106,36 +106,38 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
           processing_time: response.processing_time,
           timestamp: new Date().toISOString()
         }
-      }));
+      }))
 
       toast({
         title: 'AI analysis complete',
         description: `${task} completed in ${response.processing_time}ms`
-      });
+      })
     } catch (error: any) {
       toast({
         title: 'AI analysis failed',
         description: error.message || 'Failed to process AI request',
         variant: 'destructive'
-      });
+      })
     } finally {
-      setActiveTask(null);
+      setActiveTask(null)
     }
-  };
+  }
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(text)
     toast({
       title: 'Copied to clipboard',
       description: 'Content has been copied to your clipboard.'
-    });
-  };
+    })
+  }
 
   const getConfidenceColor = (confidence: number): string => {
-    if (confidence >= 0.8) return 'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/30';
-    if (confidence >= 0.6) return 'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/30';
-    return 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30';
-  };
+    if (confidence >= 0.8)
+      return 'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/30'
+    if (confidence >= 0.6)
+      return 'text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-900/30'
+    return 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30'
+  }
 
   const renderSummary = (summary: EmailSummary) => (
     <div className="space-y-4">
@@ -174,22 +176,26 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Sentiment:</span>
-          <Badge className={cn(
-            summary.sentiment === 'positive' && 'bg-green-100 text-green-800',
-            summary.sentiment === 'negative' && 'bg-red-100 text-red-800',
-            summary.sentiment === 'neutral' && 'bg-gray-100 text-gray-800'
-          )}>
+          <Badge
+            className={cn(
+              summary.sentiment === 'positive' && 'bg-green-100 text-green-800',
+              summary.sentiment === 'negative' && 'bg-red-100 text-red-800',
+              summary.sentiment === 'neutral' && 'bg-gray-100 text-gray-800'
+            )}
+          >
             {summary.sentiment}
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Urgency:</span>
-          <Badge className={cn(
-            summary.urgency === 'high' && 'bg-red-100 text-red-800',
-            summary.urgency === 'medium' && 'bg-yellow-100 text-yellow-800',
-            summary.urgency === 'low' && 'bg-blue-100 text-blue-800'
-          )}>
+          <Badge
+            className={cn(
+              summary.urgency === 'high' && 'bg-red-100 text-red-800',
+              summary.urgency === 'medium' && 'bg-yellow-100 text-yellow-800',
+              summary.urgency === 'low' && 'bg-blue-100 text-blue-800'
+            )}
+          >
             {summary.urgency}
           </Badge>
         </div>
@@ -208,18 +214,20 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
         </div>
       )}
     </div>
-  );
+  )
 
   const renderClassification = (classification: EmailClassification) => (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="font-medium">Priority:</span>
-          <Badge className={cn(
-            classification.priority === 'urgent' && 'bg-red-100 text-red-800',
-            classification.priority === 'normal' && 'bg-blue-100 text-blue-800',
-            classification.priority === 'low' && 'bg-gray-100 text-gray-800'
-          )}>
+          <Badge
+            className={cn(
+              classification.priority === 'urgent' && 'bg-red-100 text-red-800',
+              classification.priority === 'normal' && 'bg-blue-100 text-blue-800',
+              classification.priority === 'low' && 'bg-gray-100 text-gray-800'
+            )}
+          >
             {classification.priority}
           </Badge>
         </div>
@@ -250,7 +258,7 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
         <p className="text-sm text-muted-foreground">{classification.reasoning}</p>
       </div>
     </div>
-  );
+  )
 
   const renderSuggestedReply = (reply: SuggestedReply) => (
     <div className="space-y-4">
@@ -267,19 +275,11 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
       <div>
         <div className="flex items-center justify-between mb-2">
           <h4 className="font-medium">Suggested Reply</h4>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => copyToClipboard(reply.content)}
-          >
+          <Button variant="ghost" size="sm" onClick={() => copyToClipboard(reply.content)}>
             <Copy className="h-3 w-3" />
           </Button>
         </div>
-        <Textarea
-          value={reply.content}
-          readOnly
-          className="min-h-32 resize-none"
-        />
+        <Textarea value={reply.content} readOnly className="min-h-32 resize-none" />
       </div>
 
       <div>
@@ -287,15 +287,18 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
         <p className="text-sm text-muted-foreground">{reply.reasoning}</p>
       </div>
 
-      <Button className="w-full" onClick={() => {
-        // This would open the compose modal with the suggested reply
-        copyToClipboard(reply.content);
-      }}>
+      <Button
+        className="w-full"
+        onClick={() => {
+          // This would open the compose modal with the suggested reply
+          copyToClipboard(reply.content)
+        }}
+      >
         <Send className="h-4 w-4 mr-2" />
         Use This Reply
       </Button>
     </div>
-  );
+  )
 
   const aiTasks = [
     {
@@ -326,23 +329,18 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
       description: 'Deep sentiment analysis',
       color: 'text-orange-600'
     }
-  ];
+  ]
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700">
+    <div className="h-full flex flex-col bg-card border-l border-border">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-purple-600" />
             <h2 className="font-semibold">AI Assistant</h2>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={onClose}
-          >
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -365,18 +363,18 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
           <div className="p-4 space-y-6">
             {/* AI Task Buttons */}
             <div className="grid grid-cols-2 gap-2">
-              {aiTasks.map((task) => {
-                const Icon = task.icon;
-                const isActive = activeTask === task.key;
-                const hasResponse = responses[task.key] !== null;
-                
+              {aiTasks.map(task => {
+                const Icon = task.icon
+                const isActive = activeTask === task.key
+                const hasResponse = responses[task.key] !== null
+
                 return (
                   <Button
                     key={task.key}
-                    variant={hasResponse ? "default" : "outline"}
+                    variant={hasResponse ? 'default' : 'outline'}
                     className={cn(
-                      "h-auto p-3 flex flex-col items-center gap-1",
-                      hasResponse && "bg-purple-100 dark:bg-purple-900 border-purple-200"
+                      'h-auto p-3 flex flex-col items-center gap-1',
+                      hasResponse && 'bg-purple-100 dark:bg-purple-900 border-purple-200'
                     )}
                     onClick={() => handleAiTask(task.key)}
                     disabled={isPending}
@@ -384,21 +382,19 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
                     {isActive ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Icon className={cn("h-4 w-4", task.color)} />
+                      <Icon className={cn('h-4 w-4', task.color)} />
                     )}
                     <span className="text-xs font-medium">{task.label}</span>
-                    {hasResponse && (
-                      <div className="w-1 h-1 bg-green-500 rounded-full" />
-                    )}
+                    {hasResponse && <div className="w-1 h-1 bg-green-500 rounded-full" />}
                   </Button>
-                );
+                )
               })}
             </div>
 
             {/* AI Responses */}
             <div className="space-y-4">
               {Object.entries(responses).map(([taskKey, response]) => {
-                if (!response) return null;
+                if (!response) return null
 
                 return (
                   <Card key={taskKey}>
@@ -412,7 +408,10 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
                           {taskKey}
                         </CardTitle>
                         <div className="flex items-center gap-2">
-                          <Badge className={getConfidenceColor(response.confidence)} variant="secondary">
+                          <Badge
+                            className={getConfidenceColor(response.confidence)}
+                            variant="secondary"
+                          >
                             {Math.round(response.confidence * 100)}%
                           </Badge>
                           <Button
@@ -436,12 +435,14 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
                       {taskKey === 'suggest' && renderSuggestedReply(response.result)}
                       {taskKey === 'analyze' && (
                         <div className="text-sm">
-                          <pre className="whitespace-pre-wrap">{JSON.stringify(response.result, null, 2)}</pre>
+                          <pre className="whitespace-pre-wrap">
+                            {JSON.stringify(response.result, null, 2)}
+                          </pre>
                         </div>
                       )}
                     </CardContent>
                   </Card>
-                );
+                )
               })}
             </div>
 
@@ -475,5 +476,5 @@ export function AiAssistantPanel({ emailId, onClose }: AiAssistantPanelProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

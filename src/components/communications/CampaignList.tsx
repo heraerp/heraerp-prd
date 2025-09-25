@@ -1,35 +1,35 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+  TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   Search,
   Filter,
@@ -42,38 +42,38 @@ import {
   Download,
   Mail,
   MessageSquare,
-  Globe,
-} from 'lucide-react';
-import { useCampaignList } from '@/hooks/use-communications';
-import { Campaign } from '@/types/communications';
+  Globe
+} from 'lucide-react'
+import { useCampaignList } from '@/hooks/use-communications'
+import { Campaign } from '@/types/communications'
 
 export function CampaignList() {
-  const router = useRouter();
-  const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter()
+  const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
     channel: [],
-    status: [],
-  });
-  
+    status: []
+  })
+
   const { data, isLoading } = useCampaignList({
     q: searchQuery,
-    ...filters,
-  });
-  
+    ...filters
+  })
+
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const getStatusBadge = (status: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
       draft: 'secondary',
@@ -81,32 +81,32 @@ export function CampaignList() {
       running: 'default',
       paused: 'outline',
       completed: 'secondary',
-      cancelled: 'destructive',
-    };
-    
+      cancelled: 'destructive'
+    }
+
     return (
       <Badge variant={variants[status] || 'secondary'}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
-    );
-  };
-  
+    )
+  }
+
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.items) {
-      setSelectedCampaigns(data.items.map(c => c.id));
+      setSelectedCampaigns(data.items.map(c => c.id))
     } else {
-      setSelectedCampaigns([]);
+      setSelectedCampaigns([])
     }
-  };
-  
+  }
+
   const handleSelectCampaign = (campaignId: string, checked: boolean) => {
     if (checked) {
-      setSelectedCampaigns([...selectedCampaigns, campaignId]);
+      setSelectedCampaigns([...selectedCampaigns, campaignId])
     } else {
-      setSelectedCampaigns(selectedCampaigns.filter(id => id !== campaignId));
+      setSelectedCampaigns(selectedCampaigns.filter(id => id !== campaignId))
     }
-  };
-  
+  }
+
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
@@ -116,7 +116,7 @@ export function CampaignList() {
           <Input
             placeholder="Search campaigns..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -144,7 +144,7 @@ export function CampaignList() {
           </SelectContent>
         </Select>
       </div>
-      
+
       {/* Bulk Actions */}
       {selectedCampaigns.length > 0 && (
         <div className="bg-muted/50 p-3 rounded-lg flex items-center justify-between">
@@ -167,7 +167,7 @@ export function CampaignList() {
           </div>
         </div>
       )}
-      
+
       {/* Campaign Table */}
       <div className="border rounded-lg">
         <Table>
@@ -175,7 +175,9 @@ export function CampaignList() {
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox
-                  checked={selectedCampaigns.length === data?.items?.length && data?.items?.length > 0}
+                  checked={
+                    selectedCampaigns.length === data?.items?.length && data?.items?.length > 0
+                  }
                   onCheckedChange={handleSelectAll}
                 />
               </TableHead>
@@ -194,7 +196,9 @@ export function CampaignList() {
                 <TableCell>
                   <Checkbox
                     checked={selectedCampaigns.includes(campaign.id)}
-                    onCheckedChange={(checked) => handleSelectCampaign(campaign.id, checked as boolean)}
+                    onCheckedChange={checked =>
+                      handleSelectCampaign(campaign.id, checked as boolean)
+                    }
                   />
                 </TableCell>
                 <TableCell>
@@ -217,9 +221,7 @@ export function CampaignList() {
                     </p>
                   </div>
                 </TableCell>
-                <TableCell>
-                  {getStatusBadge(campaign.status)}
-                </TableCell>
+                <TableCell>{getStatusBadge(campaign.status)}</TableCell>
                 <TableCell>
                   {campaign.schedule_at ? (
                     <div>
@@ -236,7 +238,8 @@ export function CampaignList() {
                   <div className="text-sm">
                     <p>Sent: {campaign.metrics.sent.toLocaleString()}</p>
                     <p className="text-muted-foreground">
-                      Open: {campaign.metrics.opened > 0 
+                      Open:{' '}
+                      {campaign.metrics.opened > 0
                         ? `${((campaign.metrics.opened / campaign.metrics.sent) * 100).toFixed(1)}%`
                         : '0%'}
                     </p>
@@ -251,7 +254,11 @@ export function CampaignList() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => router.push(`/civicflow/communications/campaigns/${campaign.id}`)}>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/civicflow/communications/campaigns/${campaign.id}`)
+                        }
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
@@ -284,5 +291,5 @@ export function CampaignList() {
         </Table>
       </div>
     </div>
-  );
+  )
 }

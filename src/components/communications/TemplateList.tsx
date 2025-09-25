@@ -1,35 +1,35 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+  TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   Search,
   MoreHorizontal,
@@ -40,54 +40,54 @@ import {
   Mail,
   MessageSquare,
   Globe,
-  Code,
-} from 'lucide-react';
-import { useTemplateList } from '@/hooks/use-communications';
-import { Template } from '@/types/communications';
+  Code
+} from 'lucide-react'
+import { useTemplateList } from '@/hooks/use-communications'
+import { Template } from '@/types/communications'
 
 export function TemplateList() {
-  const router = useRouter();
-  const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter()
+  const [selectedTemplates, setSelectedTemplates] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
     channel: [],
-    is_active: null,
-  });
-  
+    is_active: null
+  })
+
   const { data, isLoading } = useTemplateList({
     q: searchQuery,
-    ...filters,
-  });
-  
+    ...filters
+  })
+
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.items) {
-      setSelectedTemplates(data.items.map(t => t.id));
+      setSelectedTemplates(data.items.map(t => t.id))
     } else {
-      setSelectedTemplates([]);
+      setSelectedTemplates([])
     }
-  };
-  
+  }
+
   const handleSelectTemplate = (templateId: string, checked: boolean) => {
     if (checked) {
-      setSelectedTemplates([...selectedTemplates, templateId]);
+      setSelectedTemplates([...selectedTemplates, templateId])
     } else {
-      setSelectedTemplates(selectedTemplates.filter(id => id !== templateId));
+      setSelectedTemplates(selectedTemplates.filter(id => id !== templateId))
     }
-  };
-  
+  }
+
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
@@ -97,7 +97,7 @@ export function TemplateList() {
           <Input
             placeholder="Search templates..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -123,7 +123,7 @@ export function TemplateList() {
           </SelectContent>
         </Select>
       </div>
-      
+
       {/* Bulk Actions */}
       {selectedTemplates.length > 0 && (
         <div className="bg-muted/50 p-3 rounded-lg flex items-center justify-between">
@@ -141,7 +141,7 @@ export function TemplateList() {
           </div>
         </div>
       )}
-      
+
       {/* Template Table */}
       <div className="border rounded-lg">
         <Table>
@@ -149,7 +149,9 @@ export function TemplateList() {
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox
-                  checked={selectedTemplates.length === data?.items?.length && data?.items?.length > 0}
+                  checked={
+                    selectedTemplates.length === data?.items?.length && data?.items?.length > 0
+                  }
                   onCheckedChange={handleSelectAll}
                 />
               </TableHead>
@@ -168,7 +170,9 @@ export function TemplateList() {
                 <TableCell>
                   <Checkbox
                     checked={selectedTemplates.includes(template.id)}
-                    onCheckedChange={(checked) => handleSelectTemplate(template.id, checked as boolean)}
+                    onCheckedChange={checked =>
+                      handleSelectTemplate(template.id, checked as boolean)
+                    }
                   />
                 </TableCell>
                 <TableCell>
@@ -203,9 +207,7 @@ export function TemplateList() {
                     {template.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  {format(new Date(template.updated_at), 'MMM d, yyyy')}
-                </TableCell>
+                <TableCell>{format(new Date(template.updated_at), 'MMM d, yyyy')}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -215,7 +217,11 @@ export function TemplateList() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => router.push(`/civicflow/communications/templates/${template.id}`)}>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/civicflow/communications/templates/${template.id}`)
+                        }
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
@@ -241,5 +247,5 @@ export function TemplateList() {
         </Table>
       </div>
     </div>
-  );
+  )
 }

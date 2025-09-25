@@ -152,7 +152,7 @@ SELECT
     tl.line_type,
     tl.description,
     tl.quantity,
-    tl.unit_amount,
+    tl.unit_price,
     tl.line_amount,
     tl.discount_amount,
     tl.tax_amount,

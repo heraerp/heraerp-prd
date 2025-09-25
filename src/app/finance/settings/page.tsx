@@ -227,7 +227,9 @@ export default function FinanceSettingsPage() {
             {activeSection === 'general' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-200 to-amber-100 bg-clip-text text-transparent mb-4">General Settings</h2>
+                  <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-200 to-amber-100 bg-clip-text text-transparent mb-4">
+                    General Settings
+                  </h2>
                   <p className="text-foreground/60 mb-6">
                     Configure basic financial system preferences
                   </p>
@@ -451,7 +453,9 @@ export default function FinanceSettingsPage() {
             {activeSection === 'documents' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-200 to-amber-100 bg-clip-text text-transparent mb-4">Document Numbering</h2>
+                  <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-200 to-amber-100 bg-clip-text text-transparent mb-4">
+                    Document Numbering
+                  </h2>
                   <p className="text-foreground/60 mb-6">
                     Configure document prefixes and numbering sequences
                   </p>

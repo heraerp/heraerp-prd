@@ -97,7 +97,7 @@ export default function OwnerDashboard() {
       const inventoryResponse = await fetch('/api/dashboard/inventory')
       if (!inventoryResponse.ok) throw new Error('Failed to fetch inventory data')
       const inventoryResponseData = await inventoryResponse.json()
-      
+
       // Handle both array and object response formats
       let inventoryArray: InventoryItem[] = []
       if (Array.isArray(inventoryResponseData)) {
@@ -113,7 +113,7 @@ export default function OwnerDashboard() {
         console.warn('Unexpected inventory data format:', inventoryResponseData)
         inventoryArray = []
       }
-      
+
       // Filter for low stock items
       setInventoryData(
         inventoryArray.filter(

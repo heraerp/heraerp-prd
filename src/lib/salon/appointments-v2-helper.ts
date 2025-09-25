@@ -70,7 +70,8 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new Error(
-      (data && (data.error || data.message)) || `Failed to create appointment (status ${res.status})`
+      (data && (data.error || data.message)) ||
+        `Failed to create appointment (status ${res.status})`
     )
   }
 

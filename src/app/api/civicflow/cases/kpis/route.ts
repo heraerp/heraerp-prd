@@ -18,16 +18,14 @@ export async function GET(request: NextRequest) {
         }
       }
     )
-    
+
     // Get organization ID from header
-    const orgId = request.headers.get('X-Organization-Id') || 
+    const orgId =
+      request.headers.get('X-Organization-Id') ||
       (request.nextUrl.pathname.startsWith('/civicflow') ? DEMO_ORG_ID : null)
-    
+
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     // Get all case entities
@@ -51,7 +49,7 @@ export async function GET(request: NextRequest) {
     }
 
     const caseIds = entities.map(e => e.id)
-    
+
     // Get dynamic fields for status, rag, due_date
     const { data: dynamicFields, error: dynamicError } = await supabase
       .from('core_dynamic_data')
@@ -109,7 +107,7 @@ export async function GET(request: NextRequest) {
     const now = new Date()
     const weekStart = startOfWeek(now)
     const weekEnd = endOfWeek(now)
-    
+
     let open = 0
     let due_this_week = 0
     let breaches = 0
@@ -157,13 +155,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const avg_resolution_days = resolved_count > 0 
-      ? Math.round(total_resolution_days / resolved_count) 
-      : 0
+    const avg_resolution_days =
+      resolved_count > 0 ? Math.round(total_resolution_days / resolved_count) : 0
 
-    const on_time_pct = total_closed > 0
-      ? Math.round((on_time_closed / total_closed) * 100)
-      : 100
+    const on_time_pct = total_closed > 0 ? Math.round((on_time_closed / total_closed) * 100) : 100
 
     const kpis: CaseKpis = {
       open,
@@ -175,12 +170,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(kpis)
-
   } catch (error) {
     console.error('Cases KPIs error:', error)
-    return NextResponse.json(
-      { error: 'Failed to calculate KPIs' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to calculate KPIs' }, { status: 500 })
   }
 }

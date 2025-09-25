@@ -1,31 +1,27 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useState } from 'react'
+import { format } from 'date-fns'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+  TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
+  SelectValue
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Search,
   Calendar as CalendarIcon,
@@ -40,67 +36,67 @@ import {
   Clock,
   Download,
   ArrowUpRight,
-  ArrowDownLeft,
-} from 'lucide-react';
-import { useOutboxMessages, useInboxMessages } from '@/hooks/use-communications';
-import { Message } from '@/types/communications';
-import { cn } from '@/lib/utils';
+  ArrowDownLeft
+} from 'lucide-react'
+import { useOutboxMessages, useInboxMessages } from '@/hooks/use-communications'
+import { Message } from '@/types/communications'
+import { cn } from '@/lib/utils'
 
 interface MessageListProps {
-  direction: 'in' | 'out';
+  direction: 'in' | 'out'
 }
 
 export function MessageList({ direction }: MessageListProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
     channel: [],
     status: [],
     date_from: null,
-    date_to: null,
-  });
+    date_to: null
+  })
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: undefined,
-    to: undefined,
-  });
-  
-  const useMessages = direction === 'out' ? useOutboxMessages : useInboxMessages;
+    to: undefined
+  })
+
+  const useMessages = direction === 'out' ? useOutboxMessages : useInboxMessages
   const { data, isLoading } = useMessages({
     q: searchQuery,
-    ...filters,
-  });
-  
+    ...filters
+  })
+
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'sent':
-        return <Send className="h-4 w-4" />;
+        return <Send className="h-4 w-4" />
       case 'delivered':
-        return <Check className="h-4 w-4" />;
+        return <Check className="h-4 w-4" />
       case 'opened':
-        return <Eye className="h-4 w-4" />;
+        return <Eye className="h-4 w-4" />
       case 'failed':
-        return <X className="h-4 w-4" />;
+        return <X className="h-4 w-4" />
       case 'bounced':
-        return <AlertCircle className="h-4 w-4" />;
+        return <AlertCircle className="h-4 w-4" />
       case 'pending':
-        return <Clock className="h-4 w-4" />;
+        return <Clock className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const getStatusBadge = (status: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
       sent: 'secondary',
@@ -109,17 +105,17 @@ export function MessageList({ direction }: MessageListProps) {
       failed: 'destructive',
       bounced: 'destructive',
       pending: 'outline',
-      received: 'default',
-    };
-    
+      received: 'default'
+    }
+
     return (
       <Badge variant={variants[status] || 'secondary'} className="flex items-center gap-1">
         {getStatusIcon(status)}
         <span>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
       </Badge>
-    );
-  };
-  
+    )
+  }
+
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
@@ -129,7 +125,7 @@ export function MessageList({ direction }: MessageListProps) {
           <Input
             placeholder="Search messages..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -196,7 +192,7 @@ export function MessageList({ direction }: MessageListProps) {
           </PopoverContent>
         </Popover>
       </div>
-      
+
       {/* Export Button */}
       <div className="flex justify-end">
         <Button variant="outline">
@@ -204,7 +200,7 @@ export function MessageList({ direction }: MessageListProps) {
           Export Messages
         </Button>
       </div>
-      
+
       {/* Message Table */}
       <div className="border rounded-lg">
         <Table>
@@ -229,18 +225,18 @@ export function MessageList({ direction }: MessageListProps) {
             {data?.items?.map((message: Message) => (
               <TableRow key={message.id}>
                 <TableCell>
-                  <div className={cn(
-                    'h-2 w-2 rounded-full',
-                    message.status === 'failed' || message.status === 'bounced' 
-                      ? 'bg-destructive' 
-                      : 'bg-primary'
-                  )} />
+                  <div
+                    className={cn(
+                      'h-2 w-2 rounded-full',
+                      message.status === 'failed' || message.status === 'bounced'
+                        ? 'bg-destructive'
+                        : 'bg-primary'
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <div className="max-w-[300px]">
-                    {message.subject && (
-                      <p className="font-medium truncate">{message.subject}</p>
-                    )}
+                    {message.subject && <p className="font-medium truncate">{message.subject}</p>}
                     <p className="text-sm text-muted-foreground truncate">
                       {message.body_text || 'No preview available'}
                     </p>
@@ -254,7 +250,9 @@ export function MessageList({ direction }: MessageListProps) {
                 </TableCell>
                 <TableCell>
                   <div>
-                    <p className="truncate">{direction === 'out' ? message.recipient : message.sender}</p>
+                    <p className="truncate">
+                      {direction === 'out' ? message.recipient : message.sender}
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -264,9 +262,7 @@ export function MessageList({ direction }: MessageListProps) {
                     <span className="text-muted-foreground">-</span>
                   )}
                 </TableCell>
-                <TableCell>
-                  {getStatusBadge(message.status)}
-                </TableCell>
+                <TableCell>{getStatusBadge(message.status)}</TableCell>
                 <TableCell>
                   <div>
                     <p>{format(new Date(message.created_at), 'MMM d')}</p>
@@ -281,5 +277,5 @@ export function MessageList({ direction }: MessageListProps) {
         </Table>
       </div>
     </div>
-  );
+  )
 }

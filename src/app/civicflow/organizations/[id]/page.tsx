@@ -1,72 +1,67 @@
-'use client';
+'use client'
 
-import { useState, useEffect, Suspense } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useOrgProfile } from '@/hooks/use-organizations';
-import OrgHeader from '@/components/organizations/OrgHeader';
-import OrgOverview from '@/components/organizations/OrgOverview';
-import OrgContacts from '@/components/organizations/OrgContacts';
-import OrgEngagement from '@/components/organizations/OrgEngagement';
-import OrgFunding from '@/components/organizations/OrgFunding';
-import OrgEvents from '@/components/organizations/OrgEvents';
-import OrgComms from '@/components/organizations/OrgComms';
-import OrgCases from '@/components/organizations/OrgCases';
-import OrgFiles from '@/components/organizations/OrgFiles';
-import OrgActivity from '@/components/organizations/OrgActivity';
+import { useState, useEffect, Suspense } from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { AlertCircle, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useOrgProfile } from '@/hooks/use-organizations'
+import OrgHeader from '@/components/organizations/OrgHeader'
+import OrgOverview from '@/components/organizations/OrgOverview'
+import OrgContacts from '@/components/organizations/OrgContacts'
+import OrgEngagement from '@/components/organizations/OrgEngagement'
+import OrgFunding from '@/components/organizations/OrgFunding'
+import OrgEvents from '@/components/organizations/OrgEvents'
+import OrgComms from '@/components/organizations/OrgComms'
+import OrgCases from '@/components/organizations/OrgCases'
+import OrgFiles from '@/components/organizations/OrgFiles'
+import OrgActivity from '@/components/organizations/OrgActivity'
 
-const TAB_KEY = 'civicflow_org_profile_tab';
+const TAB_KEY = 'civicflow_org_profile_tab'
 
 export default function OrganizationProfilePage() {
-  const params = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const orgId = params.id as string;
+  const params = useParams()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const orgId = params.id as string
 
   // Get initial tab from URL or localStorage
-  const urlTab = searchParams.get('tab');
-  const savedTab = typeof window !== 'undefined' ? localStorage.getItem(TAB_KEY) : null;
-  const [activeTab, setActiveTab] = useState(urlTab || savedTab || 'overview');
+  const urlTab = searchParams.get('tab')
+  const savedTab = typeof window !== 'undefined' ? localStorage.getItem(TAB_KEY) : null
+  const [activeTab, setActiveTab] = useState(urlTab || savedTab || 'overview')
 
   // Fetch organization profile
-  const { data: profile, isLoading, error } = useOrgProfile(orgId);
+  const { data: profile, isLoading, error } = useOrgProfile(orgId)
 
   // Update localStorage and URL when tab changes
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    localStorage.setItem(TAB_KEY, value);
-    
+    setActiveTab(value)
+    localStorage.setItem(TAB_KEY, value)
+
     // Update URL without navigation
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('tab', value);
-    window.history.replaceState({}, '', newUrl.toString());
-  };
+    const newUrl = new URL(window.location.href)
+    newUrl.searchParams.set('tab', value)
+    window.history.replaceState({}, '', newUrl.toString())
+  }
 
   // Sync with URL changes
   useEffect(() => {
-    const tab = searchParams.get('tab');
+    const tab = searchParams.get('tab')
     if (tab && tab !== activeTab) {
-      setActiveTab(tab);
+      setActiveTab(tab)
     }
-  }, [searchParams]);
+  }, [searchParams])
 
   if (isLoading) {
-    return <LoadingSkeleton />;
+    return <LoadingSkeleton />
   }
 
   if (error || !profile) {
     return (
       <div className="container mx-auto p-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.back()}
-          className="mb-4"
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.back()} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
@@ -78,18 +73,14 @@ export default function OrganizationProfilePage() {
           </AlertDescription>
         </Alert>
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4 mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Organizations
           </Button>
@@ -152,7 +143,7 @@ export default function OrganizationProfilePage() {
         </Tabs>
       </div>
     </div>
-  );
+  )
 }
 
 function LoadingSkeleton() {
@@ -169,7 +160,7 @@ function LoadingSkeleton() {
         <Skeleton className="h-64 w-full" />
       </div>
     </div>
-  );
+  )
 }
 
 function TabLoadingSkeleton() {
@@ -178,5 +169,5 @@ function TabLoadingSkeleton() {
       <Skeleton className="h-48 w-full" />
       <Skeleton className="h-48 w-full" />
     </div>
-  );
+  )
 }

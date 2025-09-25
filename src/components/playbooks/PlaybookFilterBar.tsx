@@ -1,48 +1,54 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { Search, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import type { PlaybookFilters, PlaybookStatus, PlaybookCategory } from '@/types/playbooks';
+import React from 'react'
+import { Search, X } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import type { PlaybookFilters, PlaybookStatus, PlaybookCategory } from '@/types/playbooks'
 
 interface PlaybookFilterBarProps {
-  filters: PlaybookFilters;
-  onFiltersChange: (filters: PlaybookFilters) => void;
-  onClear: () => void;
+  filters: PlaybookFilters
+  onFiltersChange: (filters: PlaybookFilters) => void
+  onClear: () => void
 }
 
 export function PlaybookFilterBar({ filters, onFiltersChange, onClear }: PlaybookFilterBarProps) {
   const handleSearchChange = (value: string) => {
-    onFiltersChange({ ...filters, q: value });
-  };
+    onFiltersChange({ ...filters, q: value })
+  }
 
   const handleStatusChange = (value: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      status: value === 'all' ? undefined : value as PlaybookStatus 
-    });
-  };
+    onFiltersChange({
+      ...filters,
+      status: value === 'all' ? undefined : (value as PlaybookStatus)
+    })
+  }
 
   const handleCategoryChange = (value: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      category: value === 'all' ? undefined : value as PlaybookCategory 
-    });
-  };
+    onFiltersChange({
+      ...filters,
+      category: value === 'all' ? undefined : (value as PlaybookCategory)
+    })
+  }
 
   const handleServiceChange = (value: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      service_id: value === 'all' ? undefined : value 
-    });
-  };
+    onFiltersChange({
+      ...filters,
+      service_id: value === 'all' ? undefined : value
+    })
+  }
 
-  const activeFiltersCount = Object.entries(filters)
-    .filter(([key, value]) => key !== 'page' && key !== 'pageSize' && value !== undefined && value !== '')
-    .length;
+  const activeFiltersCount = Object.entries(filters).filter(
+    ([key, value]) => key !== 'page' && key !== 'pageSize' && value !== undefined && value !== ''
+  ).length
 
   return (
     <div className="space-y-4">
@@ -53,7 +59,7 @@ export function PlaybookFilterBar({ filters, onFiltersChange, onClear }: Playboo
           <Input
             placeholder="Search playbooks..."
             value={filters.q || ''}
-            onChange={(e) => handleSearchChange(e.target.value)}
+            onChange={e => handleSearchChange(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -159,5 +165,5 @@ export function PlaybookFilterBar({ filters, onFiltersChange, onClear }: Playboo
         </div>
       )}
     </div>
-  );
+  )
 }

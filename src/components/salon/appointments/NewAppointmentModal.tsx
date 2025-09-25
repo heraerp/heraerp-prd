@@ -470,7 +470,12 @@ export function NewAppointmentModal({
             <Button
               type="submit"
               disabled={
-                submitting || formLoading || !customerId || !serviceId || !staffId || !appointmentTime
+                submitting ||
+                formLoading ||
+                !customerId ||
+                !serviceId ||
+                !staffId ||
+                !appointmentTime
               }
               className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-lg disabled:opacity-50"
             >

@@ -1,7 +1,20 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Home, Monitor, Shield, Zap, Users, TrendingUp, CheckCircle, ArrowRight, Globe, Wifi } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  Monitor,
+  Shield,
+  Zap,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  ArrowRight,
+  Globe,
+  Wifi
+} from 'lucide-react'
 
 export default function ISPPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -16,9 +29,7 @@ export default function ISPPresentation() {
           <div className="mb-8">
             <Wifi className="w-24 h-24 text-white mx-auto mb-4 animate-pulse" />
           </div>
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 text-white">
-            HERA ERP for ISP
-          </h1>
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 text-white">HERA ERP for ISP</h1>
           <p className="text-2xl md:text-3xl text-white/90 mb-8">
             Revolutionary Business Management Solution
           </p>
@@ -40,21 +51,29 @@ export default function ISPPresentation() {
             <div className="space-y-6">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
                 <h3 className="text-2xl font-semibold mb-3 text-white">Manual Operations</h3>
-                <p className="text-white/80">Spreadsheets, paper forms, and disconnected systems slowing down growth</p>
+                <p className="text-white/80">
+                  Spreadsheets, paper forms, and disconnected systems slowing down growth
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
                 <h3 className="text-2xl font-semibold mb-3 text-white">Billing Complexity</h3>
-                <p className="text-white/80">Managing thousands of subscribers with varying plans and payment cycles</p>
+                <p className="text-white/80">
+                  Managing thousands of subscribers with varying plans and payment cycles
+                </p>
               </div>
             </div>
             <div className="space-y-6">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
                 <h3 className="text-2xl font-semibold mb-3 text-white">Service Tracking</h3>
-                <p className="text-white/80">No real-time visibility into network status and customer issues</p>
+                <p className="text-white/80">
+                  No real-time visibility into network status and customer issues
+                </p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
                 <h3 className="text-2xl font-semibold mb-3 text-white">Growth Barriers</h3>
-                <p className="text-white/80">Traditional ERPs cost millions and take years to implement</p>
+                <p className="text-white/80">
+                  Traditional ERPs cost millions and take years to implement
+                </p>
               </div>
             </div>
           </div>
@@ -81,12 +100,16 @@ export default function ISPPresentation() {
             <div className="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/30 hover:scale-105 transition-transform">
               <Shield className="w-12 h-12 mb-4" style={{ color: '#FFD700' }} />
               <h3 className="text-xl font-semibold mb-2 text-white">6-Table Architecture</h3>
-              <p className="text-white/80">Universal design handles all ISP complexity without customization</p>
+              <p className="text-white/80">
+                Universal design handles all ISP complexity without customization
+              </p>
             </div>
             <div className="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/30 hover:scale-105 transition-transform">
               <Zap className="w-12 h-12 mb-4" style={{ color: '#FF6600' }} />
               <h3 className="text-xl font-semibold mb-2 text-white">AI-Powered</h3>
-              <p className="text-white/80">Smart automation for billing, support, and network management</p>
+              <p className="text-white/80">
+                Smart automation for billing, support, and network management
+              </p>
             </div>
           </div>
         </div>
@@ -106,7 +129,9 @@ export default function ISPPresentation() {
                 <CheckCircle className="w-8 h-8 flex-shrink-0 mt-1" style={{ color: '#FFD700' }} />
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Subscriber Management</h3>
-                  <p className="text-white/80">Complete lifecycle from signup to service delivery</p>
+                  <p className="text-white/80">
+                    Complete lifecycle from signup to service delivery
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -161,26 +186,34 @@ export default function ISPPresentation() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#FF6600' }}>90%</div>
+              <div className="text-4xl font-bold mb-2" style={{ color: '#FF6600' }}>
+                90%
+              </div>
               <p className="text-white/80">Reduction in manual work</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#FFD700' }}>24/7</div>
+              <div className="text-4xl font-bold mb-2" style={{ color: '#FFD700' }}>
+                24/7
+              </div>
               <p className="text-white/80">Automated operations</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#FF6600' }}>5x</div>
+              <div className="text-4xl font-bold mb-2" style={{ color: '#FF6600' }}>
+                5x
+              </div>
               <p className="text-white/80">Faster customer onboarding</p>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2" style={{ color: '#FFD700' }}>₹2L</div>
+              <div className="text-4xl font-bold mb-2" style={{ color: '#FFD700' }}>
+                ₹2L
+              </div>
               <p className="text-white/80">Monthly savings</p>
             </div>
           </div>
           <div className="bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/30">
             <p className="text-xl text-center text-white">
-              <span className="font-semibold">Kerala Vision Case Study:</span> Managing 50,000+ subscribers 
-              with zero downtime, automated billing, and real-time network monitoring
+              <span className="font-semibold">Kerala Vision Case Study:</span> Managing 50,000+
+              subscribers with zero downtime, automated billing, and real-time network monitoring
             </p>
           </div>
         </div>
@@ -201,8 +234,12 @@ export default function ISPPresentation() {
                   1
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-semibold text-white mb-2">Week 1-2: Setup & Migration</h3>
-                  <p className="text-white/80">Import subscriber data, configure billing cycles, set up user accounts</p>
+                  <h3 className="text-2xl font-semibold text-white mb-2">
+                    Week 1-2: Setup & Migration
+                  </h3>
+                  <p className="text-white/80">
+                    Import subscriber data, configure billing cycles, set up user accounts
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-6">
@@ -211,7 +248,9 @@ export default function ISPPresentation() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-semibold text-white mb-2">Week 3-4: Integration</h3>
-                  <p className="text-white/80">Connect payment gateways, SMS providers, and network monitoring tools</p>
+                  <p className="text-white/80">
+                    Connect payment gateways, SMS providers, and network monitoring tools
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-6">
@@ -219,8 +258,12 @@ export default function ISPPresentation() {
                   3
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-semibold text-white mb-2">Week 5-6: Training & Launch</h3>
-                  <p className="text-white/80">Staff training, pilot testing, and full production launch</p>
+                  <h3 className="text-2xl font-semibold text-white mb-2">
+                    Week 5-6: Training & Launch
+                  </h3>
+                  <p className="text-white/80">
+                    Staff training, pilot testing, and full production launch
+                  </p>
                 </div>
               </div>
             </div>
@@ -237,16 +280,21 @@ export default function ISPPresentation() {
             Ready to Transform?
           </h2>
           <p className="text-2xl mb-12 text-white/90 max-w-3xl">
-            Join the revolution in ISP management. Deploy HERA in 30 seconds and see immediate results.
+            Join the revolution in ISP management. Deploy HERA in 30 seconds and see immediate
+            results.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 mb-12">
-            <button className="px-8 py-4 text-xl font-semibold rounded-xl transition-all transform hover:scale-105" 
-                    style={{ backgroundColor: '#FF6600', color: 'white' }}>
+            <button
+              className="px-8 py-4 text-xl font-semibold rounded-xl transition-all transform hover:scale-105"
+              style={{ backgroundColor: '#FF6600', color: 'white' }}
+            >
               Schedule Demo
               <ArrowRight className="inline ml-2" />
             </button>
-            <button className="px-8 py-4 text-xl font-semibold rounded-xl border-2 text-white transition-all transform hover:scale-105"
-                    style={{ borderColor: '#FFD700' }}>
+            <button
+              className="px-8 py-4 text-xl font-semibold rounded-xl border-2 text-white transition-all transform hover:scale-105"
+              style={{ borderColor: '#FFD700' }}
+            >
               Download Whitepaper
             </button>
           </div>
@@ -301,15 +349,22 @@ export default function ISPPresentation() {
   }, [currentSlide, isAnimating])
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #7A004B 0%, #1C1F66 100%)'
-    }}>
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #7A004B 0%, #1C1F66 100%)'
+      }}
+    >
       {/* Background particles effect */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute w-96 h-96 rounded-full blur-3xl opacity-20"
-             style={{ background: '#FF6600', top: '-10%', right: '-10%' }} />
-        <div className="absolute w-96 h-96 rounded-full blur-3xl opacity-20"
-             style={{ background: '#FFD700', bottom: '-10%', left: '-10%' }} />
+        <div
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: '#FF6600', top: '-10%', right: '-10%' }}
+        />
+        <div
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: '#FFD700', bottom: '-10%', left: '-10%' }}
+        />
       </div>
 
       {/* Main content */}
@@ -321,10 +376,10 @@ export default function ISPPresentation() {
               <div
                 key={slide.id}
                 className={`absolute inset-0 p-12 transition-all duration-600 ${
-                  index === currentSlide 
-                    ? 'opacity-100 translate-x-0' 
-                    : index < currentSlide 
-                      ? 'opacity-0 -translate-x-full' 
+                  index === currentSlide
+                    ? 'opacity-100 translate-x-0'
+                    : index < currentSlide
+                      ? 'opacity-0 -translate-x-full'
                       : 'opacity-0 translate-x-full'
                 }`}
               >
@@ -339,8 +394,8 @@ export default function ISPPresentation() {
               onClick={prevSlide}
               disabled={currentSlide === 0}
               className={`p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 transition-all ${
-                currentSlide === 0 
-                  ? 'opacity-30 cursor-not-allowed' 
+                currentSlide === 0
+                  ? 'opacity-30 cursor-not-allowed'
                   : 'hover:bg-white/20 hover:scale-105'
               }`}
             >
@@ -354,9 +409,7 @@ export default function ISPPresentation() {
                   key={index}
                   onClick={() => goToSlide(index)}
                   className={`h-2 rounded-full transition-all ${
-                    index === currentSlide 
-                      ? 'w-8 bg-white' 
-                      : 'w-2 bg-white/30 hover:bg-white/50'
+                    index === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/30 hover:bg-white/50'
                   }`}
                 />
               ))}
@@ -366,8 +419,8 @@ export default function ISPPresentation() {
               onClick={nextSlide}
               disabled={currentSlide === slides.length - 1}
               className={`p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 transition-all ${
-                currentSlide === slides.length - 1 
-                  ? 'opacity-30 cursor-not-allowed' 
+                currentSlide === slides.length - 1
+                  ? 'opacity-30 cursor-not-allowed'
                   : 'hover:bg-white/20 hover:scale-105'
               }`}
             >

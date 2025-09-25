@@ -1,102 +1,109 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { 
-  Search, 
-  Filter, 
-  RefreshCw, 
+  SelectValue
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import {
+  Search,
+  Filter,
+  RefreshCw,
   MoreHorizontal,
   Send,
   AlertCircle,
   Clock,
   CheckCircle,
   XCircle
-} from 'lucide-react';
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useOutbox, useRetryFailed } from '@/hooks/use-communications';
-import { LoadingState } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { EmptyState } from '@/components/states/EmptyState';
-import { format } from 'date-fns';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { useOutbox, useRetryFailed } from '@/hooks/use-communications'
+import { LoadingState } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { EmptyState } from '@/components/states/EmptyState'
+import { format } from 'date-fns'
 
 export function OutboxList() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [page, setPage] = useState(1)
 
   const filters = {
     search: searchTerm,
     status: statusFilter === 'all' ? undefined : [statusFilter],
     page,
-    page_size: 20,
-  };
+    page_size: 20
+  }
 
-  const { data, isLoading, error, refetch } = useOutbox(filters);
-  const retryMutation = useRetryFailed();
+  const { data, isLoading, error, refetch } = useOutbox(filters)
+  const retryMutation = useRetryFailed()
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'sent':
       case 'delivered':
-        return <CheckCircle className="h-3 w-3 text-green-600" />;
+        return <CheckCircle className="h-3 w-3 text-green-600" />
       case 'failed':
       case 'bounced':
-        return <XCircle className="h-3 w-3 text-red-600" />;
+        return <XCircle className="h-3 w-3 text-red-600" />
       case 'queued':
       case 'pending':
-        return <Clock className="h-3 w-3 text-yellow-600" />;
+        return <Clock className="h-3 w-3 text-yellow-600" />
       case 'sending':
-        return <Send className="h-3 w-3 text-blue-600" />;
+        return <Send className="h-3 w-3 text-blue-600" />
       default:
-        return <AlertCircle className="h-3 w-3 text-gray-600" />;
+        return <AlertCircle className="h-3 w-3 text-gray-600" />
     }
-  };
+  }
 
-  const getStatusColor = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+  const getStatusColor = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status) {
       case 'sent':
       case 'delivered':
-        return 'secondary';
+        return 'secondary'
       case 'failed':
       case 'bounced':
-        return 'destructive';
+        return 'destructive'
       case 'sending':
-        return 'default';
+        return 'default'
       default:
-        return 'outline';
+        return 'outline'
     }
-  };
+  }
 
   const handleRetry = (messageId: string) => {
-    retryMutation.mutate({ message_id: messageId });
-  };
+    retryMutation.mutate({ message_id: messageId })
+  }
 
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState />
   }
 
   if (error) {
-    return <ErrorState message="Failed to load outbox messages" onRetry={refetch} />;
+    return <ErrorState message="Failed to load outbox messages" onRetry={refetch} />
   }
 
-  const messages = data?.items || [];
+  const messages = data?.items || []
 
   return (
     <div className="space-y-4">
@@ -109,7 +116,7 @@ export function OutboxList() {
               <Input
                 placeholder="Search by recipient, subject..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -159,15 +166,13 @@ export function OutboxList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {messages.map((message) => (
+              {messages.map(message => (
                 <TableRow key={message.id}>
                   <TableCell className="text-sm">
                     {format(new Date(message.created_at), 'MMM d, h:mm a')}
                   </TableCell>
                   <TableCell>
-                    <div className="font-medium">
-                      {message.to || 'N/A'}
-                    </div>
+                    <div className="font-medium">{message.to || 'N/A'}</div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="capitalize">
@@ -225,7 +230,8 @@ export function OutboxList() {
       {data && data.total > data.page_size && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Showing {(page - 1) * data.page_size + 1} to {Math.min(page * data.page_size, data.total)} of {data.total} messages
+            Showing {(page - 1) * data.page_size + 1} to{' '}
+            {Math.min(page * data.page_size, data.total)} of {data.total} messages
           </div>
           <div className="flex gap-2">
             <Button
@@ -248,5 +254,5 @@ export function OutboxList() {
         </div>
       )}
     </div>
-  );
+  )
 }

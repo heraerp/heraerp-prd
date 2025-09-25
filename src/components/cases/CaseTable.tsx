@@ -3,35 +3,29 @@
  * Displays cases in a tabular format with sorting
  */
 
-import React from 'react';
-import { format } from 'date-fns';
-import { 
-  ChevronUp, 
-  ChevronDown,
-  MoreHorizontal,
-  FileText,
-  AlertTriangle
-} from 'lucide-react';
+import React from 'react'
+import { format } from 'date-fns'
+import { ChevronUp, ChevronDown, MoreHorizontal, FileText, AlertTriangle } from 'lucide-react'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+  TableRow
+} from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { CaseTableProps, CaseStatus, CasePriority, CaseRag } from '@/types/cases';
-import { useRouter } from 'next/navigation';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { CaseTableProps, CaseStatus, CasePriority, CaseRag } from '@/types/cases'
+import { useRouter } from 'next/navigation'
 
 const statusColors: Record<CaseStatus, string> = {
   new: 'bg-blue-100 text-blue-800',
@@ -39,25 +33,25 @@ const statusColors: Record<CaseStatus, string> = {
   active: 'bg-green-100 text-green-800',
   on_hold: 'bg-gray-100 text-gray-800',
   breach: 'bg-red-100 text-red-800',
-  closed: 'bg-slate-100 text-slate-800',
-};
+  closed: 'bg-slate-100 text-slate-800'
+}
 
 const priorityDots: Record<CasePriority, string> = {
   low: 'bg-blue-500',
   medium: 'bg-yellow-500',
   high: 'bg-orange-500',
-  critical: 'bg-red-500',
-};
+  critical: 'bg-red-500'
+}
 
 const ragColors: Record<CaseRag, string> = {
   R: 'bg-red-500',
   A: 'bg-amber-500',
-  G: 'bg-green-500',
-};
+  G: 'bg-green-500'
+}
 
 export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) {
-  const router = useRouter();
-  
+  const router = useRouter()
+
   if (loading) {
     return (
       <div className="space-y-3">
@@ -65,14 +59,14 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
           <Skeleton key={i} className="h-16 w-full" />
         ))}
       </div>
-    );
+    )
   }
 
   const handleSort = (field: string) => {
     if (onSort) {
-      onSort(field, 'asc'); // TODO: Implement toggle between asc/desc
+      onSort(field, 'asc') // TODO: Implement toggle between asc/desc
     }
-  };
+  }
 
   const SortableHeader = ({ field, children }: { field: string; children: React.ReactNode }) => (
     <button
@@ -85,7 +79,7 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
         <ChevronDown className="h-3 w-3 text-muted-foreground -mt-1" />
       </div>
     </button>
-  );
+  )
 
   return (
     <div className="rounded-md border">
@@ -110,23 +104,23 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cases.map((caseItem) => {
-            const isOverdue = caseItem.due_date && new Date(caseItem.due_date) < new Date();
-            
+          {cases.map(caseItem => {
+            const isOverdue = caseItem.due_date && new Date(caseItem.due_date) < new Date()
+
             return (
-              <TableRow 
+              <TableRow
                 key={caseItem.id}
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => router.push(`/civicflow/cases/${caseItem.id}`)}
               >
                 <TableCell>
                   <div className="flex items-center gap-1">
-                    <div 
+                    <div
                       className={`h-2 w-2 rounded-full ${priorityDots[caseItem.priority]}`}
                       title={`Priority: ${caseItem.priority}`}
                     />
                     {caseItem.rag && (
-                      <div 
+                      <div
                         className={`h-2 w-2 rounded-full ${ragColors[caseItem.rag]}`}
                         title={`RAG: ${caseItem.rag}`}
                       />
@@ -153,33 +147,22 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
                   )}
                 </TableCell>
                 <TableCell>
-                  <Badge 
-                    variant="secondary" 
-                    className={statusColors[caseItem.status]}
-                  >
+                  <Badge variant="secondary" className={statusColors[caseItem.status]}>
                     {caseItem.status.replace('_', ' ')}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {/* TODO: Add subject info when available */}
-                  -
+                  {/* TODO: Add subject info when available */}-
                 </TableCell>
-                <TableCell>
-                  {caseItem.program_name || '-'}
-                </TableCell>
+                <TableCell>{caseItem.program_name || '-'}</TableCell>
                 <TableCell className={isOverdue ? 'text-red-600' : ''}>
-                  {caseItem.due_date 
-                    ? format(new Date(caseItem.due_date), 'MMM d, yyyy')
-                    : '-'
-                  }
+                  {caseItem.due_date ? format(new Date(caseItem.due_date), 'MMM d, yyyy') : '-'}
                 </TableCell>
-                <TableCell>
-                  {caseItem.owner || '-'}
-                </TableCell>
+                <TableCell>{caseItem.owner || '-'}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {format(new Date(caseItem.updated_at), 'MMM d, h:mm a')}
                 </TableCell>
-                <TableCell onClick={(e) => e.stopPropagation()}>
+                <TableCell onClick={e => e.stopPropagation()}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -189,22 +172,16 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
                     <DropdownMenuContent align="end">
                       {caseItem.status !== 'closed' && (
                         <>
-                          <DropdownMenuItem 
-                            onClick={() => onAction?.(caseItem.id, 'vary')}
-                          >
+                          <DropdownMenuItem onClick={() => onAction?.(caseItem.id, 'vary')}>
                             <FileText className="mr-2 h-4 w-4" />
                             Request Variation
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => onAction?.(caseItem.id, 'breach')}
-                          >
+                          <DropdownMenuItem onClick={() => onAction?.(caseItem.id, 'breach')}>
                             <AlertTriangle className="mr-2 h-4 w-4" />
                             Record Breach
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => onAction?.(caseItem.id, 'close')}
-                          >
+                          <DropdownMenuItem onClick={() => onAction?.(caseItem.id, 'close')}>
                             Close Case
                           </DropdownMenuItem>
                         </>
@@ -213,10 +190,10 @@ export function CaseTable({ cases, onAction, onSort, loading }: CaseTableProps) 
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            );
+            )
           })}
         </TableBody>
       </Table>
     </div>
-  );
+  )
 }

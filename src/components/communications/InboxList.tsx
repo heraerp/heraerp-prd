@@ -1,96 +1,104 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { 
-  Search, 
-  Filter, 
-  RefreshCw, 
-  Mail, 
+  SelectValue
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import {
+  Search,
+  Filter,
+  RefreshCw,
+  Mail,
   MessageSquare,
   Globe,
   Star,
   Reply,
   Archive
-} from 'lucide-react';
-import { useInboxMessages } from '@/hooks/use-communications';
-import { LoadingState } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { EmptyState } from '@/components/states/EmptyState';
-import { format } from 'date-fns';
-import { useToast } from '@/components/ui/use-toast';
+} from 'lucide-react'
+import { useInboxMessages } from '@/hooks/use-communications'
+import { LoadingState } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { EmptyState } from '@/components/states/EmptyState'
+import { format } from 'date-fns'
+import { useToast } from '@/components/ui/use-toast'
 
 export function InboxList() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [channelFilter, setChannelFilter] = useState('all');
-  const [readFilter, setReadFilter] = useState('all');
-  const [page, setPage] = useState(1);
-  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('')
+  const [channelFilter, setChannelFilter] = useState('all')
+  const [readFilter, setReadFilter] = useState('all')
+  const [page, setPage] = useState(1)
+  const { toast } = useToast()
 
   const filters = {
     search: searchTerm,
     channel: channelFilter === 'all' ? undefined : [channelFilter],
-    status: readFilter === 'all' ? undefined : readFilter === 'unread' ? ['new'] : ['read', 'replied'],
+    status:
+      readFilter === 'all' ? undefined : readFilter === 'unread' ? ['new'] : ['read', 'replied'],
     page,
-    page_size: 20,
-  };
+    page_size: 20
+  }
 
-  const { data, isLoading, error, refetch } = useInboxMessages(filters);
+  const { data, isLoading, error, refetch } = useInboxMessages(filters)
 
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
     }
-  };
+  }
 
   const handleReply = (messageId: string) => {
     toast({
-      title: "Reply feature coming soon",
-      description: "This will open a compose dialog to reply to the message.",
-    });
-  };
+      title: 'Reply feature coming soon',
+      description: 'This will open a compose dialog to reply to the message.'
+    })
+  }
 
   const handleArchive = (messageId: string) => {
     toast({
-      title: "Message archived",
-      description: "The message has been moved to archives.",
-    });
-  };
+      title: 'Message archived',
+      description: 'The message has been moved to archives.'
+    })
+  }
 
   const handleMarkImportant = (messageId: string) => {
     toast({
-      title: "Marked as important",
-      description: "This message has been flagged as important.",
-    });
-  };
+      title: 'Marked as important',
+      description: 'This message has been flagged as important.'
+    })
+  }
 
   if (isLoading) {
-    return <LoadingState />;
+    return <LoadingState />
   }
 
   if (error) {
-    return <ErrorState message="Failed to load inbox messages" onRetry={refetch} />;
+    return <ErrorState message="Failed to load inbox messages" onRetry={refetch} />
   }
 
-  const messages = data?.items || [];
+  const messages = data?.items || []
 
   return (
     <div className="space-y-4">
@@ -103,7 +111,7 @@ export function InboxList() {
               <Input
                 placeholder="Search by sender, subject, content..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -148,7 +156,7 @@ export function InboxList() {
           </div>
         ) : (
           <div className="divide-y">
-            {messages.map((message) => (
+            {messages.map(message => (
               <div
                 key={message.id}
                 className={`p-4 hover:bg-muted/50 transition-colors ${
@@ -157,26 +165,22 @@ export function InboxList() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3 flex-1">
-                    <div className="mt-1">
-                      {getChannelIcon(message.channel)}
-                    </div>
+                    <div className="mt-1">{getChannelIcon(message.channel)}</div>
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium">
-                            {message.from || 'Unknown Sender'}
-                          </span>
+                          <span className="font-medium">{message.from || 'Unknown Sender'}</span>
                           {message.status === 'new' && (
-                            <Badge variant="default" className="text-xs">New</Badge>
+                            <Badge variant="default" className="text-xs">
+                              New
+                            </Badge>
                           )}
                         </div>
                         <span className="text-xs text-muted-foreground">
                           {format(new Date(message.created_at), 'MMM d, h:mm a')}
                         </span>
                       </div>
-                      <div>
-                        {message.subject || 'No Subject'}
-                      </div>
+                      <div>{message.subject || 'No Subject'}</div>
                       <div className="text-sm text-muted-foreground line-clamp-2">
                         {message.body_preview || 'No content available'}
                       </div>
@@ -187,19 +191,11 @@ export function InboxList() {
                         </div>
                       )}
                       <div className="flex items-center gap-2 mt-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleReply(message.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleReply(message.id)}>
                           <Reply className="h-3 w-3 mr-1" />
                           Reply
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleArchive(message.id)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleArchive(message.id)}>
                           <Archive className="h-3 w-3 mr-1" />
                           Archive
                         </Button>
@@ -225,7 +221,8 @@ export function InboxList() {
       {data && data.total > data.page_size && (
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Showing {(page - 1) * data.page_size + 1} to {Math.min(page * data.page_size, data.total)} of {data.total} messages
+            Showing {(page - 1) * data.page_size + 1} to{' '}
+            {Math.min(page * data.page_size, data.total)} of {data.total} messages
           </div>
           <div className="flex gap-2">
             <Button
@@ -248,5 +245,5 @@ export function InboxList() {
         </div>
       )}
     </div>
-  );
+  )
 }

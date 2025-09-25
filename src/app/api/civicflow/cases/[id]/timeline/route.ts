@@ -4,10 +4,7 @@ import type { CaseTimelineEvent } from '@/types/cases'
 
 const DEMO_ORG_ID = 'f1ae3ae4-73b1-4f91-9fd5-a431cbb5b944'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Use service role key to bypass RLS
     const supabase = createClient(
@@ -21,16 +18,14 @@ export async function GET(
       }
     )
     const caseId = params.id
-    
+
     // Get organization ID from header
-    const orgId = request.headers.get('X-Organization-Id') || 
+    const orgId =
+      request.headers.get('X-Organization-Id') ||
       (request.nextUrl.pathname.startsWith('/civicflow') ? DEMO_ORG_ID : null)
-    
+
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     // Verify case exists
@@ -43,16 +38,14 @@ export async function GET(
       .single()
 
     if (caseError || !caseEntity) {
-      return NextResponse.json(
-        { error: 'Case not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Case not found' }, { status: 404 })
     }
 
     // Get all transactions related to this case
     const { data: transactions, error: txnError } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         id,
         transaction_code,
         transaction_type,
@@ -62,7 +55,8 @@ export async function GET(
         created_by:user_entity_id(
           entity_name
         )
-      `)
+      `
+      )
       .eq('source_entity_id', caseId)
       .order('created_at', { ascending: false })
 
@@ -72,7 +66,7 @@ export async function GET(
     const timelineEvents: CaseTimelineEvent[] = (transactions || []).map(txn => {
       // Generate description based on smart code
       let description = 'Activity recorded'
-      
+
       if (txn.smart_code.includes('.CREATED.')) {
         description = 'Case created'
       } else if (txn.smart_code.includes('.ACTION.APPROVE.')) {
@@ -115,12 +109,8 @@ export async function GET(
     })
 
     return NextResponse.json(timelineEvents)
-
   } catch (error) {
     console.error('Case timeline error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch timeline' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch timeline' }, { status: 500 })
   }
 }

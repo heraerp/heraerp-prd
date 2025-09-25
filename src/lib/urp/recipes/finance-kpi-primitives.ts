@@ -1,9 +1,9 @@
 /**
  * HERA Finance KPI Primitives
- * 
+ *
  * Specialized report primitives for financial key performance indicators
  * Used by finance dashboard UCR and other financial reports
- * 
+ *
  * @module HERA.URP.PRIMITIVES.FINANCE.KPI.v1
  */
 
@@ -15,10 +15,11 @@ import { ReportContext, PrimitiveResult } from '../types/report-types'
  */
 export async function cashPositionPrimitive(context: ReportContext): Promise<PrimitiveResult> {
   const { supabase, parameters } = context
-  
+
   const { data: cashAccounts, error } = await supabase
     .from('core_entities')
-    .select(`
+    .select(
+      `
       id,
       entity_name,
       entity_code,
@@ -27,7 +28,8 @@ export async function cashPositionPrimitive(context: ReportContext): Promise<Pri
         field_name,
         field_value_number
       )
-    `)
+    `
+    )
     .eq('organization_id', parameters.organization_id)
     .in('entity_type', ['bank_account', 'cash_account', 'payment_processor'])
     .like('smart_code', 'HERA.FIN.CASH.%')
@@ -35,12 +37,13 @@ export async function cashPositionPrimitive(context: ReportContext): Promise<Pri
   if (error) throw error
 
   // Calculate total cash position
-  const cashPosition = cashAccounts?.reduce((total, account) => {
-    const balance = account.core_dynamic_data?.find(
-      (d: any) => d.field_name === 'current_balance'
-    )?.field_value_number || 0
-    return total + balance
-  }, 0) || 0
+  const cashPosition =
+    cashAccounts?.reduce((total, account) => {
+      const balance =
+        account.core_dynamic_data?.find((d: any) => d.field_name === 'current_balance')
+          ?.field_value_number || 0
+      return total + balance
+    }, 0) || 0
 
   return {
     data: {
@@ -49,7 +52,9 @@ export async function cashPositionPrimitive(context: ReportContext): Promise<Pri
         id: a.id,
         name: a.entity_name,
         code: a.entity_code,
-        balance: a.core_dynamic_data?.find((d: any) => d.field_name === 'current_balance')?.field_value_number || 0
+        balance:
+          a.core_dynamic_data?.find((d: any) => d.field_name === 'current_balance')
+            ?.field_value_number || 0
       }))
     },
     metadata: {
@@ -65,11 +70,11 @@ export async function cashPositionPrimitive(context: ReportContext): Promise<Pri
  */
 export async function revenueRunRatePrimitive(context: ReportContext): Promise<PrimitiveResult> {
   const { supabase, parameters } = context
-  
+
   // Get last 3 months of revenue
   const threeMonthsAgo = new Date()
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
-  
+
   const { data: revenueTransactions, error } = await supabase
     .from('universal_transactions')
     .select('total_amount, transaction_date')
@@ -104,16 +109,18 @@ export async function revenueRunRatePrimitive(context: ReportContext): Promise<P
  */
 export async function burnRatePrimitive(context: ReportContext): Promise<PrimitiveResult> {
   const { supabase, parameters } = context
-  
+
   // Get last month's expenses
   const lastMonth = new Date()
   lastMonth.setMonth(lastMonth.getMonth() - 1)
-  
+
   const { data: expenseTransactions, error } = await supabase
     .from('universal_transactions')
     .select('total_amount')
     .eq('organization_id', parameters.organization_id)
-    .or('smart_code.like.HERA.%.EXPENSE.%,smart_code.like.HERA.%.PURCHASE.%,smart_code.like.HERA.%.PAYROLL.%')
+    .or(
+      'smart_code.like.HERA.%.EXPENSE.%,smart_code.like.HERA.%.PURCHASE.%,smart_code.like.HERA.%.PAYROLL.%'
+    )
     .gte('transaction_date', lastMonth.toISOString())
     .lte('transaction_date', new Date().toISOString())
 
@@ -123,7 +130,9 @@ export async function burnRatePrimitive(context: ReportContext): Promise<Primiti
   const cashResult = await cashPositionPrimitive(context)
   const currentCash = cashResult.data.total_cash
 
-  const monthlyExpenses = Math.abs(expenseTransactions?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0)
+  const monthlyExpenses = Math.abs(
+    expenseTransactions?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0
+  )
   const dailyBurnRate = monthlyExpenses / 30
   const runwayDays = currentCash > 0 ? currentCash / dailyBurnRate : 0
   const runwayMonths = runwayDays / 30
@@ -150,17 +159,19 @@ export async function burnRatePrimitive(context: ReportContext): Promise<Primiti
 export async function arAgingPrimitive(context: ReportContext): Promise<PrimitiveResult> {
   const { supabase, parameters } = context
   const today = new Date()
-  
+
   const { data: arTransactions, error } = await supabase
     .from('universal_transactions')
-    .select(`
+    .select(
+      `
       id,
       transaction_code,
       total_amount,
       transaction_date,
       from_entity_id,
       core_entities!from_entity_id(entity_name)
-    `)
+    `
+    )
     .eq('organization_id', parameters.organization_id)
     .like('smart_code', 'HERA.FIN.AR.%')
     .eq('status', 'pending')
@@ -173,13 +184,15 @@ export async function arAgingPrimitive(context: ReportContext): Promise<Primitiv
     '1-30': { amount: 0, count: 0 },
     '31-60': { amount: 0, count: 0 },
     '61-90': { amount: 0, count: 0 },
-    'over_90': { amount: 0, count: 0 }
+    over_90: { amount: 0, count: 0 }
   }
 
   arTransactions?.forEach(transaction => {
-    const daysOld = Math.floor((today.getTime() - new Date(transaction.transaction_date).getTime()) / (1000 * 60 * 60 * 24))
+    const daysOld = Math.floor(
+      (today.getTime() - new Date(transaction.transaction_date).getTime()) / (1000 * 60 * 60 * 24)
+    )
     const amount = transaction.total_amount || 0
-    
+
     if (daysOld <= 0) {
       agingBuckets.current.amount += amount
       agingBuckets.current.count++
@@ -220,7 +233,7 @@ export async function arAgingPrimitive(context: ReportContext): Promise<Primitiv
  */
 export async function grossMarginPrimitive(context: ReportContext): Promise<PrimitiveResult> {
   const { supabase, parameters } = context
-  
+
   // Get revenue for the period
   const { data: revenue, error: revError } = await supabase
     .from('universal_transactions')
@@ -271,10 +284,10 @@ export async function workingCapitalPrimitive(context: ReportContext): Promise<P
   // Get current assets
   const cashResult = await cashPositionPrimitive(context)
   const arResult = await arAgingPrimitive(context)
-  
+
   // Get current liabilities (simplified - would include more in production)
   const { supabase, parameters } = context
-  
+
   const { data: apTransactions, error } = await supabase
     .from('universal_transactions')
     .select('total_amount')
@@ -285,7 +298,7 @@ export async function workingCapitalPrimitive(context: ReportContext): Promise<P
   if (error) throw error
 
   const totalAP = Math.abs(apTransactions?.reduce((sum, t) => sum + (t.total_amount || 0), 0) || 0)
-  
+
   const currentAssets = cashResult.data.total_cash + arResult.data.total_ar
   const currentLiabilities = totalAP
   const workingCapital = currentAssets - currentLiabilities
@@ -311,13 +324,15 @@ export async function workingCapitalPrimitive(context: ReportContext): Promise<P
 // Helper function to calculate average days outstanding
 function calculateAverageDaysOutstanding(transactions: any[]): number {
   if (!transactions || transactions.length === 0) return 0
-  
+
   const today = new Date()
   const totalDays = transactions.reduce((sum, t) => {
-    const daysOld = Math.floor((today.getTime() - new Date(t.transaction_date).getTime()) / (1000 * 60 * 60 * 24))
+    const daysOld = Math.floor(
+      (today.getTime() - new Date(t.transaction_date).getTime()) / (1000 * 60 * 60 * 24)
+    )
     return sum + daysOld
   }, 0)
-  
+
   return Math.floor(totalDays / transactions.length)
 }
 

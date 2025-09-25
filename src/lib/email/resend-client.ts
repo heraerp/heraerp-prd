@@ -1,11 +1,11 @@
-import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend'
+import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 // Get organization-specific Resend client
 async function getResendClient(organizationId: string): Promise<Resend> {
@@ -15,47 +15,47 @@ async function getResendClient(organizationId: string): Promise<Resend> {
     .select('field_value_text')
     .eq('entity_id', organizationId)
     .eq('field_name', 'resend_api_key')
-    .single();
+    .single()
 
   if (data?.field_value_text) {
     // Use organization-specific API key
-    return new Resend(data.field_value_text);
+    return new Resend(data.field_value_text)
   }
 
   // Fallback to default API key
   if (!process.env.RESEND_API_KEY) {
-    throw new Error('No Resend API key configured');
+    throw new Error('No Resend API key configured')
   }
-  
-  return new Resend(process.env.RESEND_API_KEY);
+
+  return new Resend(process.env.RESEND_API_KEY)
 }
 
 export interface SendEmailOptions {
-  organizationId: string;
-  constituentId?: string;
-  from: string;
-  to: string | string[];
-  subject: string;
-  html?: string;
-  text?: string;
-  replyTo?: string;
-  cc?: string | string[];
-  bcc?: string | string[];
+  organizationId: string
+  constituentId?: string
+  from: string
+  to: string | string[]
+  subject: string
+  html?: string
+  text?: string
+  replyTo?: string
+  cc?: string | string[]
+  bcc?: string | string[]
   attachments?: Array<{
-    filename: string;
-    content: Buffer | string;
-  }>;
-  metadata?: Record<string, any>;
-  templateData?: Record<string, any>;
-  smartCode?: string;
+    filename: string
+    content: Buffer | string
+  }>
+  metadata?: Record<string, any>
+  templateData?: Record<string, any>
+  smartCode?: string
 }
 
 export interface EmailTemplate {
-  name: string;
-  subject: string;
-  html: string;
-  text?: string;
-  variables: string[];
+  name: string
+  subject: string
+  html: string
+  text?: string
+  variables: string[]
 }
 
 // Common email templates
@@ -79,11 +79,11 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The CivicFlow Team</p>
       </div>
     `,
-    variables: ['organization_name', 'contact_name'],
+    variables: ['organization_name', 'contact_name']
   },
   EVENT_INVITATION: {
     name: 'event_invitation',
-    subject: 'You're Invited: {{event_name}}',
+    subject: "You're Invited: {{event_name}}",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #2563eb;">You're Invited!</h1>
@@ -100,7 +100,16 @@ export const EMAIL_TEMPLATES = {
         <p style="margin-top: 20px;">We hope to see you there!</p>
       </div>
     `,
-    variables: ['organization_name', 'contact_name', 'event_name', 'event_date', 'event_time', 'event_location', 'event_description', 'registration_link'],
+    variables: [
+      'organization_name',
+      'contact_name',
+      'event_name',
+      'event_date',
+      'event_time',
+      'event_location',
+      'event_description',
+      'registration_link'
+    ]
   },
   GRANT_UPDATE: {
     name: 'grant_update',
@@ -120,18 +129,25 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The Grants Team</p>
       </div>
     `,
-    variables: ['contact_name', 'grant_name', 'grant_status', 'grant_amount', 'grant_period', 'update_message'],
-  },
-};
+    variables: [
+      'contact_name',
+      'grant_name',
+      'grant_status',
+      'grant_amount',
+      'grant_period',
+      'update_message'
+    ]
+  }
+}
 
 // Replace template variables
 function replaceTemplateVariables(template: string, data: Record<string, any>): string {
-  let result = template;
+  let result = template
   Object.entries(data).forEach(([key, value]) => {
-    const regex = new RegExp(`{{${key}}}`, 'g');
-    result = result.replace(regex, String(value));
-  });
-  return result;
+    const regex = new RegExp(`{{${key}}}`, 'g')
+    result = result.replace(regex, String(value))
+  })
+  return result
 }
 
 // Send email through Resend with CivicFlow integration
@@ -150,11 +166,11 @@ export async function sendEmail(options: SendEmailOptions) {
       bcc,
       attachments,
       metadata = {},
-      smartCode = 'HERA.PUBLICSECTOR.COMM.EMAIL.SEND.V1',
-    } = options;
+      smartCode = 'HERA.PUBLICSECTOR.COMM.EMAIL.SEND.V1'
+    } = options
 
     // Get organization-specific Resend client
-    const resend = await getResendClient(organizationId);
+    const resend = await getResendClient(organizationId)
 
     // Get organization-specific from address
     const { data: orgEmailData } = await supabase
@@ -162,13 +178,13 @@ export async function sendEmail(options: SendEmailOptions) {
       .select('field_value_text')
       .eq('entity_id', organizationId)
       .eq('field_name', 'resend_from_email')
-      .single();
+      .single()
 
-    const orgFromEmail = orgEmailData?.field_value_text;
-    const finalFromEmail = orgFromEmail || from;
+    const orgFromEmail = orgEmailData?.field_value_text
+    const finalFromEmail = orgFromEmail || from
 
     // Create a tag to link the email to organization and constituent
-    const tag = constituentId ? `${organizationId}:${constituentId}` : organizationId;
+    const tag = constituentId ? `${organizationId}:${constituentId}` : organizationId
 
     // Send email through Resend
     const { data, error } = await resend.emails.send({
@@ -184,17 +200,17 @@ export async function sendEmail(options: SendEmailOptions) {
       tags: [
         {
           name: 'org_constituent',
-          value: tag,
-        },
+          value: tag
+        }
       ],
       headers: {
         'X-Organization-Id': organizationId,
-        'X-Constituent-Id': constituentId || '',
-      },
-    });
+        'X-Constituent-Id': constituentId || ''
+      }
+    })
 
     if (error) {
-      throw error;
+      throw error
     }
 
     // Record the email send in CivicFlow
@@ -219,38 +235,36 @@ export async function sendEmail(options: SendEmailOptions) {
           has_attachments: attachments && attachments.length > 0,
           attachment_count: attachments?.length || 0,
           constituent_id: constituentId,
-          ...metadata,
-        },
+          ...metadata
+        }
       })
       .select()
-      .single();
+      .single()
 
     // Create relationship to constituent if provided
     if (transaction && constituentId) {
-      await supabase
-        .from('core_relationships')
-        .insert({
-          organization_id: organizationId,
-          from_entity_id: transaction.id,
-          to_entity_id: constituentId,
-          relationship_type: 'communication_to_constituent',
-          smart_code: 'HERA.PUBLICSECTOR.CRM.REL.COMM.CONSTITUENT.V1',
-          metadata: {
-            communication_type: 'email',
-            channel: 'email',
-            direction: 'outbound',
-          },
-        });
+      await supabase.from('core_relationships').insert({
+        organization_id: organizationId,
+        from_entity_id: transaction.id,
+        to_entity_id: constituentId,
+        relationship_type: 'communication_to_constituent',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.REL.COMM.CONSTITUENT.V1',
+        metadata: {
+          communication_type: 'email',
+          channel: 'email',
+          direction: 'outbound'
+        }
+      })
     }
 
     return {
       success: true,
       emailId: data?.id,
-      transactionId: transaction?.id,
-    };
+      transactionId: transaction?.id
+    }
   } catch (error) {
-    console.error('Failed to send email:', error);
-    throw error;
+    console.error('Failed to send email:', error)
+    throw error
   }
 }
 
@@ -259,16 +273,18 @@ export async function sendTemplateEmail(
   templateName: keyof typeof EMAIL_TEMPLATES,
   options: Omit<SendEmailOptions, 'html' | 'text'> & { templateData: Record<string, any> }
 ) {
-  const template = EMAIL_TEMPLATES[templateName];
-  
+  const template = EMAIL_TEMPLATES[templateName]
+
   if (!template) {
-    throw new Error(`Template ${templateName} not found`);
+    throw new Error(`Template ${templateName} not found`)
   }
 
   // Replace variables in subject and content
-  const subject = replaceTemplateVariables(template.subject, options.templateData);
-  const html = replaceTemplateVariables(template.html, options.templateData);
-  const text = template.text ? replaceTemplateVariables(template.text, options.templateData) : undefined;
+  const subject = replaceTemplateVariables(template.subject, options.templateData)
+  const html = replaceTemplateVariables(template.html, options.templateData)
+  const text = template.text
+    ? replaceTemplateVariables(template.text, options.templateData)
+    : undefined
 
   // Send email with processed template
   return sendEmail({
@@ -276,8 +292,8 @@ export async function sendTemplateEmail(
     subject,
     html,
     text,
-    smartCode: `HERA.PUBLICSECTOR.COMM.EMAIL.TEMPLATE.${templateName}.V1`,
-  });
+    smartCode: `HERA.PUBLICSECTOR.COMM.EMAIL.TEMPLATE.${templateName}.V1`
+  })
 }
 
 // Batch send emails to multiple recipients
@@ -285,7 +301,7 @@ export async function sendBatchEmails(
   recipients: Array<{ email: string; constituentId?: string; data?: Record<string, any> }>,
   baseOptions: Omit<SendEmailOptions, 'to' | 'constituentId'>
 ) {
-  const results = [];
+  const results = []
 
   for (const recipient of recipients) {
     try {
@@ -295,14 +311,14 @@ export async function sendBatchEmails(
         constituentId: recipient.constituentId,
         metadata: {
           ...baseOptions.metadata,
-          ...recipient.data,
-        },
-      });
-      results.push({ success: true, email: recipient.email, ...result });
+          ...recipient.data
+        }
+      })
+      results.push({ success: true, email: recipient.email, ...result })
     } catch (error) {
-      results.push({ success: false, email: recipient.email, error: error.message });
+      results.push({ success: false, email: recipient.email, error: error.message })
     }
   }
 
-  return results;
+  return results
 }

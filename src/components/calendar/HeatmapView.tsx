@@ -1,103 +1,101 @@
-'use client';
+'use client'
 
-import { 
-  startOfYear, 
-  endOfYear, 
+import {
+  startOfYear,
+  endOfYear,
   eachDayOfInterval,
   format,
   getDay,
   getWeek,
   startOfWeek,
-  isToday,
-} from 'date-fns';
-import { CalendarItem } from '@/types/calendar';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+  isToday
+} from 'date-fns'
+import { CalendarItem } from '@/types/calendar'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface HeatmapViewProps {
-  items: CalendarItem[];
-  onItemClick: (item: CalendarItem) => void;
+  items: CalendarItem[]
+  onItemClick: (item: CalendarItem) => void
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
   // Calculate the date range (last 365 days)
-  const today = new Date();
-  const yearAgo = new Date();
-  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  const today = new Date()
+  const yearAgo = new Date()
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1)
 
-  const allDays = eachDayOfInterval({ start: yearAgo, end: today });
+  const allDays = eachDayOfInterval({ start: yearAgo, end: today })
 
   // Count items per day
-  const itemsByDate = items.reduce((acc, item) => {
-    const dateKey = format(new Date(item.date), 'yyyy-MM-dd');
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
-    }
-    acc[dateKey].push(item);
-    return acc;
-  }, {} as Record<string, CalendarItem[]>);
+  const itemsByDate = items.reduce(
+    (acc, item) => {
+      const dateKey = format(new Date(item.date), 'yyyy-MM-dd')
+      if (!acc[dateKey]) {
+        acc[dateKey] = []
+      }
+      acc[dateKey].push(item)
+      return acc
+    },
+    {} as Record<string, CalendarItem[]>
+  )
 
   // Calculate max count for intensity scaling
-  const maxCount = Math.max(...Object.values(itemsByDate).map(items => items.length), 1);
+  const maxCount = Math.max(...Object.values(itemsByDate).map(items => items.length), 1)
 
   // Group days by week for grid layout
-  const weeks: Date[][] = [];
-  let currentWeek: Date[] = [];
-  let currentWeekNumber = -1;
+  const weeks: Date[][] = []
+  let currentWeek: Date[] = []
+  let currentWeekNumber = -1
 
   allDays.forEach(day => {
-    const weekNumber = getWeek(day);
-    const dayOfWeek = getDay(day);
+    const weekNumber = getWeek(day)
+    const dayOfWeek = getDay(day)
 
     if (weekNumber !== currentWeekNumber) {
       if (currentWeek.length > 0) {
         // Fill in missing days at start of week
         while (currentWeek.length < 7 && currentWeek[0] && getDay(currentWeek[0]) > 0) {
-          currentWeek.unshift(null as any);
+          currentWeek.unshift(null as any)
         }
         // Fill in missing days at end of week
         while (currentWeek.length < 7) {
-          currentWeek.push(null as any);
+          currentWeek.push(null as any)
         }
-        weeks.push(currentWeek);
+        weeks.push(currentWeek)
       }
-      currentWeek = [];
-      currentWeekNumber = weekNumber;
+      currentWeek = []
+      currentWeekNumber = weekNumber
     }
 
-    currentWeek.push(day);
-  });
+    currentWeek.push(day)
+  })
 
   // Add the last week
   if (currentWeek.length > 0) {
     while (currentWeek.length < 7) {
-      currentWeek.push(null as any);
+      currentWeek.push(null as any)
     }
-    weeks.push(currentWeek);
+    weeks.push(currentWeek)
   }
 
   // Get intensity level for a date
   const getIntensity = (date: Date) => {
-    const dateKey = format(date, 'yyyy-MM-dd');
-    const count = itemsByDate[dateKey]?.length || 0;
-    
-    if (count === 0) return 0;
-    const intensity = Math.ceil((count / maxCount) * 4);
-    return Math.min(intensity, 4);
-  };
+    const dateKey = format(date, 'yyyy-MM-dd')
+    const count = itemsByDate[dateKey]?.length || 0
+
+    if (count === 0) return 0
+    const intensity = Math.ceil((count / maxCount) * 4)
+    return Math.min(intensity, 4)
+  }
 
   // Get color class based on intensity
   const getColorClass = (intensity: number) => {
@@ -106,13 +104,13 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
       'bg-green-200 dark:bg-green-900',
       'bg-green-400 dark:bg-green-700',
       'bg-green-600 dark:bg-green-500',
-      'bg-green-800 dark:bg-green-300',
-    ];
-    return colors[intensity];
-  };
+      'bg-green-800 dark:bg-green-300'
+    ]
+    return colors[intensity]
+  }
 
   // Get items for selected date
-  const selectedDateItems = selectedDate ? itemsByDate[selectedDate] || [] : [];
+  const selectedDateItems = selectedDate ? itemsByDate[selectedDate] || [] : []
 
   return (
     <div className="h-full overflow-auto p-6">
@@ -120,15 +118,15 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
         <TooltipProvider>
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-4">Activity Overview</h2>
-            
+
             {/* Month labels */}
             <div className="flex items-start gap-1 mb-2">
               <div className="w-8" /> {/* Spacer for day labels */}
               <div className="flex gap-1">
                 {MONTHS.map((month, index) => {
-                  const monthStart = new Date(today.getFullYear(), index, 1);
-                  const isCurrentYear = monthStart <= today && monthStart >= yearAgo;
-                  
+                  const monthStart = new Date(today.getFullYear(), index, 1)
+                  const isCurrentYear = monthStart <= today && monthStart >= yearAgo
+
                   return isCurrentYear ? (
                     <div
                       key={month}
@@ -137,7 +135,7 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
                     >
                       {month}
                     </div>
-                  ) : null;
+                  ) : null
                 })}
               </div>
             </div>
@@ -150,8 +148,8 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
                   <div
                     key={day}
                     className={cn(
-                      "text-xs text-muted-foreground h-3 flex items-center",
-                      index % 2 === 1 && "opacity-0"
+                      'text-xs text-muted-foreground h-3 flex items-center',
+                      index % 2 === 1 && 'opacity-0'
                     )}
                   >
                     {day[0]}
@@ -165,39 +163,37 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
                   <div key={weekIndex} className="flex flex-col gap-1">
                     {week.map((day, dayIndex) => {
                       if (!day) {
-                        return <div key={dayIndex} className="w-3 h-3" />;
+                        return <div key={dayIndex} className="w-3 h-3" />
                       }
 
-                      const dateKey = format(day, 'yyyy-MM-dd');
-                      const intensity = getIntensity(day);
-                      const dayItems = itemsByDate[dateKey] || [];
-                      const isDayToday = isToday(day);
+                      const dateKey = format(day, 'yyyy-MM-dd')
+                      const intensity = getIntensity(day)
+                      const dayItems = itemsByDate[dateKey] || []
+                      const isDayToday = isToday(day)
 
                       return (
                         <Tooltip key={dayIndex}>
                           <TooltipTrigger asChild>
                             <button
                               className={cn(
-                                "w-3 h-3 rounded-sm transition-all",
+                                'w-3 h-3 rounded-sm transition-all',
                                 getColorClass(intensity),
-                                isDayToday && "ring-2 ring-primary ring-offset-1",
-                                "hover:opacity-80"
+                                isDayToday && 'ring-2 ring-primary ring-offset-1',
+                                'hover:opacity-80'
                               )}
                               onClick={() => setSelectedDate(dateKey)}
                             />
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="text-xs">
-                              <div className="font-medium">
-                                {format(day, 'MMM d, yyyy')}
-                              </div>
+                              <div className="font-medium">{format(day, 'MMM d, yyyy')}</div>
                               <div className="text-muted-foreground">
                                 {dayItems.length} {dayItems.length === 1 ? 'event' : 'events'}
                               </div>
                             </div>
                           </TooltipContent>
                         </Tooltip>
-                      );
+                      )
                     })}
                   </div>
                 ))}
@@ -211,10 +207,7 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
                 {[0, 1, 2, 3, 4].map(intensity => (
                   <div
                     key={intensity}
-                    className={cn(
-                      "w-3 h-3 rounded-sm",
-                      getColorClass(intensity)
-                    )}
+                    className={cn('w-3 h-3 rounded-sm', getColorClass(intensity))}
                   />
                 ))}
               </div>
@@ -229,9 +222,7 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
               <div className="text-sm text-muted-foreground">Total Events</div>
             </Card>
             <Card className="p-4">
-              <div className="text-2xl font-bold">
-                {Object.keys(itemsByDate).length}
-              </div>
+              <div className="text-2xl font-bold">{Object.keys(itemsByDate).length}</div>
               <div className="text-sm text-muted-foreground">Active Days</div>
             </Card>
             <Card className="p-4">
@@ -291,5 +282,5 @@ export function HeatmapView({ items, onItemClick }: HeatmapViewProps) {
         </TooltipProvider>
       </div>
     </div>
-  );
+  )
 }

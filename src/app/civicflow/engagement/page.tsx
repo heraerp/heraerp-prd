@@ -1,26 +1,26 @@
-'use client';
+'use client'
 
-import { useState, Suspense } from 'react';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState, Suspense } from 'react'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow
+} from '@/components/ui/table'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 import {
   ChevronRight,
   TrendingUp,
@@ -30,64 +30,64 @@ import {
   Plus,
   ArrowUp,
   ArrowDown,
-  Filter,
-} from 'lucide-react';
-import { format } from 'date-fns';
+  Filter
+} from 'lucide-react'
+import { format } from 'date-fns'
 import {
   useEngagementStages,
   useEngagementJourneys,
   useEngagementFunnel,
-  useCreateDefaultStages,
-} from '@/hooks/use-engagement';
-import { isDemoMode } from '@/lib/demo-guard';
-import { DemoBanner } from '@/components/communications/DemoBanner';
-import { Loading } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { useToast } from '@/components/ui/use-toast';
-import type { EngagementFilters } from '@/types/engagement';
+  useCreateDefaultStages
+} from '@/hooks/use-engagement'
+import { isDemoMode } from '@/lib/demo-guard'
+import { DemoBanner } from '@/components/communications/DemoBanner'
+import { Loading } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { useToast } from '@/components/ui/use-toast'
+import type { EngagementFilters } from '@/types/engagement'
 
 function EngagementContent() {
-  const { currentOrgId } = useOrgStore();
-  const { toast } = useToast();
-  const isDemo = isDemoMode(currentOrgId);
-  
-  const [activeTab, setActiveTab] = useState('funnel');
+  const { currentOrgId } = useOrgStore()
+  const { toast } = useToast()
+  const isDemo = isDemoMode(currentOrgId)
+
+  const [activeTab, setActiveTab] = useState('funnel')
   const [filters, setFilters] = useState<EngagementFilters>({
     is_active: true,
     page: 1,
-    page_size: 20,
-  });
-  
+    page_size: 20
+  })
+
   // Queries
-  const { data: stages, isLoading: stagesLoading, error: stagesError } = useEngagementStages();
-  const { data: journeysData, isLoading: journeysLoading } = useEngagementJourneys(filters);
-  const { data: funnel, isLoading: funnelLoading } = useEngagementFunnel();
-  
+  const { data: stages, isLoading: stagesLoading, error: stagesError } = useEngagementStages()
+  const { data: journeysData, isLoading: journeysLoading } = useEngagementJourneys(filters)
+  const { data: funnel, isLoading: funnelLoading } = useEngagementFunnel()
+
   // Mutations
-  const createDefaultStages = useCreateDefaultStages();
-  
+  const createDefaultStages = useCreateDefaultStages()
+
   const handleCreateDefaultStages = async () => {
     try {
-      await createDefaultStages.mutateAsync();
-      toast({ title: 'Default engagement stages created successfully' });
+      await createDefaultStages.mutateAsync()
+      toast({ title: 'Default engagement stages created successfully' })
     } catch (error) {
       toast({
         title: 'Failed to create stages',
-        variant: 'destructive',
-      });
+        variant: 'destructive'
+      })
     }
-  };
-  
+  }
+
   const getStageIcon = (stageOrder: number) => {
-    const icons = ['🔍', '💙', '⚡', '⭐'];
-    return icons[stageOrder - 1] || '📍';
-  };
-  
+    const icons = ['🔍', '💙', '⚡', '⭐']
+    return icons[stageOrder - 1] || '📍'
+  }
+
   const getStageColor = (stageOrder: number) => {
-    const colors = ['bg-gray-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
-    return colors[stageOrder - 1] || 'bg-gray-400';
-  };
-  
+    const colors = ['bg-gray-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500']
+    return colors[stageOrder - 1] || 'bg-gray-400'
+  }
+
   if (!currentOrgId) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -98,33 +98,30 @@ function EngagementContent() {
           </p>
         </div>
       </div>
-    );
+    )
   }
-  
+
   if (stagesError) {
     return (
       <div className="container mx-auto py-6">
-        <ErrorState 
-          message="Failed to load engagement data" 
-          onRetry={() => window.location.reload()} 
+        <ErrorState
+          message="Failed to load engagement data"
+          onRetry={() => window.location.reload()}
         />
       </div>
-    );
+    )
   }
-  
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {isDemo && <DemoBanner />}
-      
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Engagement Pipeline</h1>
         <div className="flex items-center gap-2">
           {(!stages || stages.length === 0) && (
-            <Button
-              onClick={handleCreateDefaultStages}
-              disabled={createDefaultStages.isPending}
-            >
+            <Button onClick={handleCreateDefaultStages} disabled={createDefaultStages.isPending}>
               <Plus className="h-4 w-4 mr-2" />
               Create Default Stages
             </Button>
@@ -135,7 +132,7 @@ function EngagementContent() {
           </Button>
         </div>
       </div>
-      
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -146,14 +143,12 @@ function EngagementContent() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
-                {funnel?.total_journeys || 0}
-              </span>
+              <span className="text-2xl font-bold">{funnel?.total_journeys || 0}</span>
               <Users className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -169,7 +164,7 @@ function EngagementContent() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -178,14 +173,12 @@ function EngagementContent() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
-                {funnel?.avg_time_to_convert || 0}d
-              </span>
+              <span className="text-2xl font-bold">{funnel?.avg_time_to_convert || 0}d</span>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -202,7 +195,7 @@ function EngagementContent() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
@@ -210,7 +203,7 @@ function EngagementContent() {
           <TabsTrigger value="journeys">Journey Details</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="funnel" className="space-y-4">
           {/* Funnel Visualization */}
           <Card>
@@ -225,7 +218,9 @@ function EngagementContent() {
                   {funnel?.stages.map((stage, index) => (
                     <div key={stage.stage_id} className="relative">
                       <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-full ${getStageColor(index + 1)} flex items-center justify-center text-white text-xl`}>
+                        <div
+                          className={`w-12 h-12 rounded-full ${getStageColor(index + 1)} flex items-center justify-center text-white text-xl`}
+                        >
                           {getStageIcon(index + 1)}
                         </div>
                         <div className="flex-1">
@@ -260,7 +255,7 @@ function EngagementContent() {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="journeys" className="space-y-4">
           {/* Filters */}
           <Card>
@@ -271,10 +266,10 @@ function EngagementContent() {
               <div className="flex items-center gap-4">
                 <Select
                   value={filters.stage_ids?.[0] || 'all'}
-                  onValueChange={(value) => 
+                  onValueChange={value =>
                     setFilters({
                       ...filters,
-                      stage_ids: value === 'all' ? undefined : [value],
+                      stage_ids: value === 'all' ? undefined : [value]
                     })
                   }
                 >
@@ -283,20 +278,21 @@ function EngagementContent() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Stages</SelectItem>
-                    {stages?.map((stage) => (
+                    {stages?.map(stage => (
                       <SelectItem key={stage.id} value={stage.id}>
                         {stage.entity_name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 <Select
                   value={filters.subject_type || 'all'}
-                  onValueChange={(value) => 
+                  onValueChange={value =>
                     setFilters({
                       ...filters,
-                      subject_type: value === 'all' ? undefined : value as 'constituent' | 'organization',
+                      subject_type:
+                        value === 'all' ? undefined : (value as 'constituent' | 'organization')
                     })
                   }
                 >
@@ -309,14 +305,14 @@ function EngagementContent() {
                     <SelectItem value="organization">Organizations</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Button variant="outline" size="icon">
                   <Filter className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Journey Table */}
           <Card>
             <CardHeader>
@@ -339,20 +335,20 @@ function EngagementContent() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {journeysData?.items.map((journey) => (
+                    {journeysData?.items.map(journey => (
                       <TableRow key={journey.id}>
                         <TableCell className="font-medium">
                           {journey.subject_name || journey.entity_name}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">
-                            {journey.subject_type}
-                          </Badge>
+                          <Badge variant="outline">{journey.subject_type}</Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <span className="text-lg">
-                              {getStageIcon(stages?.findIndex(s => s.id === journey.current_stage_id) || 0 + 1)}
+                              {getStageIcon(
+                                stages?.findIndex(s => s.id === journey.current_stage_id) || 0 + 1
+                              )}
                             </span>
                             {journey.current_stage_name}
                           </div>
@@ -373,19 +369,20 @@ function EngagementContent() {
                         </TableCell>
                         <TableCell>
                           {Math.floor(
-                            (Date.now() - new Date(journey.entered_at).getTime()) / 
-                            (1000 * 60 * 60 * 24)
-                          )}d
+                            (Date.now() - new Date(journey.entered_at).getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )}
+                          d
                         </TableCell>
                         <TableCell>
                           {journey.next_best_action && (
-                            <Badge 
+                            <Badge
                               variant={
-                                journey.next_best_action.priority === 'high' 
-                                  ? 'destructive' 
+                                journey.next_best_action.priority === 'high'
+                                  ? 'destructive'
                                   : journey.next_best_action.priority === 'medium'
-                                  ? 'default'
-                                  : 'secondary'
+                                    ? 'default'
+                                    : 'secondary'
                               }
                             >
                               {journey.next_best_action.description}
@@ -393,12 +390,12 @@ function EngagementContent() {
                           )}
                         </TableCell>
                         <TableCell>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => {
                               // Navigate to constituent/org profile
-                              window.location.href = `/civicflow/constituents/${journey.subject_id}`;
+                              window.location.href = `/civicflow/constituents/${journey.subject_id}`
                             }}
                           >
                             View Profile
@@ -412,7 +409,7 @@ function EngagementContent() {
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="analytics" className="space-y-4">
           <Card>
             <CardHeader>
@@ -427,7 +424,7 @@ function EngagementContent() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }
 
 export default function EngagementPage() {
@@ -444,5 +441,5 @@ export default function EngagementPage() {
     >
       <EngagementContent />
     </Suspense>
-  );
+  )
 }

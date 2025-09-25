@@ -21,45 +21,42 @@ export async function POST(request: NextRequest) {
       }
     )
     const { filters, format } = await request.json()
-    
+
     // Get organization ID from header
-    const orgId = request.headers.get('X-Organization-Id') || 
+    const orgId =
+      request.headers.get('X-Organization-Id') ||
       (request.nextUrl.pathname.startsWith('/civicflow') ? DEMO_ORG_ID : null)
-    
+
     const isDemoMode = orgId === DEMO_ORG_ID || !request.headers.get('X-Organization-Id')
-    
+
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
     // Fetch cases using same logic as list endpoint
     const { data: entities, error: entitiesError } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         id,
         entity_code,
         entity_name,
         smart_code,
         created_at,
         updated_at
-      `)
+      `
+      )
       .eq('organization_id', orgId)
       .eq('entity_type', 'case')
 
     if (entitiesError) throw entitiesError
 
     if (!entities || entities.length === 0) {
-      return NextResponse.json(
-        { error: 'No cases to export' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'No cases to export' }, { status: 404 })
     }
 
     const caseIds = entities.map(e => e.id)
-    
+
     // Get dynamic fields
     const { data: dynamicFields } = await supabase
       .from('core_dynamic_data')
@@ -69,7 +66,8 @@ export async function POST(request: NextRequest) {
     // Get relationships
     const { data: relationships } = await supabase
       .from('core_relationships')
-      .select(`
+      .select(
+        `
         from_entity_id,
         to_entity_id,
         relationship_type,
@@ -78,20 +76,22 @@ export async function POST(request: NextRequest) {
           entity_name,
           entity_type
         )
-      `)
+      `
+      )
       .in('from_entity_id', caseIds)
       .in('relationship_type', ['case_to_program', 'case_to_subject'])
 
     // Build case list
     const cases: CaseListItem[] = entities.map(entity => {
       const entityFields = dynamicFields?.filter(df => df.entity_id === entity.id) || []
-      const fieldMap = entityFields.reduce((acc, field) => {
-        acc[field.field_name] = field.field_value_text || 
-          field.field_value_number || 
-          field.field_value_date || 
-          null
-        return acc
-      }, {} as Record<string, any>)
+      const fieldMap = entityFields.reduce(
+        (acc, field) => {
+          acc[field.field_name] =
+            field.field_value_text || field.field_value_number || field.field_value_date || null
+          return acc
+        },
+        {} as Record<string, any>
+      )
 
       const entityRels = relationships?.filter(r => r.from_entity_id === entity.id) || []
       const program = entityRels.find(r => r.relationship_type === 'case_to_program')
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
         program_name: program?.to_entity?.entity_name || null,
         subject_id: subject?.to_entity_id || null,
         subject_name: subject?.to_entity?.entity_name || null,
-        subject_type: subject?.to_entity?.entity_type as any || null,
+        subject_type: (subject?.to_entity?.entity_type as any) || null,
         created_at: entity.created_at,
         updated_at: entity.updated_at,
         last_action_at: null,
@@ -150,10 +150,8 @@ export async function POST(request: NextRequest) {
           'due_date',
           'created_at'
         ])
-        
-        responseData = isDemoMode 
-          ? csv + '\n\n# Demo Mode - Sample Data Only' 
-          : csv
+
+        responseData = isDemoMode ? csv + '\n\n# Demo Mode - Sample Data Only' : csv
         contentType = 'text/csv'
         filename = `cases-export-${new Date().toISOString()}.csv`
         break
@@ -163,24 +161,26 @@ export async function POST(request: NextRequest) {
         const pdfData = {
           title: 'Cases Export',
           subtitle: isDemoMode ? 'Demo Mode - Sample Data Only' : '',
-          sections: [{
-            title: 'Cases Summary',
-            content: `Total Cases: ${filteredCases.length}`,
-            table: {
-              headers: ['Code', 'Name', 'Status', 'Priority', 'RAG', 'Owner', 'Due Date'],
-              rows: filteredCases.map(c => [
-                c.entity_code,
-                c.entity_name,
-                c.status,
-                c.priority,
-                c.rag,
-                c.owner || '-',
-                c.due_date || '-'
-              ])
+          sections: [
+            {
+              title: 'Cases Summary',
+              content: `Total Cases: ${filteredCases.length}`,
+              table: {
+                headers: ['Code', 'Name', 'Status', 'Priority', 'RAG', 'Owner', 'Due Date'],
+                rows: filteredCases.map(c => [
+                  c.entity_code,
+                  c.entity_name,
+                  c.status,
+                  c.priority,
+                  c.rag,
+                  c.owner || '-',
+                  c.due_date || '-'
+                ])
+              }
             }
-          }]
+          ]
         }
-        
+
         responseData = await generatePDFReport(pdfData)
         contentType = 'application/pdf'
         filename = `cases-export-${new Date().toISOString()}.pdf`
@@ -189,11 +189,11 @@ export async function POST(request: NextRequest) {
 
       case 'zip': {
         const zip = new JSZip()
-        
+
         // Add CSV
         const csv = generateCSV(filteredCases)
         zip.file('cases.csv', csv)
-        
+
         // Add JSON
         const jsonData = {
           exported_at: new Date().toISOString(),
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
           cases: filteredCases
         }
         zip.file('cases.json', JSON.stringify(jsonData, null, 2))
-        
+
         // Add readme
         const readme = `# Cases Export
 
@@ -216,7 +216,7 @@ ${isDemoMode ? '\n⚠️ Demo Mode - Sample Data Only\n' : ''}
 - cases.json: Full data with metadata
 `
         zip.file('README.txt', readme)
-        
+
         responseData = await zip.generateAsync({ type: 'nodebuffer' })
         contentType = 'application/zip'
         filename = `cases-export-${new Date().toISOString()}.zip`
@@ -224,10 +224,7 @@ ${isDemoMode ? '\n⚠️ Demo Mode - Sample Data Only\n' : ''}
       }
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid export format' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid export format' }, { status: 400 })
     }
 
     // Return file
@@ -237,12 +234,8 @@ ${isDemoMode ? '\n⚠️ Demo Mode - Sample Data Only\n' : ''}
         'Content-Disposition': `attachment; filename="${filename}"`
       }
     })
-
   } catch (error) {
     console.error('Cases export error:', error)
-    return NextResponse.json(
-      { error: 'Failed to export cases' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to export cases' }, { status: 500 })
   }
 }

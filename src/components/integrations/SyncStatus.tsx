@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { 
-  RefreshCw, 
-  CheckCircle, 
-  XCircle, 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import {
+  RefreshCw,
+  CheckCircle,
+  XCircle,
   Clock,
   AlertCircle,
   FileText,
   Mail,
   Calendar,
-  Users,
-} from 'lucide-react';
-import { useSyncStatus } from '@/hooks/use-integrations';
-import type { SyncJob } from '@/types/integrations';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+  Users
+} from 'lucide-react'
+import { useSyncStatus } from '@/hooks/use-integrations'
+import type { SyncJob } from '@/types/integrations'
+import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 interface SyncStatusProps {
-  connectorId: string;
+  connectorId: string
 }
 
 export function SyncStatus({ connectorId }: SyncStatusProps) {
-  const { data: syncJob, isLoading } = useSyncStatus(connectorId);
-  
+  const { data: syncJob, isLoading } = useSyncStatus(connectorId)
+
   if (isLoading || !syncJob) {
     return (
       <Card>
@@ -39,48 +39,50 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    )
   }
-  
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'running':
-        return <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />;
+        return <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
       case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'failed':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-red-600" />
       default:
-        return <Clock className="h-4 w-4 text-gray-600" />;
+        return <Clock className="h-4 w-4 text-gray-600" />
     }
-  };
-  
-  const getStatusBadgeVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
+  }
+
+  const getStatusBadgeVariant = (
+    status: string
+  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status) {
       case 'running':
-        return 'default';
+        return 'default'
       case 'completed':
-        return 'secondary';
+        return 'secondary'
       case 'failed':
-        return 'destructive';
+        return 'destructive'
       default:
-        return 'outline';
+        return 'outline'
     }
-  };
-  
+  }
+
   const getProgress = () => {
-    if (!syncJob.items_processed || !syncJob.items_processed) return 0;
-    if (syncJob.status !== 'running') return 100;
-    
+    if (!syncJob.items_processed || !syncJob.items_processed) return 0
+    if (syncJob.status !== 'running') return 100
+
     // Estimate progress (in real implementation, this would be more accurate)
-    const startTime = new Date(syncJob.started_at).getTime();
-    const now = Date.now();
-    const elapsed = now - startTime;
-    const estimatedDuration = 5 * 60 * 1000; // 5 minutes
-    
-    return Math.min(95, (elapsed / estimatedDuration) * 100);
-  };
-  
+    const startTime = new Date(syncJob.started_at).getTime()
+    const now = Date.now()
+    const elapsed = now - startTime
+    const estimatedDuration = 5 * 60 * 1000 // 5 minutes
+
+    return Math.min(95, (elapsed / estimatedDuration) * 100)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -88,9 +90,7 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
           <CardTitle className="text-base">Sync Status</CardTitle>
           <div className="flex items-center gap-2">
             {getStatusIcon(syncJob.status)}
-            <Badge variant={getStatusBadgeVariant(syncJob.status)}>
-              {syncJob.status}
-            </Badge>
+            <Badge variant={getStatusBadgeVariant(syncJob.status)}>{syncJob.status}</Badge>
           </div>
         </div>
         <CardDescription>
@@ -107,18 +107,21 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
             <Progress value={getProgress()} className="h-2" />
           </div>
         )}
-        
+
         {syncJob.status === 'completed' && syncJob.completed_at && (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Duration</span>
               <span>
                 {Math.round(
-                  (new Date(syncJob.completed_at).getTime() - new Date(syncJob.started_at).getTime()) / 1000
-                )}s
+                  (new Date(syncJob.completed_at).getTime() -
+                    new Date(syncJob.started_at).getTime()) /
+                    1000
+                )}
+                s
               </span>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -127,7 +130,7 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
                 </div>
                 <p className="text-2xl font-semibold">{syncJob.items_processed || 0}</p>
               </div>
-              
+
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CheckCircle className="h-3 w-3" />
@@ -138,7 +141,7 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
                 </p>
               </div>
             </div>
-            
+
             {syncJob.items_failed && syncJob.items_failed > 0 && (
               <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
                 <AlertCircle className="h-4 w-4 text-red-600" />
@@ -154,7 +157,7 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-2 pt-2 border-t">
               <p className="text-sm font-medium">Sync Summary</p>
               <div className="space-y-1 text-sm">
@@ -172,15 +175,13 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
             </div>
           </div>
         )}
-        
+
         {syncJob.status === 'failed' && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
               <XCircle className="h-4 w-4 text-red-600" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-red-900 dark:text-red-400">
-                  Sync failed
-                </p>
+                <p className="text-sm font-medium text-red-900 dark:text-red-400">Sync failed</p>
                 {syncJob.error_message && (
                   <p className="text-xs text-red-700 dark:text-red-500 mt-1">
                     {syncJob.error_message}
@@ -192,5 +193,5 @@ export function SyncStatus({ connectorId }: SyncStatusProps) {
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,63 +1,67 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { CalendarItem } from '@/types/calendar';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import { CalendarItem } from '@/types/calendar'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id');
-    
+    const orgId = request.headers.get('X-Organization-Id')
+
     if (!orgId || orgId !== CIVICFLOW_ORG_ID) {
-      return NextResponse.json(
-        { error: 'Invalid organization' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Invalid organization' }, { status: 403 })
     }
 
-    const searchParams = request.nextUrl.searchParams;
-    const startDate = searchParams.get('start_date');
-    const endDate = searchParams.get('end_date');
-    const sources = searchParams.get('sources')?.split(',') || [];
-    const status = searchParams.get('status');
-    const assignee = searchParams.get('assignee');
-    const q = searchParams.get('q');
+    const searchParams = request.nextUrl.searchParams
+    const startDate = searchParams.get('start_date')
+    const endDate = searchParams.get('end_date')
+    const sources = searchParams.get('sources')?.split(',') || []
+    const status = searchParams.get('status')
+    const assignee = searchParams.get('assignee')
+    const q = searchParams.get('q')
 
     // Fetch events from database if 'events' is in sources
-    let eventItems: CalendarItem[] = [];
+    let eventItems: CalendarItem[] = []
     if (sources.includes('events')) {
       const { data: events } = await supabase
         .from('core_entities')
-        .select(`
+        .select(
+          `
           *,
           core_dynamic_data(*)
-        `)
+        `
+        )
         .eq('organization_id', orgId)
-        .eq('entity_type', 'event');
-      
+        .eq('entity_type', 'event')
+
       if (events) {
         eventItems = events.map(event => {
-          const dynamicData = event.core_dynamic_data || [];
+          const dynamicData = event.core_dynamic_data || []
           const getFieldValue = (fieldName: string, type: 'text' | 'number' | 'json' = 'text') => {
-            const field = dynamicData.find((d: any) => d.field_name === fieldName);
-            if (!field) return undefined;
+            const field = dynamicData.find((d: any) => d.field_name === fieldName)
+            if (!field) return undefined
             switch (type) {
-              case 'number': return field.field_value_number;
-              case 'json': return field.field_value_json;
-              default: return field.field_value_text;
+              case 'number':
+                return field.field_value_number
+              case 'json':
+                return field.field_value_json
+              default:
+                return field.field_value_text
             }
-          };
-          
-          const startDatetime = new Date(getFieldValue('start_datetime') || event.created_at);
-          const endDatetime = new Date(getFieldValue('end_datetime') || startDatetime);
-          const duration = Math.round((endDatetime.getTime() - startDatetime.getTime()) / (60 * 1000));
-          
+          }
+
+          const startDatetime = new Date(getFieldValue('start_datetime') || event.created_at)
+          const endDatetime = new Date(getFieldValue('end_datetime') || startDatetime)
+          const duration = Math.round(
+            (endDatetime.getTime() - startDatetime.getTime()) / (60 * 1000)
+          )
+
           return {
             id: event.id,
             title: event.entity_name,
@@ -69,19 +73,20 @@ export async function GET(request: NextRequest) {
             source_id: event.id,
             category: getFieldValue('event_type') || 'event',
             status: startDatetime > new Date() ? 'upcoming' : 'past',
-            location: getFieldValue('is_online') === 'true' 
-              ? getFieldValue('online_url') || 'Online'
-              : getFieldValue('venue_name'),
+            location:
+              getFieldValue('is_online') === 'true'
+                ? getFieldValue('online_url') || 'Online'
+                : getFieldValue('venue_name'),
             participants: [],
             custom_fields: {
               event_type: getFieldValue('event_type'),
               is_online: getFieldValue('is_online') === 'true',
-              capacity: getFieldValue('capacity', 'number'),
+              capacity: getFieldValue('capacity', 'number')
             },
             created_at: event.created_at,
-            updated_at: event.updated_at,
-          } as CalendarItem;
-        });
+            updated_at: event.updated_at
+          } as CalendarItem
+        })
       }
     }
 
@@ -104,7 +109,7 @@ export async function GET(request: NextRequest) {
           { id: 'p2', name: 'Sarah Johnson', email: 'sarah@example.com', role: 'Applicant' }
         ],
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       },
       {
         id: '2',
@@ -123,7 +128,7 @@ export async function GET(request: NextRequest) {
           { id: 'p4', name: 'Emily Chen', email: 'emily@example.com', role: 'Supervisor' }
         ],
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       },
       {
         id: '3',
@@ -140,7 +145,7 @@ export async function GET(request: NextRequest) {
           { id: 'p5', name: 'Alex Turner', email: 'alex@example.com', role: 'Coordinator' }
         ],
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       },
       {
         id: '4',
@@ -159,7 +164,7 @@ export async function GET(request: NextRequest) {
           payment_method: 'Direct Deposit'
         },
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       },
       {
         id: '5',
@@ -178,7 +183,7 @@ export async function GET(request: NextRequest) {
           { id: 'p7', name: 'James Miller', email: 'james@example.com', role: 'Constituent' }
         ],
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       },
       {
         id: '6',
@@ -192,69 +197,63 @@ export async function GET(request: NextRequest) {
         category: 'deadline',
         status: 'overdue',
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       }
-    ];
+    ]
 
     // Combine event items with mock items
-    const allItems = [...eventItems, ...mockItems];
+    const allItems = [...eventItems, ...mockItems]
 
     // Filter by date range
-    let filteredItems = allItems;
+    let filteredItems = allItems
     if (startDate && endDate) {
       filteredItems = filteredItems.filter(item => {
-        const itemDate = new Date(item.date);
-        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
-      });
+        const itemDate = new Date(item.date)
+        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate)
+      })
     }
 
     // Filter by sources
     if (sources.length > 0) {
-      filteredItems = filteredItems.filter(item => sources.includes(item.source));
+      filteredItems = filteredItems.filter(item => sources.includes(item.source))
     }
 
     // Filter by status
     if (status && status !== 'all') {
-      filteredItems = filteredItems.filter(item => item.status === status);
+      filteredItems = filteredItems.filter(item => item.status === status)
     }
 
     // Filter by search query
     if (q) {
-      const query = q.toLowerCase();
-      filteredItems = filteredItems.filter(item => 
-        item.title.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query)
-      );
+      const query = q.toLowerCase()
+      filteredItems = filteredItems.filter(
+        item =>
+          item.title.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query)
+      )
     }
 
     return NextResponse.json({
       items: filteredItems,
-      total: filteredItems.length,
-    });
-
+      total: filteredItems.length
+    })
   } catch (error) {
-    console.error('Error fetching calendar items:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch calendar items' },
-      { status: 500 }
-    );
+    console.error('Error fetching calendar items:', error)
+    return NextResponse.json({ error: 'Failed to fetch calendar items' }, { status: 500 })
   }
 }
 
 // Export calendar data
 export async function POST(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id');
-    
+    const orgId = request.headers.get('X-Organization-Id')
+
     if (!orgId || orgId !== CIVICFLOW_ORG_ID) {
-      return NextResponse.json(
-        { error: 'Invalid organization' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Invalid organization' }, { status: 403 })
     }
 
-    const body = await request.json();
-    const { format, items } = body;
+    const body = await request.json()
+    const { format, items } = body
 
     if (format === 'ics') {
       // Generate ICS file content
@@ -265,12 +264,12 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:CivicFlow Calendar
 X-WR-TIMEZONE:America/New_York
-`;
+`
 
       items.forEach((item: CalendarItem) => {
-        const startDate = new Date(item.date);
-        const endDate = new Date(startDate.getTime() + (item.duration || 60) * 60 * 1000);
-        
+        const startDate = new Date(item.date)
+        const endDate = new Date(startDate.getTime() + (item.duration || 60) * 60 * 1000)
+
         icsContent += `
 BEGIN:VEVENT
 UID:${item.id}@civicflow.gov
@@ -280,30 +279,29 @@ SUMMARY:${item.title}
 DESCRIPTION:${item.description || ''}
 LOCATION:${item.location || ''}
 STATUS:CONFIRMED
-END:VEVENT`;
-      });
+END:VEVENT`
+      })
 
-      icsContent += '\nEND:VCALENDAR';
+      icsContent += '\nEND:VCALENDAR'
 
       return new NextResponse(icsContent, {
         headers: {
           'Content-Type': 'text/calendar',
-          'Content-Disposition': `attachment; filename="civicflow-calendar.ics"`,
-        },
-      });
+          'Content-Disposition': `attachment; filename="civicflow-calendar.ics"`
+        }
+      })
     }
 
-    return NextResponse.json({ error: 'Invalid format' }, { status: 400 });
-
+    return NextResponse.json({ error: 'Invalid format' }, { status: 400 })
   } catch (error) {
-    console.error('Error exporting calendar:', error);
-    return NextResponse.json(
-      { error: 'Failed to export calendar' },
-      { status: 500 }
-    );
+    console.error('Error exporting calendar:', error)
+    return NextResponse.json({ error: 'Failed to export calendar' }, { status: 500 })
   }
 }
 
 function formatICSDate(date: Date): string {
-  return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  return date
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d{3}/, '')
 }

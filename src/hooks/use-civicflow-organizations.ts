@@ -1,41 +1,41 @@
-import { useQuery } from '@tanstack/react-query';
-import { useOrgStore } from '@/state/org';
+import { useQuery } from '@tanstack/react-query'
+import { useOrgStore } from '@/state/org'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 interface OrganizationFilters {
-  search?: string;
-  tags?: string[];
-  page?: number;
-  page_size?: number;
+  search?: string
+  tags?: string[]
+  page?: number
+  page_size?: number
 }
 
 // Simplified hook for CivicFlow events to use
 export function useOrganizations(filters?: OrganizationFilters) {
-  const { currentOrgId } = useOrgStore();
-  const orgId = currentOrgId || CIVICFLOW_ORG_ID;
+  const { currentOrgId } = useOrgStore()
+  const orgId = currentOrgId || CIVICFLOW_ORG_ID
 
   return useQuery<{ items: any[]; total: number }>({
     queryKey: ['civicflow-organizations', orgId, filters],
     queryFn: async () => {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams()
       if (filters) {
         Object.entries(filters).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
             if (Array.isArray(value)) {
-              params.append(key, value.join(','));
+              params.append(key, value.join(','))
             } else {
-              params.append(key, String(value));
+              params.append(key, String(value))
             }
           }
-        });
+        })
       }
 
       const response = await fetch(`/api/civicflow/organizations?${params}`, {
-        headers: { 'X-Organization-Id': orgId },
-      });
-      if (!response.ok) throw new Error('Failed to fetch organizations');
-      return response.json();
-    },
-  });
+        headers: { 'X-Organization-Id': orgId }
+      })
+      if (!response.ok) throw new Error('Failed to fetch organizations')
+      return response.json()
+    }
+  })
 }

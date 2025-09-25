@@ -15,7 +15,7 @@ import type {
   UpdatePlaybookPayload,
   PlaybookKpis,
   PlaybookStatus,
-  PlaybookExportFormat,
+  PlaybookExportFormat
 } from '@/types/playbooks'
 import type { Paginated, ListQueryParams } from '@/types/api'
 import type { OrgId } from '@/types/common'
@@ -103,45 +103,45 @@ export function usePublishPlaybook(playbookId: string) {
 // Additional query hooks for new UI requirements
 
 interface PlaybookListResponse {
-  items: PlaybookListItem[];
-  total: number;
-  page: number;
-  pageSize: number;
+  items: PlaybookListItem[]
+  total: number
+  page: number
+  pageSize: number
 }
 
 interface ExportPlaybooksParams {
-  format: PlaybookExportFormat;
-  filters?: PlaybookFilters;
+  format: PlaybookExportFormat
+  filters?: PlaybookFilters
 }
 
 // Get playbook KPIs
 export function usePlaybookKpis() {
-  const { currentOrgId } = useOrgStore();
+  const { currentOrgId } = useOrgStore()
 
   return useQuery({
     queryKey: ['playbooks', 'kpis', currentOrgId],
     queryFn: async () => {
       const response = await fetch('/api/civicflow/playbooks/kpis', {
         headers: {
-          'X-Organization-Id': currentOrgId || '',
-        },
-      });
+          'X-Organization-Id': currentOrgId || ''
+        }
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to fetch playbook KPIs');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to fetch playbook KPIs')
       }
 
-      return response.json() as Promise<PlaybookKpis>;
+      return response.json() as Promise<PlaybookKpis>
     },
-    enabled: !!currentOrgId,
-  });
+    enabled: !!currentOrgId
+  })
 }
 
 // Update playbook status
 export function useUpdatePlaybookStatus() {
-  const { currentOrgId } = useOrgStore();
-  const queryClient = useQueryClient();
+  const { currentOrgId } = useOrgStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: PlaybookStatus }) => {
@@ -149,127 +149,128 @@ export function useUpdatePlaybookStatus() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': currentOrgId || '',
+          'X-Organization-Id': currentOrgId || ''
         },
-        body: JSON.stringify({ status }),
-      });
+        body: JSON.stringify({ status })
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to update playbook status');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update playbook status')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['playbooks'] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', variables.id] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['playbooks'] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', variables.id] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] })
+    }
+  })
 }
 
 // Delete playbook
 export function useDeletePlaybook() {
-  const { currentOrgId } = useOrgStore();
-  const queryClient = useQueryClient();
+  const { currentOrgId } = useOrgStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await fetch(`/api/civicflow/playbooks/${id}`, {
         method: 'DELETE',
         headers: {
-          'X-Organization-Id': currentOrgId || '',
-        },
-      });
+          'X-Organization-Id': currentOrgId || ''
+        }
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to delete playbook');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to delete playbook')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['playbooks'] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['playbooks'] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] })
+    }
+  })
 }
 
 // Duplicate playbook
 export function useDuplicatePlaybook() {
-  const { currentOrgId } = useOrgStore();
-  const queryClient = useQueryClient();
+  const { currentOrgId } = useOrgStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await fetch(`/api/civicflow/playbooks/${id}/duplicate`, {
         method: 'POST',
         headers: {
-          'X-Organization-Id': currentOrgId || '',
-        },
-      });
+          'X-Organization-Id': currentOrgId || ''
+        }
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to duplicate playbook');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to duplicate playbook')
       }
 
-      return response.json() as Promise<PlaybookDetail>;
+      return response.json() as Promise<PlaybookDetail>
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['playbooks'] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['playbooks'] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] })
+    }
+  })
 }
 
 // Export playbooks
 export function useExportPlaybooks() {
-  const { currentOrgId } = useOrgStore();
+  const { currentOrgId } = useOrgStore()
 
   return useMutation({
     mutationFn: async ({ format, filters }: ExportPlaybooksParams) => {
-      const params = new URLSearchParams();
-      params.append('format', format);
-      if (filters?.q) params.append('q', filters.q);
-      if (filters?.status) params.append('status', filters.status);
-      if (filters?.category) params.append('category', filters.category);
-      if (filters?.service_id) params.append('service_id', filters.service_id);
+      const params = new URLSearchParams()
+      params.append('format', format)
+      if (filters?.q) params.append('q', filters.q)
+      if (filters?.status) params.append('status', filters.status)
+      if (filters?.category) params.append('category', filters.category)
+      if (filters?.service_id) params.append('service_id', filters.service_id)
 
       const response = await fetch(`/api/civicflow/playbooks/export?${params}`, {
         method: 'GET',
         headers: {
-          'X-Organization-Id': currentOrgId || '',
-        },
-      });
+          'X-Organization-Id': currentOrgId || ''
+        }
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to export playbooks');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to export playbooks')
       }
 
       // Handle file download
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const filename = response.headers.get('Content-Disposition')?.split('filename=')[1] || `playbooks.${format}`;
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename.replace(/"/g, '');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    },
-  });
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const filename =
+        response.headers.get('Content-Disposition')?.split('filename=')[1] || `playbooks.${format}`
+
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename.replace(/"/g, '')
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }
+  })
 }
 
 // Create playbook for new UI - using a different name to avoid conflict
 export function useCreatePlaybookNew() {
-  const { currentOrgId } = useOrgStore();
-  const queryClient = useQueryClient();
+  const { currentOrgId } = useOrgStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (payload: CreatePlaybookPayload) => {
@@ -277,29 +278,29 @@ export function useCreatePlaybookNew() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': currentOrgId || '',
+          'X-Organization-Id': currentOrgId || ''
         },
-        body: JSON.stringify(payload),
-      });
+        body: JSON.stringify(payload)
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create playbook');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to create playbook')
       }
 
-      return response.json() as Promise<PlaybookDetail>;
+      return response.json() as Promise<PlaybookDetail>
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['playbooks'] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['playbooks'] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] })
+    }
+  })
 }
 
 // Update playbook
 export function useUpdatePlaybook() {
-  const { currentOrgId } = useOrgStore();
-  const queryClient = useQueryClient();
+  const { currentOrgId } = useOrgStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({ id, ...payload }: UpdatePlaybookPayload & { id: string }) => {
@@ -307,46 +308,46 @@ export function useUpdatePlaybook() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': currentOrgId || '',
+          'X-Organization-Id': currentOrgId || ''
         },
-        body: JSON.stringify(payload),
-      });
+        body: JSON.stringify(payload)
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to update playbook');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update playbook')
       }
 
-      return response.json() as Promise<PlaybookDetail>;
+      return response.json() as Promise<PlaybookDetail>
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['playbooks'] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', variables.id] });
-      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: ['playbooks'] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', variables.id] })
+      queryClient.invalidateQueries({ queryKey: ['playbooks', 'kpis'] })
+    }
+  })
 }
 
 // Get playbook detail (new version for new UI)
 export function usePlaybookDetail(id: string) {
-  const { currentOrgId } = useOrgStore();
+  const { currentOrgId } = useOrgStore()
 
   return useQuery({
     queryKey: ['playbooks', id, currentOrgId],
     queryFn: async () => {
       const response = await fetch(`/api/civicflow/playbooks/${id}`, {
         headers: {
-          'X-Organization-Id': currentOrgId || '',
-        },
-      });
+          'X-Organization-Id': currentOrgId || ''
+        }
+      })
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to fetch playbook details');
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to fetch playbook details')
       }
 
-      return response.json() as Promise<PlaybookDetail>;
+      return response.json() as Promise<PlaybookDetail>
     },
-    enabled: !!currentOrgId && !!id,
-  });
+    enabled: !!currentOrgId && !!id
+  })
 }

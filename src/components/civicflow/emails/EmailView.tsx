@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { format, formatDistanceToNow } from 'date-fns';
-import { Email } from './EmailList';
+import { useState } from 'react'
+import React from 'react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+import { format, formatDistanceToNow } from 'date-fns'
+import { Email } from './EmailList'
 import {
   Reply,
   ReplyAll,
@@ -33,24 +33,24 @@ import {
   EyeOff,
   Download,
   Print
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface EmailViewProps {
-  email: Email;
-  onReply: () => void;
-  onReplyAll?: () => void;
-  onForward: () => void;
-  onDelete: () => void;
-  onMove: (folder: string) => void;
-  onToggleStar?: () => void;
-  onToggleFlag?: () => void;
+  email: Email
+  onReply: () => void
+  onReplyAll?: () => void
+  onForward: () => void
+  onDelete: () => void
+  onMove: (folder: string) => void
+  onToggleStar?: () => void
+  onToggleFlag?: () => void
 }
 
 interface EmailThread {
-  id: string;
-  emails: Email[];
-  subject: string;
-  participants: string[];
+  id: string
+  emails: Email[]
+  subject: string
+  participants: string[]
 }
 
 export function EmailView({
@@ -63,114 +63,97 @@ export function EmailView({
   onToggleStar,
   onToggleFlag
 }: EmailViewProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [showRawEmail, setShowRawEmail] = useState(false);
-  
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [showRawEmail, setShowRawEmail] = useState(false)
+
   const getInitials = (name: string): string => {
     if (name.includes('@')) {
-      return name.split('@')[0].slice(0, 2).toUpperCase();
+      return name.split('@')[0].slice(0, 2).toUpperCase()
     }
-    return name.split(' ').map(part => part[0]).join('').toUpperCase().slice(0, 2);
-  };
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   const formatEmailAddress = (address: string): { name: string; email: string } => {
     if (address.includes('<') && address.includes('>')) {
-      const matches = address.match(/^(.+)<(.+)>$/);
+      const matches = address.match(/^(.+)<(.+)>$/)
       if (matches) {
-        return { name: matches[1].trim(), email: matches[2].trim() };
+        return { name: matches[1].trim(), email: matches[2].trim() }
       }
     }
-    return { name: address, email: address };
-  };
+    return { name: address, email: address }
+  }
 
   const getPriorityColor = (priority: string): string => {
     switch (priority) {
       case 'urgent':
-        return 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30';
+        return 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/30'
       case 'low':
-        return 'text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30';
+        return 'text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30'
       default:
-        return 'text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-800';
+        return 'text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-800'
     }
-  };
+  }
 
   const getStatusDisplay = (status: string, direction: string) => {
     if (direction === 'out') {
       switch (status) {
         case 'queued':
-          return { icon: Clock, text: 'Queued', color: 'text-orange-500' };
+          return { icon: Clock, text: 'Queued', color: 'text-orange-500' }
         case 'sent':
-          return { icon: CheckCircle, text: 'Sent', color: 'text-green-500' };
+          return { icon: CheckCircle, text: 'Sent', color: 'text-green-500' }
         case 'delivered':
-          return { icon: CheckCircle, text: 'Delivered', color: 'text-green-600' };
+          return { icon: CheckCircle, text: 'Delivered', color: 'text-green-600' }
         case 'failed':
-          return { icon: AlertCircle, text: 'Failed', color: 'text-red-500' };
+          return { icon: AlertCircle, text: 'Failed', color: 'text-red-500' }
         default:
-          return null;
+          return null
       }
     }
-    return null;
-  };
+    return null
+  }
 
-  const statusDisplay = getStatusDisplay(email.status, email.direction);
-  const sender = formatEmailAddress(email.from);
-  const recipients = email.to.map(formatEmailAddress);
+  const statusDisplay = getStatusDisplay(email.status, email.direction)
+  const sender = formatEmailAddress(email.from)
+  const recipients = email.to.map(formatEmailAddress)
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
+    <div className="flex flex-col h-full bg-card">
       {/* Header Actions */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onReply}
-            >
+            <Button variant="ghost" size="sm" onClick={onReply}>
               <Reply className="h-4 w-4 mr-2" />
               Reply
             </Button>
             {email.to.length > 1 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onReplyAll}
-              >
+              <Button variant="ghost" size="sm" onClick={onReplyAll}>
                 <ReplyAll className="h-4 w-4 mr-2" />
                 Reply All
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onForward}
-            >
+            <Button variant="ghost" size="sm" onClick={onForward}>
               <Forward className="h-4 w-4 mr-2" />
               Forward
             </Button>
           </div>
 
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={onToggleStar}
-            >
-              <Star className={cn(
-                "h-4 w-4",
-                email.is_starred
-                  ? "text-yellow-500 fill-current"
-                  : "text-gray-400"
-              )} />
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onToggleStar}>
+              <Star
+                className={cn(
+                  'h-4 w-4',
+                  email.is_starred ? 'text-yellow-500 fill-current' : 'text-gray-400'
+                )}
+              />
             </Button>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={onToggleFlag}
-            >
+
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onToggleFlag}>
               <Flag className="h-4 w-4 text-gray-400" />
             </Button>
 
@@ -183,12 +166,7 @@ export function EmailView({
               <Archive className="h-4 w-4 text-gray-400" />
             </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={onDelete}
-            >
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onDelete}>
               <Trash2 className="h-4 w-4 text-gray-400" />
             </Button>
 
@@ -206,12 +184,12 @@ export function EmailView({
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {format(new Date(email.created_at), 'MMM d, yyyy \'at\' h:mm a')}
+            {format(new Date(email.created_at), "MMM d, yyyy 'at' h:mm a")}
           </div>
-          
+
           {statusDisplay && (
-            <div className={cn("flex items-center gap-1", statusDisplay.color)}>
-              {React.createElement(statusDisplay.icon, { className: "h-3 w-3" })}
+            <div className={cn('flex items-center gap-1', statusDisplay.color)}>
+              {React.createElement(statusDisplay.icon, { className: 'h-3 w-3' })}
               {statusDisplay.text}
             </div>
           )}
@@ -226,7 +204,7 @@ export function EmailView({
             <div className="flex items-center gap-1">
               <Tag className="h-3 w-3" />
               <div className="flex gap-1">
-                {email.tags.slice(0, 3).map((tag) => (
+                {email.tags.slice(0, 3).map(tag => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tag}
                   </Badge>
@@ -251,14 +229,18 @@ export function EmailView({
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                 {email.subject || '(no subject)'}
               </h1>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="flex items-center gap-1 text-xs text-muted-foreground"
               >
-                {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                {isExpanded ? (
+                  <ChevronUp className="h-3 w-3" />
+                ) : (
+                  <ChevronDown className="h-3 w-3" />
+                )}
                 {isExpanded ? 'Collapse' : 'Expand'}
               </Button>
             </div>
@@ -268,9 +250,7 @@ export function EmailView({
               {/* From */}
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">
-                    {getInitials(sender.name)}
-                  </AvatarFallback>
+                  <AvatarFallback className="text-xs">{getInitials(sender.name)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -278,9 +258,7 @@ export function EmailView({
                       {sender.name}
                     </span>
                     {sender.email !== sender.name && (
-                      <span className="text-sm text-muted-foreground">
-                        &lt;{sender.email}&gt;
-                      </span>
+                      <span className="text-sm text-muted-foreground">&lt;{sender.email}&gt;</span>
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -332,7 +310,7 @@ export function EmailView({
               </div>
               <div className="flex gap-2 flex-wrap">
                 {/* Mock attachments - in real app, this would come from API */}
-                <div className="flex items-center gap-2 p-2 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                <div className="flex items-center gap-2 p-2 border rounded-lg bg-muted">
                   <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded flex items-center justify-center">
                     <span className="text-xs font-medium text-blue-600 dark:text-blue-300">
                       PDF
@@ -372,7 +350,11 @@ export function EmailView({
               onClick={() => setShowRawEmail(!showRawEmail)}
               className="text-xs text-muted-foreground"
             >
-              {showRawEmail ? <EyeOff className="h-3 w-3 mr-1" /> : <Eye className="h-3 w-3 mr-1" />}
+              {showRawEmail ? (
+                <EyeOff className="h-3 w-3 mr-1" />
+              ) : (
+                <Eye className="h-3 w-3 mr-1" />
+              )}
               {showRawEmail ? 'Hide' : 'Show'} raw email
             </Button>
 
@@ -390,7 +372,7 @@ export function EmailView({
       </div>
 
       {/* Quick Actions Footer */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+      <div className="p-4 border-t border-border bg-muted">
         <div className="flex items-center justify-center gap-2">
           <Button size="sm" onClick={onReply}>
             <Reply className="h-4 w-4 mr-2" />
@@ -403,5 +385,5 @@ export function EmailView({
         </div>
       </div>
     </div>
-  );
+  )
 }

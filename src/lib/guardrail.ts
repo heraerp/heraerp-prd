@@ -40,9 +40,20 @@ export function preflight(event: any): string[] {
   // TABLE-ONLY-6: Check that only sacred tables are referenced
   // This is enforced at DB level, but we can check entity types
   const validEntityTypes = [
-    'customer', 'vendor', 'product', 'employee', 'gl_account', 
-    'budget', 'forecast', 'location', 'project', 'development_task',
-    'user', 'ai_agent', 'workflow_status', 'expense_category'
+    'customer',
+    'vendor',
+    'product',
+    'employee',
+    'gl_account',
+    'budget',
+    'forecast',
+    'location',
+    'project',
+    'development_task',
+    'user',
+    'ai_agent',
+    'workflow_status',
+    'expense_category'
   ]
 
   // ORG-FILTER-REQUIRED: Organization ID must be present
@@ -70,13 +81,15 @@ export function preflight(event: any): string[] {
 
   // GL-BALANCED: Check if this is a financial transaction that needs balancing
   if (event.smart_code?.includes('.FIN.') || event.smart_code?.includes('.GL.')) {
-    const totalDebits = event.lines
-      ?.filter((line: any) => line.line_type === 'debit')
-      ?.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0) || 0
+    const totalDebits =
+      event.lines
+        ?.filter((line: any) => line.line_type === 'debit')
+        ?.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0) || 0
 
-    const totalCredits = event.lines
-      ?.filter((line: any) => line.line_type === 'credit')
-      ?.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0) || 0
+    const totalCredits =
+      event.lines
+        ?.filter((line: any) => line.line_type === 'credit')
+        ?.reduce((sum: number, line: any) => sum + (line.line_amount || 0), 0) || 0
 
     if (Math.abs(totalDebits - totalCredits) > 0.01) {
       errors.push(`GL-BALANCED: debits (${totalDebits}) must equal credits (${totalCredits})`)

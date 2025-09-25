@@ -1,91 +1,92 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useOrgStore } from '@/state/org';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { seedCivicFlowCases, clearCivicFlowCases } from '@/lib/civicflow/seed-cases';
+import { useState } from 'react'
+import { useOrgStore } from '@/state/org'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { seedCivicFlowCases, clearCivicFlowCases } from '@/lib/civicflow/seed-cases'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 export default function SeedTestPage() {
-  const { currentOrgId } = useOrgStore();
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const { currentOrgId } = useOrgStore()
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<string>('')
+  const [error, setError] = useState<string>('')
 
   const handleSeedDirect = async () => {
-    setLoading(true);
-    setResult('');
-    setError('');
-    
+    setLoading(true)
+    setResult('')
+    setError('')
+
     try {
-      const cases = await seedCivicFlowCases();
-      setResult(`Successfully created ${cases?.length || 0} demo cases!`);
+      const cases = await seedCivicFlowCases()
+      setResult(`Successfully created ${cases?.length || 0} demo cases!`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to seed data');
+      setError(err instanceof Error ? err.message : 'Failed to seed data')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleClearDirect = async () => {
-    setLoading(true);
-    setResult('');
-    setError('');
-    
+    setLoading(true)
+    setResult('')
+    setError('')
+
     try {
-      await clearCivicFlowCases();
-      setResult('All cases cleared successfully!');
+      await clearCivicFlowCases()
+      setResult('All cases cleared successfully!')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear data');
+      setError(err instanceof Error ? err.message : 'Failed to clear data')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleSeedAPI = async () => {
-    setLoading(true);
-    setResult('');
-    setError('');
-    
+    setLoading(true)
+    setResult('')
+    setError('')
+
     try {
       const response = await fetch('/api/civicflow/seed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': CIVICFLOW_ORG_ID,
+          'X-Organization-Id': CIVICFLOW_ORG_ID
         },
-        body: JSON.stringify({ action: 'seed' }),
-      });
+        body: JSON.stringify({ action: 'seed' })
+      })
 
-      const data = await response.json();
-      
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error(data.error || 'API request failed');
+        throw new Error(data.error || 'API request failed')
       }
-      
-      setResult(`API Success: ${data.message} (${data.cases_created} cases)`);
+
+      setResult(`API Success: ${data.message} (${data.cases_created} cases)`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to call API');
+      setError(err instanceof Error ? err.message : 'Failed to call API')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (currentOrgId !== CIVICFLOW_ORG_ID) {
     return (
       <div className="container mx-auto p-6">
         <Alert>
           <AlertDescription>
-            Please switch to the CivicFlow demo organization (ID: {CIVICFLOW_ORG_ID}) to use this test page.
+            Please switch to the CivicFlow demo organization (ID: {CIVICFLOW_ORG_ID}) to use this
+            test page.
             <br />
             Current org: {currentOrgId}
           </AlertDescription>
         </Alert>
       </div>
-    );
+    )
   }
 
   return (
@@ -117,9 +118,7 @@ export default function SeedTestPage() {
       <Card>
         <CardHeader>
           <CardTitle>API Endpoint Test</CardTitle>
-          <CardDescription>
-            Test the /api/civicflow/seed endpoint
-          </CardDescription>
+          <CardDescription>Test the /api/civicflow/seed endpoint</CardDescription>
         </CardHeader>
         <CardContent>
           <Button onClick={handleSeedAPI} disabled={loading}>
@@ -160,5 +159,5 @@ export default function SeedTestPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

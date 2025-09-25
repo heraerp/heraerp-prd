@@ -1,16 +1,22 @@
-'use client';
+'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useSaveDraft, useSendEmail } from '@/hooks/civicflow/useEmails';
-import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { useSaveDraft, useSendEmail } from '@/hooks/civicflow/useEmails'
+import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
 import {
   X,
   Send,
@@ -29,30 +35,30 @@ import {
   Users,
   Tag,
   Sparkles
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface ComposeModalProps {
-  organizationId: string;
-  onClose: () => void;
-  onSent: () => void;
-  replyToId?: string;
-  forwardId?: string;
-  draftId?: string;
+  organizationId: string
+  onClose: () => void
+  onSent: () => void
+  replyToId?: string
+  forwardId?: string
+  draftId?: string
 }
 
 interface EmailDraft {
-  to: string[];
-  cc: string[];
-  bcc: string[];
-  subject: string;
-  body_html: string;
-  body_text: string;
-  priority: 'urgent' | 'normal' | 'low';
-  tags: string[];
-  attachments: File[];
+  to: string[]
+  cc: string[]
+  bcc: string[]
+  subject: string
+  body_html: string
+  body_text: string
+  priority: 'urgent' | 'normal' | 'low'
+  tags: string[]
+  attachments: File[]
 }
 
-const AUTOSAVE_INTERVAL = 30000; // 30 seconds
+const AUTOSAVE_INTERVAL = 30000 // 30 seconds
 
 export function ComposeModal({
   organizationId,
@@ -62,13 +68,13 @@ export function ComposeModal({
   forwardId,
   draftId
 }: ComposeModalProps) {
-  const { toast } = useToast();
-  const autosaveTimeoutRef = useRef<NodeJS.Timeout>();
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  
+  const { toast } = useToast()
+  const autosaveTimeoutRef = useRef<NodeJS.Timeout>()
+  const [isMinimized, setIsMinimized] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
   const [draft, setDraft] = useState<EmailDraft>({
     to: [],
     cc: [],
@@ -79,19 +85,19 @@ export function ComposeModal({
     priority: 'normal',
     tags: [],
     attachments: []
-  });
+  })
 
   const [inputValues, setInputValues] = useState({
     to: '',
     cc: '',
     bcc: ''
-  });
+  })
 
-  const [showCc, setShowCc] = useState(false);
-  const [showBcc, setShowBcc] = useState(false);
+  const [showCc, setShowCc] = useState(false)
+  const [showBcc, setShowBcc] = useState(false)
 
-  const { mutateAsync: saveDraft, isPending: isSavingDraft } = useSaveDraft();
-  const { mutateAsync: sendEmail, isPending: isSendingEmail } = useSendEmail();
+  const { mutateAsync: saveDraft, isPending: isSavingDraft } = useSaveDraft()
+  const { mutateAsync: sendEmail, isPending: isSendingEmail } = useSendEmail()
 
   // Initialize draft from existing email for reply/forward
   useEffect(() => {
@@ -99,12 +105,12 @@ export function ComposeModal({
       // Load existing email data
       // This would typically fetch the email data and populate the draft
     }
-  }, [replyToId, forwardId, draftId]);
+  }, [replyToId, forwardId, draftId])
 
   // Autosave functionality
   const performAutosave = useCallback(async () => {
     if (!draft.subject && !draft.body_text && draft.to.length === 0) {
-      return; // Don't save empty drafts
+      return // Don't save empty drafts
     }
 
     try {
@@ -112,27 +118,27 @@ export function ComposeModal({
         organizationId,
         draft,
         draftId
-      });
-      setLastSaved(new Date());
+      })
+      setLastSaved(new Date())
     } catch (error) {
-      console.error('Autosave failed:', error);
+      console.error('Autosave failed:', error)
     }
-  }, [draft, organizationId, saveDraft, draftId]);
+  }, [draft, organizationId, saveDraft, draftId])
 
   // Setup autosave
   useEffect(() => {
     if (autosaveTimeoutRef.current) {
-      clearTimeout(autosaveTimeoutRef.current);
+      clearTimeout(autosaveTimeoutRef.current)
     }
 
-    autosaveTimeoutRef.current = setTimeout(performAutosave, AUTOSAVE_INTERVAL);
+    autosaveTimeoutRef.current = setTimeout(performAutosave, AUTOSAVE_INTERVAL)
 
     return () => {
       if (autosaveTimeoutRef.current) {
-        clearTimeout(autosaveTimeoutRef.current);
+        clearTimeout(autosaveTimeoutRef.current)
       }
-    };
-  }, [draft, performAutosave]);
+    }
+  }, [draft, performAutosave])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -140,59 +146,59 @@ export function ComposeModal({
       if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
         switch (e.key.toLowerCase()) {
           case 'enter':
-            e.preventDefault();
-            handleSend();
-            break;
+            e.preventDefault()
+            handleSend()
+            break
           case 's':
-            e.preventDefault();
-            handleSaveDraft();
-            break;
+            e.preventDefault()
+            handleSaveDraft()
+            break
           case 'escape':
-            e.preventDefault();
-            onClose();
-            break;
+            e.preventDefault()
+            onClose()
+            break
         }
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [draft]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [draft])
 
   const parseEmailAddresses = (input: string): string[] => {
     return input
       .split(/[,;\s]+/)
       .map(email => email.trim())
-      .filter(email => email.length > 0 && email.includes('@'));
-  };
+      .filter(email => email.length > 0 && email.includes('@'))
+  }
 
   const handleInputChange = (field: keyof typeof inputValues, value: string) => {
-    setInputValues(prev => ({ ...prev, [field]: value }));
-    
+    setInputValues(prev => ({ ...prev, [field]: value }))
+
     // Parse email addresses on change
-    const emails = parseEmailAddresses(value);
-    setDraft(prev => ({ ...prev, [field]: emails }));
-  };
+    const emails = parseEmailAddresses(value)
+    setDraft(prev => ({ ...prev, [field]: emails }))
+  }
 
   const handleDraftChange = (field: keyof EmailDraft, value: any) => {
-    setDraft(prev => ({ ...prev, [field]: value }));
-  };
+    setDraft(prev => ({ ...prev, [field]: value }))
+  }
 
   const handleSaveDraft = async () => {
     try {
-      await performAutosave();
+      await performAutosave()
       toast({
         title: 'Draft saved',
         description: 'Your email has been saved as a draft.'
-      });
+      })
     } catch (error) {
       toast({
         title: 'Save failed',
         description: 'Failed to save draft. Please try again.',
         variant: 'destructive'
-      });
+      })
     }
-  };
+  }
 
   const handleSend = async () => {
     if (draft.to.length === 0) {
@@ -200,54 +206,54 @@ export function ComposeModal({
         title: 'Missing recipients',
         description: 'Please add at least one recipient.',
         variant: 'destructive'
-      });
-      return;
+      })
+      return
     }
 
     if (!draft.subject.trim()) {
-      const confirmed = window.confirm('Send email without a subject?');
-      if (!confirmed) return;
+      const confirmed = window.confirm('Send email without a subject?')
+      if (!confirmed) return
     }
 
-    setIsSending(true);
+    setIsSending(true)
 
     try {
       await sendEmail({
         organizationId,
         ...draft
-      });
+      })
 
       toast({
         title: 'Email sent',
         description: 'Your email has been sent successfully.'
-      });
+      })
 
-      onSent();
+      onSent()
     } catch (error: any) {
       toast({
         title: 'Send failed',
         description: error.message || 'Failed to send email. Please try again.',
         variant: 'destructive'
-      });
+      })
     } finally {
-      setIsSending(false);
+      setIsSending(false)
     }
-  };
+  }
 
   const handleAttachmentUpload = (files: FileList) => {
-    const newFiles = Array.from(files);
+    const newFiles = Array.from(files)
     setDraft(prev => ({
       ...prev,
       attachments: [...prev.attachments, ...newFiles]
-    }));
-  };
+    }))
+  }
 
   const removeAttachment = (index: number) => {
     setDraft(prev => ({
       ...prev,
       attachments: prev.attachments.filter((_, i) => i !== index)
-    }));
-  };
+    }))
+  }
 
   if (isMinimized) {
     return (
@@ -255,9 +261,7 @@ export function ComposeModal({
         <Card className="w-80 shadow-lg">
           <CardHeader className="p-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm truncate">
-                {draft.subject || 'New Message'}
-              </CardTitle>
+              <CardTitle className="text-sm truncate">{draft.subject || 'New Message'}</CardTitle>
               <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
@@ -267,12 +271,7 @@ export function ComposeModal({
                 >
                   <Maximize2 className="h-3 w-3" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={onClose}
-                >
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
                   <X className="h-3 w-3" />
                 </Button>
               </div>
@@ -280,29 +279,31 @@ export function ComposeModal({
           </CardHeader>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-50 flex items-center justify-center",
-      isFullscreen ? "p-0" : "p-4"
-    )}>
-      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
-      
-      <Card className={cn(
-        "relative bg-white dark:bg-gray-900 shadow-2xl",
-        isFullscreen
-          ? "w-full h-full rounded-none"
-          : "w-full max-w-4xl max-h-[90vh] rounded-lg"
-      )}>
+    <div
+      className={cn(
+        'fixed inset-0 z-50 flex items-center justify-center',
+        isFullscreen ? 'p-0' : 'p-4'
+      )}
+    >
+      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+
+      <Card
+        className={cn(
+          'relative bg-card shadow-2xl',
+          isFullscreen ? 'w-full h-full rounded-none' : 'w-full max-w-4xl max-h-[90vh] rounded-lg'
+        )}
+      >
         {/* Header */}
         <CardHeader className="border-b border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">
               {replyToId ? 'Reply' : forwardId ? 'Forward' : 'New Message'}
             </CardTitle>
-            
+
             <div className="flex items-center gap-2">
               {/* Autosave Status */}
               {lastSaved && (
@@ -320,7 +321,7 @@ export function ComposeModal({
               >
                 <Minimize2 className="h-4 w-4" />
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -329,13 +330,8 @@ export function ComposeModal({
               >
                 <Maximize2 className="h-4 w-4" />
               </Button>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={onClose}
-              >
+
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -353,7 +349,7 @@ export function ComposeModal({
               <Input
                 id="to"
                 value={inputValues.to}
-                onChange={(e) => handleInputChange('to', e.target.value)}
+                onChange={e => handleInputChange('to', e.target.value)}
                 placeholder="Enter email addresses..."
                 className="flex-1"
               />
@@ -390,7 +386,7 @@ export function ComposeModal({
                 <Input
                   id="cc"
                   value={inputValues.cc}
-                  onChange={(e) => handleInputChange('cc', e.target.value)}
+                  onChange={e => handleInputChange('cc', e.target.value)}
                   placeholder="Enter email addresses..."
                   className="flex-1"
                 />
@@ -414,7 +410,7 @@ export function ComposeModal({
                 <Input
                   id="bcc"
                   value={inputValues.bcc}
-                  onChange={(e) => handleInputChange('bcc', e.target.value)}
+                  onChange={e => handleInputChange('bcc', e.target.value)}
                   placeholder="Enter email addresses..."
                   className="flex-1"
                 />
@@ -437,13 +433,13 @@ export function ComposeModal({
               <Input
                 id="subject"
                 value={draft.subject}
-                onChange={(e) => handleDraftChange('subject', e.target.value)}
+                onChange={e => handleDraftChange('subject', e.target.value)}
                 placeholder="Enter subject..."
                 className="flex-1"
               />
               <Select
                 value={draft.priority}
-                onValueChange={(value) => handleDraftChange('priority', value)}
+                onValueChange={value => handleDraftChange('priority', value)}
               >
                 <SelectTrigger className="w-24">
                   <SelectValue />
@@ -469,7 +465,7 @@ export function ComposeModal({
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <Underline className="h-4 w-4" />
               </Button>
-              <div className="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1" />
+              <div className="w-px h-4 bg-border mx-1" />
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <Link className="h-4 w-4" />
               </Button>
@@ -487,7 +483,7 @@ export function ComposeModal({
               <input
                 type="file"
                 multiple
-                onChange={(e) => e.target.files && handleAttachmentUpload(e.target.files)}
+                onChange={e => e.target.files && handleAttachmentUpload(e.target.files)}
                 className="hidden"
                 id="attachment-upload"
               />
@@ -533,9 +529,9 @@ export function ComposeModal({
           <div className="flex-1 p-4">
             <Textarea
               value={draft.body_text}
-              onChange={(e) => {
-                handleDraftChange('body_text', e.target.value);
-                handleDraftChange('body_html', e.target.value); // Simple text to HTML for now
+              onChange={e => {
+                handleDraftChange('body_text', e.target.value)
+                handleDraftChange('body_html', e.target.value) // Simple text to HTML for now
               }}
               placeholder="Write your message..."
               className="w-full h-full resize-none border-none focus-visible:ring-0"
@@ -553,23 +549,17 @@ export function ComposeModal({
                 <Send className="h-4 w-4" />
                 {isSending ? 'Sending...' : 'Send'}
               </Button>
-              
-              <Button
-                variant="outline"
-                onClick={handleSaveDraft}
-                disabled={isSavingDraft}
-              >
+
+              <Button variant="outline" onClick={handleSaveDraft} disabled={isSavingDraft}>
                 <Save className="h-4 w-4 mr-2" />
                 {isSavingDraft ? 'Saving...' : 'Save Draft'}
               </Button>
             </div>
 
-            <div className="text-xs text-muted-foreground">
-              Press ⌘+Enter to send • ⌘+S to save
-            </div>
+            <div className="text-xs text-muted-foreground">Press ⌘+Enter to send • ⌘+S to save</div>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

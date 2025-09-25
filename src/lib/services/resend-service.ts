@@ -1,42 +1,42 @@
-import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend'
+import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 interface SendEmailOptions {
-  to: string | string[];
-  subject: string;
-  html?: string;
-  text?: string;
-  from?: string;
-  replyTo?: string;
-  cc?: string | string[];
-  bcc?: string | string[];
+  to: string | string[]
+  subject: string
+  html?: string
+  text?: string
+  from?: string
+  replyTo?: string
+  cc?: string | string[]
+  bcc?: string | string[]
   attachments?: Array<{
-    filename: string;
-    content: Buffer | string;
-  }>;
+    filename: string
+    content: Buffer | string
+  }>
   tags?: Array<{
-    name: string;
-    value: string;
-  }>;
-  organizationId?: string;
+    name: string
+    value: string
+  }>
+  organizationId?: string
 }
 
 interface EmailResult {
-  id: string;
-  from: string;
-  to: string | string[];
-  created_at: string;
+  id: string
+  from: string
+  to: string | string[]
+  created_at: string
 }
 
 // Check if we're in demo mode
 function isDemoMode(): boolean {
-  return process.env.DEMO_MODE === 'true' || !process.env.RESEND_API_KEY;
+  return process.env.DEMO_MODE === 'true' || !process.env.RESEND_API_KEY
 }
 
 // Get organization-specific configuration
@@ -45,30 +45,19 @@ async function getOrgEmailConfig(organizationId: string) {
     .from('core_dynamic_data')
     .select('field_name, field_value_text')
     .eq('entity_id', organizationId)
-    .in('field_name', ['resend_from_email', 'resend_reply_to']);
+    .in('field_name', ['resend_from_email', 'resend_reply_to'])
 
-  const config: Record<string, string> = {};
+  const config: Record<string, string> = {}
   data?.forEach(item => {
-    config[item.field_name] = item.field_value_text;
-  });
+    config[item.field_name] = item.field_value_text
+  })
 
-  return config;
+  return config
 }
 
 export async function sendEmailViaResend(options: SendEmailOptions): Promise<EmailResult> {
-  const {
-    to,
-    subject,
-    html,
-    text,
-    from,
-    replyTo,
-    cc,
-    bcc,
-    attachments,
-    tags,
-    organizationId
-  } = options;
+  const { to, subject, html, text, from, replyTo, cc, bcc, attachments, tags, organizationId } =
+    options
 
   // Demo mode - return mock result
   if (isDemoMode()) {
@@ -76,24 +65,24 @@ export async function sendEmailViaResend(options: SendEmailOptions): Promise<Ema
       to,
       subject,
       preview: text?.substring(0, 100) || html?.substring(0, 100)
-    });
+    })
 
     return {
       id: `demo_${Date.now()}`,
       from: from || 'noreply@heraerp.com',
       to,
       created_at: new Date().toISOString()
-    };
+    }
   }
 
   try {
     // Initialize Resend with API key
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const resend = new Resend(process.env.RESEND_API_KEY!)
 
     // Get organization-specific email settings if provided
-    let orgConfig = {};
+    let orgConfig = {}
     if (organizationId) {
-      orgConfig = await getOrgEmailConfig(organizationId);
+      orgConfig = await getOrgEmailConfig(organizationId)
     }
 
     // Prepare email payload
@@ -108,26 +97,26 @@ export async function sendEmailViaResend(options: SendEmailOptions): Promise<Ema
       bcc,
       attachments,
       tags: tags || []
-    };
+    }
 
     // Add organization tag if provided
     if (organizationId) {
       emailPayload.tags.push({
         name: 'organization_id',
         value: organizationId
-      });
+      })
     }
 
     // Send email via Resend
-    const { data, error } = await resend.emails.send(emailPayload);
+    const { data, error } = await resend.emails.send(emailPayload)
 
     if (error) {
-      console.error('Resend API error:', error);
-      throw new Error(`Failed to send email: ${error.message}`);
+      console.error('Resend API error:', error)
+      throw new Error(`Failed to send email: ${error.message}`)
     }
 
     if (!data) {
-      throw new Error('No data returned from Resend API');
+      throw new Error('No data returned from Resend API')
     }
 
     return {
@@ -135,11 +124,10 @@ export async function sendEmailViaResend(options: SendEmailOptions): Promise<Ema
       from: emailPayload.from,
       to,
       created_at: new Date().toISOString()
-    };
-
+    }
   } catch (error) {
-    console.error('Error sending email via Resend:', error);
-    throw error;
+    console.error('Error sending email via Resend:', error)
+    throw error
   }
 }
 
@@ -147,21 +135,21 @@ export async function sendEmailViaResend(options: SendEmailOptions): Promise<Ema
 export async function sendBatchEmailsViaResend(
   emails: Array<Omit<SendEmailOptions, 'organizationId'> & { organizationId?: string }>
 ): Promise<Array<EmailResult | { error: string; email: SendEmailOptions }>> {
-  const results = [];
+  const results = []
 
   for (const email of emails) {
     try {
-      const result = await sendEmailViaResend(email);
-      results.push(result);
+      const result = await sendEmailViaResend(email)
+      results.push(result)
     } catch (error) {
       results.push({
         error: error instanceof Error ? error.message : 'Unknown error',
         email
-      });
+      })
     }
   }
 
-  return results;
+  return results
 }
 
 // Email templates
@@ -207,18 +195,21 @@ export const EMAIL_TEMPLATES = {
       </div>
     `
   }
-};
+}
 
 // Replace template variables
-export function renderTemplate(template: { subject: string; html: string }, data: Record<string, any>) {
-  let subject = template.subject;
-  let html = template.html;
+export function renderTemplate(
+  template: { subject: string; html: string },
+  data: Record<string, any>
+) {
+  let subject = template.subject
+  let html = template.html
 
   Object.entries(data).forEach(([key, value]) => {
-    const regex = new RegExp(`{{${key}}}`, 'g');
-    subject = subject.replace(regex, String(value));
-    html = html.replace(regex, String(value));
-  });
+    const regex = new RegExp(`{{${key}}}`, 'g')
+    subject = subject.replace(regex, String(value))
+    html = html.replace(regex, String(value))
+  })
 
-  return { subject, html };
+  return { subject, html }
 }

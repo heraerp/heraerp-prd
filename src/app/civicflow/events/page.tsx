@@ -1,33 +1,33 @@
-'use client';
+'use client'
 
-import { useState, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { useState, Suspense } from 'react'
+import { useRouter } from 'next/navigation'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  TableRow
+} from '@/components/ui/table'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   Calendar,
   Users,
@@ -40,17 +40,17 @@ import {
   MoreVertical,
   MapPin,
   Globe,
-  Clock,
-} from 'lucide-react';
-import { format } from 'date-fns';
-import { useEvents, useEventKPIs } from '@/hooks/use-events';
-import { isDemoMode } from '@/lib/demo-guard';
-import { DemoBanner } from '@/components/communications/DemoBanner';
-import { Loading } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { useToast } from '@/components/ui/use-toast';
-import { NewEventModal } from '@/components/events/NewEventModal';
-import type { EventFilters, EventType } from '@/types/events';
+  Clock
+} from 'lucide-react'
+import { format } from 'date-fns'
+import { useEvents, useEventKPIs } from '@/hooks/use-events'
+import { isDemoMode } from '@/lib/demo-guard'
+import { DemoBanner } from '@/components/communications/DemoBanner'
+import { Loading } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { useToast } from '@/components/ui/use-toast'
+import { NewEventModal } from '@/components/events/NewEventModal'
+import type { EventFilters, EventType } from '@/types/events'
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
   webinar: 'Webinar',
@@ -58,8 +58,8 @@ const EVENT_TYPE_LABELS: Record<EventType, string> = {
   conference: 'Conference',
   workshop: 'Workshop',
   meeting: 'Meeting',
-  other: 'Other',
-};
+  other: 'Other'
+}
 
 const EVENT_TYPE_COLORS: Record<EventType, string> = {
   webinar: 'bg-blue-500',
@@ -67,79 +67,74 @@ const EVENT_TYPE_COLORS: Record<EventType, string> = {
   conference: 'bg-green-500',
   workshop: 'bg-orange-500',
   meeting: 'bg-gray-500',
-  other: 'bg-gray-400',
-};
+  other: 'bg-gray-400'
+}
 
 function EventsContent() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { currentOrgId } = useOrgStore();
-  const isDemo = isDemoMode(currentOrgId);
-  
+  const router = useRouter()
+  const { toast } = useToast()
+  const { currentOrgId } = useOrgStore()
+  const isDemo = isDemoMode(currentOrgId)
+
   const [filters, setFilters] = useState<EventFilters>({
     status: 'upcoming',
     page: 1,
-    page_size: 20,
-  });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-  
+    page_size: 20
+  })
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showNewEventModal, setShowNewEventModal] = useState(false)
+
   // Queries
-  const { data: eventsData, isLoading: eventsLoading, error: eventsError } = useEvents(filters);
-  const { data: kpis, isLoading: kpisLoading } = useEventKPIs();
-  
+  const { data: eventsData, isLoading: eventsLoading, error: eventsError } = useEvents(filters)
+  const { data: kpis, isLoading: kpisLoading } = useEventKPIs()
+
   const handleSearch = () => {
-    setFilters({ ...filters, search: searchTerm, page: 1 });
-  };
-  
+    setFilters({ ...filters, search: searchTerm, page: 1 })
+  }
+
   const handleFilterChange = (key: keyof EventFilters, value: any) => {
-    setFilters({ ...filters, [key]: value, page: 1 });
-  };
-  
+    setFilters({ ...filters, [key]: value, page: 1 })
+  }
+
   const getEventIcon = (event: any) => {
-    if (event.is_online) return <Globe className="h-4 w-4" />;
-    if (event.is_hybrid) return <MapPin className="h-4 w-4" />;
-    return <MapPin className="h-4 w-4" />;
-  };
-  
+    if (event.is_online) return <Globe className="h-4 w-4" />
+    if (event.is_hybrid) return <MapPin className="h-4 w-4" />
+    return <MapPin className="h-4 w-4" />
+  }
+
   const getEventStatus = (startDate: string, endDate: string) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    
-    if (now < start) return 'upcoming';
-    if (now > end) return 'past';
-    return 'ongoing';
-  };
-  
+    const now = new Date()
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    if (now < start) return 'upcoming'
+    if (now > end) return 'past'
+    return 'ongoing'
+  }
+
   if (!currentOrgId) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <h2 className="text-lg font-medium mb-2">No Organization Selected</h2>
-          <p className="text-muted-foreground">
-            Please select an organization to view events.
-          </p>
+          <p className="text-muted-foreground">Please select an organization to view events.</p>
         </div>
       </div>
-    );
+    )
   }
-  
+
   if (eventsError) {
     return (
       <div className="container mx-auto py-6">
-        <ErrorState 
-          message="Failed to load events data" 
-          onRetry={() => window.location.reload()} 
-        />
+        <ErrorState message="Failed to load events data" onRetry={() => window.location.reload()} />
       </div>
-    );
+    )
   }
-  
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {isDemo && <DemoBanner />}
-      
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Events & Registrations</h1>
@@ -148,7 +143,7 @@ function EventsContent() {
           New Event
         </Button>
       </div>
-      
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -166,7 +161,7 @@ function EventsContent() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -182,7 +177,7 @@ function EventsContent() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -198,7 +193,7 @@ function EventsContent() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -215,7 +210,7 @@ function EventsContent() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Filters */}
       <Card>
         <CardHeader>
@@ -228,15 +223,15 @@ function EventsContent() {
               <Input
                 placeholder="Search events..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                onChange={e => setSearchTerm(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleSearch()}
                 className="pl-10"
               />
             </div>
-            
+
             <Select
               value={filters.status || 'upcoming'}
-              onValueChange={(value) => handleFilterChange('status', value)}
+              onValueChange={value => handleFilterChange('status', value)}
             >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Status" />
@@ -247,10 +242,10 @@ function EventsContent() {
                 <SelectItem value="past">Past</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select
               value={filters.event_type || 'all'}
-              onValueChange={(value) => 
+              onValueChange={value =>
                 handleFilterChange('event_type', value === 'all' ? undefined : value)
               }
             >
@@ -266,11 +261,20 @@ function EventsContent() {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Select
-              value={filters.is_online === true ? 'online' : filters.is_online === false ? 'in-person' : 'all'}
-              onValueChange={(value) => 
-                handleFilterChange('is_online', value === 'online' ? true : value === 'in-person' ? false : undefined)
+              value={
+                filters.is_online === true
+                  ? 'online'
+                  : filters.is_online === false
+                    ? 'in-person'
+                    : 'all'
+              }
+              onValueChange={value =>
+                handleFilterChange(
+                  'is_online',
+                  value === 'online' ? true : value === 'in-person' ? false : undefined
+                )
               }
             >
               <SelectTrigger className="w-48">
@@ -282,7 +286,7 @@ function EventsContent() {
                 <SelectItem value="in-person">In-Person</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Button variant="outline" onClick={handleSearch}>
               <Filter className="h-4 w-4 mr-2" />
               Apply
@@ -290,7 +294,7 @@ function EventsContent() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Events Table */}
       <Card>
         <CardHeader>
@@ -313,11 +317,11 @@ function EventsContent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {eventsData?.items.map((event) => {
-                  const status = getEventStatus(event.start_datetime, event.end_datetime);
-                  
+                {eventsData?.items.map(event => {
+                  const status = getEventStatus(event.start_datetime, event.end_datetime)
+
                   return (
-                    <TableRow 
+                    <TableRow
                       key={event.id}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => router.push(`/civicflow/events/${event.id}`)}
@@ -333,10 +337,7 @@ function EventsContent() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge 
-                          variant="secondary"
-                          className={EVENT_TYPE_COLORS[event.event_type]}
-                        >
+                        <Badge variant="secondary" className={EVENT_TYPE_COLORS[event.event_type]}>
                           {EVENT_TYPE_LABELS[event.event_type]}
                         </Badge>
                       </TableCell>
@@ -354,11 +355,7 @@ function EventsContent() {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {getEventIcon(event)}
-                          <span>
-                            {event.is_online 
-                              ? 'Online' 
-                              : event.venue_name || 'TBD'}
-                          </span>
+                          <span>{event.is_online ? 'Online' : event.venue_name || 'TBD'}</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -375,9 +372,11 @@ function EventsContent() {
                       <TableCell>
                         <Badge
                           variant={
-                            status === 'upcoming' ? 'default' :
-                            status === 'ongoing' ? 'destructive' :
-                            'secondary'
+                            status === 'upcoming'
+                              ? 'default'
+                              : status === 'ongoing'
+                                ? 'destructive'
+                                : 'secondary'
                           }
                         >
                           {status}
@@ -386,35 +385,31 @@ function EventsContent() {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => e.stopPropagation()}
-                            >
+                            <Button variant="ghost" size="icon" onClick={e => e.stopPropagation()}>
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/civicflow/events/${event.id}`);
+                              onClick={e => {
+                                e.stopPropagation()
+                                router.push(`/civicflow/events/${event.id}`)
                               }}
                             >
                               View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/civicflow/events/${event.id}?tab=registrations`);
+                              onClick={e => {
+                                e.stopPropagation()
+                                router.push(`/civicflow/events/${event.id}?tab=registrations`)
                               }}
                             >
                               Manage Registrations
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toast({ title: 'Export started' });
+                              onClick={e => {
+                                e.stopPropagation()
+                                toast({ title: 'Export started' })
                               }}
                             >
                               <Download className="h-4 w-4 mr-2" />
@@ -424,17 +419,17 @@ function EventsContent() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  );
+                  )
                 })}
               </TableBody>
             </Table>
           )}
-          
+
           {/* Pagination */}
           {eventsData && eventsData.total > filters.page_size! && (
             <div className="flex items-center justify-between mt-4">
               <p className="text-sm text-muted-foreground">
-                Showing {((filters.page! - 1) * filters.page_size!) + 1} to{' '}
+                Showing {(filters.page! - 1) * filters.page_size! + 1} to{' '}
                 {Math.min(filters.page! * filters.page_size!, eventsData.total)} of{' '}
                 {eventsData.total} events
               </p>
@@ -460,18 +455,18 @@ function EventsContent() {
           )}
         </CardContent>
       </Card>
-      
+
       {/* New Event Modal */}
       <NewEventModal
         open={showNewEventModal}
         onOpenChange={setShowNewEventModal}
         onSuccess={() => {
-          toast({ title: 'Event created successfully' });
-          setShowNewEventModal(false);
+          toast({ title: 'Event created successfully' })
+          setShowNewEventModal(false)
         }}
       />
     </div>
-  );
+  )
 }
 
 export default function EventsPage() {
@@ -488,5 +483,5 @@ export default function EventsPage() {
     >
       <EventsContent />
     </Suspense>
-  );
+  )
 }
