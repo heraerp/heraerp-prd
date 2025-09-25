@@ -1,58 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { validateSchema } from '@/lib/v2/validation';
+import { validateSchema, queryParamsSchema } from '@/lib/v2/validation';
 import { withTxnLogging } from '@/lib/v2/logging/structured-logger';
+import { z } from 'zod';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const schema = {
-  type: 'object',
-  properties: {
-    organization_id: { type: 'string', format: 'uuid' },
-    source_entity_id: { type: 'string', format: 'uuid' },
-    target_entity_id: { type: 'string', format: 'uuid' },
-    transaction_type: { type: 'string' },
-    smart_code_like: { type: 'string' },
-    date_from: { type: 'string', format: 'date-time' },
-    date_to: { type: 'string', format: 'date-time' },
-    limit: { type: 'integer', minimum: 1, maximum: 1000 },
-    offset: { type: 'integer', minimum: 0 },
-    include_lines: { type: 'boolean' }
-  },
-  required: ['organization_id'],
-  additionalProperties: false
-};
+// Zod schema for transaction query payload
+const txnQuerySchema = z.object({
+  organization_id: z.string().uuid(),
+  source_entity_id: z.string().uuid().optional(),
+  target_entity_id: z.string().uuid().optional(),
+  transaction_type: z.string().optional(),
+  smart_code_like: z.string().optional(),
+  date_from: z.string().datetime().optional(),
+  date_to: z.string().datetime().optional(),
+  limit: z.number().min(1).max(1000).optional().default(100),
+  offset: z.number().min(0).optional().default(0),
+  include_lines: z.boolean().optional().default(false)
+});
 
-export const POST = withTxnLogging('txn-query', async (payload, logger) => {
+export async function POST(request: NextRequest) {
   try {
     const payload = await request.json();
 
     // Validate payload
-    const validation = await validateSchema(payload, schema);
-    if (!validation.valid) {
+    const validation = validateSchema(txnQuerySchema, payload);
+    if (!validation.success) {
       return NextResponse.json(
-        { success: false, error: validation.errors?.[0]?.message || 'Invalid payload' },
+        {
+          success: false,
+          error: 'Validation failed',
+          validation_errors: validation.errors
+        },
         { status: 400 }
       );
     }
 
+    const validatedPayload = validation.data!;
+
     // Build filters object
     const filters: Record<string, any> = {};
-    if (payload.source_entity_id) filters.source_entity_id = payload.source_entity_id;
-    if (payload.target_entity_id) filters.target_entity_id = payload.target_entity_id;
-    if (payload.transaction_type) filters.transaction_type = payload.transaction_type;
-    if (payload.smart_code_like) filters.smart_code_like = payload.smart_code_like;
-    if (payload.date_from) filters.date_from = payload.date_from;
-    if (payload.date_to) filters.date_to = payload.date_to;
-    if (payload.limit) filters.limit = payload.limit;
-    if (payload.offset) filters.offset = payload.offset;
+    if (validatedPayload.source_entity_id) filters.source_entity_id = validatedPayload.source_entity_id;
+    if (validatedPayload.target_entity_id) filters.target_entity_id = validatedPayload.target_entity_id;
+    if (validatedPayload.transaction_type) filters.transaction_type = validatedPayload.transaction_type;
+    if (validatedPayload.smart_code_like) filters.smart_code_like = validatedPayload.smart_code_like;
+    if (validatedPayload.date_from) filters.date_from = validatedPayload.date_from;
+    if (validatedPayload.date_to) filters.date_to = validatedPayload.date_to;
+    if (validatedPayload.limit) filters.limit = validatedPayload.limit;
+    if (validatedPayload.offset) filters.offset = validatedPayload.offset;
 
     // Call database function
     const { data, error } = await supabase.rpc('hera_txn_query_v1', {
-      p_org_id: payload.organization_id,
+      p_org_id: validatedPayload.organization_id,
       p_filters: filters
     });
 
@@ -67,7 +70,7 @@ export const POST = withTxnLogging('txn-query', async (payload, logger) => {
     let transactions = data?.data || [];
 
     // If include_lines is requested, fetch lines for all transactions in ONE query
-    if (payload.include_lines && transactions.length > 0) {
+    if (validatedPayload.include_lines && transactions.length > 0) {
       const transactionIds = transactions.map((txn: any) => txn.id);
 
       // Single query to fetch all lines for all transactions
@@ -96,7 +99,7 @@ export const POST = withTxnLogging('txn-query', async (payload, logger) => {
           updated_at,
           version
         `)
-        .eq('organization_id', payload.organization_id)
+        .eq('organization_id', validatedPayload.organization_id)
         .in('transaction_id', transactionIds)
         .order('transaction_id, line_number'); // ORDER BY transaction_id, line_number for grouping
 
