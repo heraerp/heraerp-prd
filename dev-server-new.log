@@ -1,0 +1,54 @@
+
+> heraerp@1.2.2 predev
+> npm run schema:types
+
+
+> heraerp@1.2.2 schema:types
+> node mcp-server/schema-introspection.js types
+
+[dotenv@17.2.2] injecting env (10) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+✅ TypeScript types generated at: /home/san/PRD/heraerp-prd/src/types/hera-database.types.ts
+
+✨ Done!
+
+> heraerp@1.2.2 dev
+> node scripts/startup-control-center.js && next dev
+
+
+🎛️  HERA CONTROL CENTER - STARTUP CHECK
+
+✅ Control Center health check bypassed for development
+🚀 HERA system ready for development!
+
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://10.255.255.254:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 1898ms
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 703ms (283 modules)
+ GET /api/health 200 in 946ms
+ ○ Compiling /api/v2/universal/txn-emit ...
+ ✓ Compiled /api/v2/universal/txn-emit in 955ms (432 modules)
+Database error: {
+  code: 'PGRST202',
+  details: 'Searched for the function public.exec_sql with parameters params, query or with a single unnamed json/jsonb parameter, but no matches were found in the schema cache.',
+  hint: null,
+  message: 'Could not find the function public.exec_sql(params, query) in the schema cache'
+}
+Error in txn-emit: Error: Could not find the function public.exec_sql(params, query) in the schema cache
+    at selectValue (src/lib/db.ts:31:10)
+    at async POST (src/app/api/v2/universal/txn-emit/route.ts:45:27)
+  29 |   if (error) {
+  30 |     console.error('Database error:', error)
+> 31 |     throw new Error(error.message)
+     |          ^
+  32 |   }
+  33 |
+  34 |   // Return the first value from the result
+ POST /api/v2/universal/txn-emit 500 in 1573ms

@@ -1,0 +1,83 @@
+
+> heraerp@1.2.2 predev
+> npm run schema:types
+
+
+> heraerp@1.2.2 schema:types
+> node mcp-server/schema-introspection.js types
+
+[dotenv@17.2.2] injecting env (10) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+
+✅ TypeScript types generated at: /home/san/PRD/heraerp-prd/src/types/hera-database.types.ts
+
+✨ Done!
+
+> heraerp@1.2.2 dev
+> node scripts/startup-control-center.js && next dev
+
+
+🎛️  HERA CONTROL CENTER - STARTUP CHECK
+
+✅ Control Center health check bypassed for development
+🚀 HERA system ready for development!
+
+   ▲ Next.js 15.4.6
+   - Local:        http://localhost:3000
+   - Network:      http://10.255.255.254:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 2.7s
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 1875ms (283 modules)
+ GET /api/health 200 in 2150ms
+ ○ Compiling /api/v2/universal/txn-emit ...
+ ⨯ ./src/lib/guardrail.ts:7:1
+Module not found: Can't resolve 'ajv-formats'
+   5 |
+   6 | import Ajv from 'ajv'
+>  7 | import addFormats from 'ajv-formats'
+     | ^
+   8 |
+   9 | // Import schemas from the starter kit
+  10 | import universalEventSchema from '../../hera_claude_cli_starter/schemas/universal_event.schema.json'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/api/v2/universal/txn-emit/route.ts
+ ⨯ ./src/lib/guardrail.ts:7:1
+Module not found: Can't resolve 'ajv-formats'
+   5 |
+   6 | import Ajv from 'ajv'
+>  7 | import addFormats from 'ajv-formats'
+     | ^
+   8 |
+   9 | // Import schemas from the starter kit
+  10 | import universalEventSchema from '../../hera_claude_cli_starter/schemas/universal_event.schema.json'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/api/v2/universal/txn-emit/route.ts
+ ✓ Compiled /_not-found in 1264ms (379 modules)
+ ○ Compiling /_error ...
+ ⨯ ./src/lib/guardrail.ts:7:1
+Module not found: Can't resolve 'ajv-formats'
+   5 |
+   6 | import Ajv from 'ajv'
+>  7 | import addFormats from 'ajv-formats'
+     | ^
+   8 |
+   9 | // Import schemas from the starter kit
+  10 | import universalEventSchema from '../../hera_claude_cli_starter/schemas/universal_event.schema.json'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/app/api/v2/universal/txn-emit/route.ts
+ POST /api/v2/universal/txn-emit 500 in 24558ms
+ POST /api/v2/universal/txn-emit 500 in 109ms
+[?25h
