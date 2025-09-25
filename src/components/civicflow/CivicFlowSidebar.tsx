@@ -19,7 +19,10 @@ import {
   Calendar,
   Mail,
   Shield,
-  LogOut
+  LogOut,
+  TrendingUp,
+  UserPlus,
+  LineChart
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
@@ -41,7 +44,11 @@ const navigation: NavItem[] = [
   { title: 'Cases', href: '/civicflow/cases', icon: FileText, badge: '12' },
   { title: 'Playbooks', href: '/civicflow/playbooks', icon: Workflow },
   { title: 'Calendar', href: '/civicflow/calendar', icon: Calendar },
+  { title: 'Events', href: '/civicflow/events', icon: Calendar, badge: '3' },
   { title: 'Communications', href: '/civicflow/communications', icon: Mail },
+  { title: 'Emails', href: '/civicflow/emails', icon: MessageSquare, badge: '5' },
+  { title: 'Engagement', href: '/civicflow/engagement', icon: UserPlus },
+  { title: 'Analytics', href: '/civicflow/analytics', icon: TrendingUp },
   { title: 'Reports', href: '/civicflow/reports', icon: BarChart3 }
 ]
 
