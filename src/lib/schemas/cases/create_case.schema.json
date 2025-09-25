@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Create Case",
+  "description": "Schema for creating a new case in CivicFlow",
+  "type": "object",
+  "required": ["title", "subject_id", "subject_type", "priority"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Case Title",
+      "description": "A clear, descriptive title for the case",
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "subject_id": {
+      "type": "string",
+      "title": "Subject",
+      "description": "The entity this case relates to",
+      "format": "uuid"
+    },
+    "subject_type": {
+      "type": "string",
+      "title": "Subject Type",
+      "enum": ["constituent", "ps_org"],
+      "enumNames": ["Individual", "Organization"],
+      "default": "constituent"
+    },
+    "program_id": {
+      "type": "string",
+      "title": "Program",
+      "description": "Associated program (optional)",
+      "format": "uuid"
+    },
+    "priority": {
+      "type": "string",
+      "title": "Priority",
+      "enum": ["low", "medium", "high", "critical"],
+      "enumNames": ["Low", "Medium", "High", "Critical"],
+      "default": "medium"
+    },
+    "initial_sla": {
+      "type": "integer",
+      "title": "Initial SLA (days)",
+      "description": "Service level agreement in days",
+      "minimum": 1,
+      "maximum": 365,
+      "default": 30
+    },
+    "due_date": {
+      "type": "string",
+      "title": "Due Date",
+      "description": "When the case should be resolved by",
+      "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Detailed description of the case",
+      "minLength": 10,
+      "maxLength": 5000
+    },
+    "tags": {
+      "type": "array",
+      "title": "Tags",
+      "description": "Tags for categorization and search",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 50
+      },
+      "maxItems": 10,
+      "uniqueItems": true
+    }
+  }
+}

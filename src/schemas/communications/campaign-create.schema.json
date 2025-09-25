@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Create Campaign",
+  "description": "Schema for creating a new communication campaign",
+  "type": "object",
+  "required": ["name", "channel", "template_id", "audience_id"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Name of the campaign"
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms", "webhook"],
+      "description": "Communication channel"
+    },
+    "template_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the template to use"
+    },
+    "audience_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the audience to target"
+    },
+    "schedule_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When to send the campaign (null for immediate)"
+    },
+    "throttle_per_min": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "maximum": 1000,
+      "description": "Maximum messages to send per minute"
+    },
+    "ab_variants": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["name", "template_id", "percentage"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Variant name"
+          },
+          "template_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Template ID for this variant"
+          },
+          "percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Percentage of audience for this variant"
+          }
+        }
+      },
+      "description": "A/B test variants"
+    },
+    "utm": {
+      "type": ["object", "null"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "UTM source parameter"
+        },
+        "medium": {
+          "type": "string",
+          "description": "UTM medium parameter"
+        },
+        "campaign": {
+          "type": "string",
+          "description": "UTM campaign parameter"
+        },
+        "term": {
+          "type": "string",
+          "description": "UTM term parameter"
+        },
+        "content": {
+          "type": "string",
+          "description": "UTM content parameter"
+        }
+      },
+      "description": "UTM tracking parameters"
+    }
+  }
+}

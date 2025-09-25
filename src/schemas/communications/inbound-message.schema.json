@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Inbound Message",
+  "description": "Schema for processing inbound messages",
+  "type": "object",
+  "required": ["channel", "sender", "body_text"],
+  "properties": {
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms"],
+      "description": "Communication channel"
+    },
+    "sender": {
+      "type": "string",
+      "description": "Sender identifier (email or phone)"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Recipient identifier (your system address)"
+    },
+    "subject": {
+      "type": ["string", "null"],
+      "description": "Message subject (email only)"
+    },
+    "body_text": {
+      "type": "string",
+      "description": "Plain text message content"
+    },
+    "body_html": {
+      "type": ["string", "null"],
+      "description": "HTML message content (email only)"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["filename", "content_type", "size"],
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Attachment filename"
+          },
+          "content_type": {
+            "type": "string",
+            "description": "MIME type"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes"
+          },
+          "content": {
+            "type": "string",
+            "contentEncoding": "base64",
+            "description": "Base64 encoded content"
+          }
+        }
+      },
+      "description": "Message attachments"
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Raw message headers"
+    },
+    "campaign_id": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Related campaign ID (for replies)"
+    }
+  }
+}

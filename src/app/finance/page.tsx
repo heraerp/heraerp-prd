@@ -367,9 +367,9 @@ export default function FinanceDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-700 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text flex items-center gap-4 mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
-                <CircleDollarSign className="w-7 h-7 text-foreground" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-200 to-amber-100 dark:from-amber-300 dark:to-amber-200 text-transparent bg-clip-text flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-200 to-amber-100 rounded-xl flex items-center justify-center shadow-lg">
+                <CircleDollarSign className="w-7 h-7 text-amber-700" />
               </div>
               Finance Dashboard
             </h1>

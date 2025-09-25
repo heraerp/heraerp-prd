@@ -21,6 +21,15 @@ import type {
   ReviewGrantRequest,
   ExportGrantsRequest
 } from '@/types/crm-grants'
+import type {
+  CaseKpis,
+  CaseFilters,
+  CaseListItem,
+  CaseDetail,
+  CaseTimelineEvent,
+  ExportCasesPayload,
+  CaseListResponse
+} from '@/types/cases'
 
 // Organization ID management
 let currentOrgId: OrgId | null = null
@@ -598,6 +607,92 @@ const crmPrograms = {
   }
 }
 
+// Cases API
+const cases = {
+  async list(filters: CaseFilters = {}): Promise<CaseListResponse> {
+    const params = new URLSearchParams()
+    if (filters.q) params.set('q', filters.q)
+    if (filters.status?.length) params.set('status', filters.status.join(','))
+    if (filters.priority?.length) params.set('priority', filters.priority.join(','))
+    if (filters.rag?.length) params.set('rag', filters.rag.join(','))
+    if (filters.owner) params.set('owner', filters.owner)
+    if (filters.programId) params.set('programId', filters.programId)
+    if (filters.due_from) params.set('due_from', filters.due_from)
+    if (filters.due_to) params.set('due_to', filters.due_to)
+    if (filters.tags?.length) params.set('tags', filters.tags.join(','))
+
+    const response = await fetch(`/api/civicflow/cases?${params}`, {
+      headers: buildHeaders()
+    })
+    return handleResponse<CaseListResponse>(response)
+  },
+
+  async kpis(): Promise<CaseKpis> {
+    const response = await fetch('/api/civicflow/cases/kpis', {
+      headers: buildHeaders()
+    })
+    return handleResponse<CaseKpis>(response)
+  },
+
+  async get(id: string): Promise<CaseDetail> {
+    const response = await fetch(`/api/civicflow/cases/${id}`, {
+      headers: buildHeaders()
+    })
+    return handleResponse<CaseDetail>(response)
+  },
+
+  async timeline(id: string): Promise<CaseTimelineEvent[]> {
+    const response = await fetch(`/api/civicflow/cases/${id}/timeline`, {
+      headers: buildHeaders()
+    })
+    return handleResponse<CaseTimelineEvent[]>(response)
+  },
+
+  async export(payload: ExportCasesPayload): Promise<Blob> {
+    const response = await fetch('/api/civicflow/cases/export', {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload)
+    })
+
+    if (!response.ok) {
+      throw await handleResponse(response)
+    }
+
+    return response.blob()
+  }
+}
+
+// Universal v2 API helpers
+const universal = {
+  async entityUpsert(payload: any): Promise<any> {
+    const response = await fetch('/api/v2/universal/entity-upsert', {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload)
+    })
+    return handleResponse(response)
+  },
+
+  async relationshipUpsert(payload: any): Promise<any> {
+    const response = await fetch('/api/v2/universal/relationship-upsert', {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload)
+    })
+    return handleResponse(response)
+  },
+
+  async txnEmit(payload: any): Promise<any> {
+    const response = await fetch('/api/v2/universal/txn-emit', {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload)
+    })
+    return handleResponse(response)
+  }
+}
+
 // Export unified api object
 export const api = {
   playbooks,
@@ -608,6 +703,8 @@ export const api = {
     programs: crmPrograms,
     grants: crmGrants
   },
+  cases,
+  universal,
   // Organization helpers
   getOrgId,
   setOrgId,

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Approve Case",
+  "description": "Schema for approving a case",
+  "type": "object",
+  "required": ["approved"],
+  "properties": {
+    "approved": {
+      "type": "boolean",
+      "title": "Approval Decision",
+      "description": "Approve or reject the case",
+      "default": true
+    },
+    "comments": {
+      "type": "string",
+      "title": "Comments",
+      "description": "Additional comments about the approval decision",
+      "maxLength": 1000
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Message Webhook",
+  "description": "Schema for message status webhooks",
+  "type": "object",
+  "required": ["message_id", "event", "timestamp"],
+  "properties": {
+    "message_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the message"
+    },
+    "event": {
+      "type": "string",
+      "enum": ["delivered", "opened", "clicked", "bounced", "complained", "unsubscribed"],
+      "description": "Event type"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the event occurred"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "ip_address": {
+          "type": "string",
+          "format": "ipv4",
+          "description": "IP address of the recipient"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User agent string"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" }
+          },
+          "description": "Geographic location"
+        },
+        "link": {
+          "type": "string",
+          "format": "uri",
+          "description": "Clicked link (for click events)"
+        },
+        "bounce_type": {
+          "type": "string",
+          "enum": ["hard", "soft"],
+          "description": "Type of bounce (for bounce events)"
+        }
+      },
+      "description": "Additional event metadata"
+    }
+  }
+}

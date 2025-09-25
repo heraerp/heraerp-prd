@@ -16,8 +16,8 @@ import {
 import { formatDate } from '@/lib/date-utils'
 import { addDays, parseISO } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { useAppointments } from '@/hooks/useAppointments'
 import { universalApi } from '@/lib/universal-api'
+import { bookAppointmentV2 } from '@/lib/salon/appointments-v2-helper'
 import { toast } from '@/hooks/use-toast'
 
 interface NewAppointmentModalProps {
@@ -72,8 +72,8 @@ export function NewAppointmentModal({
   }
 
   const effectiveOrgId = getEffectiveOrgId()
-  const { createAppointment, loading } = useAppointments({ organizationId: effectiveOrgId })
   const [formLoading, setFormLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   // Form state
   const [customerId, setCustomerId] = useState('')
@@ -179,18 +179,33 @@ export function NewAppointmentModal({
       return
     }
 
-    const result = await createAppointment({
-      customerId,
-      serviceId,
-      staffId,
-      appointmentDate,
-      appointmentTime,
-      duration: selectedService?.duration || 60,
-      notes
-    })
+    try {
+      setSubmitting(true)
 
-    if (result) {
+      // Build start/end ISO from date + time and selected service duration
+      const start = new Date(`${appointmentDate}T${appointmentTime}:00`)
+      const duration = selectedService?.duration || 60
+      const end = new Date(start.getTime() + duration * 60 * 1000)
+
+      await bookAppointmentV2({
+        organizationId: effectiveOrgId!,
+        customerId,
+        staffId,
+        serviceId,
+        startISO: start.toISOString(),
+        endISO: end.toISOString(),
+        notes,
+        price: selectedService?.price || 0,
+        currencyCode: 'AED'
+      })
+
+      toast({ title: 'Success', description: 'Appointment created successfully' })
       onSuccess()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to create appointment'
+      toast({ title: 'Error', description: message, variant: 'destructive' })
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -447,7 +462,7 @@ export function NewAppointmentModal({
               type="button"
               variant="outline"
               onClick={onClose}
-              disabled={loading || formLoading}
+              disabled={submitting || formLoading}
               className="flex-1 backdrop-blur-xl bg-background/10 dark:bg-background/30 border-border/20 dark:border-border/30 hover:bg-background/20 dark:hover:bg-background/50"
             >
               Cancel
@@ -455,11 +470,11 @@ export function NewAppointmentModal({
             <Button
               type="submit"
               disabled={
-                loading || formLoading || !customerId || !serviceId || !staffId || !appointmentTime
+                submitting || formLoading || !customerId || !serviceId || !staffId || !appointmentTime
               }
               className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-foreground shadow-lg disabled:opacity-50"
             >
-              {loading || formLoading ? (
+              {submitting || formLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Creating...

@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { universalApi } from '@/lib/universal-api-v2'
+import { updateAppointmentV2 } from '@/lib/salon/appointments-v2-helper'
 import { format } from 'date-fns'
 import { ArrowLeft, Save, Calendar, Clock, User, DollarSign, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -153,38 +154,34 @@ export default function EditAppointmentPage() {
     try {
       setSaving(true)
 
-      // Combine date and time
-      const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}:00`)
+      // Compute start and end ISO from date, time, and duration
+      const start = new Date(`${appointmentDate}T${appointmentTime}:00`)
+      const end = new Date(start.getTime() + (parseInt(duration || '60') || 60) * 60 * 1000)
 
-      // Update appointment
-      const updateData = {
-        transaction_date: appointmentDateTime.toISOString(),
-        source_entity_id: selectedCustomer,
-        target_entity_id: selectedStylist,
-        metadata: {
-          ...appointment?.metadata,
-          service_id: selectedService,
-          duration_minutes: parseInt(duration),
-          notes: notes,
-          status: status,
-          appointment_time: appointmentTime,
-          updated_at: new Date().toISOString()
-        }
+      // Map UI status to list-page statuses
+      const statusMap: Record<string, 'booked' | 'checked_in' | 'completed' | 'cancelled' | 'no_show'> = {
+        DRAFT: 'booked',
+        CONFIRMED: 'booked',
+        IN_SERVICE: 'checked_in',
+        COMPLETED: 'completed',
+        CANCELLED: 'cancelled',
+        NO_SHOW: 'no_show'
       }
 
-      const response = await universalApi.update(
-        'universal_transactions',
+      await updateAppointmentV2({
+        organizationId,
         appointmentId,
-        updateData
-      )
+        startISO: start.toISOString(),
+        endISO: end.toISOString(),
+        status: statusMap[status] || 'booked',
+        notes
+      })
 
-      if (response.success) {
-        toast({
-          title: 'Success',
-          description: 'Appointment updated successfully'
-        })
-        router.push('/salon/appointments')
-      }
+      toast({
+        title: 'Success',
+        description: 'Appointment updated successfully'
+      })
+      router.push('/salon/appointments')
     } catch (error) {
       console.error('Error updating appointment:', error)
       toast({

@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Analytics Query",
+  "description": "Schema for querying communication analytics",
+  "type": "object",
+  "required": ["metrics", "period"],
+  "properties": {
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "sent_count",
+          "delivered_count",
+          "open_rate",
+          "click_rate",
+          "bounce_rate",
+          "unsubscribe_rate",
+          "response_rate",
+          "deliverability_rate",
+          "engagement_score"
+        ]
+      },
+      "minItems": 1,
+      "description": "Metrics to include"
+    },
+    "period": {
+      "type": "object",
+      "required": ["interval"],
+      "properties": {
+        "interval": {
+          "type": "string",
+          "enum": ["hour", "day", "week", "month", "quarter", "year"],
+          "description": "Time interval for aggregation"
+        },
+        "start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Period start"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Period end"
+        },
+        "timezone": {
+          "type": "string",
+          "default": "UTC",
+          "description": "Timezone for aggregation"
+        }
+      },
+      "description": "Time period configuration"
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["channel", "campaign", "template", "audience", "tag"]
+      },
+      "description": "Dimensions to group by"
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["email", "sms", "webhook"]
+          }
+        },
+        "campaign_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "template_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "audience_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "description": "Analytics filters"
+    }
+  }
+}

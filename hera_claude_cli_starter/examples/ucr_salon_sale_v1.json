@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "applies_to": [
+    "HERA.SALON.POS.SALE.INVOICE.v1"
+  ],
+  "account_derivation": {
+    "service_revenue": "4-100",
+    "vat_output": "2-100"
+  },
+  "commission": {
+    "mode": "net",
+    "rate": 0.3
+  },
+  "tax": {
+    "scheme": "UK-STD",
+    "rate": 0.2
+  }
+}

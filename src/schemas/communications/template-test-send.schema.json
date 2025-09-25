@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Test Send",
+  "description": "Schema for sending a test message",
+  "type": "object",
+  "required": ["template_id", "channel", "recipient"],
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the template to test"
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms", "webhook"],
+      "description": "Communication channel"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Test recipient (email, phone, or webhook URL)"
+    },
+    "variables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Test values for template variables"
+    }
+  }
+}

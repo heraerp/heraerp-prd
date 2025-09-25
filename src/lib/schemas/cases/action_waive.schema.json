@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Apply Waiver",
+  "description": "Schema for applying a waiver to a case",
+  "type": "object",
+  "required": ["rule", "justification"],
+  "properties": {
+    "rule": {
+      "type": "string",
+      "title": "Rule/Requirement",
+      "description": "The rule or requirement being waived",
+      "minLength": 5,
+      "maxLength": 200
+    },
+    "justification": {
+      "type": "string",
+      "title": "Justification",
+      "description": "Detailed justification for the waiver",
+      "minLength": 20,
+      "maxLength": 2000
+    },
+    "waiver_period": {
+      "type": "object",
+      "title": "Waiver Period",
+      "description": "Time period for which the waiver applies",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "title": "Start Date",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "title": "End Date",
+          "format": "date"
+        }
+      },
+      "required": ["start_date", "end_date"]
+    }
+  }
+}

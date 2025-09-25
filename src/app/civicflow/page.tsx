@@ -26,14 +26,14 @@ export default function CivicFlowPage() {
   const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
   const isDemoMode = currentOrgId === DEMO_ORG_ID
 
-  // Demo statistics
+  // Demo statistics (will be populated by seed data)
   const stats = {
     constituents: 100,
     organizations: 20,
     programs: 10,
     activeGrants: 20,
     openCases: 6,
-    completedCases: 12
+    completedCases: 3
   }
 
   return (

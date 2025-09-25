@@ -1,0 +1,32 @@
+{
+  "name": "hera_kernel_endpoints",
+  "description": "HERA DNA kernel API v2 endpoint configuration",
+  "base_url": "http://localhost:3000",
+  "endpoints": {
+    "hera_txn_emit_v1": {
+      "url": "/api/v2/universal/txn-emit",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "hera_entity_upsert_v1": {
+      "url": "/api/v2/universal/entity-upsert", 
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "hera_relationship_upsert_v1": {
+      "url": "/api/v2/universal/relationship-upsert",
+      "method": "POST", 
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "authentication": {
+    "type": "bearer",
+    "token_env_var": "HERA_API_TOKEN"
+  }
+}

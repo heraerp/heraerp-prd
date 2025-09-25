@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Export Request",
+  "description": "Schema for exporting communication data",
+  "type": "object",
+  "required": ["type", "format"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["campaigns", "templates", "audiences", "messages", "logs"],
+      "description": "Type of data to export"
+    },
+    "format": {
+      "type": "string",
+      "enum": ["csv", "json", "pdf", "zip"],
+      "description": "Export format"
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "date_from": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date filter"
+        },
+        "date_to": {
+          "type": "string",
+          "format": "date",
+          "description": "End date filter"
+        },
+        "channel": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["email", "sms", "webhook"]
+          },
+          "description": "Filter by channels"
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Filter by status"
+        },
+        "entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Specific entity IDs to export"
+        }
+      },
+      "description": "Export filters"
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "include_metadata": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include full metadata in export"
+        },
+        "include_relationships": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include related entities"
+        },
+        "compress": {
+          "type": "boolean",
+          "default": true,
+          "description": "Compress large exports"
+        }
+      },
+      "description": "Export options"
+    }
+  }
+}

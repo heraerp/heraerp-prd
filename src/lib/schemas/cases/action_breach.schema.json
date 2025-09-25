@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Record Breach",
+  "description": "Schema for recording a breach in a case",
+  "type": "object",
+  "required": ["category", "severity", "occurred_at", "narrative"],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Breach Category",
+      "enum": ["financial", "compliance", "performance", "other"],
+      "enumNames": ["Financial", "Compliance", "Performance", "Other"]
+    },
+    "severity": {
+      "type": "string",
+      "title": "Severity",
+      "enum": ["low", "medium", "high", "critical"],
+      "enumNames": ["Low", "Medium", "High", "Critical"]
+    },
+    "occurred_at": {
+      "type": "string",
+      "title": "Date Occurred",
+      "description": "When the breach occurred",
+      "format": "date-time"
+    },
+    "narrative": {
+      "type": "string",
+      "title": "Narrative",
+      "description": "Detailed description of the breach",
+      "minLength": 20,
+      "maxLength": 5000
+    },
+    "impact": {
+      "type": "string",
+      "title": "Impact",
+      "description": "Description of the breach impact",
+      "maxLength": 1000
+    },
+    "remediation": {
+      "type": "string",
+      "title": "Remediation Plan",
+      "description": "Steps to remediate the breach",
+      "maxLength": 2000
+    }
+  }
+}

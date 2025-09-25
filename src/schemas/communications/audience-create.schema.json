@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Create Audience",
+  "description": "Schema for creating a new audience",
+  "type": "object",
+  "required": ["name", "consent_policy", "definition"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Name of the audience"
+    },
+    "consent_policy": {
+      "type": "string",
+      "enum": ["opt_in", "opt_out"],
+      "description": "Consent policy for communications"
+    },
+    "definition": {
+      "type": "object",
+      "required": ["entity_types"],
+      "properties": {
+        "entity_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["constituent", "organization", "staff", "volunteer", "donor", "vendor"]
+          },
+          "minItems": 1,
+          "description": "Entity types to include"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Filter by entity tags"
+        },
+        "custom_filter": {
+          "type": "string",
+          "description": "Custom JSON filter expression"
+        },
+        "exclude_opted_out": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exclude entities that have opted out"
+        },
+        "include_subscribed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only include entities with active subscriptions"
+        }
+      },
+      "description": "Audience definition criteria"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "description": "Tags for organization"
+    }
+  }
+}

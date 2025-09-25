@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Case Variation",
+  "description": "Schema for requesting a variation to a case",
+  "type": "object",
+  "required": ["change_type", "description"],
+  "properties": {
+    "change_type": {
+      "type": "string",
+      "title": "Type of Change",
+      "enum": ["budget", "timeline", "scope", "other"],
+      "enumNames": ["Budget", "Timeline", "Scope", "Other"]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Detailed description of the variation",
+      "minLength": 10,
+      "maxLength": 2000
+    },
+    "new_dates": {
+      "type": "object",
+      "title": "New Dates",
+      "description": "Updated dates if timeline is changing",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "title": "Start Date",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "title": "End Date",
+          "format": "date"
+        },
+        "due_date": {
+          "type": "string",
+          "title": "Due Date",
+          "format": "date"
+        }
+      }
+    },
+    "budget_delta": {
+      "type": "number",
+      "title": "Budget Change",
+      "description": "Change in budget amount (positive for increase, negative for decrease)",
+      "minimum": -1000000,
+      "maximum": 1000000
+    },
+    "justification": {
+      "type": "string",
+      "title": "Justification",
+      "description": "Reason for the variation",
+      "maxLength": 1000
+    }
+  }
+}

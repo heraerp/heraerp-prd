@@ -96,9 +96,27 @@ export default function OwnerDashboard() {
       // Fetch Inventory Data
       const inventoryResponse = await fetch('/api/dashboard/inventory')
       if (!inventoryResponse.ok) throw new Error('Failed to fetch inventory data')
-      const inventoryData = await inventoryResponse.json()
+      const inventoryResponseData = await inventoryResponse.json()
+      
+      // Handle both array and object response formats
+      let inventoryArray: InventoryItem[] = []
+      if (Array.isArray(inventoryResponseData)) {
+        // Direct array format (demo data or old format)
+        inventoryArray = inventoryResponseData
+      } else if (inventoryResponseData?.products && Array.isArray(inventoryResponseData.products)) {
+        // New format: {products: [...], summary: {...}}
+        inventoryArray = inventoryResponseData.products
+      } else if (inventoryResponseData?.data && Array.isArray(inventoryResponseData.data)) {
+        // Alternative format: {data: [...]}
+        inventoryArray = inventoryResponseData.data
+      } else {
+        console.warn('Unexpected inventory data format:', inventoryResponseData)
+        inventoryArray = []
+      }
+      
+      // Filter for low stock items
       setInventoryData(
-        inventoryData.filter(
+        inventoryArray.filter(
           (item: InventoryItem) =>
             item.stock_status === 'low' || item.stock_status === 'out_of_stock'
         )

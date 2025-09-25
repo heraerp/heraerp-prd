@@ -1,0 +1,18 @@
+# .clauderc
+# Auto-load HERA DNA constitution, schemas, and templates
+system_prompt=./hera_claude_cli_starter/prompts/system/hera_system_prompt.md
+
+# Pre-attach files so Claude can validate JSON and follow guardrails
+attach=./hera_claude_cli_starter/schemas/universal_event.schema.json
+attach=./hera_claude_cli_starter/schemas/ucr.schema.json
+attach=./hera_claude_cli_starter/schemas/playbook.schema.json
+attach=./hera_claude_cli_starter/prompts/templates/universal_event_payload.md
+attach=./hera_claude_cli_starter/prompts/templates/guardrail_preflight.md
+
+# Optional: preload examples you want Claude to reference
+attach=./hera_claude_cli_starter/examples/sale_invoice_event.json
+attach=./hera_claude_cli_starter/examples/ucr_salon_sale_v1.json
+
+# Tool bindings (MCP-style) — point to your Next.js routes
+# If your CLI supports MCP tool specs, keep this line; if not, skip it and use the HTTP prompts below.
+toolspec=./hera_claude_cli_starter/tools/hera_kernel.tools.json

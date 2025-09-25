@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Close Case",
+  "description": "Schema for closing a case",
+  "type": "object",
+  "required": ["outcome", "closure_reason"],
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "title": "Outcome",
+      "enum": ["completed", "terminated", "expired", "other"],
+      "enumNames": ["Completed Successfully", "Terminated Early", "Expired", "Other"]
+    },
+    "closure_reason": {
+      "type": "string",
+      "title": "Closure Reason",
+      "description": "Detailed reason for closure",
+      "minLength": 10,
+      "maxLength": 1000
+    },
+    "closed_at": {
+      "type": "string",
+      "title": "Closure Date",
+      "description": "Date of closure (defaults to today)",
+      "format": "date-time"
+    },
+    "final_report": {
+      "type": "string",
+      "title": "Final Report",
+      "description": "Final report or summary",
+      "maxLength": 5000
+    },
+    "lessons_learned": {
+      "type": "string",
+      "title": "Lessons Learned",
+      "description": "Key lessons learned from this case",
+      "maxLength": 2000
+    }
+  }
+}

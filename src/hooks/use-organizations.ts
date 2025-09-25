@@ -35,7 +35,7 @@ export function useOrganizationList(filters: {
 export function useOrganization(id: string, orgId?: string) {
   return useQuery({
     queryKey: orgKeys.detail(id),
-    queryFn: () => orgApi.getOrganization(id, orgId as any),
+    queryFn: () => orgApi.getOrganization(id, orgId),
     enabled: !!id
   })
 }
@@ -43,7 +43,7 @@ export function useOrganization(id: string, orgId?: string) {
 export function useContacts(orgEntityId: string, orgId?: string) {
   return useQuery({
     queryKey: orgKeys.contacts(orgEntityId),
-    queryFn: () => orgApi.listContacts(orgEntityId, orgId as any),
+    queryFn: () => orgApi.listContacts(orgEntityId, orgId),
     select: res => res.items as ContactEntity[],
     enabled: !!orgEntityId
   })
@@ -61,7 +61,7 @@ export function useUpdateOrganization(id: string, orgId?: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (patch: Partial<OrganizationEntity>) =>
-      orgApi.updateOrganization(id, patch, orgId as any),
+      orgApi.updateOrganization(id, patch, orgId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: orgKeys.detail(id) })
       qc.invalidateQueries({ queryKey: orgKeys.all })
@@ -80,7 +80,7 @@ export function useCreateContact(orgEntityId: string) {
 export function useLinkRelationship(orgId?: string) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (rel: any) => orgApi.linkRelationship(rel, orgId as any),
+    mutationFn: (rel: RelationshipLink) => orgApi.linkRelationship(rel, orgId),
     onSuccess: () => qc.invalidateQueries({ queryKey: orgKeys.all })
   })
 }

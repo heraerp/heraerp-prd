@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HERA Playbook",
+  "type": "object",
+  "required": [
+    "version",
+    "steps"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "applies_to": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^HERA\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.[vV][0-9]+$"
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "procedure"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "procedure": {
+            "type": "string",
+            "pattern": "^HERA\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.[A-Z]+\\.[vV][0-9]+$"
+          },
+          "when": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "on_error": {
+      "type": "object"
+    }
+  }
+}

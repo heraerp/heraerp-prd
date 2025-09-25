@@ -56,6 +56,11 @@ import { PageLayout } from '@/components/universal/PageLayout'
 import { PageHeader, PageHeaderButton } from '@/components/universal/PageHeader'
 import { NewAppointmentModal } from '@/components/salon/appointments/NewAppointmentModal'
 import { SimpleSalonGuard } from '@/components/salon/auth/SimpleSalonGuard'
+import {
+  cancelAppointmentV2,
+  noShowAppointmentV2,
+  checkInAppointmentV2
+} from '@/lib/salon/appointments-v2-helper'
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   booked: {
@@ -212,6 +217,50 @@ function SalonAppointmentsContent() {
         </Alert>
       </div>
     )
+  }
+
+  const [actionId, setActionId] = useState<string | null>(null)
+
+  const handleCancel = async (id: string) => {
+    try {
+      setActionId(id)
+      await cancelAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
+      toast({ title: 'Appointment cancelled' })
+      await refresh()
+    } catch (e) {
+      const m = e instanceof Error ? e.message : 'Failed to cancel appointment'
+      toast({ title: 'Error', description: m, variant: 'destructive' })
+    } finally {
+      setActionId(null)
+    }
+  }
+
+  const handleNoShow = async (id: string) => {
+    try {
+      setActionId(id)
+      await noShowAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
+      toast({ title: 'Marked as no-show' })
+      await refresh()
+    } catch (e) {
+      const m = e instanceof Error ? e.message : 'Failed to mark no-show'
+      toast({ title: 'Error', description: m, variant: 'destructive' })
+    } finally {
+      setActionId(null)
+    }
+  }
+
+  const handleCheckIn = async (id: string) => {
+    try {
+      setActionId(id)
+      await checkInAppointmentV2({ organizationId: effectiveOrgId!, appointmentId: id })
+      toast({ title: 'Checked in' })
+      await refresh()
+    } catch (e) {
+      const m = e instanceof Error ? e.message : 'Failed to check in'
+      toast({ title: 'Error', description: m, variant: 'destructive' })
+    } finally {
+      setActionId(null)
+    }
   }
 
   return (
@@ -428,17 +477,35 @@ function SalonAppointmentsContent() {
                         <DropdownMenuItem
                           onClick={e => {
                             e.stopPropagation()
-                            // TODO: Implement delete via Playbook API
-                            toast({
-                              title: 'Not implemented',
-                              description: 'Delete functionality coming soon',
-                              variant: 'destructive'
-                            })
+                            handleCancel(appointment.id)
                           }}
+                          disabled={actionId === appointment.id}
                           className="text-red-600"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
+                          Cancel
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleNoShow(appointment.id)
+                          }}
+                          disabled={actionId === appointment.id}
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Mark No-show
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={e => {
+                            e.stopPropagation()
+                            handleCheckIn(appointment.id)
+                          }}
+                          disabled={actionId === appointment.id}
+                        >
+                          <Clock className="w-4 h-4 mr-2" />
+                          Check-in
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

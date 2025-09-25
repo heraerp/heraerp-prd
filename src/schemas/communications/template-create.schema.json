@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Create Template",
+  "description": "Schema for creating a new message template",
+  "type": "object",
+  "required": ["name", "channel", "body_text"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Name of the template"
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["email", "sms", "webhook"],
+      "description": "Communication channel"
+    },
+    "subject": {
+      "type": ["string", "null"],
+      "maxLength": 998,
+      "description": "Email subject line (required for email channel)"
+    },
+    "body_text": {
+      "type": "string",
+      "description": "Plain text content or webhook payload"
+    },
+    "body_html": {
+      "type": ["string", "null"],
+      "description": "HTML content (email only)"
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+      },
+      "description": "Template variables (e.g., first_name, organization_name)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "description": "Tags for organization"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the template is active"
+    }
+  },
+  "if": {
+    "properties": {
+      "channel": { "const": "email" }
+    }
+  },
+  "then": {
+    "required": ["subject"]
+  }
+}
