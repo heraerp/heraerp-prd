@@ -281,7 +281,7 @@ function StaffContent() {
           </div>
           <div className="flex gap-3">
             <Button
-              onClick={() => window.location.href = '/salon/leave1'}
+              onClick={() => (window.location.href = '/salon/leave1')}
               style={{
                 background: `linear-gradient(135deg, ${COLORS.emerald} 0%, ${COLORS.emerald}DD 100%)`,
                 color: COLORS.champagne,
@@ -307,115 +307,35 @@ function StaffContent() {
                   Add Staff Member
                 </Button>
               </DialogTrigger>
-            <DialogContent
-              style={{
-                backgroundColor: COLORS.charcoal,
-                border: `1px solid ${COLORS.gold}30`,
-                color: COLORS.champagne
-              }}
-            >
-              <DialogHeader>
-                <DialogTitle
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  Add New Staff Member
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name" style={{ color: COLORS.bronze }}>
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    value={newStaff.name}
-                    onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
-                    placeholder="Staff member name"
+              <DialogContent
+                style={{
+                  backgroundColor: COLORS.charcoal,
+                  border: `1px solid ${COLORS.gold}30`,
+                  color: COLORS.champagne
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle
                     style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="role" style={{ color: COLORS.bronze }}>
-                    Role
-                  </Label>
-                  <select
-                    id="role"
-                    className="w-full px-3 py-2 rounded-md"
-                    value={newStaff.role}
-                    onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
+                      background: `linear-gradient(135deg, ${COLORS.champagne} 0%, ${COLORS.gold} 100%)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
                     }}
                   >
-                    <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                      Stylist
-                    </option>
-                    <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
-                      Senior Stylist
-                    </option>
-                    <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
-                      Manager
-                    </option>
-                    <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
-                      Receptionist
-                    </option>
-                  </select>
-                </div>
-                <div>
-                  <Label htmlFor="phone" style={{ color: COLORS.bronze }}>
-                    Phone
-                  </Label>
-                  <Input
-                    id="phone"
-                    value={newStaff.phone}
-                    onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
-                    placeholder="+971 50 123 4567"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email" style={{ color: COLORS.bronze }}>
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newStaff.email}
-                    onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
-                    placeholder="staff@salon.com"
-                    style={{
-                      backgroundColor: COLORS.charcoalLight,
-                      border: `1px solid ${COLORS.gold}30`,
-                      color: COLORS.champagne
-                    }}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
+                    Add New Staff Member
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
                   <div>
-                    <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>
-                      Hourly Rate (AED)
+                    <Label htmlFor="name" style={{ color: COLORS.bronze }}>
+                      Name
                     </Label>
                     <Input
-                      id="hourly_rate"
-                      type="number"
-                      value={newStaff.hourly_rate}
-                      onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
-                      placeholder="50"
+                      id="name"
+                      value={newStaff.name}
+                      onChange={e => setNewStaff({ ...newStaff, name: e.target.value })}
+                      placeholder="Staff member name"
                       style={{
                         backgroundColor: COLORS.charcoalLight,
                         border: `1px solid ${COLORS.gold}30`,
@@ -424,15 +344,43 @@ function StaffContent() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>
-                      Commission %
+                    <Label htmlFor="role" style={{ color: COLORS.bronze }}>
+                      Role
+                    </Label>
+                    <select
+                      id="role"
+                      className="w-full px-3 py-2 rounded-md"
+                      value={newStaff.role}
+                      onChange={e => setNewStaff({ ...newStaff, role: e.target.value })}
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        border: `1px solid ${COLORS.gold}30`,
+                        color: COLORS.champagne
+                      }}
+                    >
+                      <option value="stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                        Stylist
+                      </option>
+                      <option value="senior_stylist" style={{ backgroundColor: COLORS.charcoal }}>
+                        Senior Stylist
+                      </option>
+                      <option value="manager" style={{ backgroundColor: COLORS.charcoal }}>
+                        Manager
+                      </option>
+                      <option value="receptionist" style={{ backgroundColor: COLORS.charcoal }}>
+                        Receptionist
+                      </option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="phone" style={{ color: COLORS.bronze }}>
+                      Phone
                     </Label>
                     <Input
-                      id="commission_rate"
-                      type="number"
-                      value={newStaff.commission_rate}
-                      onChange={e => setNewStaff({ ...newStaff, commission_rate: e.target.value })}
-                      placeholder="20"
+                      id="phone"
+                      value={newStaff.phone}
+                      onChange={e => setNewStaff({ ...newStaff, phone: e.target.value })}
+                      placeholder="+971 50 123 4567"
                       style={{
                         backgroundColor: COLORS.charcoalLight,
                         border: `1px solid ${COLORS.gold}30`,
@@ -440,21 +388,75 @@ function StaffContent() {
                       }}
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="email" style={{ color: COLORS.bronze }}>
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={newStaff.email}
+                      onChange={e => setNewStaff({ ...newStaff, email: e.target.value })}
+                      placeholder="staff@salon.com"
+                      style={{
+                        backgroundColor: COLORS.charcoalLight,
+                        border: `1px solid ${COLORS.gold}30`,
+                        color: COLORS.champagne
+                      }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="hourly_rate" style={{ color: COLORS.bronze }}>
+                        Hourly Rate (AED)
+                      </Label>
+                      <Input
+                        id="hourly_rate"
+                        type="number"
+                        value={newStaff.hourly_rate}
+                        onChange={e => setNewStaff({ ...newStaff, hourly_rate: e.target.value })}
+                        placeholder="50"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="commission_rate" style={{ color: COLORS.bronze }}>
+                        Commission %
+                      </Label>
+                      <Input
+                        id="commission_rate"
+                        type="number"
+                        value={newStaff.commission_rate}
+                        onChange={e =>
+                          setNewStaff({ ...newStaff, commission_rate: e.target.value })
+                        }
+                        placeholder="20"
+                        style={{
+                          backgroundColor: COLORS.charcoalLight,
+                          border: `1px solid ${COLORS.gold}30`,
+                          color: COLORS.champagne
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full hover:opacity-90 transition-opacity"
+                    onClick={handleAddStaff}
+                    disabled={isAddingStaff || !newStaff.name}
+                    style={{
+                      background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
+                      color: COLORS.black,
+                      border: 'none'
+                    }}
+                  >
+                    {isAddingStaff ? 'Adding...' : 'Add Staff Member'}
+                  </Button>
                 </div>
-                <Button
-                  className="w-full hover:opacity-90 transition-opacity"
-                  onClick={handleAddStaff}
-                  disabled={isAddingStaff || !newStaff.name}
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldDark} 100%)`,
-                    color: COLORS.black,
-                    border: 'none'
-                  }}
-                >
-                  {isAddingStaff ? 'Adding...' : 'Add Staff Member'}
-                </Button>
-              </div>
-            </DialogContent>
+              </DialogContent>
             </Dialog>
           </div>
         </div>

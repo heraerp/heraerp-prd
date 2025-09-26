@@ -1,4 +1,4 @@
-import { post } from './base-client';
+import { post } from './base-client'
 import type {
   TxnRead,
   TxnReadResponse,
@@ -8,7 +8,7 @@ import type {
   TxnReverseResponse,
   TxnEmit,
   TxnEmitLine
-} from '../schemas/txn-schemas';
+} from '../schemas/txn-schemas'
 
 /**
  * HERA V2 API - Transaction Client
@@ -18,29 +18,29 @@ import type {
 
 // TypeScript interfaces for client usage
 export interface TransactionReadOptions {
-  organization_id: string;
-  transaction_id: string;
-  include_lines?: boolean;
+  organization_id: string
+  transaction_id: string
+  include_lines?: boolean
 }
 
 export interface TransactionQueryOptions {
-  organization_id: string;
-  source_entity_id?: string;
-  target_entity_id?: string;
-  transaction_type?: string;
-  smart_code_like?: string;
-  date_from?: string;
-  date_to?: string;
-  limit?: number;
-  offset?: number;
-  include_lines?: boolean;
+  organization_id: string
+  source_entity_id?: string
+  target_entity_id?: string
+  transaction_type?: string
+  smart_code_like?: string
+  date_from?: string
+  date_to?: string
+  limit?: number
+  offset?: number
+  include_lines?: boolean
 }
 
 export interface TransactionReverseOptions {
-  organization_id: string;
-  original_transaction_id: string;
-  smart_code: string;
-  reason: string;
+  organization_id: string
+  original_transaction_id: string
+  smart_code: string
+  reason: string
 }
 
 /**
@@ -56,7 +56,7 @@ export const txnClientV2 = {
       organization_id: options.organization_id,
       transaction_id: options.transaction_id,
       include_lines: options.include_lines !== false // Default true
-    });
+    })
   },
 
   /**
@@ -65,20 +65,20 @@ export const txnClientV2 = {
   query: (options: TransactionQueryOptions): Promise<TxnQueryResponse> => {
     const filters: Record<string, any> = {
       organization_id: options.organization_id
-    };
+    }
 
     // Add optional filters
-    if (options.source_entity_id) filters.source_entity_id = options.source_entity_id;
-    if (options.target_entity_id) filters.target_entity_id = options.target_entity_id;
-    if (options.transaction_type) filters.transaction_type = options.transaction_type;
-    if (options.smart_code_like) filters.smart_code_like = options.smart_code_like;
-    if (options.date_from) filters.date_from = options.date_from;
-    if (options.date_to) filters.date_to = options.date_to;
-    if (options.limit) filters.limit = options.limit;
-    if (options.offset) filters.offset = options.offset;
-    if (options.include_lines !== undefined) filters.include_lines = options.include_lines;
+    if (options.source_entity_id) filters.source_entity_id = options.source_entity_id
+    if (options.target_entity_id) filters.target_entity_id = options.target_entity_id
+    if (options.transaction_type) filters.transaction_type = options.transaction_type
+    if (options.smart_code_like) filters.smart_code_like = options.smart_code_like
+    if (options.date_from) filters.date_from = options.date_from
+    if (options.date_to) filters.date_to = options.date_to
+    if (options.limit) filters.limit = options.limit
+    if (options.offset) filters.offset = options.offset
+    if (options.include_lines !== undefined) filters.include_lines = options.include_lines
 
-    return post('/api/v2/universal/txn-query', filters);
+    return post('/api/v2/universal/txn-query', filters)
   },
 
   /**
@@ -90,16 +90,16 @@ export const txnClientV2 = {
       original_transaction_id: options.original_transaction_id,
       smart_code: options.smart_code,
       reason: options.reason.trim()
-    });
+    })
   },
 
   /**
    * Emit a new transaction (uses existing txn-emit endpoint)
    */
   emit: (payload: TxnEmit): Promise<{ api_version: string; transaction_id: string }> => {
-    return post('/api/v2/universal/txn-emit', payload);
+    return post('/api/v2/universal/txn-emit', payload)
   }
-};
+}
 
 // Helper functions for common transaction patterns
 export const txnHelpers = {
@@ -129,7 +129,7 @@ export const txnHelpers = {
       as_target: asTarget.transactions,
       total_as_source: asSource.total,
       total_as_target: asTarget.total
-    }));
+    }))
   },
 
   /**
@@ -146,7 +146,7 @@ export const txnHelpers = {
       date_from,
       date_to,
       ...options
-    });
+    })
   },
 
   /**
@@ -163,40 +163,37 @@ export const txnHelpers = {
       transaction_type,
       smart_code_like: smart_code_pattern,
       ...options
-    });
+    })
   },
 
   /**
    * Get transaction with full audit trail (original + reversals)
    */
-  getAuditTrail: async (
-    organization_id: string,
-    transaction_id: string
-  ) => {
+  getAuditTrail: async (organization_id: string, transaction_id: string) => {
     // Get original transaction
     const original = await txnClientV2.read({
       organization_id,
       transaction_id,
       include_lines: true
-    });
+    })
 
     // Find reversals of this transaction
     const reversals = await txnClientV2.query({
       organization_id,
       smart_code_like: 'REVERSE',
       include_lines: true
-    });
+    })
 
     // Filter reversals that reference this transaction
-    const relatedReversals = reversals.transactions.filter((txn: any) =>
-      txn.metadata?.reversal_of === transaction_id
-    );
+    const relatedReversals = reversals.transactions.filter(
+      (txn: any) => txn.metadata?.reversal_of === transaction_id
+    )
 
     return {
       original: original.transaction,
       reversals: relatedReversals,
       audit_complete: true
-    };
+    }
   },
 
   /**
@@ -214,7 +211,7 @@ export const txnHelpers = {
       original_transaction_id,
       smart_code: generateReversalSmartCode(new_transaction_data.smart_code),
       reason: `CORRECTION: ${correction_reason}`
-    });
+    })
 
     // Step 2: Create the corrected transaction
     const corrected = await txnClientV2.emit({
@@ -225,60 +222,60 @@ export const txnHelpers = {
         reversal_transaction_id: reversal.reversal_transaction_id,
         correction_reason
       }
-    });
+    })
 
     return {
       reversal_transaction_id: reversal.reversal_transaction_id,
       corrected_transaction_id: corrected.transaction_id,
       original_transaction_id
-    };
+    }
   },
 
   /**
    * Validate transaction balance (for financial transactions)
    */
   validateBalance: (lines: TxnEmitLine[], tolerance: number = 0.01): boolean => {
-    const balances: Record<string, { debits: number; credits: number }> = {};
+    const balances: Record<string, { debits: number; credits: number }> = {}
 
     lines.forEach(line => {
-      if (!line.dr_cr || !line.line_amount) return;
+      if (!line.dr_cr || !line.line_amount) return
 
-      const currency = 'default'; // Multi-currency support can be added
+      const currency = 'default' // Multi-currency support can be added
       if (!balances[currency]) {
-        balances[currency] = { debits: 0, credits: 0 };
+        balances[currency] = { debits: 0, credits: 0 }
       }
 
       if (line.dr_cr.toUpperCase() === 'DR') {
-        balances[currency].debits += line.line_amount;
+        balances[currency].debits += line.line_amount
       } else if (line.dr_cr.toUpperCase() === 'CR') {
-        balances[currency].credits += line.line_amount;
+        balances[currency].credits += line.line_amount
       }
-    });
+    })
 
-    return Object.values(balances).every(balance =>
-      Math.abs(balance.debits - balance.credits) <= tolerance
-    );
+    return Object.values(balances).every(
+      balance => Math.abs(balance.debits - balance.credits) <= tolerance
+    )
   },
 
   /**
    * Generate standard reversal smart code
    */
   generateReversalSmartCode: (originalSmartCode: string): string => {
-    const parts = originalSmartCode.split('.');
+    const parts = originalSmartCode.split('.')
     if (parts.length >= 2) {
-      parts[parts.length - 2] = 'REVERSE';
+      parts[parts.length - 2] = 'REVERSE'
     }
-    return parts.join('.');
+    return parts.join('.')
   }
-};
+}
 
 // Utility function for smart code generation
 function generateReversalSmartCode(originalSmartCode: string): string {
-  const parts = originalSmartCode.split('.');
+  const parts = originalSmartCode.split('.')
   if (parts.length >= 2) {
-    parts[parts.length - 2] = 'REVERSE';
+    parts[parts.length - 2] = 'REVERSE'
   }
-  return parts.join('.');
+  return parts.join('.')
 }
 
 // Export types for external use
@@ -291,7 +288,7 @@ export type {
   TxnReverseResponse,
   TxnEmit,
   TxnEmitLine
-} from '../schemas/txn-schemas';
+} from '../schemas/txn-schemas'
 
 // Transaction states for business logic
 export const TRANSACTION_STATES = {
@@ -302,7 +299,7 @@ export const TRANSACTION_STATES = {
   CANCELLED: 'CANCELLED',
   REVERSED: 'REVERSED',
   REVERSAL: 'REVERSAL'
-} as const;
+} as const
 
 // Common transaction types
 export const TRANSACTION_TYPES = {
@@ -316,7 +313,7 @@ export const TRANSACTION_TYPES = {
   INVENTORY: 'inventory_movement',
   BUDGET: 'budget_line',
   FORECAST: 'forecast_line'
-} as const;
+} as const
 
 // Common smart code patterns
 export const SMART_CODE_PATTERNS = {
@@ -325,4 +322,4 @@ export const SMART_CODE_PATTERNS = {
   PAYMENT: 'HERA.*.PAYMENT.*.*.V*',
   JOURNAL: 'HERA.*.FINANCE.JOURNAL.*.V*',
   REVERSAL: 'HERA.*.*.REVERSAL.*.V*'
-} as const;
+} as const

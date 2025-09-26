@@ -76,7 +76,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         entity_id: existingServiceId,
         entity_name: 'Premium Haircut Updated',
         metadata: {
-          base_price: 75.00,
+          base_price: 75.0,
           updated: true
         }
       }
@@ -98,7 +98,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
       const requestBody = JSON.parse(mockFetch.mock.calls[0][1].body)
       expect(requestBody.entity_id).toBe(existingServiceId)
       expect(requestBody.entity_name).toBe('Premium Haircut Updated')
-      expect(requestBody.metadata.base_price).toBe(75.00)
+      expect(requestBody.metadata.base_price).toBe(75.0)
     })
 
     it('should handle service with business rules and attributes (without pricing/duration in metadata)', async () => {
@@ -139,7 +139,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         tags: ['premium', 'color-service', 'consultation-required', 'chemical'],
         ai_insights: {
           popularity_score: 0.85,
-          profit_margin: 0.60,
+          profit_margin: 0.6,
           customer_satisfaction: 4.7,
           repeat_booking_rate: 0.65,
           seasonal_demand_multiplier: 1.3
@@ -182,7 +182,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         smart_code: 'HERA.SALON.SVC.ADDON.CONDITIONING.V1',
         parent_entity_id: parentServiceId,
         metadata: {
-          base_price: 35.00,
+          base_price: 35.0,
           duration_minutes: 20,
           is_addon: true,
           parent_service_required: true,
@@ -220,7 +220,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         entity_name: 'Complex Metadata Test Service',
         metadata: {
           // NOTE: base_price, duration_minutes, category should be in dynamic data
-          commission_rate: 0.40,
+          commission_rate: 0.4,
           tax_rate: 0.0875,
           max_capacity: 1,
 
@@ -312,10 +312,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         status: 400,
         json: async () => ({
           error: 'guardrail_failed',
-          details: [
-            'Missing required field: entity_name',
-            'Missing required field: smart_code'
-          ]
+          details: ['Missing required field: entity_name', 'Missing required field: smart_code']
         })
       })
 
@@ -386,7 +383,9 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
 
     it('should handle extremely large metadata objects', async () => {
       const largeMetadata = {
-        huge_array: Array(10000).fill(0).map((_, i) => `item-${i}`),
+        huge_array: Array(10000)
+          .fill(0)
+          .map((_, i) => `item-${i}`),
         nested_object: {}
       }
 
@@ -618,14 +617,14 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
           error: 'invalid_price',
           message: 'base_price must be a positive number',
           field_name: 'base_price',
-          invalid_value: -50.00
+          invalid_value: -50.0
         })
       })
 
       const result = await client.setDynamicFieldValue(
         'price-validation-service',
         'base_price',
-        -50.00,
+        -50.0,
         'number'
       )
 
@@ -951,7 +950,9 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
 
       // Try to create very large JSON field
       const largeJsonValue = {
-        huge_array: Array(5000).fill(0).map((_, i) => `item-${i}`),
+        huge_array: Array(5000)
+          .fill(0)
+          .map((_, i) => `item-${i}`),
         nested_data: {}
       }
 
@@ -1021,7 +1022,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         expect.any(String),
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': authToken
+            Authorization: authToken
           })
         })
       )
@@ -1117,12 +1118,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
       })
 
       // Create pricing dynamic field
-      const priceResult = await client.setDynamicFieldValue(
-        serviceId,
-        'base_price',
-        85.00,
-        'number'
-      )
+      const priceResult = await client.setDynamicFieldValue(serviceId, 'base_price', 85.0, 'number')
       expect(priceResult.success).toBe(true)
 
       // Create duration dynamic field
@@ -1150,7 +1146,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
       const priceRequest = JSON.parse(mockFetch.mock.calls[1][1].body)
       expect(priceRequest.field_name).toBe('base_price')
       expect(priceRequest.field_type).toBe('number')
-      expect(priceRequest.field_value_number).toBe(85.00)
+      expect(priceRequest.field_value_number).toBe(85.0)
       expect(priceRequest.entity_id).toBe(serviceId)
 
       const durationRequest = JSON.parse(mockFetch.mock.calls[2][1].body)
@@ -1188,7 +1184,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         {
           field_name: 'base_price',
           field_type: 'number' as const,
-          field_value_number: 180.00,
+          field_value_number: 180.0,
           smart_code: 'HERA.SALON.SVC.DYN.PRICE.V1'
         },
         {
@@ -1268,22 +1264,22 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
 
       // Create complex pricing structure as JSON dynamic field
       const complexPricing = {
-        base_price: 250.00,
+        base_price: 250.0,
         member_pricing: {
-          bronze: { price: 237.50, discount: 0.05 },
-          silver: { price: 225.00, discount: 0.10 },
-          gold: { price: 212.50, discount: 0.15 },
-          platinum: { price: 200.00, discount: 0.20 }
+          bronze: { price: 237.5, discount: 0.05 },
+          silver: { price: 225.0, discount: 0.1 },
+          gold: { price: 212.5, discount: 0.15 },
+          platinum: { price: 200.0, discount: 0.2 }
         },
         add_ons: {
-          deep_conditioning: { price: 35.00, duration: 20 },
-          scalp_treatment: { price: 45.00, duration: 30 },
-          take_home_products: { price: 75.00 }
+          deep_conditioning: { price: 35.0, duration: 20 },
+          scalp_treatment: { price: 45.0, duration: 30 },
+          take_home_products: { price: 75.0 }
         },
         cancellation_fees: {
-          less_than_24h: 50.00,
-          less_than_48h: 25.00,
-          more_than_48h: 0.00
+          less_than_24h: 50.0,
+          less_than_48h: 25.0,
+          more_than_48h: 0.0
         }
       }
 
@@ -1309,7 +1305,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
       // Verify JSON field was created correctly
       const jsonRequest = JSON.parse(mockFetch.mock.calls[1][1].body)
       expect(jsonRequest.field_type).toBe('json')
-      expect(jsonRequest.field_value_json.member_pricing.platinum.price).toBe(200.00)
+      expect(jsonRequest.field_value_json.member_pricing.platinum.price).toBe(200.0)
       expect(jsonRequest.field_value_json.add_ons.scalp_treatment.duration).toBe(30)
     })
 
@@ -1354,7 +1350,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
         {
           field_name: 'base_price',
           field_type: 'number' as const,
-          field_value_number: 65.00,
+          field_value_number: 65.0,
           smart_code: 'HERA.SALON.SVC.DYN.PRICE.V1'
         },
         {
@@ -1425,7 +1421,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
 
       // Dynamic fields should have all the operational data
       expect(dynamicRequest.fields[0].field_name).toBe('base_price')
-      expect(dynamicRequest.fields[0].field_value_number).toBe(65.00)
+      expect(dynamicRequest.fields[0].field_value_number).toBe(65.0)
       expect(dynamicRequest.fields[1].field_name).toBe('duration_minutes')
       expect(dynamicRequest.fields[1].field_value_number).toBe(45)
       expect(dynamicRequest.fields[2].field_name).toBe('category')
@@ -1446,7 +1442,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
           availability_start: '2024-05-01',
           availability_end: '2024-09-30',
           // NOTE: base_price moved to dynamic data
-          peak_season_surcharge: 0.20,
+          peak_season_surcharge: 0.2,
           includes: [
             'consultation',
             'color_analysis',
@@ -1527,7 +1523,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
           membership_verification_required: true,
           advance_booking_days: 14,
           cancellation_fee_hours: 72,
-          cancellation_fee_amount: 100.00,
+          cancellation_fee_amount: 100.0,
           reschedule_limit: 2,
           no_show_policy: 'charge_full_amount'
         }
@@ -1548,7 +1544,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
       expect(requestBody.metadata.member_pricing).toBeUndefined()
       expect(requestBody.metadata.base_price).toBeUndefined()
       expect(requestBody.metadata.includes.amenities).toContain('private_suite')
-      expect(requestBody.business_rules.cancellation_fee_amount).toBe(100.00)
+      expect(requestBody.business_rules.cancellation_fee_amount).toBe(100.0)
     })
   })
 
@@ -1583,7 +1579,7 @@ describe('EntityClientV2.upsert() - Salon Service Edge Cases', () => {
 
         // ✅ DYNAMIC DATA (core_dynamic_data table)
         dynamicFields: [
-          { field_name: 'base_price', field_type: 'number', field_value_number: 65.00 },
+          { field_name: 'base_price', field_type: 'number', field_value_number: 65.0 },
           { field_name: 'duration_minutes', field_type: 'number', field_value_number: 45 },
           { field_name: 'category', field_type: 'text', field_value_text: 'Hair Services' },
           { field_name: 'commission_rate', field_type: 'number', field_value_number: 0.35 },

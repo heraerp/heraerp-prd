@@ -1,12 +1,13 @@
-import { createServiceClient } from '@/lib/supabase/service-client';
+import { createServiceClient } from '@/lib/supabase/service-client'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 // Demo playbook data
 const demoPlaybooks = [
   {
     name: 'Constituent Intake Process',
-    description: 'Standard workflow for registering new constituents and assessing their eligibility for various programs',
+    description:
+      'Standard workflow for registering new constituents and assessing their eligibility for various programs',
     category: 'constituent',
     status: 'active',
     steps: [
@@ -17,7 +18,7 @@ const demoPlaybooks = [
         step_type: 'form',
         config: {
           fields: ['name', 'email', 'phone', 'address', 'date_of_birth']
-        },
+        }
       },
       {
         sequence: 2,
@@ -27,7 +28,7 @@ const demoPlaybooks = [
         config: {
           approver_role: 'case_worker',
           documents_required: ['photo_id', 'proof_of_address']
-        },
+        }
       },
       {
         sequence: 3,
@@ -37,7 +38,7 @@ const demoPlaybooks = [
         config: {
           action: 'assess_eligibility',
           programs: ['medicaid', 'snap', 'housing_assistance']
-        },
+        }
       },
       {
         sequence: 4,
@@ -47,7 +48,7 @@ const demoPlaybooks = [
         config: {
           template: 'constituent_welcome',
           channel: 'email'
-        },
+        }
       },
       {
         sequence: 5,
@@ -57,13 +58,14 @@ const demoPlaybooks = [
         config: {
           action: 'assign_case_worker',
           assignment_method: 'round_robin'
-        },
+        }
       }
     ]
   },
   {
     name: 'Services Eligibility Assessment',
-    description: 'Comprehensive assessment workflow to determine constituent eligibility for multiple government services',
+    description:
+      'Comprehensive assessment workflow to determine constituent eligibility for multiple government services',
     category: 'service',
     status: 'active',
     steps: [
@@ -74,7 +76,7 @@ const demoPlaybooks = [
         step_type: 'form',
         config: {
           fields: ['employment_status', 'monthly_income', 'household_size']
-        },
+        }
       },
       {
         sequence: 2,
@@ -83,7 +85,7 @@ const demoPlaybooks = [
         step_type: 'action',
         config: {
           documents: ['pay_stubs', 'tax_returns', 'bank_statements']
-        },
+        }
       },
       {
         sequence: 3,
@@ -93,7 +95,7 @@ const demoPlaybooks = [
         config: {
           calculator: 'benefits_calculator_v2',
           include_programs: ['snap', 'wic', 'tanf', 'medicaid']
-        },
+        }
       },
       {
         sequence: 4,
@@ -103,7 +105,7 @@ const demoPlaybooks = [
         config: {
           approver_role: 'supervisor',
           review_threshold: 'high_value'
-        },
+        }
       },
       {
         sequence: 5,
@@ -113,7 +115,7 @@ const demoPlaybooks = [
         config: {
           channels: ['email', 'sms', 'portal'],
           include_appeal_info: true
-        },
+        }
       },
       {
         sequence: 6,
@@ -122,7 +124,7 @@ const demoPlaybooks = [
         step_type: 'action',
         config: {
           action: 'schedule_enrollment_appointment'
-        },
+        }
       }
     ]
   },
@@ -139,7 +141,7 @@ const demoPlaybooks = [
         step_type: 'action',
         config: {
           checklist: ['organization_info', 'project_narrative', 'budget', 'timeline']
-        },
+        }
       },
       {
         sequence: 2,
@@ -148,7 +150,7 @@ const demoPlaybooks = [
         step_type: 'condition',
         config: {
           conditions: ['501c3_status', 'service_area', 'past_performance']
-        },
+        }
       },
       {
         sequence: 3,
@@ -158,7 +160,7 @@ const demoPlaybooks = [
         config: {
           reviewer_pool: 'technical_reviewers',
           scoring_rubric: 'standard_grant_rubric'
-        },
+        }
       },
       {
         sequence: 4,
@@ -168,7 +170,7 @@ const demoPlaybooks = [
         config: {
           approver_role: 'finance_analyst',
           budget_caps: true
-        },
+        }
       },
       {
         sequence: 5,
@@ -178,7 +180,7 @@ const demoPlaybooks = [
         config: {
           approver_role: 'grant_committee',
           decision_options: ['approve_full', 'approve_partial', 'deny']
-        },
+        }
       }
     ]
   },
@@ -195,7 +197,7 @@ const demoPlaybooks = [
         step_type: 'form',
         config: {
           case_types: ['complaint', 'service_request', 'inquiry', 'emergency']
-        },
+        }
       },
       {
         sequence: 2,
@@ -205,7 +207,7 @@ const demoPlaybooks = [
         config: {
           priority_matrix: 'standard',
           factors: ['case_type', 'constituent_tier', 'sla_requirements']
-        },
+        }
       },
       {
         sequence: 3,
@@ -215,7 +217,7 @@ const demoPlaybooks = [
         config: {
           assignment_method: 'skill_based',
           load_balancing: true
-        },
+        }
       },
       {
         sequence: 4,
@@ -225,7 +227,7 @@ const demoPlaybooks = [
         config: {
           frequency: 'milestone_based',
           channels: ['portal', 'email']
-        },
+        }
       },
       {
         sequence: 5,
@@ -235,7 +237,7 @@ const demoPlaybooks = [
         config: {
           approver: 'case_supervisor',
           quality_check: true
-        },
+        }
       },
       {
         sequence: 6,
@@ -245,7 +247,7 @@ const demoPlaybooks = [
         config: {
           survey_type: 'case_closure',
           optional: true
-        },
+        }
       }
     ]
   },
@@ -262,7 +264,7 @@ const demoPlaybooks = [
         step_type: 'form',
         config: {
           fields: ['campaign_name', 'objectives', 'target_segments', 'budget']
-        },
+        }
       },
       {
         sequence: 2,
@@ -272,7 +274,7 @@ const demoPlaybooks = [
         config: {
           filters: ['location', 'program_enrollment', 'demographics'],
           expected_reach: 'calculate'
-        },
+        }
       },
       {
         sequence: 3,
@@ -282,7 +284,7 @@ const demoPlaybooks = [
         config: {
           approvers: ['communications_manager', 'program_director'],
           review_items: ['messaging', 'visuals', 'call_to_action']
-        },
+        }
       },
       {
         sequence: 4,
@@ -292,7 +294,7 @@ const demoPlaybooks = [
         config: {
           channels: ['email', 'sms', 'push', 'mail'],
           scheduling: 'batch_optimized'
-        },
+        }
       },
       {
         sequence: 5,
@@ -302,7 +304,7 @@ const demoPlaybooks = [
         config: {
           metrics: ['open_rate', 'click_rate', 'response_rate'],
           reporting_frequency: 'real_time'
-        },
+        }
       }
     ]
   },
@@ -319,7 +321,7 @@ const demoPlaybooks = [
         step_type: 'form',
         config: {
           alert_types: ['natural_disaster', 'public_health', 'infrastructure']
-        },
+        }
       },
       {
         sequence: 2,
@@ -328,7 +330,7 @@ const demoPlaybooks = [
         step_type: 'action',
         config: {
           data_sources: ['gis', 'constituent_database', 'infrastructure_systems']
-        },
+        }
       },
       {
         sequence: 3,
@@ -337,7 +339,7 @@ const demoPlaybooks = [
         step_type: 'action',
         config: {
           resources: ['shelters', 'emergency_supplies', 'response_teams']
-        },
+        }
       },
       {
         sequence: 4,
@@ -348,34 +350,34 @@ const demoPlaybooks = [
           priority: 'urgent',
           channels: ['sms', 'phone', 'email', 'mobile_app'],
           message_type: 'emergency_alert'
-        },
+        }
       }
     ]
   }
-];
+]
 
 export async function seedCivicFlowPlaybooks() {
-  console.log('🌱 Starting CivicFlow playbooks seed...');
-  console.log('🌱 Organization ID:', CIVICFLOW_ORG_ID);
-  console.log('🌱 Number of playbooks to create:', demoPlaybooks.length);
-  
+  console.log('🌱 Starting CivicFlow playbooks seed...')
+  console.log('🌱 Organization ID:', CIVICFLOW_ORG_ID)
+  console.log('🌱 Number of playbooks to create:', demoPlaybooks.length)
+
   // Create service client with elevated permissions
-  const supabase = createServiceClient();
-  
+  const supabase = createServiceClient()
+
   try {
     // Test the Supabase connection first
     const { data: testQuery, error: testError } = await supabase
       .from('core_entities')
       .select('count')
       .eq('organization_id', CIVICFLOW_ORG_ID)
-      .single();
-    
-    console.log('🌱 Test query result:', { testQuery, testError });
-    
-    const createdPlaybooks = [];
+      .single()
+
+    console.log('🌱 Test query result:', { testQuery, testError })
+
+    const createdPlaybooks = []
 
     for (const playbook of demoPlaybooks) {
-      console.log(`🌱 Creating playbook: ${playbook.name}`);
+      console.log(`🌱 Creating playbook: ${playbook.name}`)
       // Create playbook entity
       const { data: playbookEntity, error: playbookError } = await supabase
         .from('core_entities')
@@ -394,20 +396,20 @@ export async function seedCivicFlowPlaybooks() {
           }
         })
         .select()
-        .single();
+        .single()
 
       if (playbookError) {
-        console.error(`❌ Error creating playbook ${playbook.name}:`, playbookError);
-        console.error('Full error:', JSON.stringify(playbookError, null, 2));
-        continue;
+        console.error(`❌ Error creating playbook ${playbook.name}:`, playbookError)
+        console.error('Full error:', JSON.stringify(playbookError, null, 2))
+        continue
       }
 
       if (!playbookEntity) {
-        console.error(`❌ No data returned for playbook ${playbook.name}`);
-        continue;
+        console.error(`❌ No data returned for playbook ${playbook.name}`)
+        continue
       }
 
-      console.log(`✅ Created playbook: ${playbook.name}`, playbookEntity.id);
+      console.log(`✅ Created playbook: ${playbook.name}`, playbookEntity.id)
 
       // Create playbook steps as related entities
       for (const step of playbook.steps) {
@@ -426,32 +428,30 @@ export async function seedCivicFlowPlaybooks() {
             }
           })
           .select()
-          .single();
+          .single()
 
         if (stepError) {
-          console.error(`Error creating step ${step.name}:`, stepError);
-          continue;
+          console.error(`Error creating step ${step.name}:`, stepError)
+          continue
         }
 
         // Create relationship between playbook and step
-        await supabase
-          .from('core_relationships')
-          .insert({
-            organization_id: CIVICFLOW_ORG_ID,
-            from_entity_id: playbookEntity.id,
-            to_entity_id: stepEntity.id,
-            relationship_type: 'has_step',
-            smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.v1',
-            metadata: {
-              sequence: step.sequence
-            }
-          });
+        await supabase.from('core_relationships').insert({
+          organization_id: CIVICFLOW_ORG_ID,
+          from_entity_id: playbookEntity.id,
+          to_entity_id: stepEntity.id,
+          relationship_type: 'has_step',
+          smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.v1',
+          metadata: {
+            sequence: step.sequence
+          }
+        })
       }
 
       // Add some demo run history for active playbooks
       if (playbook.status === 'active' && Math.random() > 0.3) {
-        const runCount = Math.floor(Math.random() * 20) + 5;
-        const successCount = Math.floor(runCount * (0.7 + Math.random() * 0.25));
+        const runCount = Math.floor(Math.random() * 20) + 5
+        const successCount = Math.floor(runCount * (0.7 + Math.random() * 0.25))
 
         // Update playbook metadata with run statistics
         await supabase
@@ -462,49 +462,50 @@ export async function seedCivicFlowPlaybooks() {
               total_runs: runCount,
               successful_runs: successCount,
               success_rate: Math.round((successCount / runCount) * 100),
-              last_run_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+              last_run_at: new Date(
+                Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+              ).toISOString(),
               avg_duration_minutes: Math.floor(Math.random() * 120) + 30
             }
           })
-          .eq('id', playbookEntity.id);
+          .eq('id', playbookEntity.id)
       }
 
-      createdPlaybooks.push(playbookEntity);
+      createdPlaybooks.push(playbookEntity)
     }
 
-    console.log(`✅ Successfully created ${createdPlaybooks.length} demo playbooks`);
-    return createdPlaybooks;
-
+    console.log(`✅ Successfully created ${createdPlaybooks.length} demo playbooks`)
+    return createdPlaybooks
   } catch (error) {
-    console.error('❌ Error seeding playbooks:', error);
-    throw error;
+    console.error('❌ Error seeding playbooks:', error)
+    throw error
   }
 }
 
 export async function clearCivicFlowPlaybooks() {
-  console.log('🗑️ Clearing CivicFlow playbooks...');
-  
+  console.log('🗑️ Clearing CivicFlow playbooks...')
+
   // Create service client with elevated permissions
-  const supabase = createServiceClient();
-  
+  const supabase = createServiceClient()
+
   try {
     // Delete playbook steps first
     await supabase
       .from('core_entities')
       .delete()
       .eq('organization_id', CIVICFLOW_ORG_ID)
-      .eq('entity_type', 'playbook_step');
+      .eq('entity_type', 'playbook_step')
 
     // Delete playbooks
     await supabase
       .from('core_entities')
       .delete()
       .eq('organization_id', CIVICFLOW_ORG_ID)
-      .eq('entity_type', 'playbook');
+      .eq('entity_type', 'playbook')
 
-    console.log('✅ Successfully cleared all playbooks');
+    console.log('✅ Successfully cleared all playbooks')
   } catch (error) {
-    console.error('❌ Error clearing playbooks:', error);
-    throw error;
+    console.error('❌ Error clearing playbooks:', error)
+    throw error
   }
 }

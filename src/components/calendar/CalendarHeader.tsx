@@ -1,38 +1,35 @@
-'use client';
+'use client'
 
-import { format } from 'date-fns';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Calendar, 
-  CalendarDays, 
-  CalendarClock, 
-  List, 
+import { format } from 'date-fns'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  CalendarDays,
+  CalendarClock,
+  List,
   Activity,
   Download,
-  Printer,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+  Printer
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from '@/components/ui/toggle-group';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
-type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'heatmap';
+type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'heatmap'
 
 interface CalendarHeaderProps {
-  currentDate: Date;
-  view: CalendarView;
-  onViewChange: (view: CalendarView) => void;
-  onNavigate: (direction: 'prev' | 'next' | 'today') => void;
-  onExport: (format: 'csv' | 'ics') => void;
-  onPrint: () => void;
+  currentDate: Date
+  view: CalendarView
+  onViewChange: (view: CalendarView) => void
+  onNavigate: (direction: 'prev' | 'next' | 'today') => void
+  onExport: (format: 'csv' | 'ics') => void
+  onPrint: () => void
 }
 
 export function CalendarHeader({
@@ -41,29 +38,29 @@ export function CalendarHeader({
   onViewChange,
   onNavigate,
   onExport,
-  onPrint,
+  onPrint
 }: CalendarHeaderProps) {
   // Format display date based on view
   const getDisplayDate = () => {
     switch (view) {
       case 'month':
-        return format(currentDate, 'MMMM yyyy');
+        return format(currentDate, 'MMMM yyyy')
       case 'week':
-        const weekStart = new Date(currentDate);
-        weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
+        const weekStart = new Date(currentDate)
+        weekStart.setDate(currentDate.getDate() - currentDate.getDay())
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekStart.getDate() + 6)
+        return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`
       case 'day':
-        return format(currentDate, 'EEEE, MMMM d, yyyy');
+        return format(currentDate, 'EEEE, MMMM d, yyyy')
       case 'agenda':
-        return 'Upcoming Events';
+        return 'Upcoming Events'
       case 'heatmap':
-        return 'Activity Heatmap';
+        return 'Activity Heatmap'
       default:
-        return format(currentDate, 'MMMM yyyy');
+        return format(currentDate, 'MMMM yyyy')
     }
-  };
+  }
 
   return (
     <div className="border-b bg-card">
@@ -99,7 +96,11 @@ export function CalendarHeader({
         {/* View Toggle & Actions */}
         <div className="flex items-center gap-4">
           {/* View Toggle */}
-          <ToggleGroup type="single" value={view} onValueChange={(value) => value && onViewChange(value as CalendarView)}>
+          <ToggleGroup
+            type="single"
+            value={view}
+            onValueChange={value => value && onViewChange(value as CalendarView)}
+          >
             <ToggleGroupItem value="month" aria-label="Month view">
               <Calendar className="h-4 w-4 mr-1" />
               Month
@@ -131,9 +132,7 @@ export function CalendarHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onExport('csv')}>
-                Export as CSV
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onExport('csv')}>Export as CSV</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onExport('ics')}>
                 Export as ICS (Calendar)
               </DropdownMenuItem>
@@ -147,5 +146,5 @@ export function CalendarHeader({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { selectValue } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server'
+import { selectValue } from '@/lib/db'
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs'
 
 /**
  * POST /api/v2/universal/dynamic-data-upsert
@@ -24,17 +24,17 @@ export const runtime = "nodejs";
  * - metadata: Additional metadata
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch(() => null)
 
   if (!body) {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
   }
 
   const {
     organization_id,
     entity_id,
     field_name,
-    field_type = "text",
+    field_type = 'text',
     field_value_text,
     field_value_number,
     field_value_boolean,
@@ -43,23 +43,23 @@ export async function POST(req: NextRequest) {
     field_value_json,
     smart_code,
     metadata = {}
-  } = body;
+  } = body
 
   // Validation
   if (!organization_id || !entity_id || !field_name) {
     return NextResponse.json(
-      { error: "organization_id, entity_id, and field_name are required" },
+      { error: 'organization_id, entity_id, and field_name are required' },
       { status: 400 }
-    );
+    )
   }
 
   // Validate field_type
-  const validTypes = ["text", "number", "boolean", "date", "datetime", "json"];
+  const validTypes = ['text', 'number', 'boolean', 'date', 'datetime', 'json']
   if (!validTypes.includes(field_type)) {
     return NextResponse.json(
-      { error: `Invalid field_type. Must be one of: ${validTypes.join(", ")}` },
+      { error: `Invalid field_type. Must be one of: ${validTypes.join(', ')}` },
       { status: 400 }
-    );
+    )
   }
 
   try {
@@ -69,15 +69,11 @@ export async function POST(req: NextRequest) {
       WHERE organization_id = $1
       AND entity_id = $2
       AND field_name = $3
-    `;
+    `
 
-    const existingField = await selectValue(checkSql, [
-      organization_id,
-      entity_id,
-      field_name
-    ]);
+    const existingField = await selectValue(checkSql, [organization_id, entity_id, field_name])
 
-    let result;
+    let result
 
     if (existingField) {
       // UPDATE existing field
@@ -98,7 +94,7 @@ export async function POST(req: NextRequest) {
         AND entity_id = $2
         AND field_name = $3
         RETURNING id, field_name, field_type
-      `;
+      `
 
       result = await selectValue(updateSql, [
         organization_id,
@@ -113,8 +109,7 @@ export async function POST(req: NextRequest) {
         field_value_json || null,
         smart_code || null,
         metadata
-      ]);
-
+      ])
     } else {
       // INSERT new field
       const insertSql = `
@@ -137,7 +132,7 @@ export async function POST(req: NextRequest) {
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), NOW()
         )
         RETURNING id, field_name, field_type
-      `;
+      `
 
       result = await selectValue(insertSql, [
         organization_id,
@@ -152,23 +147,22 @@ export async function POST(req: NextRequest) {
         field_value_json || null,
         smart_code || null,
         metadata
-      ]);
+      ])
     }
 
-    return NextResponse.json({
-      api_version: "v2",
-      success: true,
-      dynamic_field_id: result.id,
-      field_name: result.field_name,
-      is_update: !!existingField
-    }, { status: 201 });
-
-  } catch (error: any) {
-    console.error("Error in dynamic-data-upsert:", error);
     return NextResponse.json(
-      { error: "database_error", message: error.message },
-      { status: 500 }
-    );
+      {
+        api_version: 'v2',
+        success: true,
+        dynamic_field_id: result.id,
+        field_name: result.field_name,
+        is_update: !!existingField
+      },
+      { status: 201 }
+    )
+  } catch (error: any) {
+    console.error('Error in dynamic-data-upsert:', error)
+    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
   }
 }
 
@@ -178,22 +172,22 @@ export async function POST(req: NextRequest) {
  * Batch upsert multiple dynamic fields for an entity
  */
 export async function PUT(req: NextRequest) {
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch(() => null)
 
   if (!body) {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
   }
 
-  const { organization_id, entity_id, fields } = body;
+  const { organization_id, entity_id, fields } = body
 
   if (!organization_id || !entity_id || !Array.isArray(fields)) {
     return NextResponse.json(
-      { error: "organization_id, entity_id, and fields array are required" },
+      { error: 'organization_id, entity_id, and fields array are required' },
       { status: 400 }
-    );
+    )
   }
 
-  const results = [];
+  const results = []
 
   try {
     for (const field of fields) {
@@ -201,7 +195,7 @@ export async function PUT(req: NextRequest) {
         organization_id,
         entity_id,
         ...field
-      };
+      }
 
       // Reuse the POST logic for each field
       const response = await POST(
@@ -209,32 +203,31 @@ export async function PUT(req: NextRequest) {
           method: 'POST',
           body: JSON.stringify(fieldBody)
         })
-      );
+      )
 
-      const result = await response.json();
+      const result = await response.json()
       results.push({
         field_name: field.field_name,
         success: response.status === 201,
         ...result
-      });
+      })
     }
 
-    const hasErrors = results.some(r => !r.success);
+    const hasErrors = results.some(r => !r.success)
 
-    return NextResponse.json({
-      api_version: "v2",
-      success: !hasErrors,
-      results,
-      total: results.length,
-      succeeded: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length
-    }, { status: hasErrors ? 207 : 201 }); // 207 Multi-Status
-
-  } catch (error: any) {
-    console.error("Error in batch dynamic-data-upsert:", error);
     return NextResponse.json(
-      { error: "database_error", message: error.message },
-      { status: 500 }
-    );
+      {
+        api_version: 'v2',
+        success: !hasErrors,
+        results,
+        total: results.length,
+        succeeded: results.filter(r => r.success).length,
+        failed: results.filter(r => !r.success).length
+      },
+      { status: hasErrors ? 207 : 201 }
+    ) // 207 Multi-Status
+  } catch (error: any) {
+    console.error('Error in batch dynamic-data-upsert:', error)
+    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
   }
 }

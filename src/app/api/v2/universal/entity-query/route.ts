@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { selectRows, selectRow } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server'
+import { selectRows, selectRow } from '@/lib/db'
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs'
 
 /**
  * POST /api/v2/universal/entity-query
@@ -20,10 +20,10 @@ export const runtime = "nodejs";
  * - aggregate: Include counts and statistics
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch(() => null)
 
   if (!body) {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+    return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
   }
 
   const {
@@ -31,28 +31,23 @@ export async function POST(req: NextRequest) {
     filters = {},
     search,
     joins = [],
-    select = ["*"],
-    order_by = { field: "created_at", direction: "DESC" },
+    select = ['*'],
+    order_by = { field: 'created_at', direction: 'DESC' },
     limit = 100,
     offset = 0,
     aggregate = false
-  } = body;
+  } = body
 
   if (!organization_id) {
-    return NextResponse.json(
-      { error: "organization_id is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
   }
 
   try {
     // Build SELECT clause
-    let selectClause = select.includes("*")
-      ? "e.*"
-      : select.map(f => `e.${f}`).join(", ");
+    let selectClause = select.includes('*') ? 'e.*' : select.map(f => `e.${f}`).join(', ')
 
     // Add join fields if requested
-    if (joins.includes("dynamic_data")) {
+    if (joins.includes('dynamic_data')) {
       selectClause += `,
         COALESCE(
           json_agg(
@@ -66,10 +61,10 @@ export async function POST(req: NextRequest) {
             )
           ) FILTER (WHERE d.id IS NOT NULL),
           '[]'::json
-        ) as dynamic_fields`;
+        ) as dynamic_fields`
     }
 
-    if (joins.includes("relationships")) {
+    if (joins.includes('relationships')) {
       selectClause += `,
         COALESCE(
           json_agg(
@@ -83,38 +78,38 @@ export async function POST(req: NextRequest) {
             )
           ) FILTER (WHERE r.id IS NOT NULL),
           '[]'::json
-        ) as relationships`;
+        ) as relationships`
     }
 
     if (aggregate) {
       selectClause += `,
         count(DISTINCT d.id) as dynamic_field_count,
         count(DISTINCT r.id) as relationship_count,
-        count(DISTINCT t.id) as transaction_count`;
+        count(DISTINCT t.id) as transaction_count`
     }
 
     // Build FROM clause with JOINs
-    let fromClause = "FROM core_entities e";
+    let fromClause = 'FROM core_entities e'
 
-    if (joins.includes("dynamic_data") || aggregate) {
+    if (joins.includes('dynamic_data') || aggregate) {
       fromClause += `
-        LEFT JOIN core_dynamic_data d ON d.entity_id = e.id`;
+        LEFT JOIN core_dynamic_data d ON d.entity_id = e.id`
     }
 
-    if (joins.includes("relationships") || aggregate) {
+    if (joins.includes('relationships') || aggregate) {
       fromClause += `
-        LEFT JOIN core_relationships r ON (r.from_entity_id = e.id OR r.to_entity_id = e.id)`;
+        LEFT JOIN core_relationships r ON (r.from_entity_id = e.id OR r.to_entity_id = e.id)`
     }
 
     if (aggregate) {
       fromClause += `
-        LEFT JOIN universal_transactions t ON (t.source_entity_id = e.id OR t.target_entity_id = e.id OR t.reference_entity_id = e.id)`;
+        LEFT JOIN universal_transactions t ON (t.source_entity_id = e.id OR t.target_entity_id = e.id OR t.reference_entity_id = e.id)`
     }
 
     // Build WHERE clause
-    let whereConditions = [`e.organization_id = $1`];
-    const queryParams: any[] = [organization_id];
-    let paramIndex = 2;
+    let whereConditions = [`e.organization_id = $1`]
+    const queryParams: any[] = [organization_id]
+    let paramIndex = 2
 
     // Add filters
     Object.entries(filters).forEach(([key, value]) => {
@@ -122,46 +117,46 @@ export async function POST(req: NextRequest) {
         if (Array.isArray(value)) {
           // Handle array filters with IN clause
           if (value.length > 0) {
-            const placeholders = value.map((_, i) => `$${paramIndex + i}`).join(",");
-            whereConditions.push(`e.${key} IN (${placeholders})`);
-            queryParams.push(...value);
-            paramIndex += value.length;
+            const placeholders = value.map((_, i) => `$${paramIndex + i}`).join(',')
+            whereConditions.push(`e.${key} IN (${placeholders})`)
+            queryParams.push(...value)
+            paramIndex += value.length
           }
-        } else if (typeof value === "object" && value.operator) {
+        } else if (typeof value === 'object' && value.operator) {
           // Handle advanced operators
-          const { operator, value: val } = value as any;
+          const { operator, value: val } = value as any
           switch (operator) {
-            case "gt":
-              whereConditions.push(`e.${key} > $${paramIndex}`);
-              break;
-            case "gte":
-              whereConditions.push(`e.${key} >= $${paramIndex}`);
-              break;
-            case "lt":
-              whereConditions.push(`e.${key} < $${paramIndex}`);
-              break;
-            case "lte":
-              whereConditions.push(`e.${key} <= $${paramIndex}`);
-              break;
-            case "like":
-              whereConditions.push(`e.${key} ILIKE $${paramIndex}`);
-              break;
-            case "not":
-              whereConditions.push(`e.${key} != $${paramIndex}`);
-              break;
+            case 'gt':
+              whereConditions.push(`e.${key} > $${paramIndex}`)
+              break
+            case 'gte':
+              whereConditions.push(`e.${key} >= $${paramIndex}`)
+              break
+            case 'lt':
+              whereConditions.push(`e.${key} < $${paramIndex}`)
+              break
+            case 'lte':
+              whereConditions.push(`e.${key} <= $${paramIndex}`)
+              break
+            case 'like':
+              whereConditions.push(`e.${key} ILIKE $${paramIndex}`)
+              break
+            case 'not':
+              whereConditions.push(`e.${key} != $${paramIndex}`)
+              break
             default:
-              whereConditions.push(`e.${key} = $${paramIndex}`);
+              whereConditions.push(`e.${key} = $${paramIndex}`)
           }
-          queryParams.push(val);
-          paramIndex++;
+          queryParams.push(val)
+          paramIndex++
         } else {
           // Simple equality
-          whereConditions.push(`e.${key} = $${paramIndex}`);
-          queryParams.push(value);
-          paramIndex++;
+          whereConditions.push(`e.${key} = $${paramIndex}`)
+          queryParams.push(value)
+          paramIndex++
         }
       }
-    });
+    })
 
     // Add text search
     if (search) {
@@ -170,53 +165,53 @@ export async function POST(req: NextRequest) {
         e.entity_code ILIKE $${paramIndex} OR
         e.entity_description ILIKE $${paramIndex} OR
         e.smart_code ILIKE $${paramIndex}
-      )`;
-      whereConditions.push(searchCondition);
-      queryParams.push(`%${search}%`);
-      paramIndex++;
+      )`
+      whereConditions.push(searchCondition)
+      queryParams.push(`%${search}%`)
+      paramIndex++
     }
 
     // Build the query
     let sql = `
       SELECT ${selectClause}
       ${fromClause}
-      WHERE ${whereConditions.join(" AND ")}
-    `;
+      WHERE ${whereConditions.join(' AND ')}
+    `
 
     // Add GROUP BY if using aggregates
-    if (joins.includes("dynamic_data") || joins.includes("relationships") || aggregate) {
+    if (joins.includes('dynamic_data') || joins.includes('relationships') || aggregate) {
       sql += `
-        GROUP BY e.id`;
+        GROUP BY e.id`
     }
 
     // Add ORDER BY
     if (order_by) {
-      const direction = order_by.direction?.toUpperCase() === "ASC" ? "ASC" : "DESC";
+      const direction = order_by.direction?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'
       sql += `
-        ORDER BY e.${order_by.field} ${direction}`;
+        ORDER BY e.${order_by.field} ${direction}`
     }
 
     // Add LIMIT and OFFSET
     sql += `
-      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-    queryParams.push(limit, offset);
+      LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
+    queryParams.push(limit, offset)
 
     // Execute main query
-    const entities = await selectRows(sql, queryParams);
+    const entities = await selectRows(sql, queryParams)
 
     // Get total count for pagination
     const countSql = `
       SELECT count(DISTINCT e.id) as total
       FROM core_entities e
-      WHERE ${whereConditions.join(" AND ")}
-    `;
+      WHERE ${whereConditions.join(' AND ')}
+    `
 
-    const countParams = queryParams.slice(0, -2); // Remove limit and offset
-    const countResult = await selectRow(countSql, countParams);
-    const total = countResult?.total || 0;
+    const countParams = queryParams.slice(0, -2) // Remove limit and offset
+    const countResult = await selectRow(countSql, countParams)
+    const total = countResult?.total || 0
 
     // Get aggregated statistics if requested
-    let statistics = null;
+    let statistics = null
     if (aggregate) {
       const statsSql = `
         SELECT
@@ -245,13 +240,13 @@ export async function POST(req: NextRequest) {
         ) status_counts ON status_counts.status = e.status
         WHERE e.organization_id = $1
         GROUP BY e.organization_id
-      `;
+      `
 
-      statistics = await selectRow(statsSql, [organization_id]);
+      statistics = await selectRow(statsSql, [organization_id])
     }
 
     return NextResponse.json({
-      api_version: "v2",
+      api_version: 'v2',
       data: entities,
       metadata: {
         total,
@@ -262,14 +257,10 @@ export async function POST(req: NextRequest) {
         has_more: offset + limit < total
       },
       ...(statistics && { statistics })
-    });
-
+    })
   } catch (error: any) {
-    console.error("Error in entity-query:", error);
-    return NextResponse.json(
-      { error: "database_error", message: error.message },
-      { status: 500 }
-    );
+    console.error('Error in entity-query:', error)
+    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
   }
 }
 
@@ -280,29 +271,35 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   return NextResponse.json({
-    api_version: "v2",
+    api_version: 'v2',
     schema: {
       fields: [
-        "id", "organization_id", "entity_type", "entity_name",
-        "entity_code", "entity_description", "smart_code",
-        "status", "tags", "metadata", "ai_confidence",
-        "ai_classification", "ai_insights", "attributes",
-        "created_at", "updated_at"
+        'id',
+        'organization_id',
+        'entity_type',
+        'entity_name',
+        'entity_code',
+        'entity_description',
+        'smart_code',
+        'status',
+        'tags',
+        'metadata',
+        'ai_confidence',
+        'ai_classification',
+        'ai_insights',
+        'attributes',
+        'created_at',
+        'updated_at'
       ],
       operators: {
-        text: ["=", "!=", "like"],
-        numeric: ["=", "!=", "gt", "gte", "lt", "lte"],
-        date: ["=", "!=", "gt", "gte", "lt", "lte"],
-        array: ["in", "not_in", "contains"]
+        text: ['=', '!=', 'like'],
+        numeric: ['=', '!=', 'gt', 'gte', 'lt', 'lte'],
+        date: ['=', '!=', 'gt', 'gte', 'lt', 'lte'],
+        array: ['in', 'not_in', 'contains']
       },
-      joins: ["dynamic_data", "relationships"],
-      order_by_fields: [
-        "created_at", "updated_at", "entity_name",
-        "entity_type", "status"
-      ],
-      aggregate_functions: [
-        "count", "sum", "avg", "min", "max"
-      ]
+      joins: ['dynamic_data', 'relationships'],
+      order_by_fields: ['created_at', 'updated_at', 'entity_name', 'entity_type', 'status'],
+      aggregate_functions: ['count', 'sum', 'avg', 'min', 'max']
     }
-  });
+  })
 }

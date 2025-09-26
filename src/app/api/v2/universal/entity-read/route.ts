@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { rpc } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server'
+import { rpc } from '@/lib/db'
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs'
 
 /**
  * GET /api/v2/universal/entity-read
@@ -19,25 +19,22 @@ export const runtime = "nodejs";
  * - include_dynamic_data: Include dynamic data fields (default false)
  */
 export async function GET(req: NextRequest) {
-  const params = req.nextUrl.searchParams;
+  const params = req.nextUrl.searchParams
 
-  const entity_id = params.get("entity_id");
-  const entity_type = params.get("entity_type");
-  const entity_code = params.get("entity_code");
-  const organization_id = params.get("organization_id");
-  const smart_code = params.get("smart_code");
-  const status = params.get("status") || "active";
-  const limit = parseInt(params.get("limit") || "100");
-  const offset = parseInt(params.get("offset") || "0");
-  const include_relationships = params.get("include_relationships") === "true";
-  const include_dynamic_data = params.get("include_dynamic_data") === "true";
+  const entity_id = params.get('entity_id')
+  const entity_type = params.get('entity_type')
+  const entity_code = params.get('entity_code')
+  const organization_id = params.get('organization_id')
+  const smart_code = params.get('smart_code')
+  const status = params.get('status') || 'active'
+  const limit = parseInt(params.get('limit') || '100')
+  const offset = parseInt(params.get('offset') || '0')
+  const include_relationships = params.get('include_relationships') === 'true'
+  const include_dynamic_data = params.get('include_dynamic_data') === 'true'
 
   // Validate required fields
   if (!organization_id) {
-    return NextResponse.json(
-      { error: "organization_id is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
   }
 
   try {
@@ -53,37 +50,33 @@ export async function GET(req: NextRequest) {
       p_include_dynamic_data: include_dynamic_data,
       p_limit: limit,
       p_offset: offset
-    });
+    })
 
     if (!result.success) {
       return NextResponse.json(
         {
-          error: result.error || "entity_operation_failed",
+          error: result.error || 'entity_operation_failed',
           message: result.message
         },
         { status: 400 }
-      );
+      )
     }
 
     return NextResponse.json({
-      api_version: "v2",
+      api_version: 'v2',
       ...result
-    });
-
+    })
   } catch (error: any) {
-    console.error("Error in entity-read:", error);
+    console.error('Error in entity-read:', error)
 
     // Handle specific database errors
     if (error.message?.includes('HERA_ENTITY_NOT_FOUND')) {
       return NextResponse.json(
-        { error: "entity_not_found", message: error.message },
+        { error: 'entity_not_found', message: error.message },
         { status: 404 }
-      );
+      )
     }
 
-    return NextResponse.json(
-      { error: "database_error", message: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
   }
 }

@@ -14,7 +14,7 @@ import { formatDate } from '@/lib/utils/format'
 export default function CasePrintPage() {
   const params = useParams()
   const caseId = params.id as string
-  
+
   const { data: caseDetail, isLoading: caseLoading } = useCase(caseId)
   const { data: timeline, isLoading: timelineLoading } = useCaseTimeline(caseId)
 
@@ -162,7 +162,7 @@ export default function CasePrintPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {timeline.slice(0, 10).map((event) => (
+                {timeline.slice(0, 10).map(event => (
                   <div key={event.id} className="flex gap-4 text-sm">
                     <div className="min-w-[120px] text-muted-foreground">
                       {formatDate(event.created_at)}

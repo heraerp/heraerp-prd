@@ -26,19 +26,9 @@ const IsoDateTimeSchema = z.string().datetime({ offset: true })
 const NonEmptyStringSchema = z.string().min(1).trim()
 
 // ==================== Enums ====================
-export const CaseStatusSchema = z.enum([
-  'OPEN',
-  'IN_PROGRESS',
-  'ON_HOLD',
-  'CLOSED'
-])
+export const CaseStatusSchema = z.enum(['OPEN', 'IN_PROGRESS', 'ON_HOLD', 'CLOSED'])
 
-export const CasePrioritySchema = z.enum([
-  'LOW',
-  'MEDIUM',
-  'HIGH',
-  'URGENT'
-])
+export const CasePrioritySchema = z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])
 
 export const CaseCategorySchema = z.enum([
   'SERVICE_REQUEST',
@@ -89,28 +79,30 @@ export const CaseCreateDTO = z.object({
   dynamic: z.record(z.string(), z.unknown()).optional()
 })
 
-export const CaseUpdateDTO = z.object({
-  title: NonEmptyStringSchema.optional(),
-  description: z.string().optional(),
-  status: CaseStatusSchema.optional(),
-  priority: CasePrioritySchema.optional(),
-  category: CaseCategorySchema.optional(),
-  owner_entity_id: UuidSchema.nullable().optional(),
-  constituent_entity_id: UuidSchema.nullable().optional(),
-  program_entity_id: UuidSchema.nullable().optional(),
-  due_date: IsoDateTimeSchema.nullable().optional(),
-  resolution_notes: z.string().nullable().optional(),
-  metadata: z.object({}).passthrough().optional(),
-  dynamic: z.record(z.string(), z.unknown()).optional()
-}).refine(data => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update'
-})
+export const CaseUpdateDTO = z
+  .object({
+    title: NonEmptyStringSchema.optional(),
+    description: z.string().optional(),
+    status: CaseStatusSchema.optional(),
+    priority: CasePrioritySchema.optional(),
+    category: CaseCategorySchema.optional(),
+    owner_entity_id: UuidSchema.nullable().optional(),
+    constituent_entity_id: UuidSchema.nullable().optional(),
+    program_entity_id: UuidSchema.nullable().optional(),
+    due_date: IsoDateTimeSchema.nullable().optional(),
+    resolution_notes: z.string().nullable().optional(),
+    metadata: z.object({}).passthrough().optional(),
+    dynamic: z.record(z.string(), z.unknown()).optional()
+  })
+  .refine(data => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update'
+  })
 
 // ==================== Query/Filter Schemas ====================
 export const CaseQuery = z.object({
   // Search
   q: z.string().optional(),
-  
+
   // Filters
   status: z.array(CaseStatusSchema).optional(),
   priority: z.array(CasePrioritySchema).optional(),
@@ -118,27 +110,29 @@ export const CaseQuery = z.object({
   owner_id: UuidSchema.optional(),
   constituent_id: UuidSchema.optional(),
   program_id: UuidSchema.optional(),
-  
+
   // Date range
   from: IsoDateTimeSchema.optional(),
   to: IsoDateTimeSchema.optional(),
-  
+
   // Pagination
   limit: z.number().int().min(1).max(100).default(20),
   cursor: z.string().optional(),
   page: z.number().int().min(1).optional(),
-  
+
   // Sorting
-  sort_by: z.enum([
-    'case_number',
-    'title',
-    'status',
-    'priority',
-    'opened_at',
-    'closed_at',
-    'due_date',
-    'updated_at'
-  ]).optional(),
+  sort_by: z
+    .enum([
+      'case_number',
+      'title',
+      'status',
+      'priority',
+      'opened_at',
+      'closed_at',
+      'due_date',
+      'updated_at'
+    ])
+    .optional(),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 })
 
@@ -154,13 +148,15 @@ export const CaseListResponse = z.object({
 
 export const CaseSingleResponse = z.object({
   data: CaseDTO,
-  related: z.object({
-    owner: z.any().optional(),
-    constituent: z.any().optional(),
-    program: z.any().optional(),
-    attachments: z.array(z.any()).optional(),
-    comments: z.array(z.any()).optional()
-  }).optional()
+  related: z
+    .object({
+      owner: z.any().optional(),
+      constituent: z.any().optional(),
+      program: z.any().optional(),
+      attachments: z.array(z.any()).optional(),
+      comments: z.array(z.any()).optional()
+    })
+    .optional()
 })
 
 // ==================== Type Exports ====================

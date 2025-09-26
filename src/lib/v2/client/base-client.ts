@@ -22,9 +22,9 @@ export async function post<TRequest = any, TResponse = any>(
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   })
 
   if (!response.ok) {
@@ -55,8 +55,8 @@ export async function get<TResponse = any>(
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
-    },
+      'Content-Type': 'application/json'
+    }
   })
 
   if (!response.ok) {

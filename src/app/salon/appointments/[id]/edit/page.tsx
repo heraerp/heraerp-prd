@@ -159,7 +159,10 @@ export default function EditAppointmentPage() {
       const end = new Date(start.getTime() + (parseInt(duration || '60') || 60) * 60 * 1000)
 
       // Map UI status to list-page statuses
-      const statusMap: Record<string, 'booked' | 'checked_in' | 'completed' | 'cancelled' | 'no_show'> = {
+      const statusMap: Record<
+        string,
+        'booked' | 'checked_in' | 'completed' | 'cancelled' | 'no_show'
+      > = {
         DRAFT: 'booked',
         CONFIRMED: 'booked',
         IN_SERVICE: 'checked_in',

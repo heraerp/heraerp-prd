@@ -6,7 +6,8 @@ import { createClient } from '@supabase/supabase-js'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
@@ -14,17 +15,13 @@ export const supabase = createClient(supabaseUrl, supabaseServiceKey)
  * Execute a SQL query and return a single value
  * Used for calling stored functions that return a single result
  */
-export async function selectValue<T = any>(
-  sql: string,
-  params: any[] = []
-): Promise<T> {
+export async function selectValue<T = any>(sql: string, params: any[] = []): Promise<T> {
   // Convert the SQL with params to a function call
   // This is a simplified version - you may need to adjust based on your DB setup
-  const { data, error } = await supabase
-    .rpc('exec_sql', {
-      query: sql,
-      params: params
-    })
+  const { data, error } = await supabase.rpc('exec_sql', {
+    query: sql,
+    params: params
+  })
 
   if (error) {
     console.error('Database error:', error)

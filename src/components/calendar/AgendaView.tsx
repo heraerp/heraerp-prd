@@ -1,22 +1,15 @@
-'use client';
+'use client'
 
-import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns';
-import { CalendarItem } from '@/types/calendar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Users,
-  AlertCircle,
-  ChevronRight,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
+import { CalendarItem } from '@/types/calendar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar, Clock, MapPin, Users, AlertCircle, ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface AgendaViewProps {
-  items: CalendarItem[];
-  onItemClick: (item: CalendarItem) => void;
+  items: CalendarItem[]
+  onItemClick: (item: CalendarItem) => void
 }
 
 const SOURCE_COLORS = {
@@ -24,8 +17,8 @@ const SOURCE_COLORS = {
   cases: { bg: 'bg-green-500', text: 'text-green-600', light: 'bg-green-100' },
   playbooks: { bg: 'bg-purple-500', text: 'text-purple-600', light: 'bg-purple-100' },
   payments: { bg: 'bg-yellow-500', text: 'text-yellow-600', light: 'bg-yellow-100' },
-  consultations: { bg: 'bg-pink-500', text: 'text-pink-600', light: 'bg-pink-100' },
-};
+  consultations: { bg: 'bg-pink-500', text: 'text-pink-600', light: 'bg-pink-100' }
+}
 
 const CATEGORY_ICONS = {
   deadline: AlertCircle,
@@ -33,54 +26,57 @@ const CATEGORY_ICONS = {
   review: Clock,
   milestone: Calendar,
   payment: AlertCircle,
-  submission: AlertCircle,
-};
+  submission: AlertCircle
+}
 
 export function AgendaView({ items, onItemClick }: AgendaViewProps) {
   // Sort items by date
-  const sortedItems = [...items].sort((a, b) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const sortedItems = [...items].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  )
 
   // Group items by date
-  const groupedItems = sortedItems.reduce((groups, item) => {
-    const dateKey = format(new Date(item.date), 'yyyy-MM-dd');
-    if (!groups[dateKey]) {
-      groups[dateKey] = [];
-    }
-    groups[dateKey].push(item);
-    return groups;
-  }, {} as Record<string, CalendarItem[]>);
+  const groupedItems = sortedItems.reduce(
+    (groups, item) => {
+      const dateKey = format(new Date(item.date), 'yyyy-MM-dd')
+      if (!groups[dateKey]) {
+        groups[dateKey] = []
+      }
+      groups[dateKey].push(item)
+      return groups
+    },
+    {} as Record<string, CalendarItem[]>
+  )
 
   // Get date label
   const getDateLabel = (dateStr: string) => {
-    const date = new Date(dateStr);
-    if (isToday(date)) return 'Today';
-    if (isTomorrow(date)) return 'Tomorrow';
-    if (isPast(date)) return format(date, 'EEEE, MMMM d') + ' (Past)';
-    
-    const daysFromNow = differenceInDays(date, new Date());
+    const date = new Date(dateStr)
+    if (isToday(date)) return 'Today'
+    if (isTomorrow(date)) return 'Tomorrow'
+    if (isPast(date)) return format(date, 'EEEE, MMMM d') + ' (Past)'
+
+    const daysFromNow = differenceInDays(date, new Date())
     if (daysFromNow <= 7) {
-      return format(date, 'EEEE, MMMM d') + ` (in ${daysFromNow} days)`;
+      return format(date, 'EEEE, MMMM d') + ` (in ${daysFromNow} days)`
     }
-    
-    return format(date, 'EEEE, MMMM d');
-  };
+
+    return format(date, 'EEEE, MMMM d')
+  }
 
   // Get item status
   const getItemStatus = (item: CalendarItem) => {
-    const itemDate = new Date(item.date);
-    const now = new Date();
-    
-    if (item.status === 'completed') return 'completed';
-    if (item.status === 'cancelled') return 'cancelled';
-    if (isPast(itemDate) && !item.all_day) return 'overdue';
-    
-    const hoursUntil = (itemDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-    if (hoursUntil <= 24 && hoursUntil > 0) return 'upcoming';
-    
-    return 'future';
-  };
+    const itemDate = new Date(item.date)
+    const now = new Date()
+
+    if (item.status === 'completed') return 'completed'
+    if (item.status === 'cancelled') return 'cancelled'
+    if (isPast(itemDate) && !item.all_day) return 'overdue'
+
+    const hoursUntil = (itemDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+    if (hoursUntil <= 24 && hoursUntil > 0) return 'upcoming'
+
+    return 'future'
+  }
 
   return (
     <div className="h-full overflow-auto">
@@ -89,34 +85,25 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
           <div className="text-center py-12">
             <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">No upcoming events</h3>
-            <p className="text-muted-foreground">
-              Your calendar is clear for the selected period.
-            </p>
+            <p className="text-muted-foreground">Your calendar is clear for the selected period.</p>
           </div>
         ) : (
           <div className="space-y-8">
             {Object.entries(groupedItems).map(([dateKey, dateItems]) => {
-              const date = new Date(dateKey);
-              const isPastDate = isPast(date) && !isToday(date);
-              
+              const date = new Date(dateKey)
+              const isPastDate = isPast(date) && !isToday(date)
+
               return (
                 <div key={dateKey}>
                   {/* Date Header */}
-                  <div className={cn(
-                    'flex items-center gap-3 mb-4',
-                    isPastDate && 'opacity-60'
-                  )}>
+                  <div className={cn('flex items-center gap-3 mb-4', isPastDate && 'opacity-60')}>
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <span className="text-lg font-bold text-primary">
-                          {format(date, 'd')}
-                        </span>
+                        <span className="text-lg font-bold text-primary">{format(date, 'd')}</span>
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold">
-                        {getDateLabel(dateKey)}
-                      </h3>
+                      <h3 className="text-lg font-semibold">{getDateLabel(dateKey)}</h3>
                       <p className="text-sm text-muted-foreground">
                         {dateItems.length} {dateItems.length === 1 ? 'event' : 'events'}
                       </p>
@@ -125,10 +112,11 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
 
                   {/* Events for this date */}
                   <div className="space-y-3">
-                    {dateItems.map((item) => {
-                      const status = getItemStatus(item);
-                      const colors = SOURCE_COLORS[item.source as keyof typeof SOURCE_COLORS];
-                      const CategoryIcon = CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS] || Calendar;
+                    {dateItems.map(item => {
+                      const status = getItemStatus(item)
+                      const colors = SOURCE_COLORS[item.source as keyof typeof SOURCE_COLORS]
+                      const CategoryIcon =
+                        CATEGORY_ICONS[item.category as keyof typeof CATEGORY_ICONS] || Calendar
 
                       return (
                         <Button
@@ -146,10 +134,12 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
                           <div className="flex items-start gap-4 w-full">
                             {/* Time & Icon */}
                             <div className="flex-shrink-0">
-                              <div className={cn(
-                                'w-10 h-10 rounded-lg flex items-center justify-center',
-                                colors.light
-                              )}>
+                              <div
+                                className={cn(
+                                  'w-10 h-10 rounded-lg flex items-center justify-center',
+                                  colors.light
+                                )}
+                              >
                                 <CategoryIcon className={cn('h-5 w-5', colors.text)} />
                               </div>
                             </div>
@@ -158,9 +148,7 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
                             <div className="flex-1 text-left">
                               {/* Title & Time */}
                               <div className="flex items-start justify-between gap-2 mb-1">
-                                <h4 className="font-semibold line-clamp-1">
-                                  {item.title}
-                                </h4>
+                                <h4 className="font-semibold line-clamp-1">{item.title}</h4>
                                 <div className="flex items-center gap-2 flex-shrink-0">
                                   {!item.all_day && (
                                     <span className="text-sm text-muted-foreground">
@@ -169,11 +157,7 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
                                   )}
                                   <Badge
                                     variant="secondary"
-                                    className={cn(
-                                      'text-xs',
-                                      colors.bg,
-                                      'text-white'
-                                    )}
+                                    className={cn('text-xs', colors.bg, 'text-white')}
                                   >
                                     {item.source}
                                   </Badge>
@@ -230,15 +214,15 @@ export function AgendaView({ items, onItemClick }: AgendaViewProps) {
                             <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                           </div>
                         </Button>
-                      );
+                      )
                     })}
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -145,7 +145,10 @@ export const structuredTxnLogger = StructuredTxnLogger.getInstance()
  */
 export function withTxnLogging<T extends Record<string, any>>(
   operation: TxnLogEntry['operation'],
-  handler: (payload: T, logger: ReturnType<StructuredTxnLogger['createOperationLogger']>) => Promise<any>
+  handler: (
+    payload: T,
+    logger: ReturnType<StructuredTxnLogger['createOperationLogger']>
+  ) => Promise<any>
 ) {
   return async (request: NextRequest) => {
     let payload: T
@@ -163,7 +166,11 @@ export function withTxnLogging<T extends Record<string, any>>(
         )
       }
 
-      logger = structuredTxnLogger.createOperationLogger(operation, payload.organization_id, request)
+      logger = structuredTxnLogger.createOperationLogger(
+        operation,
+        payload.organization_id,
+        request
+      )
 
       const result = await handler(payload, logger)
 
@@ -181,7 +188,6 @@ export function withTxnLogging<T extends Record<string, any>>(
         api_version: 'v2',
         ...result
       })
-
     } catch (error: any) {
       if (logger!) {
         logger.logError(error.message, {
@@ -196,10 +202,7 @@ export function withTxnLogging<T extends Record<string, any>>(
         })
       }
 
-      return NextResponse.json(
-        { success: false, error: 'Internal server error' },
-        { status: 500 }
-      )
+      return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
     }
   }
 }

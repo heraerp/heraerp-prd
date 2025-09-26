@@ -1,12 +1,12 @@
 /**
  * HERA Finance Dashboard Universal Cashflow Report (UCR)
- * 
+ *
  * This UCR provides comprehensive financial dashboard operations including:
  * - Real-time cashflow position
  * - Multi-period cash analysis
  * - Forecasting and projections
  * - Industry benchmarking
- * 
+ *
  * @module HERA.URP.RECIPE.FINANCE.DASHBOARD.CASHFLOW.v1
  */
 
@@ -23,7 +23,7 @@ export const financeDashboardCashflowRecipe: ReportRecipe = {
   version: '1.0.0',
   category: 'finance',
   tags: ['cashflow', 'dashboard', 'kpi', 'real-time'],
-  
+
   parameters: {
     organization_id: { type: 'uuid', required: true },
     period_start: { type: 'date', required: true },
@@ -37,7 +37,7 @@ export const financeDashboardCashflowRecipe: ReportRecipe = {
 
   async execute(context: ReportContext): Promise<ReportResult> {
     const { parameters, supabase } = context
-    
+
     // Step 1: Resolve cashflow-related entities (bank accounts, cash accounts)
     const cashEntities = await entityResolver({
       context,
@@ -69,7 +69,7 @@ export const financeDashboardCashflowRecipe: ReportRecipe = {
 
     // Step 3: Calculate operating, investing, and financing activities
     const activities = categorizeCashflowActivities(cashTransactions)
-    
+
     // Step 4: Rollup cash positions and calculate net change
     const cashPositions = await rollupAndBalance({
       context,
@@ -81,7 +81,7 @@ export const financeDashboardCashflowRecipe: ReportRecipe = {
 
     // Step 5: Get historical data for comparison periods
     const historicalData = await getHistoricalCashflow(context, parameters)
-    
+
     // Step 6: Generate forecast if requested
     let forecast = null
     if (parameters.include_forecast) {
@@ -134,18 +134,17 @@ export const financeDashboardCashflowRecipe: ReportRecipe = {
 // Helper function to categorize transactions into cashflow activities
 function categorizeCashflowActivities(transactions: any) {
   return {
-    operating: transactions.filter((t: any) => 
-      t.smart_code.includes('.SALE.') || 
-      t.smart_code.includes('.EXPENSE.') ||
-      t.smart_code.includes('.PAYROLL.')
+    operating: transactions.filter(
+      (t: any) =>
+        t.smart_code.includes('.SALE.') ||
+        t.smart_code.includes('.EXPENSE.') ||
+        t.smart_code.includes('.PAYROLL.')
     ),
-    investing: transactions.filter((t: any) => 
-      t.smart_code.includes('.ASSET.') || 
-      t.smart_code.includes('.CAPEX.')
+    investing: transactions.filter(
+      (t: any) => t.smart_code.includes('.ASSET.') || t.smart_code.includes('.CAPEX.')
     ),
-    financing: transactions.filter((t: any) => 
-      t.smart_code.includes('.LOAN.') || 
-      t.smart_code.includes('.EQUITY.')
+    financing: transactions.filter(
+      (t: any) => t.smart_code.includes('.LOAN.') || t.smart_code.includes('.EQUITY.')
     )
   }
 }
@@ -154,13 +153,13 @@ function categorizeCashflowActivities(transactions: any) {
 async function getHistoricalCashflow(context: ReportContext, parameters: any) {
   const periods = []
   const currentEnd = new Date(parameters.period_end)
-  
+
   for (let i = 1; i <= parameters.comparison_periods; i++) {
     const periodEnd = new Date(currentEnd)
     periodEnd.setMonth(periodEnd.getMonth() - i)
     const periodStart = new Date(periodEnd)
     periodStart.setMonth(periodStart.getMonth() - 1)
-    
+
     const historicalTransactions = await transactionFacts({
       context,
       filters: {
@@ -173,13 +172,13 @@ async function getHistoricalCashflow(context: ReportContext, parameters: any) {
       groupBy: ['transaction_type'],
       metrics: ['sum']
     })
-    
+
     periods.push({
       period: periodEnd.toISOString().substr(0, 7),
       data: historicalTransactions
     })
   }
-  
+
   return periods
 }
 
@@ -187,22 +186,22 @@ async function getHistoricalCashflow(context: ReportContext, parameters: any) {
 async function generateCashflowForecast(context: ReportContext, currentData: any, parameters: any) {
   // Simple linear regression forecast based on historical trends
   // In production, this would use more sophisticated forecasting methods
-  
+
   const forecastPeriods = []
   const baseAmount = currentData.total || 0
   const growthRate = 0.05 // 5% monthly growth assumption
-  
+
   for (let i = 1; i <= parameters.forecast_periods; i++) {
     const forecastDate = new Date(parameters.period_end)
     forecastDate.setMonth(forecastDate.getMonth() + i)
-    
+
     forecastPeriods.push({
       period: forecastDate.toISOString().substr(0, 7),
       forecast_amount: baseAmount * Math.pow(1 + growthRate, i),
-      confidence: 0.95 - (i * 0.05) // Confidence decreases over time
+      confidence: 0.95 - i * 0.05 // Confidence decreases over time
     })
   }
-  
+
   return forecastPeriods
 }
 
@@ -210,7 +209,7 @@ async function generateCashflowForecast(context: ReportContext, currentData: any
 async function getIndustryBenchmarks(context: ReportContext, parameters: any) {
   // Retrieve industry-specific cashflow benchmarks
   // These would come from HERA's industry DNA configurations
-  
+
   return {
     industry: 'restaurant', // Would be determined from organization
     operating_cash_margin: 0.15,
@@ -230,16 +229,19 @@ function calculateCashflowKPIs(cashPositions: any, activities: any) {
   const totalInflow = activities.operating
     .filter((t: any) => t.amount > 0)
     .reduce((sum: number, t: any) => sum + t.amount, 0)
-    
-  const totalOutflow = Math.abs(activities.operating
-    .filter((t: any) => t.amount < 0)
-    .reduce((sum: number, t: any) => sum + t.amount, 0))
-  
+
+  const totalOutflow = Math.abs(
+    activities.operating
+      .filter((t: any) => t.amount < 0)
+      .reduce((sum: number, t: any) => sum + t.amount, 0)
+  )
+
   return {
     net_cash_flow: totalInflow - totalOutflow,
     operating_cash_flow: activities.operating.reduce((sum: number, t: any) => sum + t.amount, 0),
-    free_cash_flow: activities.operating.reduce((sum: number, t: any) => sum + t.amount, 0) - 
-                    Math.abs(activities.investing.reduce((sum: number, t: any) => sum + t.amount, 0)),
+    free_cash_flow:
+      activities.operating.reduce((sum: number, t: any) => sum + t.amount, 0) -
+      Math.abs(activities.investing.reduce((sum: number, t: any) => sum + t.amount, 0)),
     cash_burn_rate: totalOutflow / 30, // Daily burn rate
     cash_runway_days: cashPositions.ending_balance / (totalOutflow / 30),
     operating_cash_margin: totalInflow > 0 ? (totalInflow - totalOutflow) / totalInflow : 0,

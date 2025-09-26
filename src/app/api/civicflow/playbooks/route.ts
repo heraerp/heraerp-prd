@@ -1,26 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase/client'
 
 export async function GET(request: NextRequest) {
-  console.log('🔍 Playbooks API called');
-  
+  console.log('🔍 Playbooks API called')
+
   try {
-    const orgId = request.headers.get('X-Organization-Id');
-    console.log('🔍 Organization ID:', orgId);
-    
+    const orgId = request.headers.get('X-Organization-Id')
+    console.log('🔍 Organization ID:', orgId)
+
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
-    const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('pageSize') || '20');
-    const status = searchParams.get('status');
-    const category = searchParams.get('category');
-    const q = searchParams.get('q');
+    const searchParams = request.nextUrl.searchParams
+    const page = parseInt(searchParams.get('page') || '1')
+    const pageSize = parseInt(searchParams.get('pageSize') || '20')
+    const status = searchParams.get('status')
+    const category = searchParams.get('category')
+    const q = searchParams.get('q')
 
     // Build query
     let query = supabase
@@ -28,35 +25,35 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact' })
       .eq('organization_id', orgId)
       .eq('entity_type', 'playbook')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
 
     // Apply filters
     if (status && status !== 'all') {
-      query = query.eq('status', status);
+      query = query.eq('status', status)
     }
 
     if (category && category !== 'all') {
-      query = query.contains('metadata', { category });
+      query = query.contains('metadata', { category })
     }
 
     if (q) {
-      query = query.or(`entity_name.ilike.%${q}%,metadata->description.ilike.%${q}%`);
+      query = query.or(`entity_name.ilike.%${q}%,metadata->description.ilike.%${q}%`)
     }
 
     // Pagination
-    const offset = (page - 1) * pageSize;
-    query = query.range(offset, offset + pageSize - 1);
+    const offset = (page - 1) * pageSize
+    query = query.range(offset, offset + pageSize - 1)
 
-    const { data, error, count } = await query;
+    const { data, error, count } = await query
 
-    console.log('🔍 Query result:', { dataLength: data?.length, count, error });
+    console.log('🔍 Query result:', { dataLength: data?.length, count, error })
 
     if (error) {
-      console.error('🔍 Query error:', error);
-      throw error;
+      console.error('🔍 Query error:', error)
+      throw error
     }
 
-    console.log('🔍 Raw data sample:', data?.[0]);
+    console.log('🔍 Raw data sample:', data?.[0])
 
     // Transform data to match PlaybookListItem interface
     const items = data.map((entity: any) => ({
@@ -70,38 +67,34 @@ export async function GET(request: NextRequest) {
       success_rate: entity.metadata?.success_rate || null,
       last_run_at: entity.metadata?.last_run_at || null,
       created_at: entity.created_at,
-      updated_at: entity.updated_at,
-    }));
+      updated_at: entity.updated_at
+    }))
 
     return NextResponse.json({
       items,
       total: count || 0,
       page,
-      pageSize,
-    });
-
+      pageSize
+    })
   } catch (error) {
-    console.error('Error fetching playbooks:', error);
+    console.error('Error fetching playbooks:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch playbooks' },
       { status: 500 }
-    );
+    )
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id');
-    
+    const orgId = request.headers.get('X-Organization-Id')
+
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Organization ID required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })
     }
 
-    const body = await request.json();
-    const { name, description, status, category, steps } = body;
+    const body = await request.json()
+    const { name, description, status, category, steps } = body
 
     // Create playbook entity
     const { data: playbook, error } = await supabase
@@ -121,10 +114,10 @@ export async function POST(request: NextRequest) {
         }
       })
       .select()
-      .single();
+      .single()
 
     if (error) {
-      throw error;
+      throw error
     }
 
     // Create steps if provided
@@ -145,26 +138,24 @@ export async function POST(request: NextRequest) {
             }
           })
           .select()
-          .single();
+          .single()
 
         if (stepError) {
-          console.error(`Error creating step ${step.name}:`, stepError);
-          continue;
+          console.error(`Error creating step ${step.name}:`, stepError)
+          continue
         }
 
         // Create relationship
-        await supabase
-          .from('core_relationships')
-          .insert({
-            organization_id: orgId,
-            from_entity_id: playbook.id,
-            to_entity_id: stepEntity.id,
-            relationship_type: 'has_step',
-            smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.v1',
-            metadata: {
-              sequence: step.sequence
-            }
-          });
+        await supabase.from('core_relationships').insert({
+          organization_id: orgId,
+          from_entity_id: playbook.id,
+          to_entity_id: stepEntity.id,
+          relationship_type: 'has_step',
+          smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.v1',
+          metadata: {
+            sequence: step.sequence
+          }
+        })
       }
     }
 
@@ -183,14 +174,13 @@ export async function POST(request: NextRequest) {
         programs: []
       },
       created_at: playbook.created_at,
-      updated_at: playbook.updated_at,
-    });
-
+      updated_at: playbook.updated_at
+    })
   } catch (error) {
-    console.error('Error creating playbook:', error);
+    console.error('Error creating playbook:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to create playbook' },
       { status: 500 }
-    );
+    )
   }
 }

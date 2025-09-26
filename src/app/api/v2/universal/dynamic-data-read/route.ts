@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { selectRows, selectRow } from "@/lib/db";
+import { NextRequest, NextResponse } from 'next/server'
+import { selectRows, selectRow } from '@/lib/db'
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs'
 
 /**
  * GET /api/v2/universal/dynamic-data-read
@@ -17,20 +17,17 @@ export const runtime = "nodejs";
  * - offset: Pagination offset (default 0)
  */
 export async function GET(req: NextRequest) {
-  const params = req.nextUrl.searchParams;
+  const params = req.nextUrl.searchParams
 
-  const organization_id = params.get("organization_id");
-  const entity_id = params.get("entity_id");
-  const field_name = params.get("field_name");
-  const field_type = params.get("field_type");
-  const limit = parseInt(params.get("limit") || "100");
-  const offset = parseInt(params.get("offset") || "0");
+  const organization_id = params.get('organization_id')
+  const entity_id = params.get('entity_id')
+  const field_name = params.get('field_name')
+  const field_type = params.get('field_type')
+  const limit = parseInt(params.get('limit') || '100')
+  const offset = parseInt(params.get('offset') || '0')
 
   if (!organization_id) {
-    return NextResponse.json(
-      { error: "organization_id is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'organization_id is required' }, { status: 400 })
   }
 
   try {
@@ -46,21 +43,18 @@ export async function GET(req: NextRequest) {
         WHERE dd.organization_id = $1
         AND dd.entity_id = $2
         AND dd.field_name = $3
-      `;
+      `
 
-      const field = await selectRow(sql, [organization_id, entity_id, field_name]);
+      const field = await selectRow(sql, [organization_id, entity_id, field_name])
 
       if (!field) {
-        return NextResponse.json(
-          { error: "field_not_found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'field_not_found' }, { status: 404 })
       }
 
       return NextResponse.json({
-        api_version: "v2",
+        api_version: 'v2',
         data: field
-      });
+      })
     }
 
     // Build query for multiple fields
@@ -72,62 +66,62 @@ export async function GET(req: NextRequest) {
       FROM core_dynamic_data dd
       JOIN core_entities e ON e.id = dd.entity_id
       WHERE dd.organization_id = $1
-    `;
+    `
 
-    const queryParams: any[] = [organization_id];
-    let paramIndex = 2;
+    const queryParams: any[] = [organization_id]
+    let paramIndex = 2
 
     // Add filters
     if (entity_id) {
-      sql += ` AND dd.entity_id = $${paramIndex}`;
-      queryParams.push(entity_id);
-      paramIndex++;
+      sql += ` AND dd.entity_id = $${paramIndex}`
+      queryParams.push(entity_id)
+      paramIndex++
     }
 
     if (field_type) {
-      sql += ` AND dd.field_type = $${paramIndex}`;
-      queryParams.push(field_type);
-      paramIndex++;
+      sql += ` AND dd.field_type = $${paramIndex}`
+      queryParams.push(field_type)
+      paramIndex++
     }
 
-    sql += ` ORDER BY dd.entity_id, dd.field_name`;
+    sql += ` ORDER BY dd.entity_id, dd.field_name`
 
     // Add pagination
-    sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-    queryParams.push(limit, offset);
+    sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
+    queryParams.push(limit, offset)
 
-    const fields = await selectRows(sql, queryParams);
+    const fields = await selectRows(sql, queryParams)
 
     // Get total count
     let countSql = `
       SELECT count(*) as total
       FROM core_dynamic_data dd
       WHERE dd.organization_id = $1
-    `;
+    `
 
-    const countParams: any[] = [organization_id];
-    let countParamIndex = 2;
+    const countParams: any[] = [organization_id]
+    let countParamIndex = 2
 
     if (entity_id) {
-      countSql += ` AND dd.entity_id = $${countParamIndex}`;
-      countParams.push(entity_id);
-      countParamIndex++;
+      countSql += ` AND dd.entity_id = $${countParamIndex}`
+      countParams.push(entity_id)
+      countParamIndex++
     }
 
     if (field_type) {
-      countSql += ` AND dd.field_type = $${countParamIndex}`;
-      countParams.push(field_type);
+      countSql += ` AND dd.field_type = $${countParamIndex}`
+      countParams.push(field_type)
     }
 
-    const countResult = await selectRow(countSql, countParams);
-    const total = countResult?.total || 0;
+    const countResult = await selectRow(countSql, countParams)
+    const total = countResult?.total || 0
 
     // Group fields by entity if requested
-    const groupByEntity = params.get("group_by_entity") === "true";
+    const groupByEntity = params.get('group_by_entity') === 'true'
 
     if (groupByEntity && fields.length > 0) {
       const grouped = fields.reduce((acc: any, field: any) => {
-        const entityKey = field.entity_id;
+        const entityKey = field.entity_id
         if (!acc[entityKey]) {
           acc[entityKey] = {
             entity_id: field.entity_id,
@@ -135,7 +129,7 @@ export async function GET(req: NextRequest) {
             entity_type: field.entity_type,
             entity_code: field.entity_code,
             fields: []
-          };
+          }
         }
         acc[entityKey].fields.push({
           field_name: field.field_name,
@@ -148,12 +142,12 @@ export async function GET(req: NextRequest) {
           field_value_json: field.field_value_json,
           smart_code: field.smart_code,
           metadata: field.metadata
-        });
-        return acc;
-      }, {});
+        })
+        return acc
+      }, {})
 
       return NextResponse.json({
-        api_version: "v2",
+        api_version: 'v2',
         data: Object.values(grouped),
         metadata: {
           total_fields: total,
@@ -162,11 +156,11 @@ export async function GET(req: NextRequest) {
           offset,
           has_more: offset + limit < total
         }
-      });
+      })
     }
 
     return NextResponse.json({
-      api_version: "v2",
+      api_version: 'v2',
       data: fields,
       metadata: {
         total,
@@ -174,13 +168,9 @@ export async function GET(req: NextRequest) {
         offset,
         has_more: offset + limit < total
       }
-    });
-
+    })
   } catch (error: any) {
-    console.error("Error in dynamic-data-read:", error);
-    return NextResponse.json(
-      { error: "database_error", message: error.message },
-      { status: 500 }
-    );
+    console.error('Error in dynamic-data-read:', error)
+    return NextResponse.json({ error: 'database_error', message: error.message }, { status: 500 })
   }
 }

@@ -1,35 +1,35 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+  TableRow
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  SelectValue
+} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   Search,
   MoreHorizontal,
@@ -40,41 +40,41 @@ import {
   Download,
   Users,
   Shield,
-  Filter,
-} from 'lucide-react';
-import { useAudienceList } from '@/hooks/use-communications';
-import { Audience } from '@/types/communications';
+  Filter
+} from 'lucide-react'
+import { useAudienceList } from '@/hooks/use-communications'
+import { Audience } from '@/types/communications'
 
 export function AudienceList() {
-  const router = useRouter();
-  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter()
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState({
     entity_type: [],
-    consent_policy: null,
-  });
-  
+    consent_policy: null
+  })
+
   const { data, isLoading } = useAudienceList({
     q: searchQuery,
-    ...filters,
-  });
-  
+    ...filters
+  })
+
   const handleSelectAll = (checked: boolean) => {
     if (checked && data?.items) {
-      setSelectedAudiences(data.items.map(a => a.id));
+      setSelectedAudiences(data.items.map(a => a.id))
     } else {
-      setSelectedAudiences([]);
+      setSelectedAudiences([])
     }
-  };
-  
+  }
+
   const handleSelectAudience = (audienceId: string, checked: boolean) => {
     if (checked) {
-      setSelectedAudiences([...selectedAudiences, audienceId]);
+      setSelectedAudiences([...selectedAudiences, audienceId])
     } else {
-      setSelectedAudiences(selectedAudiences.filter(id => id !== audienceId));
+      setSelectedAudiences(selectedAudiences.filter(id => id !== audienceId))
     }
-  };
-  
+  }
+
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
@@ -84,7 +84,7 @@ export function AudienceList() {
           <Input
             placeholder="Search audiences..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -110,7 +110,7 @@ export function AudienceList() {
           </SelectContent>
         </Select>
       </div>
-      
+
       {/* Bulk Actions */}
       {selectedAudiences.length > 0 && (
         <div className="bg-muted/50 p-3 rounded-lg flex items-center justify-between">
@@ -129,7 +129,7 @@ export function AudienceList() {
           </div>
         </div>
       )}
-      
+
       {/* Audience Table */}
       <div className="border rounded-lg">
         <Table>
@@ -137,7 +137,9 @@ export function AudienceList() {
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox
-                  checked={selectedAudiences.length === data?.items?.length && data?.items?.length > 0}
+                  checked={
+                    selectedAudiences.length === data?.items?.length && data?.items?.length > 0
+                  }
                   onCheckedChange={handleSelectAll}
                 />
               </TableHead>
@@ -155,7 +157,9 @@ export function AudienceList() {
                 <TableCell>
                   <Checkbox
                     checked={selectedAudiences.includes(audience.id)}
-                    onCheckedChange={(checked) => handleSelectAudience(audience.id, checked as boolean)}
+                    onCheckedChange={checked =>
+                      handleSelectAudience(audience.id, checked as boolean)
+                    }
                   />
                 </TableCell>
                 <TableCell>
@@ -186,9 +190,7 @@ export function AudienceList() {
                     </Badge>
                   </div>
                 </TableCell>
-                <TableCell>
-                  {format(new Date(audience.created_at), 'MMM d, yyyy')}
-                </TableCell>
+                <TableCell>{format(new Date(audience.created_at), 'MMM d, yyyy')}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -198,7 +200,11 @@ export function AudienceList() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => router.push(`/civicflow/communications/audiences/${audience.id}`)}>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/civicflow/communications/audiences/${audience.id}`)
+                        }
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
@@ -228,5 +234,5 @@ export function AudienceList() {
         </Table>
       </div>
     </div>
-  );
+  )
 }

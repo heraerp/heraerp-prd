@@ -13,9 +13,9 @@
   // Editor Configuration
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": true,
-    "source.addMissingImports": true
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit",
+    "source.addMissingImports": "explicit"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   

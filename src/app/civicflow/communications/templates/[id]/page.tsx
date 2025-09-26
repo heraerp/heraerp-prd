@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,8 +22,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 import {
   ArrowLeft,
   Mail,
@@ -37,83 +37,83 @@ import {
   ChevronDown,
   Code,
   Eye,
-  History,
-} from 'lucide-react';
-import { DemoBanner } from '@/components/communications/DemoBanner';
-import { TestSendModal } from '@/components/communications/TestSendModal';
-import { NewTemplateModal } from '@/components/communications/NewTemplateModal';
-import { 
-  useTemplate, 
+  History
+} from 'lucide-react'
+import { DemoBanner } from '@/components/communications/DemoBanner'
+import { TestSendModal } from '@/components/communications/TestSendModal'
+import { NewTemplateModal } from '@/components/communications/NewTemplateModal'
+import {
+  useTemplate,
   useUpdateTemplate,
   useTestSend,
-  useExportComms 
-} from '@/hooks/use-communications';
-import { isDemoMode } from '@/lib/demo-guard';
-import { Loading } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { EmptyState } from '@/components/states/EmptyState';
-import { useToast } from '@/components/ui/use-toast';
-import { format } from 'date-fns';
+  useExportComms
+} from '@/hooks/use-communications'
+import { isDemoMode } from '@/lib/demo-guard'
+import { Loading } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { EmptyState } from '@/components/states/EmptyState'
+import { useToast } from '@/components/ui/use-toast'
+import { format } from 'date-fns'
 
 export default function TemplateDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const { toast } = useToast();
-  const { currentOrgId } = useOrgStore();
-  const isDemo = isDemoMode(currentOrgId);
-  const templateId = params.id as string;
-  
-  const [showTestModal, setShowTestModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
-  const [previewMode, setPreviewMode] = useState<'html' | 'text'>('html');
-  
+  const params = useParams()
+  const router = useRouter()
+  const { toast } = useToast()
+  const { currentOrgId } = useOrgStore()
+  const isDemo = isDemoMode(currentOrgId)
+  const templateId = params.id as string
+
+  const [showTestModal, setShowTestModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false)
+  const [previewMode, setPreviewMode] = useState<'html' | 'text'>('html')
+
   // Queries and mutations
-  const { data: template, isLoading, error, refetch } = useTemplate(templateId);
-  const updateMutation = useUpdateTemplate();
-  const testSendMutation = useTestSend();
-  const exportMutation = useExportComms();
-  
+  const { data: template, isLoading, error, refetch } = useTemplate(templateId)
+  const updateMutation = useUpdateTemplate()
+  const testSendMutation = useTestSend()
+  const exportMutation = useExportComms()
+
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const handleDeactivate = () => {
     updateMutation.mutate(
-      { 
-        id: templateId, 
-        is_active: !template?.is_active 
+      {
+        id: templateId,
+        is_active: !template?.is_active
       },
       {
         onSuccess: () => {
-          toast({ 
-            title: `Template ${template?.is_active ? 'deactivated' : 'activated'} successfully` 
-          });
-          setShowDeactivateDialog(false);
-          refetch();
+          toast({
+            title: `Template ${template?.is_active ? 'deactivated' : 'activated'} successfully`
+          })
+          setShowDeactivateDialog(false)
+          refetch()
         },
         onError: () => {
-          toast({ 
-            title: 'Failed to update template', 
-            variant: 'destructive' 
-          });
+          toast({
+            title: 'Failed to update template',
+            variant: 'destructive'
+          })
         }
       }
-    );
-  };
-  
+    )
+  }
+
   const handleClone = () => {
-    if (!template) return;
-    
+    if (!template) return
+
     // Clone logic would create a new template with same properties
     const cloneData = {
       entity_name: `${template.entity_name} (Copy)`,
@@ -122,76 +122,73 @@ export default function TemplateDetailPage() {
       body_html: template.body_html,
       body_text: template.body_text,
       variables: template.variables,
-      is_active: false, // Start as inactive
-    };
-    
+      is_active: false // Start as inactive
+    }
+
     // This would use createTemplate mutation, but for now just show toast
-    toast({ title: 'Template cloned successfully' });
-  };
-  
+    toast({ title: 'Template cloned successfully' })
+  }
+
   const handleTestSend = (recipients: string[]) => {
     testSendMutation.mutate(
       {
         template_id: templateId,
         recipients,
-        test_mode: true,
+        test_mode: true
       },
       {
         onSuccess: () => {
-          setShowTestModal(false);
+          setShowTestModal(false)
         }
       }
-    );
-  };
-  
+    )
+  }
+
   const handleExport = () => {
     exportMutation.mutate({
       kind: 'template',
       format: 'pdf',
       template_id: templateId,
       organization_id: currentOrgId,
-      include_demo_watermark: isDemo,
-    });
-  };
-  
+      include_demo_watermark: isDemo
+    })
+  }
+
   const handlePrint = () => {
-    window.print();
-  };
-  
+    window.print()
+  }
+
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
         <Loading />
       </div>
-    );
+    )
   }
-  
+
   if (error) {
     return (
       <div className="container mx-auto py-6">
-        <ErrorState 
-          message="Failed to load template" 
-          onRetry={() => refetch()} 
-        />
+        <ErrorState message="Failed to load template" onRetry={() => refetch()} />
       </div>
-    );
+    )
   }
-  
+
   if (!template) {
     return (
       <div className="container mx-auto py-6">
-        <EmptyState 
+        <EmptyState
           title="Template not found"
           description="The requested template could not be found."
         />
       </div>
-    );
+    )
   }
-  
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {isDemo && <DemoBanner />}
-      
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
@@ -211,10 +208,7 @@ export default function TemplateDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            onClick={() => setShowTestModal(true)}
-            disabled={isDemo && !template.is_active}
-          >
+          <Button onClick={() => setShowTestModal(true)} disabled={isDemo && !template.is_active}>
             <Play className="h-4 w-4 mr-2" />
             Test Send
           </Button>
@@ -235,7 +229,8 @@ export default function TemplateDetailPage() {
                   {template.is_active ? 'Deactivate' : 'Activate'} Template
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to {template.is_active ? 'deactivate' : 'activate'} this template?
+                  Are you sure you want to {template.is_active ? 'deactivate' : 'activate'} this
+                  template?
                   {template.is_active && ' Deactivated templates cannot be used in new campaigns.'}
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -270,9 +265,9 @@ export default function TemplateDetailPage() {
           </DropdownMenu>
         </div>
       </div>
-      
+
       <Separator />
-      
+
       {/* Template Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
@@ -310,7 +305,7 @@ export default function TemplateDetailPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Variables */}
         <Card>
           <CardHeader>
@@ -333,7 +328,7 @@ export default function TemplateDetailPage() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Version History */}
         <Card>
           <CardHeader>
@@ -360,7 +355,7 @@ export default function TemplateDetailPage() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Subject Line (Email only) */}
       {template.channel === 'email' && template.subject && (
         <Card>
@@ -372,7 +367,7 @@ export default function TemplateDetailPage() {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Preview */}
       <Card>
         <CardHeader>
@@ -404,21 +399,19 @@ export default function TemplateDetailPage() {
         <CardContent>
           <div className="border rounded-lg p-4 max-h-96 overflow-auto bg-background">
             {previewMode === 'html' && template.body_html ? (
-              <div 
+              <div
                 dangerouslySetInnerHTML={{ __html: template.body_html }}
                 className="prose prose-sm max-w-none"
               />
             ) : template.body_text ? (
-              <pre className="whitespace-pre-wrap text-sm font-mono">
-                {template.body_text}
-              </pre>
+              <pre className="whitespace-pre-wrap text-sm font-mono">{template.body_text}</pre>
             ) : (
               <p className="text-muted-foreground text-sm">No content available</p>
             )}
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Modals */}
       <TestSendModal
         open={showTestModal}
@@ -427,17 +420,17 @@ export default function TemplateDetailPage() {
         onSend={handleTestSend}
         isDemo={isDemo}
       />
-      
+
       <NewTemplateModal
         open={showEditModal}
         onOpenChange={setShowEditModal}
         editTemplate={template}
         onSuccess={() => {
-          toast({ title: 'Template updated successfully' });
-          setShowEditModal(false);
-          refetch();
+          toast({ title: 'Template updated successfully' })
+          setShowEditModal(false)
+          refetch()
         }}
       />
     </div>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState } from 'react'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Mail,
   Linkedin,
@@ -17,24 +17,24 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  ArrowUpRight,
-} from 'lucide-react';
-import { DemoBanner } from '@/components/communications/DemoBanner';
-import { ConnectorCard } from '@/components/integrations/ConnectorCard';
-import { MappingModal } from '@/components/integrations/MappingModal';
-import { useConnectors } from '@/hooks/use-integrations';
-import { isDemoMode } from '@/lib/demo-guard';
-import { Loading } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import type { VendorType, Connector } from '@/types/integrations';
+  ArrowUpRight
+} from 'lucide-react'
+import { DemoBanner } from '@/components/communications/DemoBanner'
+import { ConnectorCard } from '@/components/integrations/ConnectorCard'
+import { MappingModal } from '@/components/integrations/MappingModal'
+import { useConnectors } from '@/hooks/use-integrations'
+import { isDemoMode } from '@/lib/demo-guard'
+import { Loading } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import type { VendorType, Connector } from '@/types/integrations'
 
 const CONNECTORS: Array<{
-  vendor: VendorType;
-  name: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  features: string[];
-  color: string;
+  vendor: VendorType
+  name: string
+  description: string
+  icon: React.ComponentType<{ className?: string }>
+  features: string[]
+  color: string
 }> = [
   {
     vendor: 'mailchimp',
@@ -42,7 +42,7 @@ const CONNECTORS: Array<{
     description: 'Email marketing automation and audience management',
     icon: Mail,
     features: ['Campaigns', 'Lists & Segments', 'Email Analytics', 'Subscriber Activity'],
-    color: 'bg-yellow-500',
+    color: 'bg-yellow-500'
   },
   {
     vendor: 'linkedin',
@@ -50,7 +50,7 @@ const CONNECTORS: Array<{
     description: 'Professional networking and social media engagement',
     icon: Linkedin,
     features: ['Organization Posts', 'Post Analytics', 'Follower Insights', 'Engagement Metrics'],
-    color: 'bg-blue-600',
+    color: 'bg-blue-600'
   },
   {
     vendor: 'bluesky',
@@ -58,7 +58,7 @@ const CONNECTORS: Array<{
     description: 'Decentralized social media platform',
     icon: Globe,
     features: ['Posts & Threads', 'Engagement Tracking', 'Follower Growth', 'Content Analytics'],
-    color: 'bg-sky-500',
+    color: 'bg-sky-500'
   },
   {
     vendor: 'eventbrite',
@@ -66,7 +66,7 @@ const CONNECTORS: Array<{
     description: 'Event management and ticketing platform',
     icon: Calendar,
     features: ['Event Creation', 'Attendee Management', 'Ticket Sales', 'Check-in Tracking'],
-    color: 'bg-orange-500',
+    color: 'bg-orange-500'
   },
   {
     vendor: 'office365',
@@ -74,7 +74,7 @@ const CONNECTORS: Array<{
     description: 'Email and calendar integration for Microsoft accounts',
     icon: FileText,
     features: ['Email Sync', 'Calendar Events', 'Contact Import', 'Meeting Tracking'],
-    color: 'bg-blue-500',
+    color: 'bg-blue-500'
   },
   {
     vendor: 'google',
@@ -82,64 +82,62 @@ const CONNECTORS: Array<{
     description: 'Email and calendar integration for Google accounts',
     icon: FileText,
     features: ['Gmail Sync', 'Calendar Events', 'Contact Import', 'Meeting Tracking'],
-    color: 'bg-green-500',
-  },
-];
+    color: 'bg-green-500'
+  }
+]
 
 export default function IntegrationsPage() {
-  const { currentOrgId } = useOrgStore();
-  const isDemo = isDemoMode(currentOrgId);
-  const [activeTab, setActiveTab] = useState('all');
-  const [showMappingModal, setShowMappingModal] = useState(false);
-  const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null);
+  const { currentOrgId } = useOrgStore()
+  const isDemo = isDemoMode(currentOrgId)
+  const [activeTab, setActiveTab] = useState('all')
+  const [showMappingModal, setShowMappingModal] = useState(false)
+  const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
 
-  const { data: connectorsData, isLoading, error, refetch } = useConnectors();
+  const { data: connectorsData, isLoading, error, refetch } = useConnectors()
 
-  const connectors = connectorsData?.items || [];
-  const connectedCount = connectors.filter(c => c.status === 'active').length;
-  const syncingCount = connectors.filter(c => c.status === 'active' && c.sync_schedule).length;
+  const connectors = connectorsData?.items || []
+  const connectedCount = connectors.filter(c => c.status === 'active').length
+  const syncingCount = connectors.filter(c => c.status === 'active' && c.sync_schedule).length
 
   const getConnectorInfo = (vendor: VendorType) => {
-    return CONNECTORS.find(c => c.vendor === vendor);
-  };
+    return CONNECTORS.find(c => c.vendor === vendor)
+  }
 
   const handleConfigureMapping = (connector: Connector) => {
-    setSelectedConnector(connector);
-    setShowMappingModal(true);
-  };
+    setSelectedConnector(connector)
+    setShowMappingModal(true)
+  }
 
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
         <Loading />
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
       <div className="container mx-auto py-6">
-        <ErrorState 
-          message="Failed to load integrations" 
-          onRetry={() => refetch()} 
-        />
+        <ErrorState message="Failed to load integrations" onRetry={() => refetch()} />
       </div>
-    );
+    )
   }
 
-  const filteredConnectors = activeTab === 'all' 
-    ? CONNECTORS 
-    : CONNECTORS.filter(c => {
-        const connector = connectors.find(conn => conn.vendor === c.vendor);
-        return activeTab === 'connected' 
-          ? connector?.status === 'active'
-          : !connector || connector.status !== 'active';
-      });
+  const filteredConnectors =
+    activeTab === 'all'
+      ? CONNECTORS
+      : CONNECTORS.filter(c => {
+          const connector = connectors.find(conn => conn.vendor === c.vendor)
+          return activeTab === 'connected'
+            ? connector?.status === 'active'
+            : !connector || connector.status !== 'active'
+        })
 
   return (
     <div className="container mx-auto py-6 space-y-6">
       {isDemo && <DemoBanner />}
-      
+
       {/* Header */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -159,9 +157,7 @@ export default function IntegrationsPage() {
         <div className="grid grid-cols-3 gap-4">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Connected
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Connected</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
@@ -171,7 +167,7 @@ export default function IntegrationsPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -186,12 +182,10 @@ export default function IntegrationsPage() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Last Sync
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Last Sync</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
@@ -234,9 +228,9 @@ export default function IntegrationsPage() {
 
         <TabsContent value={activeTab} className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredConnectors.map((connectorInfo) => {
-              const connector = connectors.find(c => c.vendor === connectorInfo.vendor);
-              
+            {filteredConnectors.map(connectorInfo => {
+              const connector = connectors.find(c => c.vendor === connectorInfo.vendor)
+
               return (
                 <ConnectorCard
                   key={connectorInfo.vendor}
@@ -250,7 +244,7 @@ export default function IntegrationsPage() {
                   isDemo={isDemo}
                   onConfigureMapping={() => connector && handleConfigureMapping(connector)}
                 />
-              );
+              )
             })}
           </div>
         </TabsContent>
@@ -273,24 +267,36 @@ export default function IntegrationsPage() {
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <span className="text-muted-foreground">•</span>
-              <span><strong>Messages & Posts</strong> are imported as communication records for unified tracking</span>
+              <span>
+                <strong>Messages & Posts</strong> are imported as communication records for unified
+                tracking
+              </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-muted-foreground">•</span>
-              <span><strong>Events & Registrations</strong> sync to your programs and constituent records</span>
+              <span>
+                <strong>Events & Registrations</strong> sync to your programs and constituent
+                records
+              </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-muted-foreground">•</span>
-              <span><strong>Analytics & Metrics</strong> provide insights across all channels in one place</span>
+              <span>
+                <strong>Analytics & Metrics</strong> provide insights across all channels in one
+                place
+              </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-muted-foreground">•</span>
-              <span><strong>Automatic Updates</strong> keep your data fresh with scheduled syncs</span>
+              <span>
+                <strong>Automatic Updates</strong> keep your data fresh with scheduled syncs
+              </span>
             </li>
           </ul>
           {isDemo && (
             <p className="mt-4 text-sm text-orange-600 dark:text-orange-400">
-              <strong>Demo Mode:</strong> Integrations simulate connections and generate sample data for testing.
+              <strong>Demo Mode:</strong> Integrations simulate connections and generate sample data
+              for testing.
             </p>
           )}
         </CardContent>
@@ -305,5 +311,5 @@ export default function IntegrationsPage() {
         />
       )}
     </div>
-  );
+  )
 }

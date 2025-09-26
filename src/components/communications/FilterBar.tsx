@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Search, X } from 'lucide-react';
+  SelectValue
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
 
 interface FilterBarProps {
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
-  activeTab: string;
-  onReset?: () => void;
+  searchQuery: string
+  onSearchChange: (value: string) => void
+  activeTab: string
+  onReset?: () => void
 }
 
 export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: FilterBarProps) {
@@ -48,7 +48,7 @@ export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: F
               </SelectContent>
             </Select>
           </>
-        );
+        )
       case 'templates':
         return (
           <>
@@ -74,7 +74,7 @@ export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: F
               </SelectContent>
             </Select>
           </>
-        );
+        )
       case 'audiences':
         return (
           <>
@@ -100,11 +100,11 @@ export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: F
               </SelectContent>
             </Select>
           </>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
     <div className="flex items-center gap-4">
@@ -113,7 +113,7 @@ export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: F
         <Input
           placeholder={`Search ${activeTab}...`}
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={e => onSearchChange(e.target.value)}
           className="pl-10"
         />
       </div>
@@ -124,5 +124,5 @@ export function FilterBar({ searchQuery, onSearchChange, activeTab, onReset }: F
         </Button>
       )}
     </div>
-  );
+  )
 }

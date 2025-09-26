@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useOrgStore } from '@/state/org';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useOrgStore } from '@/state/org'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Separator } from '@/components/ui/separator'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,8 +23,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 import {
   ArrowLeft,
   Mail,
@@ -42,160 +42,156 @@ import {
   Eye,
   MousePointer,
   TrendingUp,
-  Activity,
-} from 'lucide-react';
-import { DemoBanner } from '@/components/communications/DemoBanner';
-import { 
-  useCampaign, 
-  useCampaignSchedule, 
-  useCampaignPause, 
-  useCampaignResume, 
+  Activity
+} from 'lucide-react'
+import { DemoBanner } from '@/components/communications/DemoBanner'
+import {
+  useCampaign,
+  useCampaignSchedule,
+  useCampaignPause,
+  useCampaignResume,
   useCampaignCancel,
-  useExportComms 
-} from '@/hooks/use-communications';
-import { isDemoMode } from '@/lib/demo-guard';
-import { Loading } from '@/components/states/Loading';
-import { ErrorState } from '@/components/states/ErrorState';
-import { EmptyState } from '@/components/states/EmptyState';
-import { useToast } from '@/components/ui/use-toast';
-import { format } from 'date-fns';
+  useExportComms
+} from '@/hooks/use-communications'
+import { isDemoMode } from '@/lib/demo-guard'
+import { Loading } from '@/components/states/Loading'
+import { ErrorState } from '@/components/states/ErrorState'
+import { EmptyState } from '@/components/states/EmptyState'
+import { useToast } from '@/components/ui/use-toast'
+import { format } from 'date-fns'
 
 export default function CampaignDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const { toast } = useToast();
-  const { currentOrgId } = useOrgStore();
-  const isDemo = isDemoMode(currentOrgId);
-  const campaignId = params.id as string;
-  
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
-  
+  const params = useParams()
+  const router = useRouter()
+  const { toast } = useToast()
+  const { currentOrgId } = useOrgStore()
+  const isDemo = isDemoMode(currentOrgId)
+  const campaignId = params.id as string
+
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
+
   // Queries and mutations
-  const { data: campaign, isLoading, error, refetch } = useCampaign(campaignId);
-  const scheduleMutation = useCampaignSchedule();
-  const pauseMutation = useCampaignPause();
-  const resumeMutation = useCampaignResume();
-  const cancelMutation = useCampaignCancel();
-  const exportMutation = useExportComms();
-  
+  const { data: campaign, isLoading, error, refetch } = useCampaign(campaignId)
+  const scheduleMutation = useCampaignSchedule()
+  const pauseMutation = useCampaignPause()
+  const resumeMutation = useCampaignResume()
+  const cancelMutation = useCampaignCancel()
+  const exportMutation = useExportComms()
+
   const getChannelIcon = (channel: string) => {
     switch (channel) {
       case 'email':
-        return <Mail className="h-4 w-4" />;
+        return <Mail className="h-4 w-4" />
       case 'sms':
-        return <MessageSquare className="h-4 w-4" />;
+        return <MessageSquare className="h-4 w-4" />
       case 'webhook':
-        return <Globe className="h-4 w-4" />;
+        return <Globe className="h-4 w-4" />
       default:
-        return null;
+        return null
     }
-  };
-  
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft':
-        return 'secondary';
+        return 'secondary'
       case 'scheduled':
-        return 'default';
+        return 'default'
       case 'running':
-        return 'default';
+        return 'default'
       case 'paused':
-        return 'outline';
+        return 'outline'
       case 'completed':
-        return 'secondary';
+        return 'secondary'
       case 'cancelled':
-        return 'destructive';
+        return 'destructive'
       default:
-        return 'secondary';
+        return 'secondary'
     }
-  };
-  
+  }
+
   const handleAction = async (action: 'schedule' | 'pause' | 'resume' | 'cancel') => {
     const mutations = {
       schedule: scheduleMutation,
       pause: pauseMutation,
       resume: resumeMutation,
-      cancel: cancelMutation,
-    };
-    
-    const mutation = mutations[action];
+      cancel: cancelMutation
+    }
+
+    const mutation = mutations[action]
     mutation.mutate(
       { campaign_id: campaignId },
       {
         onSuccess: () => {
-          toast({ title: `Campaign ${action}d successfully` });
-          refetch();
+          toast({ title: `Campaign ${action}d successfully` })
+          refetch()
         },
         onError: () => {
-          toast({ 
-            title: `Failed to ${action} campaign`, 
-            variant: 'destructive' 
-          });
+          toast({
+            title: `Failed to ${action} campaign`,
+            variant: 'destructive'
+          })
         }
       }
-    );
-  };
-  
+    )
+  }
+
   const handleExport = () => {
     exportMutation.mutate({
       kind: 'campaign',
       format: 'pdf',
       campaign_id: campaignId,
       organization_id: currentOrgId,
-      include_demo_watermark: isDemo,
-    });
-  };
-  
+      include_demo_watermark: isDemo
+    })
+  }
+
   const handlePrint = () => {
-    window.print();
-  };
-  
+    window.print()
+  }
+
   if (isLoading) {
     return (
       <div className="container mx-auto py-6">
         <Loading />
       </div>
-    );
+    )
   }
-  
+
   if (error) {
     return (
       <div className="container mx-auto py-6">
-        <ErrorState 
-          message="Failed to load campaign" 
-          onRetry={() => refetch()} 
-        />
+        <ErrorState message="Failed to load campaign" onRetry={() => refetch()} />
       </div>
-    );
+    )
   }
-  
+
   if (!campaign) {
     return (
       <div className="container mx-auto py-6">
-        <EmptyState 
+        <EmptyState
           title="Campaign not found"
           description="The requested campaign could not be found."
         />
       </div>
-    );
+    )
   }
-  
-  const openRate = campaign.metrics.delivered > 0
-    ? (campaign.metrics.opened / campaign.metrics.delivered) * 100
-    : 0;
-    
-  const clickRate = campaign.metrics.opened > 0
-    ? (campaign.metrics.clicked / campaign.metrics.opened) * 100
-    : 0;
-    
-  const bounceRate = campaign.metrics.sent > 0
-    ? (campaign.metrics.bounced / campaign.metrics.sent) * 100
-    : 0;
-  
+
+  const openRate =
+    campaign.metrics.delivered > 0
+      ? (campaign.metrics.opened / campaign.metrics.delivered) * 100
+      : 0
+
+  const clickRate =
+    campaign.metrics.opened > 0 ? (campaign.metrics.clicked / campaign.metrics.opened) * 100 : 0
+
+  const bounceRate =
+    campaign.metrics.sent > 0 ? (campaign.metrics.bounced / campaign.metrics.sent) * 100 : 0
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {isDemo && <DemoBanner />}
-      
+
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
@@ -208,9 +204,7 @@ export default function CampaignDetailPage() {
               {getChannelIcon(campaign.channel)}
               <span className="capitalize">{campaign.channel}</span>
             </div>
-            <Badge variant={getStatusColor(campaign.status)}>
-              {campaign.status}
-            </Badge>
+            <Badge variant={getStatusColor(campaign.status)}>{campaign.status}</Badge>
             {campaign.schedule_at && (
               <div className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
@@ -261,7 +255,7 @@ export default function CampaignDetailPage() {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction 
+                  <AlertDialogAction
                     onClick={() => handleAction('cancel')}
                     className="bg-destructive text-destructive-foreground"
                   >
@@ -290,9 +284,9 @@ export default function CampaignDetailPage() {
           </DropdownMenu>
         </div>
       </div>
-      
+
       <Separator />
-      
+
       {/* Overview Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
@@ -320,7 +314,7 @@ export default function CampaignDetailPage() {
                 <div className="space-y-1">
                   <span className="text-sm text-muted-foreground">Tags</span>
                   <div className="flex flex-wrap gap-1">
-                    {campaign.tags.map((tag) => (
+                    {campaign.tags.map(tag => (
                       <Badge key={tag} variant="outline" className="text-xs">
                         {tag}
                       </Badge>
@@ -344,7 +338,7 @@ export default function CampaignDetailPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         {campaign.status !== 'draft' && (
           <Card>
             <CardHeader>
@@ -354,28 +348,34 @@ export default function CampaignDetailPage() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Progress</span>
-                  <span>{campaign.metrics.sent} / {campaign.audience_size}</span>
+                  <span>
+                    {campaign.metrics.sent} / {campaign.audience_size}
+                  </span>
                 </div>
-                <Progress 
-                  value={(campaign.metrics.sent / campaign.audience_size) * 100} 
+                <Progress
+                  value={(campaign.metrics.sent / campaign.audience_size) * 100}
                   className="h-2"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">Delivered</span>
-                  <p className="text-lg font-semibold">{campaign.metrics.delivered.toLocaleString()}</p>
+                  <p className="text-lg font-semibold">
+                    {campaign.metrics.delivered.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Bounced</span>
-                  <p className="text-lg font-semibold">{campaign.metrics.bounced.toLocaleString()}</p>
+                  <p className="text-lg font-semibold">
+                    {campaign.metrics.bounced.toLocaleString()}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
       </div>
-      
+
       {/* Performance Metrics */}
       {campaign.status !== 'draft' && (
         <Card>
@@ -399,7 +399,7 @@ export default function CampaignDetailPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MousePointer className="h-3 w-3" />
@@ -412,7 +412,7 @@ export default function CampaignDetailPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <TrendingUp className="h-3 w-3" />
@@ -425,7 +425,7 @@ export default function CampaignDetailPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-3 w-3" />
@@ -440,7 +440,7 @@ export default function CampaignDetailPage() {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Timeline */}
       <Card>
         <CardHeader>
@@ -477,5 +477,5 @@ export default function CampaignDetailPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Database, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { Database, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,117 +11,110 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useToast } from '@/components/ui/use-toast';
-import { useOrgStore } from '@/state/org';
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
+import { useToast } from '@/components/ui/use-toast'
+import { useOrgStore } from '@/state/org'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 export function SeedDataButton() {
-  const { currentOrgId } = useOrgStore();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showClearDialog, setShowClearDialog] = useState(false);
+  const { currentOrgId } = useOrgStore()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+  const [showClearDialog, setShowClearDialog] = useState(false)
 
   // Only show for CivicFlow demo organization
   if (currentOrgId !== CIVICFLOW_ORG_ID) {
-    return null;
+    return null
   }
 
   const handleSeed = async () => {
     try {
-      setIsLoading(true);
-      
+      setIsLoading(true)
+
       const response = await fetch('/api/civicflow/seed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': currentOrgId,
+          'X-Organization-Id': currentOrgId
         },
-        body: JSON.stringify({ action: 'seed' }),
-      });
+        body: JSON.stringify({ action: 'seed' })
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create seed data');
+        throw new Error(data.error || 'Failed to create seed data')
       }
 
       toast({
         title: 'Success',
-        description: `Created ${data.cases_created || 0} demo cases`,
-      });
+        description: `Created ${data.cases_created || 0} demo cases`
+      })
 
       // Reload the page to show new data
-      window.location.reload();
-      
+      window.location.reload()
     } catch (error) {
-      console.error('Seed error:', error);
+      console.error('Seed error:', error)
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create seed data',
-        variant: 'destructive',
-      });
+        variant: 'destructive'
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleClear = async () => {
     try {
-      setIsLoading(true);
-      
+      setIsLoading(true)
+
       const response = await fetch('/api/civicflow/seed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Organization-Id': currentOrgId,
+          'X-Organization-Id': currentOrgId
         },
-        body: JSON.stringify({ action: 'clear' }),
-      });
+        body: JSON.stringify({ action: 'clear' })
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to clear data');
+        throw new Error(data.error || 'Failed to clear data')
       }
 
       toast({
         title: 'Success',
-        description: 'All cases cleared successfully',
-      });
+        description: 'All cases cleared successfully'
+      })
 
-      setShowClearDialog(false);
-      
+      setShowClearDialog(false)
+
       // Reload the page to show empty state
-      window.location.reload();
-      
+      window.location.reload()
     } catch (error) {
-      console.error('Clear error:', error);
+      console.error('Clear error:', error)
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to clear data',
-        variant: 'destructive',
-      });
+        variant: 'destructive'
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSeed}
-          disabled={isLoading}
-        >
+        <Button variant="outline" size="sm" onClick={handleSeed} disabled={isLoading}>
           <Database className="mr-2 h-4 w-4" />
           {isLoading ? 'Creating...' : 'Create Demo Data'}
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -139,8 +132,8 @@ export function SeedDataButton() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all cases in the CivicFlow demo organization. 
-              This action cannot be undone.
+              This will permanently delete all cases in the CivicFlow demo organization. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -155,5 +148,5 @@ export function SeedDataButton() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
+  )
 }

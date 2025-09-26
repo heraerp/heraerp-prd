@@ -1,48 +1,53 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import type { EngagementStage } from '@/types/engagement';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import type { EngagementStage } from '@/types/engagement'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID;
-    
+    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID
+
     // Fetch engagement stages
     const { data: stages, error } = await supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data(*)
-      `)
+      `
+      )
       .eq('organization_id', orgId)
       .eq('entity_type', 'engagement_stage')
-      .order('created_at', { ascending: true });
-    
+      .order('created_at', { ascending: true })
+
     if (error) {
-      throw error;
+      throw error
     }
-    
+
     // Transform to EngagementStage type
-    const transformedStages: EngagementStage[] = (stages || []).map((stage) => {
+    const transformedStages: EngagementStage[] = (stages || []).map(stage => {
       // Extract dynamic data
-      const dynamicData = stage.core_dynamic_data || [];
+      const dynamicData = stage.core_dynamic_data || []
       const getFieldValue = (fieldName: string, type: 'text' | 'number' | 'json' = 'text') => {
-        const field = dynamicData.find((d: any) => d.field_name === fieldName);
-        if (!field) return undefined;
+        const field = dynamicData.find((d: any) => d.field_name === fieldName)
+        if (!field) return undefined
         switch (type) {
-          case 'number': return field.field_value_number;
-          case 'json': return field.field_value_json;
-          default: return field.field_value_text;
+          case 'number':
+            return field.field_value_number
+          case 'json':
+            return field.field_value_json
+          default:
+            return field.field_value_text
         }
-      };
-      
+      }
+
       return {
         id: stage.id,
         entity_code: stage.entity_code,
@@ -57,19 +62,16 @@ export async function GET(request: NextRequest) {
         scoring_rules: getFieldValue('scoring_rules', 'json') || [],
         status: getFieldValue('status') || 'active',
         created_at: stage.created_at,
-        updated_at: stage.updated_at,
-      };
-    });
-    
+        updated_at: stage.updated_at
+      }
+    })
+
     // Sort by ordinal
-    transformedStages.sort((a, b) => a.ordinal - b.ordinal);
-    
-    return NextResponse.json(transformedStages);
+    transformedStages.sort((a, b) => a.ordinal - b.ordinal)
+
+    return NextResponse.json(transformedStages)
   } catch (error) {
-    console.error('Error fetching engagement stages:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch engagement stages' },
-      { status: 500 }
-    );
+    console.error('Error fetching engagement stages:', error)
+    return NextResponse.json({ error: 'Failed to fetch engagement stages' }, { status: 500 })
   }
 }

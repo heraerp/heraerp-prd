@@ -1,27 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import type { Audience } from '@/types/communications';
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+import type { Audience } from '@/types/communications'
 
-const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77';
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
 export async function GET(request: NextRequest) {
   try {
-    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID;
-    const searchParams = request.nextUrl.searchParams;
-    
-    const q = searchParams.get('q');
-    const entity_type = searchParams.getAll('entity_type');
-    const consent_policy = searchParams.get('consent_policy');
-    const page = parseInt(searchParams.get('page') || '1');
-    const page_size = parseInt(searchParams.get('page_size') || '20');
-    const offset = (page - 1) * page_size;
-    
+    const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID
+    const searchParams = request.nextUrl.searchParams
+
+    const q = searchParams.get('q')
+    const entity_type = searchParams.getAll('entity_type')
+    const consent_policy = searchParams.get('consent_policy')
+    const page = parseInt(searchParams.get('page') || '1')
+    const page_size = parseInt(searchParams.get('page_size') || '20')
+    const offset = (page - 1) * page_size
+
     // Build query
     let query = supabase
       .from('core_entities')
@@ -29,54 +29,52 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', orgId)
       .eq('entity_type', 'comm_audience')
       .order('created_at', { ascending: false })
-      .range(offset, offset + page_size - 1);
-    
+      .range(offset, offset + page_size - 1)
+
     // Apply filters
     if (q) {
-      query = query.or(`entity_name.ilike.%${q}%`);
+      query = query.or(`entity_name.ilike.%${q}%`)
     }
-    
-    const { data: entities, error, count } = await query;
-    
+
+    const { data: entities, error, count } = await query
+
     if (error) {
-      throw error;
+      throw error
     }
-    
+
     // Transform to Audience type
-    const audiences: Audience[] = entities?.map((entity: any) => {
-      // Extract dynamic fields
-      const dynamicFields = entity.core_dynamic_data?.reduce((acc: any, field: any) => {
-        acc[field.field_name] = field.field_value_text || 
-                                field.field_value_number || 
-                                field.field_value_json;
-        return acc;
-      }, {}) || {};
-      
-      return {
-        id: entity.id,
-        entity_code: entity.entity_code,
-        entity_name: entity.entity_name,
-        smart_code: entity.smart_code,
-        definition: dynamicFields.definition || {},
-        size_estimate: dynamicFields.size_estimate || 0,
-        consent_policy: dynamicFields.consent_policy || 'opt_in',
-        tags: dynamicFields.tags || [],
-        created_at: entity.created_at,
-        updated_at: entity.updated_at,
-      };
-    }) || [];
-    
+    const audiences: Audience[] =
+      entities?.map((entity: any) => {
+        // Extract dynamic fields
+        const dynamicFields =
+          entity.core_dynamic_data?.reduce((acc: any, field: any) => {
+            acc[field.field_name] =
+              field.field_value_text || field.field_value_number || field.field_value_json
+            return acc
+          }, {}) || {}
+
+        return {
+          id: entity.id,
+          entity_code: entity.entity_code,
+          entity_name: entity.entity_name,
+          smart_code: entity.smart_code,
+          definition: dynamicFields.definition || {},
+          size_estimate: dynamicFields.size_estimate || 0,
+          consent_policy: dynamicFields.consent_policy || 'opt_in',
+          tags: dynamicFields.tags || [],
+          created_at: entity.created_at,
+          updated_at: entity.updated_at
+        }
+      }) || []
+
     return NextResponse.json({
       items: audiences,
       total: count || 0,
       page,
-      page_size,
-    });
+      page_size
+    })
   } catch (error) {
-    console.error('Error fetching audiences:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch audiences' },
-      { status: 500 }
-    );
+    console.error('Error fetching audiences:', error)
+    return NextResponse.json({ error: 'Failed to fetch audiences' }, { status: 500 })
   }
 }

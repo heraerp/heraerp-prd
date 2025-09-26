@@ -11,7 +11,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
+  FormDescription
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -20,7 +20,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Badge } from '@/components/ui/badge'
@@ -36,7 +36,7 @@ const formSchema = z.object({
   description: z.string().max(2000).optional(),
   tags: z.array(z.string()).optional(),
   program_id: z.string().optional(),
-  subject_id: z.string().optional(),
+  subject_id: z.string().optional()
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -55,8 +55,8 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
     defaultValues: {
       priority: 'medium',
       rag: 'G',
-      tags: [],
-    },
+      tags: []
+    }
   })
 
   const handleSubmit = async (data: FormData) => {
@@ -81,7 +81,10 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
 
   const handleRemoveTag = (tagToRemove: string) => {
     const currentTags = form.getValues('tags') || []
-    form.setValue('tags', currentTags.filter(tag => tag !== tagToRemove))
+    form.setValue(
+      'tags',
+      currentTags.filter(tag => tag !== tagToRemove)
+    )
   }
 
   return (
@@ -97,9 +100,7 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
               <FormControl>
                 <Input placeholder="Enter a brief title for this case" {...field} />
               </FormControl>
-              <FormDescription>
-                A concise summary of the case issue
-              </FormDescription>
+              <FormDescription>A concise summary of the case issue</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -166,7 +167,7 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
                 <FormControl>
                   <DatePicker
                     date={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) => field.onChange(date?.toISOString().split('T')[0])}
+                    onSelect={date => field.onChange(date?.toISOString().split('T')[0])}
                   />
                 </FormControl>
                 <FormMessage />
@@ -183,16 +184,10 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
                 <FormControl>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      placeholder="Assign to..." 
-                      className="pl-9"
-                      {...field} 
-                    />
+                    <Input placeholder="Assign to..." className="pl-9" {...field} />
                   </div>
                 </FormControl>
-                <FormDescription>
-                  Person responsible for this case
-                </FormDescription>
+                <FormDescription>Person responsible for this case</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -213,9 +208,7 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Include all relevant details and context
-              </FormDescription>
+              <FormDescription>Include all relevant details and context</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -228,25 +221,21 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
             <Input
               placeholder="Add a tag..."
               value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyPress={(e) => {
+              onChange={e => setTagInput(e.target.value)}
+              onKeyPress={e => {
                 if (e.key === 'Enter') {
                   e.preventDefault()
                   handleAddTag()
                 }
               }}
             />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAddTag}
-            >
+            <Button type="button" variant="outline" onClick={handleAddTag}>
               <Tag className="h-4 w-4" />
             </Button>
           </div>
           {form.watch('tags')?.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
-              {form.watch('tags').map((tag) => (
+              {form.watch('tags').map(tag => (
                 <Badge key={tag} variant="secondary">
                   {tag}
                   <button
@@ -264,12 +253,7 @@ export function CreateCaseForm({ onSubmit, onCancel }: CreateCaseFormProps) {
 
         {/* Form Actions */}
         <div className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting}>

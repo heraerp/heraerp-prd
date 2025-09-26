@@ -1,41 +1,41 @@
-'use client';
+'use client'
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Search, Filter, X } from 'lucide-react';
-import { useState } from 'react';
+  SelectValue
+} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Search, Filter, X } from 'lucide-react'
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+  SheetTrigger
+} from '@/components/ui/sheet'
 
 interface CalendarFiltersState {
-  sources: string[];
-  categories: string[];
-  status: string;
-  assignee: string;
-  search: string;
+  sources: string[]
+  categories: string[]
+  status: string
+  assignee: string
+  search: string
 }
 
 interface CalendarFiltersProps {
-  filters: CalendarFiltersState;
-  onFiltersChange: (filters: Partial<CalendarFiltersState>) => void;
-  loading: boolean;
-  itemCount: number;
+  filters: CalendarFiltersState
+  onFiltersChange: (filters: Partial<CalendarFiltersState>) => void
+  loading: boolean
+  itemCount: number
 }
 
 const SOURCE_OPTIONS = [
@@ -44,8 +44,8 @@ const SOURCE_OPTIONS = [
   { value: 'playbooks', label: 'Playbooks', color: 'bg-purple-500' },
   { value: 'payments', label: 'Payments', color: 'bg-yellow-500' },
   { value: 'consultations', label: 'Consultations', color: 'bg-pink-500' },
-  { value: 'events', label: 'Events', color: 'bg-indigo-500' },
-];
+  { value: 'events', label: 'Events', color: 'bg-indigo-500' }
+]
 
 const CATEGORY_OPTIONS = [
   { value: 'deadline', label: 'Deadline' },
@@ -53,38 +53,38 @@ const CATEGORY_OPTIONS = [
   { value: 'review', label: 'Review' },
   { value: 'milestone', label: 'Milestone' },
   { value: 'payment', label: 'Payment' },
-  { value: 'submission', label: 'Submission' },
-];
+  { value: 'submission', label: 'Submission' }
+]
 
 export function CalendarFilters({
   filters,
   onFiltersChange,
   loading,
-  itemCount,
+  itemCount
 }: CalendarFiltersProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   const activeFilterCount = [
     filters.sources.length < SOURCE_OPTIONS.length ? 1 : 0,
     filters.categories.length > 0 ? 1 : 0,
     filters.status !== 'all' ? 1 : 0,
     filters.assignee !== 'all' ? 1 : 0,
-    filters.search ? 1 : 0,
-  ].reduce((a, b) => a + b, 0);
+    filters.search ? 1 : 0
+  ].reduce((a, b) => a + b, 0)
 
   const handleSourceToggle = (source: string) => {
     const newSources = filters.sources.includes(source)
       ? filters.sources.filter(s => s !== source)
-      : [...filters.sources, source];
-    onFiltersChange({ sources: newSources });
-  };
+      : [...filters.sources, source]
+    onFiltersChange({ sources: newSources })
+  }
 
   const handleCategoryToggle = (category: string) => {
     const newCategories = filters.categories.includes(category)
       ? filters.categories.filter(c => c !== category)
-      : [...filters.categories, category];
-    onFiltersChange({ categories: newCategories });
-  };
+      : [...filters.categories, category]
+    onFiltersChange({ categories: newCategories })
+  }
 
   const resetFilters = () => {
     onFiltersChange({
@@ -92,9 +92,9 @@ export function CalendarFilters({
       categories: [],
       status: 'all',
       assignee: 'all',
-      search: '',
-    });
-  };
+      search: ''
+    })
+  }
 
   return (
     <div className="border-b bg-card">
@@ -106,7 +106,7 @@ export function CalendarFilters({
             <Input
               placeholder="Search events..."
               value={filters.search}
-              onChange={(e) => onFiltersChange({ search: e.target.value })}
+              onChange={e => onFiltersChange({ search: e.target.value })}
               className="pl-9 w-full"
             />
           </div>
@@ -134,11 +134,7 @@ export function CalendarFilters({
         <div className="flex items-center gap-4">
           {/* Item Count */}
           <div className="text-sm text-muted-foreground">
-            {loading ? (
-              <span>Loading...</span>
-            ) : (
-              <span>{itemCount} items</span>
-            )}
+            {loading ? <span>Loading...</span> : <span>{itemCount} items</span>}
           </div>
 
           {/* Advanced Filters */}
@@ -157,9 +153,7 @@ export function CalendarFilters({
             <SheetContent>
               <SheetHeader>
                 <SheetTitle>Calendar Filters</SheetTitle>
-                <SheetDescription>
-                  Filter calendar items by various criteria
-                </SheetDescription>
+                <SheetDescription>Filter calendar items by various criteria</SheetDescription>
               </SheetHeader>
 
               <div className="mt-6 space-y-6">
@@ -197,10 +191,7 @@ export function CalendarFilters({
                           checked={filters.categories.includes(category.value)}
                           onCheckedChange={() => handleCategoryToggle(category.value)}
                         />
-                        <Label
-                          htmlFor={category.value}
-                          className="cursor-pointer"
-                        >
+                        <Label htmlFor={category.value} className="cursor-pointer">
                           {category.label}
                         </Label>
                       </div>
@@ -213,7 +204,7 @@ export function CalendarFilters({
                   <Label className="mb-2 block">Status</Label>
                   <Select
                     value={filters.status}
-                    onValueChange={(value) => onFiltersChange({ status: value })}
+                    onValueChange={value => onFiltersChange({ status: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="All statuses" />
@@ -233,7 +224,7 @@ export function CalendarFilters({
                   <Label className="mb-2 block">Assignee</Label>
                   <Select
                     value={filters.assignee}
-                    onValueChange={(value) => onFiltersChange({ assignee: value })}
+                    onValueChange={value => onFiltersChange({ assignee: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="All assignees" />
@@ -249,18 +240,11 @@ export function CalendarFilters({
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-4 border-t">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={resetFilters}
-                  >
+                  <Button variant="outline" className="flex-1" onClick={resetFilters}>
                     <X className="h-4 w-4 mr-2" />
                     Reset
                   </Button>
-                  <Button
-                    className="flex-1"
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Button className="flex-1" onClick={() => setIsOpen(false)}>
                     Apply Filters
                   </Button>
                 </div>
@@ -270,5 +254,5 @@ export function CalendarFilters({
         </div>
       </div>
     </div>
-  );
+  )
 }

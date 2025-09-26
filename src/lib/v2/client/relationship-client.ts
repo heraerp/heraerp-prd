@@ -1,4 +1,4 @@
-import { post } from './base-client';
+import { post } from './base-client'
 
 /**
  * HERA V2 API - Relationship Client
@@ -7,48 +7,48 @@ import { post } from './base-client';
 
 // TypeScript interfaces
 export interface RelationshipUpsertPayload {
-  organization_id: string;
-  id?: string;
-  from_entity_id: string;
-  to_entity_id: string;
-  relationship_type: string;
-  relationship_subtype?: string;
-  relationship_name?: string;
-  relationship_code?: string;
-  smart_code: string;
-  is_active?: boolean;
-  effective_date?: string;
-  expiration_date?: string;
-  relationship_data?: Record<string, any>;
-  metadata?: Record<string, any>;
+  organization_id: string
+  id?: string
+  from_entity_id: string
+  to_entity_id: string
+  relationship_type: string
+  relationship_subtype?: string
+  relationship_name?: string
+  relationship_code?: string
+  smart_code: string
+  is_active?: boolean
+  effective_date?: string
+  expiration_date?: string
+  relationship_data?: Record<string, any>
+  metadata?: Record<string, any>
 }
 
 export interface RelationshipReadPayload {
-  organization_id: string;
-  relationship_id: string;
+  organization_id: string
+  relationship_id: string
 }
 
 export interface RelationshipQueryPayload {
-  organization_id: string;
-  entity_id?: string;
-  side?: 'either' | 'from' | 'to';
-  relationship_type?: string;
-  active_only?: boolean;
-  effective_from?: string;
-  effective_to?: string;
-  limit?: number;
-  offset?: number;
+  organization_id: string
+  entity_id?: string
+  side?: 'either' | 'from' | 'to'
+  relationship_type?: string
+  active_only?: boolean
+  effective_from?: string
+  effective_to?: string
+  limit?: number
+  offset?: number
 }
 
 export interface RelationshipDeletePayload {
-  organization_id: string;
-  relationship_id: string;
-  expiration_date?: string;
+  organization_id: string
+  relationship_id: string
+  expiration_date?: string
 }
 
 export interface RelationshipBatchPayload {
-  organization_id: string;
-  rows: Omit<RelationshipUpsertPayload, 'organization_id'>[];
+  organization_id: string
+  rows: Omit<RelationshipUpsertPayload, 'organization_id'>[]
 }
 
 /**
@@ -95,7 +95,7 @@ export const relationshipClientV2 = {
       organization_id,
       rows
     } as RelationshipBatchPayload)
-};
+}
 
 // Export convenience functions for common patterns
 export const relationshipHelpers = {
@@ -117,7 +117,7 @@ export const relationshipHelpers = {
       metadata: {
         assigned_at: new Date().toISOString()
       }
-    });
+    })
   },
 
   /**
@@ -132,7 +132,7 @@ export const relationshipHelpers = {
       organization_id,
       entity_id,
       active_only
-    });
+    })
   },
 
   /**
@@ -149,20 +149,13 @@ export const relationshipHelpers = {
       side: 'from',
       relationship_type,
       active_only: true
-    });
+    })
   },
 
   /**
    * Expire a relationship (soft delete with timestamp)
    */
-  expireRelationship: (
-    organization_id: string,
-    relationship_id: string
-  ) => {
-    return relationshipClientV2.delete(
-      organization_id,
-      relationship_id,
-      new Date().toISOString()
-    );
+  expireRelationship: (organization_id: string, relationship_id: string) => {
+    return relationshipClientV2.delete(organization_id, relationship_id, new Date().toISOString())
   }
-};
+}

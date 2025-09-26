@@ -1,33 +1,28 @@
-'use client';
+'use client'
 
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Users,
-  Shield,
-  Filter,
-  MoreVertical,
-} from 'lucide-react';
+import { useRouter } from 'next/navigation'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Users, Shield, Filter, MoreVertical } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { format } from 'date-fns';
-import type { Audience } from '@/types/communications';
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { format } from 'date-fns'
+import type { Audience } from '@/types/communications'
 
 interface AudienceCardProps {
-  audience: Audience;
+  audience: Audience
 }
 
 export function AudienceCard({ audience }: AudienceCardProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
-    <Card 
+    <Card
       className="cursor-pointer hover:shadow-lg transition-shadow"
       onClick={() => router.push(`/civicflow/communications/audiences/${audience.id}`)}
     >
@@ -49,34 +44,25 @@ export function AudienceCard({ audience }: AudienceCardProps) {
             </Badge>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <Button variant="ghost" size="icon" onClick={e => e.stopPropagation()}>
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/civicflow/communications/audiences/${audience.id}`);
-                }}>
+                <DropdownMenuItem
+                  onClick={e => {
+                    e.stopPropagation()
+                    router.push(`/civicflow/communications/audiences/${audience.id}`)
+                  }}
+                >
                   View Details
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                  Clone
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem onClick={e => e.stopPropagation()}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={e => e.stopPropagation()}>Clone</DropdownMenuItem>
+                <DropdownMenuItem onClick={e => e.stopPropagation()}>
                   Export Members
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  className="text-destructive"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <DropdownMenuItem className="text-destructive" onClick={e => e.stopPropagation()}>
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -95,7 +81,7 @@ export function AudienceCard({ audience }: AudienceCardProps) {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Types:</span>
                 <div className="flex flex-wrap gap-1">
-                  {audience.definition.entity_types.map((type) => (
+                  {audience.definition.entity_types.map(type => (
                     <Badge key={type} variant="outline" className="text-xs">
                       {type}
                     </Badge>
@@ -107,7 +93,7 @@ export function AudienceCard({ audience }: AudienceCardProps) {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">Tags:</span>
                 <div className="flex flex-wrap gap-1">
-                  {audience.definition.tags.map((tag) => (
+                  {audience.definition.tags.map(tag => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
@@ -117,7 +103,7 @@ export function AudienceCard({ audience }: AudienceCardProps) {
             )}
           </div>
         </div>
-        
+
         <div className="pt-2 border-t">
           <p className="text-sm text-muted-foreground">
             Created {format(new Date(audience.created_at), 'MMM d, yyyy')}
@@ -125,5 +111,5 @@ export function AudienceCard({ audience }: AudienceCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -3,9 +3,9 @@
  * Displays chronological events for a case
  */
 
-import React from 'react';
-import { format } from 'date-fns';
-import { 
+import React from 'react'
+import { format } from 'date-fns'
+import {
   Clock,
   FileText,
   CheckCircle,
@@ -16,11 +16,11 @@ import {
   Download,
   MessageSquare,
   User
-} from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import type { CaseTimelineProps } from '@/types/cases';
+} from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import type { CaseTimelineProps } from '@/types/cases'
 
 const eventIcons: Record<string, React.ElementType> = {
   created: Clock,
@@ -32,8 +32,8 @@ const eventIcons: Record<string, React.ElementType> = {
   payment: DollarSign,
   export: Download,
   note: MessageSquare,
-  unknown: FileText,
-};
+  unknown: FileText
+}
 
 const eventColors: Record<string, string> = {
   created: 'text-blue-600 bg-blue-100',
@@ -45,8 +45,8 @@ const eventColors: Record<string, string> = {
   payment: 'text-emerald-600 bg-emerald-100',
   export: 'text-indigo-600 bg-indigo-100',
   note: 'text-cyan-600 bg-cyan-100',
-  unknown: 'text-slate-600 bg-slate-100',
-};
+  unknown: 'text-slate-600 bg-slate-100'
+}
 
 export function CaseTimeline({ events, loading }: CaseTimelineProps) {
   if (loading) {
@@ -62,26 +62,25 @@ export function CaseTimeline({ events, loading }: CaseTimelineProps) {
           </div>
         ))}
       </div>
-    );
+    )
   }
 
   if (!events || events.length === 0) {
-    return (
-      <Card className="p-6 text-center text-muted-foreground">
-        No timeline events yet
-      </Card>
-    );
+    return <Card className="p-6 text-center text-muted-foreground">No timeline events yet</Card>
   }
 
   // Group events by date
-  const groupedEvents = events.reduce((groups, event) => {
-    const date = format(new Date(event.event_date), 'yyyy-MM-dd');
-    if (!groups[date]) {
-      groups[date] = [];
-    }
-    groups[date].push(event);
-    return groups;
-  }, {} as Record<string, typeof events>);
+  const groupedEvents = events.reduce(
+    (groups, event) => {
+      const date = format(new Date(event.event_date), 'yyyy-MM-dd')
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(event)
+      return groups
+    },
+    {} as Record<string, typeof events>
+  )
 
   return (
     <div className="space-y-6">
@@ -95,18 +94,20 @@ export function CaseTimeline({ events, loading }: CaseTimelineProps) {
           <div className="relative pl-10 space-y-4">
             {/* Vertical line */}
             <div className="absolute left-5 top-0 bottom-0 w-px bg-border" />
-            
+
             {dateEvents.map((event, idx) => {
-              const Icon = eventIcons[event.event_type] || eventIcons.unknown;
-              const colorClass = eventColors[event.event_type] || eventColors.unknown;
-              
+              const Icon = eventIcons[event.event_type] || eventIcons.unknown
+              const colorClass = eventColors[event.event_type] || eventColors.unknown
+
               return (
                 <div key={event.id} className="relative">
                   {/* Timeline dot */}
-                  <div className={`absolute -left-5 w-10 h-10 rounded-full flex items-center justify-center ${colorClass}`}>
+                  <div
+                    className={`absolute -left-5 w-10 h-10 rounded-full flex items-center justify-center ${colorClass}`}
+                  >
                     <Icon className="h-5 w-5" />
                   </div>
-                  
+
                   <Card className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div>
@@ -121,29 +122,27 @@ export function CaseTimeline({ events, loading }: CaseTimelineProps) {
                         </div>
                       </div>
                       {event.metadata?.severity && (
-                        <Badge variant="destructive">
-                          {event.metadata.severity}
-                        </Badge>
+                        <Badge variant="destructive">{event.metadata.severity}</Badge>
                       )}
                     </div>
-                    
+
                     {event.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {event.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{event.description}</p>
                     )}
-                    
+
                     {/* Metadata details */}
                     {event.metadata && (
                       <div className="mt-3 space-y-1">
                         {event.metadata.change_type && (
                           <div className="text-sm">
-                            <span className="font-medium">Change Type:</span> {event.metadata.change_type}
+                            <span className="font-medium">Change Type:</span>{' '}
+                            {event.metadata.change_type}
                           </div>
                         )}
                         {event.metadata.budget_delta && (
                           <div className="text-sm">
-                            <span className="font-medium">Budget Change:</span> ${event.metadata.budget_delta.toLocaleString()}
+                            <span className="font-medium">Budget Change:</span> $
+                            {event.metadata.budget_delta.toLocaleString()}
                           </div>
                         )}
                         {event.metadata.category && (
@@ -160,11 +159,11 @@ export function CaseTimeline({ events, loading }: CaseTimelineProps) {
                     )}
                   </Card>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       ))}
     </div>
-  );
+  )
 }

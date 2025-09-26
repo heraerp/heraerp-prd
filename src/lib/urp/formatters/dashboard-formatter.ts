@@ -1,9 +1,9 @@
 /**
  * HERA Dashboard-Specific Formatters
- * 
+ *
  * Specialized presentation formatters for finance dashboard UCRs
  * Provides interactive, real-time dashboard components
- * 
+ *
  * @module HERA.URP.FORMATTERS.DASHBOARD.v1
  */
 
@@ -25,15 +25,11 @@ export interface DashboardFormatterOptions extends FormatterOptions {
 /**
  * Format cashflow data for dashboard display
  */
-export function formatCashflowDashboard(data: any, options: DashboardFormatterOptions): FormattedResult {
-  const {
-    current_period,
-    historical,
-    forecast,
-    benchmarks,
-    kpis,
-    details
-  } = data
+export function formatCashflowDashboard(
+  data: any,
+  options: DashboardFormatterOptions
+): FormattedResult {
+  const { current_period, historical, forecast, benchmarks, kpis, details } = data
 
   return {
     summary_cards: [
@@ -44,7 +40,9 @@ export function formatCashflowDashboard(data: any, options: DashboardFormatterOp
         format: 'currency',
         trend: calculateTrend(kpis.net_cash_flow, historical),
         status: getStatus(kpis.net_cash_flow, options.alert_thresholds?.net_cash_flow),
-        sparkline: options.include_sparklines ? generateSparklineData(historical, 'net_cash_flow') : null,
+        sparkline: options.include_sparklines
+          ? generateSparklineData(historical, 'net_cash_flow')
+          : null,
         smart_code: 'HERA.FIN.KPI.CASH.POSITION.V1'
       },
       {
@@ -53,7 +51,12 @@ export function formatCashflowDashboard(data: any, options: DashboardFormatterOp
         value: kpis.cash_runway_days,
         format: 'days',
         subtitle: `${kpis.cash_runway_days} days remaining`,
-        status: kpis.cash_runway_days < 90 ? 'critical' : kpis.cash_runway_days < 180 ? 'warning' : 'healthy',
+        status:
+          kpis.cash_runway_days < 90
+            ? 'critical'
+            : kpis.cash_runway_days < 180
+              ? 'warning'
+              : 'healthy',
         smart_code: 'HERA.GUI.DASH.CARD.RUNWAY.V1'
       },
       {
@@ -63,7 +66,8 @@ export function formatCashflowDashboard(data: any, options: DashboardFormatterOp
         format: 'percentage',
         benchmark: benchmarks?.operating_cash_margin * 100,
         benchmark_label: 'Industry Avg',
-        status: kpis.operating_cash_margin >= benchmarks?.operating_cash_margin ? 'healthy' : 'warning',
+        status:
+          kpis.operating_cash_margin >= benchmarks?.operating_cash_margin ? 'healthy' : 'warning',
         smart_code: 'HERA.FIN.KPI.GROSS.MARGIN.V1'
       },
       {
@@ -110,71 +114,77 @@ export function formatCashflowDashboard(data: any, options: DashboardFormatterOp
       ]
     },
 
-    trend_chart: options.include_charts ? {
-      title: 'Cash Flow Trend',
-      type: 'line',
-      data: formatTrendChartData(historical, forecast),
-      options: {
-        show_forecast: true,
-        show_confidence_bands: true,
-        interactive: true
-      },
-      smart_code: 'HERA.GUI.DASH.CHART.CASHFLOW.V1'
-    } : null,
+    trend_chart: options.include_charts
+      ? {
+          title: 'Cash Flow Trend',
+          type: 'line',
+          data: formatTrendChartData(historical, forecast),
+          options: {
+            show_forecast: true,
+            show_confidence_bands: true,
+            interactive: true
+          },
+          smart_code: 'HERA.GUI.DASH.CHART.CASHFLOW.V1'
+        }
+      : null,
 
-    forecast_section: forecast ? {
-      title: 'Cash Flow Forecast',
-      periods: forecast.map((f: any) => ({
-        period: f.period,
-        amount: f.forecast_amount,
-        confidence: f.confidence,
-        variance_band: {
-          upper: f.forecast_amount * 1.1,
-          lower: f.forecast_amount * 0.9
+    forecast_section: forecast
+      ? {
+          title: 'Cash Flow Forecast',
+          periods: forecast.map((f: any) => ({
+            period: f.period,
+            amount: f.forecast_amount,
+            confidence: f.confidence,
+            variance_band: {
+              upper: f.forecast_amount * 1.1,
+              lower: f.forecast_amount * 0.9
+            }
+          })),
+          smart_code: 'HERA.FIN.REPORT.CASHFLOW.FORECAST.V1'
         }
-      })),
-      smart_code: 'HERA.FIN.REPORT.CASHFLOW.FORECAST.V1'
-    } : null,
+      : null,
 
-    benchmark_comparison: benchmarks ? {
-      title: 'Industry Benchmarks',
-      your_score: benchmarks.peer_comparison.your_performance,
-      scores: [
-        {
-          label: 'Your Performance',
-          value: benchmarks.peer_comparison.your_performance * 100,
-          format: 'percentage',
-          highlight: true
-        },
-        {
-          label: 'Industry Average',
-          value: benchmarks.peer_comparison.industry_average * 100,
-          format: 'percentage'
-        },
-        {
-          label: 'Top Quartile',
-          value: benchmarks.peer_comparison.top_quartile * 100,
-          format: 'percentage'
+    benchmark_comparison: benchmarks
+      ? {
+          title: 'Industry Benchmarks',
+          your_score: benchmarks.peer_comparison.your_performance,
+          scores: [
+            {
+              label: 'Your Performance',
+              value: benchmarks.peer_comparison.your_performance * 100,
+              format: 'percentage',
+              highlight: true
+            },
+            {
+              label: 'Industry Average',
+              value: benchmarks.peer_comparison.industry_average * 100,
+              format: 'percentage'
+            },
+            {
+              label: 'Top Quartile',
+              value: benchmarks.peer_comparison.top_quartile * 100,
+              format: 'percentage'
+            }
+          ],
+          metrics: [
+            {
+              metric: 'Cash Conversion Cycle',
+              value: benchmarks.cash_conversion_cycle,
+              unit: 'days',
+              benchmark: 7,
+              status: benchmarks.cash_conversion_cycle <= 7 ? 'healthy' : 'warning'
+            },
+            {
+              metric: 'Days Sales Outstanding',
+              value: benchmarks.days_sales_outstanding,
+              unit: 'days',
+              benchmark: 30,
+              status: benchmarks.days_sales_outstanding <= 30 ? 'healthy' : 'warning'
+            }
+          ],
+          smart_code: 'HERA.GUI.DASH.SECTION.BENCHMARK.V1'
         }
-      ],
-      metrics: [
-        {
-          metric: 'Cash Conversion Cycle',
-          value: benchmarks.cash_conversion_cycle,
-          unit: 'days',
-          benchmark: 7,
-          status: benchmarks.cash_conversion_cycle <= 7 ? 'healthy' : 'warning'
-        },
-        {
-          metric: 'Days Sales Outstanding',
-          value: benchmarks.days_sales_outstanding,
-          unit: 'days',
-          benchmark: 30,
-          status: benchmarks.days_sales_outstanding <= 30 ? 'healthy' : 'warning'
-        }
-      ],
-      smart_code: 'HERA.GUI.DASH.SECTION.BENCHMARK.V1'
-    } : null,
+      : null,
 
     alerts: generateAlerts(kpis, options.alert_thresholds),
 
@@ -190,7 +200,10 @@ export function formatCashflowDashboard(data: any, options: DashboardFormatterOp
 /**
  * Format financial KPIs for dashboard cards
  */
-export function formatKPIDashboard(kpiData: any, options: DashboardFormatterOptions): FormattedResult {
+export function formatKPIDashboard(
+  kpiData: any,
+  options: DashboardFormatterOptions
+): FormattedResult {
   return {
     kpi_grid: [
       {
@@ -242,7 +255,7 @@ export function formatKPIDashboard(kpiData: any, options: DashboardFormatterOpti
     ],
 
     mini_charts: options.include_charts ? generateMiniCharts(kpiData) : null,
-    
+
     quick_actions: [
       {
         label: 'View Full Report',
@@ -267,13 +280,13 @@ export function formatKPIDashboard(kpiData: any, options: DashboardFormatterOpti
 
 function calculateTrend(current: number, historical: any[], inverse = false): any {
   if (!historical || historical.length === 0) return null
-  
+
   const previous = historical[0]?.data?.total || 0
   const change = current - previous
   const changePercent = previous !== 0 ? (change / previous) * 100 : 0
-  
+
   return {
-    direction: inverse ? (change < 0 ? 'up' : 'down') : (change > 0 ? 'up' : 'down'),
+    direction: inverse ? (change < 0 ? 'up' : 'down') : change > 0 ? 'up' : 'down',
     value: Math.abs(changePercent),
     label: `${changePercent > 0 ? '+' : ''}${changePercent.toFixed(1)}%`
   }
@@ -281,7 +294,7 @@ function calculateTrend(current: number, historical: any[], inverse = false): an
 
 function getStatus(value: number, thresholds?: any): string {
   if (!thresholds) return 'normal'
-  
+
   if (value <= thresholds.critical) return 'critical'
   if (value <= thresholds.warning) return 'warning'
   return 'healthy'
@@ -312,20 +325,21 @@ function formatTrendChartData(historical: any[], forecast: any[]): any {
     y: h.data.total || 0,
     type: 'actual'
   }))
-  
-  const forecastData = forecast?.map(f => ({
-    x: f.period,
-    y: f.forecast_amount,
-    type: 'forecast',
-    confidence: f.confidence
-  })) || []
-  
+
+  const forecastData =
+    forecast?.map(f => ({
+      x: f.period,
+      y: f.forecast_amount,
+      type: 'forecast',
+      confidence: f.confidence
+    })) || []
+
   return [...historicalData, ...forecastData]
 }
 
 function generateAlerts(kpis: any, thresholds: any): any[] {
   const alerts = []
-  
+
   if (kpis.cash_runway_days < 90) {
     alerts.push({
       type: 'critical',
@@ -333,7 +347,7 @@ function generateAlerts(kpis: any, thresholds: any): any[] {
       smart_code: 'HERA.GUI.DASH.ALERT.THRESHOLD.V1'
     })
   }
-  
+
   if (kpis.operating_cash_margin < 0.1) {
     alerts.push({
       type: 'warning',
@@ -341,7 +355,7 @@ function generateAlerts(kpis: any, thresholds: any): any[] {
       smart_code: 'HERA.GUI.DASH.ALERT.THRESHOLD.V1'
     })
   }
-  
+
   return alerts
 }
 

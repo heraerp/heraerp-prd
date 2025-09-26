@@ -1,138 +1,135 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from '@/components/ui/radio-group';
-import { Badge } from '@/components/ui/badge';
-import { Plus, X, Info } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { useCreateAudience } from '@/hooks/use-communications';
+  SelectValue
+} from '@/components/ui/select'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Badge } from '@/components/ui/badge'
+import { Plus, X, Info } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+import { useCreateAudience } from '@/hooks/use-communications'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+  AccordionTrigger
+} from '@/components/ui/accordion'
 
 interface CreateAudienceModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalProps) {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [currentTag, setCurrentTag] = useState('');
-  
+  const router = useRouter()
+  const { toast } = useToast()
+  const [currentTag, setCurrentTag] = useState('')
+
   const [audienceData, setAudienceData] = useState({
     name: '',
     consent_policy: 'opt_in',
     definition: {
       entity_types: [] as string[],
       tags: [] as string[],
-      custom_filter: '',
+      custom_filter: ''
     },
-    tags: [] as string[],
-  });
-  
-  const createMutation = useCreateAudience();
-  
+    tags: [] as string[]
+  })
+
+  const createMutation = useCreateAudience()
+
   const handleAddTag = () => {
     if (currentTag && !audienceData.tags.includes(currentTag)) {
       setAudienceData({
         ...audienceData,
-        tags: [...audienceData.tags, currentTag],
-      });
-      setCurrentTag('');
+        tags: [...audienceData.tags, currentTag]
+      })
+      setCurrentTag('')
     }
-  };
-  
+  }
+
   const handleRemoveTag = (tag: string) => {
     setAudienceData({
       ...audienceData,
-      tags: audienceData.tags.filter(t => t !== tag),
-    });
-  };
-  
+      tags: audienceData.tags.filter(t => t !== tag)
+    })
+  }
+
   const toggleEntityType = (type: string) => {
-    const types = audienceData.definition.entity_types;
+    const types = audienceData.definition.entity_types
     if (types.includes(type)) {
       setAudienceData({
         ...audienceData,
         definition: {
           ...audienceData.definition,
-          entity_types: types.filter(t => t !== type),
-        },
-      });
+          entity_types: types.filter(t => t !== type)
+        }
+      })
     } else {
       setAudienceData({
         ...audienceData,
         definition: {
           ...audienceData.definition,
-          entity_types: [...types, type],
-        },
-      });
+          entity_types: [...types, type]
+        }
+      })
     }
-  };
-  
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     if (!audienceData.name) {
       toast({
         title: 'Missing required fields',
         description: 'Please provide a name for the audience',
-        variant: 'destructive',
-      });
-      return;
+        variant: 'destructive'
+      })
+      return
     }
-    
+
     if (audienceData.definition.entity_types.length === 0) {
       toast({
         title: 'No entity types selected',
         description: 'Please select at least one entity type to include in the audience',
-        variant: 'destructive',
-      });
-      return;
+        variant: 'destructive'
+      })
+      return
     }
-    
+
     try {
-      const audience = await createMutation.mutateAsync(audienceData);
-      
+      const audience = await createMutation.mutateAsync(audienceData)
+
       toast({
         title: 'Audience created',
-        description: 'Your audience has been created successfully',
-      });
-      
-      onOpenChange(false);
-      router.push(`/civicflow/communications/audiences/${audience.id}`);
+        description: 'Your audience has been created successfully'
+      })
+
+      onOpenChange(false)
+      router.push(`/civicflow/communications/audiences/${audience.id}`)
     } catch (error) {
       // Error handled by mutation
     }
-  };
-  
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
@@ -143,7 +140,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
               Define a new audience for your communication campaigns.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -152,20 +149,18 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
               <Input
                 id="name"
                 value={audienceData.name}
-                onChange={(e) => setAudienceData({ ...audienceData, name: e.target.value })}
+                onChange={e => setAudienceData({ ...audienceData, name: e.target.value })}
                 className="col-span-3"
                 placeholder="e.g., Active Constituents"
               />
             </div>
-            
+
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">
-                Consent Policy
-              </Label>
+              <Label className="text-right pt-2">Consent Policy</Label>
               <RadioGroup
                 className="col-span-3"
                 value={audienceData.consent_policy}
-                onValueChange={(value) => setAudienceData({ ...audienceData, consent_policy: value })}
+                onValueChange={value => setAudienceData({ ...audienceData, consent_policy: value })}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="opt_in" id="opt_in" />
@@ -181,45 +176,49 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                 </div>
               </RadioGroup>
             </div>
-            
+
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">
-                Entity Types
-              </Label>
+              <Label className="text-right pt-2">Entity Types</Label>
               <div className="col-span-3 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  {['constituent', 'organization', 'staff', 'volunteer', 'donor', 'vendor'].map((type) => (
-                    <Button
-                      key={type}
-                      type="button"
-                      variant={audienceData.definition.entity_types.includes(type) ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => toggleEntityType(type)}
-                      className="justify-start"
-                    >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </Button>
-                  ))}
+                  {['constituent', 'organization', 'staff', 'volunteer', 'donor', 'vendor'].map(
+                    type => (
+                      <Button
+                        key={type}
+                        type="button"
+                        variant={
+                          audienceData.definition.entity_types.includes(type)
+                            ? 'default'
+                            : 'outline'
+                        }
+                        size="sm"
+                        onClick={() => toggleEntityType(type)}
+                        className="justify-start"
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </Button>
+                    )
+                  )}
                 </div>
               </div>
             </div>
-            
+
             <Accordion type="single" collapsible className="col-span-full">
               <AccordionItem value="advanced">
                 <AccordionTrigger>Advanced Filters</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">
-                        Filter Tags
-                      </Label>
+                      <Label className="text-right pt-2">Filter Tags</Label>
                       <div className="col-span-3 space-y-2">
                         <div className="flex gap-2">
                           <Input
                             value={currentTag}
-                            onChange={(e) => setCurrentTag(e.target.value)}
+                            onChange={e => setCurrentTag(e.target.value)}
                             placeholder="e.g., newsletter"
-                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                            onKeyPress={e =>
+                              e.key === 'Enter' && (e.preventDefault(), handleAddTag())
+                            }
                           />
                           <Button type="button" onClick={handleAddTag} size="icon">
                             <Plus className="h-4 w-4" />
@@ -227,7 +226,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                         </div>
                         {audienceData.definition.tags.length > 0 && (
                           <div className="flex flex-wrap gap-2">
-                            {audienceData.definition.tags.map((tag) => (
+                            {audienceData.definition.tags.map(tag => (
                               <Badge key={tag} variant="secondary">
                                 {tag}
                                 <button
@@ -237,9 +236,9 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                                       ...audienceData,
                                       definition: {
                                         ...audienceData.definition,
-                                        tags: audienceData.definition.tags.filter(t => t !== tag),
-                                      },
-                                    });
+                                        tags: audienceData.definition.tags.filter(t => t !== tag)
+                                      }
+                                    })
                                   }}
                                   className="ml-1 hover:text-destructive"
                                 >
@@ -251,21 +250,21 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">
-                        Custom Filter
-                      </Label>
+                      <Label className="text-right pt-2">Custom Filter</Label>
                       <div className="col-span-3 space-y-2">
                         <Textarea
                           value={audienceData.definition.custom_filter}
-                          onChange={(e) => setAudienceData({
-                            ...audienceData,
-                            definition: {
-                              ...audienceData.definition,
-                              custom_filter: e.target.value,
-                            },
-                          })}
+                          onChange={e =>
+                            setAudienceData({
+                              ...audienceData,
+                              definition: {
+                                ...audienceData.definition,
+                                custom_filter: e.target.value
+                              }
+                            })
+                          }
                           placeholder="JSON filter expression (optional)"
                           rows={3}
                         />
@@ -279,18 +278,16 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-            
+
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">
-                Audience Tags
-              </Label>
+              <Label className="text-right pt-2">Audience Tags</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex gap-2">
                   <Input
                     value={currentTag}
-                    onChange={(e) => setCurrentTag(e.target.value)}
+                    onChange={e => setCurrentTag(e.target.value)}
                     placeholder="e.g., marketing"
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                    onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                   />
                   <Button type="button" onClick={handleAddTag} size="icon">
                     <Plus className="h-4 w-4" />
@@ -298,7 +295,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                 </div>
                 {audienceData.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {audienceData.tags.map((tag) => (
+                    {audienceData.tags.map(tag => (
                       <Badge key={tag} variant="secondary">
                         {tag}
                         <button
@@ -315,7 +312,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
               </div>
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
@@ -327,5 +324,5 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

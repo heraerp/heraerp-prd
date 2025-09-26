@@ -4,17 +4,17 @@
  */
 
 interface PDFContent {
-  title: string;
-  subtitle?: string;
+  title: string
+  subtitle?: string
   sections: Array<{
-    title: string;
-    content?: string;
+    title: string
+    content?: string
     table?: {
-      headers: string[];
-      rows: string[][];
-    };
-  }>;
-  watermark?: string;
+      headers: string[]
+      rows: string[][]
+    }
+  }>
+  watermark?: string
 }
 
 export const documentService = {
@@ -46,36 +46,36 @@ export const documentService = {
   ${content.watermark ? `<div class="watermark">${content.watermark}</div>` : ''}
   <h1>${content.title}</h1>
   ${content.subtitle ? `<p>${content.subtitle}</p>` : ''}
-`;
+`
 
     for (const section of content.sections) {
-      html += `<h2>${section.title}</h2>`;
-      
+      html += `<h2>${section.title}</h2>`
+
       if (section.content) {
-        html += `<p>${section.content}</p>`;
+        html += `<p>${section.content}</p>`
       }
-      
+
       if (section.table) {
-        html += '<table>';
-        html += '<thead><tr>';
+        html += '<table>'
+        html += '<thead><tr>'
         for (const header of section.table.headers) {
-          html += `<th>${header}</th>`;
+          html += `<th>${header}</th>`
         }
-        html += '</tr></thead>';
-        html += '<tbody>';
+        html += '</tr></thead>'
+        html += '<tbody>'
         for (const row of section.table.rows) {
-          html += '<tr>';
+          html += '<tr>'
           for (const cell of row) {
-            html += `<td>${cell}</td>`;
+            html += `<td>${cell}</td>`
           }
-          html += '</tr>';
+          html += '</tr>'
         }
-        html += '</tbody></table>';
+        html += '</tbody></table>'
       }
     }
 
-    html += '</body></html>';
-    
-    return new Blob([html], { type: 'application/pdf' });
+    html += '</body></html>'
+
+    return new Blob([html], { type: 'application/pdf' })
   }
-};
+}

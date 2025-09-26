@@ -40,10 +40,10 @@ describe('/api/v2/universal/entity-upsert', () => {
       smart_code: 'HERA.SALON.SVC.HAIR.CUT.V1',
       metadata: {
         duration_minutes: 45,
-        base_price: 65.00,
+        base_price: 65.0,
         category: 'Hair Services',
         requires_stylist: true,
-        commission_rate: 0.40
+        commission_rate: 0.4
       }
     },
     {
@@ -52,7 +52,7 @@ describe('/api/v2/universal/entity-upsert', () => {
       smart_code: 'HERA.SALON.SVC.HAIR.COLOR.V1',
       metadata: {
         duration_minutes: 120,
-        base_price: 150.00,
+        base_price: 150.0,
         category: 'Color Services',
         requires_stylist: true,
         commission_rate: 0.45,
@@ -65,7 +65,7 @@ describe('/api/v2/universal/entity-upsert', () => {
       smart_code: 'HERA.SALON.SVC.HAIR.HIGHLIGHT.V1',
       metadata: {
         duration_minutes: 180,
-        base_price: 250.00,
+        base_price: 250.0,
         category: 'Color Services',
         requires_stylist: true,
         commission_rate: 0.45,
@@ -78,7 +78,7 @@ describe('/api/v2/universal/entity-upsert', () => {
       smart_code: 'HERA.SALON.SVC.HAIR.TREATMENT.V1',
       metadata: {
         duration_minutes: 30,
-        base_price: 45.00,
+        base_price: 45.0,
         category: 'Treatments',
         requires_stylist: false,
         commission_rate: 0.35,
@@ -91,10 +91,10 @@ describe('/api/v2/universal/entity-upsert', () => {
       smart_code: 'HERA.SALON.SVC.HAIR.BRIDAL.V1',
       metadata: {
         duration_minutes: 90,
-        base_price: 350.00,
+        base_price: 350.0,
         category: 'Special Events',
         requires_stylist: true,
-        commission_rate: 0.50,
+        commission_rate: 0.5,
         includes_trial: true,
         advance_booking_required: true
       }
@@ -132,12 +132,7 @@ describe('/api/v2/universal/entity-upsert', () => {
 
       expect(mockSelectValue).toHaveBeenCalledWith(
         expect.stringContaining('hera_entity_upsert_v1'),
-        expect.arrayContaining([
-          TEST_ORG_ID,
-          'service',
-          service.entity_name,
-          service.smart_code
-        ])
+        expect.arrayContaining([TEST_ORG_ID, 'service', service.entity_name, service.smart_code])
       )
     })
 
@@ -196,7 +191,7 @@ describe('/api/v2/universal/entity-upsert', () => {
           smart_code: service.smart_code,
           metadata: {
             ...service.metadata,
-            base_price: 175.00 // Updated price
+            base_price: 175.0 // Updated price
           },
           status: 'active'
         })
@@ -250,7 +245,8 @@ describe('/api/v2/universal/entity-upsert', () => {
           entity_name: complexService.entity_name,
           entity_code: complexService.entity_code,
           smart_code: complexService.smart_code,
-          entity_description: 'Premium bridal hair styling service including consultation and trial',
+          entity_description:
+            'Premium bridal hair styling service including consultation and trial',
           metadata: complexService.metadata,
           attributes: complexService.attributes,
           ai_insights: complexService.ai_insights,
@@ -341,9 +337,7 @@ describe('/api/v2/universal/entity-upsert', () => {
       ]
 
       for (const invalidCode of invalidSmartCodes) {
-        mockValidateEntityUpsert.mockReturnValueOnce([
-          `Invalid smart_code: ${invalidCode}`
-        ])
+        mockValidateEntityUpsert.mockReturnValueOnce([`Invalid smart_code: ${invalidCode}`])
 
         const request = new NextRequest('http://localhost:3000/api/v2/universal/entity-upsert', {
           method: 'POST',
@@ -449,7 +443,7 @@ describe('/api/v2/universal/entity-upsert', () => {
           parent_entity_id: parentServiceId,
           metadata: {
             duration_minutes: 15,
-            base_price: 25.00,
+            base_price: 25.0,
             is_addon: true,
             parent_service: 'Full Color Treatment'
           },

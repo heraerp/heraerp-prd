@@ -1,113 +1,113 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Check } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { useTestSend } from '@/hooks/use-communications';
-import { isDemoMode } from '@/lib/demo-guard';
-import { useOrgStore } from '@/state/org';
-import type { Template } from '@/types/communications';
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle, Check } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+import { useTestSend } from '@/hooks/use-communications'
+import { isDemoMode } from '@/lib/demo-guard'
+import { useOrgStore } from '@/state/org'
+import type { Template } from '@/types/communications'
 
 interface TestSendModalProps {
-  template: Template;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  template: Template
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function TestSendModal({ template, open, onOpenChange }: TestSendModalProps) {
-  const { toast } = useToast();
-  const { currentOrgId } = useOrgStore();
-  const isDemo = isDemoMode(currentOrgId);
-  
-  const [recipient, setRecipient] = useState('');
-  const [testVariables, setTestVariables] = useState<Record<string, string>>({});
-  const [sendSuccess, setSendSuccess] = useState(false);
-  
-  const testSendMutation = useTestSend();
-  
+  const { toast } = useToast()
+  const { currentOrgId } = useOrgStore()
+  const isDemo = isDemoMode(currentOrgId)
+
+  const [recipient, setRecipient] = useState('')
+  const [testVariables, setTestVariables] = useState<Record<string, string>>({})
+  const [sendSuccess, setSendSuccess] = useState(false)
+
+  const testSendMutation = useTestSend()
+
   const getRecipientPlaceholder = () => {
     switch (template.channel) {
       case 'email':
-        return 'test@example.com';
+        return 'test@example.com'
       case 'sms':
-        return '+1234567890';
+        return '+1234567890'
       case 'webhook':
-        return 'https://webhook.site/test-endpoint';
+        return 'https://webhook.site/test-endpoint'
       default:
-        return '';
+        return ''
     }
-  };
-  
+  }
+
   const getRecipientLabel = () => {
     switch (template.channel) {
       case 'email':
-        return 'Email Address';
+        return 'Email Address'
       case 'sms':
-        return 'Phone Number';
+        return 'Phone Number'
       case 'webhook':
-        return 'Webhook URL';
+        return 'Webhook URL'
       default:
-        return 'Recipient';
+        return 'Recipient'
     }
-  };
-  
+  }
+
   const handleSend = async () => {
     if (!recipient) {
       toast({
         title: 'Recipient required',
         description: 'Please provide a recipient for the test send',
-        variant: 'destructive',
-      });
-      return;
+        variant: 'destructive'
+      })
+      return
     }
-    
+
     try {
       await testSendMutation.mutateAsync({
         template_id: template.id,
         channel: template.channel,
         recipient,
-        variables: testVariables,
-      });
-      
-      setSendSuccess(true);
-      
+        variables: testVariables
+      })
+
+      setSendSuccess(true)
+
       toast({
         title: isDemo ? 'Test simulated' : 'Test sent',
-        description: isDemo 
+        description: isDemo
           ? `Test ${template.channel} simulated in demo mode`
-          : `Test ${template.channel} sent successfully`,
-      });
-      
+          : `Test ${template.channel} sent successfully`
+      })
+
       // Close modal after a delay
       setTimeout(() => {
-        onOpenChange(false);
-        setSendSuccess(false);
-      }, 2000);
+        onOpenChange(false)
+        setSendSuccess(false)
+      }, 2000)
     } catch (error) {
       // Error handled by mutation
     }
-  };
-  
+  }
+
   const handleClose = () => {
-    onOpenChange(false);
-    setSendSuccess(false);
-    setRecipient('');
-    setTestVariables({});
-  };
-  
+    onOpenChange(false)
+    setSendSuccess(false)
+    setRecipient('')
+    setTestVariables({})
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[525px]">
@@ -118,7 +118,7 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
             {isDemo && ' (Demo mode - message will be simulated)'}
           </DialogDescription>
         </DialogHeader>
-        
+
         {sendSuccess ? (
           <div className="py-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
@@ -126,7 +126,7 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
             </div>
             <h3 className="mt-4 text-lg font-medium">Test Sent!</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              {isDemo 
+              {isDemo
                 ? 'Your test message was simulated in demo mode.'
                 : `Your test ${template.channel} has been sent successfully.`}
             </p>
@@ -141,12 +141,12 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
                 <Input
                   id="recipient"
                   value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
+                  onChange={e => setRecipient(e.target.value)}
                   className="col-span-3"
                   placeholder={getRecipientPlaceholder()}
                 />
               </div>
-              
+
               {template.variables && template.variables.length > 0 && (
                 <>
                   <div className="col-span-full">
@@ -155,7 +155,7 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
                       Provide test values for the variables in your template:
                     </p>
                   </div>
-                  {template.variables.map((variable) => (
+                  {template.variables.map(variable => (
                     <div key={variable} className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor={variable} className="text-right">
                         {`{{${variable}}}`}
@@ -163,10 +163,12 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
                       <Input
                         id={variable}
                         value={testVariables[variable] || ''}
-                        onChange={(e) => setTestVariables({
-                          ...testVariables,
-                          [variable]: e.target.value,
-                        })}
+                        onChange={e =>
+                          setTestVariables({
+                            ...testVariables,
+                            [variable]: e.target.value
+                          })
+                        }
                         className="col-span-3"
                         placeholder={`Enter ${variable}`}
                       />
@@ -174,25 +176,23 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
                   ))}
                 </>
               )}
-              
+
               {isDemo && (
                 <Alert className="col-span-full">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>Demo Mode:</strong> Test sends are simulated and won't actually send messages.
+                    <strong>Demo Mode:</strong> Test sends are simulated and won't actually send
+                    messages.
                   </AlertDescription>
                 </Alert>
               )}
             </div>
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSend} 
-                disabled={testSendMutation.isPending}
-              >
+              <Button onClick={handleSend} disabled={testSendMutation.isPending}>
                 {testSendMutation.isPending ? 'Sending...' : 'Send Test'}
               </Button>
             </DialogFooter>
@@ -200,5 +200,5 @@ export function TestSendModal({ template, open, onOpenChange }: TestSendModalPro
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }
