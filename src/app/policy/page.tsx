@@ -1,815 +1,776 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Shield, Lock, Database, Eye, Users, Globe, Cookie, Mail, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Shield, Lock, Database, Eye, Users, Globe, Cookie, Mail, AlertTriangle, CheckCircle, ChevronRight, ArrowRight, Sparkles, Zap, FileText, Clock, Award, ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default function PrivacyPolicyPage() {
+  const [activeSection, setActiveSection] = useState('')
+  const [isScrolled, setIsScrolled] = useState(false)
   const lastUpdated = "January 26, 2025"
   const effectiveDate = "January 26, 2025"
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+
+      // Track active section for navigation highlighting
+      const sections = document.querySelectorAll('section[id]')
+      const scrollPosition = window.scrollY + 100
+
+      sections.forEach((section) => {
+        const sectionTop = (section as HTMLElement).offsetTop
+        const sectionHeight = (section as HTMLElement).offsetHeight
+        const sectionId = section.getAttribute('id')
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          setActiveSection(sectionId || '')
+        }
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const navigationItems = [
+    { id: 'introduction', label: 'Introduction', icon: Globe },
+    { id: 'data-collection', label: 'Data Collection', icon: Database },
+    { id: 'data-usage', label: 'How We Use Data', icon: Users },
+    { id: 'security', label: 'Security', icon: Lock },
+    { id: 'cookies', label: 'Cookies', icon: Cookie },
+    { id: 'your-rights', label: 'Your Rights', icon: Eye },
+    { id: 'contact', label: 'Contact', icon: Mail },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">H</span>
+    <div className="min-h-screen bg-white dark:bg-slate-950">
+      {/* Modern Gradient Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/20" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-transparent dark:from-blue-900/10" />
+
+      {/* Subtle Grid Pattern */}
+      <div className="fixed inset-0 opacity-30">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:60px_60px] dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)]" />
+      </div>
+
+      {/* Modern Navigation Header */}
+      <header className={cn(
+        "sticky top-0 z-50 transition-all duration-300",
+        isScrolled
+          ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm"
+          : "bg-transparent"
+      )}>
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity" />
+                <div className="relative w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                  <span className="text-white font-bold text-xl">H</span>
+                </div>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                HERA ERP
-              </span>
+              <div>
+                <span className="text-xl font-semibold text-slate-900 dark:text-white">
+                  HERA ERP
+                </span>
+                <span className="block text-xs text-slate-500 dark:text-slate-400 -mt-1">
+                  Enterprise Platform
+                </span>
+              </div>
             </Link>
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+
+            {/* Navigation Links */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors relative group"
+              >
                 Home
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300" />
               </Link>
-              <Link href="/terms" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link
+                href="/terms"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors relative group"
+              >
                 Terms
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300" />
               </Link>
-              <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                Contact
+              <Link
+                href="/security"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors relative group"
+              >
+                Security
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                Contact Us
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-16 px-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-2xl mb-6">
-              <Shield className="w-10 h-10 text-white" />
+      {/* Hero Section with Modern Design */}
+      <section className="relative pt-20 pb-16 px-6 overflow-hidden">
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-950/30 rounded-full border border-blue-200 dark:border-blue-800 mb-8">
+              <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                GDPR Compliant
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+
+            {/* Main Title */}
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-br from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white bg-clip-text text-transparent leading-tight">
               Privacy & Cookie Policy
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Your privacy is our priority. GDPR-compliant data protection you can trust.
+
+            {/* Subtitle */}
+            <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+              Your privacy is fundamental to our mission. We're committed to protecting your data
+              with enterprise-grade security and complete transparency.
             </p>
-            <div className="flex items-center justify-center gap-4 mt-6 text-sm text-gray-500 dark:text-gray-400">
-              <span>Effective: {effectiveDate}</span>
-              <span>•</span>
-              <span>Last Updated: {lastUpdated}</span>
+
+            {/* Date Information */}
+            <div className="flex items-center justify-center gap-6 text-sm">
+              <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <Clock className="w-4 h-4 text-slate-500" />
+                <span className="text-slate-600 dark:text-slate-400">Effective:</span>
+                <span className="font-semibold text-slate-900 dark:text-white">{effectiveDate}</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <FileText className="w-4 h-4 text-slate-500" />
+                <span className="text-slate-600 dark:text-slate-400">Updated:</span>
+                <span className="font-semibold text-slate-900 dark:text-white">{lastUpdated}</span>
+              </div>
             </div>
           </div>
 
-          {/* Key Features */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Multi-Tenant Isolation</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Perfect data separation with organization_id isolation
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <Database className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Complete Audit Trail</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Every action tracked with Smart Code intelligence
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <Shield className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">GDPR Compliant</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Full compliance with EU data protection regulations
-                </p>
-              </CardContent>
-            </Card>
+          {/* Feature Cards with Modern Design */}
+          <div className="grid md:grid-cols-3 gap-6 mt-16">
+            {[
+              {
+                icon: Lock,
+                title: "Multi-Tenant Isolation",
+                description: "Perfect data separation with organization_id isolation",
+                gradient: "from-blue-600 to-indigo-600",
+                lightBg: "bg-blue-50",
+                darkBg: "dark:bg-blue-950/20"
+              },
+              {
+                icon: Database,
+                title: "Complete Audit Trail",
+                description: "Every action tracked with Smart Code intelligence",
+                gradient: "from-indigo-600 to-purple-600",
+                lightBg: "bg-indigo-50",
+                darkBg: "dark:bg-indigo-950/20"
+              },
+              {
+                icon: Award,
+                title: "GDPR Compliant",
+                description: "Full compliance with EU data protection regulations",
+                gradient: "from-purple-600 to-pink-600",
+                lightBg: "bg-purple-50",
+                darkBg: "dark:bg-purple-950/20"
+              }
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              >
+                {/* Gradient Border on Hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                <div className="relative p-6">
+                  {/* Icon with Gradient Background */}
+                  <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4", feature.lightBg, feature.darkBg)}>
+                    <feature.icon className={cn("w-6 h-6 bg-gradient-to-br bg-clip-text text-transparent", feature.gradient)} />
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* Main Content */}
-          <div className="space-y-8">
-            {/* Section 1: Introduction */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  1. Introduction
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose prose-gray dark:prose-invert max-w-none">
-                <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  HERA ERP Ltd. ("HERA", "we", "our", or "us") is committed to protecting and respecting your privacy.
-                  This Privacy & Cookie Policy explains how we collect, use, disclose, and safeguard your personal data
-                  when you visit our website at heraerp.com or use our enterprise resource planning services.
-                </p>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  We comply with the General Data Protection Regulation (EU) 2016/679 ("GDPR"), the UK Data Protection Act 2018,
-                  and other applicable data protection laws worldwide. Our revolutionary 6-table universal architecture ensures
-                  perfect data isolation through our sacred organization_id boundary, providing enterprise-grade security for all users.
-                </p>
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mt-4">
-                  <p className="text-sm text-blue-900 dark:text-blue-200">
-                    <strong>Data Controller:</strong> HERA ERP Ltd.<br />
-                    <strong>Contact:</strong> privacy@heraerp.com<br />
-                    <strong>DPO Contact:</strong> dpo@heraerp.com (if applicable)
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Main Content with Side Navigation */}
+      <section className="relative pb-24 px-6">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-12 gap-8">
+            {/* Side Navigation - Sticky */}
+            <aside className="hidden lg:block lg:col-span-3">
+              <div className="sticky top-24">
+                <nav className="space-y-1">
+                  {navigationItems.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                        activeSection === item.id
+                          ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 text-blue-700 dark:text-blue-400 border-l-2 border-blue-600"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                      )}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                    >
+                      <item.icon className="w-4 h-4 flex-shrink-0" />
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </nav>
 
-            {/* Section 2: Data Collection */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Database className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-                  2. What Data We Collect
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">Personal Data You Provide:</h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Contact Information:</strong> Name, email address, phone number, job title</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Business Information:</strong> Company name, industry, organization size, business address</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Account Data:</strong> Username, encrypted password, organization_id, user preferences</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Transaction Data:</strong> Smart Code-tagged business transactions, audit logs, workflow data</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">Data We Collect Automatically:</h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Usage Data:</strong> IP address, browser type, device information, pages visited, click paths</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Performance Data:</strong> API response times, system health metrics (anonymized)</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Cookie Data:</strong> Session cookies, preference cookies, analytics cookies (with consent)</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mt-4">
-                  <p className="text-sm text-amber-900 dark:text-amber-200">
-                    <strong>Special Categories:</strong> HERA does not intentionally collect sensitive personal data
-                    (health, biometric, political opinions). If your business processes such data, it remains isolated
-                    within your organization's sacred boundary.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 3: How We Use Data */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  3. How We Use Your Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We process your personal data based on the following legal bases under GDPR:
-                </p>
-
-                <div className="space-y-4">
-                  <div className="border-l-4 border-blue-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Contract Performance (Article 6(1)(b) GDPR)</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Providing HERA ERP services and support</li>
-                      <li>• Managing your account and organization settings</li>
-                      <li>• Processing transactions with Smart Code intelligence</li>
-                      <li>• Maintaining audit trails for compliance</li>
-                    </ul>
-                  </div>
-
-                  <div className="border-l-4 border-green-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Legitimate Interest (Article 6(1)(f) GDPR)</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Improving our services through analytics</li>
-                      <li>• Ensuring platform security and preventing fraud</li>
-                      <li>• Sending service updates and important notices</li>
-                      <li>• Conducting business intelligence and research</li>
-                    </ul>
-                  </div>
-
-                  <div className="border-l-4 border-purple-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Consent (Article 6(1)(a) GDPR)</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Sending marketing communications and newsletters</li>
-                      <li>• Setting non-essential cookies for analytics</li>
-                      <li>• Processing special categories of data (if applicable)</li>
-                    </ul>
-                  </div>
-
-                  <div className="border-l-4 border-red-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Legal Obligation (Article 6(1)(c) GDPR)</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Complying with regulatory requirements</li>
-                      <li>• Responding to lawful requests from authorities</li>
-                      <li>• Maintaining records for tax and accounting purposes</li>
-                    </ul>
+                {/* Quick Actions */}
+                <div className="mt-8 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <h4 className="font-semibold text-sm mb-3 text-slate-900 dark:text-white">Quick Actions</h4>
+                  <div className="space-y-2">
+                    <button className="w-full text-left text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Contact DPO
+                    </button>
+                    <button className="w-full text-left text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      Download PDF
+                    </button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </aside>
 
-            {/* Section 4: Data Storage & Security */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Lock className="w-6 h-6 text-green-600 dark:text-green-400" />
-                  4. Data Storage & Security
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">Technical & Organizational Measures:</h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Multi-Tenant Isolation:</strong> Sacred organization_id boundary ensures zero data leakage between organizations</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Smart Code Architecture:</strong> Every transaction tagged with intelligent business context for perfect audit trails</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Encryption:</strong> TLS 1.3 for data in transit, AES-256 for data at rest</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Access Control:</strong> Role-based access control (RBAC) with JWT authentication</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Monitoring:</strong> Real-time security monitoring with Prometheus and Grafana</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span><strong>Backup & Recovery:</strong> Automated backups with point-in-time recovery (RPO ≤ 5min)</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">Data Location:</h4>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    Primary data storage is within the European Economic Area (EEA). For international transfers,
-                    we rely on:
-                  </p>
-                  <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300 ml-4">
-                    <li>• EU-approved Standard Contractual Clauses (SCCs)</li>
-                    <li>• Adequacy decisions by the European Commission</li>
-                    <li>• Your explicit consent for specific transfers</li>
-                  </ul>
-                </div>
-
-                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                  <p className="text-sm text-green-900 dark:text-green-200">
-                    <strong>Security Incident Response:</strong> In the unlikely event of a data breach affecting your personal data,
-                    we will notify you within 72 hours in accordance with GDPR requirements.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 5: Data Sharing */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Users className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                  5. Data Sharing & Third Parties
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We do not sell, rent, or trade your personal data. We only share data with:
-                </p>
-
-                <div className="space-y-3">
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Service Providers (Data Processors)</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• <strong>Supabase:</strong> Database and authentication services (EU/US with SCCs)</li>
-                      <li>• <strong>Vercel:</strong> Hosting and CDN services (Global with DPA)</li>
-                      <li>• <strong>SendGrid:</strong> Email delivery services (US with SCCs)</li>
-                      <li>• <strong>Stripe:</strong> Payment processing (PCI-DSS compliant)</li>
-                    </ul>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Integration Partners (Optional)</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                      Only if you explicitly enable these integrations:
-                    </p>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Microsoft 365, Google Workspace</li>
-                      <li>• LinkedIn, Mailchimp</li>
-                      <li>• Banking and payment gateways</li>
-                      <li>• Industry-specific tools</li>
-                    </ul>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Legal Requirements</h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                      <li>• Law enforcement agencies (with valid legal basis)</li>
-                      <li>• Regulatory bodies and government authorities</li>
-                      <li>• Courts and tribunals</li>
-                      <li>• Professional advisers (lawyers, accountants)</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 6: Cookies */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Cookie className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                  6. Cookies & Tracking Technologies
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We use cookies and similar technologies to enhance your experience:
-                </p>
-
-                <div className="space-y-3">
-                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                    <h4 className="font-semibold text-green-900 dark:text-green-200 mb-2">Essential Cookies (Always Active)</h4>
-                    <p className="text-sm text-green-800 dark:text-green-300">
-                      Required for basic functionality, security, and authentication. Cannot be disabled.
-                    </p>
-                    <ul className="mt-2 space-y-1 text-sm text-green-700 dark:text-green-400">
-                      <li>• Session management (supabase-auth-token)</li>
-                      <li>• Security tokens (csrf-token)</li>
-                      <li>• Organization context (org-id)</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                    <h4 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Functional Cookies (Optional)</h4>
-                    <p className="text-sm text-blue-800 dark:text-blue-300">
-                      Enhance functionality and personalization. Can be disabled in preferences.
-                    </p>
-                    <ul className="mt-2 space-y-1 text-sm text-blue-700 dark:text-blue-400">
-                      <li>• Language preferences</li>
-                      <li>• Theme settings (dark/light mode)</li>
-                      <li>• Dashboard layouts</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-                    <h4 className="font-semibold text-purple-900 dark:text-purple-200 mb-2">Analytics Cookies (With Consent)</h4>
-                    <p className="text-sm text-purple-800 dark:text-purple-300">
-                      Help us understand usage patterns. Only set with your explicit consent.
-                    </p>
-                    <ul className="mt-2 space-y-1 text-sm text-purple-700 dark:text-purple-400">
-                      <li>• Google Analytics (_ga, _gid)</li>
-                      <li>• Performance monitoring</li>
-                      <li>• User journey tracking</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="border-l-4 border-amber-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Managing Cookies:</strong> You can control cookies through our Cookie Banner on first visit,
-                    or anytime via your browser settings. Note that disabling cookies may affect functionality.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 7: Your Rights */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Eye className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                  7. Your GDPR Rights
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  Under GDPR, you have the following rights regarding your personal data:
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Access
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Request a copy of your personal data we hold (Subject Access Request)
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Rectification
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Request correction of inaccurate or incomplete personal data
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Erasure
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Request deletion of your data ("right to be forgotten") where applicable
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Restriction
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Request limitation of processing in certain circumstances
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Data Portability
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Receive your data in a structured, machine-readable format
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      Right to Object
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Object to processing based on legitimate interests or direct marketing
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
-                  <h4 className="font-semibold text-indigo-900 dark:text-indigo-200 mb-2">How to Exercise Your Rights</h4>
-                  <p className="text-sm text-indigo-800 dark:text-indigo-300 mb-2">
-                    To exercise any of these rights, contact us at:
-                  </p>
-                  <ul className="space-y-1 text-sm text-indigo-700 dark:text-indigo-400">
-                    <li>📧 Email: privacy@heraerp.com</li>
-                    <li>📧 DPO: dpo@heraerp.com</li>
-                    <li>⏱️ Response time: Within 30 days</li>
-                  </ul>
-                </div>
-
-                <div className="border-l-4 border-red-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Right to Withdraw Consent:</strong> Where processing is based on consent, you can withdraw it at any time
-                    without affecting the lawfulness of processing before withdrawal.
-                  </p>
-                </div>
-
-                <div className="border-l-4 border-amber-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Right to Complain:</strong> You have the right to lodge a complaint with your local supervisory authority
-                    if you believe we have not handled your data properly.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 8: Data Retention */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Database className="w-6 h-6 text-red-600 dark:text-red-400" />
-                  8. Data Retention
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We retain personal data only as long as necessary for the purposes collected:
-                </p>
-
-                <div className="space-y-3">
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Active Account Data</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Retained for the duration of your subscription plus 30 days grace period
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Transaction & Audit Logs</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      7 years for compliance with financial regulations and accounting standards
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Marketing Data</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Until you unsubscribe or withdraw consent, reviewed annually
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Security Logs</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      90 days for security monitoring and incident response
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Backup Data</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      30 days in encrypted backups for disaster recovery
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
-                  <p className="text-sm text-red-900 dark:text-red-200">
-                    <strong>Deletion Process:</strong> When retention periods expire, data is permanently deleted using secure
-                    deletion methods. Smart Code audit trails are anonymized rather than deleted for system integrity.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 9: International Transfers */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  9. International Data Transfers
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  Your data may be transferred outside the EEA. We ensure adequate protection through:
-                </p>
-
-                <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>EU-approved Standard Contractual Clauses (SCCs) with all processors</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Adequacy decisions (UK, Switzerland, Canada, Japan, etc.)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Binding Corporate Rules for intra-group transfers</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Your explicit consent for specific transfers when required</span>
-                  </li>
-                </ul>
-
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                  <p className="text-sm text-blue-900 dark:text-blue-200">
-                    <strong>Transfer Impact Assessment:</strong> We conduct regular assessments to ensure transfers
-                    meet GDPR standards and do not undermine your data protection rights.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 10: Children's Privacy */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Users className="w-6 h-6 text-pink-600 dark:text-pink-400" />
-                  10. Children's Privacy
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700 dark:text-gray-300">
-                  HERA ERP is designed for business use and is not intended for children under 16.
-                  We do not knowingly collect personal data from children. If you believe a child has
-                  provided us with personal data, please contact us immediately at privacy@heraerp.com
-                  and we will delete such information.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Section 11: Marketing */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Mail className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-                  11. Marketing Communications
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We may send you marketing communications about our products, services, and updates if:
-                </p>
-
-                <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>You have given explicit consent (opt-in)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>You are an existing customer and haven't opted out (soft opt-in)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>The communication relates to similar products/services</span>
-                  </li>
-                </ul>
-
-                <div className="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-4">
-                  <p className="text-sm text-teal-900 dark:text-teal-200">
-                    <strong>Unsubscribe Anytime:</strong> Every marketing email contains an unsubscribe link.
-                    You can also update preferences in your account settings or email privacy@heraerp.com.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Section 12: Contact & DPO */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Mail className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  12. Contact Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Data Controller</h4>
-                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                      <p><strong>HERA ERP Ltd.</strong></p>
-                      <p>📧 General: info@heraerp.com</p>
-                      <p>📧 Privacy: privacy@heraerp.com</p>
-                      <p>🌐 Website: heraerp.com</p>
+            {/* Main Content Area */}
+            <main className="lg:col-span-9 space-y-8">
+              {/* Introduction Section */}
+              <section id="introduction" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                        <Globe className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Introduction</h2>
                     </div>
-                  </div>
 
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Data Protection Officer</h4>
-                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                      <p>📧 DPO: dpo@heraerp.com</p>
-                      <p>📮 Postal: [Address if required]</p>
-                      <p>📞 Phone: [If provided]</p>
+                    <div className="prose prose-slate dark:prose-invert max-w-none">
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+                        HERA ERP Ltd. ("HERA", "we", "our", or "us") is committed to protecting and respecting your privacy.
+                        This Privacy & Cookie Policy explains how we collect, use, disclose, and safeguard your personal data
+                        when you visit our website at heraerp.com or use our enterprise resource planning services.
+                      </p>
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                        We comply with the General Data Protection Regulation (EU) 2016/679 ("GDPR"), the UK Data Protection Act 2018,
+                        and other applicable data protection laws worldwide. Our revolutionary 6-table universal architecture ensures
+                        perfect data isolation through our sacred organization_id boundary, providing enterprise-grade security for all users.
+                      </p>
+
+                      {/* Info Card */}
+                      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                        <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Data Controller Information</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-start gap-3">
+                            <span className="text-slate-500 dark:text-slate-400">Company:</span>
+                            <span className="font-medium text-slate-900 dark:text-white">HERA ERP Ltd.</span>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <span className="text-slate-500 dark:text-slate-400">Contact:</span>
+                            <span className="font-medium text-blue-600 dark:text-blue-400">privacy@heraerp.com</span>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <span className="text-slate-500 dark:text-slate-400">DPO:</span>
+                            <span className="font-medium text-blue-600 dark:text-blue-400">dpo@heraerp.com</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </section>
 
-                <div className="border-t pt-4 mt-4">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Supervisory Authorities</h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                    You may lodge a complaint with your local data protection authority:
-                  </p>
-                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                    <li>• UK: Information Commissioner's Office (ico.org.uk)</li>
-                    <li>• Ireland: Data Protection Commission (dataprotection.ie)</li>
-                    <li>• Germany: BfDI (bfdi.bund.de)</li>
-                    <li>• France: CNIL (cnil.fr)</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
+              {/* Data Collection Section */}
+              <section id="data-collection" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+                        <Database className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">What Data We Collect</h2>
+                    </div>
 
-            {/* Section 13: Updates */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                  13. Updates to This Policy
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
-                  We may update this Privacy Policy from time to time to reflect changes in our practices,
-                  technology, legal requirements, or business operations.
-                </p>
+                    <div className="space-y-6">
+                      {/* Personal Data Section */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Personal Data You Provide</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {[
+                            { title: "Contact Information", items: "Name, email, phone, job title" },
+                            { title: "Business Information", items: "Company, industry, size, address" },
+                            { title: "Account Data", items: "Username, password, preferences" },
+                            { title: "Transaction Data", items: "Business transactions, audit logs" }
+                          ].map((category, index) => (
+                            <div key={index} className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                              <div className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <h4 className="font-medium text-slate-900 dark:text-white mb-1">{category.title}</h4>
+                                  <p className="text-sm text-slate-600 dark:text-slate-400">{category.items}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
-                <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4">
-                  <h4 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Notification Process</h4>
-                  <ul className="space-y-1 text-sm text-amber-800 dark:text-amber-300">
-                    <li>• <strong>Material Changes:</strong> Email notification to all users</li>
-                    <li>• <strong>Minor Updates:</strong> Posted on this page with updated date</li>
-                    <li>• <strong>Review Frequency:</strong> We review this policy annually</li>
-                    <li>• <strong>Version History:</strong> Previous versions available upon request</li>
-                  </ul>
-                </div>
+                      {/* Automated Data Section */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Data We Collect Automatically</h3>
+                        <div className="space-y-3">
+                          {[
+                            { icon: Zap, title: "Usage Data", description: "IP address, browser type, pages visited, click paths" },
+                            { icon: ChevronRight, title: "Performance Data", description: "API response times, system metrics (anonymized)" },
+                            { icon: Cookie, title: "Cookie Data", description: "Session cookies, preferences, analytics (with consent)" }
+                          ].map((item, index) => (
+                            <div key={index} className="flex items-start gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                              <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                                <item.icon className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-medium text-slate-900 dark:text-white mb-1">{item.title}</h4>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  The latest version will always be available at heraerp.com/policy
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* HERA-Specific Features */}
-            <Card className="border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
-                  <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  HERA's Advanced Privacy Features
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">🔒 Perfect Multi-Tenancy</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Sacred organization_id boundary ensures your data never mixes with others.
-                      Mario's restaurant data is completely isolated from Dr. Smith's clinic.
-                    </p>
-                  </div>
-
-                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">🧬 Smart Code Intelligence</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Every transaction tagged with business context for perfect audit trails.
-                      Complete transparency without exposing sensitive data.
-                    </p>
-                  </div>
-
-                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">📊 6-Table Universal Architecture</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      All data stored in 6 sacred tables with consistent security model.
-                      No data sprawl, no security gaps, perfect control.
-                    </p>
-                  </div>
-
-                  <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">🛡️ Enterprise Security DNA</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      SSO/SAML 2.0, RBAC, KMS encryption, rate limiting built-in.
-                      Enterprise-grade security as standard, not an add-on.
-                    </p>
+                      {/* Warning Card */}
+                      <div className="bg-amber-50 dark:bg-amber-950/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Special Categories</h4>
+                            <p className="text-sm text-amber-800 dark:text-amber-300">
+                              HERA does not intentionally collect sensitive personal data (health, biometric, political opinions).
+                              If your business processes such data, it remains isolated within your organization's sacred boundary.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </section>
 
-                <div className="bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-800/30 dark:to-cyan-800/30 rounded-lg p-4">
-                  <p className="text-center text-sm font-medium text-blue-900 dark:text-blue-200">
-                    HERA's revolutionary architecture provides privacy by design, not by policy alone.
-                  </p>
+              {/* Data Usage Section */}
+              <section id="data-usage" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">How We Use Your Data</h2>
+                    </div>
+
+                    <p className="text-slate-600 dark:text-slate-300 mb-6">
+                      We process your personal data based on the following legal bases under GDPR:
+                    </p>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {[
+                        {
+                          title: "Contract Performance",
+                          article: "Article 6(1)(b) GDPR",
+                          color: "blue",
+                          items: [
+                            "Providing HERA ERP services",
+                            "Managing your account",
+                            "Processing transactions",
+                            "Maintaining audit trails"
+                          ]
+                        },
+                        {
+                          title: "Legitimate Interest",
+                          article: "Article 6(1)(f) GDPR",
+                          color: "green",
+                          items: [
+                            "Improving our services",
+                            "Ensuring platform security",
+                            "Service updates & notices",
+                            "Business intelligence"
+                          ]
+                        },
+                        {
+                          title: "Consent",
+                          article: "Article 6(1)(a) GDPR",
+                          color: "purple",
+                          items: [
+                            "Marketing communications",
+                            "Non-essential cookies",
+                            "Special data categories",
+                            "Newsletter subscriptions"
+                          ]
+                        },
+                        {
+                          title: "Legal Obligation",
+                          article: "Article 6(1)(c) GDPR",
+                          color: "red",
+                          items: [
+                            "Regulatory compliance",
+                            "Authority requests",
+                            "Tax records",
+                            "Legal proceedings"
+                          ]
+                        }
+                      ].map((basis, index) => (
+                        <div key={index} className={cn(
+                          "relative rounded-xl border overflow-hidden",
+                          basis.color === "blue" && "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20",
+                          basis.color === "green" && "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/20",
+                          basis.color === "purple" && "border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/20",
+                          basis.color === "red" && "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20"
+                        )}>
+                          <div className={cn(
+                            "absolute top-0 left-0 w-1 h-full",
+                            basis.color === "blue" && "bg-blue-500",
+                            basis.color === "green" && "bg-green-500",
+                            basis.color === "purple" && "bg-purple-500",
+                            basis.color === "red" && "bg-red-500"
+                          )} />
+                          <div className="p-5 pl-6">
+                            <h4 className="font-semibold text-slate-900 dark:text-white mb-1">{basis.title}</h4>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{basis.article}</p>
+                            <ul className="space-y-1.5">
+                              {basis.items.map((item, i) => (
+                                <li key={i} className="text-sm text-slate-600 dark:text-slate-300 flex items-start gap-2">
+                                  <span className="text-slate-400 mt-0.5">•</span>
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </section>
+
+              {/* Security Section */}
+              <section id="security" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center">
+                        <Lock className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Data Storage & Security</h2>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Technical & Organizational Measures</h3>
+                        <div className="grid gap-3">
+                          {[
+                            { title: "Multi-Tenant Isolation", desc: "Sacred organization_id boundary ensures zero data leakage" },
+                            { title: "Smart Code Architecture", desc: "Every transaction tagged with intelligent business context" },
+                            { title: "Encryption Standards", desc: "TLS 1.3 for data in transit, AES-256 for data at rest" },
+                            { title: "Access Control", desc: "Role-based access control (RBAC) with JWT authentication" },
+                            { title: "Real-time Monitoring", desc: "Security monitoring with Prometheus and Grafana" },
+                            { title: "Backup & Recovery", desc: "Automated backups with point-in-time recovery (RPO ≤ 5min)" }
+                          ].map((item, index) => (
+                            <div key={index} className="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50 to-green-50 dark:from-slate-800 dark:to-green-950/20 rounded-xl border border-slate-200 dark:border-slate-700">
+                              <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <h4 className="font-medium text-slate-900 dark:text-white mb-1">{item.title}</h4>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">{item.desc}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Data Location Card */}
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                        <h4 className="font-semibold text-slate-900 dark:text-white mb-3">Data Location & Transfers</h4>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                          Primary data storage is within the European Economic Area (EEA). For international transfers, we rely on:
+                        </p>
+                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <span>EU-approved Standard Contractual Clauses (SCCs)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <span>Adequacy decisions by the European Commission</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <span>Your explicit consent for specific transfers</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Cookies Section */}
+              <section id="cookies" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-600 to-orange-600 rounded-xl flex items-center justify-center">
+                        <Cookie className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Cookies & Tracking Technologies</h2>
+                    </div>
+
+                    <p className="text-slate-600 dark:text-slate-300 mb-6">
+                      We use cookies and similar technologies to enhance your experience:
+                    </p>
+
+                    <div className="space-y-4">
+                      {[
+                        {
+                          type: "Essential Cookies",
+                          status: "Always Active",
+                          color: "green",
+                          description: "Required for basic functionality, security, and authentication. Cannot be disabled.",
+                          examples: ["Session management", "Security tokens", "Organization context"]
+                        },
+                        {
+                          type: "Functional Cookies",
+                          status: "Optional",
+                          color: "blue",
+                          description: "Enhance functionality and personalization. Can be disabled in preferences.",
+                          examples: ["Language preferences", "Theme settings", "Dashboard layouts"]
+                        },
+                        {
+                          type: "Analytics Cookies",
+                          status: "With Consent",
+                          color: "purple",
+                          description: "Help us understand usage patterns. Only set with your explicit consent.",
+                          examples: ["Google Analytics", "Performance monitoring", "User journey tracking"]
+                        }
+                      ].map((cookie, index) => (
+                        <div key={index} className={cn(
+                          "rounded-xl border p-5",
+                          cookie.color === "green" && "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800",
+                          cookie.color === "blue" && "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800",
+                          cookie.color === "purple" && "bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800"
+                        )}>
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="font-semibold text-slate-900 dark:text-white">{cookie.type}</h4>
+                            <span className={cn(
+                              "text-xs font-medium px-2 py-1 rounded-full",
+                              cookie.color === "green" && "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300",
+                              cookie.color === "blue" && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                              cookie.color === "purple" && "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300"
+                            )}>
+                              {cookie.status}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">{cookie.description}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {cookie.examples.map((example, i) => (
+                              <span key={i} className="text-xs px-2 py-1 bg-white dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-700">
+                                {example}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                      <div className="flex items-start gap-3">
+                        <Cookie className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-amber-900 dark:text-amber-200 mb-1">Managing Cookies</h4>
+                          <p className="text-sm text-amber-800 dark:text-amber-300">
+                            You can control cookies through our Cookie Banner on first visit, or anytime via your browser settings.
+                            Note that disabling cookies may affect functionality.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Your Rights Section */}
+              <section id="your-rights" className="scroll-mt-24">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  <div className="p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-xl flex items-center justify-center">
+                        <Eye className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Your GDPR Rights</h2>
+                    </div>
+
+                    <p className="text-slate-600 dark:text-slate-300 mb-6">
+                      Under GDPR, you have the following rights regarding your personal data:
+                    </p>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                      {[
+                        { title: "Right to Access", desc: "Request a copy of your personal data we hold" },
+                        { title: "Right to Rectification", desc: "Request correction of inaccurate data" },
+                        { title: "Right to Erasure", desc: "Request deletion of your data ('right to be forgotten')" },
+                        { title: "Right to Restriction", desc: "Request limitation of processing" },
+                        { title: "Right to Data Portability", desc: "Receive your data in machine-readable format" },
+                        { title: "Right to Object", desc: "Object to processing based on legitimate interests" }
+                      ].map((right, index) => (
+                        <div key={index} className="bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-800 dark:to-indigo-950/20 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-start gap-3">
+                            <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-slate-900 dark:text-white mb-1">{right.title}</h4>
+                              <p className="text-sm text-slate-600 dark:text-slate-400">{right.desc}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* How to Exercise Rights */}
+                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/20 dark:to-blue-950/20 rounded-xl p-6 border border-indigo-200 dark:border-indigo-800">
+                      <h4 className="font-semibold text-slate-900 dark:text-white mb-3">How to Exercise Your Rights</h4>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                        To exercise any of these rights, contact us through the following channels:
+                      </p>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="bg-white dark:bg-slate-900 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Mail className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Email</span>
+                          </div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">privacy@heraerp.com</p>
+                        </div>
+                        <div className="bg-white dark:bg-slate-900 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">DPO</span>
+                          </div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">dpo@heraerp.com</p>
+                        </div>
+                        <div className="bg-white dark:bg-slate-900 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Clock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Response</span>
+                          </div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">Within 30 days</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Contact Section */}
+              <section id="contact" className="scroll-mt-24">
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl overflow-hidden relative">
+                  {/* Background Pattern */}
+                  <div className="absolute inset-0">
+                    <div className="absolute inset-0" style={{
+                      backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+                      backgroundSize: '30px 30px'
+                    }} />
+                  </div>
+
+                  <div className="relative p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                        <Mail className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white">Contact Information</h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <h3 className="font-semibold text-white mb-4">Data Controller</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <Sparkles className="w-4 h-4 text-white/70" />
+                            <span className="text-white/90">HERA ERP Ltd.</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Mail className="w-4 h-4 text-white/70" />
+                            <a href="mailto:info@heraerp.com" className="text-white/90 hover:text-white">info@heraerp.com</a>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Globe className="w-4 h-4 text-white/70" />
+                            <a href="https://heraerp.com" className="text-white/90 hover:text-white">heraerp.com</a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <h3 className="font-semibold text-white mb-4">Data Protection Officer</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <Mail className="w-4 h-4 text-white/70" />
+                            <a href="mailto:dpo@heraerp.com" className="text-white/90 hover:text-white">dpo@heraerp.com</a>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Shield className="w-4 h-4 text-white/70" />
+                            <span className="text-white/90">GDPR Compliance Team</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Clock className="w-4 h-4 text-white/70" />
+                            <span className="text-white/90">Response within 30 days</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-8 px-6 mt-16">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+      <footer className="relative bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12 px-6">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col items-center space-y-4">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               © 2025 HERA ERP Ltd. All rights reserved. | Privacy-first enterprise software.
             </p>
-            <div className="flex items-center justify-center gap-6 text-sm">
-              <Link href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <div className="flex items-center gap-6 text-sm">
+              <Link href="/terms" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 Terms of Service
               </Link>
               <Link href="/policy" className="text-blue-600 dark:text-blue-400 font-semibold">
                 Privacy Policy
               </Link>
-              <Link href="/security" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/security" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 Security
               </Link>
-              <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link href="/contact" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                 Contact
               </Link>
             </div>

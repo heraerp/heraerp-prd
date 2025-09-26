@@ -28,42 +28,8 @@ import { Card } from '@/components/ui/card'
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold">HERA</span>
-          </Link>
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/features" className="text-gray-900 font-medium">
-              Features
-            </Link>
-            <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
-              Pricing
-            </Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900">
-              About
-            </Link>
-            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-              Contact
-            </Link>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Start Free Trial</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-6">
+      <section className="pt-16 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">

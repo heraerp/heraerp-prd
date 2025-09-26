@@ -6,6 +6,9 @@ import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 // import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'; // Temporarily disabled due to runtime error
 import { ToastProvider } from '@/components/ui/useToast'
 import { Toaster } from '@/components/ui/toaster'
+import CookieBanner from '@/components/ui/cookie-banner'
+import Navbar from '@/app/components/Navbar'
+import Footer from '@/app/components/Footer'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
@@ -85,6 +88,12 @@ export default function RootLayout({
                 if (!localStorage.getItem('hera-theme')) {
                   localStorage.setItem('hera-theme', 'dark');
                 }
+
+                // No-op cookie preferences function for footer
+                window.showCookiePreferences = function() {
+                  console.log('Cookie preferences would be shown here');
+                  // TODO: Replace with actual CMP integration (Cookiebot/OneTrust)
+                };
               })();
             `
           }}
@@ -103,8 +112,11 @@ export default function RootLayout({
           <QueryProvider>
             <HERAAuthProvider>
               <ToastProvider>
+                <Navbar />
                 {children}
+                <Footer showGradient={true} />
                 <Toaster />
+                <CookieBanner />
               </ToastProvider>
             </HERAAuthProvider>
           </QueryProvider>
