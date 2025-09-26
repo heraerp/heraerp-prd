@@ -48,14 +48,14 @@ export default function CTA({ city, variants = [], className = "" }: CTAProps) {
         ${className}
       `}
     >
-      <div className="bg-white/95 backdrop-blur-lg border-t shadow-2xl">
+      <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 shadow-2xl">
         <div className="mx-auto max-w-7xl px-4 py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-center sm:text-left">
-              <strong className="block text-lg font-bold text-gray-900">
+              <strong className="block text-lg font-bold text-gray-900 dark:text-gray-100">
                 Ready to transform your {city} business?
               </strong>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Join 500+ UK businesses already saving 15+ hours per week
               </p>
             </div>
@@ -63,9 +63,11 @@ export default function CTA({ city, variants = [], className = "" }: CTAProps) {
               <Link 
                 href={`/free-guide?${utm}`}
                 className="
-                  rounded-xl border-2 border-gray-200 bg-white px-6 py-3 
-                  text-center font-semibold text-gray-700
-                  transition-all hover:border-gray-300 hover:bg-gray-50
+                  rounded-xl border-2 border-gray-200 dark:border-gray-600 
+                  bg-white dark:bg-gray-800 px-6 py-3 
+                  text-center font-semibold text-gray-700 dark:text-gray-200
+                  transition-all hover:border-gray-300 dark:hover:border-gray-500 
+                  hover:bg-gray-50 dark:hover:bg-gray-700
                   hover:shadow-md
                 "
               >
@@ -84,7 +86,7 @@ export default function CTA({ city, variants = [], className = "" }: CTAProps) {
               </Link>
             </div>
           </div>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 sm:justify-start">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400 sm:justify-start">
             <span>✓ No credit card required</span>
             <span>✓ 14-day free trial</span>
             <span>✓ Cancel anytime</span>
