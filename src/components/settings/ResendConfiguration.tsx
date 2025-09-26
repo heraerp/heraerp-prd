@@ -171,7 +171,7 @@ Sent at: ${new Date().toLocaleString()}`,
       toast.success('Test email sent successfully')
     } catch (error) {
       console.error('Error sending test email:', error)
-      toast.error(error.message || 'Failed to send test email')
+      toast.error((error as Error).message || 'Failed to send test email')
     } finally {
       setIsTesting(false)
     }

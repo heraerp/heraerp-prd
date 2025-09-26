@@ -24,7 +24,7 @@ async function setupResendConnector() {
       .from('core_entities')
       .select('*')
       .eq('entity_type', 'connector')
-      .eq('smart_code', 'HERA.PUBLICSECTOR.COMM.CONNECTOR.RESEND.V1')
+      .eq('smart_code', 'HERA.INTEGRATION.CONNECTOR.RESEND.V1')
       .single();
 
     if (existing) {
@@ -40,7 +40,7 @@ async function setupResendConnector() {
         entity_type: 'connector',
         entity_name: 'Resend Email Service',
         entity_code: 'CONNECTOR-RESEND-001',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONNECTOR.RESEND.V1',
+        smart_code: 'HERA.INTEGRATION.CONNECTOR.RESEND.V1',
         status: 'active',
         metadata: {
           provider: 'resend',
@@ -66,35 +66,35 @@ async function setupResendConnector() {
         entity_id: connector.id,
         field_name: 'provider',
         field_value_text: 'resend',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONFIG.PROVIDER.V1'
+        smart_code: 'HERA.INTEGRATION.CONFIG.PROVIDER.V1'
       },
       {
         organization_id: process.env.DEFAULT_ORGANIZATION_ID,
         entity_id: connector.id,
         field_name: 'api_key_ref',
         field_value_text: 'RESEND_API_KEY',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONFIG.API_KEY_REF.V1'
+        smart_code: 'HERA.INTEGRATION.CONFIG.API_KEY_REF.V1'
       },
       {
         organization_id: process.env.DEFAULT_ORGANIZATION_ID,
         entity_id: connector.id,
         field_name: 'status',
         field_value_text: process.env.RESEND_API_KEY ? 'connected' : 'pending',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONFIG.STATUS.V1'
+        smart_code: 'HERA.INTEGRATION.CONFIG.STATUS.V1'
       },
       {
         organization_id: process.env.DEFAULT_ORGANIZATION_ID,
         entity_id: connector.id,
         field_name: 'from_email',
         field_value_text: 'noreply@heraerp.com',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONFIG.FROM_EMAIL.V1'
+        smart_code: 'HERA.INTEGRATION.CONFIG.FROM_EMAIL.V1'
       },
       {
         organization_id: process.env.DEFAULT_ORGANIZATION_ID,
         entity_id: connector.id,
         field_name: 'webhook_endpoint',
         field_value_text: '/api/webhooks/resend',
-        smart_code: 'HERA.PUBLICSECTOR.COMM.CONFIG.WEBHOOK.V1'
+        smart_code: 'HERA.INTEGRATION.CONFIG.WEBHOOK.V1'
       }
     ];
 

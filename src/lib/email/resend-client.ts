@@ -193,7 +193,7 @@ export async function sendEmail(options: SendEmailOptions) {
       subject,
       html,
       text,
-      reply_to: replyTo,
+      replyTo,
       cc,
       bcc,
       attachments,
@@ -282,8 +282,8 @@ export async function sendTemplateEmail(
   // Replace variables in subject and content
   const subject = replaceTemplateVariables(template.subject, options.templateData)
   const html = replaceTemplateVariables(template.html, options.templateData)
-  const text = template.text
-    ? replaceTemplateVariables(template.text, options.templateData)
+  const text = (template as any).text
+    ? replaceTemplateVariables((template as any).text, options.templateData)
     : undefined
 
   // Send email with processed template

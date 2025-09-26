@@ -10,10 +10,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-dotenv.config({ path: join(__dirname, '..', '.env') });
+const envResult = dotenv.config({ path: join(__dirname, '..', '.env') });
 
 const program = new Command();
 const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
+// Check for required environment variables
+function checkEnvironment() {
+  const warnings = [];
+  
+  if (!process.env.DEFAULT_ORGANIZATION_ID) {
+    warnings.push('⚠️  DEFAULT_ORGANIZATION_ID is not set in .env file');
+  }
+  
+  if (!process.env.RESEND_API_KEY) {
+    warnings.push('⚠️  RESEND_API_KEY is not set in .env file');
+  }
+  
+  if (warnings.length > 0) {
+    console.log(chalk.yellow('\nEnvironment Configuration Warnings:'));
+    warnings.forEach(w => console.log(chalk.yellow(w)));
+    console.log(chalk.gray('\nYou can set these in your .env file or use command options.\n'));
+  }
+}
 
 // Helper function to make API calls
 async function callAPI(endpoint, method = 'GET', body = null, headers = {}) {
@@ -54,11 +73,17 @@ program
 program
   .command('status')
   .description('Check Resend connector status and configuration')
-  .action(async () => {
+  .option('--org <organizationId>', 'Organization ID')
+  .action(async (options) => {
+    checkEnvironment();
     const spinner = ora('Checking Resend connector status...').start();
     
     try {
-      const data = await callAPI('/api/integrations/resend/send', 'GET');
+      const headers = {};
+      if (options.org) {
+        headers['X-Organization-Id'] = options.org;
+      }
+      const data = await callAPI('/api/integrations/resend/send', 'GET', null, headers);
       spinner.succeed('Resend connector status retrieved');
       
       console.log('\n' + chalk.cyan('📧 Resend Connector Status'));
@@ -96,6 +121,7 @@ program
   .option('--reply-to <replyTo>', 'Reply-to email address')
   .option('--org <organizationId>', 'Organization ID')
   .action(async (options) => {
+    checkEnvironment();
     const spinner = ora('Sending email...').start();
     
     try {

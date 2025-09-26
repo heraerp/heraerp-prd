@@ -130,7 +130,7 @@ export default function SendEmailModal({ organization, onClose }: SendEmailModal
       onClose()
     } catch (error) {
       console.error('Error sending email:', error)
-      toast.error(error.message || 'Failed to send email')
+      toast.error((error as Error).message || 'Failed to send email')
     } finally {
       setIsLoading(false)
     }

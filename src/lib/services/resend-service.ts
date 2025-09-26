@@ -86,13 +86,13 @@ export async function sendEmailViaResend(options: SendEmailOptions): Promise<Ema
     }
 
     // Prepare email payload
-    const emailPayload = {
-      from: from || orgConfig['resend_from_email'] || 'noreply@heraerp.com',
+    const emailPayload: any = {
+      from: from || (orgConfig as any)['resend_from_email'] || 'noreply@heraerp.com',
       to,
       subject,
       html,
       text,
-      reply_to: replyTo || orgConfig['resend_reply_to'],
+      replyTo: replyTo || (orgConfig as any)['resend_reply_to'],
       cc,
       bcc,
       attachments,

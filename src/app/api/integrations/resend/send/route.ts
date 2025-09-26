@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     if (template && templateData) {
       const templateObj = EMAIL_TEMPLATES[template as keyof typeof EMAIL_TEMPLATES]
       if (templateObj) {
-        const rendered = renderTemplate(templateObj, templateData)
+        const rendered = renderTemplate(templateObj as any, templateData)
         emailSubject = rendered.subject
         emailHtml = rendered.html
       }
