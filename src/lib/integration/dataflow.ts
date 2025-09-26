@@ -32,14 +32,9 @@ export const dataFlows: DataFlowConfig[] = [
         description: 'Event registrations, attendees, and check-ins'
       }
     ],
-    capabilities: [
-      'event_sync',
-      'attendee_sync',
-      'checkin_tracking',
-      'capacity_management'
-    ]
+    capabilities: ['event_sync', 'attendee_sync', 'checkin_tracking', 'capacity_management']
   },
-  
+
   // Salesforce Constituents Integration
   {
     vendor: 'salesforce',
@@ -65,7 +60,7 @@ export const dataFlows: DataFlowConfig[] = [
       'custom_field_mapping'
     ]
   },
-  
+
   // HubSpot Communications Integration
   {
     vendor: 'hubspot',
@@ -84,14 +79,9 @@ export const dataFlows: DataFlowConfig[] = [
         description: 'Email templates for citizen communications'
       }
     ],
-    capabilities: [
-      'campaign_sync',
-      'template_sync',
-      'engagement_tracking',
-      'unsubscribe_sync'
-    ]
+    capabilities: ['campaign_sync', 'template_sync', 'engagement_tracking', 'unsubscribe_sync']
   },
-  
+
   // QuickBooks Financial Integration
   {
     vendor: 'quickbooks',
@@ -110,14 +100,9 @@ export const dataFlows: DataFlowConfig[] = [
         description: 'Invoices for services and fees'
       }
     ],
-    capabilities: [
-      'invoice_sync',
-      'payment_sync',
-      'grant_tracking',
-      'budget_monitoring'
-    ]
+    capabilities: ['invoice_sync', 'payment_sync', 'grant_tracking', 'budget_monitoring']
   },
-  
+
   // Mailchimp Audience Integration
   {
     vendor: 'mailchimp',
@@ -136,20 +121,13 @@ export const dataFlows: DataFlowConfig[] = [
         description: 'Subscriber list synchronization'
       }
     ],
-    capabilities: [
-      'list_sync',
-      'segment_sync',
-      'subscriber_updates',
-      'engagement_metrics'
-    ]
+    capabilities: ['list_sync', 'segment_sync', 'subscriber_updates', 'engagement_metrics']
   }
 ]
 
 // Get DataFlow configuration by vendor and domain
 export function getDataFlow(vendor: string, domain: string): DataFlowConfig | undefined {
-  return dataFlows.find(flow => 
-    flow.vendor === vendor && flow.domain === domain
-  )
+  return dataFlows.find(flow => flow.vendor === vendor && flow.domain === domain)
 }
 
 // Get all DataFlows for a specific vendor

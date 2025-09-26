@@ -30,10 +30,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ connectors })
   } catch (error) {
     console.error('Error fetching connectors:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch connectors' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch connectors' }, { status: 500 })
   }
 }
 
@@ -44,10 +41,7 @@ export async function POST(request: NextRequest) {
     const { organizationId, vendor, name, config } = body
 
     if (!organizationId || !vendor || !name) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     const connector = await ConnectorManager.createConnector(
@@ -60,9 +54,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ connector })
   } catch (error) {
     console.error('Error creating connector:', error)
-    return NextResponse.json(
-      { error: 'Failed to create connector' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create connector' }, { status: 500 })
   }
 }

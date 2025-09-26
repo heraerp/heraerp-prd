@@ -78,9 +78,7 @@ export function IntegrationNav({ activeView, onViewChange, organizationId }: Int
           <Network className="h-5 w-5 text-primary" />
           Integration Hub
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Connect & sync data
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">Connect & sync data</p>
       </div>
 
       {/* Navigation */}
@@ -102,15 +100,15 @@ export function IntegrationNav({ activeView, onViewChange, organizationId }: Int
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
-                    <Icon className={cn(
-                      'h-4 w-4',
-                      isActive ? 'text-accent-foreground' : 'text-muted-foreground'
-                    )} />
+                    <Icon
+                      className={cn(
+                        'h-4 w-4',
+                        isActive ? 'text-accent-foreground' : 'text-muted-foreground'
+                      )}
+                    />
                     <div className="text-left">
                       <div className="font-medium text-sm">{item.label}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {item.description}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{item.description}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -124,9 +122,7 @@ export function IntegrationNav({ activeView, onViewChange, organizationId }: Int
                         {item.activeCount}
                       </Badge>
                     )}
-                    {isActive && (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {isActive && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                   </div>
                 </div>
               </Button>
@@ -138,19 +134,11 @@ export function IntegrationNav({ activeView, onViewChange, organizationId }: Int
 
         {/* Footer Actions */}
         <div className="space-y-1">
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            size="sm"
-          >
+          <Button variant="ghost" className="w-full justify-start" size="sm">
             <Settings className="h-4 w-4 mr-3 text-muted-foreground" />
             Settings
           </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            size="sm"
-          >
+          <Button variant="ghost" className="w-full justify-start" size="sm">
             <HelpCircle className="h-4 w-4 mr-3 text-muted-foreground" />
             Documentation
           </Button>
@@ -167,11 +155,7 @@ export function IntegrationNav({ activeView, onViewChange, organizationId }: Int
               <span>Operational</span>
             </div>
           </div>
-          {dashboard && (
-            <div className="text-xs">
-              {dashboard.last_24h_syncs} syncs in 24h
-            </div>
-          )}
+          {dashboard && <div className="text-xs">{dashboard.last_24h_syncs} syncs in 24h</div>}
         </div>
       </div>
     </div>

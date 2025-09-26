@@ -49,7 +49,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [selectedRun, setSelectedRun] = useState<SyncRun | null>(null)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
-  
+
   const { data: syncRuns, isLoading } = useSyncRuns(organizationId, 100)
   const { data: syncJobs } = useSyncJobs(organizationId)
 
@@ -79,12 +79,8 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
       running: 'bg-blue-100 text-blue-800',
       cancelled: 'bg-yellow-100 text-yellow-800'
     }
-    
-    return (
-      <Badge className={variants[status]}>
-        {status}
-      </Badge>
-    )
+
+    return <Badge className={variants[status]}>{status}</Badge>
   }
 
   const getSyncJobName = (syncJobId: string) => {
@@ -115,7 +111,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
   const totalRuns = filteredRuns?.length || 0
   const completedRuns = filteredRuns?.filter(r => r.status === 'completed').length || 0
   const failedRuns = filteredRuns?.filter(r => r.status === 'failed').length || 0
-  const successRate = totalRuns > 0 ? (completedRuns / totalRuns * 100).toFixed(1) : '0'
+  const successRate = totalRuns > 0 ? ((completedRuns / totalRuns) * 100).toFixed(1) : '0'
 
   return (
     <div className="p-8 space-y-6">
@@ -123,9 +119,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Sync Run History</h1>
-          <p className="text-muted-foreground">
-            View and analyze past synchronization runs
-          </p>
+          <p className="text-muted-foreground">View and analyze past synchronization runs</p>
         </div>
         <Button variant="outline" className="gap-2">
           <Download className="h-4 w-4" />
@@ -137,15 +131,11 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
       <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Runs
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Runs</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalRuns}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Last 24 hours
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">Last 24 hours</p>
           </CardContent>
         </Card>
 
@@ -163,9 +153,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Completed
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline justify-between">
@@ -177,9 +165,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Failed
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Failed</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline justify-between">
@@ -235,8 +221,8 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
             </TableHeader>
             <TableBody>
               {filteredRuns?.map(run => (
-                <TableRow 
-                  key={run.id} 
+                <TableRow
+                  key={run.id}
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => {
                     setSelectedRun(run)
@@ -251,12 +237,8 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
                   </TableCell>
                   <TableCell>
                     <div>
-                      <div className="font-medium">
-                        {getSyncJobName(run.sync_job_id)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {run.entity_code}
-                      </div>
+                      <div className="font-medium">{getSyncJobName(run.sync_job_id)}</div>
+                      <div className="text-xs text-muted-foreground">{run.entity_code}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -272,9 +254,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">
-                        {formatDuration(run.duration_seconds)}
-                      </span>
+                      <span className="text-sm">{formatDuration(run.duration_seconds)}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -319,7 +299,7 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {/* Empty State */}
               {filteredRuns?.length === 0 && (
                 <TableRow>
@@ -328,9 +308,8 @@ export function SyncRunHistory({ organizationId }: SyncRunHistoryProps) {
                     <h3 className="text-lg font-medium mb-2">No sync runs found</h3>
                     <p className="text-muted-foreground">
                       {searchQuery || statusFilter !== 'all'
-                        ? "Try adjusting your filters"
-                        : "Sync runs will appear here once jobs are executed"
-                      }
+                        ? 'Try adjusting your filters'
+                        : 'Sync runs will appear here once jobs are executed'}
                     </p>
                   </TableCell>
                 </TableRow>

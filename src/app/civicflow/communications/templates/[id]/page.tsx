@@ -191,9 +191,9 @@ export default function TemplateDetailPage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => router.back()}
           className="hover:bg-[rgb(0,166,166)]/10"
         >
@@ -213,16 +213,16 @@ export default function TemplateDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            onClick={() => setShowTestModal(true)} 
+          <Button
+            onClick={() => setShowTestModal(true)}
             disabled={isDemo && !template.is_active}
             className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white disabled:bg-gray-300"
           >
             <Play className="h-4 w-4 mr-2" />
             Test Send
           </Button>
-          <Button 
-            onClick={handleClone} 
+          <Button
+            onClick={handleClone}
             variant="outline"
             className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
           >
@@ -231,7 +231,7 @@ export default function TemplateDetailPage() {
           </Button>
           <AlertDialog open={showDeactivateDialog} onOpenChange={setShowDeactivateDialog}>
             <AlertDialogTrigger asChild>
-              <Button 
+              <Button
                 variant="outline"
                 className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
@@ -260,8 +260,8 @@ export default function TemplateDetailPage() {
           </AlertDialog>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="icon"
                 className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
@@ -402,7 +402,11 @@ export default function TemplateDetailPage() {
                   variant={previewMode === 'html' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setPreviewMode('html')}
-                  className={previewMode === 'html' ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"}
+                  className={
+                    previewMode === 'html'
+                      ? 'bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white'
+                      : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10'
+                  }
                 >
                   HTML
                 </Button>
@@ -410,7 +414,11 @@ export default function TemplateDetailPage() {
                   variant={previewMode === 'text' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setPreviewMode('text')}
-                  className={previewMode === 'text' ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"}
+                  className={
+                    previewMode === 'text'
+                      ? 'bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white'
+                      : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10'
+                  }
                 >
                   Text
                 </Button>

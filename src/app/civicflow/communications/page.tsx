@@ -105,9 +105,7 @@ function CommunicationsContent() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <h2 className="text-lg font-medium mb-2">No Organization Selected</h2>
-          <p className="text-text-200">
-            Please select an organization to view communications.
-          </p>
+          <p className="text-text-200">Please select an organization to view communications.</p>
         </div>
       </div>
     )
@@ -132,7 +130,7 @@ function CommunicationsContent() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Communications</h1>
         <div className="flex items-center gap-2">
-          <Button 
+          <Button
             onClick={() => setShowNewCampaignModal(true)}
             className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
           >
@@ -141,7 +139,7 @@ function CommunicationsContent() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
+              <Button
                 variant="outline"
                 className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
@@ -165,9 +163,7 @@ function CommunicationsContent() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-300">
-              Outbound Today
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Outbound Today</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -181,9 +177,7 @@ function CommunicationsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-300">
-              Inbound Today
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Inbound Today</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -197,9 +191,7 @@ function CommunicationsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-300">
-              Bounces (7d)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Bounces (7d)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -213,9 +205,7 @@ function CommunicationsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-300">
-              Opt-outs (7d)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Opt-outs (7d)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -243,9 +233,7 @@ function CommunicationsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-300">
-              Deliverability
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Deliverability</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">

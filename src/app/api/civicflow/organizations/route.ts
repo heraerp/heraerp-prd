@@ -21,10 +21,12 @@ export async function GET(request: NextRequest) {
     // Build query using Supabase directly
     let query = supabase
       .from('core_entities')
-      .select(`
+      .select(
+        `
         *,
         core_dynamic_data(field_name, field_value_text, field_value_json)
-      `)
+      `
+      )
       .eq('organization_id', orgId)
       .eq('entity_type', 'organization')
       .order('created_at', { ascending: false })

@@ -1,11 +1,11 @@
 import { universalApi } from '@/lib/universal-api'
 import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
-import type { 
-  DataMapping, 
-  FieldMapping, 
-  TransformOperation, 
+import type {
+  DataMapping,
+  FieldMapping,
+  TransformOperation,
   ValidationRule,
-  SchemaField 
+  SchemaField
 } from '@/types/integration-hub'
 
 export class MappingEngine {
@@ -19,37 +19,29 @@ export class MappingEngine {
     transformOperations?: TransformOperation[],
     validationRules?: ValidationRule[]
   ): Promise<DataMapping> {
-    const mapping = await createNormalizedEntity(
-      organizationId,
-      'integration_mapping',
-      name,
-      {
-        entity_code: `MAP-${resource.toUpperCase()}-${Date.now()}`,
-        smart_code: `HERA.INTEGRATIONS.MAPPING.${resource.toUpperCase()}.v1`,
-        connector_id: connectorId,
-        resource,
-        field_mappings: fieldMappings,
-        transform_operations: transformOperations || [],
-        validation_rules: validationRules || []
-      }
-    )
+    const mapping = await createNormalizedEntity(organizationId, 'integration_mapping', name, {
+      entity_code: `MAP-${resource.toUpperCase()}-${Date.now()}`,
+      smart_code: `HERA.INTEGRATIONS.MAPPING.${resource.toUpperCase()}.v1`,
+      connector_id: connectorId,
+      resource,
+      field_mappings: fieldMappings,
+      transform_operations: transformOperations || [],
+      validation_rules: validationRules || []
+    })
 
     return mapping.data as DataMapping
   }
 
   // Apply field mappings to transform source data to target format
-  static applyFieldMappings(
-    sourceData: any,
-    fieldMappings: FieldMapping[]
-  ): any {
+  static applyFieldMappings(sourceData: any, fieldMappings: FieldMapping[]): any {
     const targetData: any = {}
 
     fieldMappings.forEach(mapping => {
       const sourceValue = this.getNestedValue(sourceData, mapping.source_field)
-      
+
       if (sourceValue !== undefined || mapping.default_value !== undefined) {
         const value = sourceValue !== undefined ? sourceValue : mapping.default_value
-        
+
         if (mapping.transform) {
           const transformedValue = this.applyTransform(value, mapping.transform)
           this.setNestedValue(targetData, mapping.target_field, transformedValue)
@@ -63,10 +55,7 @@ export class MappingEngine {
   }
 
   // Apply transform operations in sequence
-  static applyTransformPipeline(
-    data: any,
-    operations: TransformOperation[]
-  ): any {
+  static applyTransformPipeline(data: any, operations: TransformOperation[]): any {
     let result = data
 
     // Sort operations by order
@@ -84,25 +73,25 @@ export class MappingEngine {
     switch (operation.type) {
       case 'filter':
         return this.transformFilter(data, operation.config)
-      
+
       case 'map':
         return this.transformMap(data, operation.config)
-      
+
       case 'merge':
         return this.transformMerge(data, operation.config)
-      
+
       case 'split':
         return this.transformSplit(data, operation.config)
-      
+
       case 'validate':
         return this.transformValidate(data, operation.config)
-      
+
       case 'enrich':
         return this.transformEnrich(data, operation.config)
-      
+
       case 'redact':
         return this.transformRedact(data, operation.config)
-      
+
       default:
         return data
     }
@@ -239,10 +228,7 @@ export class MappingEngine {
   }
 
   // Validate data against rules
-  static validateData(
-    data: any,
-    rules: ValidationRule[]
-  ): { valid: boolean; errors: string[] } {
+  static validateData(data: any, rules: ValidationRule[]): { valid: boolean; errors: string[] } {
     const errors: string[] = []
 
     rules.forEach(rule => {
@@ -302,18 +288,17 @@ export class MappingEngine {
 
       // Try partial match
       if (!targetField) {
-        targetField = targetFields.find(tf => 
-          tf.name.toLowerCase().includes(sourceField.name.toLowerCase()) ||
-          sourceField.name.toLowerCase().includes(tf.name.toLowerCase())
+        targetField = targetFields.find(
+          tf =>
+            tf.name.toLowerCase().includes(sourceField.name.toLowerCase()) ||
+            sourceField.name.toLowerCase().includes(tf.name.toLowerCase())
         )
       }
 
       // Try common aliases
       if (!targetField) {
         const aliases = this.getFieldAliases(sourceField.name)
-        targetField = targetFields.find(tf => 
-          aliases.includes(tf.name.toLowerCase())
-        )
+        targetField = targetFields.find(tf => aliases.includes(tf.name.toLowerCase()))
       }
 
       if (targetField && this.areTypesCompatible(sourceField.type, targetField.type)) {
@@ -347,15 +332,22 @@ export class MappingEngine {
   private static evaluateCondition(data: any, condition: any): boolean {
     if (condition.field && condition.operator && condition.value !== undefined) {
       const fieldValue = this.getNestedValue(data, condition.field)
-      
+
       switch (condition.operator) {
-        case 'eq': return fieldValue === condition.value
-        case 'ne': return fieldValue !== condition.value
-        case 'gt': return fieldValue > condition.value
-        case 'lt': return fieldValue < condition.value
-        case 'contains': return fieldValue?.includes?.(condition.value)
-        case 'in': return condition.value?.includes?.(fieldValue)
-        default: return true
+        case 'eq':
+          return fieldValue === condition.value
+        case 'ne':
+          return fieldValue !== condition.value
+        case 'gt':
+          return fieldValue > condition.value
+        case 'lt':
+          return fieldValue < condition.value
+        case 'contains':
+          return fieldValue?.includes?.(condition.value)
+        case 'in':
+          return condition.value?.includes?.(fieldValue)
+        default:
+          return true
       }
     }
     return true

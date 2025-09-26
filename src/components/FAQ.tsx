@@ -1,16 +1,16 @@
 interface FAQItem {
-  q: string;
-  a: string;
+  q: string
+  a: string
 }
 
 interface FAQProps {
-  items: FAQItem[];
-  className?: string;
+  items: FAQItem[]
+  className?: string
 }
 
-export default function FAQ({ items, className = "" }: FAQProps) {
-  if (!items || items.length === 0) return null;
-  
+export default function FAQ({ items, className = '' }: FAQProps) {
+  if (!items || items.length === 0) return null
+
   return (
     <section className={`mt-12 ${className}`}>
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -18,19 +18,15 @@ export default function FAQ({ items, className = "" }: FAQProps) {
       </h2>
       <div className="space-y-6">
         {items.map((item, index) => (
-          <div 
+          <div
             key={index}
             className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-6 transition-shadow hover:shadow-md"
           >
-            <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">
-              {item.q}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              {item.a}
-            </p>
+            <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">{item.q}</h3>
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.a}</p>
           </div>
         ))}
       </div>
     </section>
-  );
+  )
 }

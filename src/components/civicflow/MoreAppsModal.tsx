@@ -197,9 +197,8 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [hoveredApp, setHoveredApp] = useState<string | null>(null)
 
-  const filteredApps = selectedCategory === 'all' 
-    ? apps 
-    : apps.filter(app => app.category === selectedCategory)
+  const filteredApps =
+    selectedCategory === 'all' ? apps : apps.filter(app => app.category === selectedCategory)
 
   const handleAppClick = (app: AppItem) => {
     if (app.status === 'coming-soon') {
@@ -220,7 +219,9 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
       case 'beta':
         return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Beta</Badge>
       case 'coming-soon':
-        return <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">Coming Soon</Badge>
+        return (
+          <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">Coming Soon</Badge>
+        )
       default:
         return null
     }
@@ -251,10 +252,10 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
                 size="sm"
                 onClick={() => setSelectedCategory('all')}
                 className={cn(
-                  "rounded-full px-4 transition-all",
+                  'rounded-full px-4 transition-all',
                   selectedCategory === 'all'
-                    ? "bg-[rgb(0,166,166)]/20 text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/30"
-                    : "bg-white/5 hover:bg-white/10 text-text-200"
+                    ? 'bg-[rgb(0,166,166)]/20 text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/30'
+                    : 'bg-white/5 hover:bg-white/10 text-text-200'
                 )}
               >
                 All Apps
@@ -266,10 +267,10 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
                   size="sm"
                   onClick={() => setSelectedCategory(key)}
                   className={cn(
-                    "rounded-full px-4 transition-all",
+                    'rounded-full px-4 transition-all',
                     selectedCategory === key
                       ? `${category.bgColor} ${category.color} hover:opacity-80`
-                      : "bg-white/5 hover:bg-white/10 text-text-200"
+                      : 'bg-white/5 hover:bg-white/10 text-text-200'
                   )}
                 >
                   {category.label}
@@ -288,11 +289,11 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
                   <div
                     key={app.id}
                     className={cn(
-                      "group relative rounded-xl border transition-all duration-300 cursor-pointer",
-                      isDisabled && "opacity-50 cursor-not-allowed",
-                      isHovered && !isDisabled && "scale-[1.02] shadow-xl",
-                      "bg-white/5 hover:bg-white/10 backdrop-blur-sm",
-                      "border-white/10 hover:border-white/20"
+                      'group relative rounded-xl border transition-all duration-300 cursor-pointer',
+                      isDisabled && 'opacity-50 cursor-not-allowed',
+                      isHovered && !isDisabled && 'scale-[1.02] shadow-xl',
+                      'bg-white/5 hover:bg-white/10 backdrop-blur-sm',
+                      'border-white/10 hover:border-white/20'
                     )}
                     onClick={() => !isDisabled && handleAppClick(app)}
                     onMouseEnter={() => setHoveredApp(app.id)}
@@ -300,32 +301,32 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
                   >
                     <div className="p-5">
                       <div className="flex items-start justify-between mb-3">
-                        <div className={cn(
-                          "p-2.5 rounded-xl transition-colors",
-                          category.bgColor,
-                          isHovered && !isDisabled && "scale-110"
-                        )}>
-                          <app.icon className={cn("h-6 w-6", category.color)} />
+                        <div
+                          className={cn(
+                            'p-2.5 rounded-xl transition-colors',
+                            category.bgColor,
+                            isHovered && !isDisabled && 'scale-110'
+                          )}
+                        >
+                          <app.icon className={cn('h-6 w-6', category.color)} />
                         </div>
                         {app.status && getStatusBadge(app.status)}
                       </div>
 
                       <h3 className="font-semibold text-text-100 mb-1 flex items-center gap-2">
                         {app.title}
-                        {app.external && (
-                          <ExternalLink className="h-3 w-3 text-text-300" />
-                        )}
+                        {app.external && <ExternalLink className="h-3 w-3 text-text-300" />}
                       </h3>
-                      <p className="text-sm text-text-300 line-clamp-2">
-                        {app.description}
-                      </p>
+                      <p className="text-sm text-text-300 line-clamp-2">{app.description}</p>
 
                       {!isDisabled && (
-                        <div className={cn(
-                          "mt-3 flex items-center gap-1 text-xs font-medium transition-all",
-                          category.color,
-                          isHovered ? "opacity-100 translate-x-1" : "opacity-0"
-                        )}>
+                        <div
+                          className={cn(
+                            'mt-3 flex items-center gap-1 text-xs font-medium transition-all',
+                            category.color,
+                            isHovered ? 'opacity-100 translate-x-1' : 'opacity-0'
+                          )}
+                        >
                           Open App
                           <ArrowRight className="h-3 w-3" />
                         </div>
@@ -343,9 +344,7 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
 
             {/* Footer */}
             <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-              <p className="text-sm text-text-300">
-                Can't find what you're looking for?
-              </p>
+              <p className="text-sm text-text-300">Can't find what you're looking for?</p>
               <Button
                 variant="ghost"
                 size="sm"

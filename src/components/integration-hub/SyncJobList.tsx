@@ -35,11 +35,7 @@ import {
   ArrowDownRight,
   ArrowLeftRight
 } from 'lucide-react'
-import { 
-  useSyncJobs, 
-  useRunSyncJob, 
-  useToggleSyncJob 
-} from '@/hooks/integration-hub/useSyncJobs'
+import { useSyncJobs, useRunSyncJob, useToggleSyncJob } from '@/hooks/integration-hub/useSyncJobs'
 import { useConnectors } from '@/hooks/integration-hub/useConnectors'
 import { formatDistanceToNow } from 'date-fns'
 import { NewSyncJobModal } from './modals/NewSyncJobModal'
@@ -52,7 +48,7 @@ interface SyncJobListProps {
 export function SyncJobList({ organizationId }: SyncJobListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [showNewModal, setShowNewModal] = useState(false)
-  
+
   const { data: syncJobs, isLoading } = useSyncJobs(organizationId)
   const { data: connectors } = useConnectors(organizationId)
   const { mutate: runSyncJob, isPending: isRunning } = useRunSyncJob()
@@ -80,7 +76,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
 
   const getScheduleDisplay = (schedule?: SyncJob['schedule']) => {
     if (!schedule) return 'Manual'
-    
+
     if (schedule.type === 'cron' && schedule.cron) {
       // Simple cron descriptions
       if (schedule.cron === '0 * * * *') return 'Every hour'
@@ -89,7 +85,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
       if (schedule.cron === '0 0 1 * *') return 'Monthly'
       return schedule.cron
     }
-    
+
     if (schedule.type === 'interval' && schedule.interval_minutes) {
       if (schedule.interval_minutes < 60) {
         return `Every ${schedule.interval_minutes} minutes`
@@ -97,7 +93,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
       const hours = Math.floor(schedule.interval_minutes / 60)
       return `Every ${hours} hour${hours > 1 ? 's' : ''}`
     }
-    
+
     return 'Manual'
   }
 
@@ -127,9 +123,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Sync Jobs</h1>
-          <p className="text-muted-foreground">
-            Configure automated data synchronization
-          </p>
+          <p className="text-muted-foreground">Configure automated data synchronization</p>
         </div>
         <Button onClick={() => setShowNewModal(true)} className="gap-2">
           <Plus className="h-4 w-4" />
@@ -179,20 +173,14 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                   <TableCell>
                     <div>
                       <div className="font-medium">{syncJob.entity_name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {syncJob.sync_type}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{syncJob.sync_type}</div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {getConnectorName(syncJob.connector_id)}
-                  </TableCell>
+                  <TableCell>{getConnectorName(syncJob.connector_id)}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getDirectionIcon(syncJob.sync_direction)}
-                      <span className="text-sm capitalize">
-                        {syncJob.sync_direction}
-                      </span>
+                      <span className="text-sm capitalize">{syncJob.sync_direction}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -202,16 +190,14 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                       ) : (
                         <Clock className="h-4 w-4 text-muted-foreground" />
                       )}
-                      <span className="text-sm">
-                        {getScheduleDisplay(syncJob.schedule)}
-                      </span>
+                      <span className="text-sm">{getScheduleDisplay(syncJob.schedule)}</span>
                     </div>
                   </TableCell>
                   <TableCell>
                     {syncJob.last_run ? (
                       <span className="text-sm text-muted-foreground">
-                        {formatDistanceToNow(new Date(syncJob.last_run.timestamp), { 
-                          addSuffix: true 
+                        {formatDistanceToNow(new Date(syncJob.last_run.timestamp), {
+                          addSuffix: true
                         })}
                       </span>
                     ) : (
@@ -221,8 +207,8 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                   <TableCell>
                     {syncJob.next_run ? (
                       <span className="text-sm">
-                        {formatDistanceToNow(new Date(syncJob.next_run), { 
-                          addSuffix: true 
+                        {formatDistanceToNow(new Date(syncJob.next_run), {
+                          addSuffix: true
                         })}
                       </span>
                     ) : (
@@ -237,7 +223,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => runSyncJob(syncJob.id)}
                           disabled={isRunning}
                         >
@@ -252,9 +238,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                           <RotateCw className="h-4 w-4 mr-2" />
                           View Runs
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => handleToggle(syncJob)}
-                        >
+                        <DropdownMenuItem onClick={() => handleToggle(syncJob)}>
                           {syncJob.status === 'active' ? (
                             <>
                               <Pause className="h-4 w-4 mr-2" />
@@ -276,7 +260,7 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {/* Empty State */}
               {filteredSyncJobs?.length === 0 && (
                 <TableRow>
@@ -284,10 +268,9 @@ export function SyncJobList({ organizationId }: SyncJobListProps) {
                     <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium mb-2">No sync jobs found</h3>
                     <p className="text-muted-foreground mb-4">
-                      {searchQuery 
-                        ? "Try adjusting your search query"
-                        : "Create sync jobs to automate data synchronization"
-                      }
+                      {searchQuery
+                        ? 'Try adjusting your search query'
+                        : 'Create sync jobs to automate data synchronization'}
                     </p>
                     {!searchQuery && (
                       <Button onClick={() => setShowNewModal(true)} className="gap-2">

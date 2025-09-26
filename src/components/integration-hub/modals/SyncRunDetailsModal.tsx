@@ -1,12 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle 
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,7 +33,7 @@ interface SyncRunDetailsModalProps {
 
 export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsModalProps) {
   const [activeTab, setActiveTab] = useState('overview')
-  
+
   const { data: logs } = useSyncRunLogs(syncRun.id)
   const { data: errors } = useSyncRunErrors(syncRun.id)
 
@@ -101,9 +96,7 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                 <CardContent>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(syncRun.status)}
-                    <span className="text-lg font-semibold capitalize">
-                      {syncRun.status}
-                    </span>
+                    <span className="text-lg font-semibold capitalize">{syncRun.status}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -131,9 +124,7 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-sm">
-                    {format(new Date(syncRun.started_at), 'PPpp')}
-                  </div>
+                  <div className="text-sm">{format(new Date(syncRun.started_at), 'PPpp')}</div>
                 </CardContent>
               </Card>
 
@@ -145,10 +136,9 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                 </CardHeader>
                 <CardContent>
                   <div className="text-sm">
-                    {syncRun.ended_at 
+                    {syncRun.ended_at
                       ? format(new Date(syncRun.ended_at), 'PPpp')
-                      : 'Still running...'
-                    }
+                      : 'Still running...'}
                   </div>
                 </CardContent>
               </Card>
@@ -199,9 +189,7 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm">Total Records</span>
-                        <span className="text-sm font-medium">
-                          {syncRun.stats.total_records}
-                        </span>
+                        <span className="text-sm font-medium">{syncRun.stats.total_records}</span>
                       </div>
                       <Progress value={100} className="h-2" />
                     </div>
@@ -213,8 +201,10 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                           {syncRun.stats.processed_records}
                         </span>
                       </div>
-                      <Progress 
-                        value={(syncRun.stats.processed_records / syncRun.stats.total_records) * 100} 
+                      <Progress
+                        value={
+                          (syncRun.stats.processed_records / syncRun.stats.total_records) * 100
+                        }
                         className="h-2"
                       />
                     </div>
@@ -222,12 +212,10 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-green-600">Created</span>
-                        <span className="text-sm font-medium">
-                          {syncRun.stats.created_records}
-                        </span>
+                        <span className="text-sm font-medium">{syncRun.stats.created_records}</span>
                       </div>
-                      <Progress 
-                        value={(syncRun.stats.created_records / syncRun.stats.total_records) * 100} 
+                      <Progress
+                        value={(syncRun.stats.created_records / syncRun.stats.total_records) * 100}
                         className="h-2 [&>div]:bg-green-500"
                       />
                     </div>
@@ -235,12 +223,10 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-blue-600">Updated</span>
-                        <span className="text-sm font-medium">
-                          {syncRun.stats.updated_records}
-                        </span>
+                        <span className="text-sm font-medium">{syncRun.stats.updated_records}</span>
                       </div>
-                      <Progress 
-                        value={(syncRun.stats.updated_records / syncRun.stats.total_records) * 100} 
+                      <Progress
+                        value={(syncRun.stats.updated_records / syncRun.stats.total_records) * 100}
                         className="h-2 [&>div]:bg-blue-500"
                       />
                     </div>
@@ -248,12 +234,10 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-yellow-600">Skipped</span>
-                        <span className="text-sm font-medium">
-                          {syncRun.stats.skipped_records}
-                        </span>
+                        <span className="text-sm font-medium">{syncRun.stats.skipped_records}</span>
                       </div>
-                      <Progress 
-                        value={(syncRun.stats.skipped_records / syncRun.stats.total_records) * 100} 
+                      <Progress
+                        value={(syncRun.stats.skipped_records / syncRun.stats.total_records) * 100}
                         className="h-2 [&>div]:bg-yellow-500"
                       />
                     </div>
@@ -261,12 +245,10 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm text-red-600">Errors</span>
-                        <span className="text-sm font-medium">
-                          {syncRun.stats.error_records}
-                        </span>
+                        <span className="text-sm font-medium">{syncRun.stats.error_records}</span>
                       </div>
-                      <Progress 
-                        value={(syncRun.stats.error_records / syncRun.stats.total_records) * 100} 
+                      <Progress
+                        value={(syncRun.stats.error_records / syncRun.stats.total_records) * 100}
                         className="h-2 [&>div]:bg-red-500"
                       />
                     </div>
@@ -280,46 +262,38 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex justify-between py-1">
-                    <span className="text-sm text-muted-foreground">
-                      Records per Second
-                    </span>
+                    <span className="text-sm text-muted-foreground">Records per Second</span>
                     <span className="text-sm font-medium">
-                      {syncRun.duration_seconds 
+                      {syncRun.duration_seconds
                         ? Math.round(syncRun.stats.processed_records / syncRun.duration_seconds)
-                        : 0
-                      }
+                        : 0}
                     </span>
                   </div>
 
                   <div className="flex justify-between py-1">
-                    <span className="text-sm text-muted-foreground">
-                      Data Volume
-                    </span>
+                    <span className="text-sm text-muted-foreground">Data Volume</span>
                     <span className="text-sm font-medium">
                       {(syncRun.stats.data_volume_bytes / 1024 / 1024).toFixed(2)} MB
                     </span>
                   </div>
 
                   <div className="flex justify-between py-1">
-                    <span className="text-sm text-muted-foreground">
-                      Success Rate
-                    </span>
+                    <span className="text-sm text-muted-foreground">Success Rate</span>
                     <span className="text-sm font-medium">
                       {syncRun.stats.processed_records > 0
-                        ? (((syncRun.stats.processed_records - syncRun.stats.error_records) / 
-                            syncRun.stats.processed_records) * 100).toFixed(1)
-                        : 0
-                      }%
+                        ? (
+                            ((syncRun.stats.processed_records - syncRun.stats.error_records) /
+                              syncRun.stats.processed_records) *
+                            100
+                          ).toFixed(1)
+                        : 0}
+                      %
                     </span>
                   </div>
 
                   <div className="flex justify-between py-1">
-                    <span className="text-sm text-muted-foreground">
-                      Error Rate
-                    </span>
-                    <span className="text-sm font-medium">
-                      {errors?.error_rate || '0%'}
-                    </span>
+                    <span className="text-sm text-muted-foreground">Error Rate</span>
+                    <span className="text-sm font-medium">{errors?.error_rate || '0%'}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -342,24 +316,30 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                   {logs?.logs && logs.logs.length > 0 ? (
                     <div className="space-y-2">
                       {logs.logs.map((log, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className={cn(
                             'p-3 rounded-lg border text-sm',
-                            log.level === 'error' && 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800',
-                            log.level === 'warn' && 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800',
-                            log.level === 'info' && 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800',
-                            log.level === 'debug' && 'bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800'
+                            log.level === 'error' &&
+                              'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800',
+                            log.level === 'warn' &&
+                              'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800',
+                            log.level === 'info' &&
+                              'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800',
+                            log.level === 'debug' &&
+                              'bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800'
                           )}
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
-                                <Badge 
+                                <Badge
                                   variant={
-                                    log.level === 'error' ? 'destructive' : 
-                                    log.level === 'warn' ? 'secondary' : 
-                                    'outline'
+                                    log.level === 'error'
+                                      ? 'destructive'
+                                      : log.level === 'warn'
+                                        ? 'secondary'
+                                        : 'outline'
                                   }
                                   className="text-xs"
                                 >
@@ -416,9 +396,7 @@ export function SyncRunDetailsModal({ open, onClose, syncRun }: SyncRunDetailsMo
                                 </Badge>
                                 <span>{error.error_code}</span>
                                 <span>{format(new Date(error.timestamp), 'HH:mm:ss')}</span>
-                                {error.retry_count > 0 && (
-                                  <span>Retried {error.retry_count}x</span>
-                                )}
+                                {error.retry_count > 0 && <span>Retried {error.retry_count}x</span>}
                               </div>
                               <p className="text-sm font-medium">{error.message}</p>
                               {error.record_id && (

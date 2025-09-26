@@ -13,7 +13,7 @@
     "event.url": "EVENT.META.V1.url",
     "event.venue.name": "EVENT.META.V1.venue",
     "event.changed": "EVENT.SOURCE.V1.changed_at",
-    
+
     "attendee.id": "INVITE.SOURCE.V1.provider_id",
     "attendee.profile.email": "INVITE.META.V1.email",
     "attendee.profile.first_name": "INVITE.META.V1.first_name",

@@ -150,14 +150,17 @@ function EventsContent() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-text-100">Events & Registrations</h1>
         <div className="flex items-center gap-2">
-          <EventActions 
-            organizationId={currentOrgId} 
+          <EventActions
+            organizationId={currentOrgId}
             onSyncComplete={() => {
               // Refetch events data
               window.location.reload()
-            }} 
+            }}
           />
-          <Button onClick={() => setShowNewEventModal(true)} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+          <Button
+            onClick={() => setShowNewEventModal(true)}
+            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Event
           </Button>
@@ -168,9 +171,7 @@ function EventsContent() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-200">
-              Total Events
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-200">Total Events</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -184,9 +185,7 @@ function EventsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-200">
-              Upcoming Events
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-200">Upcoming Events</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -200,9 +199,7 @@ function EventsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-200">
-              Total Registrations
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-200">Total Registrations</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -216,9 +213,7 @@ function EventsContent() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-text-200">
-              Attendance Rate
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-200">Attendance Rate</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -307,7 +302,11 @@ function EventsContent() {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" onClick={handleSearch} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+            <Button
+              variant="outline"
+              onClick={handleSearch}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               <Filter className="h-4 w-4 mr-2" />
               Apply
             </Button>
@@ -338,89 +337,97 @@ function EventsContent() {
               </TableHeader>
               <TableBody>
                 {/* Show synced Eventbrite events first */}
-                {syncedEvents.length > 0 && syncedEvents.map(event => {
-                  const status = getEventStatus(event.start, event.end)
+                {syncedEvents.length > 0 &&
+                  syncedEvents.map(event => {
+                    const status = getEventStatus(event.start, event.end)
 
-                  return (
-                    <TableRow
-                      key={event.id}
-                      className="cursor-pointer hover:bg-[rgb(0,166,166)]/10 bg-panel/50"
-                    >
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <div>
-                            <p className="text-text-100">{event.name}</p>
-                            <p className="text-xs text-text-200">
-                              Synced from Eventbrite
-                            </p>
-                          </div>
-                          <Badge variant="outline" className="text-xs border-[rgb(0,166,166)] text-[rgb(0,166,166)]">
-                            Eventbrite
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          {event.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-3 w-3 text-text-200" />
-                          <div>
-                            <p className="text-text-100">{format(new Date(event.start), 'MMM d, yyyy')}</p>
-                            <p className="text-sm text-text-200">
-                              {format(new Date(event.start), 'h:mm a')}
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {event.online ? <Globe className="h-4 w-4 text-text-200" /> : <MapPin className="h-4 w-4 text-text-200" />}
-                          <span className="text-text-100">{event.online ? 'Online' : event.venue || 'TBD'}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-3 w-3 text-text-200" />
-                          <span className="text-text-100">-</span>
-                          {event.capacity && (
-                            <span className="text-sm text-text-200">
-                              / {event.capacity}
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="default">
-                          {event.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" onClick={e => e.stopPropagation()}>
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                // Use preview URL format
-                                const previewUrl = `https://www.eventbrite.com/e/${event.providerId}/preview/`
-                                window.open(previewUrl, '_blank')
-                              }}
+                    return (
+                      <TableRow
+                        key={event.id}
+                        className="cursor-pointer hover:bg-[rgb(0,166,166)]/10 bg-panel/50"
+                      >
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <p className="text-text-100">{event.name}</p>
+                              <p className="text-xs text-text-200">Synced from Eventbrite</p>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className="text-xs border-[rgb(0,166,166)] text-[rgb(0,166,166)]"
                             >
-                              View on Eventbrite (Preview)
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
+                              Eventbrite
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">{event.type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-3 w-3 text-text-200" />
+                            <div>
+                              <p className="text-text-100">
+                                {format(new Date(event.start), 'MMM d, yyyy')}
+                              </p>
+                              <p className="text-sm text-text-200">
+                                {format(new Date(event.start), 'h:mm a')}
+                              </p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {event.online ? (
+                              <Globe className="h-4 w-4 text-text-200" />
+                            ) : (
+                              <MapPin className="h-4 w-4 text-text-200" />
+                            )}
+                            <span className="text-text-100">
+                              {event.online ? 'Online' : event.venue || 'TBD'}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Users className="h-3 w-3 text-text-200" />
+                            <span className="text-text-100">-</span>
+                            {event.capacity && (
+                              <span className="text-sm text-text-200">/ {event.capacity}</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="default">{event.status}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={e => e.stopPropagation()}
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  // Use preview URL format
+                                  const previewUrl = `https://www.eventbrite.com/e/${event.providerId}/preview/`
+                                  window.open(previewUrl, '_blank')
+                                }}
+                              >
+                                View on Eventbrite (Preview)
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
 
                 {/* Show existing HERA events */}
                 {eventsData?.items.map(event => {
@@ -436,9 +443,7 @@ function EventsContent() {
                         <div>
                           <p className="text-text-100">{event.entity_name}</p>
                           {event.host_program_name && (
-                            <p className="text-sm text-text-200">
-                              {event.host_program_name}
-                            </p>
+                            <p className="text-sm text-text-200">{event.host_program_name}</p>
                           )}
                         </div>
                       </TableCell>
@@ -451,7 +456,9 @@ function EventsContent() {
                         <div className="flex items-center gap-2">
                           <Clock className="h-3 w-3 text-text-200" />
                           <div>
-                            <p className="text-text-100">{format(new Date(event.start_datetime), 'MMM d, yyyy')}</p>
+                            <p className="text-text-100">
+                              {format(new Date(event.start_datetime), 'MMM d, yyyy')}
+                            </p>
                             <p className="text-sm text-text-200">
                               {format(new Date(event.start_datetime), 'h:mm a')}
                             </p>
@@ -461,7 +468,9 @@ function EventsContent() {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <span className="text-text-200">{getEventIcon(event)}</span>
-                          <span className="text-text-100">{event.is_online ? 'Online' : event.venue_name || 'TBD'}</span>
+                          <span className="text-text-100">
+                            {event.is_online ? 'Online' : event.venue_name || 'TBD'}
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -469,9 +478,7 @@ function EventsContent() {
                           <Users className="h-3 w-3 text-text-200" />
                           <span className="text-text-100">0</span>
                           {event.capacity && (
-                            <span className="text-sm text-text-200">
-                              / {event.capacity}
-                            </span>
+                            <span className="text-sm text-text-200">/ {event.capacity}</span>
                           )}
                         </div>
                       </TableCell>

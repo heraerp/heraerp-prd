@@ -39,17 +39,17 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
   async processQuery(query: string): Promise<AIManagerResponse> {
     // Detect intent
     const intent = this.detectIntent(query)
-    
+
     // Execute appropriate tool sequence
     const toolResults = await this.executeToolSequence(intent, query)
-    
+
     // Format response
     return this.formatResponse(toolResults, intent)
   }
 
   private detectIntent(query: string): QueryIntent {
     const lowerQuery = query.toLowerCase()
-    
+
     if (lowerQuery.includes('tracking') || lowerQuery.includes('vs plan')) {
       return 'programme_tracking'
     } else if (lowerQuery.includes('risk') || lowerQuery.includes('underperform')) {
@@ -71,58 +71,70 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
 
   private async executeToolSequence(intent: QueryIntent, query: string): Promise<any[]> {
     const results = []
-    
+
     switch (intent) {
       case 'programme_tracking':
         // Example: "How is Flexible Finance tracking vs plan this quarter?"
         results.push(await this.tools.biKPI({ programme_id: 'FF' }))
         results.push(await this.tools.financeDrawdowns({ programme_id: 'FF' }))
-        results.push(await this.tools.crmQuery({
-          sql: "SELECT fund_id, kpi_name, target, actual, rag FROM kpi_view WHERE programme='FF' AND period=current_qtr"
-        }))
+        results.push(
+          await this.tools.crmQuery({
+            sql: "SELECT fund_id, kpi_name, target, actual, rag FROM kpi_view WHERE programme='FF' AND period=current_qtr"
+          })
+        )
         break
 
       case 'risk_assessment':
         // Example: "Which partners are at risk on matched finance?"
-        results.push(await this.tools.crmQuery({
-          sql: `SELECT p.name, f.fund_id, f.matched_finance_progress, f.matched_finance_target,
+        results.push(
+          await this.tools.crmQuery({
+            sql: `SELECT p.name, f.fund_id, f.matched_finance_progress, f.matched_finance_target,
                 (f.matched_finance_progress / NULLIF(f.matched_finance_target,0)) AS pct
                 FROM fund f JOIN partner p ON p.id=f.partner_id
                 WHERE f.status='deploying' 
                 AND (f.matched_finance_progress / NULLIF(f.matched_finance_target,0)) < 0.8`
-        }))
+          })
+        )
         break
 
       case 'engagement_analysis':
         // Example: "Top LinkedIn content engaging foundations last month?"
         const lastMonth = new Date()
         lastMonth.setMonth(lastMonth.getMonth() - 1)
-        results.push(await this.tools.linkedinPostList({
-          since: lastMonth.toISOString().split('T')[0],
-          until: new Date().toISOString().split('T')[0]
-        }))
+        results.push(
+          await this.tools.linkedinPostList({
+            since: lastMonth.toISOString().split('T')[0],
+            until: new Date().toISOString().split('T')[0]
+          })
+        )
         break
 
       case 'committee_briefing':
         // Example: "Brief me before the Blended Finance Investment Committee"
-        results.push(await this.tools.crmQuery({
-          sql: `SELECT * FROM agenda_items WHERE committee='IC' AND date >= CURRENT_DATE AND date <= CURRENT_DATE + INTERVAL '14 days'`
-        }))
-        results.push(await this.tools.graphMailSearch({
-          query: 'investment committee',
-          after: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-        }))
+        results.push(
+          await this.tools.crmQuery({
+            sql: `SELECT * FROM agenda_items WHERE committee='IC' AND date >= CURRENT_DATE AND date <= CURRENT_DATE + INTERVAL '14 days'`
+          })
+        )
+        results.push(
+          await this.tools.graphMailSearch({
+            query: 'investment committee',
+            after: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+          })
+        )
         break
 
       case 'outreach_targeting':
         // Example: "Show orgs in IMD deciles 1–3 with no touchpoints in 90d"
-        results.push(await this.tools.crmQuery({
-          sql: `SELECT o.* FROM organisations o 
+        results.push(
+          await this.tools.crmQuery({
+            sql: `SELECT o.* FROM organisations o 
                 LEFT JOIN touchpoints t ON t.org_id = o.id 
                 WHERE o.imd_decile IN (1,2,3) 
                 AND (t.date IS NULL OR t.date < CURRENT_DATE - INTERVAL '90 days')
                 GROUP BY o.id`
-        }))
+          })
+        )
         results.push(await this.tools.mailchimpMetrics({}))
         break
 
@@ -130,21 +142,21 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
         // Generic query
         results.push(await this.tools.biKPI({}))
     }
-    
+
     return results
   }
 
   private formatResponse(toolResults: any[], intent: QueryIntent): AIManagerResponse {
     // This would normally use an LLM to format the response
     // For now, return a structured example
-    
+
     const successfulResults = toolResults.filter(r => r.success)
     const sources = successfulResults.map((r, i) => `Tool call ${i + 1}: ${intent}`)
-    
+
     // Example response for programme tracking
     if (intent === 'programme_tracking') {
       const kpis = successfulResults[0]?.data?.kpis || []
-      
+
       return {
         answer: [
           'Flexible Finance is tracking at 85% of quarterly targets overall',
@@ -185,7 +197,7 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
         confidence: 0.85
       }
     }
-    
+
     // Default response
     return {
       answer: ['Query processed successfully'],
@@ -199,7 +211,9 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
 
   // High-value query handlers
   async getQuarterlyOverview(programmeId: string): Promise<AIManagerResponse> {
-    return this.processQuery(`Quarterly overview for ${programmeId}: KPIs vs targets, drawdowns vs schedule, top risks, actions.`)
+    return this.processQuery(
+      `Quarterly overview for ${programmeId}: KPIs vs targets, drawdowns vs schedule, top risks, actions.`
+    )
   }
 
   async getUnderperformingPartners(): Promise<AIManagerResponse> {
@@ -207,7 +221,9 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
   }
 
   async getCrossPortfolioAnalysis(): Promise<AIManagerResponse> {
-    return this.processQuery('Which investees appear across multiple programmes in last 24 months? Show overlaps.')
+    return this.processQuery(
+      'Which investees appear across multiple programmes in last 24 months? Show overlaps.'
+    )
   }
 
   async getVariationRequests(): Promise<AIManagerResponse> {
@@ -215,21 +231,27 @@ Defaults: "recent" = last 90 days; currency = GBP; time zone = Europe/London.`
   }
 
   async prepareStakeholderBrief(orgName: string): Promise<AIManagerResponse> {
-    return this.processQuery(`Prepare stakeholder brief for ${orgName}: last 6 months of meetings, emails, events, LinkedIn engagement, Mailchimp interactions.`)
+    return this.processQuery(
+      `Prepare stakeholder brief for ${orgName}: last 6 months of meetings, emails, events, LinkedIn engagement, Mailchimp interactions.`
+    )
   }
 
   // Proactive insights (would be scheduled)
   async generateWeeklyInsights() {
     return {
       drawdownSlippage: await this.processQuery('Show drawdown schedule slippage in next 10 days'),
-      matchedFinanceGaps: await this.processQuery('Partners with matched finance below 80% of target'),
+      matchedFinanceGaps: await this.processQuery(
+        'Partners with matched finance below 80% of target'
+      ),
       lowEngagement: await this.processQuery('Partners with engagement score below threshold')
     }
   }
 
   async generateMonthlyInsights() {
     return {
-      channelLeaderboard: await this.processQuery('Channel performance: LinkedIn vs Mailchimp engagement rates'),
+      channelLeaderboard: await this.processQuery(
+        'Channel performance: LinkedIn vs Mailchimp engagement rates'
+      ),
       imdCoverage: await this.processQuery('IMD coverage heatmap by region'),
       ediTrends: await this.processQuery('EDI snapshot trends across portfolio')
     }

@@ -16,9 +16,10 @@ export function useSyncRuns(organizationId: string, limit = 50) {
         }
       })
       // Sort by started_at desc and limit
-      const sorted = result.data.sort((a, b) => 
-        new Date(b.metadata?.started_at || 0).getTime() - 
-        new Date(a.metadata?.started_at || 0).getTime()
+      const sorted = result.data.sort(
+        (a, b) =>
+          new Date(b.metadata?.started_at || 0).getTime() -
+          new Date(a.metadata?.started_at || 0).getTime()
       )
       return sorted.slice(0, limit) as SyncRun[]
     },
@@ -39,9 +40,10 @@ export function useSyncJobRuns(syncJobId: string, limit = 20) {
       })
       // Filter by sync_job_id in metadata
       const filtered = result.data.filter(r => r.metadata?.sync_job_id === syncJobId)
-      const sorted = filtered.sort((a, b) => 
-        new Date(b.metadata?.started_at || 0).getTime() - 
-        new Date(a.metadata?.started_at || 0).getTime()
+      const sorted = filtered.sort(
+        (a, b) =>
+          new Date(b.metadata?.started_at || 0).getTime() -
+          new Date(a.metadata?.started_at || 0).getTime()
       )
       return sorted.slice(0, limit) as SyncRun[]
     },
@@ -64,7 +66,7 @@ export function useSyncRun(syncRunId: string) {
       return result.data[0] as SyncRun
     },
     enabled: !!syncRunId,
-    refetchInterval: (data) => {
+    refetchInterval: data => {
       // Refetch every 5 seconds if still running
       return data?.status === 'running' ? 5000 : false
     }
@@ -92,18 +94,18 @@ export function useCancelSyncRun() {
       return response.json()
     },
     onSuccess: (data, syncRunId) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-run', syncRunId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-run', syncRunId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-runs'] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-runs']
       })
       toast({
         title: 'Sync cancelled',
         description: 'Sync run has been cancelled successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to cancel sync',
         description: error.message,
@@ -119,10 +121,7 @@ export function useRetrySyncErrors() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      syncRunId: string
-      recordIds?: string[]
-    }) => {
+    mutationFn: async (data: { syncRunId: string; recordIds?: string[] }) => {
       const response = await fetch(`/api/integration-hub/sync-runs/${data.syncRunId}/retry`, {
         method: 'POST',
         headers: {
@@ -138,15 +137,15 @@ export function useRetrySyncErrors() {
       return response.json()
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-run', variables.syncRunId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-run', variables.syncRunId]
       })
       toast({
         title: 'Retry initiated',
         description: `Retrying ${data.recordCount} failed records.`
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to retry sync errors',
         description: error.message,

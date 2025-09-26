@@ -70,15 +70,15 @@ export function useCreateConnector() {
       return connector as IntegrationConnector
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-connectors', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-connectors', variables.organizationId]
       })
       toast({
         title: 'Connector created',
         description: 'Integration connector has been created successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to create connector',
         description: error.message,
@@ -105,18 +105,18 @@ export function useUpdateConnector() {
       })
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-connector', variables.connectorId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-connector', variables.connectorId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-connectors', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-connectors', variables.organizationId]
       })
       toast({
         title: 'Connector updated',
         description: 'Integration connector has been updated successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to update connector',
         description: error.message,
@@ -132,22 +132,19 @@ export function useDeleteConnector() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      connectorId: string
-      organizationId: string
-    }) => {
+    mutationFn: async (data: { connectorId: string; organizationId: string }) => {
       await universalApi.deleteEntity(data.connectorId)
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-connectors', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-connectors', variables.organizationId]
       })
       toast({
         title: 'Connector deleted',
         description: 'Integration connector has been deleted successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to delete connector',
         description: error.message,
@@ -177,13 +174,13 @@ export function useTestConnection() {
 
       return response.json()
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast({
         title: 'Connection successful',
         description: 'Successfully connected to the integration service.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Connection failed',
         description: error.message,

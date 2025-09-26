@@ -214,10 +214,19 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={createMutation.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+            <Button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               {createMutation.isPending ? 'Creating...' : 'Create Campaign'}
             </Button>
           </DialogFooter>

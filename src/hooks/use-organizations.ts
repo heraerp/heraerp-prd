@@ -471,9 +471,9 @@ export function useOrganizationList(filters?: {
         headers: { 'X-Organization-Id': orgId }
       })
       if (!response.ok) throw new Error('Failed to fetch organizations')
-      
+
       const data = await response.json()
-      
+
       // Transform the data to match expected format
       return (data.items || []).map((org: any) => ({
         id: org.id,

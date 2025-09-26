@@ -3,10 +3,7 @@ import { universalApi } from '@/lib/universal-api'
 import { SyncScheduler } from '@/lib/integration-hub/sync-scheduler'
 
 // POST /api/integration-hub/sync-jobs/[id]/run
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Fetch sync job
     const jobResult = await universalApi.read({
@@ -22,13 +19,10 @@ export async function POST(
     }
 
     const syncJob = jobResult.data[0]
-    
+
     // Check if job is active
     if (syncJob.metadata?.status !== 'active') {
-      return NextResponse.json(
-        { error: 'Sync job is not active' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Sync job is not active' }, { status: 400 })
     }
 
     // Create a new sync run
@@ -39,16 +33,11 @@ export async function POST(
     )
 
     // Log start of sync
-    await SyncScheduler.logSyncActivity(
-      syncRun.id,
-      'info',
-      'Sync run started',
-      {
-        sync_job_id: syncJob.id,
-        sync_job_name: syncJob.entity_name,
-        triggered_by: 'manual'
-      }
-    )
+    await SyncScheduler.logSyncActivity(syncRun.id, 'info', 'Sync run started', {
+      sync_job_id: syncJob.id,
+      sync_job_name: syncJob.entity_name,
+      triggered_by: 'manual'
+    })
 
     // In a real implementation, this would trigger the actual sync process
     // For now, we'll simulate a successful sync after a delay
@@ -72,12 +61,9 @@ export async function POST(
           duration_seconds: Math.floor(Math.random() * 60) + 10
         })
 
-        await SyncScheduler.logSyncActivity(
-          syncRun.id,
-          'info',
-          'Sync run completed successfully',
-          { stats }
-        )
+        await SyncScheduler.logSyncActivity(syncRun.id, 'info', 'Sync run completed successfully', {
+          stats
+        })
 
         // Update next run time
         await SyncScheduler.updateNextRunTime(syncJob.id)
@@ -93,9 +79,6 @@ export async function POST(
     })
   } catch (error) {
     console.error('Error running sync job:', error)
-    return NextResponse.json(
-      { error: 'Failed to run sync job' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to run sync job' }, { status: 500 })
   }
 }

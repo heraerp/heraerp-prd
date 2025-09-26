@@ -1,30 +1,29 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { getAllPosts, getAllCities, getAllPillars } from "@/lib/posts";
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { getAllPosts, getAllCities, getAllPillars } from '@/lib/posts'
 
 export const metadata: Metadata = {
-  title: "Business Growth Blog | HERA ERP",
-  description: "Practical guides for UK businesses to streamline operations, improve cash flow, and scale efficiently. Get our free SMB growth guide.",
+  title: 'Business Growth Blog | HERA ERP',
+  description:
+    'Practical guides for UK businesses to streamline operations, improve cash flow, and scale efficiently. Get our free SMB growth guide.',
   openGraph: {
-    title: "Business Growth Blog - Transform Your Operations",
-    description: "Join 3,000+ UK business owners getting actionable insights every week.",
-    type: "website"
+    title: 'Business Growth Blog - Transform Your Operations',
+    description: 'Join 3,000+ UK business owners getting actionable insights every week.',
+    type: 'website'
   }
-};
+}
 
 export default function BlogListingPage() {
-  const posts = getAllPosts();
-  const cities = getAllCities();
-  const pillars = getAllPillars();
+  const posts = getAllPosts()
+  const cities = getAllCities()
+  const pillars = getAllPillars()
 
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-600 to-indigo-700 py-16 px-4 text-white">
         <div className="mx-auto max-w-7xl">
-          <h1 className="mb-4 text-4xl font-bold sm:text-5xl">
-            Business Growth Insights
-          </h1>
+          <h1 className="mb-4 text-4xl font-bold sm:text-5xl">Business Growth Insights</h1>
           <p className="mb-8 text-xl text-blue-100">
             Practical guides to transform your operations and boost profitability
           </p>
@@ -69,17 +68,15 @@ export default function BlogListingPage() {
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <h2 className="mb-6 text-2xl font-bold text-gray-900">
-              Latest Insights
-            </h2>
-            
+            <h2 className="mb-6 text-2xl font-bold text-gray-900">Latest Insights</h2>
+
             {posts.length === 0 ? (
               <div className="rounded-xl bg-white p-8 text-center">
                 <p className="text-gray-600">No blog posts yet. Check back soon!</p>
               </div>
             ) : (
               <div className="space-y-6">
-                {posts.map((post) => (
+                {posts.map(post => (
                   <article
                     key={post.slug}
                     className="group rounded-xl bg-white p-6 shadow-sm transition-shadow hover:shadow-lg"
@@ -91,24 +88,20 @@ export default function BlogListingPage() {
                       <span>{post.meta.pillar}</span>
                       <span>•</span>
                       <time dateTime={post.meta.date}>
-                        {new Date(post.meta.date).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric"
+                        {new Date(post.meta.date).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
                         })}
                       </time>
                     </div>
-                    
+
                     <h3 className="mb-2 text-xl font-bold text-gray-900 group-hover:text-blue-600">
-                      <Link href={`/blog/${post.slug}`}>
-                        {post.meta.title}
-                      </Link>
+                      <Link href={`/blog/${post.slug}`}>{post.meta.title}</Link>
                     </h3>
-                    
-                    <p className="mb-4 text-gray-600 line-clamp-2">
-                      {post.meta.excerpt}
-                    </p>
-                    
+
+                    <p className="mb-4 text-gray-600 line-clamp-2">{post.meta.excerpt}</p>
+
                     <div className="flex items-center justify-between">
                       <Link
                         href={`/blog/${post.slug}`}
@@ -129,13 +122,10 @@ export default function BlogListingPage() {
                           />
                         </svg>
                       </Link>
-                      
+
                       <div className="flex gap-2">
                         {post.meta.trust_signals.slice(0, 1).map((signal, idx) => (
-                          <span 
-                            key={idx}
-                            className="text-xs text-gray-500"
-                          >
+                          <span key={idx} className="text-xs text-gray-500">
                             ✓ {signal}
                           </span>
                         ))}
@@ -151,9 +141,7 @@ export default function BlogListingPage() {
           <aside className="space-y-6">
             {/* Newsletter Signup */}
             <div className="rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">
-                Free Growth Guide
-              </h3>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">Free Growth Guide</h3>
               <p className="mb-4 text-sm text-gray-600">
                 30 proven tactics to streamline operations and boost profitability.
               </p>
@@ -168,9 +156,7 @@ export default function BlogListingPage() {
             {/* Cities */}
             {cities.length > 0 && (
               <div className="rounded-xl bg-white p-6">
-                <h3 className="mb-4 font-semibold text-gray-900">
-                  Browse by City
-                </h3>
+                <h3 className="mb-4 font-semibold text-gray-900">Browse by City</h3>
                 <div className="space-y-2">
                   {cities.slice(0, 10).map(({ city, count }) => (
                     <Link
@@ -189,9 +175,7 @@ export default function BlogListingPage() {
             {/* Topics */}
             {pillars.length > 0 && (
               <div className="rounded-xl bg-white p-6">
-                <h3 className="mb-4 font-semibold text-gray-900">
-                  Popular Topics
-                </h3>
+                <h3 className="mb-4 font-semibold text-gray-900">Popular Topics</h3>
                 <div className="flex flex-wrap gap-2">
                   {pillars.map(({ pillar, count }) => (
                     <Link
@@ -208,9 +192,7 @@ export default function BlogListingPage() {
 
             {/* CTA */}
             <div className="rounded-xl bg-gray-900 p-6 text-white">
-              <h3 className="mb-2 text-lg font-semibold">
-                Ready to Transform Your Business?
-              </h3>
+              <h3 className="mb-2 text-lg font-semibold">Ready to Transform Your Business?</h3>
               <p className="mb-4 text-sm text-gray-300">
                 See how HERA can streamline your operations.
               </p>
@@ -225,5 +207,5 @@ export default function BlogListingPage() {
         </div>
       </div>
     </main>
-  );
+  )
 }

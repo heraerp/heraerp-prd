@@ -88,18 +88,18 @@ export function useCreateMapping() {
       return mapping as DataMapping
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-mappings', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-mappings', variables.organizationId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-mappings', 'connector', variables.connectorId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-mappings', 'connector', variables.connectorId]
       })
       toast({
         title: 'Mapping created',
         description: 'Data mapping has been created successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to create mapping',
         description: error.message,
@@ -126,18 +126,18 @@ export function useUpdateMapping() {
       })
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-mapping', variables.mappingId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-mapping', variables.mappingId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-mappings', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-mappings', variables.organizationId]
       })
       toast({
         title: 'Mapping updated',
         description: 'Data mapping has been updated successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to update mapping',
         description: error.message,
@@ -153,22 +153,19 @@ export function useDeleteMapping() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      mappingId: string
-      organizationId: string
-    }) => {
+    mutationFn: async (data: { mappingId: string; organizationId: string }) => {
       await universalApi.deleteEntity(data.mappingId)
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-mappings', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-mappings', variables.organizationId]
       })
       toast({
         title: 'Mapping deleted',
         description: 'Data mapping has been deleted successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to delete mapping',
         description: error.message,
@@ -183,10 +180,7 @@ export function useTestMapping() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      mappingId: string
-      sampleData: any
-    }) => {
+    mutationFn: async (data: { mappingId: string; sampleData: any }) => {
       const response = await fetch('/api/integration-hub/mappings/test', {
         method: 'POST',
         headers: {
@@ -201,13 +195,13 @@ export function useTestMapping() {
 
       return response.json()
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast({
         title: 'Mapping test successful',
         description: 'Data mapping validated successfully with sample data.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Mapping test failed',
         description: error.message,
@@ -222,10 +216,7 @@ export function useAutoGenerateMappings() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      sourceSchema: any
-      targetSchema: any
-    }) => {
+    mutationFn: async (data: { sourceSchema: any; targetSchema: any }) => {
       const response = await fetch('/api/integration-hub/mappings/auto-generate', {
         method: 'POST',
         headers: {
@@ -240,13 +231,13 @@ export function useAutoGenerateMappings() {
 
       return response.json()
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       toast({
         title: 'Mappings generated',
         description: `Successfully generated ${data.fieldMappings.length} field mappings.`
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Auto-generation failed',
         description: error.message,

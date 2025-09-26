@@ -1,32 +1,30 @@
 import { universalApi } from '@/lib/universal-api'
 import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
-import type { 
-  IntegrationConnector, 
-  IntegrationVendor, 
+import type {
+  IntegrationConnector,
+  IntegrationVendor,
   ConnectorConfig,
   ConnectorCapability,
-  OAuthToken 
+  OAuthToken
 } from '@/types/integration-hub'
 
 // Vendor configurations with default capabilities and settings
-const VENDOR_CONFIGS: Record<IntegrationVendor, {
-  displayName: string
-  icon: string
-  authType: ConnectorConfig['auth_type']
-  defaultScopes?: string[]
-  baseUrl?: string
-  capabilities: ConnectorCapability[]
-}> = {
+const VENDOR_CONFIGS: Record<
+  IntegrationVendor,
+  {
+    displayName: string
+    icon: string
+    authType: ConnectorConfig['auth_type']
+    defaultScopes?: string[]
+    baseUrl?: string
+    capabilities: ConnectorCapability[]
+  }
+> = {
   microsoft_365: {
     displayName: 'Microsoft 365',
     icon: '🔷',
     authType: 'oauth2',
-    defaultScopes: [
-      'User.Read',
-      'Mail.ReadWrite',
-      'Contacts.ReadWrite',
-      'Calendars.ReadWrite'
-    ],
+    defaultScopes: ['User.Read', 'Mail.ReadWrite', 'Contacts.ReadWrite', 'Calendars.ReadWrite'],
     baseUrl: 'https://graph.microsoft.com/v1.0',
     capabilities: [
       { type: 'read', resource: 'contacts', operations: ['list', 'get'] },
@@ -167,24 +165,19 @@ export class ConnectorManager {
     }
 
     // Create the connector entity
-    const connector = await createNormalizedEntity(
-      organizationId,
-      'integration_connector',
-      name,
-      {
-        entity_code: `CONN-${vendor.toUpperCase()}-${Date.now()}`,
-        smart_code: `HERA.INTEGRATIONS.CONNECTOR.${vendor.toUpperCase()}.v1`,
-        vendor,
-        status: 'configuring',
-        config: {
-          auth_type: vendorConfig.authType,
-          ...config,
-          base_url: config.base_url || vendorConfig.baseUrl
-        },
-        capabilities: vendorConfig.capabilities,
-        last_health_check: new Date().toISOString()
-      }
-    )
+    const connector = await createNormalizedEntity(organizationId, 'integration_connector', name, {
+      entity_code: `CONN-${vendor.toUpperCase()}-${Date.now()}`,
+      smart_code: `HERA.INTEGRATIONS.CONNECTOR.${vendor.toUpperCase()}.v1`,
+      vendor,
+      status: 'configuring',
+      config: {
+        auth_type: vendorConfig.authType,
+        ...config,
+        base_url: config.base_url || vendorConfig.baseUrl
+      },
+      capabilities: vendorConfig.capabilities,
+      last_health_check: new Date().toISOString()
+    })
 
     return connector.data as IntegrationConnector
   }
@@ -224,10 +217,7 @@ export class ConnectorManager {
     })
   }
 
-  static async storeOAuthToken(
-    connectorId: string,
-    token: OAuthToken
-  ): Promise<void> {
+  static async storeOAuthToken(connectorId: string, token: OAuthToken): Promise<void> {
     const connector = await universalApi.read({
       table: 'core_entities',
       filters: { id: connectorId }

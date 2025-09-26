@@ -147,7 +147,7 @@ export class EventbriteAdapter {
   constructor(private config: EventbriteConfig) {
     this.apiUrl = config.apiUrl || 'https://www.eventbriteapi.com/v3'
     this.headers = {
-      'Authorization': `Bearer ${config.apiToken}`,
+      Authorization: `Bearer ${config.apiToken}`,
       'Content-Type': 'application/json'
     }
   }
@@ -176,13 +176,13 @@ export class EventbriteAdapter {
 
       // Fetch all owned events
       const events = await this.fetchAllEvents(options.sinceCursor)
-      
+
       let latestChangedTimestamp: string | undefined
 
       // Process each event
       for (const event of events) {
         stats.eventsProcessed++
-        
+
         try {
           // Track latest changed timestamp
           if (!latestChangedTimestamp || event.changed > latestChangedTimestamp) {
@@ -191,16 +191,16 @@ export class EventbriteAdapter {
 
           // Normalize event
           const normalizedEvent = this.normalizeEvent(options.orgId, event)
-          
+
           // TODO: Call HERA API to upsert event
           // This will be handled by the sync engine using the normalized data
-          
+
           // Fetch attendees for this event
           const attendees = await this.fetchAllAttendees(event.id)
-          
+
           for (const attendee of attendees) {
             stats.attendeesProcessed++
-            
+
             try {
               // Track latest changed timestamp
               if (!latestChangedTimestamp || attendee.changed > latestChangedTimestamp) {
@@ -209,15 +209,14 @@ export class EventbriteAdapter {
 
               // Normalize attendee
               const normalizedInvite = this.normalizeAttendee(options.orgId, event.id, attendee)
-              
+
               // Track checkins
               if (attendee.checked_in) {
                 stats.checkins++
               }
-              
+
               // TODO: Call HERA API to upsert invite
               // This will be handled by the sync engine
-              
             } catch (error) {
               stats.errors++
               partialErrors.push({
@@ -227,7 +226,6 @@ export class EventbriteAdapter {
               })
             }
           }
-          
         } catch (error) {
           stats.errors++
           partialErrors.push({
@@ -244,17 +242,18 @@ export class EventbriteAdapter {
         cursor: latestChangedTimestamp,
         partialErrors
       }
-
     } catch (error) {
       console.error('Eventbrite pull error:', error)
       return {
         success: false,
         stats,
-        partialErrors: [{
-          type: 'event',
-          id: 'pull',
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }]
+        partialErrors: [
+          {
+            type: 'event',
+            id: 'pull',
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        ]
       }
     }
   }
@@ -263,8 +262,8 @@ export class EventbriteAdapter {
   async testConnection(): Promise<{ success: boolean; message: string }> {
     try {
       const response = await this.fetchWithRetry(`${this.apiUrl}/users/me/`)
-      const data = await response.json() as EventbriteMeResponse
-      
+      const data = (await response.json()) as EventbriteMeResponse
+
       return {
         success: true,
         message: `Connected to Eventbrite as ${data.name || data.emails?.[0]?.email || 'Unknown'}`
@@ -281,16 +280,18 @@ export class EventbriteAdapter {
   private async fetchAllEvents(sinceCursor?: string): Promise<EventbriteEvent[]> {
     const events: EventbriteEvent[] = []
     let continuation: string | undefined
-    
+
     // First get user info to get organizer ID
     const meResponse = await this.fetchWithRetry(`${this.apiUrl}/users/me/`)
     const userData = await meResponse.json()
     const userId = userData.id
-    
+
     // Get user's organizations
     let organizationId = userId
     try {
-      const orgsResponse = await this.fetchWithRetry(`${this.apiUrl}/users/${userId}/organizations/`)
+      const orgsResponse = await this.fetchWithRetry(
+        `${this.apiUrl}/users/${userId}/organizations/`
+      )
       const orgsData = await orgsResponse.json()
       if (orgsData.organizations && orgsData.organizations.length > 0) {
         organizationId = orgsData.organizations[0].id
@@ -298,32 +299,31 @@ export class EventbriteAdapter {
     } catch (error) {
       // No organizations found, using user ID as organizer
     }
-    
+
     do {
       const params = new URLSearchParams()
-      
+
       if (continuation) {
         params.set('continuation', continuation)
       }
-      
+
       if (sinceCursor) {
         params.set('changed_since', sinceCursor)
       }
-      
+
       const response = await this.fetchWithRetry(
         `${this.apiUrl}/organizations/${organizationId}/events/?${params.toString()}`
       )
-      
-      const data = await response.json() as EventbriteEventsResponse
+
+      const data = (await response.json()) as EventbriteEventsResponse
       events.push(...data.events)
-      
+
       continuation = data.pagination.continuation
-      
+
       // Rate limit
       await this.delay(this.rateLimitDelay)
-      
     } while (continuation)
-    
+
     return events
   }
 
@@ -331,30 +331,29 @@ export class EventbriteAdapter {
   private async fetchAllAttendees(eventId: string): Promise<EventbriteAttendee[]> {
     const attendees: EventbriteAttendee[] = []
     let continuation: string | undefined
-    
+
     do {
       const params = new URLSearchParams({
         status: 'attending,transferred,deleted'
       })
-      
+
       if (continuation) {
         params.set('continuation', continuation)
       }
-      
+
       const response = await this.fetchWithRetry(
         `${this.apiUrl}/events/${eventId}/attendees/?${params.toString()}`
       )
-      
-      const data = await response.json() as EventbriteAttendeesResponse
+
+      const data = (await response.json()) as EventbriteAttendeesResponse
       attendees.push(...data.attendees)
-      
+
       continuation = data.pagination.continuation
-      
+
       // Rate limit
       await this.delay(this.rateLimitDelay)
-      
     } while (continuation)
-    
+
     return attendees
   }
 
@@ -362,7 +361,7 @@ export class EventbriteAdapter {
   private async fetchWithRetry(url: string, retries = 0): Promise<Response> {
     try {
       const response = await fetch(url, { headers: this.headers })
-      
+
       if (response.status === 429) {
         // Rate limited
         const retryAfter = parseInt(response.headers.get('Retry-After') || '60')
@@ -372,12 +371,12 @@ export class EventbriteAdapter {
         }
         throw new Error('Rate limited after max retries')
       }
-      
+
       if (!response.ok) {
         const errorText = await response.text()
         throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`)
       }
-      
+
       return response
     } catch (error) {
       if (retries < this.maxRetries && error instanceof Error && error.message.includes('fetch')) {
@@ -430,10 +429,15 @@ export class EventbriteAdapter {
   }
 
   // Normalize Eventbrite attendee to HERA invite format
-  private normalizeAttendee(orgId: string, eventId: string, attendee: EventbriteAttendee): NormalizedInvite {
+  private normalizeAttendee(
+    orgId: string,
+    eventId: string,
+    attendee: EventbriteAttendee
+  ): NormalizedInvite {
     return {
       entity_type: 'event_invite',
-      entity_name: `${attendee.profile.first_name || ''} ${attendee.profile.last_name || attendee.profile.email}`.trim(),
+      entity_name:
+        `${attendee.profile.first_name || ''} ${attendee.profile.last_name || attendee.profile.email}`.trim(),
       entity_code: `EB-ATT-${attendee.id}`,
       smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
       dynamic_data: {
@@ -457,7 +461,9 @@ export class EventbriteAdapter {
   }
 
   // Map Eventbrite event status to HERA status
-  private mapEventStatus(status: EventbriteEvent['status']): NormalizedEvent['dynamic_data']['EVENT.META.V1']['status'] {
+  private mapEventStatus(
+    status: EventbriteEvent['status']
+  ): NormalizedEvent['dynamic_data']['EVENT.META.V1']['status'] {
     switch (status) {
       case 'live':
       case 'started':
@@ -473,7 +479,9 @@ export class EventbriteAdapter {
   }
 
   // Map Eventbrite attendee status to HERA invite status
-  private mapAttendeeStatus(attendee: EventbriteAttendee): NormalizedInvite['dynamic_data']['INVITE.META.V1']['status'] {
+  private mapAttendeeStatus(
+    attendee: EventbriteAttendee
+  ): NormalizedInvite['dynamic_data']['INVITE.META.V1']['status'] {
     if (attendee.cancelled || attendee.status === 'deleted') {
       return 'cancelled'
     }
@@ -489,24 +497,24 @@ export class EventbriteAdapter {
   // Demo data pull
   private pullDemoData(orgId: string, stats: AdapterStats): AdapterResult {
     const partialErrors: AdapterResult['partialErrors'] = []
-    
+
     // Process demo events
     for (const event of DEMO_EVENTS) {
       stats.eventsProcessed++
       stats.eventsCreated++ // Assume all demo events are new
-      
+
       // Process demo attendees
       const attendees = DEMO_ATTENDEES[event.id] || []
       for (const attendee of attendees) {
         stats.attendeesProcessed++
         stats.attendeesCreated++ // Assume all demo attendees are new
-        
+
         if (attendee.checked_in) {
           stats.checkins++
         }
       }
     }
-    
+
     return {
       success: true,
       stats,
@@ -531,7 +539,7 @@ export class EventbriteAdapter {
       // Return demo data
       for (const event of DEMO_EVENTS) {
         events.push(this.normalizeEvent(options.orgId, event))
-        
+
         const attendees = DEMO_ATTENDEES[event.id] || []
         for (const attendee of attendees) {
           invites.push(this.normalizeAttendee(options.orgId, event.id, attendee))
@@ -540,10 +548,10 @@ export class EventbriteAdapter {
     } else {
       // Fetch real data
       const eventbriteEvents = await this.fetchAllEvents(options.sinceCursor)
-      
+
       for (const event of eventbriteEvents) {
         events.push(this.normalizeEvent(options.orgId, event))
-        
+
         const attendees = await this.fetchAllAttendees(event.id)
         for (const attendee of attendees) {
           invites.push(this.normalizeAttendee(options.orgId, event.id, attendee))

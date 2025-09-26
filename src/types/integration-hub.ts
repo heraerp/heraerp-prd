@@ -17,16 +17,16 @@ export interface IntegrationConnector {
   updated_at: string
 }
 
-export type IntegrationVendor = 
-  | 'microsoft_365' 
-  | 'google' 
-  | 'mailchimp' 
-  | 'linkedin' 
-  | 'bluesky' 
-  | 'twinfield' 
-  | 'craft_cms' 
-  | 'eventbrite' 
-  | 'power_bi' 
+export type IntegrationVendor =
+  | 'microsoft_365'
+  | 'google'
+  | 'mailchimp'
+  | 'linkedin'
+  | 'bluesky'
+  | 'twinfield'
+  | 'craft_cms'
+  | 'eventbrite'
+  | 'power_bi'
   | 'tableau'
 
 export interface ConnectorConfig {

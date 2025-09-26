@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       metrics: healthMetrics,
       summary: {
         total: healthMetrics.length,
@@ -67,9 +67,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error fetching health metrics:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch health metrics' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch health metrics' }, { status: 500 })
   }
 }

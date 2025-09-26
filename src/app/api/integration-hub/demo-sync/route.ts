@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     // Get organization ID from header
     const orgId = request.headers.get('X-Organization-Id')
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Missing X-Organization-Id header' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing X-Organization-Id header' }, { status: 400 })
     }
 
     // Get request body
@@ -26,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     // For demo, create a simple sync run ID
     const syncRunId = uuidv4()
-    
+
     // Simulate sync for Eventbrite
     if (vendor === 'eventbrite' && domain === 'events') {
       // Create adapter with demo config
@@ -80,19 +77,21 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: false,
-      error: `Unsupported vendor/domain: ${vendor}/${domain}`
-    }, { status: 400 })
-
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Unsupported vendor/domain: ${vendor}/${domain}`
+      },
+      { status: 400 }
+    )
   } catch (error) {
     console.error('Demo sync error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: error instanceof Error ? error.message : 'Sync failed',
-        syncRunId: uuidv4() 
+        syncRunId: uuidv4()
       },
       { status: 500 }
     )

@@ -4,13 +4,7 @@ import { useEffect, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Network,
-  Download,
-  Maximize2,
-  RefreshCw,
-  Info
-} from 'lucide-react'
+import { Network, Download, Maximize2, RefreshCw, Info } from 'lucide-react'
 import { useConnectors } from '@/hooks/integration-hub/useConnectors'
 import { useMappings } from '@/hooks/integration-hub/useMappings'
 import { useSyncJobs } from '@/hooks/integration-hub/useSyncJobs'
@@ -22,7 +16,7 @@ interface DataFlowDiagramProps {
 
 export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  
+
   const { data: connectors, isLoading: connectorsLoading } = useConnectors(organizationId)
   const { data: mappings, isLoading: mappingsLoading } = useMappings(organizationId)
   const { data: syncJobs, isLoading: syncJobsLoading } = useSyncJobs(organizationId)
@@ -45,19 +39,15 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // Generate flow diagram
-    const flowDiagram = DataFlowEngine.generateFlowDiagram(
-      connectors,
-      mappings,
-      syncJobs
-    )
+    const flowDiagram = DataFlowEngine.generateFlowDiagram(connectors, mappings, syncJobs)
 
     // Draw diagram (simplified visualization)
     // In production, use a proper graph visualization library like react-flow or d3
-    
+
     // Draw HERA central node
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
-    
+
     ctx.beginPath()
     ctx.arc(centerX, centerY, 60, 0, 2 * Math.PI)
     ctx.fillStyle = '#3b82f6'
@@ -65,7 +55,7 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
     ctx.strokeStyle = '#1e40af'
     ctx.lineWidth = 3
     ctx.stroke()
-    
+
     ctx.fillStyle = 'white'
     ctx.font = 'bold 14px sans-serif'
     ctx.textAlign = 'center'
@@ -79,7 +69,7 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
         // Draw node
         ctx.beginPath()
         ctx.arc(node.position.x, node.position.y, 40, 0, 2 * Math.PI)
-        
+
         if (node.status === 'active') {
           ctx.fillStyle = '#10b981'
         } else if (node.status === 'error') {
@@ -87,19 +77,19 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
         } else {
           ctx.fillStyle = '#6b7280'
         }
-        
+
         ctx.fill()
         ctx.strokeStyle = '#374151'
         ctx.lineWidth = 2
         ctx.stroke()
-        
+
         // Draw icon
         ctx.fillStyle = 'white'
         ctx.font = '20px sans-serif'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillText(node.metadata?.icon || '🔌', node.position.x, node.position.y - 5)
-        
+
         // Draw label
         ctx.fillStyle = '#374151'
         ctx.font = '12px sans-serif'
@@ -111,28 +101,28 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
     flowDiagram.edges.forEach(edge => {
       const sourceNode = flowDiagram.nodes.find(n => n.id === edge.source)
       const targetNode = flowDiagram.nodes.find(n => n.id === edge.target)
-      
+
       if (sourceNode?.position && targetNode?.position) {
         ctx.beginPath()
         ctx.moveTo(sourceNode.position.x, sourceNode.position.y)
         ctx.lineTo(targetNode.position.x, targetNode.position.y)
-        
+
         if (edge.style?.stroke) {
           ctx.strokeStyle = edge.style.stroke
         } else {
           ctx.strokeStyle = '#9ca3af'
         }
-        
+
         ctx.lineWidth = edge.animated ? 3 : 2
-        
+
         if (edge.animated) {
           ctx.setLineDash([5, 5])
         } else {
           ctx.setLineDash([])
         }
-        
+
         ctx.stroke()
-        
+
         // Draw arrowhead
         const angle = Math.atan2(
           targetNode.position.y - sourceNode.position.y,
@@ -140,7 +130,7 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
         )
         const arrowLength = 10
         const arrowAngle = Math.PI / 6
-        
+
         ctx.beginPath()
         ctx.moveTo(
           targetNode.position.x - 40 * Math.cos(angle),
@@ -159,15 +149,15 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
           targetNode.position.y - 40 * Math.sin(angle) - arrowLength * Math.sin(angle + arrowAngle)
         )
         ctx.stroke()
-        
+
         // Draw label
         if (edge.label) {
           const midX = (sourceNode.position.x + targetNode.position.x) / 2
           const midY = (sourceNode.position.y + targetNode.position.y) / 2
-          
+
           ctx.fillStyle = 'white'
           ctx.fillRect(midX - 40, midY - 10, 80, 20)
-          
+
           ctx.fillStyle = '#374151'
           ctx.font = '11px sans-serif'
           ctx.textAlign = 'center'
@@ -198,9 +188,7 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Data Flow Visualization</h1>
-          <p className="text-muted-foreground">
-            Visual representation of integration architecture
-          </p>
+          <p className="text-muted-foreground">Visual representation of integration architecture</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2">
@@ -244,25 +232,16 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
           <CardTitle className="flex items-center justify-between">
             <span>Integration Architecture</span>
             <div className="flex items-center gap-4 text-sm">
-              <Badge variant="secondary">
-                {connectors?.length || 0} Connectors
-              </Badge>
-              <Badge variant="secondary">
-                {mappings?.length || 0} Mappings
-              </Badge>
-              <Badge variant="secondary">
-                {syncJobs?.length || 0} Sync Jobs
-              </Badge>
+              <Badge variant="secondary">{connectors?.length || 0} Connectors</Badge>
+              <Badge variant="secondary">{mappings?.length || 0} Mappings</Badge>
+              <Badge variant="secondary">{syncJobs?.length || 0} Sync Jobs</Badge>
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <canvas
-              ref={canvasRef}
-              className="w-full h-[600px] border rounded-lg bg-muted/20"
-            />
-            
+            <canvas ref={canvasRef} className="w-full h-[600px] border rounded-lg bg-muted/20" />
+
             {/* Info overlay */}
             <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur p-3 rounded-lg border">
               <div className="flex items-center gap-2 text-sm">
@@ -286,42 +265,48 @@ export function DataFlowDiagram({ organizationId }: DataFlowDiagramProps) {
             <div>
               <h4 className="font-medium mb-2">Inbound Flows</h4>
               <div className="space-y-2">
-                {syncJobs?.filter(j => j.sync_direction === 'inbound').map(job => (
-                  <div key={job.id} className="flex items-center justify-between text-sm">
-                    <span>{job.entity_name}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {job.sync_type}
-                    </Badge>
-                  </div>
-                ))}
+                {syncJobs
+                  ?.filter(j => j.sync_direction === 'inbound')
+                  .map(job => (
+                    <div key={job.id} className="flex items-center justify-between text-sm">
+                      <span>{job.entity_name}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {job.sync_type}
+                      </Badge>
+                    </div>
+                  ))}
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-medium mb-2">Outbound Flows</h4>
               <div className="space-y-2">
-                {syncJobs?.filter(j => j.sync_direction === 'outbound').map(job => (
-                  <div key={job.id} className="flex items-center justify-between text-sm">
-                    <span>{job.entity_name}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {job.sync_type}
-                    </Badge>
-                  </div>
-                ))}
+                {syncJobs
+                  ?.filter(j => j.sync_direction === 'outbound')
+                  .map(job => (
+                    <div key={job.id} className="flex items-center justify-between text-sm">
+                      <span>{job.entity_name}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {job.sync_type}
+                      </Badge>
+                    </div>
+                  ))}
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-medium mb-2">Bidirectional Flows</h4>
               <div className="space-y-2">
-                {syncJobs?.filter(j => j.sync_direction === 'bidirectional').map(job => (
-                  <div key={job.id} className="flex items-center justify-between text-sm">
-                    <span>{job.entity_name}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {job.sync_type}
-                    </Badge>
-                  </div>
-                ))}
+                {syncJobs
+                  ?.filter(j => j.sync_direction === 'bidirectional')
+                  .map(job => (
+                    <div key={job.id} className="flex items-center justify-between text-sm">
+                      <span>{job.entity_name}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {job.sync_type}
+                      </Badge>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

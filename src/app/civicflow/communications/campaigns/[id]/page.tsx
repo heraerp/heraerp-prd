@@ -194,9 +194,9 @@ export default function CampaignDetailPage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => router.back()}
           className="hover:bg-[rgb(0,166,166)]/10"
         >
@@ -226,7 +226,7 @@ export default function CampaignDetailPage() {
         </div>
         <div className="flex items-center gap-2">
           {campaign.status === 'draft' && (
-            <Button 
+            <Button
               onClick={() => handleAction('schedule')}
               className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
             >
@@ -235,8 +235,8 @@ export default function CampaignDetailPage() {
             </Button>
           )}
           {campaign.status === 'running' && (
-            <Button 
-              onClick={() => handleAction('pause')} 
+            <Button
+              onClick={() => handleAction('pause')}
               variant="outline"
               className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
             >
@@ -245,7 +245,7 @@ export default function CampaignDetailPage() {
             </Button>
           )}
           {campaign.status === 'paused' && (
-            <Button 
+            <Button
               onClick={() => handleAction('resume')}
               className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
             >
@@ -256,7 +256,7 @@ export default function CampaignDetailPage() {
           {['draft', 'scheduled', 'running', 'paused'].includes(campaign.status) && (
             <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
               <AlertDialogTrigger asChild>
-                <Button 
+                <Button
                   variant="outline"
                   className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
                 >
@@ -285,8 +285,8 @@ export default function CampaignDetailPage() {
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="icon"
                 className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >

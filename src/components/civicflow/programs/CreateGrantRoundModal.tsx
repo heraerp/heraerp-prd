@@ -91,7 +91,9 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
           <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto px-1">
             {/* Round Code */}
             <div className="space-y-2">
-              <Label htmlFor="round_code" className="text-text-200">Round Code</Label>
+              <Label htmlFor="round_code" className="text-text-200">
+                Round Code
+              </Label>
               <div className="flex gap-2">
                 <Input
                   id="round_code"
@@ -121,7 +123,9 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="window_open" className="text-text-200">Opens</Label>
+                  <Label htmlFor="window_open" className="text-text-200">
+                    Opens
+                  </Label>
                   <Input
                     id="window_open"
                     type="date"
@@ -133,7 +137,9 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="window_close" className="text-text-200">Closes</Label>
+                  <Label htmlFor="window_close" className="text-text-200">
+                    Closes
+                  </Label>
                   <Input
                     id="window_close"
                     type="date"
@@ -190,7 +196,12 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 Cancel
               </Button>
               <Button

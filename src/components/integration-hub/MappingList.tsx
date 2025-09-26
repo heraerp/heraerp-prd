@@ -46,7 +46,7 @@ export function MappingList({ organizationId }: MappingListProps) {
   const [showNewModal, setShowNewModal] = useState(false)
   const [selectedMapping, setSelectedMapping] = useState<DataMapping | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
-  
+
   const { data: mappings, isLoading } = useMappings(organizationId)
   const { data: connectors } = useConnectors(organizationId)
   const { mutate: testMapping, isPending: isTesting } = useTestMapping()
@@ -77,9 +77,7 @@ export function MappingList({ organizationId }: MappingListProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Data Mappings</h1>
-          <p className="text-muted-foreground">
-            Configure field transformations between systems
-          </p>
+          <p className="text-muted-foreground">Configure field transformations between systems</p>
         </div>
         <Button onClick={() => setShowNewModal(true)} className="gap-2">
           <Plus className="h-4 w-4" />
@@ -124,15 +122,11 @@ export function MappingList({ organizationId }: MappingListProps) {
                       <GitBranch className="h-4 w-4 text-muted-foreground" />
                       <div>
                         <div className="font-medium">{mapping.entity_name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {mapping.entity_code}
-                        </div>
+                        <div className="text-xs text-muted-foreground">{mapping.entity_code}</div>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    {getConnectorName(mapping.connector_id)}
-                  </TableCell>
+                  <TableCell>{getConnectorName(mapping.connector_id)}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">
                       {mapping.source_schema?.resource || 'Unknown'}
@@ -152,8 +146,8 @@ export function MappingList({ organizationId }: MappingListProps) {
                   </TableCell>
                   <TableCell>
                     <span className="text-sm text-muted-foreground">
-                      {formatDistanceToNow(new Date(mapping.created_at), { 
-                        addSuffix: true 
+                      {formatDistanceToNow(new Date(mapping.created_at), {
+                        addSuffix: true
                       })}
                     </span>
                   </TableCell>
@@ -165,10 +159,12 @@ export function MappingList({ organizationId }: MappingListProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => {
-                          setSelectedMapping(mapping)
-                          setShowTestModal(true)
-                        }}>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedMapping(mapping)
+                            setShowTestModal(true)
+                          }}
+                        >
                           <TestTube className="h-4 w-4 mr-2" />
                           Test Mapping
                         </DropdownMenuItem>
@@ -189,7 +185,7 @@ export function MappingList({ organizationId }: MappingListProps) {
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {/* Empty State */}
               {filteredMappings?.length === 0 && (
                 <TableRow>
@@ -197,10 +193,9 @@ export function MappingList({ organizationId }: MappingListProps) {
                     <GitBranch className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium mb-2">No mappings found</h3>
                     <p className="text-muted-foreground mb-4">
-                      {searchQuery 
-                        ? "Try adjusting your search query"
-                        : "Create your first data mapping to transform fields between systems"
-                      }
+                      {searchQuery
+                        ? 'Try adjusting your search query'
+                        : 'Create your first data mapping to transform fields between systems'}
                     </p>
                     {!searchQuery && (
                       <Button onClick={() => setShowNewModal(true)} className="gap-2">

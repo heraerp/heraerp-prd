@@ -39,13 +39,14 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [showNewModal, setShowNewModal] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState<IntegrationConnector | null>(null)
-  
+
   const { data: connectors, isLoading, refetch } = useConnectors(organizationId)
   const { mutate: testConnection, isPending: isTesting } = useTestConnection()
 
-  const filteredConnectors = connectors?.filter(connector =>
-    connector.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    connector.vendor.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredConnectors = connectors?.filter(
+    connector =>
+      connector.entity_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      connector.vendor.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const getStatusIcon = (status: IntegrationConnector['status']) => {
@@ -68,12 +69,8 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
       error: 'bg-red-100 text-red-800',
       configuring: 'bg-yellow-100 text-yellow-800'
     }
-    
-    return (
-      <Badge className={variants[status] || variants.inactive}>
-        {status}
-      </Badge>
-    )
+
+    return <Badge className={variants[status] || variants.inactive}>{status}</Badge>
   }
 
   const handleTestConnection = (connector: IntegrationConnector) => {
@@ -107,9 +104,7 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Connectors</h1>
-          <p className="text-muted-foreground">
-            Connect to external services and APIs
-          </p>
+          <p className="text-muted-foreground">Connect to external services and APIs</p>
         </div>
         <Button onClick={() => setShowNewModal(true)} className="gap-2">
           <Plus className="h-4 w-4" />
@@ -132,7 +127,7 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
       <div className="grid grid-cols-3 gap-4">
         {filteredConnectors?.map(connector => {
           const vendor = vendorDetails.find(v => v.id === connector.vendor)
-          
+
           return (
             <Card key={connector.id} className="relative hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -183,17 +178,15 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
                   {/* Auth Type */}
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Auth</span>
-                    <Badge variant="secondary">
-                      {connector.config.auth_type}
-                    </Badge>
+                    <Badge variant="secondary">{connector.config.auth_type}</Badge>
                   </div>
 
                   {/* Last Health Check */}
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Last Check</span>
                     <span className="text-sm">
-                      {formatDistanceToNow(new Date(connector.last_health_check), { 
-                        addSuffix: true 
+                      {formatDistanceToNow(new Date(connector.last_health_check), {
+                        addSuffix: true
                       })}
                     </span>
                   </div>
@@ -250,10 +243,9 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
             <Cable className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">No connectors found</h3>
             <p className="text-muted-foreground mb-4">
-              {searchQuery 
-                ? "Try adjusting your search query"
-                : "Get started by adding your first connector"
-              }
+              {searchQuery
+                ? 'Try adjusting your search query'
+                : 'Get started by adding your first connector'}
             </p>
             {!searchQuery && (
               <Button onClick={() => setShowNewModal(true)} className="gap-2">

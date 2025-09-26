@@ -191,8 +191,8 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                         onClick={() => toggleEntityType(type)}
                         className={
                           audienceData.definition.entity_types.includes(type)
-                            ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white border-[rgb(0,166,166)] justify-start"
-                            : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10 justify-start"
+                            ? 'bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white border-[rgb(0,166,166)] justify-start'
+                            : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10 justify-start'
                         }
                       >
                         {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -221,7 +221,12 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                             }
                             className="bg-panel-alt border-border text-text-100"
                           />
-                          <Button type="button" onClick={handleAddTag} size="icon" className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+                          <Button
+                            type="button"
+                            onClick={handleAddTag}
+                            size="icon"
+                            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
@@ -292,7 +297,12 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                     onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                     className="bg-panel-alt border-border text-text-100"
                   />
-                  <Button type="button" onClick={handleAddTag} size="icon" className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+                  <Button
+                    type="button"
+                    onClick={handleAddTag}
+                    size="icon"
+                    className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -317,10 +327,19 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
           </div>
 
           <DialogFooter className="flex-shrink-0">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={createMutation.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+            <Button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               {createMutation.isPending ? 'Creating...' : 'Create Audience'}
             </Button>
           </DialogFooter>

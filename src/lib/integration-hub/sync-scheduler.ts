@@ -1,13 +1,13 @@
 import { universalApi } from '@/lib/universal-api'
 import { createNormalizedEntity } from '@/lib/services/entity-normalization-service'
-import type { 
-  SyncJob, 
-  SyncRun, 
-  SyncSchedule, 
-  SyncOptions, 
+import type {
+  SyncJob,
+  SyncRun,
+  SyncSchedule,
+  SyncOptions,
   SyncStats,
   SyncError,
-  SyncLog 
+  SyncLog
 } from '@/types/integration-hub'
 import * as cron from 'cron-parser'
 
@@ -63,14 +63,14 @@ export class SyncScheduler {
           tz: schedule.timezone
         })
         const next = interval.next()
-        
+
         // Check if within active hours
         if (schedule.active_hours) {
           const nextDate = next.toDate()
           const hours = nextDate.getHours()
           const startHour = parseInt(schedule.active_hours.start.split(':')[0])
           const endHour = parseInt(schedule.active_hours.end.split(':')[0])
-          
+
           if (hours < startHour || hours >= endHour) {
             // Adjust to next active window
             nextDate.setHours(startHour, 0, 0, 0)
@@ -80,7 +80,7 @@ export class SyncScheduler {
             return nextDate.toISOString()
           }
         }
-        
+
         return next.toISOString()
       } catch (error) {
         console.error('Invalid cron expression:', error)
@@ -158,8 +158,12 @@ export class SyncScheduler {
       metadata: {
         ...currentMetadata,
         status: updates.status || currentMetadata.status,
-        stats: updates.stats ? { ...currentMetadata.stats, ...updates.stats } : currentMetadata.stats,
-        errors: updates.errors ? [...currentMetadata.errors, ...updates.errors] : currentMetadata.errors,
+        stats: updates.stats
+          ? { ...currentMetadata.stats, ...updates.stats }
+          : currentMetadata.stats,
+        errors: updates.errors
+          ? [...currentMetadata.errors, ...updates.errors]
+          : currentMetadata.errors,
         logs: updates.logs ? [...currentMetadata.logs, ...updates.logs] : currentMetadata.logs,
         ended_at: updates.ended_at || currentMetadata.ended_at,
         duration_seconds: updates.duration_seconds || currentMetadata.duration_seconds
@@ -249,18 +253,18 @@ export class SyncScheduler {
 
     return syncJobs.data.filter(job => {
       const metadata = job.metadata as any
-      
+
       // Only active jobs
       if (metadata.status !== 'active') return false
-      
+
       // Manual jobs are not auto-run
       if (!metadata.schedule || metadata.schedule.type === 'manual') return false
-      
+
       // Check if next run time has passed
       if (metadata.next_run && new Date(metadata.next_run) <= now) {
         return true
       }
-      
+
       return false
     }) as SyncJob[]
   }
@@ -300,17 +304,13 @@ export class SyncScheduler {
   // Check if error threshold exceeded
   static isErrorThresholdExceeded(stats: SyncStats, threshold: number): boolean {
     if (stats.processed_records === 0) return false
-    
+
     const errorRate = (stats.error_records / stats.processed_records) * 100
     return errorRate > threshold
   }
 
   // Create idempotency key for deduplication
-  static createIdempotencyKey(
-    connectorId: string,
-    resource: string,
-    recordId: string
-  ): string {
+  static createIdempotencyKey(connectorId: string, resource: string, recordId: string): string {
     return `${connectorId}-${resource}-${recordId}`
   }
 }

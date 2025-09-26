@@ -225,7 +225,12 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               Cancel
             </Button>
             <Button

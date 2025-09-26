@@ -141,7 +141,7 @@ export class ConnectorFactory {
   static validateConfig(vendor: VendorType, config: ConnectorConfig): string[] {
     const errors: string[] = []
     const vendorConfig = VENDOR_CONFIGS[vendor]
-    
+
     if (!vendorConfig) {
       errors.push(`Unsupported vendor: ${vendor}`)
       return errors

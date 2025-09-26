@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -45,21 +45,21 @@ const RESOURCES = {
   tableau: ['workbooks', 'views', 'datasources']
 }
 
-export function NewMappingModal({ 
-  open, 
-  onClose, 
+export function NewMappingModal({
+  open,
+  onClose,
   organizationId,
-  connectors 
+  connectors
 }: NewMappingModalProps) {
   const [mappingName, setMappingName] = useState('')
   const [selectedConnector, setSelectedConnector] = useState('')
   const [selectedResource, setSelectedResource] = useState('')
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([])
-  
+
   const { mutate: createMapping, isPending } = useCreateMapping()
 
   const selectedConnectorData = connectors.find(c => c.id === selectedConnector)
-  const availableResources = selectedConnectorData 
+  const availableResources = selectedConnectorData
     ? RESOURCES[selectedConnectorData.vendor as keyof typeof RESOURCES] || []
     : []
 
@@ -181,12 +181,7 @@ export function NewMappingModal({
             <div>
               <div className="flex items-center justify-between mb-2">
                 <Label>Field Mappings</Label>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleAutoGenerate}
-                  className="gap-2"
-                >
+                <Button size="sm" variant="outline" onClick={handleAutoGenerate} className="gap-2">
                   <Sparkles className="h-3 w-3" />
                   Auto-generate
                 </Button>
@@ -220,9 +215,7 @@ export function NewMappingModal({
               ) : (
                 <Card className="p-8 text-center">
                   <GitBranch className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    No field mappings configured yet
-                  </p>
+                  <p className="text-sm text-muted-foreground">No field mappings configured yet</p>
                   <Button
                     size="sm"
                     variant="outline"
@@ -242,9 +235,15 @@ export function NewMappingModal({
           <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleCreate} 
-            disabled={!mappingName || !selectedConnector || !selectedResource || fieldMappings.length === 0 || isPending}
+          <Button
+            onClick={handleCreate}
+            disabled={
+              !mappingName ||
+              !selectedConnector ||
+              !selectedResource ||
+              fieldMappings.length === 0 ||
+              isPending
+            }
           >
             {isPending ? (
               <>

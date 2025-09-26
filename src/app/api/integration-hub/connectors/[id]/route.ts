@@ -3,10 +3,7 @@ import { universalApi } from '@/lib/universal-api'
 import { ConnectorManager } from '@/lib/integration-hub/connector-manager'
 
 // GET /api/integration-hub/connectors/[id]
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const result = await universalApi.read({
       table: 'core_entities',
@@ -31,21 +28,15 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error fetching connector:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch connector' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch connector' }, { status: 500 })
   }
 }
 
 // PATCH /api/integration-hub/connectors/[id]
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
-    
+
     await universalApi.updateEntity({
       id: params.id,
       metadata: body
@@ -54,18 +45,12 @@ export async function PATCH(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error updating connector:', error)
-    return NextResponse.json(
-      { error: 'Failed to update connector' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update connector' }, { status: 500 })
   }
 }
 
 // DELETE /api/integration-hub/connectors/[id]
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Check for dependent sync jobs or mappings
     const [syncJobs, mappings] = await Promise.all([
@@ -88,7 +73,7 @@ export async function DELETE(
 
     if (dependentSyncJobs.length > 0 || dependentMappings.length > 0) {
       return NextResponse.json(
-        { 
+        {
           error: 'Cannot delete connector with dependent sync jobs or mappings',
           dependencies: {
             syncJobs: dependentSyncJobs.length,
@@ -104,9 +89,6 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting connector:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete connector' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete connector' }, { status: 500 })
   }
 }

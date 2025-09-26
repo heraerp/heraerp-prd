@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Initialize Resend with API key
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend with API key (lazy initialization to avoid build errors)
+let resend: Resend | null = null
+
+function getResendClient() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 // Email template for feature requests
 function generateEmailTemplate(data: any) {
-  const categoryEmoji = {
-    feature: '💡',
-    bug: '🐛',
-    integration: '⚡',
-    security: '🔒',
-    'ui-ux': '🎨',
-    api: '🔧',
-    other: '💬'
-  }[data.category] || '📝'
+  const categoryEmoji =
+    {
+      feature: '💡',
+      bug: '🐛',
+      integration: '⚡',
+      security: '🔒',
+      'ui-ux': '🎨',
+      api: '🔧',
+      other: '💬'
+    }[data.category] || '📝'
 
-  const priorityColor = {
-    low: '#10b981',
-    medium: '#f59e0b',
-    high: '#ef4444'
-  }[data.priority] || '#6b7280'
+  const priorityColor =
+    {
+      low: '#10b981',
+      medium: '#f59e0b',
+      high: '#ef4444'
+    }[data.priority] || '#6b7280'
 
   return `
 <!DOCTYPE html>
@@ -128,26 +137,20 @@ export async function POST(request: NextRequest) {
     const requiredFields = ['name', 'email', 'category', 'title', 'description']
     for (const field of requiredFields) {
       if (!data[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 })
       }
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(data.email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     // Check if Resend API key is configured
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not configured')
-      
+
       // In development, just log the request
       if (process.env.NODE_ENV === 'development') {
         console.log('Feature Request (Development Mode):', data)
@@ -157,16 +160,18 @@ export async function POST(request: NextRequest) {
           data
         })
       }
-      
-      return NextResponse.json(
-        { error: 'Email service not configured' },
-        { status: 500 }
-      )
+
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
     }
 
     // Send email via Resend
     try {
-      const emailData = await resend.emails.send({
+      const resendClient = getResendClient()
+      if (!resendClient) {
+        throw new Error('Resend client not initialized')
+      }
+      
+      const emailData = await resendClient.emails.send({
         from: 'HERA Feature Requests <onboarding@resend.dev>', // Use your verified domain
         to: ['help@hanaset.com'],
         reply_to: data.email,
@@ -191,9 +196,9 @@ export async function POST(request: NextRequest) {
       console.log('Feature request email sent:', emailData.id)
 
       // Also send a confirmation email to the user
-      if (data.email) {
+      if (data.email && resendClient) {
         try {
-          await resend.emails.send({
+          await resendClient.emails.send({
             from: 'HERA Support <onboarding@resend.dev>',
             to: [data.email],
             subject: 'We received your feature request',
@@ -218,19 +223,17 @@ export async function POST(request: NextRequest) {
         message: 'Feature request submitted successfully',
         id: emailData.id
       })
-
     } catch (emailError: any) {
       console.error('Failed to send email via Resend:', emailError)
-      
+
       return NextResponse.json(
         { error: emailError.message || 'Failed to send email' },
         { status: 500 }
       )
     }
-
   } catch (error: any) {
     console.error('Error processing feature request:', error)
-    
+
     return NextResponse.json(
       { error: error.message || 'Failed to process request' },
       { status: 500 }

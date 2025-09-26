@@ -40,9 +40,9 @@ export async function POST(request: NextRequest) {
         })
 
         const fields = fieldsResult.data || []
-        const getFieldValue = (name: string) => 
+        const getFieldValue = (name: string) =>
           fields.find(f => f.field_name === name)?.field_value_text || ''
-        const getFieldBoolean = (name: string) => 
+        const getFieldBoolean = (name: string) =>
           fields.find(f => f.field_name === name)?.field_value_text === 'true'
 
         const isActive = getFieldBoolean('is_active')
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
           if (response.ok) {
             triggered++
-            
+
             // Update last run time
             await universalApi.setDynamicField(
               job.id,
@@ -86,18 +86,12 @@ export async function POST(request: NextRequest) {
 
             // Calculate next run time
             const nextRun = calculateNextRun(schedule)
-            await universalApi.setDynamicField(
-              job.id,
-              'next_run_at',
-              nextRun.toISOString(),
-              'text'
-            )
+            await universalApi.setDynamicField(job.id, 'next_run_at', nextRun.toISOString(), 'text')
           } else {
             const error = await response.text()
             errors.push(`Job ${job.id}: ${error}`)
           }
         }
-
       } catch (error) {
         errors.push(`Job ${job.id}: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
@@ -109,14 +103,13 @@ export async function POST(request: NextRequest) {
       triggered,
       errors
     })
-
   } catch (error) {
     console.error('Scheduler error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error instanceof Error ? error.message : 'Scheduler failed' 
+        error: error instanceof Error ? error.message : 'Scheduler failed'
       },
       { status: 500 }
     )
@@ -154,7 +147,7 @@ function shouldRunNow(schedule: string, lastRunAt?: string): boolean {
 
 function calculateNextRun(schedule: string): Date {
   const now = new Date()
-  
+
   switch (schedule) {
     case '15m':
       return new Date(now.getTime() + 15 * 60 * 1000)

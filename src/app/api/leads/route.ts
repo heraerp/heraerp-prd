@@ -1,48 +1,42 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server'
 
-// This is a placeholder API endpoint. 
+// This is a placeholder API endpoint.
 // Replace with your actual CRM integration (HubSpot, Mailchimp, etc.)
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    
+    const formData = await req.formData()
+
     const leadData = {
-      name: formData.get("name")?.toString() || "",
-      email: formData.get("email")?.toString() || "",
-      company: formData.get("company")?.toString() || "",
-      phone: formData.get("phone")?.toString() || "",
-      source: "blog",
-      form_id: formData.get("form_id") || "unknown",
+      name: formData.get('name')?.toString() || '',
+      email: formData.get('email')?.toString() || '',
+      company: formData.get('company')?.toString() || '',
+      phone: formData.get('phone')?.toString() || '',
+      source: 'blog',
+      form_id: formData.get('form_id') || 'unknown',
       timestamp: new Date().toISOString(),
-      
+
       // UTM parameters
-      utm_source: formData.get("utm_source")?.toString() || "",
-      utm_medium: formData.get("utm_medium")?.toString() || "",
-      utm_campaign: formData.get("utm_campaign")?.toString() || "",
-      utm_content: formData.get("utm_content")?.toString() || "",
-    };
-    
+      utm_source: formData.get('utm_source')?.toString() || '',
+      utm_medium: formData.get('utm_medium')?.toString() || '',
+      utm_campaign: formData.get('utm_campaign')?.toString() || '',
+      utm_content: formData.get('utm_content')?.toString() || ''
+    }
+
     // Validate required fields
     if (!leadData.name || !leadData.email) {
-      return NextResponse.json(
-        { error: "Name and email are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })
     }
-    
+
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(leadData.email)) {
-      return NextResponse.json(
-        { error: "Invalid email address" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
-    
+
     // TODO: Integrate with your CRM/email service
     // Example integrations:
-    
+
     // HubSpot
     // const hubspotResponse = await fetch("https://api.hubapi.com/contacts/v1/contact", {
     //   method: "POST",
@@ -61,7 +55,7 @@ export async function POST(req: NextRequest) {
     //     ]
     //   })
     // });
-    
+
     // Mailchimp
     // const mailchimpResponse = await fetch(
     //   `https://us1.api.mailchimp.com/3.0/lists/${process.env.MAILCHIMP_LIST_ID}/members`,
@@ -84,27 +78,26 @@ export async function POST(req: NextRequest) {
     //     })
     //   }
     // );
-    
+
     // Supabase (if using HERA's database)
     // import { createClient } from "@supabase/supabase-js";
     // const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
     // const { data, error } = await supabase.from("leads").insert([leadData]);
-    
+
     // Log for development (remove in production)
-    console.log("New lead captured:", leadData);
-    
+    console.log('New lead captured:', leadData)
+
     // Send confirmation email (optional)
     // await sendConfirmationEmail(leadData.email, leadData.name);
-    
+
     // Redirect to thank you page
-    return NextResponse.redirect(new URL("/thank-you", req.url));
-    
+    return NextResponse.redirect(new URL('/thank-you', req.url))
   } catch (error) {
-    console.error("Lead capture error:", error);
-    
+    console.error('Lead capture error:', error)
+
     return NextResponse.json(
-      { error: "Failed to process your request. Please try again." },
+      { error: 'Failed to process your request. Please try again.' },
       { status: 500 }
-    );
+    )
   }
 }

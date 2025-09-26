@@ -1,10 +1,10 @@
-import type { 
-  IntegrationConnector, 
-  DataMapping, 
+import type {
+  IntegrationConnector,
+  DataMapping,
   SyncJob,
   FlowDiagram,
   FlowNode,
-  FlowEdge 
+  FlowEdge
 } from '@/types/integration-hub'
 
 export class DataFlowEngine {
@@ -45,8 +45,12 @@ export class DataFlowEngine {
         id: connector.id,
         type: 'connector',
         label: connector.entity_name,
-        status: connector.status === 'active' ? 'active' : 
-                connector.status === 'error' ? 'error' : 'inactive',
+        status:
+          connector.status === 'active'
+            ? 'active'
+            : connector.status === 'error'
+              ? 'error'
+              : 'inactive',
         metadata: {
           vendor: connector.vendor,
           icon: this.getVendorIcon(connector.vendor),
@@ -60,7 +64,7 @@ export class DataFlowEngine {
     })
 
     // Create transformer nodes for mappings
-    mappings.forEach((mapping) => {
+    mappings.forEach(mapping => {
       const connectorNode = nodeMap.get(mapping.connector_id)
       if (!connectorNode) return
 
@@ -84,10 +88,10 @@ export class DataFlowEngine {
     })
 
     // Create edges based on sync jobs
-    syncJobs.forEach((syncJob) => {
+    syncJobs.forEach(syncJob => {
       const connectorNode = nodeMap.get(syncJob.connector_id)
       const mappingNode = nodeMap.get(syncJob.mapping_id)
-      
+
       if (!connectorNode) return
 
       if (syncJob.sync_direction === 'inbound') {
@@ -177,30 +181,28 @@ export class DataFlowEngine {
   }
 
   // Generate data flow statistics
-  static generateDataFlowStats(
-    syncRuns: any[],
-    period: '1h' | '24h' | '7d' | '30d'
-  ): any {
+  static generateDataFlowStats(syncRuns: any[], period: '1h' | '24h' | '7d' | '30d'): any {
     const now = new Date()
     const periodMs = this.getPeriodMilliseconds(period)
     const cutoffTime = new Date(now.getTime() - periodMs)
 
     // Filter runs within period
-    const recentRuns = syncRuns.filter(run => 
-      new Date(run.metadata?.started_at || 0) > cutoffTime
-    )
+    const recentRuns = syncRuns.filter(run => new Date(run.metadata?.started_at || 0) > cutoffTime)
 
     // Group by connector and direction
-    const flowStats = new Map<string, {
-      connectorId: string
-      connectorName: string
-      inboundRecords: number
-      outboundRecords: number
-      inboundBytes: number
-      outboundBytes: number
-      errors: number
-      avgDuration: number
-    }>()
+    const flowStats = new Map<
+      string,
+      {
+        connectorId: string
+        connectorName: string
+        inboundRecords: number
+        outboundRecords: number
+        inboundBytes: number
+        outboundBytes: number
+        errors: number
+        avgDuration: number
+      }
+    >()
 
     recentRuns.forEach(run => {
       const syncJob = run.metadata?.sync_job
@@ -247,7 +249,7 @@ export class DataFlowEngine {
       const hour = new Date(run.metadata?.started_at || 0).getHours()
 
       const hourly = hourlyStats.get(hour) || { inbound: 0, outbound: 0 }
-      
+
       if (direction === 'inbound') {
         hourly.inbound += stats.processed_records || 0
         totalInbound += stats.processed_records || 0
@@ -255,7 +257,7 @@ export class DataFlowEngine {
         hourly.outbound += stats.processed_records || 0
         totalOutbound += stats.processed_records || 0
       }
-      
+
       totalErrors += stats.error_records || 0
       hourlyStats.set(hour, hourly)
     })
@@ -282,9 +284,10 @@ export class DataFlowEngine {
       totalInboundRecords: totalInbound,
       totalOutboundRecords: totalOutbound,
       totalErrors,
-      errorRate: totalInbound + totalOutbound > 0 
-        ? (totalErrors / (totalInbound + totalOutbound) * 100).toFixed(2) + '%'
-        : '0%',
+      errorRate:
+        totalInbound + totalOutbound > 0
+          ? ((totalErrors / (totalInbound + totalOutbound)) * 100).toFixed(2) + '%'
+          : '0%',
       connectorStats: Array.from(flowStats.values()),
       peakInboundHour: peakInboundHour >= 0 ? `${peakInboundHour}:00` : 'N/A',
       peakOutboundHour: peakOutboundHour >= 0 ? `${peakOutboundHour}:00` : 'N/A',
@@ -333,19 +336,27 @@ export class DataFlowEngine {
 
   private static getEdgeColor(status: string): string {
     switch (status) {
-      case 'active': return '#10b981' // green
-      case 'paused': return '#f59e0b' // amber
-      case 'error': return '#ef4444' // red
-      default: return '#6b7280' // gray
+      case 'active':
+        return '#10b981' // green
+      case 'paused':
+        return '#f59e0b' // amber
+      case 'error':
+        return '#ef4444' // red
+      default:
+        return '#6b7280' // gray
     }
   }
 
   private static getPeriodMilliseconds(period: '1h' | '24h' | '7d' | '30d'): number {
     switch (period) {
-      case '1h': return 60 * 60 * 1000
-      case '24h': return 24 * 60 * 60 * 1000
-      case '7d': return 7 * 24 * 60 * 60 * 1000
-      case '30d': return 30 * 24 * 60 * 60 * 1000
+      case '1h':
+        return 60 * 60 * 1000
+      case '24h':
+        return 24 * 60 * 60 * 1000
+      case '7d':
+        return 7 * 24 * 60 * 60 * 1000
+      case '30d':
+        return 30 * 24 * 60 * 60 * 1000
     }
   }
 }

@@ -1,6 +1,6 @@
-import { 
-  AIManagerResponse, 
-  QueryIntent, 
+import {
+  AIManagerResponse,
+  QueryIntent,
   Organisation,
   Programme,
   Contact,
@@ -8,7 +8,7 @@ import {
   Application,
   Agreement,
   Event,
-  KPITarget 
+  KPITarget
 } from '@/types/civicflow-ai-manager'
 import { crmSearchTool } from '../tools/crm-search'
 import { kpiAnalyticsTool } from '../tools/kpi-analytics'
@@ -41,18 +41,20 @@ export class CivicFlowAIManager {
     try {
       // 1. Detect intent from query
       const intent = this.detectIntent(query)
-      
+
       // 2. Extract entities and parameters
       const context = this.extractContext(query, intent)
-      
+
       // 3. Execute relevant tools
       const toolResults = await this.executeToolSequence(intent, context)
-      
+
       // 4. Format response
       return this.formatResponse(toolResults, intent, query)
     } catch (error) {
       return {
-        answer: ['I encountered an error processing your query. Please try rephrasing or contact support.'],
+        answer: [
+          'I encountered an error processing your query. Please try rephrasing or contact support.'
+        ],
         metrics: {},
         insights: [],
         recommended_actions: [],
@@ -64,17 +66,37 @@ export class CivicFlowAIManager {
 
   private detectIntent(query: string): QueryIntent {
     const q = query.toLowerCase()
-    
-    if (q.includes('track') || q.includes('kpi') || q.includes('performance') || q.includes('vs plan')) {
+
+    if (
+      q.includes('track') ||
+      q.includes('kpi') ||
+      q.includes('performance') ||
+      q.includes('vs plan')
+    ) {
       return 'programme_tracking'
     }
-    if (q.includes('risk') || q.includes('compliance') || q.includes('variation') || q.includes('underperform')) {
+    if (
+      q.includes('risk') ||
+      q.includes('compliance') ||
+      q.includes('variation') ||
+      q.includes('underperform')
+    ) {
       return 'risk_compliance'
     }
-    if (q.includes('engagement') || q.includes('linkedin') || q.includes('event') || q.includes('conversion')) {
+    if (
+      q.includes('engagement') ||
+      q.includes('linkedin') ||
+      q.includes('event') ||
+      q.includes('conversion')
+    ) {
       return 'engagement_analytics'
     }
-    if (q.includes('brief') || q.includes('committee') || q.includes('stakeholder') || q.includes('drawdown')) {
+    if (
+      q.includes('brief') ||
+      q.includes('committee') ||
+      q.includes('stakeholder') ||
+      q.includes('drawdown')
+    ) {
       return 'committee_briefing'
     }
     if (q.includes('partner') || q.includes('org') || q.includes('imd') || q.includes('sector')) {
@@ -86,23 +108,23 @@ export class CivicFlowAIManager {
     if (q.includes('pipeline') || q.includes('application') || q.includes('forecast')) {
       return 'pipeline_analysis'
     }
-    
+
     return 'general_query'
   }
 
   private extractContext(query: string, intent: QueryIntent) {
     // Extract time periods
-    const timeMatch = query.match(/(last|past|previous)?\s*(\d+)?\s*(day|week|month|quarter|year)s?/i)
-    
+    const timeMatch = query.match(
+      /(last|past|previous)?\s*(\d+)?\s*(day|week|month|quarter|year)s?/i
+    )
+
     // Extract programme names
     const programmes = ['Flexible Finance', 'Enterprise Grants', 'Blended Finance']
-    const foundProgrammes = programmes.filter(p => 
-      query.toLowerCase().includes(p.toLowerCase())
-    )
-    
+    const foundProgrammes = programmes.filter(p => query.toLowerCase().includes(p.toLowerCase()))
+
     // Extract numbers/amounts
     const amounts = query.match(/£?\d+(?:,\d{3})*(?:\.\d{2})?[MmKk]?/g)
-    
+
     return {
       intent,
       timeRange: timeMatch ? timeMatch[0] : 'current quarter',
@@ -114,60 +136,104 @@ export class CivicFlowAIManager {
 
   private async executeToolSequence(intent: QueryIntent, context: any) {
     const results = []
-    
+
     switch (intent) {
       case 'programme_tracking':
         // Execute KPI analytics and CRM search
-        results.push(await kpiAnalyticsTool.execute({
-          programme_id: context.programmes?.[0],
-          time_range: 'qtd'
-        }, this))
+        results.push(
+          await kpiAnalyticsTool.execute(
+            {
+              programme_id: context.programmes?.[0],
+              time_range: 'qtd'
+            },
+            this
+          )
+        )
         break
-        
+
       case 'risk_compliance':
         // Search for at-risk partners and variations
-        results.push(await crmSearchTool.execute({
-          entity_type: 'agreement',
-          filters: { status: 'active' }
-        }, this))
-        results.push(await kpiAnalyticsTool.execute({
-          category: 'financial',
-          time_range: 'qtd'
-        }, this))
+        results.push(
+          await crmSearchTool.execute(
+            {
+              entity_type: 'agreement',
+              filters: { status: 'active' }
+            },
+            this
+          )
+        )
+        results.push(
+          await kpiAnalyticsTool.execute(
+            {
+              category: 'financial',
+              time_range: 'qtd'
+            },
+            this
+          )
+        )
         break
-        
+
       case 'engagement_analytics':
         // Get engagement insights across channels
-        results.push(await engagementInsightsTool.execute({
-          time_range: '30d'
-        }, this))
-        results.push(await linkedinAnalyticsTool.execute({
-          period: '30d'
-        }, this))
+        results.push(
+          await engagementInsightsTool.execute(
+            {
+              time_range: '30d'
+            },
+            this
+          )
+        )
+        results.push(
+          await linkedinAnalyticsTool.execute(
+            {
+              period: '30d'
+            },
+            this
+          )
+        )
         break
-        
+
       case 'committee_briefing':
         // Gather comprehensive data for briefing
-        results.push(await kpiAnalyticsTool.execute({
-          time_range: 'qtd'
-        }, this))
-        results.push(await financeTool.execute({
-          report_type: 'drawdown_schedule'
-        }, this))
+        results.push(
+          await kpiAnalyticsTool.execute(
+            {
+              time_range: 'qtd'
+            },
+            this
+          )
+        )
+        results.push(
+          await financeTool.execute(
+            {
+              report_type: 'drawdown_schedule'
+            },
+            this
+          )
+        )
         break
-        
+
       default:
         // General search
-        results.push(await crmSearchTool.execute({
-          entity_type: 'organisation',
-          query: context.query
-        }, this))
+        results.push(
+          await crmSearchTool.execute(
+            {
+              entity_type: 'organisation',
+              query: context.query
+            },
+            this
+          )
+        )
     }
-    
+
     return results
   }
 
-  private formatResponse(toolResults: any[], intent: QueryIntent, query: string): AIManagerResponse {
+  private formatResponse(
+    toolResults: any[],
+    intent: QueryIntent,
+    query: string
+  ): AIManagerResponse {
     // Mock response formatting based on intent
     const baseResponse = {
       answer: [],
@@ -182,7 +248,7 @@ export class CivicFlowAIManager {
         time_context: 'Q3 2024'
       }
     }
-    
+
     switch (intent) {
       case 'programme_tracking':
         return {
@@ -211,7 +277,7 @@ export class CivicFlowAIManager {
             }
           ]
         }
-        
+
       case 'risk_compliance':
         return {
           ...baseResponse,
@@ -244,7 +310,7 @@ export class CivicFlowAIManager {
             }
           ]
         }
-        
+
       default:
         return {
           ...baseResponse,

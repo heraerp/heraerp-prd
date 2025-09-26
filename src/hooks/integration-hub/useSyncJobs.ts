@@ -94,18 +94,18 @@ export function useCreateSyncJob() {
       return syncJob as SyncJob
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-jobs', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-jobs', variables.organizationId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-jobs', 'connector', variables.connectorId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-jobs', 'connector', variables.connectorId]
       })
       toast({
         title: 'Sync job created',
         description: 'Sync job has been created successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to create sync job',
         description: error.message,
@@ -132,18 +132,18 @@ export function useUpdateSyncJob() {
       })
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-job', variables.syncJobId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-job', variables.syncJobId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-jobs', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-jobs', variables.organizationId]
       })
       toast({
         title: 'Sync job updated',
         description: 'Sync job has been updated successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to update sync job',
         description: error.message,
@@ -159,22 +159,19 @@ export function useDeleteSyncJob() {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async (data: {
-      syncJobId: string
-      organizationId: string
-    }) => {
+    mutationFn: async (data: { syncJobId: string; organizationId: string }) => {
       await universalApi.deleteEntity(data.syncJobId)
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-jobs', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-jobs', variables.organizationId]
       })
       toast({
         title: 'Sync job deleted',
         description: 'Sync job has been deleted successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to delete sync job',
         description: error.message,
@@ -205,18 +202,18 @@ export function useRunSyncJob() {
       return response.json()
     },
     onSuccess: (data, syncJobId) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-job', syncJobId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-job', syncJobId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-runs'] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-runs']
       })
       toast({
         title: 'Sync job started',
         description: 'Sync job has been started successfully.'
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to run sync job',
         description: error.message,
@@ -245,18 +242,18 @@ export function useToggleSyncJob() {
       })
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-job', variables.syncJobId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-job', variables.syncJobId]
       })
-      queryClient.invalidateQueries({ 
-        queryKey: ['integration-sync-jobs', variables.organizationId] 
+      queryClient.invalidateQueries({
+        queryKey: ['integration-sync-jobs', variables.organizationId]
       })
       toast({
         title: variables.action === 'pause' ? 'Sync job paused' : 'Sync job resumed',
         description: `Sync job has been ${variables.action}d successfully.`
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast({
         title: 'Failed to update sync job',
         description: error.message,

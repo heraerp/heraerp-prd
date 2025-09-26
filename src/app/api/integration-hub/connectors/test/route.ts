@@ -15,13 +15,13 @@ export async function POST(request: NextRequest) {
     const success = await ConnectorManager.testConnection(connectorId)
 
     if (success) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         success: true,
         message: 'Connection test successful',
         timestamp: new Date().toISOString()
       })
     } else {
-      return NextResponse.json({ 
+      return NextResponse.json({
         success: false,
         message: 'Connection test failed',
         timestamp: new Date().toISOString()
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error testing connection:', error)
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: error instanceof Error ? error.message : 'Connection test failed'
       },

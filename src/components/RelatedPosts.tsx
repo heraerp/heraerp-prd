@@ -1,14 +1,14 @@
-import Link from "next/link";
-import { Post } from "@/lib/posts";
+import Link from 'next/link'
+import { Post } from '@/lib/posts'
 
 interface RelatedPostsProps {
-  posts: Post[];
-  className?: string;
+  posts: Post[]
+  className?: string
 }
 
-export default function RelatedPosts({ posts, className = "" }: RelatedPostsProps) {
-  if (!posts || posts.length === 0) return null;
-  
+export default function RelatedPosts({ posts, className = '' }: RelatedPostsProps) {
+  if (!posts || posts.length === 0) return null
+
   return (
     <section className={`bg-gray-50 dark:bg-gray-900/50 py-12 ${className}`}>
       <div className="mx-auto max-w-7xl px-4">
@@ -16,7 +16,7 @@ export default function RelatedPosts({ posts, className = "" }: RelatedPostsProp
           Related Articles
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
+          {posts.map(post => (
             <article
               key={post.slug}
               className="group rounded-xl bg-white dark:bg-gray-800 p-6 shadow-sm transition-all hover:shadow-lg dark:hover:shadow-2xl"
@@ -26,17 +26,15 @@ export default function RelatedPosts({ posts, className = "" }: RelatedPostsProp
                 <span>•</span>
                 <span>{post.meta.pillar}</span>
               </div>
-              
+
               <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                <Link href={`/blog/${post.slug}`}>
-                  {post.meta.title}
-                </Link>
+                <Link href={`/blog/${post.slug}`}>{post.meta.title}</Link>
               </h3>
-              
+
               <p className="mb-4 text-gray-600 dark:text-gray-300 line-clamp-3">
                 {post.meta.excerpt}
               </p>
-              
+
               <Link
                 href={`/blog/${post.slug}`}
                 className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
@@ -61,5 +59,5 @@ export default function RelatedPosts({ posts, className = "" }: RelatedPostsProp
         </div>
       </div>
     </section>
-  );
+  )
 }

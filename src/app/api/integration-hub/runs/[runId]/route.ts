@@ -1,26 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { universalApi } from '@/lib/universal-api'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { runId: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { runId: string } }) {
   try {
     // Get organization ID from header
     const orgId = request.headers.get('X-Organization-Id')
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Missing X-Organization-Id header' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing X-Organization-Id header' }, { status: 400 })
     }
 
     const { runId } = params
     if (!runId) {
-      return NextResponse.json(
-        { error: 'Missing runId parameter' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing runId parameter' }, { status: 400 })
     }
 
     // Set organization context
@@ -37,10 +28,7 @@ export async function GET(
     })
 
     if (!runResult.success || !runResult.data || runResult.data.length === 0) {
-      return NextResponse.json(
-        { error: 'Sync run not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Sync run not found' }, { status: 404 })
     }
 
     const syncRun = runResult.data[0]
@@ -55,11 +43,11 @@ export async function GET(
     })
 
     const fields = fieldsResult.data || []
-    
+
     // Extract field values
-    const getFieldValue = (name: string) => 
+    const getFieldValue = (name: string) =>
       fields.find(f => f.field_name === name)?.field_value_text || ''
-    const getFieldNumber = (name: string) => 
+    const getFieldNumber = (name: string) =>
       fields.find(f => f.field_name === name)?.field_value_number || 0
 
     const status = getFieldValue('status')
@@ -92,9 +80,8 @@ export async function GET(
       syncJobId,
       startTime,
       endTime,
-      duration: startTime && endTime ? 
-        new Date(endTime).getTime() - new Date(startTime).getTime() : 
-        null,
+      duration:
+        startTime && endTime ? new Date(endTime).getTime() - new Date(startTime).getTime() : null,
       records_processed: recordsProcessed,
       records_synced: recordsSynced,
       records_failed: recordsFailed,
@@ -103,14 +90,13 @@ export async function GET(
       createdAt: syncRun.created_at,
       updatedAt: syncRun.updated_at
     })
-
   } catch (error) {
     console.error('Get sync run error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get sync run' 
+        error: error instanceof Error ? error.message : 'Failed to get sync run'
       },
       { status: 500 }
     )

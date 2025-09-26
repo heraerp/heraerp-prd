@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { 
-  Brain, 
+import {
+  Brain,
   Search,
   TrendingUp,
   AlertTriangle,
@@ -33,15 +33,16 @@ export default function CivicFlowAIManagerPage() {
   const [activeTab, setActiveTab] = useState('query')
 
   // Initialize AI Manager with mock permissions
-  const aiManager = new CivicFlowAIManager(
-    'user-123',
-    'org-456', 
-    ['crm.contact.read', 'crm.org.read', 'crm.programme.read', 'crm.fund.read']
-  )
+  const aiManager = new CivicFlowAIManager('user-123', 'org-456', [
+    'crm.contact.read',
+    'crm.org.read',
+    'crm.programme.read',
+    'crm.fund.read'
+  ])
 
   const handleQuery = async () => {
     if (!query.trim()) return
-    
+
     setIsLoading(true)
     try {
       const result = await aiManager.processQuery(query)
@@ -98,16 +99,21 @@ export default function CivicFlowAIManagerPage() {
       return (
         <div className="space-y-1">
           {metrics.map((item, i) => (
-            <div key={i} className="text-sm">{JSON.stringify(item)}</div>
+            <div key={i} className="text-sm">
+              {JSON.stringify(item)}
+            </div>
           ))}
         </div>
       )
     }
-    
+
     return (
       <div className="space-y-2">
         {Object.entries(metrics).map(([key, value]: [string, any]) => (
-          <div key={key} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+          <div
+            key={key}
+            className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded"
+          >
             <span className="font-medium text-sm">{key}</span>
             <div className="flex items-center gap-2 text-sm">
               {value.actual && <span className="font-semibold">{value.actual}</span>}
@@ -131,7 +137,8 @@ export default function CivicFlowAIManagerPage() {
             AI Manager for CivicFlow
           </h1>
           <p className="text-text-200 mt-1">
-            Fast answers, proactive insights, and guided actions across programmes, grants, and relationships
+            Fast answers, proactive insights, and guided actions across programmes, grants, and
+            relationships
           </p>
         </div>
         <Badge variant="outline" className="px-3 py-1">
@@ -158,12 +165,12 @@ export default function CivicFlowAIManagerPage() {
                   <Input
                     placeholder="Ask about programmes, partners, KPIs, engagement, or finances..."
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleQuery()}
+                    onChange={e => setQuery(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && handleQuery()}
                     className="text-lg"
                   />
                 </div>
-                <Button 
+                <Button
                   onClick={handleQuery}
                   disabled={isLoading || !query.trim()}
                   size="lg"
@@ -178,7 +185,7 @@ export default function CivicFlowAIManagerPage() {
 
           {/* Example Queries */}
           <div className="grid grid-cols-2 gap-4">
-            {exampleQueries.map((category) => (
+            {exampleQueries.map(category => (
               <Card key={category.category}>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
@@ -231,9 +238,7 @@ export default function CivicFlowAIManagerPage() {
                   <CardHeader>
                     <CardTitle>Key Metrics</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    {renderMetrics(response.metrics)}
-                  </CardContent>
+                  <CardContent>{renderMetrics(response.metrics)}</CardContent>
                 </Card>
               )}
 
@@ -271,7 +276,10 @@ export default function CivicFlowAIManagerPage() {
                   <CardContent>
                     <div className="space-y-3">
                       {response.recommended_actions.map((action, i) => (
-                        <div key={i} className="flex items-start p-3 bg-green-50 dark:bg-green-950 rounded">
+                        <div
+                          key={i}
+                          className="flex items-start p-3 bg-green-50 dark:bg-green-950 rounded"
+                        >
                           <span className="text-green-600 mr-3 font-bold">{i + 1}.</span>
                           <div className="flex-1">
                             <p className="font-medium">{action.action}</p>
@@ -313,7 +321,7 @@ export default function CivicFlowAIManagerPage() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 {response.confidence && (
                   <Card>
                     <CardHeader>
@@ -322,7 +330,7 @@ export default function CivicFlowAIManagerPage() {
                     <CardContent>
                       <div className="flex items-center gap-2">
                         <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${response.confidence * 100}%` }}
                           />
@@ -442,7 +450,8 @@ export default function CivicFlowAIManagerPage() {
             <Sparkles className="h-4 w-4" />
             <AlertTitle>Proactive Insights Schedule</AlertTitle>
             <AlertDescription>
-              AI Manager runs scheduled analyses to surface important information before you need to ask
+              AI Manager runs scheduled analyses to surface important information before you need to
+              ask
             </AlertDescription>
           </Alert>
 

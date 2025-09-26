@@ -25,7 +25,6 @@ interface EmailFilters {
 }
 
 function EmailsContent() {
-
   const searchParams = useSearchParams()
   const { currentOrgId } = useOrgStore()
 
@@ -111,8 +110,7 @@ function EmailsContent() {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
-  
-return (
+  return (
     <div className="flex h-screen bg-muted/50">
       {/* Email Sidebar */}
       <div className="w-64 bg-card border-r border-border flex-shrink-0">
@@ -130,7 +128,11 @@ return (
           {/* Email List Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2 mb-3">
-              <Button onClick={() => setIsComposeOpen(true)} className="flex-1 bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" size="sm">
+              <Button
+                onClick={() => setIsComposeOpen(true)}
+                className="flex-1 bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+                size="sm"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Compose
               </Button>
@@ -138,7 +140,11 @@ return (
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAiPanelOpen(!isAiPanelOpen)}
-                className={isAiPanelOpen ? 'bg-purple-100 dark:bg-purple-900 border-purple-500' : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10'}
+                className={
+                  isAiPanelOpen
+                    ? 'bg-purple-100 dark:bg-purple-900 border-purple-500'
+                    : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10'
+                }
               >
                 <Sparkles className="h-4 w-4" />
               </Button>
@@ -253,12 +259,11 @@ return (
       )}
     </div>
   )
-
 }
 
 export default function EmailsPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

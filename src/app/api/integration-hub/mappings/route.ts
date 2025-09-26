@@ -31,10 +31,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ mappings })
   } catch (error) {
     console.error('Error fetching mappings:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch mappings' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch mappings' }, { status: 500 })
   }
 }
 
@@ -42,10 +39,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      organizationId, 
-      connectorId, 
-      name, 
+    const {
+      organizationId,
+      connectorId,
+      name,
       resource,
       fieldMappings,
       transformOperations,
@@ -53,10 +50,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!organizationId || !connectorId || !name || !resource) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     const mapping = await MappingEngine.createMapping(
@@ -72,9 +66,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ mapping })
   } catch (error) {
     console.error('Error creating mapping:', error)
-    return NextResponse.json(
-      { error: 'Failed to create mapping' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create mapping' }, { status: 500 })
   }
 }

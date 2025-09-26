@@ -5,7 +5,15 @@ export const crmSearchTool: Tool = {
   name: 'CRM Search',
   description: 'Search CRM database for organisations, contacts, programmes, etc.',
   parameters: z.object({
-    entity_type: z.enum(['organisation', 'contact', 'programme', 'fund', 'application', 'agreement', 'event']),
+    entity_type: z.enum([
+      'organisation',
+      'contact',
+      'programme',
+      'fund',
+      'application',
+      'agreement',
+      'event'
+    ]),
     query: z.string().optional(),
     filters: z.record(z.any()).optional(),
     sort_by: z.string().optional(),

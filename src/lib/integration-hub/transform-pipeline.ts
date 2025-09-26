@@ -1,8 +1,8 @@
-import type { 
-  TransformOperation, 
-  FieldMapping, 
+import type {
+  TransformOperation,
+  FieldMapping,
   ValidationRule,
-  SchemaField 
+  SchemaField
 } from '@/types/integration-hub'
 
 export interface TransformResult {
@@ -123,10 +123,10 @@ export class TransformPipeline {
 
     this.fieldMappings.forEach(mapping => {
       const sourceValue = this.getNestedValue(record, mapping.source_field)
-      
+
       if (sourceValue !== undefined || mapping.default_value !== undefined) {
         const value = sourceValue !== undefined ? sourceValue : mapping.default_value
-        
+
         if (mapping.transform) {
           const transformedValue = this.applyTransform(value, mapping.transform)
           this.setNestedValue(mappedRecord, mapping.target_field, transformedValue)
@@ -158,25 +158,25 @@ export class TransformPipeline {
     switch (operation.type) {
       case 'filter':
         return this.transformFilter(data, operation.config)
-      
+
       case 'map':
         return this.transformMap(data, operation.config)
-      
+
       case 'merge':
         return this.transformMerge(data, operation.config)
-      
+
       case 'split':
         return this.transformSplit(data, operation.config)
-      
+
       case 'validate':
         return this.transformValidate(data, operation.config)
-      
+
       case 'enrich':
         return this.transformEnrich(data, operation.config)
-      
+
       case 'redact':
         return this.transformRedact(data, operation.config)
-      
+
       default:
         return data
     }
@@ -192,19 +192,19 @@ export class TransformPipeline {
 
   private transformMap(data: any, config: any): any {
     const mapFunction = this.getMapFunction(config.type)
-    
+
     if (Array.isArray(data)) {
       return data.map(item => mapFunction(item, config))
     }
-    
+
     return mapFunction(data, config)
   }
 
   private getMapFunction(type: string): (data: any, config: any) => any {
     const mapFunctions: Record<string, (data: any, config: any) => any> = {
-      uppercase: (data) => typeof data === 'string' ? data.toUpperCase() : data,
-      lowercase: (data) => typeof data === 'string' ? data.toLowerCase() : data,
-      trim: (data) => typeof data === 'string' ? data.trim() : data,
+      uppercase: data => (typeof data === 'string' ? data.toUpperCase() : data),
+      lowercase: data => (typeof data === 'string' ? data.toLowerCase() : data),
+      trim: data => (typeof data === 'string' ? data.trim() : data),
       date_format: (data, config) => {
         if (!data) return data
         const date = new Date(data)
@@ -213,8 +213,8 @@ export class TransformPipeline {
         if (config.format === 'time') return date.toTimeString().split(' ')[0]
         return date.toISOString()
       },
-      number: (data) => data !== null && data !== undefined ? Number(data) : null,
-      boolean: (data) => Boolean(data),
+      number: data => (data !== null && data !== undefined ? Number(data) : null),
+      boolean: data => Boolean(data),
       concat: (data, config) => {
         if (config.fields && Array.isArray(config.fields)) {
           return config.fields
@@ -234,7 +234,7 @@ export class TransformPipeline {
       }
     }
 
-    return mapFunctions[type] || ((data) => data)
+    return mapFunctions[type] || (data => data)
   }
 
   private transformMerge(data: any, config: any): any {
@@ -242,26 +242,26 @@ export class TransformPipeline {
       // Merge multiple arrays
       return [...data, ...config.with]
     }
-    
+
     if (typeof data === 'object' && config.with && typeof config.with === 'object') {
       // Merge objects
       return { ...data, ...config.with }
     }
-    
+
     return data
   }
 
   private transformSplit(data: any, config: any): any {
     if (typeof data === 'string' && config.separator) {
       const parts = data.split(config.separator)
-      
+
       if (config.limit) {
         return parts.slice(0, config.limit)
       }
-      
+
       return parts
     }
-    
+
     if (Array.isArray(data) && config.batch_size) {
       // Split array into batches
       const batches = []
@@ -270,23 +270,23 @@ export class TransformPipeline {
       }
       return batches
     }
-    
+
     return data
   }
 
   private transformValidate(data: any, config: any): any {
     const validation = this.validateSingleRecord(data, config)
-    
+
     if (!validation.valid) {
       throw new Error(`Validation failed: ${validation.errors.join(', ')}`)
     }
-    
+
     return data
   }
 
   private transformEnrich(data: any, config: any): any {
     let enriched = data
-    
+
     // Add timestamp
     if (config.add_timestamp) {
       const timestampField = config.timestamp_field || 'enriched_at'
@@ -302,7 +302,7 @@ export class TransformPipeline {
         }
       }
     }
-    
+
     // Add static fields
     if (config.add_fields && typeof config.add_fields === 'object') {
       if (Array.isArray(enriched)) {
@@ -317,7 +317,7 @@ export class TransformPipeline {
         }
       }
     }
-    
+
     // Add computed fields
     if (config.computed_fields && Array.isArray(config.computed_fields)) {
       config.computed_fields.forEach((field: any) => {
@@ -337,7 +337,7 @@ export class TransformPipeline {
         }
       })
     }
-    
+
     return enriched
   }
 
@@ -346,17 +346,17 @@ export class TransformPipeline {
       if (config.fields && config.fields.includes(path)) {
         return '***REDACTED***'
       }
-      
+
       if (config.patterns && typeof value === 'string') {
         let redacted = value
-        
+
         config.patterns.forEach((pattern: any) => {
           if (pattern.type === 'ssn') {
             redacted = redacted.replace(/\b\d{3}-?\d{2}-?\d{4}\b/g, '***-**-****')
           } else if (pattern.type === 'email') {
             redacted = redacted.replace(
               /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-              (match) => {
+              match => {
                 const [local, domain] = match.split('@')
                 return `${local.substring(0, 2)}***@${domain}`
               }
@@ -378,34 +378,32 @@ export class TransformPipeline {
             )
           }
         })
-        
+
         return redacted
       }
-      
+
       return value
     }
-    
+
     const redactObject = (obj: any, parentPath = ''): any => {
       if (Array.isArray(obj)) {
-        return obj.map((item, index) => 
-          redactObject(item, `${parentPath}[${index}]`)
-        )
+        return obj.map((item, index) => redactObject(item, `${parentPath}[${index}]`))
       }
-      
+
       if (obj !== null && typeof obj === 'object') {
         const redacted: any = {}
-        
+
         Object.keys(obj).forEach(key => {
           const path = parentPath ? `${parentPath}.${key}` : key
           redacted[key] = redactObject(obj[key], path)
         })
-        
+
         return redacted
       }
-      
+
       return redact(obj, parentPath)
     }
-    
+
     return redactObject(data)
   }
 
@@ -421,12 +419,12 @@ export class TransformPipeline {
       })
       return { valid: errors.length === 0, errors }
     }
-    
+
     return this.validateSingleRecord(data, this.validationRules)
   }
 
   private validateSingleRecord(
-    record: any, 
+    record: any,
     rules: ValidationRule[] | any
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = []
@@ -434,14 +432,14 @@ export class TransformPipeline {
 
     rulesToValidate.forEach((rule: ValidationRule) => {
       const value = this.getNestedValue(record, rule.field)
-      
+
       switch (rule.type) {
         case 'required':
           if (value === undefined || value === null || value === '') {
             errors.push(rule.error_message || `${rule.field} is required`)
           }
           break
-          
+
         case 'format':
           if (value && rule.config.pattern) {
             const regex = new RegExp(rule.config.pattern)
@@ -450,7 +448,7 @@ export class TransformPipeline {
             }
           }
           break
-          
+
         case 'range':
           if (value !== undefined && value !== null) {
             if (rule.config.min !== undefined && value < rule.config.min) {
@@ -461,7 +459,7 @@ export class TransformPipeline {
             }
           }
           break
-          
+
         case 'custom':
           if (rule.config.validator) {
             // Custom validation function would be defined elsewhere
@@ -470,24 +468,24 @@ export class TransformPipeline {
           break
       }
     })
-    
+
     return { valid: errors.length === 0, errors }
   }
 
   // Helpers
   private getNestedValue(obj: any, path: string): any {
     if (!path) return obj
-    
+
     return path.split('.').reduce((current, prop) => {
       if (current === null || current === undefined) return undefined
-      
+
       // Handle array notation
       const arrayMatch = prop.match(/^(.+)\[(\d+)\]$/)
       if (arrayMatch) {
         const [, arrayProp, index] = arrayMatch
         return current[arrayProp]?.[parseInt(index)]
       }
-      
+
       return current[prop]
     }, obj)
   }
@@ -495,7 +493,7 @@ export class TransformPipeline {
   private setNestedValue(obj: any, path: string, value: any): void {
     const keys = path.split('.')
     const lastKey = keys.pop()!
-    
+
     const target = keys.reduce((current, key) => {
       // Handle array notation
       const arrayMatch = key.match(/^(.+)\[(\d+)\]$/)
@@ -505,95 +503,91 @@ export class TransformPipeline {
         if (!current[arrayProp][parseInt(index)]) current[arrayProp][parseInt(index)] = {}
         return current[arrayProp][parseInt(index)]
       }
-      
+
       if (!current[key]) current[key] = {}
       return current[key]
     }, obj)
-    
+
     target[lastKey] = value
   }
 
   private evaluateCondition(record: any, config: any): boolean {
     if (!config || !config.conditions) return true
-    
+
     const conditions = Array.isArray(config.conditions) ? config.conditions : [config]
     const operator = config.operator || 'and'
-    
+
     if (operator === 'and') {
-      return conditions.every((condition: any) => 
-        this.evaluateSingleCondition(record, condition)
-      )
+      return conditions.every((condition: any) => this.evaluateSingleCondition(record, condition))
     } else if (operator === 'or') {
-      return conditions.some((condition: any) => 
-        this.evaluateSingleCondition(record, condition)
-      )
+      return conditions.some((condition: any) => this.evaluateSingleCondition(record, condition))
     }
-    
+
     return this.evaluateSingleCondition(record, config)
   }
 
   private evaluateSingleCondition(record: any, condition: any): boolean {
     const value = this.getNestedValue(record, condition.field)
-    
+
     switch (condition.operator) {
       case 'eq':
       case '=':
       case '==':
         return value === condition.value
-        
+
       case 'ne':
       case '!=':
       case '<>':
         return value !== condition.value
-        
+
       case 'gt':
       case '>':
         return value > condition.value
-        
+
       case 'gte':
       case '>=':
         return value >= condition.value
-        
+
       case 'lt':
       case '<':
         return value < condition.value
-        
+
       case 'lte':
       case '<=':
         return value <= condition.value
-        
+
       case 'contains':
       case 'includes':
         return value?.includes?.(condition.value) || false
-        
+
       case 'not_contains':
       case 'not_includes':
         return !value?.includes?.(condition.value) || false
-        
+
       case 'starts_with':
         return value?.startsWith?.(condition.value) || false
-        
+
       case 'ends_with':
         return value?.endsWith?.(condition.value) || false
-        
+
       case 'in':
         return Array.isArray(condition.value) && condition.value.includes(value)
-        
+
       case 'not_in':
         return Array.isArray(condition.value) && !condition.value.includes(value)
-        
+
       case 'between':
         return value >= condition.value[0] && value <= condition.value[1]
-        
+
       case 'regex':
         return new RegExp(condition.value, condition.flags).test(value)
-        
+
       case 'exists':
         return value !== null && value !== undefined
-        
+
       case 'not_exists':
         return value === null || value === undefined
-        
+
       default:
         return true
     }
@@ -602,24 +596,26 @@ export class TransformPipeline {
   private evaluateExpression(data: any, expression: string): any {
     // Simple expression evaluator
     // In production, use a proper expression library
-    
+
     if (expression.startsWith('=')) {
       // Simple field reference
       const field = expression.substring(1)
       return this.getNestedValue(data, field)
     }
-    
+
     if (expression.includes('+')) {
       // Simple concatenation
       const parts = expression.split('+').map(p => p.trim())
-      return parts.map(part => {
-        if (part.startsWith('"') && part.endsWith('"')) {
-          return part.slice(1, -1)
-        }
-        return this.getNestedValue(data, part) || ''
-      }).join('')
+      return parts
+        .map(part => {
+          if (part.startsWith('"') && part.endsWith('"')) {
+            return part.slice(1, -1)
+          }
+          return this.getNestedValue(data, part) || ''
+        })
+        .join('')
     }
-    
+
     // Default: return as-is
     return expression
   }

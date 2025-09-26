@@ -96,7 +96,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
 
         <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-2">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-text-200">Event Name</Label>
+            <Label htmlFor="name" className="text-text-200">
+              Event Name
+            </Label>
             <Input
               id="name"
               required
@@ -108,7 +110,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type" className="text-text-200">Event Type</Label>
+            <Label htmlFor="type" className="text-text-200">
+              Event Type
+            </Label>
             <Select
               value={formData.event_type}
               onValueChange={value => setFormData({ ...formData, event_type: value as EventType })}
@@ -153,7 +157,12 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   />
                 </PopoverContent>
               </Popover>
-              <Input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} className="bg-panel-alt border-border text-text-100" />
+              <Input
+                type="time"
+                value={startTime}
+                onChange={e => setStartTime(e.target.value)}
+                className="bg-panel-alt border-border text-text-100"
+              />
             </div>
 
             <div className="space-y-2">
@@ -176,7 +185,12 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
                 </PopoverContent>
               </Popover>
-              <Input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} className="bg-panel-alt border-border text-text-100" />
+              <Input
+                type="time"
+                value={endTime}
+                onChange={e => setEndTime(e.target.value)}
+                className="bg-panel-alt border-border text-text-100"
+              />
             </div>
           </div>
 
@@ -193,7 +207,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   })
                 }
               />
-              <Label htmlFor="online" className="text-text-200">Online Event</Label>
+              <Label htmlFor="online" className="text-text-200">
+                Online Event
+              </Label>
             </div>
 
             {!formData.is_online && (
@@ -203,14 +219,18 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   checked={formData.is_hybrid}
                   onCheckedChange={checked => setFormData({ ...formData, is_hybrid: checked })}
                 />
-                <Label htmlFor="hybrid" className="text-text-200">Hybrid Event (In-person + Online)</Label>
+                <Label htmlFor="hybrid" className="text-text-200">
+                  Hybrid Event (In-person + Online)
+                </Label>
               </div>
             )}
           </div>
 
           {(formData.is_online || formData.is_hybrid) && (
             <div className="space-y-2">
-              <Label htmlFor="url" className="text-text-200">Online URL</Label>
+              <Label htmlFor="url" className="text-text-200">
+                Online URL
+              </Label>
               <Input
                 id="url"
                 type="url"
@@ -225,7 +245,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           {(!formData.is_online || formData.is_hybrid) && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="venue" className="text-text-200">Venue Name</Label>
+                <Label htmlFor="venue" className="text-text-200">
+                  Venue Name
+                </Label>
                 <Input
                   id="venue"
                   value={formData.venue_name || ''}
@@ -236,7 +258,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-text-200">Venue Address</Label>
+                <Label htmlFor="address" className="text-text-200">
+                  Venue Address
+                </Label>
                 <Input
                   id="address"
                   value={formData.venue_address || ''}
@@ -249,7 +273,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="capacity" className="text-text-200">Capacity (optional)</Label>
+            <Label htmlFor="capacity" className="text-text-200">
+              Capacity (optional)
+            </Label>
             <Input
               id="capacity"
               type="number"
@@ -264,7 +290,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-text-200">Description (optional)</Label>
+            <Label htmlFor="description" className="text-text-200">
+              Description (optional)
+            </Label>
             <Textarea
               id="description"
               value={formData.description || ''}
@@ -276,10 +304,19 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           </div>
 
           <div className="flex justify-end space-x-2 pt-4 border-t border-border">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={createEvent.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+            <Button
+              type="submit"
+              disabled={createEvent.isPending}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               {createEvent.isPending ? 'Creating...' : 'Create Event'}
             </Button>
           </div>

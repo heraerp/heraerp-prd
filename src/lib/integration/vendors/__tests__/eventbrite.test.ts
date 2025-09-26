@@ -10,10 +10,10 @@ describe('EventbriteAdapter', () => {
   describe('Event Normalization', () => {
     it('should normalize Eventbrite event to HERA format', () => {
       const adapter = createEventbriteAdapter(mockConfig)
-      
+
       // Use private method through any cast for testing
       const normalizeEvent = (adapter as any).normalizeEvent.bind(adapter)
-      
+
       const eventbriteEvent = {
         id: 'eb-123',
         name: { text: 'Test Event' },
@@ -45,7 +45,7 @@ describe('EventbriteAdapter', () => {
       expect(normalized.entity_name).toBe('Test Event')
       expect(normalized.entity_code).toBe('EB-eb-123')
       expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.WEBINAR.v1')
-      
+
       expect(normalized.dynamic_data['EVENT.META.V1']).toEqual({
         title: 'Test Event',
         type: 'webinar',
@@ -165,7 +165,12 @@ describe('EventbriteAdapter', () => {
       const scenarios = [
         { cancelled: true, checked_in: false, status: 'attending' as const, expected: 'cancelled' },
         { cancelled: false, checked_in: true, status: 'attending' as const, expected: 'attended' },
-        { cancelled: false, checked_in: false, status: 'attending' as const, expected: 'registered' },
+        {
+          cancelled: false,
+          checked_in: false,
+          status: 'attending' as const,
+          expected: 'registered'
+        },
         { cancelled: false, checked_in: false, status: 'deleted' as const, expected: 'cancelled' }
       ]
 
@@ -194,9 +199,9 @@ describe('EventbriteAdapter', () => {
     it('should generate consistent idempotency keys', () => {
       const orgId = 'org-123'
       const providerId = 'eb-456'
-      
+
       const expectedKey = `${orgId}-eventbrite-event-${providerId}-upsert`
-      
+
       // In actual implementation, this would be used in the sync engine
       expect(expectedKey).toBe('org-123-eventbrite-event-eb-456-upsert')
     })
@@ -205,7 +210,7 @@ describe('EventbriteAdapter', () => {
   describe('Demo Mode', () => {
     it('should return demo data when in demo mode', async () => {
       const adapter = createEventbriteAdapter(mockConfig)
-      
+
       const result = await adapter.pull({
         orgId: '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77', // Demo org ID
         config: mockConfig,

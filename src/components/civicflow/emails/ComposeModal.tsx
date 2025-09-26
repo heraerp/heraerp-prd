@@ -261,7 +261,9 @@ export function ComposeModal({
         <Card className="w-80 shadow-lg bg-panel border-border">
           <CardHeader className="p-3 bg-panel-alt">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm truncate text-text-100">{draft.subject || 'New Message'}</CardTitle>
+              <CardTitle className="text-sm truncate text-text-100">
+                {draft.subject || 'New Message'}
+              </CardTitle>
               <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
@@ -271,7 +273,12 @@ export function ComposeModal({
                 >
                   <Maximize2 className="h-3 w-3" />
                 </Button>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-text-300 hover:text-text-100 hover:bg-[rgb(0,166,166)]/10" onClick={onClose}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 text-text-300 hover:text-text-100 hover:bg-[rgb(0,166,166)]/10"
+                  onClick={onClose}
+                >
                   <X className="h-3 w-3" />
                 </Button>
               </div>
@@ -551,7 +558,12 @@ export function ComposeModal({
                 {isSending ? 'Sending...' : 'Send'}
               </Button>
 
-              <Button variant="outline" onClick={handleSaveDraft} disabled={isSavingDraft} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+              <Button
+                variant="outline"
+                onClick={handleSaveDraft}
+                disabled={isSavingDraft}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Save className="h-4 w-4 mr-2" />
                 {isSavingDraft ? 'Saving...' : 'Save Draft'}
               </Button>

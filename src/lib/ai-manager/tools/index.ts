@@ -1,5 +1,5 @@
 // AI Manager Tool Implementations
-import type { 
+import type {
   ToolResponse,
   Organisation,
   Contact,
@@ -8,7 +8,7 @@ import type {
   Agreement,
   Event
 } from '@/types/ai-manager'
-import { 
+import {
   CRMQuerySchema,
   CRMObjectGetSchema,
   GraphMailSearchSchema,
@@ -36,10 +36,10 @@ export class AIManagerTools {
   // CRM Tools
   async crmQuery(params: unknown): Promise<ToolResponse<{ rows: any[] }>> {
     const { sql } = CRMQuerySchema.parse(params)
-    
+
     // Log for audit
     console.log(`[AUDIT] User ${this.userId} executed CRM query: ${sql}`)
-    
+
     // Mock implementation
     return {
       success: true,
@@ -58,7 +58,7 @@ export class AIManagerTools {
 
   async crmObjectGet(params: unknown): Promise<ToolResponse<any>> {
     const { type, id } = CRMObjectGetSchema.parse(params)
-    
+
     // Check permissions
     if (!this.permissions.has(`crm.${type}.read`)) {
       return {
@@ -66,7 +66,7 @@ export class AIManagerTools {
         error: `Permission denied for ${type} objects`
       }
     }
-    
+
     // Mock implementation
     const mockData: Record<string, any> = {
       contact: {
@@ -90,7 +90,7 @@ export class AIManagerTools {
         status: 'active'
       }
     }
-    
+
     return {
       success: true,
       data: mockData[type] || { id, type }
@@ -100,7 +100,7 @@ export class AIManagerTools {
   // Microsoft Graph Tools
   async graphMailSearch(params: unknown): Promise<ToolResponse<{ results: any[] }>> {
     const { query, after, before } = GraphMailSearchSchema.parse(params)
-    
+
     // Mock email search results
     return {
       success: true,
@@ -121,7 +121,7 @@ export class AIManagerTools {
 
   async graphCalendarSearch(params: unknown): Promise<ToolResponse<{ results: any[] }>> {
     const { query, after, before } = GraphCalendarSearchSchema.parse(params)
-    
+
     // Mock calendar search results
     return {
       success: true,
@@ -143,7 +143,7 @@ export class AIManagerTools {
   // File Tools
   async filesSearch(params: unknown): Promise<ToolResponse<{ results: any[] }>> {
     const { query, path } = FilesSearchSchema.parse(params)
-    
+
     // Mock file search results
     return {
       success: true,
@@ -162,7 +162,7 @@ export class AIManagerTools {
   // Mailchimp Tools
   async mailchimpMetrics(params: unknown): Promise<ToolResponse<any>> {
     const { campaign_id, since } = MailchimpMetricsSchema.parse(params)
-    
+
     // Mock Mailchimp metrics
     return {
       success: true,
@@ -185,7 +185,7 @@ export class AIManagerTools {
   // LinkedIn Tools
   async linkedinOrgAnalytics(params: unknown): Promise<ToolResponse<any>> {
     const { since, until } = LinkedInOrgAnalyticsSchema.parse(params)
-    
+
     // Mock LinkedIn analytics
     return {
       success: true,
@@ -206,7 +206,7 @@ export class AIManagerTools {
 
   async linkedinPostList(params: unknown): Promise<ToolResponse<any>> {
     const { since, until } = LinkedInPostListSchema.parse(params)
-    
+
     // Mock LinkedIn posts
     return {
       success: true,
@@ -219,10 +219,10 @@ export class AIManagerTools {
             clicks: 450,
             engagement_rate: 0.082,
             audience_breakdown: {
-              'foundations': 0.35,
-              'social_enterprise': 0.25,
-              'corporates': 0.20,
-              'other': 0.20
+              foundations: 0.35,
+              social_enterprise: 0.25,
+              corporates: 0.2,
+              other: 0.2
             }
           }
         ]
@@ -233,7 +233,7 @@ export class AIManagerTools {
   // Finance Tools
   async financeDrawdowns(params: unknown): Promise<ToolResponse<any>> {
     const { programme_id, fund_id } = FinanceDrawdownsSchema.parse(params)
-    
+
     // Mock finance drawdowns
     return {
       success: true,
@@ -255,7 +255,7 @@ export class AIManagerTools {
   // BI/KPI Tools
   async biKPI(params: unknown): Promise<ToolResponse<any>> {
     const { programme_id } = BIKPISchema.parse(params)
-    
+
     // Mock BI KPIs
     return {
       success: true,
@@ -270,7 +270,7 @@ export class AIManagerTools {
           },
           {
             name: 'IMD 1-3 Reach',
-            target: 0.60,
+            target: 0.6,
             actual: 0.52,
             trend: 'stable',
             rag: 'amber'
@@ -291,11 +291,13 @@ export class AIManagerTools {
   private redactPII(data: any): any {
     if (!this.permissions.has('pii.view')) {
       // Redact email addresses and personal info
-      return JSON.parse(JSON.stringify(data, (key, value) => {
-        if (key === 'email' || key === 'emails') return '[REDACTED]'
-        if (key === 'phone') return '[REDACTED]'
-        return value
-      }))
+      return JSON.parse(
+        JSON.stringify(data, (key, value) => {
+          if (key === 'email' || key === 'emails') return '[REDACTED]'
+          if (key === 'phone') return '[REDACTED]'
+          return value
+        })
+      )
     }
     return data
   }

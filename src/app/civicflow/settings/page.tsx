@@ -15,13 +15,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import {
-  Settings,
-  Download,
-  Save,
-  RefreshCw,
-  AlertTriangle
-} from 'lucide-react'
+import { Settings, Download, Save, RefreshCw, AlertTriangle } from 'lucide-react'
 
 export default function SettingsPage() {
   const { toast } = useToast()
@@ -66,7 +60,7 @@ export default function SettingsPage() {
     setHasChanges(false)
     toast({
       title: 'Settings Saved',
-      description: 'Your settings have been updated successfully.',
+      description: 'Your settings have been updated successfully.'
     })
   }
 
@@ -110,9 +104,7 @@ export default function SettingsPage() {
             </div>
             Settings
           </h1>
-          <p className="text-text-200 mt-1">
-            Manage your account settings and preferences
-          </p>
+          <p className="text-text-200 mt-1">Manage your account settings and preferences</p>
         </div>
         <div className="flex items-center gap-3">
           {hasChanges && (
@@ -121,11 +113,7 @@ export default function SettingsPage() {
               Unsaved changes
             </div>
           )}
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            className="border-border"
-          >
+          <Button variant="outline" onClick={handleExport} className="border-border">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -162,9 +150,7 @@ export default function SettingsPage() {
           <Card className="bg-panel border-border">
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
-              <CardDescription>
-                Update your profile information and contact details
-              </CardDescription>
+              <CardDescription>Update your profile information and contact details</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -173,7 +159,7 @@ export default function SettingsPage() {
                   <Input
                     id="firstName"
                     value={profile.firstName}
-                    onChange={(e) => handleInputChange('profile', 'firstName', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'firstName', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -182,7 +168,7 @@ export default function SettingsPage() {
                   <Input
                     id="lastName"
                     value={profile.lastName}
-                    onChange={(e) => handleInputChange('profile', 'lastName', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'lastName', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -194,7 +180,7 @@ export default function SettingsPage() {
                   id="email"
                   type="email"
                   value={profile.email}
-                  onChange={(e) => handleInputChange('profile', 'email', e.target.value)}
+                  onChange={e => handleInputChange('profile', 'email', e.target.value)}
                   className="bg-panel-alt border-border"
                 />
               </div>
@@ -205,7 +191,7 @@ export default function SettingsPage() {
                   <Input
                     id="phone"
                     value={profile.phone}
-                    onChange={(e) => handleInputChange('profile', 'phone', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'phone', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -214,7 +200,7 @@ export default function SettingsPage() {
                   <Input
                     id="jobTitle"
                     value={profile.jobTitle}
-                    onChange={(e) => handleInputChange('profile', 'jobTitle', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'jobTitle', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -226,7 +212,7 @@ export default function SettingsPage() {
                   <Input
                     id="department"
                     value={profile.department}
-                    onChange={(e) => handleInputChange('profile', 'department', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'department', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -235,7 +221,7 @@ export default function SettingsPage() {
                   <Input
                     id="location"
                     value={profile.location}
-                    onChange={(e) => handleInputChange('profile', 'location', e.target.value)}
+                    onChange={e => handleInputChange('profile', 'location', e.target.value)}
                     className="bg-panel-alt border-border"
                   />
                 </div>
@@ -246,7 +232,7 @@ export default function SettingsPage() {
                 <Textarea
                   id="bio"
                   value={profile.bio}
-                  onChange={(e) => handleInputChange('profile', 'bio', e.target.value)}
+                  onChange={e => handleInputChange('profile', 'bio', e.target.value)}
                   className="bg-panel-alt border-border min-h-[100px]"
                   placeholder="Tell us about yourself..."
                 />
@@ -260,9 +246,7 @@ export default function SettingsPage() {
           <Card className="bg-panel border-border">
             <CardHeader>
               <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>
-                Configure how and when you receive notifications
-              </CardDescription>
+              <CardDescription>Configure how and when you receive notifications</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -273,7 +257,9 @@ export default function SettingsPage() {
                   </div>
                   <Select
                     value={notifications.emailEnabled ? 'enabled' : 'disabled'}
-                    onValueChange={(value) => handleInputChange('notifications', 'emailEnabled', value === 'enabled')}
+                    onValueChange={value =>
+                      handleInputChange('notifications', 'emailEnabled', value === 'enabled')
+                    }
                   >
                     <SelectTrigger className="w-32 bg-panel-alt border-border">
                       <SelectValue />
@@ -292,7 +278,9 @@ export default function SettingsPage() {
                   </div>
                   <Select
                     value={notifications.pushEnabled ? 'enabled' : 'disabled'}
-                    onValueChange={(value) => handleInputChange('notifications', 'pushEnabled', value === 'enabled')}
+                    onValueChange={value =>
+                      handleInputChange('notifications', 'pushEnabled', value === 'enabled')
+                    }
                   >
                     <SelectTrigger className="w-32 bg-panel-alt border-border">
                       <SelectValue />
@@ -311,7 +299,9 @@ export default function SettingsPage() {
                   </div>
                   <Select
                     value={notifications.smsEnabled ? 'enabled' : 'disabled'}
-                    onValueChange={(value) => handleInputChange('notifications', 'smsEnabled', value === 'enabled')}
+                    onValueChange={value =>
+                      handleInputChange('notifications', 'smsEnabled', value === 'enabled')
+                    }
                   >
                     <SelectTrigger className="w-32 bg-panel-alt border-border">
                       <SelectValue />
@@ -328,7 +318,7 @@ export default function SettingsPage() {
                 <Label>Email Digest Frequency</Label>
                 <Select
                   value={notifications.emailDigest}
-                  onValueChange={(value) => handleInputChange('notifications', 'emailDigest', value)}
+                  onValueChange={value => handleInputChange('notifications', 'emailDigest', value)}
                 >
                   <SelectTrigger className="bg-panel-alt border-border w-48">
                     <SelectValue />
@@ -350,9 +340,7 @@ export default function SettingsPage() {
           <Card className="bg-panel border-border">
             <CardHeader>
               <CardTitle>System Preferences</CardTitle>
-              <CardDescription>
-                Configure system behavior and display preferences
-              </CardDescription>
+              <CardDescription>Configure system behavior and display preferences</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
@@ -360,7 +348,7 @@ export default function SettingsPage() {
                   <Label>Theme</Label>
                   <Select
                     value={system.theme}
-                    onValueChange={(value) => handleInputChange('system', 'theme', value)}
+                    onValueChange={value => handleInputChange('system', 'theme', value)}
                   >
                     <SelectTrigger className="bg-panel-alt border-border">
                       <SelectValue />
@@ -377,7 +365,7 @@ export default function SettingsPage() {
                   <Label>Language</Label>
                   <Select
                     value={system.language}
-                    onValueChange={(value) => handleInputChange('system', 'language', value)}
+                    onValueChange={value => handleInputChange('system', 'language', value)}
                   >
                     <SelectTrigger className="bg-panel-alt border-border">
                       <SelectValue />
@@ -394,7 +382,7 @@ export default function SettingsPage() {
                   <Label>Timezone</Label>
                   <Select
                     value={system.timezone}
-                    onValueChange={(value) => handleInputChange('system', 'timezone', value)}
+                    onValueChange={value => handleInputChange('system', 'timezone', value)}
                   >
                     <SelectTrigger className="bg-panel-alt border-border">
                       <SelectValue />
@@ -412,7 +400,7 @@ export default function SettingsPage() {
                   <Label>Date Format</Label>
                   <Select
                     value={system.dateFormat}
-                    onValueChange={(value) => handleInputChange('system', 'dateFormat', value)}
+                    onValueChange={value => handleInputChange('system', 'dateFormat', value)}
                   >
                     <SelectTrigger className="bg-panel-alt border-border">
                       <SelectValue />
@@ -429,7 +417,7 @@ export default function SettingsPage() {
                   <Label>Currency</Label>
                   <Select
                     value={system.currency}
-                    onValueChange={(value) => handleInputChange('system', 'currency', value)}
+                    onValueChange={value => handleInputChange('system', 'currency', value)}
                   >
                     <SelectTrigger className="bg-panel-alt border-border">
                       <SelectValue />
@@ -452,9 +440,7 @@ export default function SettingsPage() {
           <Card className="bg-panel border-border">
             <CardHeader>
               <CardTitle>Advanced Settings</CardTitle>
-              <CardDescription>
-                Advanced configuration options for power users
-              </CardDescription>
+              <CardDescription>Advanced configuration options for power users</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -462,7 +448,10 @@ export default function SettingsPage() {
                   <AlertTriangle className="h-5 w-5 text-yellow-500" />
                   <div>
                     <p className="font-medium">Advanced Configuration</p>
-                    <p className="text-sm text-text-300">These settings are for advanced users. Changing them may affect system performance.</p>
+                    <p className="text-sm text-text-300">
+                      These settings are for advanced users. Changing them may affect system
+                      performance.
+                    </p>
                   </div>
                 </div>
 

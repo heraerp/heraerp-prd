@@ -32,34 +32,24 @@ export class SyncEngine {
     try {
       // Create sync run record
       const syncRun = await this.createSyncRun(organizationId, syncJob.id)
-      
+
       // Fetch data from source
-      const sourceData = await this.fetchSourceData(
-        sourceConnector,
-        mapping.mappingType
-      )
-      
+      const sourceData = await this.fetchSourceData(sourceConnector, mapping.mappingType)
+
       // Process each record
       for (const record of sourceData) {
         recordsProcessed++
-        
+
         try {
           // Apply mapping
           const mappedData = MappingEngine.applyMapping(record, mapping)
-          
+
           // Apply transformations
-          const transformedData = this.applyTransformations(
-            mappedData,
-            mapping.transformations
-          )
-          
+          const transformedData = this.applyTransformations(mappedData, mapping.transformations)
+
           // Sync to target
-          await this.syncToTarget(
-            targetConnector,
-            transformedData,
-            mapping.mappingType
-          )
-          
+          await this.syncToTarget(targetConnector, transformedData, mapping.mappingType)
+
           recordsSynced++
         } catch (error) {
           recordsFailed++
@@ -69,7 +59,7 @@ export class SyncEngine {
           })
         }
       }
-      
+
       // Update sync run status
       await this.updateSyncRun(syncRun.id, {
         status: errors.length === 0 ? 'success' : 'partial_success',
@@ -79,10 +69,10 @@ export class SyncEngine {
         errors,
         endTime: new Date().toISOString()
       })
-      
+
       // Update sync job stats
       await this.updateSyncJobStats(organizationId, syncJob.id, errors.length === 0)
-      
+
       return {
         success: errors.length === 0,
         recordsProcessed,
@@ -94,7 +84,7 @@ export class SyncEngine {
     } catch (error) {
       // Update sync run as failed
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      
+
       return {
         success: false,
         recordsProcessed,
@@ -106,12 +96,9 @@ export class SyncEngine {
     }
   }
 
-  private static async createSyncRun(
-    organizationId: string,
-    syncJobId: string
-  ): Promise<SyncRun> {
+  private static async createSyncRun(organizationId: string, syncJobId: string): Promise<SyncRun> {
     universalApi.setOrganizationId(organizationId)
-    
+
     const result = await universalApi.createEntity({
       entity_type: 'integration_sync_run',
       entity_name: `Sync Run - ${new Date().toISOString()}`,
@@ -146,20 +133,20 @@ export class SyncEngine {
     } as SyncRun
   }
 
-  private static async updateSyncRun(
-    syncRunId: string,
-    updates: Partial<SyncRun>
-  ): Promise<void> {
+  private static async updateSyncRun(syncRunId: string, updates: Partial<SyncRun>): Promise<void> {
     const fieldUpdates = []
-    
+
     if (updates.status) {
-      fieldUpdates.push(
-        universalApi.setDynamicField(syncRunId, 'status', updates.status, 'text')
-      )
+      fieldUpdates.push(universalApi.setDynamicField(syncRunId, 'status', updates.status, 'text'))
     }
     if (updates.recordsProcessed !== undefined) {
       fieldUpdates.push(
-        universalApi.setDynamicField(syncRunId, 'records_processed', updates.recordsProcessed, 'number')
+        universalApi.setDynamicField(
+          syncRunId,
+          'records_processed',
+          updates.recordsProcessed,
+          'number'
+        )
       )
     }
     if (updates.recordsSynced !== undefined) {
@@ -182,7 +169,7 @@ export class SyncEngine {
         universalApi.setDynamicField(syncRunId, 'errors', JSON.stringify(updates.errors), 'text')
       )
     }
-    
+
     await Promise.all(fieldUpdates)
   }
 
@@ -192,7 +179,7 @@ export class SyncEngine {
     success: boolean
   ): Promise<void> {
     universalApi.setOrganizationId(organizationId)
-    
+
     // Get current stats
     const fieldsResult = await universalApi.read({
       table: 'core_dynamic_data',
@@ -201,36 +188,39 @@ export class SyncEngine {
         organization_id: organizationId
       }
     })
-    
+
     const fields = fieldsResult.data || []
     const totalRuns = fields.find(f => f.field_name === 'total_runs')?.field_value_number || 0
-    const successfulRuns = fields.find(f => f.field_name === 'successful_runs')?.field_value_number || 0
+    const successfulRuns =
+      fields.find(f => f.field_name === 'successful_runs')?.field_value_number || 0
     const failedRuns = fields.find(f => f.field_name === 'failed_runs')?.field_value_number || 0
-    
+
     // Update stats
     await Promise.all([
       universalApi.setDynamicField(syncJobId, 'last_run_at', new Date().toISOString(), 'text'),
-      universalApi.setDynamicField(syncJobId, 'last_status', success ? 'success' : 'failed', 'text'),
+      universalApi.setDynamicField(
+        syncJobId,
+        'last_status',
+        success ? 'success' : 'failed',
+        'text'
+      ),
       universalApi.setDynamicField(syncJobId, 'total_runs', totalRuns + 1, 'number'),
       universalApi.setDynamicField(
-        syncJobId, 
-        'successful_runs', 
-        success ? successfulRuns + 1 : successfulRuns, 
+        syncJobId,
+        'successful_runs',
+        success ? successfulRuns + 1 : successfulRuns,
         'number'
       ),
       universalApi.setDynamicField(
-        syncJobId, 
-        'failed_runs', 
-        success ? failedRuns : failedRuns + 1, 
+        syncJobId,
+        'failed_runs',
+        success ? failedRuns : failedRuns + 1,
         'number'
       )
     ])
   }
 
-  private static async fetchSourceData(
-    connector: Connector,
-    resourceType: string
-  ): Promise<any[]> {
+  private static async fetchSourceData(connector: Connector, resourceType: string): Promise<any[]> {
     // This would integrate with the actual connector API
     // For now, return mock data
     return [
@@ -251,14 +241,11 @@ export class SyncEngine {
 
   private static applyTransformations(data: any, transformations: any[]): any {
     let result = data
-    
+
     for (const transformation of transformations) {
-      result = MappingEngine.applyTransformations(
-        result,
-        [transformation]
-      )
+      result = MappingEngine.applyTransformations(result, [transformation])
     }
-    
+
     return result
   }
 
@@ -272,11 +259,9 @@ export class SyncEngine {
     await new Promise(resolve => setTimeout(resolve, 100))
   }
 
-  static async getScheduledJobs(
-    organizationId: string
-  ): Promise<SyncJob[]> {
+  static async getScheduledJobs(organizationId: string): Promise<SyncJob[]> {
     universalApi.setOrganizationId(organizationId)
-    
+
     const result = await universalApi.read({
       table: 'core_entities',
       filters: {
@@ -290,7 +275,7 @@ export class SyncEngine {
     }
 
     const syncJobs = await Promise.all(
-      result.data.map(async (entity) => {
+      result.data.map(async entity => {
         const fieldsResult = await universalApi.read({
           table: 'core_dynamic_data',
           filters: {
@@ -300,16 +285,16 @@ export class SyncEngine {
         })
 
         const fields = fieldsResult.data || []
-        const getFieldValue = (name: string) => 
+        const getFieldValue = (name: string) =>
           fields.find(f => f.field_name === name)?.field_value_text || ''
-        const getFieldNumber = (name: string) => 
+        const getFieldNumber = (name: string) =>
           fields.find(f => f.field_name === name)?.field_value_number || 0
-        const getFieldBoolean = (name: string) => 
+        const getFieldBoolean = (name: string) =>
           fields.find(f => f.field_name === name)?.field_value_text === 'true'
 
         const isActive = getFieldBoolean('is_active')
         const schedule = getFieldValue('schedule')
-        
+
         // Check if job should run based on schedule
         // This is simplified - in production, use a proper cron parser
         const shouldRun = isActive && this.shouldRunBasedOnSchedule(schedule)
@@ -340,7 +325,7 @@ export class SyncEngine {
     if (schedule === 'realtime' || schedule === 'manual') {
       return false
     }
-    
+
     // For now, always return true for other schedules
     return true
   }

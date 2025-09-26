@@ -29,10 +29,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ syncJobs })
   } catch (error) {
     console.error('Error fetching sync jobs:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch sync jobs' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch sync jobs' }, { status: 500 })
   }
 }
 
@@ -52,33 +49,30 @@ export async function POST(request: NextRequest) {
       filters
     } = body
 
-    if (!organizationId || !connectorId || !mappingId || !name || !syncType || !syncDirection || !options) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+    if (
+      !organizationId ||
+      !connectorId ||
+      !mappingId ||
+      !name ||
+      !syncType ||
+      !syncDirection ||
+      !options
+    ) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const syncJob = await SyncScheduler.createSyncJob(
-      organizationId,
-      connectorId,
-      mappingId,
-      {
-        name,
-        syncType,
-        syncDirection,
-        schedule,
-        options,
-        filters
-      }
-    )
+    const syncJob = await SyncScheduler.createSyncJob(organizationId, connectorId, mappingId, {
+      name,
+      syncType,
+      syncDirection,
+      schedule,
+      options,
+      filters
+    })
 
     return NextResponse.json({ syncJob })
   } catch (error) {
     console.error('Error creating sync job:', error)
-    return NextResponse.json(
-      { error: 'Failed to create sync job' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create sync job' }, { status: 500 })
   }
 }

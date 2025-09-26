@@ -204,7 +204,7 @@ export function CivicFlowSidebar() {
                 </Link>
               )
             })}
-            
+
             {/* More Apps Button */}
             <button
               onClick={() => setShowMoreApps(true)}
@@ -295,7 +295,7 @@ export function CivicFlowSidebar() {
 
       {/* Main content spacer */}
       <div className={cn('transition-all duration-300', collapsed ? 'lg:pl-20' : 'lg:pl-64')} />
-      
+
       {/* More Apps Modal */}
       <MoreAppsModal open={showMoreApps} onOpenChange={setShowMoreApps} />
     </>

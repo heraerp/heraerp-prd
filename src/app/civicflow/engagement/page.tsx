@@ -121,12 +121,19 @@ function EngagementContent() {
         <h1 className="text-3xl font-bold">Engagement Pipeline</h1>
         <div className="flex items-center gap-2">
           {(!stages || stages.length === 0) && (
-            <Button onClick={handleCreateDefaultStages} disabled={createDefaultStages.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+            <Button
+              onClick={handleCreateDefaultStages}
+              disabled={createDefaultStages.isPending}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Default Stages
             </Button>
           )}
-          <Button variant="outline" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+          <Button
+            variant="outline"
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+          >
             <Settings className="h-4 w-4 mr-2" />
             Configure Stages
           </Button>
@@ -306,7 +313,11 @@ function EngagementContent() {
                   </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="icon" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+                >
                   <Filter className="h-4 w-4" />
                 </Button>
               </div>

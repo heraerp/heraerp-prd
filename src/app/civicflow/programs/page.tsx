@@ -135,7 +135,7 @@ export default function ProgramsPage() {
                 ? 'Try adjusting your filters to see more results.'
                 : 'Get started by creating your first program.'}
             </p>
-            <Button 
+            <Button
               onClick={() => setIsCreateModalOpen(true)}
               className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
             >

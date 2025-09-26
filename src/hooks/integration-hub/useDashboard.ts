@@ -36,30 +36,20 @@ export function useIntegrationDashboard(organizationId: string) {
       const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
 
       // Filter runs from last 24 hours
-      const recentRuns = syncRuns.data.filter(run => 
-        new Date(run.metadata?.started_at || 0) > yesterday
+      const recentRuns = syncRuns.data.filter(
+        run => new Date(run.metadata?.started_at || 0) > yesterday
       )
 
       // Calculate statistics
-      const activeConnectors = connectors.data.filter(c => 
-        c.metadata?.status === 'active'
-      ).length
+      const activeConnectors = connectors.data.filter(c => c.metadata?.status === 'active').length
 
-      const activeSyncJobs = syncJobs.data.filter(j => 
-        j.metadata?.status === 'active'
-      ).length
+      const activeSyncJobs = syncJobs.data.filter(j => j.metadata?.status === 'active').length
 
       // Calculate health summary
       const healthSummary = {
-        healthy: connectors.data.filter(c => 
-          c.metadata?.health_status === 'healthy'
-        ).length,
-        degraded: connectors.data.filter(c => 
-          c.metadata?.health_status === 'degraded'
-        ).length,
-        unhealthy: connectors.data.filter(c => 
-          c.metadata?.health_status === 'unhealthy'
-        ).length
+        healthy: connectors.data.filter(c => c.metadata?.health_status === 'healthy').length,
+        degraded: connectors.data.filter(c => c.metadata?.health_status === 'degraded').length,
+        unhealthy: connectors.data.filter(c => c.metadata?.health_status === 'unhealthy').length
       }
 
       // Aggregate sync run stats
@@ -96,9 +86,9 @@ export function useIntegrationDashboard(organizationId: string) {
       // Get upcoming syncs
       const upcomingSyncs = syncJobs.data
         .filter(job => job.metadata?.next_run)
-        .sort((a, b) => 
-          new Date(a.metadata.next_run).getTime() - 
-          new Date(b.metadata.next_run).getTime()
+        .sort(
+          (a, b) =>
+            new Date(a.metadata.next_run).getTime() - new Date(b.metadata.next_run).getTime()
         )
         .slice(0, 5)
 
@@ -141,7 +131,10 @@ export function useConnectorHealthMetrics(organizationId: string) {
 }
 
 // Fetch sync performance metrics
-export function useSyncPerformanceMetrics(organizationId: string, period: '1h' | '24h' | '7d' = '24h') {
+export function useSyncPerformanceMetrics(
+  organizationId: string,
+  period: '1h' | '24h' | '7d' = '24h'
+) {
   return useQuery({
     queryKey: ['integration-sync-performance-metrics', organizationId, period],
     queryFn: async () => {

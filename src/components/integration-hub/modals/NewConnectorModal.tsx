@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,7 +31,7 @@ export function NewConnectorModal({ open, onClose, organizationId }: NewConnecto
   const [apiKey, setApiKey] = useState('')
   const [clientId, setClientId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
-  
+
   const { mutate: createConnector, isPending } = useCreateConnector()
 
   const vendors = ConnectorManager.getAllVendors()
@@ -199,19 +199,22 @@ export function NewConnectorModal({ open, onClose, organizationId }: NewConnecto
               <div>
                 <Label>Capabilities</Label>
                 <div className="mt-2 space-y-2">
-                  {vendors.find(v => v.id === selectedVendor)?.capabilities.slice(0, 3).map((cap, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>
-                        {cap.type === 'read' && 'Read'}
-                        {cap.type === 'write' && 'Write'}
-                        {cap.type === 'webhook' && 'Webhook'}
-                        {cap.type === 'realtime' && 'Real-time'}
-                        {cap.type === 'batch' && 'Batch'}
-                      </span>
-                      <span className="text-muted-foreground">{cap.resource}</span>
-                    </div>
-                  ))}
+                  {vendors
+                    .find(v => v.id === selectedVendor)
+                    ?.capabilities.slice(0, 3)
+                    .map((cap, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span>
+                          {cap.type === 'read' && 'Read'}
+                          {cap.type === 'write' && 'Write'}
+                          {cap.type === 'webhook' && 'Webhook'}
+                          {cap.type === 'realtime' && 'Real-time'}
+                          {cap.type === 'batch' && 'Batch'}
+                        </span>
+                        <span className="text-muted-foreground">{cap.resource}</span>
+                      </div>
+                    ))}
                 </div>
               </div>
             </>
@@ -222,10 +225,7 @@ export function NewConnectorModal({ open, onClose, organizationId }: NewConnecto
           <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleCreate} 
-            disabled={!selectedVendor || !connectorName || isPending}
-          >
+          <Button onClick={handleCreate} disabled={!selectedVendor || !connectorName || isPending}>
             {isPending ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />

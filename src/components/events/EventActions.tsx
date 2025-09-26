@@ -13,10 +13,10 @@ interface EventActionsProps {
 export function EventActions({ organizationId, onSyncComplete }: EventActionsProps) {
   const [isSyncing, setIsSyncing] = useState(false)
   const { toast } = useToast()
-  
+
   const handleSyncFromEventbrite = async () => {
     setIsSyncing(true)
-    
+
     try {
       // Use demo sync endpoint for now
       const response = await fetch('/api/integration-hub/demo-sync', {
@@ -47,20 +47,22 @@ export function EventActions({ organizationId, onSyncComplete }: EventActionsPro
           title: 'Sync completed',
           description: `Successfully synced ${stats.eventsProcessed} events and ${stats.attendeesProcessed} attendees from Eventbrite`
         })
-        
+
         // Store the synced data in localStorage for the events page to pick up
-        localStorage.setItem('eventbrite_sync_data', JSON.stringify({
-          events,
-          attendees,
-          syncedAt: new Date().toISOString()
-        }))
-        
+        localStorage.setItem(
+          'eventbrite_sync_data',
+          JSON.stringify({
+            events,
+            attendees,
+            syncedAt: new Date().toISOString()
+          })
+        )
+
         setIsSyncing(false)
         if (onSyncComplete) onSyncComplete()
       } else {
         throw new Error(result.error || 'Sync failed')
       }
-
     } catch (error) {
       console.error('Sync error:', error)
       toast({
@@ -74,12 +76,7 @@ export function EventActions({ organizationId, onSyncComplete }: EventActionsPro
 
   return (
     <div className="flex items-center gap-4">
-      <Button
-        onClick={handleSyncFromEventbrite}
-        disabled={isSyncing}
-        variant="outline"
-        size="sm"
-      >
+      <Button onClick={handleSyncFromEventbrite} disabled={isSyncing} variant="outline" size="sm">
         <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
         {isSyncing ? 'Syncing...' : 'Sync from Eventbrite'}
       </Button>

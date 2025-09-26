@@ -147,8 +147,8 @@ export default function IntegrationsPage() {
               Connect your favorite tools to sync data and automate workflows
             </p>
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => refetch()}
             className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
           >

@@ -1,66 +1,66 @@
-"use client";
+'use client'
 
-import { useState, FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, FormEvent } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 interface LeadFormProps {
-  redirectTo?: string;
-  formId?: string;
-  className?: string;
+  redirectTo?: string
+  formId?: string
+  className?: string
 }
 
-export default function LeadForm({ 
-  redirectTo = "/thank-you", 
-  formId = "blog-lead-form",
-  className = "" 
+export default function LeadForm({
+  redirectTo = '/thank-you',
+  formId = 'blog-lead-form',
+  className = ''
 }: LeadFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
-  
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
     // Add UTM parameters
     searchParams.forEach((value, key) => {
-      if (key.startsWith("utm_")) {
-        formData.append(key, value);
+      if (key.startsWith('utm_')) {
+        formData.append(key, value)
       }
-    });
-    
+    })
+
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
+      const response = await fetch('/api/leads', {
+        method: 'POST',
         body: formData
-      });
-      
+      })
+
       if (response.ok) {
         // Track conversion if GTM is available
-        if (typeof window !== "undefined" && (window as any).dataLayer) {
-          (window as any).dataLayer.push({
-            event: "lead_capture",
+        if (typeof window !== 'undefined' && (window as any).dataLayer) {
+          ;(window as any).dataLayer.push({
+            event: 'lead_capture',
             form_id: formId,
-            lead_source: "blog"
-          });
+            lead_source: 'blog'
+          })
         }
-        
-        window.location.href = redirectTo;
+
+        window.location.href = redirectTo
       } else {
-        throw new Error("Failed to submit form");
+        throw new Error('Failed to submit form')
       }
     } catch (err) {
-      setError("Something went wrong. Please try again or email us directly.");
-      setIsSubmitting(false);
+      setError('Something went wrong. Please try again or email us directly.')
+      setIsSubmitting(false)
     }
-  };
-  
+  }
+
   return (
-    <form 
+    <form
       onSubmit={handleSubmit}
       className={`max-w-lg space-y-4 ${className}`}
       data-form-id={formId}
@@ -82,7 +82,7 @@ export default function LeadForm({
           disabled={isSubmitting}
         />
       </div>
-      
+
       <div>
         <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
           Work Email *
@@ -101,7 +101,7 @@ export default function LeadForm({
           disabled={isSubmitting}
         />
       </div>
-      
+
       <div>
         <label htmlFor="company" className="mb-1 block text-sm font-medium text-gray-700">
           Company Name
@@ -118,7 +118,7 @@ export default function LeadForm({
           disabled={isSubmitting}
         />
       </div>
-      
+
       <div>
         <label htmlFor="phone" className="mb-1 block text-sm font-medium text-gray-700">
           Phone Number
@@ -135,13 +135,9 @@ export default function LeadForm({
           disabled={isSubmitting}
         />
       </div>
-      
-      {error && (
-        <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          {error}
-        </div>
-      )}
-      
+
+      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+
       <button
         type="submit"
         disabled={isSubmitting}
@@ -152,17 +148,17 @@ export default function LeadForm({
           disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed
         "
       >
-        {isSubmitting ? "Sending..." : "Get Your Free Guide"}
+        {isSubmitting ? 'Sending...' : 'Get Your Free Guide'}
       </button>
-      
+
       <p className="text-center text-xs text-gray-500">
-        🔒 Your data is safe. No spam, ever. 
+        🔒 Your data is safe. No spam, ever.
         <br />
-        By submitting, you agree to our{" "}
+        By submitting, you agree to our{' '}
         <a href="/privacy" className="underline hover:text-gray-700">
           Privacy Policy
         </a>
       </p>
     </form>
-  );
+  )
 }

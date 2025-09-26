@@ -8,10 +8,7 @@ export async function POST(request: NextRequest) {
     // Get organization ID from header
     const orgId = request.headers.get('X-Organization-Id')
     if (!orgId) {
-      return NextResponse.json(
-        { error: 'Missing X-Organization-Id header' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing X-Organization-Id header' }, { status: 400 })
     }
 
     // Get request body
@@ -51,7 +48,12 @@ export async function POST(request: NextRequest) {
       universalApi.setDynamicField(syncRunResult.data.id, 'vendor', vendor, 'text'),
       universalApi.setDynamicField(syncRunResult.data.id, 'domain', domain, 'text'),
       universalApi.setDynamicField(syncRunResult.data.id, 'status', 'running', 'text'),
-      universalApi.setDynamicField(syncRunResult.data.id, 'start_time', new Date().toISOString(), 'text'),
+      universalApi.setDynamicField(
+        syncRunResult.data.id,
+        'start_time',
+        new Date().toISOString(),
+        'text'
+      ),
       universalApi.setDynamicField(syncRunResult.data.id, 'records_processed', 0, 'number'),
       universalApi.setDynamicField(syncRunResult.data.id, 'records_synced', 0, 'number'),
       universalApi.setDynamicField(syncRunResult.data.id, 'records_failed', 0, 'number')
@@ -85,25 +87,20 @@ export async function POST(request: NextRequest) {
       syncRunId: syncRunResult.data.id,
       message: `Sync triggered for ${vendor} ${domain}`
     })
-
   } catch (error) {
     console.error('Sync trigger error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error instanceof Error ? error.message : 'Sync trigger failed' 
+        error: error instanceof Error ? error.message : 'Sync trigger failed'
       },
       { status: 500 }
     )
   }
 }
 
-async function executeEventbritePull(
-  orgId: string, 
-  syncRunId: string,
-  isDemoMode: boolean
-) {
+async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMode: boolean) {
   const stats = {
     eventsProcessed: 0,
     eventsCreated: 0,
@@ -135,7 +132,7 @@ async function executeEventbritePull(
     }
 
     let config = { apiToken: '' }
-    
+
     if (!isDemoMode && eventbriteConnector) {
       // Get configuration from dynamic fields
       const fieldsResult = await universalApi.read({
@@ -163,7 +160,7 @@ async function executeEventbritePull(
           organization_id: orgId
         }
       })
-      
+
       if (cursorField.data?.[0]?.field_value_text) {
         sinceCursor = cursorField.data[0].field_value_text
       }
@@ -181,11 +178,11 @@ async function executeEventbritePull(
     // Process events
     for (const event of events) {
       stats.eventsProcessed++
-      
+
       try {
         // Make idempotency key
         const idempotencyKey = `${orgId}-eventbrite-event-${event.dynamic_data['EVENT.SOURCE.V1'].provider_id}-upsert`
-        
+
         // Check if event exists
         const existingEvent = await universalApi.read({
           table: 'core_entities',
@@ -210,7 +207,7 @@ async function executeEventbritePull(
         if (eventResult.success) {
           if (isNew) {
             stats.eventsCreated++
-            
+
             // Emit event created transaction
             await universalApi.createTransaction({
               transaction_type: 'event_lifecycle',
@@ -226,7 +223,7 @@ async function executeEventbritePull(
             })
           } else {
             stats.eventsUpdated++
-            
+
             // Emit event updated transaction
             await universalApi.createTransaction({
               transaction_type: 'event_lifecycle',
@@ -244,20 +241,21 @@ async function executeEventbritePull(
 
           // Store event mapping for relationship creation
           const eventProviderId = event.dynamic_data['EVENT.SOURCE.V1'].provider_id
-          
+
           // Process invites for this event
-          const eventInvites = invites.filter(invite => 
-            // Match by event provider ID (would be set during normalization)
-            true // For now process all invites
+          const eventInvites = invites.filter(
+            invite =>
+              // Match by event provider ID (would be set during normalization)
+              true // For now process all invites
           )
 
           for (const invite of eventInvites) {
             stats.attendeesProcessed++
-            
+
             try {
               // Make idempotency key
               const inviteIdempotencyKey = `${orgId}-eventbrite-invite-${invite.dynamic_data['INVITE.SOURCE.V1'].provider_id}-upsert`
-              
+
               // Check if invite exists
               const existingInvite = await universalApi.read({
                 table: 'core_entities',
@@ -313,7 +311,7 @@ async function executeEventbritePull(
                 // If checked in, emit checkin transaction
                 if (invite.dynamic_data['INVITE.META.V1'].checked_in) {
                   stats.checkins++
-                  
+
                   await universalApi.createTransaction({
                     transaction_type: 'event_checkin',
                     transaction_date: new Date(),
@@ -343,7 +341,7 @@ async function executeEventbritePull(
 
                   if (constituentSearch.data && constituentSearch.data.length > 0) {
                     const constituentEntityId = constituentSearch.data[0].entity_id
-                    
+
                     // Create relationship between invite and constituent
                     await universalApi.createRelationship({
                       from_entity_id: inviteResult.data.id,
@@ -369,10 +367,25 @@ async function executeEventbritePull(
 
     // Update sync run with completion
     await Promise.all([
-      universalApi.setDynamicField(syncRunId, 'status', stats.errors === 0 ? 'success' : 'partial_success', 'text'),
+      universalApi.setDynamicField(
+        syncRunId,
+        'status',
+        stats.errors === 0 ? 'success' : 'partial_success',
+        'text'
+      ),
       universalApi.setDynamicField(syncRunId, 'end_time', new Date().toISOString(), 'text'),
-      universalApi.setDynamicField(syncRunId, 'records_processed', stats.eventsProcessed + stats.attendeesProcessed, 'number'),
-      universalApi.setDynamicField(syncRunId, 'records_synced', stats.eventsCreated + stats.eventsUpdated + stats.attendeesCreated + stats.attendeesUpdated, 'number'),
+      universalApi.setDynamicField(
+        syncRunId,
+        'records_processed',
+        stats.eventsProcessed + stats.attendeesProcessed,
+        'number'
+      ),
+      universalApi.setDynamicField(
+        syncRunId,
+        'records_synced',
+        stats.eventsCreated + stats.eventsUpdated + stats.attendeesCreated + stats.attendeesUpdated,
+        'number'
+      ),
       universalApi.setDynamicField(syncRunId, 'records_failed', stats.errors, 'number'),
       universalApi.setDynamicField(syncRunId, 'stats', JSON.stringify(stats), 'text')
     ])
@@ -383,7 +396,10 @@ async function executeEventbritePull(
       transaction_date: new Date(),
       total_amount: 0,
       organization_id: orgId,
-      smart_code: stats.errors === 0 ? 'HERA.INTEGRATION.SYNC.COMPLETED.v1' : 'HERA.INTEGRATION.SYNC.FAILED.v1',
+      smart_code:
+        stats.errors === 0
+          ? 'HERA.INTEGRATION.SYNC.COMPLETED.v1'
+          : 'HERA.INTEGRATION.SYNC.FAILED.v1',
       metadata: {
         sync_run_id: syncRunId,
         vendor: 'eventbrite',
@@ -401,22 +417,21 @@ async function executeEventbritePull(
         newCursor,
         'text'
       )
-      await universalApi.setDynamicField(
-        eventbriteConnector.id,
-        'last_sync_at',
-        newCursor,
-        'text'
-      )
+      await universalApi.setDynamicField(eventbriteConnector.id, 'last_sync_at', newCursor, 'text')
     }
-
   } catch (error) {
     stats.errors++
-    
+
     // Update sync run as failed
     await Promise.all([
       universalApi.setDynamicField(syncRunId, 'status', 'failed', 'text'),
       universalApi.setDynamicField(syncRunId, 'end_time', new Date().toISOString(), 'text'),
-      universalApi.setDynamicField(syncRunId, 'error', error instanceof Error ? error.message : 'Unknown error', 'text'),
+      universalApi.setDynamicField(
+        syncRunId,
+        'error',
+        error instanceof Error ? error.message : 'Unknown error',
+        'text'
+      ),
       universalApi.setDynamicField(syncRunId, 'stats', JSON.stringify(stats), 'text')
     ])
 

@@ -72,7 +72,15 @@ export interface Application {
   org_id: string
   programme_id: string
   fund_id?: string
-  status: 'draft' | 'submitted' | 'reviewing' | 'clarifications' | 'ic_review' | 'approved' | 'rejected' | 'withdrawn'
+  status:
+    | 'draft'
+    | 'submitted'
+    | 'reviewing'
+    | 'clarifications'
+    | 'ic_review'
+    | 'approved'
+    | 'rejected'
+    | 'withdrawn'
   stage_history: Array<{
     stage: string
     date: string
@@ -144,7 +152,15 @@ export interface Event {
 
 // Tool Contract Types
 export const CRMSearchParamsSchema = z.object({
-  entity_type: z.enum(['organisation', 'contact', 'programme', 'fund', 'application', 'agreement', 'event']),
+  entity_type: z.enum([
+    'organisation',
+    'contact',
+    'programme',
+    'fund',
+    'application',
+    'agreement',
+    'event'
+  ]),
   query: z.string().optional(),
   filters: z.record(z.any()).optional(),
   sort_by: z.string().optional(),
@@ -175,7 +191,7 @@ export interface Tool {
 }
 
 // Query Intent Types
-export type QueryIntent = 
+export type QueryIntent =
   | 'programme_tracking'
   | 'risk_compliance'
   | 'engagement_analytics'

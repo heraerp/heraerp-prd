@@ -107,7 +107,7 @@ export default function HelpPage() {
   const router = useRouter()
   const { toast } = useToast()
   const { currentOrgId } = useOrgStore()
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [formData, setFormData] = useState({
@@ -123,8 +123,14 @@ export default function HelpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!formData.name || !formData.email || !formData.category || !formData.title || !formData.description) {
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.category ||
+      !formData.title ||
+      !formData.description
+    ) {
       toast({
         title: 'Missing Information',
         description: 'Please fill in all required fields',
@@ -139,7 +145,7 @@ export default function HelpPage() {
       const response = await fetch('/api/request-feature', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...formData,
@@ -157,7 +163,7 @@ export default function HelpPage() {
       setSubmitted(true)
       toast({
         title: 'Request Submitted!',
-        description: 'Thank you for your feedback. We\'ll review it and get back to you soon.',
+        description: "Thank you for your feedback. We'll review it and get back to you soon."
       })
 
       // Reset form after 3 seconds
@@ -168,7 +174,10 @@ export default function HelpPage() {
       console.error('Error submitting request:', error)
       toast({
         title: 'Submission Failed',
-        description: error instanceof Error ? error.message : 'Failed to submit your request. Please try again.',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Failed to submit your request. Please try again.',
         variant: 'destructive'
       })
     } finally {
@@ -190,9 +199,7 @@ export default function HelpPage() {
             <p className="text-text-200 mb-6">
               Your feature request has been submitted successfully.
             </p>
-            <p className="text-sm text-text-300">
-              Redirecting you back...
-            </p>
+            <p className="text-sm text-text-300">Redirecting you back...</p>
           </CardContent>
         </Card>
       </div>
@@ -220,9 +227,7 @@ export default function HelpPage() {
               </div>
               Request a Feature
             </h1>
-            <p className="text-text-200 mt-1">
-              Help us improve by sharing your ideas and feedback
-            </p>
+            <p className="text-text-200 mt-1">Help us improve by sharing your ideas and feedback</p>
           </div>
         </div>
       </div>
@@ -231,7 +236,8 @@ export default function HelpPage() {
       <Alert className="bg-[rgb(0,166,166)]/10 border-[rgb(0,166,166)]/20">
         <Sparkles className="h-4 w-4 text-[rgb(0,166,166)]" />
         <AlertDescription className="text-text-200">
-          Your feedback helps shape the future of our platform. We review every request and prioritize based on community needs.
+          Your feedback helps shape the future of our platform. We review every request and
+          prioritize based on community needs.
         </AlertDescription>
       </Alert>
 
@@ -243,30 +249,33 @@ export default function HelpPage() {
             <Card className="bg-panel-alt border-border sticky top-6">
               <CardHeader>
                 <CardTitle className="text-lg">Category</CardTitle>
-                <CardDescription>
-                  Select the type of request
-                </CardDescription>
+                <CardDescription>Select the type of request</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                {categories.map((category) => {
+                {categories.map(category => {
                   const Icon = category.icon
                   const isSelected = formData.category === category.id
-                  
+
                   return (
                     <button
                       key={category.id}
                       type="button"
                       onClick={() => setFormData({ ...formData, category: category.id })}
                       className={cn(
-                        "w-full p-3 rounded-lg border transition-all text-left",
+                        'w-full p-3 rounded-lg border transition-all text-left',
                         isSelected
-                          ? "bg-[rgb(0,166,166)]/10 border-[rgb(0,166,166)] shadow-sm"
-                          : "bg-panel border-border hover:border-[rgb(0,166,166)]/50"
+                          ? 'bg-[rgb(0,166,166)]/10 border-[rgb(0,166,166)] shadow-sm'
+                          : 'bg-panel border-border hover:border-[rgb(0,166,166)]/50'
                       )}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={cn("p-1.5 rounded-lg bg-white/5", isSelected && "bg-[rgb(0,166,166)]/20")}>
-                          <Icon className={cn("h-5 w-5", category.color)} />
+                        <div
+                          className={cn(
+                            'p-1.5 rounded-lg bg-white/5',
+                            isSelected && 'bg-[rgb(0,166,166)]/20'
+                          )}
+                        >
+                          <Icon className={cn('h-5 w-5', category.color)} />
                         </div>
                         <div className="flex-1">
                           <p className="font-medium text-text-100">{category.label}</p>
@@ -286,9 +295,7 @@ export default function HelpPage() {
             <Card className="bg-panel border-border">
               <CardHeader>
                 <CardTitle className="text-lg">Contact Information</CardTitle>
-                <CardDescription>
-                  So we can follow up on your request
-                </CardDescription>
+                <CardDescription>So we can follow up on your request</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -299,7 +306,7 @@ export default function HelpPage() {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
                       placeholder="John Doe"
                       className="bg-panel-alt border-border text-text-100"
                       required
@@ -313,7 +320,7 @@ export default function HelpPage() {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={e => setFormData({ ...formData, email: e.target.value })}
                       placeholder="john@example.com"
                       className="bg-panel-alt border-border text-text-100"
                       required
@@ -330,14 +337,14 @@ export default function HelpPage() {
                   Request Details
                   {selectedCategory && (
                     <Badge variant="outline" className="ml-2">
-                      <selectedCategory.icon className={cn("h-3 w-3 mr-1", selectedCategory.color)} />
+                      <selectedCategory.icon
+                        className={cn('h-3 w-3 mr-1', selectedCategory.color)}
+                      />
                       {selectedCategory.label}
                     </Badge>
                   )}
                 </CardTitle>
-                <CardDescription>
-                  Describe your request in detail
-                </CardDescription>
+                <CardDescription>Describe your request in detail</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -346,13 +353,16 @@ export default function HelpPage() {
                   </Label>
                   <Select
                     value={formData.priority}
-                    onValueChange={(value) => setFormData({ ...formData, priority: value })}
+                    onValueChange={value => setFormData({ ...formData, priority: value })}
                   >
-                    <SelectTrigger id="priority" className="bg-panel-alt border-border text-text-100">
+                    <SelectTrigger
+                      id="priority"
+                      className="bg-panel-alt border-border text-text-100"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-panel border-border">
-                      {priorityLevels.map((level) => (
+                      {priorityLevels.map(level => (
                         <SelectItem key={level.value} value={level.value}>
                           <div>
                             <p className="font-medium">{level.label}</p>
@@ -371,7 +381,7 @@ export default function HelpPage() {
                   <Input
                     id="title"
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
                     placeholder="Brief summary of your request"
                     className="bg-panel-alt border-border text-text-100"
                     required
@@ -385,7 +395,7 @@ export default function HelpPage() {
                   <Textarea
                     id="description"
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={e => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Provide as much detail as possible about your request..."
                     className="bg-panel-alt border-border text-text-100 min-h-[150px]"
                     required

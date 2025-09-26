@@ -19,7 +19,10 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react'
-import { useIntegrationDashboard, useConnectorHealthMetrics } from '@/hooks/integration-hub/useDashboard'
+import {
+  useIntegrationDashboard,
+  useConnectorHealthMetrics
+} from '@/hooks/integration-hub/useDashboard'
 import { useSyncStatistics } from '@/hooks/integration-hub/useSyncRuns'
 import { formatDistanceToNow } from 'date-fns'
 
@@ -73,15 +76,11 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline justify-between">
-              <div className="text-2xl font-bold">
-                {dashboard.active_connectors}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                of {dashboard.total_connectors}
-              </div>
+              <div className="text-2xl font-bold">{dashboard.active_connectors}</div>
+              <div className="text-sm text-muted-foreground">of {dashboard.total_connectors}</div>
             </div>
-            <Progress 
-              value={(dashboard.active_connectors / dashboard.total_connectors) * 100} 
+            <Progress
+              value={(dashboard.active_connectors / dashboard.total_connectors) * 100}
               className="mt-2 h-2"
             />
           </CardContent>
@@ -95,9 +94,7 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline justify-between">
-              <div className="text-2xl font-bold">
-                {dashboard.active_sync_jobs}
-              </div>
+              <div className="text-2xl font-bold">{dashboard.active_sync_jobs}</div>
               <Activity className="h-4 w-4 text-green-500" />
             </div>
             <div className="text-sm text-muted-foreground mt-1">
@@ -127,16 +124,15 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Error Rate
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Error Rate</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline justify-between">
               <div className="text-2xl font-bold">
                 {dashboard.last_24h_records > 0
                   ? ((dashboard.last_24h_errors / dashboard.last_24h_records) * 100).toFixed(1)
-                  : 0}%
+                  : 0}
+                %
               </div>
               {dashboard.last_24h_errors > 0 ? (
                 <AlertCircle className="h-4 w-4 text-red-500" />
@@ -182,18 +178,24 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
           {healthData && healthData.metrics.length > 0 ? (
             <div className="space-y-3">
               {healthData.metrics.map(metric => (
-                <div key={metric.connector_id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div
+                  key={metric.connector_id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex items-center gap-3">
-                    <div className={cn(
-                      'w-2 h-2 rounded-full',
-                      metric.status === 'healthy' && 'bg-green-500',
-                      metric.status === 'degraded' && 'bg-yellow-500',
-                      metric.status === 'unhealthy' && 'bg-red-500'
-                    )}></div>
+                    <div
+                      className={cn(
+                        'w-2 h-2 rounded-full',
+                        metric.status === 'healthy' && 'bg-green-500',
+                        metric.status === 'degraded' && 'bg-yellow-500',
+                        metric.status === 'unhealthy' && 'bg-red-500'
+                      )}
+                    ></div>
                     <div>
                       <div className="font-medium">Connector {metric.connector_id.slice(-8)}</div>
                       <div className="text-sm text-muted-foreground">
-                        Last checked {formatDistanceToNow(new Date(metric.last_check), { addSuffix: true })}
+                        Last checked{' '}
+                        {formatDistanceToNow(new Date(metric.last_check), { addSuffix: true })}
                       </div>
                     </div>
                   </div>
@@ -235,9 +237,10 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
                     <div>
                       <div className="font-medium text-sm">{sync.entity_name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {sync.metadata?.next_run && 
-                          formatDistanceToNow(new Date(sync.metadata.next_run), { addSuffix: true })
-                        }
+                        {sync.metadata?.next_run &&
+                          formatDistanceToNow(new Date(sync.metadata.next_run), {
+                            addSuffix: true
+                          })}
                       </div>
                     </div>
                     <Badge variant="secondary" className="text-xs">
@@ -277,9 +280,7 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
                 ))}
               </div>
             ) : (
-              <div className="text-center py-4 text-muted-foreground text-sm">
-                No recent errors
-              </div>
+              <div className="text-center py-4 text-muted-foreground text-sm">No recent errors</div>
             )}
           </CardContent>
         </Card>
@@ -305,7 +306,7 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
                   Peak hour: {syncStats.peakInboundHour}
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <ArrowUpRight className="h-4 w-4 text-green-500" />
@@ -318,14 +319,18 @@ export function IntegrationDashboard({ organizationId }: IntegrationDashboardPro
                   Peak hour: {syncStats.peakOutboundHour}
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 text-purple-500" />
                   <span className="text-sm text-muted-foreground">Total Volume</span>
                 </div>
                 <div className="text-2xl font-bold">
-                  {((syncStats.totalInboundRecords + syncStats.totalOutboundRecords) / 1000).toFixed(1)}k
+                  {(
+                    (syncStats.totalInboundRecords + syncStats.totalOutboundRecords) /
+                    1000
+                  ).toFixed(1)}
+                  k
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Error rate: {syncStats.errorRate}

@@ -110,7 +110,13 @@ export function SeedDataButton() {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={handleSeed} disabled={isLoading} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSeed}
+          disabled={isLoading}
+          className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+        >
           <Database className="mr-2 h-4 w-4" />
           {isLoading ? 'Creating...' : 'Create Demo Data'}
         </Button>
@@ -137,7 +143,9 @@ export function SeedDataButton() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleClear}
               className="bg-destructive hover:bg-destructive/90"

@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
     const { mappingId, sampleData } = body
 
     if (!mappingId || !sampleData) {
-      return NextResponse.json(
-        { error: 'Mapping ID and sample data required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Mapping ID and sample data required' }, { status: 400 })
     }
 
     // Fetch the mapping
@@ -36,18 +33,12 @@ export async function POST(request: NextRequest) {
     try {
       // Apply field mappings
       const mappedData = MappingEngine.applyFieldMappings(sampleData, fieldMappings)
-      
+
       // Apply transforms
-      const transformedData = MappingEngine.applyTransformPipeline(
-        mappedData,
-        transformOperations
-      )
-      
+      const transformedData = MappingEngine.applyTransformPipeline(mappedData, transformOperations)
+
       // Validate
-      const validationResult = MappingEngine.validateData(
-        transformedData,
-        validationRules
-      )
+      const validationResult = MappingEngine.validateData(transformedData, validationRules)
 
       return NextResponse.json({
         success: true,
@@ -66,9 +57,6 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error testing mapping:', error)
-    return NextResponse.json(
-      { error: 'Failed to test mapping' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to test mapping' }, { status: 500 })
   }
 }

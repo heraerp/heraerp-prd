@@ -234,7 +234,7 @@ export default function SecurityPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [isLoading, setIsLoading] = useState(false)
-  
+
   // Security Settings
   const [securitySettings, setSecuritySettings] = useState({
     twoFactorAuth: true,
@@ -267,10 +267,8 @@ export default function SecurityPage() {
   }
 
   const handleResolveAlert = (alertId: string) => {
-    setSecurityAlerts(prev => 
-      prev.map(alert => 
-        alert.id === alertId ? { ...alert, status: 'resolved' } : alert
-      )
+    setSecurityAlerts(prev =>
+      prev.map(alert => (alert.id === alertId ? { ...alert, status: 'resolved' } : alert))
     )
     toast({
       title: 'Alert Resolved',
@@ -287,9 +285,10 @@ export default function SecurityPage() {
   }
 
   const filteredEvents = securityEvents.filter(event => {
-    const matchesSearch = event.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         event.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         event.details.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      event.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.details.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesFilter = filterStatus === 'all' || event.status === filterStatus
     return matchesSearch && matchesFilter
   })
@@ -346,9 +345,7 @@ export default function SecurityPage() {
             </div>
             Security Center
           </h1>
-          <p className="text-text-200 mt-1">
-            Monitor and manage your organization's security
-          </p>
+          <p className="text-text-200 mt-1">Monitor and manage your organization's security</p>
         </div>
         <Button
           onClick={refreshData}
@@ -404,15 +401,15 @@ export default function SecurityPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-text-200">Active Sessions</p>
-                    <p className="text-3xl font-bold text-text-100">{userSessions.filter(s => s.status === 'active').length}</p>
+                    <p className="text-3xl font-bold text-text-100">
+                      {userSessions.filter(s => s.status === 'active').length}
+                    </p>
                   </div>
                   <div className="p-3 bg-[rgb(0,166,166)]/20 rounded-full">
                     <Users className="h-6 w-6 text-[rgb(0,166,166)]" />
                   </div>
                 </div>
-                <p className="text-xs text-text-300 mt-2">
-                  {userSessions.length} total sessions
-                </p>
+                <p className="text-xs text-text-300 mt-2">{userSessions.length} total sessions</p>
               </CardContent>
             </Card>
 
@@ -421,14 +418,20 @@ export default function SecurityPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-text-200">Security Alerts</p>
-                    <p className="text-3xl font-bold text-yellow-500">{securityAlerts.filter(a => a.status === 'new').length}</p>
+                    <p className="text-3xl font-bold text-yellow-500">
+                      {securityAlerts.filter(a => a.status === 'new').length}
+                    </p>
                   </div>
                   <div className="p-3 bg-yellow-500/20 rounded-full">
                     <AlertTriangle className="h-6 w-6 text-yellow-500" />
                   </div>
                 </div>
                 <p className="text-xs text-text-300 mt-2">
-                  {securityAlerts.filter(a => a.severity === 'high' || a.severity === 'critical').length} high priority
+                  {
+                    securityAlerts.filter(a => a.severity === 'high' || a.severity === 'critical')
+                      .length
+                  }{' '}
+                  high priority
                 </p>
               </CardContent>
             </Card>
@@ -444,9 +447,7 @@ export default function SecurityPage() {
                     <XCircle className="h-6 w-6 text-red-500" />
                   </div>
                 </div>
-                <p className="text-xs text-text-300 mt-2">
-                  Last 24 hours
-                </p>
+                <p className="text-xs text-text-300 mt-2">Last 24 hours</p>
               </CardContent>
             </Card>
           </div>
@@ -462,12 +463,17 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {securityEvents.slice(0, 5).map((event) => (
-                    <div key={event.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-panel-alt">
+                  {securityEvents.slice(0, 5).map(event => (
+                    <div
+                      key={event.id}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-panel-alt"
+                    >
                       {getStatusIcon(event.status)}
                       <div className="flex-1">
                         <p className="text-sm font-medium text-text-100">{event.event}</p>
-                        <p className="text-xs text-text-300">{event.user} • {event.timestamp}</p>
+                        <p className="text-xs text-text-300">
+                          {event.user} • {event.timestamp}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -484,8 +490,11 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {securityAlerts.slice(0, 5).map((alert) => (
-                    <div key={alert.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-panel-alt">
+                  {securityAlerts.slice(0, 5).map(alert => (
+                    <div
+                      key={alert.id}
+                      className="flex items-start gap-3 p-2 rounded-lg hover:bg-panel-alt"
+                    >
                       <Badge className={cn('text-xs', getSeverityColor(alert.severity))}>
                         {alert.severity}
                       </Badge>
@@ -525,7 +534,7 @@ export default function SecurityPage() {
                   <Input
                     placeholder="Search events..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10 bg-panel-alt border-border"
                   />
                 </div>
@@ -560,7 +569,7 @@ export default function SecurityPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredEvents.map((event) => (
+                    {filteredEvents.map(event => (
                       <TableRow key={event.id} className="border-border">
                         <TableCell>{getStatusIcon(event.status)}</TableCell>
                         <TableCell className="font-medium">{event.event}</TableCell>
@@ -587,9 +596,7 @@ export default function SecurityPage() {
           <Card className="bg-panel border-border">
             <CardHeader>
               <CardTitle>Active User Sessions</CardTitle>
-              <CardDescription>
-                Monitor and manage all active user sessions
-              </CardDescription>
+              <CardDescription>Monitor and manage all active user sessions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="rounded-lg border border-border overflow-hidden">
@@ -605,7 +612,7 @@ export default function SecurityPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {userSessions.map((session) => (
+                    {userSessions.map(session => (
                       <TableRow key={session.id} className="border-border">
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -658,7 +665,7 @@ export default function SecurityPage() {
         {/* Alerts Tab */}
         <TabsContent value="alerts" className="space-y-6">
           <div className="grid gap-4">
-            {securityAlerts.map((alert) => (
+            {securityAlerts.map(alert => (
               <Card key={alert.id} className="bg-panel border-border">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -673,11 +680,14 @@ export default function SecurityPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className={cn(
-                        alert.status === 'new' && 'border-yellow-500/20 text-yellow-500',
-                        alert.status === 'investigating' && 'border-blue-500/20 text-blue-500',
-                        alert.status === 'resolved' && 'border-green-500/20 text-green-500'
-                      )}>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          alert.status === 'new' && 'border-yellow-500/20 text-yellow-500',
+                          alert.status === 'investigating' && 'border-blue-500/20 text-blue-500',
+                          alert.status === 'resolved' && 'border-green-500/20 text-green-500'
+                        )}
+                      >
                         {alert.status}
                       </Badge>
                       {alert.status === 'new' && (
@@ -703,9 +713,7 @@ export default function SecurityPage() {
             <Card className="bg-panel border-border">
               <CardHeader>
                 <CardTitle>Authentication Settings</CardTitle>
-                <CardDescription>
-                  Configure user authentication and access controls
-                </CardDescription>
+                <CardDescription>Configure user authentication and access controls</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -715,10 +723,12 @@ export default function SecurityPage() {
                   </div>
                   <Switch
                     checked={securitySettings.twoFactorAuth}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('twoFactorAuth', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('twoFactorAuth', checked)
+                    }
                   />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-text-100">Password Expiry</Label>
@@ -726,18 +736,24 @@ export default function SecurityPage() {
                   </div>
                   <Switch
                     checked={securitySettings.passwordExpiry}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('passwordExpiry', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('passwordExpiry', checked)
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-text-100">Session Timeout</Label>
-                    <p className="text-sm text-text-300">Auto-logout after 30 minutes of inactivity</p>
+                    <p className="text-sm text-text-300">
+                      Auto-logout after 30 minutes of inactivity
+                    </p>
                   </div>
                   <Switch
                     checked={securitySettings.sessionTimeout}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('sessionTimeout', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('sessionTimeout', checked)
+                    }
                   />
                 </div>
 
@@ -748,7 +764,9 @@ export default function SecurityPage() {
                   </div>
                   <Switch
                     checked={securitySettings.loginNotifications}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('loginNotifications', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('loginNotifications', checked)
+                    }
                   />
                 </div>
               </CardContent>
@@ -757,30 +775,34 @@ export default function SecurityPage() {
             <Card className="bg-panel border-border">
               <CardHeader>
                 <CardTitle>System Security</CardTitle>
-                <CardDescription>
-                  Configure system-wide security policies
-                </CardDescription>
+                <CardDescription>Configure system-wide security policies</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-text-100">IP Whitelist</Label>
-                    <p className="text-sm text-text-300">Restrict access to approved IP addresses</p>
+                    <p className="text-sm text-text-300">
+                      Restrict access to approved IP addresses
+                    </p>
                   </div>
                   <Switch
                     checked={securitySettings.ipWhitelist}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('ipWhitelist', checked)}
+                    onCheckedChange={checked => handleSecuritySettingChange('ipWhitelist', checked)}
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-text-100">Audit Logging</Label>
-                    <p className="text-sm text-text-300">Log all user activities and system changes</p>
+                    <p className="text-sm text-text-300">
+                      Log all user activities and system changes
+                    </p>
                   </div>
                   <Switch
                     checked={securitySettings.auditLogging}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('auditLogging', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('auditLogging', checked)
+                    }
                   />
                 </div>
 
@@ -791,7 +813,9 @@ export default function SecurityPage() {
                   </div>
                   <Switch
                     checked={securitySettings.dataEncryption}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('dataEncryption', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('dataEncryption', checked)
+                    }
                   />
                 </div>
 
@@ -802,7 +826,9 @@ export default function SecurityPage() {
                   </div>
                   <Switch
                     checked={securitySettings.backupEncryption}
-                    onCheckedChange={(checked) => handleSecuritySettingChange('backupEncryption', checked)}
+                    onCheckedChange={checked =>
+                      handleSecuritySettingChange('backupEncryption', checked)
+                    }
                   />
                 </div>
               </CardContent>
@@ -828,8 +854,12 @@ export default function SecurityPage() {
                       </SelectTrigger>
                       <SelectContent className="bg-panel border-border">
                         <SelectItem value="basic">Basic (8+ characters)</SelectItem>
-                        <SelectItem value="strong">Strong (12+ chars, mixed case, numbers)</SelectItem>
-                        <SelectItem value="enterprise">Enterprise (16+ chars, special chars)</SelectItem>
+                        <SelectItem value="strong">
+                          Strong (12+ chars, mixed case, numbers)
+                        </SelectItem>
+                        <SelectItem value="enterprise">
+                          Enterprise (16+ chars, special chars)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

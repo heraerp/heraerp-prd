@@ -21,7 +21,8 @@ export class ISPAIManager {
     } catch (error) {
       console.error('AI Manager Error:', error)
       return {
-        answer: 'I apologize, but I encountered an error processing your request. Please try again.',
+        answer:
+          'I apologize, but I encountered an error processing your request. Please try again.',
         confidence: 0,
         sources: []
       }
@@ -34,11 +35,12 @@ export class ISPAIManager {
 
     // Parse query intent
     const lowerQuery = query.query.toLowerCase()
-    
+
     // Network performance queries
     if (lowerQuery.includes('network') || lowerQuery.includes('uptime')) {
       return {
-        answer: "Network performance is excellent across all regions. Kerala region shows 99.8% uptime with minimal packet loss. Thiruvananthapuram hub is operating at peak efficiency with 45Gbps throughput.",
+        answer:
+          'Network performance is excellent across all regions. Kerala region shows 99.8% uptime with minimal packet loss. Thiruvananthapuram hub is operating at peak efficiency with 45Gbps throughput.',
         confidence: 0.92,
         sources: ['Network Monitoring System', 'SNMP Data', 'Performance Analytics'],
         metrics: {
@@ -57,7 +59,8 @@ export class ISPAIManager {
     // Subscriber analytics
     if (lowerQuery.includes('subscriber') || lowerQuery.includes('customer')) {
       return {
-        answer: "Total subscriber base has grown by 8.3% this month to 45,832 active connections. ARPU increased to ₹916, driven by premium plan upgrades. Churn rate remains low at 2.3%.",
+        answer:
+          'Total subscriber base has grown by 8.3% this month to 45,832 active connections. ARPU increased to ₹916, driven by premium plan upgrades. Churn rate remains low at 2.3%.',
         confidence: 0.89,
         sources: ['CRM Database', 'Billing System', 'Analytics Platform'],
         metrics: {
@@ -84,7 +87,8 @@ export class ISPAIManager {
     // Revenue insights
     if (lowerQuery.includes('revenue') || lowerQuery.includes('financial')) {
       return {
-        answer: "Monthly revenue reached ₹4.2 Cr, exceeding target by 5%. Broadband services contribute 60% of total revenue. Enterprise segment shows strongest growth at 15% MoM.",
+        answer:
+          'Monthly revenue reached ₹4.2 Cr, exceeding target by 5%. Broadband services contribute 60% of total revenue. Enterprise segment shows strongest growth at 15% MoM.',
         confidence: 0.95,
         sources: ['Financial System', 'Billing Database', 'Revenue Analytics'],
         metrics: {
@@ -111,7 +115,8 @@ export class ISPAIManager {
     // IPO readiness
     if (lowerQuery.includes('ipo') || lowerQuery.includes('compliance')) {
       return {
-        answer: "IPO readiness score improved to 8.5/10. Key areas of improvement: Financial reporting automation (complete), regulatory compliance (96%), and corporate governance structure (in progress).",
+        answer:
+          'IPO readiness score improved to 8.5/10. Key areas of improvement: Financial reporting automation (complete), regulatory compliance (96%), and corporate governance structure (in progress).',
         confidence: 0.88,
         sources: ['Compliance System', 'SEBI Guidelines', 'Audit Reports'],
         suggestions: [
@@ -159,8 +164,6 @@ export class ISPAIManager {
       'What are the main churn reasons?'
     ]
 
-    return suggestions.filter(s => 
-      s.toLowerCase().includes(partialQuery.toLowerCase())
-    ).slice(0, 5)
+    return suggestions.filter(s => s.toLowerCase().includes(partialQuery.toLowerCase())).slice(0, 5)
   }
 }

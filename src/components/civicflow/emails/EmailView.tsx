@@ -254,9 +254,7 @@ export function EmailView({
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-text-100">
-                      {sender.name}
-                    </span>
+                    <span className="font-medium text-text-100">{sender.name}</span>
                     {sender.email !== sender.name && (
                       <span className="text-sm text-text-300">&lt;{sender.email}&gt;</span>
                     )}
@@ -336,9 +334,7 @@ export function EmailView({
                 className="text-text-100"
               />
             ) : (
-              <div className="whitespace-pre-wrap text-text-100">
-                {email.body_text}
-              </div>
+              <div className="whitespace-pre-wrap text-text-100">{email.body_text}</div>
             )}
           </div>
 

@@ -28,9 +28,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(stats)
   } catch (error) {
     console.error('Error fetching statistics:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch statistics' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch statistics' }, { status: 500 })
   }
 }

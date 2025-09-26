@@ -17,9 +17,9 @@ export const eventSchema: JSONSchemaType<NormalizedEvent> = {
           type: 'object',
           properties: {
             title: { type: 'string', minLength: 1 },
-            type: { 
-              type: 'string', 
-              enum: ['webinar', 'conference', 'workshop', 'roundtable'] 
+            type: {
+              type: 'string',
+              enum: ['webinar', 'conference', 'workshop', 'roundtable']
             },
             start: { type: 'string', format: 'date-time' },
             end: { type: 'string', format: 'date-time' },
@@ -123,9 +123,7 @@ export function validateEventData(data: unknown): {
   if (!valid && validateEvent.errors) {
     return {
       valid: false,
-      errors: validateEvent.errors.map(err => 
-        `${err.instancePath} ${err.message}`
-      )
+      errors: validateEvent.errors.map(err => `${err.instancePath} ${err.message}`)
     }
   }
   return { valid: true, errors: [] }
@@ -139,9 +137,7 @@ export function validateInviteData(data: unknown): {
   if (!valid && validateInvite.errors) {
     return {
       valid: false,
-      errors: validateInvite.errors.map(err => 
-        `${err.instancePath} ${err.message}`
-      )
+      errors: validateInvite.errors.map(err => `${err.instancePath} ${err.message}`)
     }
   }
   return { valid: true, errors: [] }

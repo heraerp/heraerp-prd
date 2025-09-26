@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,11 +23,11 @@ import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Loader2, 
-  Play, 
-  ArrowUpRight, 
-  ArrowDownRight, 
+import {
+  Loader2,
+  Play,
+  ArrowUpRight,
+  ArrowDownRight,
   ArrowLeftRight,
   Clock,
   Calendar
@@ -56,7 +56,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
   const [maxRetries, setMaxRetries] = useState(3)
   const [errorThreshold, setErrorThreshold] = useState(10)
   const [deleteMissing, setDeleteMissing] = useState(false)
-  
+
   const { data: connectors } = useConnectors(organizationId)
   const { data: mappings } = useConnectorMappings(selectedConnector)
   const { mutate: createSyncJob, isPending } = useCreateSyncJob()
@@ -65,7 +65,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
     if (!jobName || !selectedConnector || !selectedMapping) return
 
     let schedule: SyncSchedule | undefined
-    
+
     if (scheduleType === 'interval') {
       schedule = {
         type: 'interval',
@@ -165,16 +165,18 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                   <SelectValue placeholder="Select a connector" />
                 </SelectTrigger>
                 <SelectContent>
-                  {connectors?.filter(c => c.status === 'active').map(connector => (
-                    <SelectItem key={connector.id} value={connector.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{connector.entity_name}</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {connector.vendor}
-                        </Badge>
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {connectors
+                    ?.filter(c => c.status === 'active')
+                    .map(connector => (
+                      <SelectItem key={connector.id} value={connector.id}>
+                        <div className="flex items-center gap-2">
+                          <span>{connector.entity_name}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {connector.vendor}
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -311,8 +313,8 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                       className="flex-1"
                     />
                     <span className="w-20 text-sm font-medium">
-                      {intervalMinutes < 60 
-                        ? `${intervalMinutes} min` 
+                      {intervalMinutes < 60
+                        ? `${intervalMinutes} min`
                         : `${Math.floor(intervalMinutes / 60)} hr`}
                     </span>
                   </div>
@@ -418,10 +420,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                   Remove records that no longer exist in source
                 </p>
               </div>
-              <Switch
-                checked={deleteMissing}
-                onCheckedChange={setDeleteMissing}
-              />
+              <Switch checked={deleteMissing} onCheckedChange={setDeleteMissing} />
             </div>
           </TabsContent>
         </Tabs>
@@ -430,8 +429,8 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
           <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleCreate} 
+          <Button
+            onClick={handleCreate}
             disabled={!jobName || !selectedConnector || !selectedMapping || isPending}
           >
             {isPending ? (

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link'
 
 export default function ThankYouPage() {
   return (
@@ -21,20 +21,16 @@ export default function ThankYouPage() {
             </svg>
           </div>
         </div>
-        
-        <h1 className="mb-4 text-4xl font-bold text-gray-900">
-          Thank You!
-        </h1>
-        
+
+        <h1 className="mb-4 text-4xl font-bold text-gray-900">Thank You!</h1>
+
         <p className="mb-8 text-xl text-gray-600">
           Your free SMB Growth Guide is on its way to your inbox.
         </p>
-        
+
         <div className="rounded-xl bg-white p-8 shadow-lg">
-          <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-            What happens next?
-          </h2>
-          
+          <h2 className="mb-4 text-2xl font-semibold text-gray-900">What happens next?</h2>
+
           <div className="space-y-4 text-left">
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">1.</div>
@@ -45,7 +41,7 @@ export default function ThankYouPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">2.</div>
               <div>
@@ -55,7 +51,7 @@ export default function ThankYouPage() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">3.</div>
               <div>
@@ -66,22 +62,15 @@ export default function ThankYouPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8 border-t pt-8">
-            <p className="mb-4 text-sm text-gray-600">
-              Ready to see HERA in action?
-            </p>
+            <p className="mb-4 text-sm text-gray-600">Ready to see HERA in action?</p>
             <Link
               href="/book-a-meeting"
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 font-semibold text-white transition-all hover:from-blue-700 hover:to-indigo-700"
             >
               Book Your Free Demo
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -92,16 +81,13 @@ export default function ThankYouPage() {
             </Link>
           </div>
         </div>
-        
+
         <div className="mt-8">
-          <Link
-            href="/blog"
-            className="text-blue-600 hover:text-blue-700"
-          >
+          <Link href="/blog" className="text-blue-600 hover:text-blue-700">
             ← Back to Blog
           </Link>
         </div>
       </div>
     </main>
-  );
+  )
 }

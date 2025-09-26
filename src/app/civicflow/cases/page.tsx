@@ -150,13 +150,22 @@ export default function CasesPage() {
         </div>
         <div className="flex items-center gap-2">
           <SeedDataButton />
-          <Button variant="outline" size="sm" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10" onClick={() => setShowCreateDialog(true)}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            onClick={() => setShowCreateDialog(true)}
+          >
             <Plus className="mr-2 h-4 w-4" />
             New Case
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -240,7 +249,10 @@ export default function CasesPage() {
               filters.q ? 'Try adjusting your filters' : 'Create your first case to get started'
             }
             action={
-              <Button className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" onClick={() => setShowCreateDialog(true)}>
+              <Button
+                className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+                onClick={() => setShowCreateDialog(true)}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Create Case
               </Button>
@@ -310,7 +322,10 @@ export default function CasesPage() {
             <DialogTitle className="text-text-100">Create New Case</DialogTitle>
           </DialogHeader>
           <div className="flex-1 overflow-y-auto px-1">
-            <CreateCaseForm onSubmit={handleCreateCase} onCancel={() => setShowCreateDialog(false)} />
+            <CreateCaseForm
+              onSubmit={handleCreateCase}
+              onCancel={() => setShowCreateDialog(false)}
+            />
           </div>
         </DialogContent>
       </Dialog>
