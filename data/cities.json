@@ -1,0 +1,22 @@
+[
+  {"city":"Bristol","region":"South West","country":"UK","landmarks":["Clifton Suspension Bridge","Harbourside","SS Great Britain","Bristol Cathedral"]},
+  {"city":"Leeds","region":"Yorkshire","country":"UK","landmarks":["Roundhay Park","Kirkgate Market","Leeds Castle","Royal Armouries"]},
+  {"city":"Manchester","region":"North West","country":"UK","landmarks":["Northern Quarter","MediaCityUK","Manchester Cathedral","Etihad Stadium"]},
+  {"city":"Birmingham","region":"West Midlands","country":"UK","landmarks":["Bullring","Cadbury World","Birmingham Museum","Jewellery Quarter"]},
+  {"city":"Liverpool","region":"Merseyside","country":"UK","landmarks":["Albert Dock","The Cavern Club","Liverpool Cathedral","Anfield"]},
+  {"city":"Newcastle","region":"North East","country":"UK","landmarks":["Quayside","Grey's Monument","St James' Park","BALTIC Centre"]},
+  {"city":"Sheffield","region":"Yorkshire","country":"UK","landmarks":["Peace Gardens","Winter Garden","Millennium Gallery","Kelham Island"]},
+  {"city":"Nottingham","region":"East Midlands","country":"UK","landmarks":["Nottingham Castle","Old Market Square","City of Caves","Wollaton Hall"]},
+  {"city":"Glasgow","region":"Scotland","country":"UK","landmarks":["George Square","Kelvingrove Museum","Glasgow Cathedral","Merchant City"]},
+  {"city":"Edinburgh","region":"Scotland","country":"UK","landmarks":["Edinburgh Castle","Royal Mile","Arthur's Seat","Princes Street"]},
+  {"city":"Cardiff","region":"Wales","country":"UK","landmarks":["Cardiff Castle","Cardiff Bay","Principality Stadium","St Fagans"]},
+  {"city":"Belfast","region":"Northern Ireland","country":"UK","landmarks":["Titanic Belfast","City Hall","Peace Wall","St George's Market"]},
+  {"city":"Cambridge","region":"East","country":"UK","landmarks":["King's College","The Backs","Fitzwilliam Museum","Market Square"]},
+  {"city":"Oxford","region":"South East","country":"UK","landmarks":["Radcliffe Camera","Christ Church","Bodleian Library","Covered Market"]},
+  {"city":"Brighton","region":"South East","country":"UK","landmarks":["Brighton Pier","The Lanes","Royal Pavilion","North Laine"]},
+  {"city":"Southampton","region":"South East","country":"UK","landmarks":["SeaCity Museum","Mayflower Theatre","Tudor House","Ocean Village"]},
+  {"city":"Portsmouth","region":"South East","country":"UK","landmarks":["Historic Dockyard","Spinnaker Tower","HMS Victory","Gunwharf Quays"]},
+  {"city":"Leicester","region":"East Midlands","country":"UK","landmarks":["King Richard III Centre","National Space Centre","Leicester Cathedral","Golden Mile"]},
+  {"city":"Coventry","region":"West Midlands","country":"UK","landmarks":["Coventry Cathedral","Transport Museum","War Memorial Park","FarGo Village"]},
+  {"city":"York","region":"Yorkshire","country":"UK","landmarks":["York Minster","The Shambles","National Railway Museum","Clifford's Tower"]}
+]
