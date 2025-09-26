@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 interface LeadFormProps {
@@ -9,7 +9,7 @@ interface LeadFormProps {
   className?: string
 }
 
-export default function LeadForm({
+function LeadFormContent({
   redirectTo = '/thank-you',
   formId = 'blog-lead-form',
   className = ''
@@ -160,5 +160,13 @@ export default function LeadForm({
         </a>
       </p>
     </form>
+  )
+}
+
+export default function LeadForm(props: LeadFormProps) {
+  return (
+    <Suspense fallback={<div />}>
+      <LeadFormContent {...props} />
+    </Suspense>
   )
 }

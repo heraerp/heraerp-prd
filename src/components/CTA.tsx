@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 
 interface CTAProps {
   city?: string
@@ -10,7 +10,7 @@ interface CTAProps {
   className?: string
 }
 
-export default function CTA({ city, variants = [], className = '' }: CTAProps) {
+function CTAContent({ city, variants = [], className = '' }: CTAProps) {
   const searchParams = useSearchParams()
   const [isVisible, setIsVisible] = useState(false)
 
@@ -91,5 +91,13 @@ export default function CTA({ city, variants = [], className = '' }: CTAProps) {
         </div>
       </div>
     </aside>
+  )
+}
+
+export default function CTA(props: CTAProps) {
+  return (
+    <Suspense fallback={<div />}>
+      <CTAContent {...props} />
+    </Suspense>
   )
 }
