@@ -224,8 +224,11 @@ async function translatePosts() {
     console.log('  📋 Creating bilingual version...');
     const bilingualContent = createBilingualPost(mainContent, malayalamContent, metadata);
     
-    // Update front matter with language info
-    const updatedFrontMatter = frontMatter + '\nlanguages:\n  - "en"\n  - "ml"\ndefaultLanguage: "en"';
+    // Update front matter with language info (only if not already present)
+    let updatedFrontMatter = frontMatter;
+    if (!frontMatter.includes('languages:')) {
+      updatedFrontMatter = frontMatter + '\nlanguages:\n  - "en"\n  - "ml"\ndefaultLanguage: "en"';
+    }
     
     // Save translated version
     const outputFile = file.replace('.mdx', '-bilingual.mdx');
