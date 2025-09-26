@@ -150,7 +150,7 @@ export default function CivicFlowPage() {
                     <TrendingUp className="h-4 w-4 text-secondary" />
                     <div className="flex-1">
                       <p className="text-sm font-medium text-text-100">Grant approved</p>
-                      <p className="text-xs text-text-500">Community Development - $250,000</p>
+                      <p className="text-xs text-text-500">Community Development - £250,000</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

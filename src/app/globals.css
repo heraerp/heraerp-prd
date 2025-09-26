@@ -3061,3 +3061,70 @@ html {
 /* ===============================================
    END CIVICFLOW THEMING SYSTEM
    =============================================== */
+
+/* ===============================================
+   BLOG & MALAYALAM CONTENT DARK MODE FIXES
+   =============================================== */
+
+/* Fix prose dark mode for better text visibility */
+.prose.dark\:prose-invert :where(p):not(:where([class~="not-prose"] *)),
+.prose.dark\:prose-invert :where(li):not(:where([class~="not-prose"] *)),
+.prose.dark\:prose-invert :where(td):not(:where([class~="not-prose"] *)) {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.prose.dark\:prose-invert :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"] *)) {
+  color: rgb(243 244 246) !important; /* gray-100 */
+}
+
+.prose.dark\:prose-invert :where(strong):not(:where([class~="not-prose"] *)) {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* Malayalam content specific dark mode fixes */
+.malayalam-content {
+  color: rgb(156 163 175); /* gray-400 in light mode */
+}
+
+@media (prefers-color-scheme: dark) {
+  .malayalam-content {
+    color: rgb(209 213 219) !important; /* gray-300 in dark mode */
+  }
+  
+  .malayalam-content h1,
+  .malayalam-content h2,
+  .malayalam-content h3,
+  .malayalam-content h4 {
+    color: rgb(243 244 246) !important; /* gray-100 */
+  }
+  
+  .malayalam-content p,
+  .malayalam-content li {
+    color: rgb(209 213 219) !important; /* gray-300 */
+  }
+  
+  .malayalam-content strong {
+    color: rgb(229 231 235) !important; /* gray-200 */
+  }
+}
+
+/* Dark mode class-based (for Tailwind dark mode) */
+.dark .malayalam-content {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark .malayalam-content h1,
+.dark .malayalam-content h2,
+.dark .malayalam-content h3,
+.dark .malayalam-content h4 {
+  color: rgb(243 244 246) !important; /* gray-100 */
+}
+
+.dark .malayalam-content p,
+.dark .malayalam-content li {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark .malayalam-content strong {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}

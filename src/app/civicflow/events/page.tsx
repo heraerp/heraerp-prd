@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { useOrgStore } from '@/state/org'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -48,6 +48,7 @@ import { isDemoMode } from '@/lib/demo-guard'
 import { DemoBanner } from '@/components/communications/DemoBanner'
 import { Loading } from '@/components/states/Loading'
 import { ErrorState } from '@/components/states/ErrorState'
+import { EventActions } from '@/components/events/EventActions'
 import { useToast } from '@/components/ui/use-toast'
 import { NewEventModal } from '@/components/events/NewEventModal'
 import type { EventFilters, EventType } from '@/types/events'
@@ -83,6 +84,16 @@ function EventsContent() {
   })
   const [searchTerm, setSearchTerm] = useState('')
   const [showNewEventModal, setShowNewEventModal] = useState(false)
+  const [syncedEvents, setSyncedEvents] = useState<any[]>([])
+
+  // Check for synced Eventbrite data
+  useEffect(() => {
+    const syncData = localStorage.getItem('eventbrite_sync_data')
+    if (syncData) {
+      const { events } = JSON.parse(syncData)
+      setSyncedEvents(events || [])
+    }
+  }, [])
 
   // Queries
   const { data: eventsData, isLoading: eventsLoading, error: eventsError } = useEvents(filters)
@@ -116,8 +127,8 @@ function EventsContent() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-lg font-medium mb-2">No Organization Selected</h2>
-          <p className="text-muted-foreground">Please select an organization to view events.</p>
+          <h2 className="text-lg font-medium mb-2 text-text-100">No Organization Selected</h2>
+          <p className="text-text-200">Please select an organization to view events.</p>
         </div>
       </div>
     )
@@ -137,75 +148,84 @@ function EventsContent() {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Events & Registrations</h1>
-        <Button onClick={() => setShowNewEventModal(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          New Event
-        </Button>
+        <h1 className="text-3xl font-bold text-text-100">Events & Registrations</h1>
+        <div className="flex items-center gap-2">
+          <EventActions 
+            organizationId={currentOrgId} 
+            onSyncComplete={() => {
+              // Refetch events data
+              window.location.reload()
+            }} 
+          />
+          <Button onClick={() => setShowNewEventModal(true)} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
+            <Plus className="h-4 w-4 mr-2" />
+            New Event
+          </Button>
+        </div>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-200">
               Total Events
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold text-text-100">
                 {kpisLoading ? '-' : kpis?.total_events || 0}
               </span>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <Calendar className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-200">
               Upcoming Events
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold text-text-100">
                 {kpisLoading ? '-' : kpis?.upcoming_events || 0}
               </span>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Clock className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-200">
               Total Registrations
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold text-text-100">
                 {kpisLoading ? '-' : kpis?.total_registrations || 0}
               </span>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-text-200">
               Attendance Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold text-text-100">
                 {kpisLoading ? '-' : `${Math.round(kpis?.avg_attendance_rate || 0)}%`}
               </span>
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              <CheckCircle className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
@@ -214,12 +234,12 @@ function EventsContent() {
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
+          <CardTitle className="text-text-100">Filters</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-300" />
               <Input
                 placeholder="Search events..."
                 value={searchTerm}
@@ -287,7 +307,7 @@ function EventsContent() {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" onClick={handleSearch}>
+            <Button variant="outline" onClick={handleSearch} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
               <Filter className="h-4 w-4 mr-2" />
               Apply
             </Button>
@@ -298,7 +318,7 @@ function EventsContent() {
       {/* Events Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Events</CardTitle>
+          <CardTitle className="text-text-100">Events</CardTitle>
         </CardHeader>
         <CardContent>
           {eventsLoading ? (
@@ -307,30 +327,116 @@ function EventsContent() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Event Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Date & Time</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Registrations</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-text-100">Event Name</TableHead>
+                  <TableHead className="text-text-100">Type</TableHead>
+                  <TableHead className="text-text-100">Date & Time</TableHead>
+                  <TableHead className="text-text-100">Location</TableHead>
+                  <TableHead className="text-text-100">Registrations</TableHead>
+                  <TableHead className="text-text-100">Status</TableHead>
+                  <TableHead className="text-right text-text-100">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {/* Show synced Eventbrite events first */}
+                {syncedEvents.length > 0 && syncedEvents.map(event => {
+                  const status = getEventStatus(event.start, event.end)
+
+                  return (
+                    <TableRow
+                      key={event.id}
+                      className="cursor-pointer hover:bg-[rgb(0,166,166)]/10 bg-panel/50"
+                    >
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <p className="text-text-100">{event.name}</p>
+                            <p className="text-xs text-text-200">
+                              Synced from Eventbrite
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="text-xs border-[rgb(0,166,166)] text-[rgb(0,166,166)]">
+                            Eventbrite
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {event.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-3 w-3 text-text-200" />
+                          <div>
+                            <p className="text-text-100">{format(new Date(event.start), 'MMM d, yyyy')}</p>
+                            <p className="text-sm text-text-200">
+                              {format(new Date(event.start), 'h:mm a')}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {event.online ? <Globe className="h-4 w-4 text-text-200" /> : <MapPin className="h-4 w-4 text-text-200" />}
+                          <span className="text-text-100">{event.online ? 'Online' : event.venue || 'TBD'}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-3 w-3 text-text-200" />
+                          <span className="text-text-100">-</span>
+                          {event.capacity && (
+                            <span className="text-sm text-text-200">
+                              / {event.capacity}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="default">
+                          {event.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" onClick={e => e.stopPropagation()}>
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                // Use preview URL format
+                                const previewUrl = `https://www.eventbrite.com/e/${event.providerId}/preview/`
+                                window.open(previewUrl, '_blank')
+                              }}
+                            >
+                              View on Eventbrite (Preview)
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+
+                {/* Show existing HERA events */}
                 {eventsData?.items.map(event => {
                   const status = getEventStatus(event.start_datetime, event.end_datetime)
 
                   return (
                     <TableRow
                       key={event.id}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className="cursor-pointer hover:bg-[rgb(0,166,166)]/10"
                       onClick={() => router.push(`/civicflow/events/${event.id}`)}
                     >
                       <TableCell className="font-medium">
                         <div>
-                          <p>{event.entity_name}</p>
+                          <p className="text-text-100">{event.entity_name}</p>
                           {event.host_program_name && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-text-200">
                               {event.host_program_name}
                             </p>
                           )}
@@ -343,10 +449,10 @@ function EventsContent() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-3 w-3 text-muted-foreground" />
+                          <Clock className="h-3 w-3 text-text-200" />
                           <div>
-                            <p>{format(new Date(event.start_datetime), 'MMM d, yyyy')}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-text-100">{format(new Date(event.start_datetime), 'MMM d, yyyy')}</p>
+                            <p className="text-sm text-text-200">
                               {format(new Date(event.start_datetime), 'h:mm a')}
                             </p>
                           </div>
@@ -354,16 +460,16 @@ function EventsContent() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {getEventIcon(event)}
-                          <span>{event.is_online ? 'Online' : event.venue_name || 'TBD'}</span>
+                          <span className="text-text-200">{getEventIcon(event)}</span>
+                          <span className="text-text-100">{event.is_online ? 'Online' : event.venue_name || 'TBD'}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Users className="h-3 w-3 text-muted-foreground" />
-                          <span>0</span>
+                          <Users className="h-3 w-3 text-text-200" />
+                          <span className="text-text-100">0</span>
                           {event.capacity && (
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm text-text-200">
                               / {event.capacity}
                             </span>
                           )}
@@ -428,7 +534,7 @@ function EventsContent() {
           {/* Pagination */}
           {eventsData && eventsData.total > filters.page_size! && (
             <div className="flex items-center justify-between mt-4">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-text-200">
                 Showing {(filters.page! - 1) * filters.page_size! + 1} to{' '}
                 {Math.min(filters.page! * filters.page_size!, eventsData.total)} of{' '}
                 {eventsData.total} events

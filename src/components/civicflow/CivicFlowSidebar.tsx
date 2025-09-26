@@ -22,11 +22,14 @@ import {
   LogOut,
   TrendingUp,
   UserPlus,
-  LineChart
+  LineChart,
+  Brain,
+  Grid3X3
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase/client'
+import { MoreAppsModal } from './MoreAppsModal'
 
 interface NavItem {
   title: string
@@ -69,6 +72,7 @@ export function CivicFlowSidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [currentUser, setCurrentUser] = useState<DemoUser | null>(null)
+  const [showMoreApps, setShowMoreApps] = useState(false)
 
   useEffect(() => {
     getCurrentUser()
@@ -200,6 +204,21 @@ export function CivicFlowSidebar() {
                 </Link>
               )
             })}
+            
+            {/* More Apps Button */}
+            <button
+              onClick={() => setShowMoreApps(true)}
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all cursor-pointer w-full',
+                'hover:bg-accent-soft hover:text-accent text-text-300 hover:text-text-100',
+                'mt-2 border border-dashed border-accent-soft hover:border-accent',
+                collapsed && 'justify-center'
+              )}
+              title={collapsed ? 'More Apps' : undefined}
+            >
+              <Grid3X3 className="h-5 w-5 flex-shrink-0" />
+              {!collapsed && <span className="flex-1">More Apps</span>}
+            </button>
           </nav>
 
           {/* Bottom Navigation */}
@@ -276,6 +295,9 @@ export function CivicFlowSidebar() {
 
       {/* Main content spacer */}
       <div className={cn('transition-all duration-300', collapsed ? 'lg:pl-20' : 'lg:pl-64')} />
+      
+      {/* More Apps Modal */}
+      <MoreAppsModal open={showMoreApps} onOpenChange={setShowMoreApps} />
     </>
   )
 }

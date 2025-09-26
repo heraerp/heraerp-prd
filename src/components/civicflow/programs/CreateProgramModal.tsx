@@ -99,8 +99,8 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-panel border-border">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] bg-panel border-border overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-xl font-semibold text-text-100">
             Create New Program
           </DialogTitle>
@@ -109,7 +109,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto flex-1 px-1">
           {/* Program Code */}
           <div className="space-y-2">
             <Label htmlFor="code">Program Code</Label>
@@ -126,7 +126,7 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
                 type="button"
                 variant="outline"
                 onClick={generateCode}
-                className="border-border"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
                 Generate
               </Button>
@@ -225,13 +225,13 @@ export function CreateProgramModal({ isOpen, onClose }: CreateProgramModalProps)
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="border-border">
+            <Button type="button" variant="outline" onClick={onClose} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={createProgram.isPending || !formData.code || !formData.title}
-              className="bg-primary text-white hover:bg-primary-hover"
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
             >
               {createProgram.isPending ? 'Creating...' : 'Create Program'}
             </Button>

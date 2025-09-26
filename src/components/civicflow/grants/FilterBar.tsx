@@ -254,13 +254,13 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
             <Badge variant="secondary" className="text-xs">
               Amount:{' '}
               {filters.amount_min
-                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(
                     filters.amount_min
                   )
                 : '0'}{' '}
               -{' '}
               {filters.amount_max
-                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(
                     filters.amount_max
                   )
                 : '∞'}

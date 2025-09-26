@@ -162,7 +162,7 @@ ${englishContent}
   </TabsContent>
   
   <TabsContent value="malayalam">
-    <div className="malayalam-content" style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}>
+    <div className="malayalam-content prose prose-lg dark:prose-invert max-w-none" style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}>
 ${malayalamContent}
     </div>
   </TabsContent>

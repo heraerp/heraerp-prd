@@ -146,17 +146,17 @@ export default function CasesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Cases</h1>
-          <p className="text-muted-foreground">Manage cases, applications, and agreements</p>
+          <p className="text-text-200">Manage cases, applications, and agreements</p>
         </div>
         <div className="flex items-center gap-2">
           <SeedDataButton />
-          <Button variant="outline" size="sm" onClick={() => setShowCreateDialog(true)}>
+          <Button variant="outline" size="sm" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10" onClick={() => setShowCreateDialog(true)}>
             <Plus className="mr-2 h-4 w-4" />
             New Case
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -185,7 +185,7 @@ export default function CasesPage() {
               <CardContent>
                 <div className="text-2xl font-bold">{kpi.value}</div>
                 {kpi.title === 'On-Time %' && kpisQuery.data && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-text-300">
                     Avg. resolution: {kpisQuery.data.avg_resolution_days} days
                   </p>
                 )}
@@ -208,6 +208,7 @@ export default function CasesPage() {
           <Button
             variant={viewMode === 'card' ? 'secondary' : 'ghost'}
             size="sm"
+            className={viewMode === 'card' ? '' : ''}
             onClick={() => handleViewChange('card')}
           >
             <LayoutGrid className="h-4 w-4" />
@@ -215,6 +216,7 @@ export default function CasesPage() {
           <Button
             variant={viewMode === 'table' ? 'secondary' : 'ghost'}
             size="sm"
+            className={viewMode === 'table' ? '' : ''}
             onClick={() => handleViewChange('table')}
           >
             <List className="h-4 w-4" />
@@ -238,7 +240,7 @@ export default function CasesPage() {
               filters.q ? 'Try adjusting your filters' : 'Create your first case to get started'
             }
             action={
-              <Button onClick={() => setShowCreateDialog(true)}>
+              <Button className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" onClick={() => setShowCreateDialog(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Case
               </Button>
@@ -273,7 +275,7 @@ export default function CasesPage() {
       {/* Pagination */}
       {casesQuery.data && casesQuery.data.total > casesQuery.data.pageSize && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-text-300">
             Showing {((filters.page || 1) - 1) * (filters.pageSize || 20) + 1} to{' '}
             {Math.min((filters.page || 1) * (filters.pageSize || 20), casesQuery.data.total)} of{' '}
             {casesQuery.data.total} cases
@@ -282,6 +284,7 @@ export default function CasesPage() {
             <Button
               variant="outline"
               size="sm"
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               onClick={() => handlePageChange((filters.page || 1) - 1)}
               disabled={(filters.page || 1) === 1}
             >
@@ -290,6 +293,7 @@ export default function CasesPage() {
             <Button
               variant="outline"
               size="sm"
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               onClick={() => handlePageChange((filters.page || 1) + 1)}
               disabled={(filters.page || 1) * (filters.pageSize || 20) >= casesQuery.data.total}
             >
@@ -301,11 +305,13 @@ export default function CasesPage() {
 
       {/* Create Case Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Create New Case</DialogTitle>
+        <DialogContent className="max-w-2xl max-h-[90vh] bg-panel border-border overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="text-text-100">Create New Case</DialogTitle>
           </DialogHeader>
-          <CreateCaseForm onSubmit={handleCreateCase} onCancel={() => setShowCreateDialog(false)} />
+          <div className="flex-1 overflow-y-auto px-1">
+            <CreateCaseForm onSubmit={handleCreateCase} onCancel={() => setShowCreateDialog(false)} />
+          </div>
         </DialogContent>
       </Dialog>
     </div>

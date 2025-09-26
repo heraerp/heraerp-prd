@@ -191,7 +191,12 @@ export default function TemplateDetailPage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => router.back()}
+          className="hover:bg-[rgb(0,166,166)]/10"
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1 space-y-1">
@@ -208,17 +213,28 @@ export default function TemplateDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setShowTestModal(true)} disabled={isDemo && !template.is_active}>
+          <Button 
+            onClick={() => setShowTestModal(true)} 
+            disabled={isDemo && !template.is_active}
+            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white disabled:bg-gray-300"
+          >
             <Play className="h-4 w-4 mr-2" />
             Test Send
           </Button>
-          <Button onClick={handleClone} variant="outline">
+          <Button 
+            onClick={handleClone} 
+            variant="outline"
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+          >
             <Copy className="h-4 w-4 mr-2" />
             Clone
           </Button>
           <AlertDialog open={showDeactivateDialog} onOpenChange={setShowDeactivateDialog}>
             <AlertDialogTrigger asChild>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Power className="h-4 w-4 mr-2" />
                 {template.is_active ? 'Deactivate' : 'Activate'}
               </Button>
@@ -244,7 +260,11 @@ export default function TemplateDetailPage() {
           </AlertDialog>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -382,6 +402,7 @@ export default function TemplateDetailPage() {
                   variant={previewMode === 'html' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setPreviewMode('html')}
+                  className={previewMode === 'html' ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"}
                 >
                   HTML
                 </Button>
@@ -389,6 +410,7 @@ export default function TemplateDetailPage() {
                   variant={previewMode === 'text' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setPreviewMode('text')}
+                  className={previewMode === 'text' ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"}
                 >
                   Text
                 </Button>

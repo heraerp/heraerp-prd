@@ -143,7 +143,12 @@ export default function AudienceDetailPage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => router.back()}
+          className="hover:bg-[rgb(0,166,166)]/10"
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1 space-y-1">
@@ -169,17 +174,27 @@ export default function AudienceDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setShowMemberPreview(true)}>
+          <Button 
+            onClick={() => setShowMemberPreview(true)}
+            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+          >
             <Eye className="h-4 w-4 mr-2" />
             Preview Members
           </Button>
-          <Button onClick={() => setShowEditModal(true)} variant="outline">
+          <Button 
+            onClick={() => setShowEditModal(true)} 
+            variant="outline"
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+          >
             <Edit className="h-4 w-4 mr-2" />
             Edit Definition
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export
                 <ChevronDown className="h-4 w-4 ml-2" />
@@ -344,7 +359,12 @@ export default function AudienceDetailPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Sample Members</CardTitle>
-              <Button variant="outline" size="sm" onClick={() => setShowMemberPreview(false)}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowMemberPreview(false)}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 Hide
               </Button>
             </div>

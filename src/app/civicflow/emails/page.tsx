@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { EmailSidebar } from '@/components/civicflow/emails/EmailSidebar'
 import { EmailList } from '@/components/civicflow/emails/EmailList'
@@ -24,7 +24,8 @@ interface EmailFilters {
   tags: string[]
 }
 
-export default function EmailsPage() {
+function EmailsContent() {
+
   const searchParams = useSearchParams()
   const { currentOrgId } = useOrgStore()
 
@@ -110,7 +111,8 @@ export default function EmailsPage() {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
 
-  return (
+  
+return (
     <div className="flex h-screen bg-muted/50">
       {/* Email Sidebar */}
       <div className="w-64 bg-card border-r border-border flex-shrink-0">
@@ -128,7 +130,7 @@ export default function EmailsPage() {
           {/* Email List Header */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-2 mb-3">
-              <Button onClick={() => setIsComposeOpen(true)} className="flex-1" size="sm">
+              <Button onClick={() => setIsComposeOpen(true)} className="flex-1 bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white" size="sm">
                 <Plus className="h-4 w-4 mr-2" />
                 Compose
               </Button>
@@ -136,7 +138,7 @@ export default function EmailsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAiPanelOpen(!isAiPanelOpen)}
-                className={isAiPanelOpen ? 'bg-purple-100 dark:bg-purple-900' : ''}
+                className={isAiPanelOpen ? 'bg-purple-100 dark:bg-purple-900 border-purple-500' : 'border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10'}
               >
                 <Sparkles className="h-4 w-4" />
               </Button>
@@ -250,5 +252,23 @@ export default function EmailsPage() {
         />
       )}
     </div>
+  )
+
+}
+
+export default function EmailsPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <EmailsContent />
+    </Suspense>
   )
 }

@@ -99,9 +99,9 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
   }
 
   const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GBP',
       minimumFractionDigits: 0
     }).format(amount)
   }
@@ -118,13 +118,15 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl bg-panel border-border max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl bg-panel border-border max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-text-100">Review Grant Application</DialogTitle>
           <DialogDescription className="text-text-300">
             Review and make a decision on this grant application.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="flex-1 overflow-y-auto px-1">
 
         {isLoading ? (
           <div className="space-y-4">
@@ -134,7 +136,7 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
         ) : application ? (
           <div className="space-y-6">
             {/* Application Overview */}
-            <Card className="bg-bg border-border">
+            <Card className="bg-panel-alt border-border">
               <CardHeader>
                 <CardTitle className="text-lg text-text-100">Application Details</CardTitle>
               </CardHeader>
@@ -276,7 +278,7 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
             </Card>
 
             {/* Review Form */}
-            <Card className="bg-bg border-border">
+            <Card className="bg-panel-alt border-border">
               <CardHeader>
                 <CardTitle className="text-lg text-text-100">Review Decision</CardTitle>
               </CardHeader>
@@ -294,10 +296,10 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
                         }))
                       }
                     >
-                      <SelectTrigger className="bg-panel border-border">
+                      <SelectTrigger className="bg-panel-alt border-border text-text-100">
                         <SelectValue placeholder="Select action" />
                       </SelectTrigger>
-                      <SelectContent className="hera-select-content">
+                      <SelectContent className="bg-panel border-border">
                         {Object.entries(ACTION_CONFIG).map(([action, config]) => {
                           const Icon = config.icon
                           return (
@@ -327,7 +329,7 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
                             amount_awarded: e.target.value ? Number(e.target.value) : undefined
                           }))
                         }
-                        className="bg-panel border-border"
+                        className="bg-panel-alt border-border text-text-100"
                       />
                     </div>
                   )}
@@ -339,7 +341,7 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
                       placeholder="Add any notes about this decision..."
                       value={formData.notes}
                       onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                      className="bg-panel border-border min-h-[100px]"
+                      className="bg-panel-alt border-border text-text-100 min-h-[100px]"
                     />
                   </div>
 
@@ -349,14 +351,14 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
                       type="button"
                       variant="outline"
                       onClick={onClose}
-                      className="border-border hover:bg-accent-soft"
+                      className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
                     >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       disabled={reviewGrant.isPending}
-                      className={ACTION_CONFIG[formData.action].buttonClass}
+                      className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
                     >
                       {reviewGrant.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {ACTION_CONFIG[formData.action].label} Application
@@ -371,6 +373,7 @@ export function ReviewGrantModal(props: ReviewGrantModalProps): JSX.Element {
             <p className="text-text-300">Application not found</p>
           </div>
         )}
+        </div>
       </DialogContent>
     </Dialog>
   )

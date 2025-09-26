@@ -77,21 +77,21 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-panel border-border">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[500px] bg-panel border-border max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-xl font-semibold text-text-100">
             Create Grant Round
           </DialogTitle>
-          <DialogDescription className="text-text-500">
+          <DialogDescription className="text-text-300">
             {program ? `Add a new grant round to ${program.title}` : 'Select a program first'}
           </DialogDescription>
         </DialogHeader>
 
         {program && (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto px-1">
             {/* Round Code */}
             <div className="space-y-2">
-              <Label htmlFor="round_code">Round Code</Label>
+              <Label htmlFor="round_code" className="text-text-200">Round Code</Label>
               <div className="flex gap-2">
                 <Input
                   id="round_code"
@@ -99,13 +99,13 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                   onChange={e => setFormData(prev => ({ ...prev, round_code: e.target.value }))}
                   placeholder={`${program.code}-R202401`}
                   required
-                  className="bg-panel-alt border-border"
+                  className="bg-panel-alt border-border text-text-100"
                 />
                 <Button
                   type="button"
                   variant="outline"
                   onClick={generateRoundCode}
-                  className="border-border"
+                  className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
                 >
                   Generate
                 </Button>
@@ -121,19 +121,19 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="window_open">Opens</Label>
+                  <Label htmlFor="window_open" className="text-text-200">Opens</Label>
                   <Input
                     id="window_open"
                     type="date"
                     value={formData.window_open}
                     onChange={e => setFormData(prev => ({ ...prev, window_open: e.target.value }))}
                     required
-                    className="bg-panel-alt border-border"
+                    className="bg-panel-alt border-border text-text-100"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="window_close">Closes</Label>
+                  <Label htmlFor="window_close" className="text-text-200">Closes</Label>
                   <Input
                     id="window_close"
                     type="date"
@@ -141,7 +141,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                     onChange={e => setFormData(prev => ({ ...prev, window_close: e.target.value }))}
                     min={formData.window_open}
                     required
-                    className="bg-panel-alt border-border"
+                    className="bg-panel-alt border-border text-text-100"
                   />
                 </div>
               </div>
@@ -151,7 +151,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 variant="ghost"
                 size="sm"
                 onClick={setDefaultDates}
-                className="text-xs text-text-500 hover:text-text-300"
+                className="text-xs text-text-300 hover:text-text-100"
               >
                 Set default 30-day window
               </Button>
@@ -159,7 +159,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
             {/* Budget */}
             <div className="space-y-2">
-              <Label htmlFor="budget">
+              <Label htmlFor="budget" className="text-text-200">
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
                   <span>Round Budget</span>
@@ -179,10 +179,10 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                 min="0"
                 max={program.budget}
                 step="1000"
-                className="bg-panel-alt border-border"
+                className="bg-panel-alt border-border text-text-100"
               />
               {program.budget && (
-                <p className="text-xs text-text-500">
+                <p className="text-xs text-text-300">
                   Program budget: ${program.budget.toLocaleString()}
                 </p>
               )}
@@ -190,7 +190,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
 
             {/* Actions */}
             <div className="flex justify-end gap-3 pt-4">
-              <Button type="button" variant="outline" onClick={onClose} className="border-border">
+              <Button type="button" variant="outline" onClick={onClose} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
                 Cancel
               </Button>
               <Button
@@ -201,7 +201,7 @@ export function CreateGrantRoundModal({ isOpen, onClose, program }: CreateGrantR
                   !formData.window_open ||
                   !formData.window_close
                 }
-                className="bg-primary text-white hover:bg-primary-hover"
+                className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
               >
                 {createGrantRound.isPending ? 'Creating...' : 'Create Round'}
               </Button>

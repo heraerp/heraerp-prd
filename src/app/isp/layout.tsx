@@ -17,8 +17,9 @@ import {
   Radio,
   Menu,
   Signal,
-  Activity,
-  Target
+  Brain,
+  Target,
+  Activity
 } from 'lucide-react'
 
 const navigation = [
@@ -28,7 +29,7 @@ const navigation = [
   { name: 'Network', href: '/isp/network', icon: Network },
   { name: 'Agents', href: '/isp/agents', icon: UserCheck },
   { name: 'Analytics', href: '/isp/analytics', icon: TrendingUp },
-  { name: 'AI Manager', href: '/isp/ai-manager', icon: Activity },
+  { name: 'AI Manager', href: '/isp/ai-manager', icon: Brain },
   { name: 'IPO Readiness', href: '/isp/ipo', icon: Target },
   { name: 'Settings', href: '/isp/settings', icon: Settings }
 ]
