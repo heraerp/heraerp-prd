@@ -446,3 +446,80 @@ export function useExportOrg(orgId: string) {
     }
   })
 }
+
+// Fetch organization list
+export function useOrganizationList(filters?: {
+  q?: string
+  type?: string
+  stage?: string
+  limit?: number
+  orgId?: string
+}) {
+  const { currentOrgId } = useOrgStore()
+  const orgId = filters?.orgId || currentOrgId || CIVICFLOW_ORG_ID
+
+  return useQuery<any[]>({
+    queryKey: ['organization-list', orgId, filters],
+    queryFn: async () => {
+      const params = new URLSearchParams()
+      if (filters?.q) params.append('search', filters.q)
+      if (filters?.type) params.append('type', filters.type)
+      if (filters?.stage) params.append('stage', filters.stage)
+      if (filters?.limit) params.append('limit', filters.limit.toString())
+
+      const response = await fetch(`/api/civicflow/organizations?${params}`, {
+        headers: { 'X-Organization-Id': orgId }
+      })
+      if (!response.ok) throw new Error('Failed to fetch organizations')
+      
+      const data = await response.json()
+      
+      // Transform the data to match expected format
+      return (data.items || []).map((org: any) => ({
+        id: org.id,
+        name: org.entity_name,
+        data: {
+          type: org.metadata?.type || 'Partner',
+          engagement_stage: org.metadata?.engagement_stage || 'Exploration',
+          relationship_manager_user_id: org.metadata?.relationship_manager_user_id
+        }
+      }))
+    },
+    keepPreviousData: true
+  })
+}
+
+// Create organization
+export function useCreateOrganization() {
+  const queryClient = useQueryClient()
+  const { currentOrgId } = useOrgStore()
+
+  return useMutation({
+    mutationFn: async (data: {
+      entity_type: string
+      entity_name: string
+      organization_id: string
+      smart_code: string
+      metadata?: any
+    }) => {
+      const response = await fetch('/api/v2/universal/entity-upsert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Organization-Id': data.organization_id
+        },
+        body: JSON.stringify(data)
+      })
+
+      if (!response.ok) throw new Error('Failed to create organization')
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organization-list'] })
+      toast.success('Organization created successfully')
+    },
+    onError: () => {
+      toast.error('Failed to create organization')
+    }
+  })
+}

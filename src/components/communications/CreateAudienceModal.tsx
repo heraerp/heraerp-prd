@@ -132,31 +132,31 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Create Audience</DialogTitle>
-            <DialogDescription>
+      <DialogContent className="sm:max-w-[625px] max-h-[90vh] bg-panel border-border overflow-hidden flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <DialogHeader className="flex-shrink-0">
+            <DialogTitle className="text-text-100">Create Audience</DialogTitle>
+            <DialogDescription className="text-text-300">
               Define a new audience for your communication campaigns.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4 py-4 overflow-y-auto px-1">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="name" className="text-right text-text-200">
                 Name
               </Label>
               <Input
                 id="name"
                 value={audienceData.name}
                 onChange={e => setAudienceData({ ...audienceData, name: e.target.value })}
-                className="col-span-3"
+                className="col-span-3 bg-panel-alt border-border text-text-100"
                 placeholder="e.g., Active Constituents"
               />
             </div>
 
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">Consent Policy</Label>
+              <Label className="text-right pt-2 text-text-200">Consent Policy</Label>
               <RadioGroup
                 className="col-span-3"
                 value={audienceData.consent_policy}
@@ -178,7 +178,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
             </div>
 
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">Entity Types</Label>
+              <Label className="text-right pt-2 text-text-200">Entity Types</Label>
               <div className="col-span-3 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
                   {['constituent', 'organization', 'staff', 'volunteer', 'donor', 'vendor'].map(
@@ -186,14 +186,14 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                       <Button
                         key={type}
                         type="button"
-                        variant={
-                          audienceData.definition.entity_types.includes(type)
-                            ? 'default'
-                            : 'outline'
-                        }
+                        variant="outline"
                         size="sm"
                         onClick={() => toggleEntityType(type)}
-                        className="justify-start"
+                        className={
+                          audienceData.definition.entity_types.includes(type)
+                            ? "bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white border-[rgb(0,166,166)] justify-start"
+                            : "border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10 justify-start"
+                        }
                       >
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </Button>
@@ -209,7 +209,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                 <AccordionContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">Filter Tags</Label>
+                      <Label className="text-right pt-2 text-text-200">Filter Tags</Label>
                       <div className="col-span-3 space-y-2">
                         <div className="flex gap-2">
                           <Input
@@ -219,8 +219,9 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                             onKeyPress={e =>
                               e.key === 'Enter' && (e.preventDefault(), handleAddTag())
                             }
+                            className="bg-panel-alt border-border text-text-100"
                           />
-                          <Button type="button" onClick={handleAddTag} size="icon">
+                          <Button type="button" onClick={handleAddTag} size="icon" className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
@@ -252,7 +253,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                     </div>
 
                     <div className="grid grid-cols-4 items-start gap-4">
-                      <Label className="text-right pt-2">Custom Filter</Label>
+                      <Label className="text-right pt-2 text-text-200">Custom Filter</Label>
                       <div className="col-span-3 space-y-2">
                         <Textarea
                           value={audienceData.definition.custom_filter}
@@ -267,6 +268,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                           }
                           placeholder="JSON filter expression (optional)"
                           rows={3}
+                          className="bg-panel-alt border-border text-text-100"
                         />
                         <p className="text-xs text-muted-foreground flex items-start gap-1">
                           <Info className="h-3 w-3 mt-0.5" />
@@ -280,7 +282,7 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
             </Accordion>
 
             <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">Audience Tags</Label>
+              <Label className="text-right pt-2 text-text-200">Audience Tags</Label>
               <div className="col-span-3 space-y-2">
                 <div className="flex gap-2">
                   <Input
@@ -288,8 +290,9 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
                     onChange={e => setCurrentTag(e.target.value)}
                     placeholder="e.g., marketing"
                     onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                    className="bg-panel-alt border-border text-text-100"
                   />
-                  <Button type="button" onClick={handleAddTag} size="icon">
+                  <Button type="button" onClick={handleAddTag} size="icon" className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -313,11 +316,11 @@ export function CreateAudienceModal({ open, onOpenChange }: CreateAudienceModalP
             </div>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <DialogFooter className="flex-shrink-0">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
               Cancel
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
               {createMutation.isPending ? 'Creating...' : 'Create Audience'}
             </Button>
           </DialogFooter>

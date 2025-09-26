@@ -14,34 +14,35 @@ export async function GET(request: NextRequest) {
     const orgId = request.headers.get('X-Organization-Id') || CIVICFLOW_ORG_ID
     const searchParams = request.nextUrl.searchParams
     const search = searchParams.get('search')
+    const type = searchParams.get('type')
+    const stage = searchParams.get('stage')
+    const limit = searchParams.get('limit') || '100'
 
-    // Build query
+    // Build query using Supabase directly
     let query = supabase
       .from('core_entities')
-      .select(
-        `
+      .select(`
         *,
-        core_dynamic_data!inner(field_name, field_value_text, field_value_json)
-      `,
-        { count: 'exact' }
-      )
+        core_dynamic_data(field_name, field_value_text, field_value_json)
+      `)
       .eq('organization_id', orgId)
       .eq('entity_type', 'organization')
+      .order('created_at', { ascending: false })
+      .limit(parseInt(limit))
 
     if (search) {
       query = query.ilike('entity_name', `%${search}%`)
     }
 
-    query = query.limit(100)
-
-    const { data: organizations, count, error } = await query
+    const { data: organizations, error, count } = await query
 
     if (error) {
+      console.error('Supabase error:', error)
       throw error
     }
 
     // Transform to include dynamic data
-    const transformedOrganizations = (organizations || []).map(organization => {
+    let transformedOrganizations = (organizations || []).map((organization: any) => {
       const dynamicData = organization.core_dynamic_data || []
       const email = dynamicData.find((d: any) => d.field_name === 'email')?.field_value_text
       const tags = dynamicData.find((d: any) => d.field_name === 'tags')?.field_value_json || []
@@ -50,13 +51,27 @@ export async function GET(request: NextRequest) {
         id: organization.id,
         entity_name: organization.entity_name,
         email,
-        tags
+        tags,
+        metadata: organization.metadata || {}
       }
     })
 
+    // Apply client-side filtering for type and stage
+    if (type) {
+      transformedOrganizations = transformedOrganizations.filter(
+        (org: any) => org.metadata?.type === type
+      )
+    }
+
+    if (stage) {
+      transformedOrganizations = transformedOrganizations.filter(
+        (org: any) => org.metadata?.engagement_stage === stage
+      )
+    }
+
     return NextResponse.json({
       items: transformedOrganizations,
-      total: count || 0
+      total: transformedOrganizations.length
     })
   } catch (error) {
     console.error('Error fetching organizations:', error)

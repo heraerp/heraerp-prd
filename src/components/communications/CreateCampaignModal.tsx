@@ -87,11 +87,11 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[525px] bg-panel border-border">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create Campaign</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-text-100">Create Campaign</DialogTitle>
+            <DialogDescription className="text-text-300">
               Create a new communication campaign to reach your audience.
               {isDemo && ' (Demo mode - messages will not be sent)'}
             </DialogDescription>
@@ -99,20 +99,20 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="name" className="text-right text-text-200">
                 Name
               </Label>
               <Input
                 id="name"
                 value={campaignData.name}
                 onChange={e => setCampaignData({ ...campaignData, name: e.target.value })}
-                className="col-span-3"
+                className="col-span-3 bg-panel-alt border-border text-text-100"
                 placeholder="e.g., Holiday Newsletter 2024"
               />
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="channel" className="text-right">
+              <Label htmlFor="channel" className="text-right text-text-200">
                 Channel
               </Label>
               <Select
@@ -125,10 +125,10 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
                   })
                 }
               >
-                <SelectTrigger className="col-span-3">
+                <SelectTrigger className="col-span-3 bg-panel-alt border-border text-text-100">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-panel border-border">
                   <SelectItem value="email">Email</SelectItem>
                   <SelectItem value="sms">SMS</SelectItem>
                   <SelectItem value="webhook">Webhook</SelectItem>
@@ -137,17 +137,17 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="template" className="text-right">
+              <Label htmlFor="template" className="text-right text-text-200">
                 Template
               </Label>
               <Select
                 value={campaignData.template_id}
                 onValueChange={value => setCampaignData({ ...campaignData, template_id: value })}
               >
-                <SelectTrigger className="col-span-3">
+                <SelectTrigger className="col-span-3 bg-panel-alt border-border text-text-100">
                   <SelectValue placeholder="Select a template" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-panel border-border">
                   {templates?.items?.map(template => (
                     <SelectItem key={template.id} value={template.id}>
                       {template.entity_name}
@@ -158,17 +158,17 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="audience" className="text-right">
+              <Label htmlFor="audience" className="text-right text-text-200">
                 Audience
               </Label>
               <Select
                 value={campaignData.audience_id}
                 onValueChange={value => setCampaignData({ ...campaignData, audience_id: value })}
               >
-                <SelectTrigger className="col-span-3">
+                <SelectTrigger className="col-span-3 bg-panel-alt border-border text-text-100">
                   <SelectValue placeholder="Select an audience" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-panel border-border">
                   {audiences?.items?.map(audience => (
                     <SelectItem key={audience.id} value={audience.id}>
                       {audience.entity_name} ({audience.size_estimate} recipients)
@@ -179,7 +179,7 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
             </div>
 
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="schedule" className="text-right">
+              <Label htmlFor="schedule" className="text-right text-text-200">
                 Schedule
               </Label>
               <Popover>
@@ -187,8 +187,9 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
                   <Button
                     variant="outline"
                     className={cn(
-                      'col-span-3 justify-start text-left font-normal',
-                      !campaignData.schedule_at && 'text-muted-foreground'
+                      'col-span-3 justify-start text-left font-normal bg-panel-alt border-border',
+                      !campaignData.schedule_at && 'text-text-500',
+                      campaignData.schedule_at && 'text-text-100'
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -199,7 +200,7 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 bg-panel border-border">
                   <Calendar
                     mode="single"
                     selected={campaignData.schedule_at}
@@ -213,10 +214,10 @@ export function CreateCampaignModal({ open, onOpenChange }: CreateCampaignModalP
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
               Cancel
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending} className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
               {createMutation.isPending ? 'Creating...' : 'Create Campaign'}
             </Button>
           </DialogFooter>

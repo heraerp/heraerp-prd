@@ -1,0 +1,62 @@
+{
+  "direction": "pull",
+  "version": 1,
+  "field_map": {
+    "event.id": "EVENT.SOURCE.V1.provider_id",
+    "event.name.text": "EVENT.META.V1.title",
+    "event.start.utc": "EVENT.META.V1.start",
+    "event.end.utc": "EVENT.META.V1.end",
+    "event.start.timezone": "EVENT.META.V1.timezone",
+    "event.status": "EVENT.META.V1.status",
+    "event.online_event": "EVENT.META.V1.online_event",
+    "event.capacity": "EVENT.META.V1.capacity",
+    "event.url": "EVENT.META.V1.url",
+    "event.venue.name": "EVENT.META.V1.venue",
+    "event.changed": "EVENT.SOURCE.V1.changed_at",
+    
+    "attendee.id": "INVITE.SOURCE.V1.provider_id",
+    "attendee.profile.email": "INVITE.META.V1.email",
+    "attendee.profile.first_name": "INVITE.META.V1.first_name",
+    "attendee.profile.last_name": "INVITE.META.V1.last_name",
+    "attendee.ticket_class_name": "INVITE.META.V1.ticket_type",
+    "attendee.checked_in": "INVITE.META.V1.checked_in",
+    "attendee.checkin_time": "INVITE.META.V1.checkin_time",
+    "attendee.status": "INVITE.META.V1.status",
+    "attendee.changed": "INVITE.SOURCE.V1.changed_at"
+  },
+  "transforms": [
+    {
+      "op": "validate",
+      "contract": "HERA.INTEGRATION.CONTRACT.event.v1"
+    },
+    {
+      "op": "derive",
+      "expr": "EVENT.META.V1.type = event.category_id ? 'conference' : (event.format_id ? 'workshop' : 'webinar')"
+    },
+    {
+      "op": "upsert",
+      "entity_type": "event",
+      "id_field": "EVENT.SOURCE.V1.provider_id"
+    },
+    {
+      "op": "validate",
+      "contract": "HERA.INTEGRATION.CONTRACT.event_invite.v1"
+    },
+    {
+      "op": "upsert",
+      "entity_type": "event_invite",
+      "id_field": "INVITE.SOURCE.V1.provider_id"
+    },
+    {
+      "op": "relate",
+      "type": "INVITE.REL.EVENT.V1",
+      "from_lookup": "invite_by_provider_id",
+      "to_lookup": "event_by_provider_id"
+    },
+    {
+      "op": "relateByEmailIfExists",
+      "type": "INVITE.REL.SUBJECT.V1",
+      "email_field": "INVITE.META.V1.email"
+    }
+  ]
+}

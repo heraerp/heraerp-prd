@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 
-const { createClient } = require('@supabase/supabase-js')
-const fs = require('fs')
-const path = require('path')
-require('dotenv').config()
+import { createClient } from '@supabase/supabase-js'
+import fs from 'fs'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import dotenv from 'dotenv'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+dotenv.config({ path: join(__dirname, '..', '.env') })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -273,8 +279,8 @@ export const hasColumn = (obj: any, column: string): boolean =>
   obj && typeof obj === 'object' && column in obj
 `
 
-  const typesPath = path.join(__dirname, '..', 'src', 'types', 'hera-database.types.ts')
-  const typesDir = path.dirname(typesPath)
+  const typesPath = join(__dirname, '..', 'src', 'types', 'hera-database.types.ts')
+  const typesDir = dirname(typesPath)
   
   if (!fs.existsSync(typesDir)) {
     fs.mkdirSync(typesDir, { recursive: true })

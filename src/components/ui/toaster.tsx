@@ -2,7 +2,7 @@
 
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { useToast } from './useToast'
+import { useToast } from './use-toast'
 import { cn } from '@/lib/utils'
 
 export function Toaster() {
