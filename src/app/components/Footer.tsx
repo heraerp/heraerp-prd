@@ -2,21 +2,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 type FooterProps = {
   showGradient?: boolean; // turn on to add subtle hero-style gradient behind glass
 };
 
-export default function Footer({ showGradient = false }: FooterProps) {
-  const pathname = usePathname();
-
-  // Show gradient only on home page
-  const shouldShowGradient = showGradient && pathname === "/";
-
+export default function Footer({ showGradient = true }: FooterProps) {
   return (
     <footer className="relative mt-24">
-      {shouldShowGradient && (
+      {showGradient && (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
@@ -26,7 +20,7 @@ export default function Footer({ showGradient = false }: FooterProps) {
       )}
 
       <div className="mx-auto w-[92%] max-w-7xl">
-        <div className="rounded-3xl border border-white/15 bg-white/10 dark:border-white/10 dark:bg-white/5 backdrop-blur-xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.35)]">
+        <div className="rounded-3xl glass">
           {/* top row */}
           <div className="grid grid-cols-1 gap-12 px-8 py-12 lg:grid-cols-4 lg:gap-16 lg:px-12">
             {/* brand - takes 2 columns on large screens */}
@@ -35,11 +29,11 @@ export default function Footer({ showGradient = false }: FooterProps) {
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-400 text-white font-bold text-lg">
                   H
                 </span>
-                <span className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                <span className="text-xl font-semibold tracking-tight ink">
                   HERA ERP
                 </span>
               </Link>
-              <p className="max-w-md text-sm leading-relaxed text-gray-700/90 dark:text-gray-300/90">
+              <p className="max-w-md text-sm leading-relaxed ink-muted">
                 Enterprise ERP with modern patterns, fast implementation, and
                 AI-driven continuous improvement. Built for the future of business.
               </p>
@@ -99,7 +93,7 @@ export default function Footer({ showGradient = false }: FooterProps) {
 
             {/* product links */}
             <nav aria-label="Product" className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+              <h3 className="text-sm font-semibold ink uppercase tracking-wider">
                 Product
               </h3>
               <div className="flex flex-col space-y-3">
@@ -112,7 +106,7 @@ export default function Footer({ showGradient = false }: FooterProps) {
 
             {/* company links */}
             <nav aria-label="Company" className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+              <h3 className="text-sm font-semibold ink uppercase tracking-wider">
                 Company
               </h3>
               <div className="flex flex-col space-y-3">
@@ -133,7 +127,7 @@ export default function Footer({ showGradient = false }: FooterProps) {
           </div>
 
           {/* bottom row */}
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-white/15 px-8 py-6 text-sm text-gray-700/80 dark:text-gray-300/80 md:flex-row md:px-12">
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-white/15 px-8 py-6 text-sm ink-muted md:flex-row md:px-12">
             <p>© {new Date().getFullYear()} HERA ERP Ltd. All rights reserved.</p>
             <p className="text-sm">
               Built on modern enterprise patterns (patent pending).
@@ -146,20 +140,14 @@ export default function Footer({ showGradient = false }: FooterProps) {
       <style jsx global>{`
         .footer-link {
           display: block;
-          color: rgba(17, 24, 39, 0.85);
+          color: var(--ink-secondary);
           font-size: 0.875rem;
           line-height: 1.5;
           transition: color 0.2s ease;
           padding: 0.125rem 0;
         }
-        .dark .footer-link {
-          color: rgba(243, 244, 246, 0.85);
-        }
         .footer-link:hover {
-          color: #111827;
-        }
-        .dark .footer-link:hover {
-          color: #ffffff;
+          color: var(--ink-primary);
         }
       `}</style>
     </footer>
@@ -181,7 +169,7 @@ function SocialIcon({
       aria-label={label}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 text-gray-800/80 dark:text-gray-100/80 bg-white/10 dark:bg-white/5 backdrop-blur-md hover:bg-white/20 hover:text-gray-900 dark:hover:text-white transition"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 ink bg-[var(--surface-veil)] backdrop-blur-md hover:opacity-95 transition"
     >
       {children}
     </a>
