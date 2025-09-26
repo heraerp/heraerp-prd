@@ -1,0 +1,122 @@
+[
+  {
+    "city": "Dubai",
+    "region": "UAE",
+    "country": "UAE",
+    "landmarks": ["Burj Khalifa", "Dubai Mall", "Business Bay", "DIFC", "Dubai Marina", "JBR", "DWTC"]
+  },
+  {
+    "city": "Abu Dhabi",
+    "region": "UAE",
+    "country": "UAE",
+    "landmarks": ["Sheikh Zayed Grand Mosque", "Yas Island", "ADNEC", "Corniche", "Marina Mall"]
+  },
+  {
+    "city": "Mumbai",
+    "region": "Maharashtra",
+    "country": "India",
+    "landmarks": ["Gateway of India", "Marine Drive", "Bandra Kurla Complex", "Nariman Point", "Lower Parel"]
+  },
+  {
+    "city": "Delhi",
+    "region": "NCR",
+    "country": "India",
+    "landmarks": ["Connaught Place", "India Gate", "Cyber City", "Nehru Place", "Karol Bagh"]
+  },
+  {
+    "city": "Bangalore",
+    "region": "Karnataka",
+    "country": "India",
+    "landmarks": ["Electronic City", "Whitefield", "Koramangala", "MG Road", "Indiranagar"]
+  },
+  {
+    "city": "Chennai",
+    "region": "Tamil Nadu",
+    "country": "India",
+    "landmarks": ["Marina Beach", "T Nagar", "Anna Salai", "OMR", "Guindy"]
+  },
+  {
+    "city": "Hyderabad",
+    "region": "Telangana",
+    "country": "India",
+    "landmarks": ["HITEC City", "Banjara Hills", "Gachibowli", "Madhapur", "Charminar"]
+  },
+  {
+    "city": "Pune",
+    "region": "Maharashtra",
+    "country": "India",
+    "landmarks": ["Hinjewadi IT Park", "Koregaon Park", "MG Road", "Viman Nagar", "Kharadi"]
+  },
+  {
+    "city": "Kolkata",
+    "region": "West Bengal",
+    "country": "India",
+    "landmarks": ["Salt Lake", "Park Street", "New Town", "Howrah Bridge", "Esplanade"]
+  },
+  {
+    "city": "Ahmedabad",
+    "region": "Gujarat",
+    "country": "India",
+    "landmarks": ["SG Highway", "CG Road", "Prahlad Nagar", "Satellite", "Vastrapur"]
+  },
+  {
+    "city": "Jaipur",
+    "region": "Rajasthan",
+    "country": "India",
+    "landmarks": ["MI Road", "C-Scheme", "Malviya Nagar", "Vaishali Nagar", "Raja Park"]
+  },
+  {
+    "city": "Surat",
+    "region": "Gujarat",
+    "country": "India",
+    "landmarks": ["Ring Road", "Textile Market", "Dumas Road", "VR Mall", "Athwalines"]
+  },
+  {
+    "city": "Lucknow",
+    "region": "Uttar Pradesh",
+    "country": "India",
+    "landmarks": ["Hazratganj", "Gomti Nagar", "Aliganj", "Indira Nagar", "Chowk"]
+  },
+  {
+    "city": "Chandigarh",
+    "region": "Punjab/Haryana",
+    "country": "India",
+    "landmarks": ["Sector 17", "IT Park", "Industrial Area", "Elante Mall", "Rock Garden"]
+  },
+  {
+    "city": "Coimbatore",
+    "region": "Tamil Nadu",
+    "country": "India",
+    "landmarks": ["RS Puram", "Avinashi Road", "Gandhipuram", "Tidel Park", "Saibaba Colony"]
+  },
+  {
+    "city": "Noida",
+    "region": "NCR",
+    "country": "India",
+    "landmarks": ["Sector 62", "Sector 18", "Film City", "Greater Noida", "DLF Mall"]
+  },
+  {
+    "city": "Gurgaon",
+    "region": "NCR",
+    "country": "India",
+    "landmarks": ["Cyber Hub", "DLF Cyber City", "MG Road", "Golf Course Road", "Udyog Vihar"]
+  },
+  {
+    "city": "Indore",
+    "region": "Madhya Pradesh",
+    "country": "India",
+    "landmarks": ["Vijay Nagar", "Palasia", "MG Road", "Sapna Sangeeta", "Crystal IT Park"]
+  },
+  {
+    "city": "Nagpur",
+    "region": "Maharashtra",
+    "country": "India",
+    "landmarks": ["Sitabuldi", "Dharampeth", "Civil Lines", "MIHAN", "IT Park"]
+  },
+  {
+    "city": "Kochi",
+    "region": "Kerala",
+    "country": "India",
+    "landmarks": ["Marine Drive", "MG Road", "Kakkanad", "InfoPark", "Fort Kochi"]
+  }
+]
