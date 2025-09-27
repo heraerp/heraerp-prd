@@ -194,7 +194,7 @@ export default function PrivacyPolicyPage() {
                 <div className="relative p-6">
                   {/* Icon with Gradient Background */}
                   <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4", feature.lightBg, feature.darkBg)}>
-                    <feature.icon className={cn("w-6 h-6 bg-gradient-to-br bg-clip-text text-transparent", feature.gradient)} />
+                    <feature.icon className="w-6 h-6 text-slate-700 dark:text-slate-300" />
                   </div>
 
                   {/* Content */}

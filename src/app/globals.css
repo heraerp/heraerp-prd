@@ -13,6 +13,44 @@
   .animate-delay-300 {
     animation-delay: 300ms;
   }
+
+  /* ========================================================================== */
+  /* HERA Semantic Utility Classes - Dark-Only Theme Stabilization */
+  /* ========================================================================== */
+
+  /* Primary text colors - always white/off-white in dark mode */
+  .ink {
+    @apply text-slate-50 dark:text-slate-50;
+  }
+
+  .ink-muted {
+    @apply text-slate-400 dark:text-slate-400;
+  }
+
+  /* Card backgrounds with glassmorphism */
+  .card-glass {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-xl;
+  }
+
+  /* Section backgrounds */
+  .section-narrow {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Force all semantic classes to use dark colors on public pages */
+  html.dark .ink {
+    color: rgb(248 250 252) !important; /* slate-50 */
+  }
+
+  html.dark .ink-muted {
+    color: rgb(148 163 184) !important; /* slate-400 */
+  }
+
+  html.dark .card-glass {
+    background: rgba(15, 23, 42, 0.8) !important; /* slate-900/80 */
+    backdrop-filter: blur(48px) !important;
+    border-color: rgba(51, 65, 85, 0.5) !important; /* slate-700/50 */
+  }
 }
 
 /* Import Salon Theme Styles */
@@ -20,6 +58,9 @@
 
 /* Import dialog overrides for better positioning */
 @import '../styles/dialog-overrides.css';
+
+/* Import consolidated theme variables - High Priority */
+@import './theme-variables.css';
 
 /* HERA Luxury Theme Colors - Applied Globally */
 :root {
@@ -165,26 +206,43 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   /* Ensure proper box-sizing */
   *, *::before, *::after {
     box-sizing: border-box;
   }
-  
+
   /* Prevent horizontal scroll */
   body {
     overflow-x: hidden;
   }
-  
+
   /* Enterprise-grade focus states */
   *:focus {
     outline: none;
   }
-  
+
   *:focus-visible {
     outline: 2px solid rgb(59 130 246);
     outline-offset: 2px;
     border-radius: 0.375rem;
+  }
+
+  /* Universal readability defaults for Light/Dark mode */
+  /* Page backgrounds */
+  html.light body { background: #ffffff; }
+  html.dark body  { background: #0b0f1a; }
+
+  /* Default text color & hierarchy */
+  h1, h2, h3, h4 { color: var(--ink-primary); letter-spacing: -0.01em; }
+  p, li          { color: var(--ink-secondary); line-height: 1.75; }
+  a              { color: var(--ink-primary); text-underline-offset: 3px; }
+
+  /* Inputs on veil surfaces */
+  input, select, textarea {
+    color: var(--ink-primary);
+    background: var(--surface-veil);
+    border: 1px solid var(--border-strong);
   }
 }
 
@@ -856,15 +914,25 @@ button[role="combobox"]:focus {
   padding: 6px 8px !important;
 }
 
+@layer components {
+  .section { @apply mx-auto w-[92%] max-w-7xl; }
+  .section-narrow { @apply mx-auto w-[92%] max-w-5xl; }
+  .card-glass {
+    background: var(--surface-veil);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-elev);
+    border-radius: 1.5rem; /* rounded-3xl */
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+  }
+}
+
 /* Native HTML Select elements */
 select {
   background-color: var(--hera-charcoal) !important;
   border: 1px solid rgba(140, 120, 83, 0.4) !important;
   color: var(--hera-light-text) !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238C7853' d='M6 9L2 5h8z'/%3E%3C/svg%3E") !important;
-  background-repeat: no-repeat !important;
-  background-position: right 0.7rem center !important;
-  background-size: 12px !important;
+  /* Removed background-image arrow as Radix Select components have their own icon */
   padding-right: 2.5rem !important;
 }
 
@@ -3061,3 +3129,108 @@ html {
 /* ===============================================
    END CIVICFLOW THEMING SYSTEM
    =============================================== */
+
+/* ===============================================
+   ENTERPRISE GLASS DESIGN TOKENS
+   =============================================== */
+
+:root {
+  --surface-glass: rgba(255,255,255,0.72);
+  --surface-veil: rgba(255,255,255,0.55);
+  --ink-primary: #0b1220;
+  --ink-secondary: rgba(11,18,32,0.72);
+  --border-strong: rgba(17,24,39,0.15);
+  --shadow-elev: 0 8px 40px -12px rgba(0,0,0,0.25);
+
+  /* Wave Background Tokens - Light Theme */
+  --wave-1: #ffb3d9;  /* warm blush - more saturated */
+  --wave-2: #b3d9ff;  /* cool mist - more saturated */
+  --wave-3: #ffe0b3;  /* peach veil - more saturated */
+  --wave-opacity: 1;  /* solid color; softness comes from blur/mask */
+}
+
+.dark {
+  --surface-glass: rgba(17,25,40,0.6);
+  --surface-veil: rgba(17,25,40,0.5);
+  --ink-primary: #f5f7fa;
+  --ink-secondary: rgba(245,247,250,0.78);
+  --border-strong: rgba(255,255,255,0.14);
+  --shadow-elev: 0 8px 40px -12px rgba(0,0,0,0.6);
+
+  /* Wave Background Tokens - Dark Theme */
+  --wave-1: #4a3366;  /* plum shadow - more visible */
+  --wave-2: #1e3a5f;  /* deep indigo - more visible */
+  --wave-3: #2a4444;  /* teal charcoal - more visible */
+  --wave-opacity: 1;
+}
+
+.glass {
+  background: var(--surface-glass);
+  backdrop-filter: saturate(140%) blur(16px);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-elev);
+}
+.ink { color: var(--ink-primary); }
+.ink-muted { color: var(--ink-secondary); }
+
+/* Wave background utilities */
+.bg-wave-mask {
+  -webkit-mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+}
+
+/* Individual wave colors */
+.bg-wave-1 { background-color: var(--wave-1); }
+.bg-wave-2 { background-color: var(--wave-2); }
+.bg-wave-3 { background-color: var(--wave-3); }
+
+/* Pre-composed wave backgrounds with mask */
+.bg-wave-blush {
+  background-color: var(--wave-1);
+  -webkit-mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+}
+
+.bg-wave-mist {
+  background-color: var(--wave-2);
+  -webkit-mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+}
+
+.bg-wave-veil {
+  background-color: var(--wave-3);
+  -webkit-mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+  mask-image: radial-gradient(130% 80% at 50% 20%, #000 55%, transparent 85%);
+}
+
+/* Pure CSS gradient alternative (no SVG required) */
+.bg-soft-waves {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, var(--wave-1) 0%, transparent 60%),
+    radial-gradient(900px 500px at 80% 0%, var(--wave-2) 0%, transparent 60%),
+    radial-gradient(1000px 700px at 50% 20%, var(--wave-3) 0%, transparent 65%);
+  filter: blur(8px);
+}
+
+/* Gentle float animation for waves (respects reduced-motion preference) */
+@media (prefers-reduced-motion: no-preference) {
+  .wave-float {
+    animation: waveFloat 20s ease-in-out infinite;
+  }
+
+  @keyframes waveFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+/* (Optional) scrim for busy backgrounds */
+.scrim {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.12), transparent);
+}
+
+/* Motion/accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}

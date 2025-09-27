@@ -56,7 +56,7 @@ export default function Navbar() {
       <div className="mx-auto mt-3 w-[92%] max-w-7xl">
         <div
           role="navigation" aria-label="Primary"
-          className="relative flex items-center justify-between rounded-3xl glass px-4 py-2 md:px-6"
+          className="relative flex items-center justify-between rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 px-4 py-2 md:px-6"
         >
           {/* Brand */}
           <Link
@@ -66,7 +66,7 @@ export default function Navbar() {
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-400 text-white font-bold">
               H
             </span>
-            <span className="ink text-base md:text-lg font-semibold tracking-tight">HERA ERP</span>
+            <span className="text-slate-900 dark:text-slate-50 text-base md:text-lg font-semibold tracking-tight">HERA ERP</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -77,10 +77,10 @@ export default function Navbar() {
                 href={item.href}
                 className={[
                   "px-3 py-2 rounded-xl text-sm transition",
-                  "ink-muted hover:ink",
+                  "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50",
                   isActive(item.href)
-                    ? "bg-[var(--surface-veil)] border border-white/30"
-                    : "hover:bg-[var(--surface-veil)] border border-transparent",
+                    ? "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                    : "hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border border-transparent",
                 ].join(" ")}
                 aria-current={isActive(item.href) ? "page" : undefined}
               >
@@ -91,25 +91,25 @@ export default function Navbar() {
 
           {/* CTAs + Theme */}
           <div className="hidden md:flex items-center gap-2">
-            <ThemeToggle />
             <Link
               href="/auth/login"
-              className="inline-flex items-center justify-center rounded-xl px-3.5 py-2 text-sm ink hover:bg-[var(--surface-veil)] transition"
+              className="inline-flex items-center justify-center rounded-xl px-3.5 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-50 transition"
             >
               Sign In
             </Link>
             <Link
               href="/pricing-request"
-              className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-[var(--surface-veil)] px-3.5 py-2 text-sm ink hover:opacity-95 transition"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
             >
               Request Pricing
             </Link>
             <Link
               href="/demo"
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-cyan-500 text-white px-3.5 py-2 text-sm font-medium shadow hover:opacity-95 transition"
+              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 hover:from-blue-700 hover:via-purple-700 hover:to-blue-800 text-white px-4 py-2.5 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 ring-1 ring-white/20"
             >
               Book a Demo
             </Link>
+            <ThemeToggle />
           </div>
 
           {/* Mobile menu button */}
@@ -120,7 +120,7 @@ export default function Navbar() {
               aria-expanded={open}
               aria-controls="mobile-nav"
               aria-label="Toggle menu"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 ink bg-[var(--surface-veil)] backdrop-blur-md hover:opacity-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 backdrop-blur-md hover:bg-slate-200 dark:hover:bg-slate-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             >
               <span className="sr-only">Menu</span>
               <MenuIcon open={open} />
@@ -141,10 +141,10 @@ export default function Navbar() {
                     href={item.href}
                     className={[
                       "px-3 py-3 rounded-xl text-sm transition",
-                      "ink",
+                      "text-slate-700 dark:text-slate-300",
                       isActive(item.href)
-                        ? "bg-[var(--surface-veil)] border border-white/30"
-                        : "hover:bg-[var(--surface-veil)] border border-transparent",
+                        ? "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                        : "hover:bg-slate-100/50 dark:hover:bg-slate-800/50 border border-transparent",
                     ].join(" ")}
                     aria-current={isActive(item.href) ? "page" : undefined}
                     onClick={() => setOpen(false)}
@@ -156,14 +156,14 @@ export default function Navbar() {
                   <Link
                     href="/pricing-request"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-[var(--surface-veil)] px-3 py-2 text-sm ink hover:opacity-95 transition"
+                    className="inline-flex items-center justify-center rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
                   >
                     Request Pricing
                   </Link>
                   <Link
                     href="/demo"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-cyan-500 text-white px-3 py-2 text-sm font-medium shadow hover:opacity-95 transition"
+                    className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 hover:from-blue-700 hover:via-purple-700 hover:to-blue-800 text-white px-4 py-2.5 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 ring-1 ring-white/20"
                   >
                     Book a Demo
                   </Link>
@@ -172,7 +172,7 @@ export default function Navbar() {
                   <Link
                     href="/auth/login"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm ink hover:bg-[var(--surface-veil)] transition"
+                    className="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-50 transition"
                   >
                     Sign In
                   </Link>

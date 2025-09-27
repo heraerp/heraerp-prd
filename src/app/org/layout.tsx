@@ -137,10 +137,10 @@ export default function OrganizationLayout({ children }: { children: React.React
                   <span className="text-sm font-bold text-foreground">H</span>
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-100">
+                  <h1 className="text-lg font-semibold ink">
                     {currentOrganization.name}
                   </h1>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs ink-muted">
                     {currentOrganization.subdomain}.heraerp.com
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default function OrganizationLayout({ children }: { children: React.React
                     key={item.href}
                     href={href}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                      isActive ? 'text-primary' : 'text-gray-700 hover:text-foreground'
+                      isActive ? 'text-primary' : 'ink-muted hover:ink'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -207,8 +207,8 @@ export default function OrganizationLayout({ children }: { children: React.React
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="gap-2">
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-gray-700">
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                      <span className="text-sm font-medium ink">
                         {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                       </span>
                     </div>
@@ -252,8 +252,8 @@ export default function OrganizationLayout({ children }: { children: React.React
                     href={href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium ${
                       isActive
-                        ? 'text-primary bg-blue-50'
-                        : 'text-gray-700 hover:text-foreground hover:bg-muted'
+                        ? 'text-primary bg-blue-50 dark:bg-blue-950'
+                        : 'ink-muted hover:ink hover:bg-muted'
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >

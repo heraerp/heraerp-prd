@@ -54,7 +54,7 @@ import {
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
 import { Badge } from '@/components/ui/badge'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/app/components/ThemeProvider'
 import { formatDate, isTodaySafe, isYesterdaySafe, differenceInMinutesSafe } from '@/lib/date-utils'
 
 interface Message {

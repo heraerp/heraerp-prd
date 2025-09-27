@@ -1,0 +1,135 @@
+/* HERA Universal Theme Variables - Consolidated and Clean */
+
+/* Light Mode - Clean, Professional Colors */
+:root {
+  /* Core Colors */
+  --background: 255 255 255; /* Pure white */
+  --foreground: 9 9 11; /* Near black for maximum contrast */
+
+  /* Card & Surface Colors */
+  --card: 255 255 255; /* White cards */
+  --card-foreground: 9 9 11; /* Black text on cards */
+
+  /* Popover Colors */
+  --popover: 255 255 255;
+  --popover-foreground: 9 9 11;
+
+  /* Primary Brand Colors */
+  --primary: 99 102 241; /* Indigo-500 */
+  --primary-foreground: 255 255 255; /* White text on primary */
+
+  /* Secondary Colors */
+  --secondary: 243 244 246; /* Gray-100 */
+  --secondary-foreground: 17 24 39; /* Gray-900 */
+
+  /* Muted Colors */
+  --muted: 249 250 251; /* Gray-50 */
+  --muted-foreground: 107 114 128; /* Gray-500 */
+
+  /* Accent Colors */
+  --accent: 239 246 255; /* Blue-50 */
+  --accent-foreground: 30 64 175; /* Blue-800 */
+
+  /* Destructive Colors */
+  --destructive: 239 68 68; /* Red-500 */
+  --destructive-foreground: 255 255 255;
+
+  /* Borders */
+  --border: 229 231 235; /* Gray-200 */
+  --input: 209 213 219; /* Gray-300 */
+  --ring: 99 102 241; /* Indigo-500 */
+
+  /* Chart Colors */
+  --chart-1: 99 102 241;
+  --chart-2: 34 197 94;
+  --chart-3: 251 146 60;
+  --chart-4: 168 85 247;
+  --chart-5: 236 72 153;
+
+  /* Border Radius */
+  --radius: 0.5rem;
+}
+
+/* Dark Mode - High Contrast Professional Dark */
+.dark {
+  /* Core Colors */
+  --background: 9 9 11; /* Near black */
+  --foreground: 248 250 252; /* Near white for contrast */
+
+  /* Card & Surface Colors */
+  --card: 24 24 27; /* Zinc-900 */
+  --card-foreground: 248 250 252;
+
+  /* Popover Colors */
+  --popover: 24 24 27;
+  --popover-foreground: 248 250 252;
+
+  /* Primary Brand Colors */
+  --primary: 129 140 248; /* Indigo-400 */
+  --primary-foreground: 15 23 42; /* Slate-900 */
+
+  /* Secondary Colors */
+  --secondary: 39 39 42; /* Zinc-800 */
+  --secondary-foreground: 226 232 240; /* Slate-200 */
+
+  /* Muted Colors */
+  --muted: 39 39 42; /* Zinc-800 */
+  --muted-foreground: 161 161 170; /* Zinc-400 */
+
+  /* Accent Colors */
+  --accent: 39 39 42; /* Zinc-800 */
+  --accent-foreground: 226 232 240; /* Slate-200 */
+
+  /* Destructive Colors */
+  --destructive: 248 113 113; /* Red-400 */
+  --destructive-foreground: 255 255 255;
+
+  /* Borders */
+  --border: 63 63 70; /* Zinc-700 */
+  --input: 82 82 91; /* Zinc-600 */
+  --ring: 129 140 248; /* Indigo-400 */
+
+  /* Chart Colors */
+  --chart-1: 129 140 248;
+  --chart-2: 74 222 128;
+  --chart-3: 251 191 36;
+  --chart-4: 196 181 253;
+  --chart-5: 251 146 60;
+}
+
+/* Apply Theme Colors Globally */
+* {
+  border-color: rgb(var(--border));
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+/* High Contrast Text Classes */
+.text-high-contrast {
+  color: rgb(var(--foreground));
+}
+
+.text-medium-contrast {
+  color: rgb(var(--muted-foreground));
+}
+
+/* Ensure Proper Text Visibility */
+.dark .text-foreground {
+  color: rgb(248 250 252) !important;
+}
+
+.dark .text-muted-foreground {
+  color: rgb(161 161 170) !important;
+}
+
+/* Light Mode Text Visibility */
+:root .text-foreground {
+  color: rgb(9 9 11) !important;
+}
+
+:root .text-muted-foreground {
+  color: rgb(107 114 128) !important;
+}

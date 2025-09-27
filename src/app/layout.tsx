@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import { QueryProvider } from '@/components/providers/QueryProvider'
-import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
+// import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
+import ThemeProvider from '@/app/components/ThemeProvider'
+import PublicPageWrapper from '@/app/components/PublicPageWrapper'
 import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 // import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'; // Temporarily disabled due to runtime error
 import { ToastProvider } from '@/components/ui/useToast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
-import Navbar from '@/app/components/Navbar'
-import Footer from '@/app/components/Footer'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
 import './globals-migration-test.css' // Migration test - imports both styles
 // import "../styles/intro.css"; // Temporarily disabled for SSR compatibility
@@ -70,23 +70,45 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* PWA functionality has been removed from HERA for multi-tenant safety */}
         {/* Setting cache control headers for multi-tenant security */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        {/* Ensure dark theme is applied immediately to prevent flash */}
+        {/* Ensure dark theme is applied immediately to prevent flash for public pages */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Always apply dark theme on initial load
-                document.documentElement.classList.add('dark');
-                // If no theme is saved, save dark theme
-                if (!localStorage.getItem('hera-theme')) {
-                  localStorage.setItem('hera-theme', 'dark');
+                // List of public routes that should be dark-only
+                const PUBLIC_ROUTES = [
+                  "/", "/demo", "/pricing-request", "/blog", "/docs",
+                  "/contact", "/partners", "/solutions", "/features",
+                  "/terms", "/policy", "/whatsapp-desktop", "/discover",
+                  "/how-it-works", "/pricing", "/get-started"
+                ];
+
+                const pathname = window.location.pathname;
+                const isPublicPage = PUBLIC_ROUTES.some(route => {
+                  if (route === "/") {
+                    return pathname === "/";
+                  }
+                  return pathname.startsWith(route);
+                });
+
+                if (isPublicPage) {
+                  // Force dark mode for public pages
+                  document.documentElement.classList.remove('light');
+                  document.documentElement.classList.add('dark');
+                } else {
+                  // Apply saved theme for non-public pages
+                  const saved = localStorage.getItem('theme') || 'dark';
+                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const effective = saved === 'system' ? (systemDark ? 'dark' : 'light') : saved;
+                  document.documentElement.classList.remove('light', 'dark');
+                  document.documentElement.classList.add(effective);
                 }
 
                 // No-op cookie preferences function for footer
@@ -100,27 +122,25 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
         style={{
-          backgroundColor: 'var(--hera-black)',
-          color: 'var(--hera-light-text)',
           minHeight: '100vh'
         }}
         suppressHydrationWarning={true}
       >
-        <HeraThemeProvider defaultTheme="dark">
-          <QueryProvider>
-            <HERAAuthProvider>
-              <ToastProvider>
-                <Navbar />
-                {children}
-                <Footer showGradient={true} />
-                <Toaster />
-                <CookieBanner />
-              </ToastProvider>
-            </HERAAuthProvider>
-          </QueryProvider>
-        </HeraThemeProvider>
+        <ThemeProvider>
+          <PublicPageWrapper>
+            <QueryProvider>
+              <HERAAuthProvider>
+                <ToastProvider>
+                  {children}
+                  <Toaster />
+                  <CookieBanner />
+                </ToastProvider>
+              </HERAAuthProvider>
+            </QueryProvider>
+          </PublicPageWrapper>
+        </ThemeProvider>
       </body>
     </html>
   )

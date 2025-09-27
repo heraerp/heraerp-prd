@@ -270,6 +270,85 @@
 }
 
 /* ===============================================
+   ENTERPRISE GLASSMORPHISM TOKENS
+   Modern design system for HERA components
+   =============================================== */
+
+/* Light theme enterprise tokens - Enhanced for crisp readability (Mangomint-like) */
+:root {
+  /* Surfaces (near-solid for readability on light) */
+  --surface-glass: rgba(255,255,255,0.96);
+  --surface-veil:  rgba(255,255,255,0.98);
+
+  /* Ink (SOLID; no alpha) */
+  --ink-primary:   #0b1220; /* near-black */
+  --ink-secondary: #344154; /* SOLID dark-slate for body copy */
+
+  /* Lines & depth */
+  --border-strong: rgba(15,23,42,0.14);
+  --shadow-elev:   0 10px 24px -12px rgba(15,23,42,0.2);
+}
+
+/* Dark theme enterprise tokens - ENHANCED CONTRAST */
+.dark {
+  --surface-glass: rgba(31, 41, 55, 0.85);  /* Increased opacity for better contrast */
+  --surface-veil: rgba(31, 41, 55, 0.7);    /* Increased opacity */
+  --ink-primary: #ffffff;                    /* Pure white for maximum contrast */
+  --ink-secondary: rgba(255,255,255,0.85);   /* High contrast secondary text */
+  --border-strong: rgba(255,255,255,0.2);    /* Brighter borders */
+  --shadow-elev: 0 8px 40px -12px rgba(0,0,0,0.8);
+}
+
+/* Enterprise glassmorphism classes */
+.glass {
+  background: var(--surface-glass);
+  backdrop-filter: saturate(140%) blur(16px);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-elev);
+}
+
+.ink {
+  color: var(--ink-primary);
+}
+
+.ink-muted {
+  color: var(--ink-secondary);
+}
+
+/* Enhanced dark mode form inputs for better contrast */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: rgba(17, 24, 39, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: rgba(17, 24, 39, 0.9) !important;
+  border-color: var(--hera-500) !important;
+  outline: 2px solid rgba(99, 102, 241, 0.3) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced dropdown contrast for dark mode */
+.dark [role="listbox"],
+.dark [data-radix-select-content] {
+  background-color: rgb(31, 41, 55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.dark [role="option"]:hover,
+.dark [role="option"]:focus {
+  background-color: rgba(99, 102, 241, 0.2) !important;
+  color: white !important;
+}
+
+/* ===============================================
    END OF SAFE GLOBALS
    All problematic overrides removed
    =============================================== */

@@ -60,7 +60,7 @@ export function RuleCard({
   }
 
   return (
-    <Card className={cn('transition-all hover:shadow-md', !rule.enabled && 'opacity-60')}>
+    <Card className={cn('transition-all hover:shadow-md', !rule.enabled && 'bg-muted/50')}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-1">

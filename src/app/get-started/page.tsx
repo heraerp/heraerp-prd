@@ -112,7 +112,7 @@ export default function GetStartedPage() {
               </div>
               <span className="text-xl font-light">HERA</span>
             </Link>
-            <Link href="/apps" className="text-muted-foreground hover:text-white transition-colors">
+            <Link href="/apps" className="ink-muted hover:ink transition-colors">
               View All Apps
             </Link>
           </div>
@@ -123,8 +123,8 @@ export default function GetStartedPage() {
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-16">
-            <h1 className="text-5xl font-light text-gray-100 mb-6">Start Your HERA Journey</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <h1 className="text-5xl font-light ink mb-6">Start Your HERA Journey</h1>
+            <p className="text-xl ink-muted max-w-3xl mx-auto">
               Enterprise-grade ERP that's live in 2 weeks. Join thousands of businesses already
               transforming their operations with HERA.
             </p>
@@ -146,8 +146,8 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-100">2-Week Implementation Guarantee</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium ink">2-Week Implementation Guarantee</p>
+                        <p className="text-sm ink-muted">
                           Live in 14 days or your implementation is free
                         </p>
                       </div>
@@ -155,8 +155,8 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-100">70% Cost Savings</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium ink">70% Cost Savings</p>
+                        <p className="text-sm ink-muted">
                           Enterprise features at small business prices
                         </p>
                       </div>
@@ -164,8 +164,8 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-100">Industry-Specific Solutions</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium ink">Industry-Specific Solutions</p>
+                        <p className="text-sm ink-muted">
                           Pre-configured for salon, restaurant, healthcare & more
                         </p>
                       </div>
@@ -173,8 +173,8 @@ export default function GetStartedPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-medium text-gray-100">AI-Powered Automation</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-medium ink">AI-Powered Automation</p>
+                        <p className="text-sm ink-muted">
                           85% journal automation, smart insights, and more
                         </p>
                       </div>
@@ -188,9 +188,9 @@ export default function GetStartedPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
                     <Shield className="w-6 h-6 text-primary" />
-                    <h3 className="text-lg font-semibold text-gray-100">Enterprise Security</h3>
+                    <h3 className="text-lg font-semibold ink">Enterprise Security</h3>
                   </div>
-                  <ul className="space-y-2 text-sm text-gray-700">
+                  <ul className="space-y-2 text-sm ink-muted">
                     <li className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
                       Perfect multi-tenant isolation

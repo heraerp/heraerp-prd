@@ -194,7 +194,7 @@ const AppsModal = React.memo(function AppsModal({
                     <span
                       className={cn(
                         'text-xs font-medium text-center',
-                        active ? 'text-violet-600' : 'text-gray-700 group-hover:text-violet-600'
+                        active ? 'text-violet-600' : 'ink-muted group-hover:text-violet-600'
                       )}
                     >
                       {app.title}
@@ -297,7 +297,7 @@ function UniversalSidebar({
           >
             <ModuleIcon className="h-6 w-6 text-foreground" />
           </div>
-          <span className="text-[10px] text-gray-700 mt-1 font-semibold">{moduleName}</span>
+          <span className="text-[10px] ink-muted mt-1 font-semibold">{moduleName}</span>
         </div>
 
         {/* Navigation Items */}

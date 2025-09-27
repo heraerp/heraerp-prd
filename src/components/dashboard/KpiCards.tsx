@@ -23,9 +23,9 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {Array.from({ length: 6 }).map((_, index) => (
-          <Card key={index} className="relative overflow-hidden opacity-50">
+          <Card key={index} className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <CardTitle className="text-sm font-medium ink-muted">
                 Loading...
               </CardTitle>
               <Skeleton className="h-8 w-8 rounded-lg" />
@@ -165,7 +165,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent dark:from-gray-900/50" />
 
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <CardTitle className="text-sm font-medium ink-muted">
                   {kpi.title}
                 </CardTitle>
                 <div className={cn('p-2 rounded-lg bg-gradient-to-br', kpi.color, 'bg-opacity-20')}>
