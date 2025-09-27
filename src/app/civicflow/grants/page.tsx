@@ -62,14 +62,14 @@ export default function GrantsPage() {
     {
       title: 'Average Award',
       value: kpis?.avg_award
-        ? new Intl.NumberFormat('en-US', {
+        ? new Intl.NumberFormat('en-GB', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'GBP',
             minimumFractionDigits: 0
           }).format(kpis.avg_award)
-        : new Intl.NumberFormat('en-US', {
+        : new Intl.NumberFormat('en-GB', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'GBP',
             minimumFractionDigits: 0
           }).format(0),
       color: 'text-accent2'
@@ -89,14 +89,14 @@ export default function GrantsPage() {
             variant="outline"
             onClick={() => handleExport('csv')}
             disabled={exportGrants.isPending}
-            className="border-border hover:bg-accent-soft"
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-accent hover:bg-accent/90 text-accent-fg"
+            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Application
@@ -144,7 +144,10 @@ export default function GrantsPage() {
                 ? 'Try adjusting your filters to see more results.'
                 : 'Get started by creating your first grant application.'}
             </p>
-            <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Application
             </Button>
@@ -169,6 +172,7 @@ export default function GrantsPage() {
                 variant="outline"
                 onClick={() => setFilters(f => ({ ...f, page: Math.max(1, f.page! - 1) }))}
                 disabled={filters.page === 1}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
                 Previous
               </Button>
@@ -179,6 +183,7 @@ export default function GrantsPage() {
                 variant="outline"
                 onClick={() => setFilters(f => ({ ...f, page: f.page! + 1 }))}
                 disabled={filters.page === grantsData.total_pages}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
               >
                 Next
               </Button>

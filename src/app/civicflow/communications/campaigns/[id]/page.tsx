@@ -194,7 +194,12 @@ export default function CampaignDetailPage() {
 
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.back()}
+          className="hover:bg-[rgb(0,166,166)]/10"
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="flex-1 space-y-1">
@@ -221,19 +226,29 @@ export default function CampaignDetailPage() {
         </div>
         <div className="flex items-center gap-2">
           {campaign.status === 'draft' && (
-            <Button onClick={() => handleAction('schedule')}>
+            <Button
+              onClick={() => handleAction('schedule')}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               <Play className="h-4 w-4 mr-2" />
               Schedule
             </Button>
           )}
           {campaign.status === 'running' && (
-            <Button onClick={() => handleAction('pause')} variant="outline">
+            <Button
+              onClick={() => handleAction('pause')}
+              variant="outline"
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               <Pause className="h-4 w-4 mr-2" />
               Pause
             </Button>
           )}
           {campaign.status === 'paused' && (
-            <Button onClick={() => handleAction('resume')}>
+            <Button
+              onClick={() => handleAction('resume')}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               <Play className="h-4 w-4 mr-2" />
               Resume
             </Button>
@@ -241,7 +256,10 @@ export default function CampaignDetailPage() {
           {['draft', 'scheduled', 'running', 'paused'].includes(campaign.status) && (
             <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
               <AlertDialogTrigger asChild>
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+                >
                   <Square className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
@@ -267,7 +285,11 @@ export default function CampaignDetailPage() {
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button
+                variant="outline"
+                size="icon"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

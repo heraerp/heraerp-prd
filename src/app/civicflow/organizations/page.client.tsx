@@ -112,35 +112,43 @@ export default function Client() {
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-accent hover:bg-accent/90">
+            <Button className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white">
               <Plus className="h-4 w-4 mr-2" />
               New Organization
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[500px] bg-panel border-border">
             <DialogHeader>
-              <DialogTitle>Create New Organization</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-text-100">Create New Organization</DialogTitle>
+              <DialogDescription className="text-text-300">
                 Add a new partner, funder, investee, or government organization.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="org-name">Organization Name</Label>
+                <Label htmlFor="org-name" className="text-text-200">
+                  Organization Name
+                </Label>
                 <Input
                   id="org-name"
                   value={newOrgName}
                   onChange={e => setNewOrgName(e.target.value)}
                   placeholder="Enter organization name"
+                  className="bg-panel-alt border-border text-text-100 mt-1.5"
                 />
               </div>
               <div>
-                <Label htmlFor="org-type">Type</Label>
+                <Label htmlFor="org-type" className="text-text-200">
+                  Type
+                </Label>
                 <Select value={newOrgType} onValueChange={v => setNewOrgType(v as OrgType)}>
-                  <SelectTrigger id="org-type">
+                  <SelectTrigger
+                    id="org-type"
+                    className="bg-panel-alt border-border text-text-100 mt-1.5"
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-panel border-border">
                     <SelectItem value="Partner">Partner</SelectItem>
                     <SelectItem value="Funder">Funder</SelectItem>
                     <SelectItem value="Investee">Investee</SelectItem>
@@ -149,15 +157,20 @@ export default function Client() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="org-stage">Engagement Stage</Label>
+                <Label htmlFor="org-stage" className="text-text-200">
+                  Engagement Stage
+                </Label>
                 <Select
                   value={newOrgStage}
                   onValueChange={v => setNewOrgStage(v as EngagementStage)}
                 >
-                  <SelectTrigger id="org-stage">
+                  <SelectTrigger
+                    id="org-stage"
+                    className="bg-panel-alt border-border text-text-100 mt-1.5"
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-panel border-border">
                     <SelectItem value="Exploration">Exploration</SelectItem>
                     <SelectItem value="Co-design">Co-design</SelectItem>
                     <SelectItem value="Approval">Approval</SelectItem>
@@ -167,11 +180,19 @@ export default function Client() {
                 </Select>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+            <DialogFooter className="bg-panel-alt -mx-6 -mb-6 px-6 py-4 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsCreateOpen(false)}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 Cancel
               </Button>
-              <Button onClick={handleCreateOrg} disabled={!newOrgName || createOrg.isPending}>
+              <Button
+                onClick={handleCreateOrg}
+                disabled={!newOrgName || createOrg.isPending}
+                className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+              >
                 {createOrg.isPending ? 'Creating...' : 'Create Organization'}
               </Button>
             </DialogFooter>
@@ -300,7 +321,10 @@ export default function Client() {
                 ? 'Try adjusting your filters to see more results.'
                 : 'Get started by creating your first organization.'}
             </p>
-            <Button onClick={() => setIsCreateOpen(true)}>
+            <Button
+              onClick={() => setIsCreateOpen(true)}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create Organization
             </Button>

@@ -21,9 +21,9 @@ const statusStyles = {
 export function ProgramCard({ program, onCreateGrantRound }: ProgramCardProps) {
   const formatCurrency = (amount?: number) => {
     if (!amount) return 'N/A'
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GBP',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(amount)

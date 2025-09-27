@@ -48,3 +48,26 @@ export async function callFunction(
 
   return data
 }
+
+// Alias for RPC calls
+export const rpc = callFunction
+
+// Add selectRows and selectRow functions for raw SQL queries
+export async function selectRows(sql: string, params: any[] = []): Promise<any[]> {
+  const { data, error } = await supabase.rpc('exec_sql', {
+    query: sql,
+    params: params
+  })
+
+  if (error) {
+    console.error('Database error:', error)
+    throw new Error(error.message)
+  }
+
+  return data || []
+}
+
+export async function selectRow(sql: string, params: any[] = []): Promise<any> {
+  const rows = await selectRows(sql, params)
+  return rows[0] || null
+}

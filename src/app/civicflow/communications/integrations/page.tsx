@@ -147,7 +147,11 @@ export default function IntegrationsPage() {
               Connect your favorite tools to sync data and automate workflows
             </p>
           </div>
-          <Button variant="outline" onClick={() => refetch()}>
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+          >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>

@@ -89,33 +89,38 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Create New Event</DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[90vh] bg-panel border-border overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0 pb-4">
+          <DialogTitle className="text-text-100">Create New Event</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-2">
           <div className="space-y-2">
-            <Label htmlFor="name">Event Name</Label>
+            <Label htmlFor="name" className="text-text-200">
+              Event Name
+            </Label>
             <Input
               id="name"
               required
               value={formData.entity_name || ''}
               onChange={e => setFormData({ ...formData, entity_name: e.target.value })}
               placeholder="Annual Community Summit"
+              className="bg-panel-alt border-border text-text-100"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type">Event Type</Label>
+            <Label htmlFor="type" className="text-text-200">
+              Event Type
+            </Label>
             <Select
               value={formData.event_type}
               onValueChange={value => setFormData({ ...formData, event_type: value as EventType })}
             >
-              <SelectTrigger id="type">
+              <SelectTrigger id="type" className="bg-panel-alt border-border text-text-100">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-panel border-border">
                 <SelectItem value="webinar">Webinar</SelectItem>
                 <SelectItem value="roundtable">Roundtable</SelectItem>
                 <SelectItem value="conference">Conference</SelectItem>
@@ -128,21 +133,22 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Start Date & Time</Label>
+              <Label className="text-text-200">Start Date & Time</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      !startDate && 'text-muted-foreground'
+                      'w-full justify-start text-left font-normal bg-panel-alt border-border',
+                      !startDate && 'text-text-500',
+                      startDate && 'text-text-100'
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {startDate ? format(startDate, 'PPP') : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 bg-panel border-border">
                   <Calendar
                     mode="single"
                     selected={startDate}
@@ -151,29 +157,40 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   />
                 </PopoverContent>
               </Popover>
-              <Input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} />
+              <Input
+                type="time"
+                value={startTime}
+                onChange={e => setStartTime(e.target.value)}
+                className="bg-panel-alt border-border text-text-100"
+              />
             </div>
 
             <div className="space-y-2">
-              <Label>End Date & Time</Label>
+              <Label className="text-text-200">End Date & Time</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      'w-full justify-start text-left font-normal',
-                      !endDate && 'text-muted-foreground'
+                      'w-full justify-start text-left font-normal bg-panel-alt border-border',
+                      !endDate && 'text-text-500',
+                      endDate && 'text-text-100'
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {endDate ? format(endDate, 'PPP') : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 bg-panel border-border">
                   <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
                 </PopoverContent>
               </Popover>
-              <Input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
+              <Input
+                type="time"
+                value={endTime}
+                onChange={e => setEndTime(e.target.value)}
+                className="bg-panel-alt border-border text-text-100"
+              />
             </div>
           </div>
 
@@ -190,7 +207,9 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   })
                 }
               />
-              <Label htmlFor="online">Online Event</Label>
+              <Label htmlFor="online" className="text-text-200">
+                Online Event
+              </Label>
             </div>
 
             {!formData.is_online && (
@@ -200,20 +219,25 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                   checked={formData.is_hybrid}
                   onCheckedChange={checked => setFormData({ ...formData, is_hybrid: checked })}
                 />
-                <Label htmlFor="hybrid">Hybrid Event (In-person + Online)</Label>
+                <Label htmlFor="hybrid" className="text-text-200">
+                  Hybrid Event (In-person + Online)
+                </Label>
               </div>
             )}
           </div>
 
           {(formData.is_online || formData.is_hybrid) && (
             <div className="space-y-2">
-              <Label htmlFor="url">Online URL</Label>
+              <Label htmlFor="url" className="text-text-200">
+                Online URL
+              </Label>
               <Input
                 id="url"
                 type="url"
                 value={formData.online_url || ''}
                 onChange={e => setFormData({ ...formData, online_url: e.target.value })}
                 placeholder="https://zoom.us/..."
+                className="bg-panel-alt border-border text-text-100"
               />
             </div>
           )}
@@ -221,29 +245,37 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
           {(!formData.is_online || formData.is_hybrid) && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="venue">Venue Name</Label>
+                <Label htmlFor="venue" className="text-text-200">
+                  Venue Name
+                </Label>
                 <Input
                   id="venue"
                   value={formData.venue_name || ''}
                   onChange={e => setFormData({ ...formData, venue_name: e.target.value })}
                   placeholder="Community Center Main Hall"
+                  className="bg-panel-alt border-border text-text-100"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address">Venue Address</Label>
+                <Label htmlFor="address" className="text-text-200">
+                  Venue Address
+                </Label>
                 <Input
                   id="address"
                   value={formData.venue_address || ''}
                   onChange={e => setFormData({ ...formData, venue_address: e.target.value })}
                   placeholder="123 Main St, City, State"
+                  className="bg-panel-alt border-border text-text-100"
                 />
               </div>
             </>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="capacity">Capacity (optional)</Label>
+            <Label htmlFor="capacity" className="text-text-200">
+              Capacity (optional)
+            </Label>
             <Input
               id="capacity"
               type="number"
@@ -253,25 +285,38 @@ export function NewEventModal({ open, onOpenChange, onSuccess }: NewEventModalPr
                 setFormData({ ...formData, capacity: parseInt(e.target.value) || undefined })
               }
               placeholder="100"
+              className="bg-panel-alt border-border text-text-100"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description" className="text-text-200">
+              Description (optional)
+            </Label>
             <Textarea
               id="description"
               value={formData.description || ''}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
               placeholder="Join us for an engaging discussion about..."
               rows={3}
+              className="bg-panel-alt border-border text-text-100"
             />
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <div className="flex justify-end space-x-2 pt-4 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={createEvent.isPending}>
+            <Button
+              type="submit"
+              disabled={createEvent.isPending}
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+            >
               {createEvent.isPending ? 'Creating...' : 'Create Event'}
             </Button>
           </div>

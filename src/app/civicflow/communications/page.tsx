@@ -105,9 +105,7 @@ function CommunicationsContent() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <h2 className="text-lg font-medium mb-2">No Organization Selected</h2>
-          <p className="text-muted-foreground">
-            Please select an organization to view communications.
-          </p>
+          <p className="text-text-200">Please select an organization to view communications.</p>
         </div>
       </div>
     )
@@ -132,13 +130,19 @@ function CommunicationsContent() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Communications</h1>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setShowNewCampaignModal(true)}>
+          <Button
+            onClick={() => setShowNewCampaignModal(true)}
+            className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
+          >
             <Plus className="h-4 w-4 mr-2" />
             New Campaign
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button
+                variant="outline"
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export
                 <ChevronDown className="h-4 w-4 ml-2" />
@@ -159,94 +163,84 @@ function CommunicationsContent() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Outbound Today
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Outbound Today</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : kpis?.outbound_today || 0}
               </span>
-              <Send className="h-4 w-4 text-muted-foreground" />
+              <Send className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Inbound Today
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Inbound Today</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : kpis?.inbound_today || 0}
               </span>
-              <Inbox className="h-4 w-4 text-muted-foreground" />
+              <Inbox className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Bounces (7d)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Bounces (7d)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : kpis?.bounces_7d || 0}
               </span>
-              <AlertCircle className="h-4 w-4 text-muted-foreground" />
+              <AlertCircle className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Opt-outs (7d)
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Opt-outs (7d)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : kpis?.opt_outs_7d || 0}
               </span>
-              <UserX className="h-4 w-4 text-muted-foreground" />
+              <UserX className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Queue Size</CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Queue Size</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : kpis?.queue_size || 0}
               </span>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Clock className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Deliverability
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-text-300">Deliverability</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">
                 {kpisLoading ? '-' : `${kpis?.deliverability_percent || 0}%`}
               </span>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <TrendingUp className="h-4 w-4 text-text-300" />
             </div>
           </CardContent>
         </Card>

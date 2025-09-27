@@ -33,9 +33,9 @@ const STATUS_LABELS = {
 
 export function ApplicationCard({ application, onReview }: ApplicationCardProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-GB', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'GBP',
       minimumFractionDigits: 0
     }).format(amount)
   }

@@ -1,0 +1,35 @@
+{
+  "name": "hera-blog-automation",
+  "version": "1.0.0",
+  "description": "SEO-optimized blog automation system for HERA ERP",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate": "ts-node scripts/generate_daily_post.ts",
+    "generate:multiple": "for i in {1..5}; do npm run generate; sleep 5; done"
+  },
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next-mdx-remote": "^4.4.1",
+    "gray-matter": "^4.0.3",
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4",
+    "@anthropic-ai/sdk": "^0.17.0"
+  }
+}

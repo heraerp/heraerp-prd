@@ -258,20 +258,27 @@ export function ComposeModal({
   if (isMinimized) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
-        <Card className="w-80 shadow-lg">
-          <CardHeader className="p-3">
+        <Card className="w-80 shadow-lg bg-panel border-border">
+          <CardHeader className="p-3 bg-panel-alt">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm truncate">{draft.subject || 'New Message'}</CardTitle>
+              <CardTitle className="text-sm truncate text-text-100">
+                {draft.subject || 'New Message'}
+              </CardTitle>
               <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-6 w-6 p-0"
+                  className="h-6 w-6 p-0 text-text-300 hover:text-text-100 hover:bg-[rgb(0,166,166)]/10"
                   onClick={() => setIsMinimized(false)}
                 >
                   <Maximize2 className="h-3 w-3" />
                 </Button>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onClose}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 text-text-300 hover:text-text-100 hover:bg-[rgb(0,166,166)]/10"
+                  onClick={onClose}
+                >
                   <X className="h-3 w-3" />
                 </Button>
               </div>
@@ -286,19 +293,19 @@ export function ComposeModal({
     <div
       className={cn(
         'fixed inset-0 z-50 flex items-center justify-center',
-        isFullscreen ? 'p-0' : 'p-4'
+        isFullscreen ? 'p-0' : 'p-6'
       )}
     >
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <Card
         className={cn(
-          'relative bg-card shadow-2xl',
-          isFullscreen ? 'w-full h-full rounded-none' : 'w-full max-w-4xl max-h-[90vh] rounded-lg'
+          'relative bg-panel border-border shadow-2xl flex flex-col overflow-hidden',
+          isFullscreen ? 'w-full h-full rounded-none' : 'w-full max-w-4xl h-[85vh] rounded-lg'
         )}
       >
         {/* Header */}
-        <CardHeader className="border-b border-gray-200 dark:border-gray-700 p-4">
+        <CardHeader className="border-b border-border p-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">
               {replyToId ? 'Reply' : forwardId ? 'Forward' : 'New Message'}
@@ -338,9 +345,9 @@ export function ComposeModal({
           </div>
         </CardHeader>
 
-        <CardContent className="p-0 flex flex-col h-full">
+        <CardContent className="p-0 flex flex-col flex-1 overflow-hidden">
           {/* Recipients */}
-          <div className="p-4 space-y-3 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-4 space-y-3 border-b border-border flex-shrink-0">
             {/* To Field */}
             <div className="flex items-center gap-3">
               <Label htmlFor="to" className="w-12 text-sm font-medium shrink-0">
@@ -454,7 +461,7 @@ export function ComposeModal({
           </div>
 
           {/* Toolbar */}
-          <div className="p-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-1">
+          <div className="p-2 border-b border-border flex items-center gap-1 flex-shrink-0">
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <Bold className="h-4 w-4" />
@@ -505,7 +512,7 @@ export function ComposeModal({
 
           {/* Attachments */}
           {draft.attachments.length > 0 && (
-            <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-3 border-b border-border flex-shrink-0">
               <div className="flex items-center gap-2 flex-wrap">
                 {draft.attachments.map((file, index) => (
                   <Badge key={index} variant="secondary" className="flex items-center gap-1">
@@ -526,7 +533,7 @@ export function ComposeModal({
           )}
 
           {/* Email Body */}
-          <div className="flex-1 p-4">
+          <div className="flex-1 overflow-y-auto p-4 min-h-0">
             <Textarea
               value={draft.body_text}
               onChange={e => {
@@ -534,23 +541,29 @@ export function ComposeModal({
                 handleDraftChange('body_html', e.target.value) // Simple text to HTML for now
               }}
               placeholder="Write your message..."
-              className="w-full h-full resize-none border-none focus-visible:ring-0"
+              className="w-full min-h-[200px] resize-none border-none focus-visible:ring-0 bg-transparent"
+              style={{ height: 'auto' }}
             />
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div className="p-4 border-t border-border flex items-center justify-between flex-shrink-0 bg-panel">
             <div className="flex items-center gap-2">
               <Button
                 onClick={handleSend}
                 disabled={isSending || draft.to.length === 0}
-                className="flex items-center gap-2"
+                className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white flex items-center gap-2"
               >
                 <Send className="h-4 w-4" />
                 {isSending ? 'Sending...' : 'Send'}
               </Button>
 
-              <Button variant="outline" onClick={handleSaveDraft} disabled={isSavingDraft}>
+              <Button
+                variant="outline"
+                onClick={handleSaveDraft}
+                disabled={isSavingDraft}
+                className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+              >
                 <Save className="h-4 w-4 mr-2" />
                 {isSavingDraft ? 'Saving...' : 'Save Draft'}
               </Button>

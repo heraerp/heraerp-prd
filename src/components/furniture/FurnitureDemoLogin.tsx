@@ -14,8 +14,12 @@ import { LogIn, User, Key }
 from 'lucide-react'
 import { useState }
 from 'react'
-import type { Database }
-from '@/types/hera-database.types' const DEMO_CREDENTIALS = { email: 'demo@keralafurniture.com', password: 'FurnitureDemo2025!', organizationId: 'f0af4ced-9d12-4a55-a649-b484368db249'
+import type { Database } from '@/types/hera-database.types'
+
+const DEMO_CREDENTIALS = {
+  email: 'demo@keralafurniture.com',
+  password: 'FurnitureDemo2025!',
+  organizationId: 'f0af4ced-9d12-4a55-a649-b484368db249'
 }
 
 export function FurnitureDemoLogin() {

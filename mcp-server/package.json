@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "HERA Universal MCP Server with REST API - Direct access to 6-table architecture",
   "main": "hera-mcp-server.js",
+  "type": "module",
   "bin": {
     "hera-mcp": "./hera-mcp-server.js"
   },

@@ -31,8 +31,21 @@ interface EditProductModalProps {
   onSuccess?: () => void
 }
 
-const categories = [ { value: 'office', label: 'Office Furniture' }, { value: 'seating', label: 'Seating' }, { value: 'tables', label: 'Tables' }, { value: 'storage', label: 'Storage' }, { value: 'beds', label: 'Beds' }
-] const materials = [ { value: 'wood', label: 'Wood' }, { value: 'metal', label: 'Metal' }, { value: 'plastic', label: 'Plastic' }, { value: 'fabric', label: 'Fabric' }, { value: 'leather', label: 'Leather' }, { value: 'glass', label: 'Glass' }
+const categories = [
+  { value: 'office', label: 'Office Furniture' },
+  { value: 'seating', label: 'Seating' },
+  { value: 'tables', label: 'Tables' },
+  { value: 'storage', label: 'Storage' },
+  { value: 'beds', label: 'Beds' }
+]
+
+const materials = [
+  { value: 'wood', label: 'Wood' },
+  { value: 'metal', label: 'Metal' },
+  { value: 'plastic', label: 'Plastic' },
+  { value: 'fabric', label: 'Fabric' },
+  { value: 'leather', label: 'Leather' },
+  { value: 'glass', label: 'Glass' }
 ]
 
 export default function EditProductModal({ open, onClose, product, organizationId, onSuccess

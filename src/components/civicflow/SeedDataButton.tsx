@@ -110,7 +110,13 @@ export function SeedDataButton() {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={handleSeed} disabled={isLoading}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSeed}
+          disabled={isLoading}
+          className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
+        >
           <Database className="mr-2 h-4 w-4" />
           {isLoading ? 'Creating...' : 'Create Demo Data'}
         </Button>
@@ -120,7 +126,7 @@ export function SeedDataButton() {
           size="sm"
           onClick={() => setShowClearDialog(true)}
           disabled={isLoading}
-          className="text-destructive hover:text-destructive"
+          className="border-[rgb(0,166,166)] text-destructive hover:text-destructive hover:bg-[rgb(0,166,166)]/10"
         >
           <Trash2 className="mr-2 h-4 w-4" />
           Clear All
@@ -128,16 +134,18 @@ export function SeedDataButton() {
       </div>
 
       <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-panel border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-text-100">Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription className="text-text-300">
               This will permanently delete all cases in the CivicFlow demo organization. This action
               cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleClear}
               className="bg-destructive hover:bg-destructive/90"

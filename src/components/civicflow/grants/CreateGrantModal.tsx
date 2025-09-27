@@ -105,15 +105,15 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-panel border-border">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[90vh] bg-panel border-border overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-text-100">Create Grant Application</DialogTitle>
           <DialogDescription className="text-text-300">
             Submit a new grant application for review and processing.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto flex-1 px-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Applicant Type */}
             <div className="space-y-2">
@@ -216,7 +216,7 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
                   variant="outline"
                   onClick={handleAddTag}
                   disabled={!tagInput.trim()}
-                  className="border-border hover:bg-accent-soft"
+                  className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -258,14 +258,14 @@ export function CreateGrantModal(props: CreateGrantModalProps): JSX.Element {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="border-border hover:bg-accent-soft"
+              className="border-[rgb(0,166,166)] text-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/10"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={createGrant.isPending || !formData.applicant.id || !formData.round_id}
-              className="bg-accent hover:bg-accent/90 text-accent-fg"
+              className="bg-[rgb(0,166,166)] hover:bg-[rgb(0,166,166)]/90 text-white"
             >
               {createGrant.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Application

@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "@/app/components/ThemeToggle";
 
-type NavItem = { href: string; label: string };
+type NavItem = { href: string; label: string }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/solutions", label: "Solutions" }, // renamed from Features
+  { href: "/solutions", label: "Solutions" },
   { href: "/partners", label: "Partners" },
   { href: "/docs", label: "Docs" },
   { href: "/blog", label: "Blog" },
@@ -16,35 +16,40 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
 
   // Close on route change
-  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   // Close when clicking outside
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      if (!open) return;
-      const target = e.target as Node | null;
-      if (panelRef.current?.contains(target as Node)) return;
-      if (buttonRef.current?.contains(target as Node)) return;
-      setOpen(false);
+      if (!open) return
+      const target = e.target as Node | null
+      if (panelRef.current?.contains(target as Node)) return
+      if (buttonRef.current?.contains(target as Node)) return
+      setOpen(false)
     }
-    window.addEventListener("click", onClick);
-    return () => window.removeEventListener("click", onClick);
-  }, [open]);
+    window.addEventListener('click', onClick)
+    return () => window.removeEventListener('click', onClick)
+  }, [open])
 
   // Close on Escape
   useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setOpen(false); }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
-  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href) ?? false);
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : (pathname?.startsWith(href) ?? false)
 
   return (
     <header className="sticky top-0 z-50">
@@ -71,7 +76,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map(item => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -116,7 +121,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               ref={buttonRef}
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => setOpen(v => !v)}
               aria-expanded={open}
               aria-controls="mobile-nav"
               aria-label="Toggle menu"
@@ -135,7 +140,7 @@ export default function Navbar() {
               className="absolute left-2 right-2 top-[calc(100%+8px)] rounded-2xl border border-white/15 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl p-3"
             >
               <div className="flex flex-col">
-                {NAV_ITEMS.map((item) => (
+                {NAV_ITEMS.map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -184,13 +189,20 @@ export default function Navbar() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
 function MenuIcon({ open }: { open: boolean }) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       {open ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
     </svg>
-  );
+  )
 }

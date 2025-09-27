@@ -1,7 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Cookie, Shield, BarChart3, Megaphone, Check, Settings, ChevronRight, Lock, Sparkles } from 'lucide-react'
+import {
+  X,
+  Cookie,
+  Shield,
+  BarChart3,
+  Megaphone,
+  Check,
+  Settings,
+  ChevronRight,
+  Lock,
+  Sparkles
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -42,11 +53,14 @@ export default function CookieBanner() {
       marketing: true,
       functional: true
     }
-    localStorage.setItem('cookieConsent', JSON.stringify({
-      preferences: allPreferences,
-      timestamp: new Date().toISOString(),
-      type: 'all'
-    }))
+    localStorage.setItem(
+      'cookieConsent',
+      JSON.stringify({
+        preferences: allPreferences,
+        timestamp: new Date().toISOString(),
+        type: 'all'
+      })
+    )
     setIsAnimating(false)
     setTimeout(() => setVisible(false), 300)
   }
@@ -58,21 +72,27 @@ export default function CookieBanner() {
       marketing: false,
       functional: false
     }
-    localStorage.setItem('cookieConsent', JSON.stringify({
-      preferences: essentialOnly,
-      timestamp: new Date().toISOString(),
-      type: 'essential'
-    }))
+    localStorage.setItem(
+      'cookieConsent',
+      JSON.stringify({
+        preferences: essentialOnly,
+        timestamp: new Date().toISOString(),
+        type: 'essential'
+      })
+    )
     setIsAnimating(false)
     setTimeout(() => setVisible(false), 300)
   }
 
   const handleSavePreferences = () => {
-    localStorage.setItem('cookieConsent', JSON.stringify({
-      preferences,
-      timestamp: new Date().toISOString(),
-      type: 'custom'
-    }))
+    localStorage.setItem(
+      'cookieConsent',
+      JSON.stringify({
+        preferences,
+        timestamp: new Date().toISOString(),
+        type: 'custom'
+      })
+    )
     setShowPreferences(false)
     setIsAnimating(false)
     setTimeout(() => setVisible(false), 300)
@@ -85,8 +105,8 @@ export default function CookieBanner() {
       {/* Main Cookie Banner */}
       <div
         className={cn(
-          "fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-auto md:max-w-md lg:max-w-lg z-50 transition-all duration-500 ease-out",
-          isAnimating ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+          'fixed bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-auto md:max-w-md lg:max-w-lg z-50 transition-all duration-500 ease-out',
+          isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         )}
       >
         {/* Glassmorphism Container */}
@@ -127,8 +147,8 @@ export default function CookieBanner() {
 
             {/* Description */}
             <p className="text-slate-300 text-sm leading-relaxed mb-6">
-              We use cookies to enhance your experience, provide essential functionality, analyze traffic,
-              and personalize content. You control your data preferences.{' '}
+              We use cookies to enhance your experience, provide essential functionality, analyze
+              traffic, and personalize content. You control your data preferences.{' '}
               <Link
                 href="/policy"
                 className="text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors inline-flex items-center gap-1"
@@ -254,8 +274,9 @@ export default function CookieBanner() {
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2">Cookie Preferences Center</h2>
                   <p className="text-slate-400">
-                    When you visit our website, we may store or retrieve information on your browser,
-                    mostly in the form of cookies. Control your personal Cookie Services here.
+                    When you visit our website, we may store or retrieve information on your
+                    browser, mostly in the form of cookies. Control your personal Cookie Services
+                    here.
                   </p>
                 </div>
                 <button
@@ -285,9 +306,9 @@ export default function CookieBanner() {
                     </div>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">
-                    These cookies are necessary for the website to function and cannot be switched off.
-                    They are usually set in response to actions you take, such as setting privacy preferences,
-                    logging in, or filling forms.
+                    These cookies are necessary for the website to function and cannot be switched
+                    off. They are usually set in response to actions you take, such as setting
+                    privacy preferences, logging in, or filling forms.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
@@ -315,21 +336,26 @@ export default function CookieBanner() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setPreferences(prev => ({ ...prev, analytics: !prev.analytics }))}
+                      onClick={() =>
+                        setPreferences(prev => ({ ...prev, analytics: !prev.analytics }))
+                      }
                       className={cn(
-                        "w-12 h-6 rounded-full relative transition-all duration-200",
-                        preferences.analytics ? "bg-blue-600" : "bg-slate-700"
+                        'w-12 h-6 rounded-full relative transition-all duration-200',
+                        preferences.analytics ? 'bg-blue-600' : 'bg-slate-700'
                       )}
                     >
-                      <div className={cn(
-                        "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200",
-                        preferences.analytics ? "translate-x-6" : "translate-x-0.5"
-                      )} />
+                      <div
+                        className={cn(
+                          'absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200',
+                          preferences.analytics ? 'translate-x-6' : 'translate-x-0.5'
+                        )}
+                      />
                     </button>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">
-                    These cookies help us understand how visitors interact with our website by collecting
-                    and reporting information anonymously. This helps us improve our services.
+                    These cookies help us understand how visitors interact with our website by
+                    collecting and reporting information anonymously. This helps us improve our
+                    services.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
@@ -357,21 +383,26 @@ export default function CookieBanner() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setPreferences(prev => ({ ...prev, marketing: !prev.marketing }))}
+                      onClick={() =>
+                        setPreferences(prev => ({ ...prev, marketing: !prev.marketing }))
+                      }
                       className={cn(
-                        "w-12 h-6 rounded-full relative transition-all duration-200",
-                        preferences.marketing ? "bg-purple-600" : "bg-slate-700"
+                        'w-12 h-6 rounded-full relative transition-all duration-200',
+                        preferences.marketing ? 'bg-purple-600' : 'bg-slate-700'
                       )}
                     >
-                      <div className={cn(
-                        "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200",
-                        preferences.marketing ? "translate-x-6" : "translate-x-0.5"
-                      )} />
+                      <div
+                        className={cn(
+                          'absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200',
+                          preferences.marketing ? 'translate-x-6' : 'translate-x-0.5'
+                        )}
+                      />
                     </button>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">
-                    These cookies are used to deliver advertisements more relevant to you and your interests.
-                    They remember that you have visited our website and share this information with advertisers.
+                    These cookies are used to deliver advertisements more relevant to you and your
+                    interests. They remember that you have visited our website and share this
+                    information with advertisers.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
@@ -399,16 +430,20 @@ export default function CookieBanner() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setPreferences(prev => ({ ...prev, functional: !prev.functional }))}
+                      onClick={() =>
+                        setPreferences(prev => ({ ...prev, functional: !prev.functional }))
+                      }
                       className={cn(
-                        "w-12 h-6 rounded-full relative transition-all duration-200",
-                        preferences.functional ? "bg-amber-600" : "bg-slate-700"
+                        'w-12 h-6 rounded-full relative transition-all duration-200',
+                        preferences.functional ? 'bg-amber-600' : 'bg-slate-700'
                       )}
                     >
-                      <div className={cn(
-                        "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200",
-                        preferences.functional ? "translate-x-6" : "translate-x-0.5"
-                      )} />
+                      <div
+                        className={cn(
+                          'absolute top-0.5 w-5 h-5 bg-white rounded-full transition-all duration-200',
+                          preferences.functional ? 'translate-x-6' : 'translate-x-0.5'
+                        )}
+                      />
                     </button>
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">

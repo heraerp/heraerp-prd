@@ -95,7 +95,7 @@ export function EmailView({
       case 'low':
         return 'text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/30'
       default:
-        return 'text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-800'
+        return 'text-text-200 bg-gray-100 dark:text-text-200 dark:bg-gray-800'
     }
   }
 
@@ -226,7 +226,7 @@ export function EmailView({
           {/* Email Header */}
           <div className="mb-6">
             <div className="flex items-start justify-between mb-4">
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              <h1 className="text-2xl font-semibold text-text-100">
                 {email.subject || '(no subject)'}
               </h1>
 
@@ -234,7 +234,7 @@ export function EmailView({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 text-xs text-muted-foreground"
+                className="flex items-center gap-1 text-xs text-text-300"
               >
                 {isExpanded ? (
                   <ChevronUp className="h-3 w-3" />
@@ -254,14 +254,12 @@ export function EmailView({
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
-                      {sender.name}
-                    </span>
+                    <span className="font-medium text-text-100">{sender.name}</span>
                     {sender.email !== sender.name && (
-                      <span className="text-sm text-muted-foreground">&lt;{sender.email}&gt;</span>
+                      <span className="text-sm text-text-300">&lt;{sender.email}&gt;</span>
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-text-300">
                     {formatDistanceToNow(new Date(email.created_at), { addSuffix: true })}
                   </div>
                 </div>
@@ -270,7 +268,7 @@ export function EmailView({
               {/* Recipients (when expanded) */}
               {isExpanded && (
                 <>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-text-300">
                     <span className="font-medium">To: </span>
                     {recipients.map((recipient, index) => (
                       <span key={index}>
@@ -282,14 +280,14 @@ export function EmailView({
                   </div>
 
                   {email.cc && email.cc.length > 0 && (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-text-300">
                       <span className="font-medium">Cc: </span>
                       {email.cc.join(', ')}
                     </div>
                   )}
 
                   {email.bcc && email.bcc.length > 0 && (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-text-300">
                       <span className="font-medium">Bcc: </span>
                       {email.bcc.join(', ')}
                     </div>
@@ -305,7 +303,7 @@ export function EmailView({
           {email.has_attachments && (
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Paperclip className="h-4 w-4 text-muted-foreground" />
+                <Paperclip className="h-4 w-4 text-text-300" />
                 <span className="text-sm font-medium">Attachments</span>
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -318,7 +316,7 @@ export function EmailView({
                   </div>
                   <div className="flex-1">
                     <div className="text-sm font-medium">document.pdf</div>
-                    <div className="text-xs text-muted-foreground">2.3 MB</div>
+                    <div className="text-xs text-text-300">2.3 MB</div>
                   </div>
                   <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                     <Download className="h-3 w-3" />
@@ -333,12 +331,10 @@ export function EmailView({
             {email.body_html ? (
               <div
                 dangerouslySetInnerHTML={{ __html: email.body_html }}
-                className="text-gray-900 dark:text-gray-100"
+                className="text-text-100"
               />
             ) : (
-              <div className="whitespace-pre-wrap text-gray-900 dark:text-gray-100">
-                {email.body_text}
-              </div>
+              <div className="whitespace-pre-wrap text-text-100">{email.body_text}</div>
             )}
           </div>
 
@@ -348,7 +344,7 @@ export function EmailView({
               variant="ghost"
               size="sm"
               onClick={() => setShowRawEmail(!showRawEmail)}
-              className="text-xs text-muted-foreground"
+              className="text-xs text-text-300"
             >
               {showRawEmail ? (
                 <EyeOff className="h-3 w-3 mr-1" />
@@ -361,7 +357,7 @@ export function EmailView({
             {showRawEmail && (
               <Card className="mt-3">
                 <CardContent className="p-4">
-                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap">
+                  <pre className="text-xs text-text-300 whitespace-pre-wrap">
                     {JSON.stringify(email, null, 2)}
                   </pre>
                 </CardContent>

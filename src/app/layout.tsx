@@ -6,7 +6,7 @@ import ThemeProvider from '@/app/components/ThemeProvider'
 import PublicPageWrapper from '@/app/components/PublicPageWrapper'
 import { HERAAuthProvider } from '@/components/auth/HERAAuthProvider'
 // import { DemoAuthHandler } from '@/components/auth/DemoAuthHandler'; // Temporarily disabled due to runtime error
-import { ToastProvider } from '@/components/ui/useToast'
+import { ToastProvider } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import CookieBanner from '@/components/ui/cookie-banner'
 // import "./globals.css"; // Original - temporarily disabled for migration testing
