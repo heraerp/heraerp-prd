@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     // Fetch all connectors
     const connectors = await universalApi.read({
       table: 'core_entities',
-      filters: {
+      filter: {
         entity_type: 'integration_connector',
         organization_id: organizationId
       }

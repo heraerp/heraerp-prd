@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     // Fetch sync runs
     const syncRuns = await universalApi.read({
       table: 'core_entities',
-      filters: {
+      filter: {
         entity_type: 'integration_sync_run',
         organization_id: organizationId
       }

@@ -114,6 +114,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Authorization code required' }, { status: 400 })
     }
 
+    // Check for required environment variables
+    if (!process.env.MAILCHIMP_CLIENT_ID || !process.env.MAILCHIMP_CLIENT_SECRET) {
+      console.error('Mailchimp OAuth credentials not configured')
+      return NextResponse.json({ error: 'Mailchimp integration not configured' }, { status: 501 })
+    }
+
     // Exchange code for token
     const tokenResponse = await fetch('https://login.mailchimp.com/oauth2/token', {
       method: 'POST',
@@ -122,9 +128,9 @@ export async function POST(request: NextRequest) {
       },
       body: new URLSearchParams({
         grant_type: 'authorization_code',
-        client_id: process.env.MAILCHIMP_CLIENT_ID!,
-        client_secret: process.env.MAILCHIMP_CLIENT_SECRET!,
-        redirect_uri: process.env.MAILCHIMP_REDIRECT_URI!,
+        client_id: process.env.MAILCHIMP_CLIENT_ID || '',
+        client_secret: process.env.MAILCHIMP_CLIENT_SECRET || '',
+        redirect_uri: process.env.MAILCHIMP_REDIRECT_URI || `${request.nextUrl.origin}/api/integrations/mailchimp/auth/callback`,
         code
       })
     })

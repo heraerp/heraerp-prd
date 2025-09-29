@@ -74,8 +74,8 @@ export async function POST(request: NextRequest) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-            Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+            apikey: process.env.SUPABASE_SERVICE_KEY!,
+            Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
           },
           body: JSON.stringify({
             ...field,

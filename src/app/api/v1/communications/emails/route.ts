@@ -70,24 +70,13 @@ export async function GET(req: NextRequest) {
       query = query.or(`metadata->>subject.ilike.%${params.search}%,metadata->>from.ilike.%${params.search}%`)
     }
 
-    // Execute query
-    const { data, error, count } = await supabase
-      .from('universal_transactions')
-      .select(`
-        *,
-        universal_transaction_lines (
-          line_type,
-          description,
-          metadata
-        )
-      `, { count: 'exact' })
-      .eq('organization_id', params.organizationId)
-      .eq('smart_code', 'HERA.COMMS.EMAIL.SEND.V1')
-      .order('transaction_date', { ascending: false })
-      .limit(params.limit)
-      .range(params.offset, params.offset + params.limit - 1)
+    // Execute query with proper error handling
+    const { data, error, count } = await query
 
-    if (error) throw error
+    if (error) {
+      console.error('Email query error:', error)
+      throw new Error(`Failed to query emails: ${error.message}`)
+    }
 
     // Get email content from core_dynamic_data
     const transactionIds = data?.map(tx => tx.id) || []
@@ -97,7 +86,10 @@ export async function GET(req: NextRequest) {
       .in('entity_id', transactionIds)
       .eq('field_name', 'email_content')
 
-    if (contentError) throw contentError
+    if (contentError && contentError.code !== 'PGRST116') {
+      console.error('Email content query error:', contentError)
+      // Don't throw, just log - content might not exist for all emails
+    }
 
     // Transform data to email format
     const emails = data?.map(tx => {
@@ -114,9 +106,17 @@ export async function GET(req: NextRequest) {
           .map((line: any) => line.metadata?.email || line.description) || []
       }
 
-      // Get email content
+      // Get email content with safe parsing
       const content = contentData?.find(c => c.entity_id === tx.id)
-      const emailContent = content ? JSON.parse(content.field_value_text) : {}
+      let emailContent: any = {}
+      if (content?.field_value_text) {
+        try {
+          emailContent = JSON.parse(content.field_value_text)
+        } catch (parseError) {
+          console.error('Failed to parse email content:', parseError)
+          emailContent = {}
+        }
+      }
 
       return {
         id: tx.id,
@@ -218,7 +218,15 @@ export async function POST(req: NextRequest) {
         size: line.metadata?.size
       })) || []
 
-    const emailContent = contentData ? JSON.parse(contentData.field_value_text) : {}
+    let emailContent: any = {}
+    if (contentData?.field_value_text) {
+      try {
+        emailContent = JSON.parse(contentData.field_value_text)
+      } catch (parseError) {
+        console.error('Failed to parse email content:', parseError)
+        emailContent = {}
+      }
+    }
 
     const email = {
       id: tx.id,
