@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
-import Script from 'next/script'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 // import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
 import ThemeProvider from '@/app/components/ThemeProvider'
@@ -73,9 +72,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        <Script
-          id="public-page-theme"
-          strategy="beforeInteractive"
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
