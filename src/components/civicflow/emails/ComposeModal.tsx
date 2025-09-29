@@ -218,9 +218,26 @@ export function ComposeModal({
     setIsSending(true)
 
     try {
+      // Convert File objects to base64
+      const attachmentPromises = draft.attachments.map(async (file) => ({
+        filename: file.name,
+        content: await fileToBase64(file),
+        type: file.type
+      }))
+      
+      const attachments = await Promise.all(attachmentPromises)
+
       await sendEmail({
         organizationId,
-        ...draft
+        to: draft.to,
+        cc: draft.cc,
+        bcc: draft.bcc,
+        subject: draft.subject,
+        body_html: draft.body_html,
+        body_text: draft.body_text,
+        priority: draft.priority,
+        tags: draft.tags,
+        attachments
       })
 
       toast({
@@ -238,6 +255,20 @@ export function ComposeModal({
     } finally {
       setIsSending(false)
     }
+  }
+
+  // Helper function to convert File to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        // Remove data URL prefix to get pure base64
+        const base64 = (reader.result as string).split(',')[1]
+        resolve(base64)
+      }
+      reader.onerror = error => reject(error)
+    })
   }
 
   const handleAttachmentUpload = (files: FileList) => {

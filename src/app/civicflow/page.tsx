@@ -16,12 +16,16 @@ import {
   Activity,
   TrendingUp,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Search,
+  BookOpen
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function CivicFlowPage() {
   const { currentOrgId } = useOrgStore()
   const [activeTab, setActiveTab] = useState('overview')
+  const router = useRouter()
 
   const DEMO_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
   const isDemoMode = currentOrgId === DEMO_ORG_ID
@@ -39,9 +43,29 @@ export default function CivicFlowPage() {
   return (
     <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-text-100">CivicFlow</h1>
-        <p className="text-xl text-text-300">Public Sector CRM for Government Services</p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold mb-2 text-text-100">CivicFlow</h1>
+          <p className="text-xl text-text-300">Public Sector CRM for Government Services</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => router.push('/docs/civicflow')}
+            variant="outline"
+            className="hover:bg-accent-soft/10"
+          >
+            <BookOpen className="h-4 w-4 mr-2" />
+            Documentation
+          </Button>
+          <Button
+            onClick={() => router.push('/docs/civicflow/search')}
+            variant="outline"
+            className="hover:bg-accent-soft/10"
+          >
+            <Search className="h-4 w-4 mr-2" />
+            Search Docs
+          </Button>
+        </div>
       </div>
 
       {/* Statistics Cards */}

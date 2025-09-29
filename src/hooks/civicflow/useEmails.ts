@@ -52,17 +52,17 @@ export function useEmailList({
       if (!organizationId) throw new Error('Organization ID is required')
 
       const searchParams = new URLSearchParams({
+        organizationId,
         folder,
-        search: filters.search,
-        page: '1',
-        limit: '50'
+        search: filters.search || '',
+        dateRange: filters.dateRange || '',
+        priority: filters.priority || '',
+        tags: filters.tags.join(','),
+        limit: '50',
+        offset: '0'
       })
 
-      const response = await fetch(`/api/civicflow/emails?${searchParams}`, {
-        headers: {
-          'x-organization-id': organizationId
-        }
-      })
+      const response = await fetch(`/api/v1/communications/emails?${searchParams}`)
 
       if (!response.ok) {
         const error = await response.json()
@@ -87,10 +87,12 @@ export function useEmail(emailId: string | null, options?: { enabled?: boolean }
     queryFn: async () => {
       if (!emailId) throw new Error('Email ID is required')
 
-      const response = await fetch(`/api/civicflow/emails/${emailId}`, {
+      const response = await fetch('/api/v1/communications/emails', {
+        method: 'POST',
         headers: {
-          'x-organization-id': getOrganizationIdFromStorage() // Helper function
-        }
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ emailId })
       })
 
       if (!response.ok) {
@@ -98,8 +100,7 @@ export function useEmail(emailId: string | null, options?: { enabled?: boolean }
         throw new Error(error.error || 'Failed to fetch email')
       }
 
-      const data = await response.json()
-      return data.email
+      return response.json()
     },
     enabled: enabled && !!emailId,
     staleTime: 5 * 60 * 1000 // 5 minutes
@@ -145,16 +146,28 @@ export function useSendEmail() {
       body_text: string
       priority?: string
       tags?: string[]
+      attachments?: Array<{
+        filename: string
+        content: string // base64
+        type?: string
+      }>
     }) => {
-      const response = await fetch('/api/civicflow/emails', {
+      const response = await fetch('/api/v1/communications/emails/send', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'x-organization-id': params.organizationId
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          ...params,
-          is_draft: false
+          organizationId: params.organizationId,
+          from: 'CivicFlow <onboarding@resend.dev>', // Resend test domain
+          to: params.to,
+          cc: params.cc || [],
+          bcc: params.bcc || [],
+          subject: params.subject,
+          html: params.body_html,
+          text: params.body_text,
+          tags: params.tags || [],
+          attachments: params.attachments || []
         })
       })
 

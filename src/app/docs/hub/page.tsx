@@ -22,7 +22,8 @@ import {
   TrendingUp,
   ArrowRight,
   GitBranch,
-  Star
+  Star,
+  Search
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -44,6 +45,12 @@ export default function DocsHub() {
               </Badge>
             </div>
             <div className="flex items-center gap-4">
+              <Link href="/docs/civicflow/search">
+                <Button variant="outline" size="sm">
+                  <Search className="h-4 w-4 mr-1" />
+                  Search Docs
+                </Button>
+              </Link>
               <Button variant="ghost" size="sm" className="text-muted-foreground">
                 <Star className="h-4 w-4 mr-1" />
                 Star
@@ -62,6 +69,32 @@ export default function DocsHub() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Search Section */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Search Documentation
+          </h2>
+          <Card className="border-border hover:border-blue-300 transition-colors">
+            <CardContent className="p-6">
+              <Link href="/docs/civicflow/search" className="block">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">Search All Documentation</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Find what you need with full-text search, intelligent suggestions, and search analytics.
+                    </p>
+                  </div>
+                  <Button variant="outline">
+                    <Search className="h-4 w-4 mr-2" />
+                    Go to Search
+                  </Button>
+                </div>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Overview Section */}
         <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">

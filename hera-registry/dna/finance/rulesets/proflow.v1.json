@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "industry": "PROFLOW",
+  "rules": [
+    {
+      "smart_code": "HERA.PROFLOW.BILLING.TIME.v1",
+      "transaction_defaults": { "transaction_type": "TIME_ENTRY" },
+      "derivation": [
+        { "line_type": "GL.LINE", "account_role": "WIP", "dr_cr": "DEBIT",  "amount": "hours * rate" },
+        { "line_type": "GL.LINE", "account_role": "REVENUE", "dr_cr": "CREDIT", "amount": "hours * rate" }
+      ],
+      "tax": { "vat_applicable": true, "vat_code": "STANDARD" },
+      "currency": { "source": "transaction_currency_code" }
+    },
+    {
+      "smart_code": "HERA.PROFLOW.BILLING.RETAINER.v1",
+      "transaction_defaults": { "transaction_type": "RETAINER_RECEIPT" },
+      "derivation": [
+        { "line_type": "GL.LINE", "account_role": "CASH", "dr_cr": "DEBIT", "amount": "retainer_amount" },
+        { "line_type": "GL.LINE", "account_role": "UNEARNED_REVENUE", "dr_cr": "CREDIT", "amount": "retainer_amount" }
+      ],
+      "tax": { "vat_applicable": false }
+    },
+    {
+      "smart_code": "HERA.PROFLOW.BILLING.INVOICE.v1",
+      "transaction_defaults": { "transaction_type": "INVOICE_ISSUE" },
+      "derivation": [
+        { "line_type": "GL.LINE", "account_role": "AR", "dr_cr": "DEBIT", "amount": "invoice_total" },
+        { "line_type": "GL.LINE", "account_role": "REVENUE", "dr_cr": "CREDIT", "amount": "net_of_vat" },
+        { "line_type": "GL.LINE", "account_role": "VAT_OUTPUT", "dr_cr": "CREDIT", "amount": "vat_amount" },
+        { "line_type": "GL.LINE", "account_role": "UNEARNED_REVENUE", "dr_cr": "DEBIT", "amount": "retainer_applied", "optional": true }
+      ]
+    },
+    {
+      "smart_code": "HERA.PROFLOW.EXPENSE.RECHARGE.v1",
+      "transaction_defaults": { "transaction_type": "EXPENSE_RECHARGE" },
+      "derivation": [
+        { "line_type": "GL.LINE", "account_role": "AR", "dr_cr": "DEBIT", "amount": "recharge_total" },
+        { "line_type": "GL.LINE", "account_role": "EXPENSE_RECOVERY", "dr_cr": "CREDIT", "amount": "net_of_vat" },
+        { "line_type": "GL.LINE", "account_role": "VAT_OUTPUT", "dr_cr": "CREDIT", "amount": "vat_amount" }
+      ]
+    }
+  ],
+  "posting": {
+    "multi_currency": true,
+    "enforce_gl_balance": true
+  },
+  "metadata": {
+    "description": "Finance DNA rules for ProFlow (specialized professional services): time & billing, retainers, invoices, expense recharge.",
+    "source": "HERA Finance DNA"
+  }
+}

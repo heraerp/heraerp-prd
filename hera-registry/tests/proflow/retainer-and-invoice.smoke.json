@@ -1,0 +1,50 @@
+{
+  "name": "ProFlow | Retainer receipt + Invoice issue (Finance DNA)",
+  "sequence": [
+    {
+      "step": "retainer_received",
+      "given": {
+        "organization_id": "00000000-0000-0000-0000-00000000ABCD",
+        "smart_code": "HERA.PROFLOW.BILLING.RETAINER.v1",
+        "transaction_type": "RETAINER_RECEIPT",
+        "transaction_currency_code": "GBP",
+        "business_context": { "retainer_amount": 3000.00 }
+      },
+      "expect": {
+        "universal_transaction_lines": {
+          "balanced_by_currency": true,
+          "lines_match": [
+            { "account_role": "CASH", "dr_cr": "DEBIT", "amount_eq": 3000.00 },
+            { "account_role": "UNEARNED_REVENUE", "dr_cr": "CREDIT", "amount_eq": 3000.00 }
+          ]
+        }
+      }
+    },
+    {
+      "step": "invoice_issue",
+      "given": {
+        "organization_id": "00000000-0000-0000-0000-00000000ABCD",
+        "smart_code": "HERA.PROFLOW.BILLING.INVOICE.v1",
+        "transaction_type": "INVOICE_ISSUE",
+        "transaction_currency_code": "GBP",
+        "business_context": {
+          "invoice_total": 2400.00,
+          "vat_amount": 400.00,
+          "net_of_vat": 2000.00,
+          "retainer_applied": 1500.00
+        }
+      },
+      "expect": {
+        "universal_transaction_lines": {
+          "balanced_by_currency": true,
+          "lines_match": [
+            { "account_role": "AR", "dr_cr": "DEBIT", "amount_eq": 2400.00 },
+            { "account_role": "REVENUE", "dr_cr": "CREDIT", "amount_eq": 2000.00 },
+            { "account_role": "VAT_OUTPUT", "dr_cr": "CREDIT", "amount_eq": 400.00 },
+            { "account_role": "UNEARNED_REVENUE", "dr_cr": "DEBIT", "amount_eq": 1500.00, "optional": true }
+          ]
+        }
+      }
+    }
+  ]
+}

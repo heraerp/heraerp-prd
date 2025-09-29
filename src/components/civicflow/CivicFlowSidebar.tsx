@@ -24,7 +24,9 @@ import {
   UserPlus,
   LineChart,
   Brain,
-  Grid3X3
+  Grid3X3,
+  Search,
+  BookOpen
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
@@ -56,6 +58,8 @@ const navigation: NavItem[] = [
 ]
 
 const bottomNavigation: NavItem[] = [
+  { title: 'Documentation', href: '/docs/civicflow', icon: BookOpen },
+  { title: 'Search Docs', href: '/docs/civicflow/search', icon: Search },
   { title: 'Settings', href: '/civicflow/settings', icon: Settings },
   { title: 'Security', href: '/civicflow/security', icon: Shield },
   { title: 'Help', href: '/civicflow/help', icon: HelpCircle }
