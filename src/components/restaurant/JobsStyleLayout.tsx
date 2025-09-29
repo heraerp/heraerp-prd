@@ -120,8 +120,7 @@ export function JobsStyleLayout({
 
   return (
     <div
-      className={`min-h-screen bg-gray-900 flex transition-all duration-300 ${
-        darkMode ? 'bg-background' : 'bg-muted'
+      className={`min-h-screen bg-gray-900 flex transition-all duration-300 ${ darkMode ?'bg-background' : 'bg-muted'
       }`}
     >
       {/* Sidebar */}
@@ -157,8 +156,7 @@ export function JobsStyleLayout({
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header
-          className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-all ${
-            darkMode ? 'bg-background/95 border-gray-800' : 'bg-background/95 border-border'
+          className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-all ${ darkMode ?'bg-background/95 border-gray-800' : 'bg-background/95 border-border'
           }`}
         >
           <div className="px-6 py-4">
@@ -182,14 +180,13 @@ export function JobsStyleLayout({
                   </div>
                   <div>
                     <h1
-                      className={`text-xl font-semibold ${
-                        darkMode ? 'text-foreground' : 'text-gray-100'
+                      className={`text-xl font-semibold ${ darkMode ?'text-foreground' : 'text-gray-100'
                       }`}
                     >
                       {getPageTitle()}
                     </h1>
                     <p
-                      className={`text-sm ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+                      className={`text-sm ${darkMode ?'text-muted-foreground' : 'text-muted-foreground'}`}
                     >
                       {organization?.organization_name} •{' '}
                       {isClient ? formatDate(currentTime, 'MMM d, h:mm a') : '...'}
@@ -202,17 +199,14 @@ export function JobsStyleLayout({
               <div className="hidden md:block flex-1 max-w-md mx-8">
                 <div className="relative">
                   <Search
-                    className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                      darkMode ? 'text-muted-foreground' : 'text-muted-foreground'
+                    className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${ darkMode ?'text-muted-foreground' : 'text-muted-foreground'
                     }`}
                   />
                   <Input
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search everything... ⌘K"
-                    className={`pl-10 rounded-full border-0 transition-all ${
-                      darkMode
-                        ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
+                    className={`pl-10 rounded-full border-0 transition-all ${ darkMode ?'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
                         : 'bg-muted text-gray-100 placeholder-gray-500 focus:bg-background focus:shadow-md'
                     }`}
                     onFocus={() => setIsCommandPaletteOpen(true)}
@@ -228,8 +222,7 @@ export function JobsStyleLayout({
                 {/* Connection Status */}
                 <div className="hidden md:flex items-center space-x-2">
                   <div
-                    className={`w-2 h-2 rounded-full ${
-                      connectionStatus === 'connected'
+                    className={`w-2 h-2 rounded-full ${ connectionStatus ==='connected'
                         ? 'bg-green-500 animate-pulse'
                         : connectionStatus === 'connecting'
                           ? 'bg-yellow-500 animate-pulse'
@@ -237,8 +230,7 @@ export function JobsStyleLayout({
                     }`}
                   />
                   <span
-                    className={`text-xs font-medium ${
-                      darkMode ? 'text-gray-300' : 'text-muted-foreground'
+                    className={`text-xs font-medium ${ darkMode ?'text-gray-300' : 'text-muted-foreground'
                     }`}
                   >
                     {connectionStatus === 'connected'
@@ -288,16 +280,14 @@ export function JobsStyleLayout({
 
         {/* Status Bar */}
         <div
-          className={`border-t px-6 py-2 ${
-            darkMode ? 'bg-background border-gray-800' : 'bg-background border-border'
+          className={`border-t px-6 py-2 ${ darkMode ?'bg-background border-gray-800' : 'bg-background border-border'
           }`}
         >
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Wifi
-                  className={`w-3 h-3 ${
-                    connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'
+                  className={`w-3 h-3 ${ connectionStatus ==='connected' ? 'text-green-500' : 'text-red-500'
                   }`}
                 />
                 <span className={darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}>

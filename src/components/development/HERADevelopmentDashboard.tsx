@@ -312,7 +312,7 @@ export function HERADevelopmentDashboard() {
             className="flex items-center gap-2"
             disabled={isRefreshing}
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ?'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
@@ -492,8 +492,7 @@ export function HERADevelopmentDashboard() {
                 {gitActivity.map(activity => (
                   <div key={activity.id} className="flex items-start gap-4 p-4 bg-muted rounded-lg">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        activity.type === 'commit'
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${ activity.type ==='commit'
                           ? 'bg-green-100 text-green-600'
                           : activity.type === 'pr'
                             ? 'bg-blue-100 text-primary'
@@ -549,7 +548,7 @@ export function HERADevelopmentDashboard() {
                     <div className="space-y-2">
                       {category.tasks.map(task => (
                         <div key={task.name} className="flex items-center justify-between">
-                          <span className="text-sm text-gray-700">{task.name}</span>
+                          <span className="text-sm ink">{task.name}</span>
                           <Badge
                             className={
                               task.status === 'completed'

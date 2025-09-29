@@ -697,7 +697,7 @@ export function UserManager() {
                 Add User
               </Button>
               <Button variant="outline" onClick={fetchUsers} size="sm" disabled={loading}>
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${loading ?'animate-spin' : ''}`} />
               </Button>
             </div>
           </CardTitle>

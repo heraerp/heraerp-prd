@@ -107,8 +107,7 @@ export function ErrorDisplay({
       <Alert variant={getVariant()} className="relative">
         <div className="flex items-start gap-3">
           <div
-            className={`mt-0.5 ${
-              errorMessage.type === 'error'
+            className={`mt-0.5 ${ errorMessage.type ==='error'
                 ? 'text-red-600'
                 : errorMessage.type === 'warning'
                   ? 'text-yellow-600'

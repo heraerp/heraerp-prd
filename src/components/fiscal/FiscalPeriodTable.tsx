@@ -198,7 +198,7 @@ export function FiscalPeriodTable({
         <CardContent className="py-12">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-6 w-6 animate-spin text-violet-600 mr-3" />
-            <span className="text-gray-600 dark:text-gray-400">Loading fiscal periods...</span>
+            <span className="dark:ink-muted">Loading fiscal periods...</span>
           </div>
         </CardContent>
       </Card>
@@ -221,11 +221,11 @@ export function FiscalPeriodTable({
       <Card>
         <CardContent className="py-12">
           <div className="text-center">
-            <CalendarDays className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <CalendarDays className="h-12 w-12 mx-auto mb-4 ink-muted" />
+            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">
               No Fiscal Periods
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="dark:ink-muted">
               Click "Generate Periods" above to create fiscal periods for the year.
             </p>
           </div>
@@ -288,16 +288,16 @@ export function FiscalPeriodTable({
                       aria-label="Select all open periods"
                     />
                   </th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
                     Period
                   </th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
                     Date Range
                   </th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+                  <th className="text-left px-4 py-3 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="text-right px-4 py-3 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+                  <th className="text-right px-4 py-3 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -311,8 +311,7 @@ export function FiscalPeriodTable({
                   return (
                     <tr
                       key={period.code}
-                      className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
-                        isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
+                      className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${ isEven ?'bg-gray-50/30 dark:bg-gray-800/20' : ''
                       }`}
                     >
                       <td className="px-4 py-4">
@@ -327,15 +326,15 @@ export function FiscalPeriodTable({
                       </td>
 
                       <td className="px-4 py-4">
-                        <div className="font-medium text-gray-900 dark:text-gray-100 font-mono">
+                        <div className="font-medium ink dark:text-gray-100 font-mono">
                           {period.code}
                         </div>
                       </td>
 
                       <td className="px-4 py-4">
-                        <div className="text-sm text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                        <div className="text-sm ink dark:text-gray-100 flex items-center gap-2">
                           {formatDate(period.from)}
-                          <ArrowRight className="h-3 w-3 text-gray-400" />
+                          <ArrowRight className="h-3 w-3 ink-muted" />
                           {formatDate(period.to)}
                         </div>
                       </td>
@@ -377,7 +376,7 @@ export function FiscalPeriodTable({
                           )}
 
                           {period.status === 'closed' && (
-                            <span className="text-sm text-gray-500 px-2">
+                            <span className="text-sm ink-muted px-2">
                               {period.closed_at &&
                                 `Closed ${new Date(period.closed_at).toLocaleDateString()}`}
                             </span>

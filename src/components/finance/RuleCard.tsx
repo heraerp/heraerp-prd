@@ -71,7 +71,7 @@ export function RuleCard({
               </Badge>
             </CardTitle>
             <div className="flex items-center gap-2">
-              <code className="text-xs text-gray-600 dark:text-gray-400 font-mono">{rule.key}</code>
+              <code className="text-xs dark:ink-muted font-mono">{rule.key}</code>
             </div>
           </div>
 
@@ -103,7 +103,7 @@ export function RuleCard({
           </Badge>
 
           {rule.description && (
-            <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
+            <p className="text-xs dark:ink-muted line-clamp-1">
               {rule.description}
             </p>
           )}
@@ -111,7 +111,7 @@ export function RuleCard({
 
         {/* Applies To Section */}
         <div className="space-y-1">
-          <div className="text-xs font-medium text-gray-700 dark:text-gray-300">Applies to:</div>
+          <div className="text-xs font-medium ink dark:text-gray-300">Applies to:</div>
           <div className="flex flex-wrap gap-1">
             {rule.applies_to.map((code, index) => (
               <Badge key={index} variant="secondary" className="text-xs font-mono">
@@ -122,7 +122,7 @@ export function RuleCard({
         </div>
 
         {/* Mappings Summary */}
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-between text-xs dark:ink-muted">
           <span>
             {rule.mappings.length} mapping{rule.mappings.length !== 1 ? 's' : ''}
           </span>

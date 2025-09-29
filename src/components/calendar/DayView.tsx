@@ -138,15 +138,15 @@ export function DayView({ currentDate, items, onItemClick }: DayViewProps) {
                   <div className="text-sm font-medium">
                     {format(new Date(item.date), 'h:mm a')}
                     {item.duration && item.duration !== 60 && (
-                      <span className="ml-1 text-xs opacity-80">({item.duration} min)</span>
+                      <span className="ml-1 text-xs">({item.duration} min)</span>
                     )}
                   </div>
                   <div className="text-sm font-medium mt-1">{item.title}</div>
                   {item.location && (
-                    <div className="text-xs opacity-80 truncate">{item.location}</div>
+                    <div className="text-xs truncate">{item.location}</div>
                   )}
                   {item.participants && item.participants.length > 0 && (
-                    <div className="text-xs opacity-80 truncate mt-1">
+                    <div className="text-xs truncate mt-1">
                       {item.participants
                         .slice(0, 2)
                         .map(p => p.name)

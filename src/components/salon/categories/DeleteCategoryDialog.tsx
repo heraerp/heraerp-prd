@@ -137,7 +137,7 @@ export function DeleteCategoryDialog({
                       {category.entity_name}
                     </h4>
                     {category.entity_code && (
-                      <p className="text-xs font-mono opacity-60">{category.entity_code}</p>
+                      <p className="text-xs font-mono">{category.entity_code}</p>
                     )}
                   </div>
                 </div>

@@ -138,7 +138,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                 <DialogTitle className="text-xl font-semibold" style={{ color: COLORS.champagne }}>
                   {product ? 'Edit Product' : 'Create Product'}
                 </DialogTitle>
-                <p className="text-sm opacity-60 mt-1" style={{ color: COLORS.lightText }}>
+                <p className="text-sm mt-1" style={{ color: COLORS.lightText }}>
                   {product ? 'Update product information' : 'Add a new product to your inventory'}
                 </p>
               </div>
@@ -310,7 +310,7 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
                       <FormLabel style={{ color: COLORS.lightText }}>Track Inventory</FormLabel>
-                      <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
+                      <p className="text-sm" style={{ color: COLORS.lightText }}>
                         Enable stock tracking for this product
                       </p>
                     </div>

@@ -31,7 +31,7 @@ export function Column({ id, title, cards, onCardAction, isDraft = false }: Colu
         )}
       >
         <span>{title}</span>
-        <span className="text-sm font-normal opacity-60">{cards.length}</span>
+        <span className="text-sm font-normal">{cards.length}</span>
       </div>
 
       {/* Column content */}

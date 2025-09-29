@@ -117,7 +117,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
-            <p className="text-xs opacity-70">Number of days employees are entitled to per year</p>
+            <p className="text-xs">Number of days employees are entitled to per year</p>
           </div>
 
           {/* Carry Over Cap */}
@@ -135,7 +135,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
-            <p className="text-xs opacity-70">Maximum days that can be carried over to next year</p>
+            <p className="text-xs">Maximum days that can be carried over to next year</p>
           </div>
 
           {/* Notice Period */}
@@ -188,7 +188,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
               className="bg-transparent border"
               style={{ borderColor: COLORS.bronze, color: COLORS.champagne }}
             />
-            <p className="text-xs opacity-70">
+            <p className="text-xs">
               Days accrued per month ({formData.accrual_rate * 12} days per year)
             </p>
           </div>
@@ -200,7 +200,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
                 <Label htmlFor="prorate" style={{ color: COLORS.champagne }}>
                   Prorate First Year
                 </Label>
-                <p className="text-xs opacity-70">
+                <p className="text-xs">
                   Calculate entitlement based on join date for new employees
                 </p>
               </div>
@@ -218,7 +218,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
                 <Label htmlFor="negative" style={{ color: COLORS.champagne }}>
                   Allow Negative Balance
                 </Label>
-                <p className="text-xs opacity-70">Allow employees to take leave in advance</p>
+                <p className="text-xs">Allow employees to take leave in advance</p>
               </div>
               <Switch
                 id="negative"
@@ -253,7 +253,7 @@ export function PolicyModal({ open, onClose, policy }: PolicyModalProps) {
           >
             <div className="flex items-start gap-2">
               <Info size={16} color={COLORS.bronze} className="mt-0.5" />
-              <div className="space-y-1 text-xs opacity-70">
+              <div className="space-y-1 text-xs">
                 <p>• Employees will accrue {formData.accrual_rate} days per month</p>
                 <p>• Annual total: {(formData.accrual_rate * 12).toFixed(1)} days</p>
                 <p>• Unused leave up to {formData.carry_over_cap} days will carry over</p>

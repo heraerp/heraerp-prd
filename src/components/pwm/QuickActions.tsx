@@ -136,7 +136,7 @@ export function QuickActions({ onActionClick, disabledActions = [] }: QuickActio
             </div>
             <div>
               <p className="text-sm font-medium text-slate-300">AI Rebalancing Available</p>
-              <p className="text-xs text-slate-500">Optimize for +2.3% annual returns</p>
+              <p className="text-xs ink-muted">Optimize for +2.3% annual returns</p>
             </div>
           </div>
           <Button

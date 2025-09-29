@@ -12,7 +12,7 @@ export default function RelatedPosts({ posts, className = '' }: RelatedPostsProp
   return (
     <section className={`bg-gray-50 dark:bg-gray-900/50 py-12 ${className}`}>
       <div className="mx-auto max-w-7xl px-4">
-        <h2 className="mb-8 text-center text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="mb-8 text-center text-3xl font-bold ink dark:text-gray-100">
           Related Articles
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -21,17 +21,17 @@ export default function RelatedPosts({ posts, className = '' }: RelatedPostsProp
               key={post.slug}
               className="group rounded-xl bg-white dark:bg-gray-800 p-6 shadow-sm transition-all hover:shadow-lg dark:hover:shadow-2xl"
             >
-              <div className="mb-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <div className="mb-2 flex items-center gap-2 text-sm dark:ink-muted">
                 <span>{post.meta.city}</span>
                 <span>•</span>
                 <span>{post.meta.pillar}</span>
               </div>
 
-              <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+              <h3 className="mb-3 text-xl font-semibold ink dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                 <Link href={`/blog/${post.slug}`}>{post.meta.title}</Link>
               </h3>
 
-              <p className="mb-4 text-gray-600 dark:text-gray-300 line-clamp-3">
+              <p className="mb-4 ink-muted dark:text-gray-300 line-clamp-3">
                 {post.meta.excerpt}
               </p>
 

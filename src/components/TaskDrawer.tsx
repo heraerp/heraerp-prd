@@ -107,7 +107,7 @@ export function TaskDrawer({ open, onClose, task }: TaskDrawerProps) {
 
         {!task && (
           <div className="mt-6">
-            <p className="text-gray-500">No task selected</p>
+            <p className="ink-muted">No task selected</p>
           </div>
         )}
 
@@ -116,30 +116,30 @@ export function TaskDrawer({ open, onClose, task }: TaskDrawerProps) {
             {/* Task Information */}
             <div className="space-y-4">
               <div>
-                <h4 className="font-medium text-sm text-gray-500 mb-1">Step Name</h4>
+                <h4 className="font-medium text-sm ink-muted mb-1">Step Name</h4>
                 <p className="font-medium">{task.step_name}</p>
               </div>
 
               <div>
-                <h4 className="font-medium text-sm text-gray-500 mb-1">Run ID</h4>
+                <h4 className="font-medium text-sm ink-muted mb-1">Run ID</h4>
                 <p className="text-sm font-mono">{task.run_id}</p>
               </div>
 
               <div>
-                <h4 className="font-medium text-sm text-gray-500 mb-1">Sequence</h4>
+                <h4 className="font-medium text-sm ink-muted mb-1">Sequence</h4>
                 <p className="text-sm">{task.sequence}</p>
               </div>
 
               {task.due_at && (
                 <div>
-                  <h4 className="font-medium text-sm text-gray-500 mb-1">Due</h4>
+                  <h4 className="font-medium text-sm ink-muted mb-1">Due</h4>
                   <p className="text-sm">{new Date(task.due_at).toLocaleString()}</p>
                 </div>
               )}
 
               {task.metadata && (
                 <div>
-                  <h4 className="font-medium text-sm text-gray-500 mb-1">Context</h4>
+                  <h4 className="font-medium text-sm ink-muted mb-1">Context</h4>
                   <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto">
                     {JSON.stringify(task.metadata, null, 2)}
                   </pre>
@@ -204,7 +204,7 @@ export function TaskDrawer({ open, onClose, task }: TaskDrawerProps) {
 
               {!schema && !schemaLoading && !schemaError && (
                 <div className="p-4 border rounded-lg">
-                  <p className="text-gray-500">No output schema defined for this step</p>
+                  <p className="ink-muted">No output schema defined for this step</p>
                   <Button
                     onClick={() => handleSubmit({})}
                     disabled={completeStepMutation.isPending}

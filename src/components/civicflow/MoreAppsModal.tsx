@@ -220,7 +220,7 @@ export function MoreAppsModal({ open, onOpenChange }: MoreAppsModalProps) {
         return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Beta</Badge>
       case 'coming-soon':
         return (
-          <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">Coming Soon</Badge>
+          <Badge className="bg-gray-500/20 ink-muted border-gray-500/30">Coming Soon</Badge>
         )
       default:
         return null

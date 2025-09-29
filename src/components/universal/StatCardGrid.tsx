@@ -113,8 +113,7 @@ export function StatCardGrid({
                 <p className="text-2xl font-bold">{formatValue(stat)}</p>
                 {stat.trend && (
                   <span
-                    className={`text-sm ${
-                      stat.trend.direction === 'up'
+                    className={`text-sm ${ stat.trend.direction ==='up'
                         ? 'text-green-600 dark:text-green-400'
                         : 'text-red-600 dark:text-red-400'
                     }`}

@@ -112,7 +112,7 @@ export default function GetStartedPage() {
               </div>
               <span className="text-xl font-light">HERA</span>
             </Link>
-            <Link href="/apps" className="ink-muted hover:ink transition-colors">
+            <Link href="/apps" className="-muted hover:ink transition-colors">
               View All Apps
             </Link>
           </div>
@@ -214,7 +214,7 @@ export default function GetStartedPage() {
               {/* Demo Credentials */}
               <Alert className="border-amber-200 bg-amber-50">
                 <Zap className="h-4 w-4 text-amber-600" />
-                <AlertDescription className="text-gray-700">
+                <AlertDescription className="ink">
                   <strong>Quick Demo:</strong> Use mario@restaurant.com / securepass123 to explore a
                   fully configured restaurant
                 </AlertDescription>

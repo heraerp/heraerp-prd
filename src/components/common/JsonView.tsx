@@ -69,7 +69,7 @@ export function JsonView({
 
     if (Array.isArray(value)) {
       if (value.length === 0) {
-        return <span className="text-gray-500">[]</span>
+        return <span className="ink-muted">[]</span>
       }
 
       return <CollapsibleArray items={value} depth={depth} renderValue={renderValue} />
@@ -78,13 +78,13 @@ export function JsonView({
     if (typeof value === 'object') {
       const entries = Object.entries(value)
       if (entries.length === 0) {
-        return <span className="text-gray-500">{'{}'}</span>
+        return <span className="ink-muted">{'{}'}</span>
       }
 
       return <CollapsibleObject entries={entries} depth={depth} renderValue={renderValue} />
     }
 
-    return <span className="text-gray-700 dark:text-gray-300">{String(value)}</span>
+    return <span className="ink dark:text-gray-300">{String(value)}</span>
   }
 
   return (
@@ -92,7 +92,7 @@ export function JsonView({
       <CardContent className="p-4">
         {title && (
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{title}</h3>
+            <h3 className="text-sm font-medium ink dark:text-gray-300">{title}</h3>
             <Button size="sm" variant="ghost" onClick={copyToClipboard} className="h-8 px-2">
               {copied ? (
                 <>
@@ -143,19 +143,19 @@ function CollapsibleArray({
 
   return (
     <>
-      <span className="text-gray-700 dark:text-gray-300">[</span>
+      <span className="ink dark:text-gray-300">[</span>
       {expanded ? (
         <>
           {items.map((item, index) => (
             <div key={index} className="ml-4">
-              <span className="text-gray-500">{indent}</span>
+              <span className="ink-muted">{indent}</span>
               {renderValue(item, depth + 1)}
               {index < items.length - 1 && ','}
             </div>
           ))}
           <div>
-            <span className="text-gray-500">{'  '.repeat(depth)}</span>
-            <span className="text-gray-700 dark:text-gray-300">]</span>
+            <span className="ink-muted">{'  '.repeat(depth)}</span>
+            <span className="ink dark:text-gray-300">]</span>
           </div>
         </>
       ) : (
@@ -166,7 +166,7 @@ function CollapsibleArray({
           {items.length} items
         </button>
       )}
-      {!expanded && <span className="text-gray-700 dark:text-gray-300">]</span>}
+      {!expanded && <span className="ink dark:text-gray-300">]</span>}
     </>
   )
 }
@@ -186,21 +186,21 @@ function CollapsibleObject({
 
   return (
     <>
-      <span className="text-gray-700 dark:text-gray-300">{'{'}</span>
+      <span className="ink dark:text-gray-300">{'{'}</span>
       {expanded ? (
         <>
           {entries.map(([key, value], index) => (
             <div key={key} className="ml-4">
-              <span className="text-gray-500">{indent}</span>
+              <span className="ink-muted">{indent}</span>
               <span className="text-red-600 dark:text-red-400">"{key}"</span>
-              <span className="text-gray-700 dark:text-gray-300">: </span>
+              <span className="ink dark:text-gray-300">: </span>
               {renderValue(value, depth + 1)}
               {index < entries.length - 1 && ','}
             </div>
           ))}
           <div>
-            <span className="text-gray-500">{'  '.repeat(depth)}</span>
-            <span className="text-gray-700 dark:text-gray-300">{'}'}</span>
+            <span className="ink-muted">{'  '.repeat(depth)}</span>
+            <span className="ink dark:text-gray-300">{'}'}</span>
           </div>
         </>
       ) : (
@@ -211,7 +211,7 @@ function CollapsibleObject({
           {entries.length} properties
         </button>
       )}
-      {!expanded && <span className="text-gray-700 dark:text-gray-300">{'}'}</span>}
+      {!expanded && <span className="ink dark:text-gray-300">{'}'}</span>}
     </>
   )
 }

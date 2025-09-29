@@ -414,7 +414,7 @@ export function EmployeeManagerView({
                         {/* Description */}
                         {request.description && (
                           <div className="bg-muted dark:bg-muted-foreground/10 rounded-lg p-3">
-                            <p className="text-sm text-gray-700 dark:text-gray-300">
+                            <p className="text-sm ink dark:text-gray-300">
                               <span className="font-medium">Note: </span>
                               {request.description}
                             </p>

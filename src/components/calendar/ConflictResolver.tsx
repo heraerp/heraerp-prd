@@ -175,8 +175,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                 return (
                   <Card
                     key={index}
-                    className={`cursor-pointer transition-all p-3 ${
-                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
+                    className={`cursor-pointer transition-all p-3 ${ isSelected ?'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
                     }`}
                     onClick={() => handleResolutionSelect(conflict.conflict_id, suggestion)}
                   >
@@ -232,7 +231,7 @@ export function ConflictResolver({ conflicts, onResolve, onDismiss }: ConflictRe
                           <div className="text-xs">
                             <span className="font-medium">Cost impact:</span>
                             <span
-                              className={`ml-1 ${suggestion.cost_impact > 0 ? 'text-red-600' : 'text-green-600'}`}
+                              className={`ml-1 ${suggestion.cost_impact > 0 ?'text-red-600' : 'text-green-600'}`}
                             >
                               {suggestion.cost_impact > 0 ? '+' : ''}${suggestion.cost_impact}
                             </span>

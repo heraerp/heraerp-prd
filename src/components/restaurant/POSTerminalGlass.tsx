@@ -165,7 +165,7 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none text-foreground hover:text-foreground">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none text-foreground hover:text-foreground">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -914,7 +914,7 @@ export function POSTerminalGlass({
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute top-0 -right-4 w-96 h-96 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
       </div>
 
       {/* Left Panel - Menu Items */}
@@ -1029,7 +1029,7 @@ export function POSTerminalGlass({
                         />
                       ) : (
                         <div
-                          className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
+                          className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category ||''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
                         >
                           <Icon className="h-16 w-16 text-foreground/30" />
                         </div>
@@ -1126,7 +1126,7 @@ export function POSTerminalGlass({
                           />
                         ) : (
                           <div
-                            className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category || ''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
+                            className={`h-full w-full bg-gradient-to-br ${CATEGORY_GRADIENTS[(item.metadata as any)?.category ||''] || 'from-gray-400/20 to-gray-9000/20'} flex items-center justify-center`}
                           >
                             <Icon className="h-8 w-8 text-foreground/30" />
                           </div>
@@ -1400,7 +1400,7 @@ export function POSTerminalGlass({
               variant="outline"
               onClick={() => setShowCheckout(true)}
               disabled={cart.length === 0}
-              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:opacity-50"
+              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:"
             >
               <Percent className="h-4 w-4 mr-1" />
               Discount
@@ -1409,7 +1409,7 @@ export function POSTerminalGlass({
               variant="outline"
               onClick={clearCart}
               disabled={cart.length === 0}
-              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:opacity-50"
+              className="bg-background/10 border-border/20 text-foreground hover:bg-background/20 hover:text-foreground disabled:"
             >
               <Trash2 className="h-4 w-4 mr-1" />
               Clear
@@ -1569,7 +1569,7 @@ export function POSTerminalGlass({
                     <div className="flex justify-between items-center">
                       <span className="text-gray-300 font-medium">Change Due:</span>
                       <span
-                        className={`text-2xl font-bold ${change >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+                        className={`text-2xl font-bold ${change >= 0 ?'text-emerald-400' : 'text-rose-400'}`}
                       >
                         {change >= 0 ? '' : '-'}
                         {formatCurrency(Math.abs(change))}
@@ -1594,7 +1594,7 @@ export function POSTerminalGlass({
             <Button
               onClick={processOrder}
               disabled={processing || (paymentMethod === 'cash' && change < 0)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-foreground border-0 disabled: disabled:cursor-not-allowed"
             >
               {processing ? (
                 <>

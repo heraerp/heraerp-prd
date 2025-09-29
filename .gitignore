@@ -44,3 +44,7 @@ next-env.d.ts
 .railway-service.json
 railway.env
 .env
+
+# Color guard reports
+color-guard-report.json
+.color-guard-baseline.json

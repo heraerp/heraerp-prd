@@ -178,8 +178,7 @@ export default function SeamlessNavigation({
     <div className={`${className}`}>
       {/* Floating Navigation Bar */}
       <div
-        className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${
-          isMinimized ? 'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
+        className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${ isMinimized ?'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
         }`}
       >
         <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/20 px-6 py-4 max-w-md">
@@ -197,7 +196,7 @@ export default function SeamlessNavigation({
           {/* Progress Bar */}
           <div className="mb-4">
             <Progress value={navState.progress} className={`h-2 transition-all duration-1000`} />
-            <div className="flex justify-between text-xs text-slate-500 mt-1">
+            <div className="flex justify-between text-xs ink-muted mt-1">
               <span>Journey Progress</span>
               <span>{navState.progress}/100</span>
             </div>
@@ -205,7 +204,7 @@ export default function SeamlessNavigation({
 
           {/* Encouragement */}
           <div className="text-center mb-4">
-            <p className="text-slate-700 font-medium">{navState.encouragement}</p>
+            <p className="ink font-medium">{navState.encouragement}</p>
           </div>
 
           {/* Action Buttons */}
@@ -247,7 +246,7 @@ export default function SeamlessNavigation({
 
           {/* Time Estimate */}
           {navState.timeRemaining && (
-            <div className="flex items-center justify-center gap-1 mt-3 text-xs text-slate-500">
+            <div className="flex items-center justify-center gap-1 mt-3 text-xs ink-muted">
               <Clock className="h-3 w-3" />
               <span>{navState.timeRemaining} remaining</span>
             </div>

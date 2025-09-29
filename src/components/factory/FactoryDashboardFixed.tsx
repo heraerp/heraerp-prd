@@ -77,7 +77,7 @@ export default function FactoryDashboardFixed() {
                   <option value="stable">Stable</option>
                   <option value="LTS">LTS</option>
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 ink">
                   <svg
                     className="h-4 w-4"
                     fill="none"
@@ -99,7 +99,7 @@ export default function FactoryDashboardFixed() {
 
               {/* Refresh */}
               <Button variant="outline" size="sm" onClick={actions.refresh} disabled={loading}>
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-4 h-4 ${loading ?'animate-spin' : ''}`} />
               </Button>
             </div>
           </div>

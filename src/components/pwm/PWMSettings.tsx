@@ -343,7 +343,7 @@ export function PWMSettings({ organizationId }: PWMSettingsProps) {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs ink-muted mt-1">
                   Premium dark theme optimized for wealth management
                 </p>
               </div>

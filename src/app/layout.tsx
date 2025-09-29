@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import Script from 'next/script'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 // import { HeraThemeProvider } from '@/components/universal/ui/HeraThemeProvider'
 import ThemeProvider from '@/app/components/ThemeProvider'
@@ -72,13 +73,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        {/* PWA functionality has been removed from HERA for multi-tenant safety */}
-        {/* Setting cache control headers for multi-tenant security */}
-        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta httpEquiv="Pragma" content="no-cache" />
-        <meta httpEquiv="Expires" content="0" />
-        {/* Ensure dark theme is applied immediately to prevent flash for public pages */}
-        <script
+        <Script
+          id="public-page-theme"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -87,39 +84,69 @@ export default function RootLayout({
                   "/", "/demo", "/pricing-request", "/blog", "/docs",
                   "/contact", "/partners", "/solutions", "/features",
                   "/terms", "/policy", "/whatsapp-desktop", "/discover",
-                  "/how-it-works", "/pricing", "/get-started"
+                  "/how-it-works", "/pricing", "/get-started", "/book-a-meeting",
+                  "/about"
                 ];
 
-                const pathname = window.location.pathname;
-                const isPublicPage = PUBLIC_ROUTES.some(route => {
-                  if (route === "/") {
-                    return pathname === "/";
-                  }
-                  return pathname.startsWith(route);
-                });
+              const pathname = window.location.pathname;
+              const isPublicPage = PUBLIC_ROUTES.some(route => {
+                if (route === "/") {
+                  return pathname === "/";
+                }
+                return pathname.startsWith(route);
+              });
 
-                if (isPublicPage) {
-                  // Force dark mode for public pages
-                  document.documentElement.classList.remove('light');
-                  document.documentElement.classList.add('dark');
-                } else {
-                  // Apply saved theme for non-public pages
-                  const saved = localStorage.getItem('theme') || 'dark';
-                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  const effective = saved === 'system' ? (systemDark ? 'dark' : 'light') : saved;
-                  document.documentElement.classList.remove('light', 'dark');
-                  document.documentElement.classList.add(effective);
+              if (isPublicPage) {
+                // Force dark mode for public pages BEFORE hydration
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+
+                // Add public-page class to body as soon as it's available
+                function addPublicPageClass() {
+                  if (document.body) {
+                    document.body.classList.add('public-page');
+                  }
                 }
 
-                // No-op cookie preferences function for footer
-                window.showCookiePreferences = function() {
-                  console.log('Cookie preferences would be shown here');
-                  // TODO: Replace with actual CMP integration (Cookiebot/OneTrust)
-                };
-              })();
-            `
-          }}
-        />
+                // Try to add class immediately if body exists
+                if (document.body) {
+                  addPublicPageClass();
+                } else if (document.readyState === 'loading') {
+                  // Use DOMContentLoaded if still loading
+                  document.addEventListener('DOMContentLoaded', addPublicPageClass);
+
+                  // Also use MutationObserver as fallback for early body creation
+                  const observer = new MutationObserver(function(mutations, obs) {
+                    if (document.body) {
+                      addPublicPageClass();
+                      obs.disconnect();
+                    }
+                  });
+                  observer.observe(document.documentElement, { childList: true, subtree: true });
+                }
+              } else {
+                // Apply saved theme for non-public pages
+                const saved = localStorage.getItem('theme') || 'dark';
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const effective = saved === 'system' ? (systemDark ? 'dark' : 'light') : saved;
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(effective);
+              }
+
+              // No-op cookie preferences function for footer
+              window.showCookiePreferences = function() {
+                console.log('Cookie preferences would be shown here');
+                // TODO: Replace with actual CMP integration (Cookiebot/OneTrust)
+              };
+            })();
+          `
+        }}
+      />
+        {/* PWA functionality has been removed from HERA for multi-tenant safety */}
+        {/* Setting cache control headers for multi-tenant security */}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}

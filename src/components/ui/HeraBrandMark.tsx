@@ -33,7 +33,7 @@ export function HeraBrandMark({
 
   if (variant === 'icon') {
     return (
-      <svg width={height} height={height} viewBox={`0 0 ${height} ${height}`} className={className}>
+      <svg fill="none" stroke="currentColor" width={height} height={height} viewBox={`0 0 ${height} ${height}`} className={className}>
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
             {scaleStops.map((color, i) => (
@@ -64,7 +64,7 @@ export function HeraBrandMark({
   }
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -135,7 +135,7 @@ export function HeraBrandMark({
                     x={x + barWidth / 2}
                     y={maxHeight + height * 0.25}
                     fontSize={fontSize * 0.15}
-                    fill="#64748B"
+                    fill="currentColor"
                     textAnchor="middle"
                     fontWeight="500"
                     fontFamily="Inter"
@@ -187,7 +187,7 @@ export function HeraBrandMark({
           fontFamily="Inter"
           fontSize={fontSize * 0.18}
           fontWeight="600"
-          fill="#64748B"
+          fill="currentColor"
           letterSpacing="0.1em"
           opacity="0.7"
         >

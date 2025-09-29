@@ -107,19 +107,19 @@ export function RoleTable({
       <table className="w-full">
         <thead>
           <tr className="border-b border-gray-200 dark:border-gray-700">
-            <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <th className="text-left py-3 px-4 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
               User
             </th>
-            <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <th className="text-left py-3 px-4 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
               Roles
             </th>
-            <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <th className="text-left py-3 px-4 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
               Status
             </th>
-            <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <th className="text-left py-3 px-4 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
               Granted
             </th>
-            <th className="text-right py-3 px-4 font-semibold text-gray-900 dark:text-gray-100 text-sm uppercase tracking-wider">
+            <th className="text-right py-3 px-4 font-semibold ink dark:text-gray-100 text-sm uppercase tracking-wider">
               Actions
             </th>
           </tr>
@@ -133,15 +133,14 @@ export function RoleTable({
             return (
               <tr
                 key={grant.user_email}
-                className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
-                  isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
+                className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${ isEven ?'bg-gray-50/30 dark:bg-gray-800/20' : ''
                 }`}
               >
                 {/* User Column */}
                 <td className="py-4 px-4">
                   <div className="flex items-start gap-3">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color || 'bg-gray-100'}`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color ||'bg-gray-100'}`}
                     >
                       {roleConfig ? (
                         <roleConfig.icon className="h-4 w-4" />
@@ -150,10 +149,10 @@ export function RoleTable({
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                      <div className="text-sm font-medium ink dark:text-gray-100 truncate">
                         {grant.user_name || 'Unknown User'}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
+                      <div className="text-sm dark:ink-muted truncate flex items-center gap-1">
                         <Mail className="h-3 w-3" />
                         {grant.user_email}
                       </div>
@@ -167,7 +166,7 @@ export function RoleTable({
                     {grant.roles.length > 0 ? (
                       grant.roles.map(role => getRoleBadge(role))
                     ) : (
-                      <Badge variant="outline" className="text-gray-500 border-gray-300">
+                      <Badge variant="outline" className="ink-muted border-gray-300">
                         No roles
                       </Badge>
                     )}
@@ -197,13 +196,13 @@ export function RoleTable({
 
                 {/* Granted Column */}
                 <td className="py-4 px-4">
-                  <div className="text-sm text-gray-900 dark:text-gray-100">
+                  <div className="text-sm ink dark:text-gray-100">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3 text-gray-400" />
+                      <Calendar className="h-3 w-3 ink-muted" />
                       {formatDate(grant.granted_at)}
                     </div>
                     {grant.granted_by && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <div className="text-xs dark:ink-muted mt-1">
                         by {grant.granted_by}
                       </div>
                     )}

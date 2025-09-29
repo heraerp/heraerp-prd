@@ -637,9 +637,7 @@ export function UCRTemplateCustomizer({ template, onSave, onCancel }: UCRTemplat
         {validationResult && (
           <div className="space-y-4">
             <div
-              className={`p-4 rounded-lg border ${
-                validationResult.ok
-                  ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+              className={`p-4 rounded-lg border ${ validationResult.ok ?'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                   : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
               }`}
             >

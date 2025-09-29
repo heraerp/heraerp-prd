@@ -223,7 +223,7 @@ export default function DiscoverPage() {
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
         <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
-        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-4000 dark:bg-pink-600 dark:" />
       </div>
 
       <div className="relative z-10">
@@ -264,7 +264,7 @@ export default function DiscoverPage() {
             <h2 className="text-4xl font-bold text-foreground dark:text-foreground mb-4">
               See HERA in Action
             </h2>
-            <p className="text-lg text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
+            <p className="text-lg ink dark:text-slate-300 max-w-3xl mx-auto">
               Explore real businesses powered by HERA. Click any industry below to experience a live
               demo with actual data, features, and workflows.
             </p>
@@ -281,7 +281,7 @@ export default function DiscoverPage() {
                 <p className="text-2xl font-bold text-foreground dark:text-foreground">
                   {stat.value}
                 </p>
-                <p className="text-sm text-slate-700 dark:text-slate-300">{stat.label}</p>
+                <p className="text-sm ink dark:text-slate-300">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -325,7 +325,7 @@ export default function DiscoverPage() {
                 </CardHeader>
 
                 <CardContent className="relative z-10">
-                  <p className="text-slate-700 dark:text-slate-300 mb-4">{industry.description}</p>
+                  <p className="ink dark:text-slate-300 mb-4">{industry.description}</p>
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
@@ -357,14 +357,14 @@ export default function DiscoverPage() {
                         <Badge
                           key={idx}
                           variant="outline"
-                          className="text-xs border-input text-slate-700 dark:border-input dark:text-slate-300"
+                          className="text-xs border-input ink dark:border-input dark:text-slate-300"
                         >
                           {feature}
                         </Badge>
                       ))}
                       <Badge
                         variant="outline"
-                        className="text-xs border-input text-slate-700 dark:border-input dark:text-slate-300"
+                        className="text-xs border-input ink dark:border-input dark:text-slate-300"
                       >
                         +{industry.metrics.features - 3} more
                       </Badge>
@@ -376,7 +376,7 @@ export default function DiscoverPage() {
                     <p className="text-sm italic text-muted-foreground dark:text-muted-foreground mb-2">
                       "{industry.testimonial.quote}"
                     </p>
-                    <p className="text-xs text-slate-700 dark:text-slate-300">
+                    <p className="text-xs ink dark:text-slate-300">
                       — {industry.testimonial.author},{' '}
                       <span className="text-muted-foreground dark:text-muted-foreground">
                         {industry.testimonial.role}
@@ -438,7 +438,7 @@ export default function DiscoverPage() {
               <h3 className="text-2xl font-bold text-foreground dark:text-foreground mb-2">
                 Ready to validate?
               </h3>
-              <p className="text-slate-700 dark:text-slate-300 mb-6 max-w-md">
+              <p className="ink dark:text-slate-300 mb-6 max-w-md">
                 After exploring our demos, check if HERA fits your specific business needs with our
                 interactive validation tools.
               </p>

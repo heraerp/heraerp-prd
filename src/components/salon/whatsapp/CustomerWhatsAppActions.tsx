@@ -216,7 +216,7 @@ export function CustomerWhatsAppActions({
 
                 <div className="mt-4">
                   <div className="bg-muted dark:bg-muted p-4 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
+                    <pre className="whitespace-pre-wrap text-sm !ink dark:!text-gray-300 font-mono">
                       {getBirthdayPreview()}
                     </pre>
                   </div>
@@ -278,7 +278,7 @@ export function CustomerWhatsAppActions({
 
                 <div className="mt-4">
                   <div className="bg-muted dark:bg-muted p-4 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm !text-gray-700 dark:!text-gray-300 font-mono">
+                    <pre className="whitespace-pre-wrap text-sm !ink dark:!text-gray-300 font-mono">
                       {getWinbackPreview()}
                     </pre>
                   </div>

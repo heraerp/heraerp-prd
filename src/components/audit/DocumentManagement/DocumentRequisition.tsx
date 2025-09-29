@@ -285,7 +285,7 @@ export function DocumentRequisition({
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Overall Completion</span>
+            <span className="text-sm font-medium ink">Overall Completion</span>
             <span className="text-sm font-bold text-gray-100">{stats.completion_percentage}%</span>
           </div>
           <Progress value={stats.completion_percentage} className="h-3" />

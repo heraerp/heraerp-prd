@@ -244,7 +244,7 @@ export function EmailList({ emails, selectedEmailId, onEmailSelect, folder }: Em
                       </div>
 
                       <div className="flex items-center gap-2">
-                        {email.has_attachments && <Paperclip className="h-3 w-3 text-gray-400" />}
+                        {email.has_attachments && <Paperclip className="h-3 w-3 ink-muted" />}
                         <span className="text-xs text-muted-foreground">
                           {formatDate(email.created_at)}
                         </span>

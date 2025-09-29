@@ -118,7 +118,7 @@ export function CategoryList({
                       <p style={{ color: COLORS.champagne }}>{category.entity_name}</p>
                       {category.description && (
                         <p
-                          className="text-sm opacity-60 mt-0.5"
+                          className="text-sm mt-0.5"
                           style={{ color: COLORS.lightText }}
                         >
                           {category.description}
@@ -142,7 +142,7 @@ export function CategoryList({
                   {isArchived ? (
                     <Badge
                       variant="secondary"
-                      className="bg-gray-500/20 text-gray-400 border-gray-500/30"
+                      className="bg-gray-500/20 ink-muted border-gray-500/30"
                     >
                       Archived
                     </Badge>

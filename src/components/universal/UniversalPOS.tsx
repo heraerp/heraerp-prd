@@ -396,7 +396,7 @@ export function UniversalPOS({
                 placeholder={`Search ${config.businessType} items...`}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="bg-background/60 backdrop-blur-sm border-white/30 text-slate-800 placeholder:text-slate-500 focus:bg-background/80 transition-all"
+                className="bg-background/60 backdrop-blur-sm border-white/30 text-slate-800 placeholder:ink-muted focus:bg-background/80 transition-all"
               />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
@@ -457,7 +457,7 @@ export function UniversalPOS({
                         <p className="text-sm text-muted-foreground mb-2 font-medium">
                           {item.description}
                         </p>
-                        <div className="flex items-center gap-3 text-xs text-slate-500">
+                        <div className="flex items-center gap-3 text-xs ink-muted">
                           {item.type === 'service' ? (
                             <>
                               {item.duration && (
@@ -528,7 +528,7 @@ export function UniversalPOS({
                   <div className="text-center py-8">
                     <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
                     <p className="text-muted-foreground font-medium">Cart is empty</p>
-                    <p className="text-sm text-slate-500">Add items to start</p>
+                    <p className="text-sm ink-muted">Add items to start</p>
                   </div>
                 ) : (
                   cart.map(item => (
@@ -645,7 +645,7 @@ export function UniversalPOS({
               <CardContent className="space-y-4">
                 {!splitPayment ? (
                   <div>
-                    <Label className="text-slate-700 font-medium mb-2 block">Payment Method</Label>
+                    <Label className="ink font-medium mb-2 block">Payment Method</Label>
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {Object.entries(config.paymentMethods).map(([method, enabled]) =>
                         enabled ? (
@@ -666,7 +666,7 @@ export function UniversalPOS({
                 ) : (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-slate-700 font-medium">Split Payment Methods</Label>
+                      <Label className="ink font-medium">Split Payment Methods</Label>
                       {getRemainingAmount() > 0 && (
                         <Button
                           size="sm"
@@ -795,7 +795,7 @@ export function UniversalPOS({
                     disabled={
                       splitPayment && Math.abs(getTotalPaymentAmount() - getFinalTotal()) > 0.01
                     }
-                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-foreground shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-foreground shadow-lg hover:shadow-xl transition-all duration-200 font-medium py-3 disabled: disabled:cursor-not-allowed"
                   >
                     <Receipt className="h-5 w-5 mr-2" />
                     {splitPayment

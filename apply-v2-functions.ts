@@ -9,8 +9,8 @@ import { createClient } from '@supabase/supabase-js'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL']!
+const supabaseKey = process.env['SUPABASE_SERVICE_ROLE_KEY']!
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Missing Supabase environment variables')
@@ -88,7 +88,7 @@ async function createFunctionsDirectly() {
   console.log('🔧 Creating HERA V2 functions directly...')
 
   // Test connection first
-  const { data, error } = await supabase.from('core_organizations').select('count').limit(1)
+  const { error } = await supabase.from('core_organizations').select('count').limit(1)
   if (error) {
     console.error('❌ Database connection failed:', error.message)
     return false

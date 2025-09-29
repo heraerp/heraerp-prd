@@ -295,7 +295,7 @@ export function GuardrailDetailDialog({
                                 className="text-sm p-2 bg-muted dark:bg-background rounded"
                               >
                                 <div className="flex items-center justify-between">
-                                  <span className="text-gray-700 dark:text-gray-300">
+                                  <span className="ink dark:text-gray-300">
                                     {violation.message || 'Policy violation detected'}
                                   </span>
                                   <span className="text-xs text-muted-foreground">

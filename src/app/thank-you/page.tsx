@@ -22,21 +22,21 @@ export default function ThankYouPage() {
           </div>
         </div>
 
-        <h1 className="mb-4 text-4xl font-bold text-gray-900">Thank You!</h1>
+        <h1 className="mb-4 text-4xl font-bold ink">Thank You!</h1>
 
-        <p className="mb-8 text-xl text-gray-600">
+        <p className="mb-8 text-xl ink-muted">
           Your free SMB Growth Guide is on its way to your inbox.
         </p>
 
         <div className="rounded-xl bg-white p-8 shadow-lg">
-          <h2 className="mb-4 text-2xl font-semibold text-gray-900">What happens next?</h2>
+          <h2 className="mb-4 text-2xl font-semibold ink">What happens next?</h2>
 
           <div className="space-y-4 text-left">
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">1.</div>
               <div>
-                <h3 className="font-semibold text-gray-900">Check your email</h3>
-                <p className="text-gray-600">
+                <h3 className="font-semibold ink">Check your email</h3>
+                <p className="ink-muted">
                   You'll receive the guide within 5 minutes. Check spam if needed.
                 </p>
               </div>
@@ -45,8 +45,8 @@ export default function ThankYouPage() {
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">2.</div>
               <div>
-                <h3 className="font-semibold text-gray-900">Read the guide</h3>
-                <p className="text-gray-600">
+                <h3 className="font-semibold ink">Read the guide</h3>
+                <p className="ink-muted">
                   18 minutes average read time. Includes templates and checklists.
                 </p>
               </div>
@@ -55,8 +55,8 @@ export default function ThankYouPage() {
             <div className="flex gap-4">
               <div className="mt-1 text-blue-600">3.</div>
               <div>
-                <h3 className="font-semibold text-gray-900">Book a demo</h3>
-                <p className="text-gray-600">
+                <h3 className="font-semibold ink">Book a demo</h3>
+                <p className="ink-muted">
                   See how HERA can transform your specific business operations.
                 </p>
               </div>
@@ -64,7 +64,7 @@ export default function ThankYouPage() {
           </div>
 
           <div className="mt-8 border-t pt-8">
-            <p className="mb-4 text-sm text-gray-600">Ready to see HERA in action?</p>
+            <p className="mb-4 text-sm ink-muted">Ready to see HERA in action?</p>
             <Link
               href="/book-a-meeting"
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 font-semibold text-white transition-all hover:from-blue-700 hover:to-indigo-700"

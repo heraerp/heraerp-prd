@@ -41,7 +41,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {isPassword && (
           <button
             type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-hera-ink-500 hover:text-hera-ink-700"
+            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-hera--500 hover:text-hera-ink-700"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeOff /> : <Eye />}

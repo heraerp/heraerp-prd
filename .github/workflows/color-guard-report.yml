@@ -1,0 +1,34 @@
+name: Color Guard (Report Only)
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Run color guard (non-blocking)
+        run: npm run guard:colors:annotate
+        continue-on-error: true
+      - name: Upload JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: color-guard-report
+          path: color-guard-report.json
+      - name: PR summary (optional)
+        if: env.GITHUB_STEP_SUMMARY != ''
+        run: |
+          if [ -f color-guard-report.json ]; then
+            echo "### Color Guard Report" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            cat color-guard-report.json >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi

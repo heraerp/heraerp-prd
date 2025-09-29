@@ -110,10 +110,10 @@ export function PnLTable({
       gross_profit: <TrendingUp className="h-4 w-4 text-blue-600" />,
       expenses: <TrendingDown className="h-4 w-4 text-red-600" />,
       operating_profit: <TrendingUp className="h-4 w-4 text-blue-600" />,
-      other: <Minus className="h-4 w-4 text-gray-600" />,
+      other: <Minus className="h-4 w-4 ink-muted" />,
       net_income: <TrendingUp className="h-4 w-4 text-emerald-600" />
     }
-    return groupIcons[group] || <FileText className="h-4 w-4 text-gray-600" />
+    return groupIcons[group] || <FileText className="h-4 w-4 ink-muted" />
   }
 
   const getAmountColor = (amount: number, group: string) => {
@@ -267,7 +267,7 @@ export function PnLTable({
                 )}
               </div>
               {row.sub_group && !row.is_subtotal && (
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{row.sub_group}</div>
+                <div className="text-xs dark:ink-muted mt-1">{row.sub_group}</div>
               )}
             </div>
           </div>
@@ -285,14 +285,14 @@ export function PnLTable({
         </TableCell>
 
         {/* Percentage */}
-        <TableCell className="text-right text-sm text-gray-600 dark:text-gray-400">
+        <TableCell className="text-right text-sm dark:ink-muted">
           {row.percentage ? `${row.percentage.toFixed(1)}%` : '—'}
         </TableCell>
 
         {/* Comparison columns */}
         {showComparison && (
           <>
-            <TableCell className="text-right font-mono text-sm text-gray-600 dark:text-gray-400">
+            <TableCell className="text-right font-mono text-sm dark:ink-muted">
               {row.prior_period_amount ? formatCurrency(Math.abs(row.prior_period_amount)) : '—'}
             </TableCell>
             <TableCell className="text-right">
@@ -366,7 +366,7 @@ export function PnLTable({
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-            <span className="ml-2 text-gray-600 dark:text-gray-400">Loading P&L data...</span>
+            <span className="ml-2 dark:ink-muted">Loading P&L data...</span>
           </div>
         </CardContent>
       </Card>
@@ -383,7 +383,7 @@ export function PnLTable({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 dark:ink-muted">
             <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No financial data available for the selected period.</p>
           </div>
@@ -438,7 +438,7 @@ export function PnLTable({
         </div>
 
         {/* Footer Notes */}
-        <div className="mt-4 space-y-2 text-xs text-gray-500 dark:text-gray-400">
+        <div className="mt-4 space-y-2 text-xs dark:ink-muted">
           <div className="flex flex-wrap gap-4">
             <span>• All amounts in {currency}</span>
             <span>• Revenue amounts shown as positive for clarity</span>

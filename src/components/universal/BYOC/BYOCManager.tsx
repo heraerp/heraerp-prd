@@ -481,7 +481,7 @@ export function BYOCManager({
               Add Configuration
             </Button>
             <Button variant="outline" onClick={loadConfigurations} disabled={isLoading}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ?'animate-spin' : ''}`} />
               Refresh
             </Button>
           </div>
@@ -507,7 +507,7 @@ export function BYOCManager({
               return (
                 <Card
                   key={config.id}
-                  className={`relative ${config.metadata.isActive ? 'ring-2 ring-green-500' : ''}`}
+                  className={`relative ${config.metadata.isActive ?'ring-2 ring-green-500' : ''}`}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
@@ -533,8 +533,7 @@ export function BYOCManager({
                     {/* Status Indicator */}
                     {status && (
                       <div
-                        className={`flex items-center gap-2 text-sm ${
-                          status.connected ? 'text-green-600' : 'text-red-600'
+                        className={`flex items-center gap-2 text-sm ${ status.connected ?'text-green-600' : 'text-red-600'
                         }`}
                       >
                         {status.connected ? (
@@ -553,8 +552,7 @@ export function BYOCManager({
                       {Object.entries(config.permissions).map(([perm, enabled]) => (
                         <Badge
                           key={perm}
-                          className={`text-xs ${
-                            enabled ? 'bg-blue-100 text-blue-700' : 'bg-muted text-muted-foreground'
+                          className={`text-xs ${ enabled ?'bg-blue-100 text-blue-700' : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {perm.toUpperCase()}

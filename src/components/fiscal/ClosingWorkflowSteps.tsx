@@ -64,7 +64,7 @@ export function ClosingWorkflowSteps({
         <CardContent className="py-12">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-6 w-6 animate-spin text-violet-600 mr-3" />
-            <span className="text-gray-600 dark:text-gray-400">Loading workflow...</span>
+            <span className="dark:ink-muted">Loading workflow...</span>
           </div>
         </CardContent>
       </Card>
@@ -144,7 +144,7 @@ export function ClosingWorkflowSteps({
             Closing Workflow Steps
           </CardTitle>
           {workflow?.started_at && (
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm dark:ink-muted">
               Started: {formatTimestamp(workflow.started_at)}
             </div>
           )}
@@ -159,8 +159,7 @@ export function ClosingWorkflowSteps({
             return (
               <div key={step.id}>
                 <div
-                  className={`relative p-4 border rounded-lg transition-all ${getStepColor(step.status)} ${
-                    isClickable ? 'cursor-pointer hover:shadow-md' : ''
+                  className={`relative p-4 border rounded-lg transition-all ${getStepColor(step.status)} ${ isClickable ?'cursor-pointer hover:shadow-md' : ''
                   }`}
                   onClick={() => isClickable && onStepClick(step)}
                   role={isClickable ? 'button' : undefined}
@@ -177,8 +176,7 @@ export function ClosingWorkflowSteps({
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${
-                            step.status === 'done'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${ step.status ==='done'
                               ? 'bg-green-600 text-white'
                               : step.status === 'in_progress'
                                 ? 'bg-blue-600 text-white'
@@ -200,17 +198,17 @@ export function ClosingWorkflowSteps({
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <Icon className="h-4 w-4 text-gray-600" />
-                            <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                            <Icon className="h-4 w-4 ink-muted" />
+                            <h3 className="font-semibold ink dark:text-gray-100">
                               {step.name}
                             </h3>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm dark:ink-muted">
                             {step.description}
                           </p>
 
                           {/* Timestamps */}
-                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <div className="flex items-center gap-4 text-xs ink-muted">
                             {step.started_at && (
                               <span>Started: {formatTimestamp(step.started_at)}</span>
                             )}

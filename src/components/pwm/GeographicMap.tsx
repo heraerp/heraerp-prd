@@ -82,7 +82,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
 
       {/* Interactive World Map */}
       <div className="relative h-64 md:h-80 mb-6 bg-muted/50 rounded-xl border border-border/50 overflow-hidden">
-        <svg
+        <svg fill="none" stroke="currentColor"
           viewBox="0 0 100 60"
           className="w-full h-full"
           style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
@@ -100,14 +100,14 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           </defs>
 
           {/* Ocean background */}
-          <rect width="100" height="60" fill="url(#oceanGradient)" />
+          <rect width="100" height="60" fill="currentColor" />
 
           {/* Continents (simplified shapes) */}
           {/* North America */}
           <path
             d="M10,15 Q15,10 25,12 Q30,15 28,25 Q25,30 20,28 Q12,25 10,15 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -115,8 +115,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           {/* South America */}
           <path
             d="M20,32 Q25,30 27,35 Q25,45 20,50 Q15,48 18,40 Q15,35 20,32 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -124,8 +124,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           {/* Europe */}
           <path
             d="M45,12 Q52,10 55,15 Q53,20 48,18 Q45,15 45,12 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -133,8 +133,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           {/* Africa */}
           <path
             d="M48,22 Q55,20 58,30 Q55,45 50,48 Q45,45 47,35 Q45,28 48,22 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -142,8 +142,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           {/* Asia */}
           <path
             d="M60,8 Q75,5 85,15 Q80,25 75,30 Q70,28 65,25 Q60,20 60,8 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -151,8 +151,8 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           {/* Australia */}
           <path
             d="M75,40 Q82,38 85,42 Q83,45 78,44 Q75,42 75,40 Z"
-            fill="url(#landGradient)"
-            stroke="#4b5563"
+            fill="currentColor"
+            stroke="currentColor"
             strokeWidth="0.2"
             className="transition-all duration-300 hover:fill-slate-600"
           />
@@ -176,7 +176,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                 cy={region.coordinates.y}
                 r={Math.sqrt(region.percentage) / 2 + 1}
                 fill={region.color}
-                stroke="white"
+                stroke="currentColor"
                 strokeWidth="0.3"
                 className="cursor-pointer transition-all duration-300 hover:r-4 hover:opacity-80"
                 onMouseEnter={() => setHoveredRegion(region.name)}
@@ -191,7 +191,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                     y={region.coordinates.y - 8}
                     width="18"
                     height="12"
-                    fill="rgba(0, 0, 0, 0.9)"
+                    fill="currentColor"
                     stroke={region.color}
                     strokeWidth="0.2"
                     rx="1"
@@ -199,7 +199,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
                   <text
                     x={region.coordinates.x + 4}
                     y={region.coordinates.y - 5}
-                    fill="white"
+                    fill="currentColor"
                     fontSize="2"
                     className="font-medium"
                   >
@@ -232,7 +232,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           <path
             d={`M${regions[0].coordinates.x},${regions[0].coordinates.y} Q40,15 ${regions[1].coordinates.x},${regions[1].coordinates.y}`}
             fill="none"
-            stroke="url(#connectionGradient)"
+            stroke="currentColor"
             strokeWidth="0.5"
             strokeDasharray="2,2"
             className="animate-pulse"
@@ -240,7 +240,7 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
           <path
             d={`M${regions[1].coordinates.x},${regions[1].coordinates.y} Q65,25 ${regions[2].coordinates.x},${regions[2].coordinates.y}`}
             fill="none"
-            stroke="url(#connectionGradient)"
+            stroke="currentColor"
             strokeWidth="0.5"
             strokeDasharray="2,2"
             className="animate-pulse"

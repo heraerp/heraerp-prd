@@ -430,8 +430,7 @@ export function ContextualSidebar({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`w-10 h-10 p-0 ${
-                    pathname === item.href ? 'bg-blue-100 text-primary' : ''
+                  className={`w-10 h-10 p-0 ${ pathname === item.href ?'bg-blue-100 text-primary' : ''
                   }`}
                 >
                   {item.icon}
@@ -488,8 +487,7 @@ export function ContextualSidebar({
                 {section.title}
               </h3>
               <ChevronRight
-                className={`w-3 h-3 text-muted-foreground transition-transform ${
-                  expandedSections.has(section.id) ? 'rotate-90' : ''
+                className={`w-3 h-3 text-muted-foreground transition-transform ${ expandedSections.has(section.id) ?'rotate-90' : ''
                 }`}
               />
             </div>
@@ -501,9 +499,7 @@ export function ContextualSidebar({
                     {item.href ? (
                       <Link href={item.href}>
                         <div
-                          className={`flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted ${
-                            pathname === item.href
-                              ? 'bg-blue-50 text-primary border-l-4 border-blue-500 pl-2'
+                          className={`flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted ${ pathname === item.href ?'bg-blue-50 text-primary border-l-4 border-blue-500 pl-2'
                               : 'text-gray-700 hover:text-foreground'
                           }`}
                         >
@@ -538,7 +534,7 @@ export function ContextualSidebar({
                       </Link>
                     ) : (
                       <div
-                        className="flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted cursor-pointer text-gray-700 hover:text-foreground"
+                        className="flex items-center justify-between p-3 rounded-lg transition-all hover:bg-muted cursor-pointer ink hover:text-foreground"
                         onClick={item.action}
                       >
                         <div className="flex items-center space-x-3">

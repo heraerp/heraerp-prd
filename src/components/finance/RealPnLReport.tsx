@@ -382,13 +382,13 @@ export function RealPnLReport({
             <table className="w-full">
               <thead className="bg-muted dark:bg-background border-y border-border dark:border-border">
                 <tr>
-                  <th className="text-left px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <th className="text-left px-6 py-3 text-sm font-medium ink dark:text-gray-300">
                     Account
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <th className="text-right px-6 py-3 text-sm font-medium ink dark:text-gray-300">
                     {format(new Date(endDate), 'MMM yyyy')}
                   </th>
-                  <th className="text-right px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <th className="text-right px-6 py-3 text-sm font-medium ink dark:text-gray-300">
                     % of Revenue
                   </th>
                 </tr>

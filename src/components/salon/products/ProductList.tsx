@@ -138,7 +138,7 @@ export function ProductList({
                       <p style={{ color: COLORS.champagne }}>{product.entity_name}</p>
                       {product.entity_code && (
                         <p
-                          className="text-sm opacity-60 mt-0.5"
+                          className="text-sm mt-0.5"
                           style={{ color: COLORS.lightText }}
                         >
                           {product.entity_code}
@@ -157,7 +157,7 @@ export function ProductList({
                       {product.category}
                     </Badge>
                   ) : (
-                    <span className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
+                    <span className="text-sm" style={{ color: COLORS.lightText }}>
                       No category
                     </span>
                   )}
@@ -169,7 +169,7 @@ export function ProductList({
                       AED {product.price.toFixed(2)}
                     </span>
                   ) : (
-                    <span className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
+                    <span className="text-sm" style={{ color: COLORS.lightText }}>
                       No price
                     </span>
                   )}
@@ -196,7 +196,7 @@ export function ProductList({
                   {isArchived ? (
                     <Badge
                       variant="secondary"
-                      className="bg-gray-500/20 text-gray-400 border-gray-500/30"
+                      className="bg-gray-500/20 ink-muted border-gray-500/30"
                     >
                       Archived
                     </Badge>
@@ -432,7 +432,7 @@ function ProductCard({
       {/* Price and Stock */}
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
+          <p className="text-xs" style={{ color: COLORS.lightText }}>
             Price
           </p>
           <p className="font-semibold" style={{ color: COLORS.gold }}>
@@ -440,7 +440,7 @@ function ProductCard({
           </p>
         </div>
         <div>
-          <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
+          <p className="text-xs" style={{ color: COLORS.lightText }}>
             Stock
           </p>
           <p

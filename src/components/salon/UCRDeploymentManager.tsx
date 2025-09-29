@@ -708,8 +708,7 @@ export function UCRDeploymentManager({
                 {deploymentHistory.map((event, index) => (
                   <div key={index} className="flex items-start gap-3 pb-4 border-b last:border-0">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        event.status === 'completed'
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${ event.status ==='completed'
                           ? 'bg-green-100 dark:bg-green-900/30'
                           : 'bg-yellow-100 dark:bg-yellow-900/30'
                       }`}

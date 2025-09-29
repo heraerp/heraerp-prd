@@ -174,7 +174,7 @@ export function ServiceList({
                     {service.name || service.entity_name || service.code || '-'}
                   </div>
                   {service.code && (
-                    <div className="text-xs opacity-70" style={{ color: COLORS.lightText }}>
+                    <div className="text-xs" style={{ color: COLORS.lightText }}>
                       {service.code}
                     </div>
                   )}

@@ -175,8 +175,7 @@ export default function JobsDemoSelector() {
           return (
             <Card
               key={demo.id}
-              className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl border-0 overflow-hidden ${
-                isSelected ? 'ring-4 ring-blue-500/50 scale-105' : ''
+              className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl border-0 overflow-hidden ${ isSelected ?'ring-4 ring-blue-500/50 scale-105' : ''
               }`}
               onClick={() => !isLoading && handleDemoSelect(demo)}
             >
@@ -193,7 +192,7 @@ export default function JobsDemoSelector() {
                   >
                     <Icon className="w-7 h-7 text-foreground" />
                   </div>
-                  <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium">
+                  <Badge variant="secondary" className="bg-slate-100 ink font-medium">
                     Live Demo
                   </Badge>
                 </div>
@@ -203,7 +202,7 @@ export default function JobsDemoSelector() {
                   <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-blue-900 transition-colors">
                     {demo.title}
                   </h3>
-                  <p className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">
+                  <p className="text-sm font-medium ink-muted mb-3 uppercase tracking-wide">
                     {demo.subtitle}
                   </p>
                   <p className="text-muted-foreground leading-relaxed">{demo.description}</p>
@@ -223,8 +222,7 @@ export default function JobsDemoSelector() {
 
                 {/* Action Button */}
                 <Button
-                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-foreground border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${
-                    isCurrentlyLoading ? 'cursor-wait' : ''
+                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-foreground border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${ isCurrentlyLoading ?'cursor-wait' : ''
                   }`}
                   disabled={isLoading}
                 >
@@ -248,7 +246,7 @@ export default function JobsDemoSelector() {
 
       {/* Footer */}
       <div className="mt-16 text-center">
-        <p className="text-sm text-slate-500 mb-4">
+        <p className="text-sm ink-muted mb-4">
           No registration required • Full feature access • Reset anytime
         </p>
         <div className="flex items-center justify-center space-x-6 text-xs text-muted-foreground">

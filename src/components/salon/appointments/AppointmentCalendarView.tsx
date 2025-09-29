@@ -301,16 +301,16 @@ export function AppointmentCalendarView({
                         <div className="grid grid-cols-3 gap-4 text-sm">
                           <div className="flex items-center gap-2">
                             <User className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="!text-gray-700 dark:!text-gray-300">
+                            <span className="!ink dark:!text-gray-300">
                               {apt.customerName}
                             </span>
                           </div>
-                          <div className="!text-gray-700 dark:!text-gray-300">
+                          <div className="!ink dark:!text-gray-300">
                             {apt.serviceName}
                           </div>
                           <div className="flex items-center gap-2">
                             <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="!text-gray-700 dark:!text-gray-300">
+                            <span className="!ink dark:!text-gray-300">
                               AED {apt.price}
                             </span>
                           </div>

@@ -201,7 +201,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
               <h3 className="text-lg font-medium text-gray-100 mb-4">Basic Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Item Name *
                   </Label>
                   <Input
@@ -211,7 +211,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Item Code *
                   </Label>
                   <Input
@@ -221,7 +221,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   />
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Price ($) *
                   </Label>
                   <div className="relative">
@@ -237,7 +237,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Prep Time (minutes) *
                   </Label>
                   <div className="relative">
@@ -254,7 +254,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
               </div>
 
               <div className="mt-4">
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                <Label className="text-sm font-medium ink mb-2 block">
                   Description *
                 </Label>
                 <textarea
@@ -272,7 +272,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
               <h3 className="text-lg font-medium text-gray-100 mb-4">Category</h3>
               <div className="space-y-4">
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Select Category *
                   </Label>
                   <select
@@ -292,7 +292,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
                 {formData.category === 'custom' && (
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <Label className="text-sm font-medium ink mb-2 block">
                       Custom Category Name
                     </Label>
                     <Input
@@ -314,10 +314,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     key={tag}
                     type="button"
                     onClick={() => toggleDietaryTag(tag)}
-                    className={`p-2 rounded-lg border text-sm font-medium transition-colors ${
-                      dietaryTags.includes(tag)
-                        ? getDietaryTagColor(tag)
-                        : 'bg-muted text-gray-700 border-border hover:bg-muted'
+                    className={`p-2 rounded-lg border text-sm font-medium transition-colors ${ dietaryTags.includes(tag) ? getDietaryTagColor(tag) :'bg-muted text-gray-700 border-border hover:bg-muted'
                     }`}
                   >
                     {formatDietaryTag(tag)}
@@ -327,7 +324,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
 
               {dietaryTags.length > 0 && (
                 <div className="mt-3">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium ink mb-2 block">
                     Selected Tags:
                   </Label>
                   <div className="flex flex-wrap gap-2">
@@ -351,7 +348,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
             <Card className="p-4">
               <h3 className="text-lg font-medium text-gray-100 mb-4">Ingredients</h3>
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                <Label className="text-sm font-medium ink mb-2 block">
                   Ingredients List *
                 </Label>
                 <textarea
@@ -397,7 +394,7 @@ export function AddMenuItemForm({ onItemAdded, onClose }: AddMenuItemFormProps) 
                     </div>
                   )}
                   {formData.ingredients && (
-                    <p className="text-xs text-gray-700">
+                    <p className="text-xs ink">
                       <strong>Ingredients:</strong> {formData.ingredients}
                     </p>
                   )}

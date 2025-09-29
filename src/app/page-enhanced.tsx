@@ -159,7 +159,7 @@ export default function EnhancedLandingPage() {
                 <div className="w-8 h-8 bg-background dark:bg-background rounded-lg flex items-center justify-center">
                   <span className="text-sm font-bold text-foreground dark:text-black">H</span>
                 </div>
-                <span className="text-xl font-semibold text-gray-900 dark:text-foreground">
+                <span className="text-xl font-semibold ink dark:text-foreground">
                   HERA
                 </span>
               </Link>
@@ -246,7 +246,7 @@ export default function EnhancedLandingPage() {
       <section id="how-it-works" className="py-20 bg-background dark:bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold ink dark:text-foreground mb-4">
               Your Journey to Digital Transformation
             </h2>
             <p className="text-xl text-muted-foreground dark:text-muted-foreground">
@@ -261,7 +261,7 @@ export default function EnhancedLandingPage() {
                   <div className="inline-flex p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl mb-4">
                     <stage.icon className="w-8 h-8 text-primary dark:text-blue-400" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-foreground mb-2">
+                  <h3 className="text-xl font-semibold ink dark:text-foreground mb-2">
                     {index + 1}. {stage.stage}
                   </h3>
                   <p className="text-muted-foreground dark:text-muted-foreground mb-4">
@@ -291,7 +291,7 @@ export default function EnhancedLandingPage() {
               <Star className="w-3 h-3 mr-1" />
               Live Production Apps
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-foreground mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold ink dark:text-foreground mb-4">
               Experience Real Business Applications
             </h2>
             <p className="text-xl text-muted-foreground dark:text-muted-foreground max-w-3xl mx-auto">
@@ -304,8 +304,7 @@ export default function EnhancedLandingPage() {
             {industries.map(industry => (
               <Card
                 key={industry.id}
-                className={`group cursor-pointer transition-all duration-300 hover:shadow-xl ${
-                  selectedIndustry === industry.id ? 'ring-2 ring-blue-500' : ''
+                className={`group cursor-pointer transition-all duration-300 hover:shadow-xl ${ selectedIndustry === industry.id ?'ring-2 ring-blue-500' : ''
                 }`}
                 onClick={() => setSelectedIndustry(industry.id)}
               >
@@ -318,7 +317,7 @@ export default function EnhancedLandingPage() {
                       Live System
                     </Badge>
                   </div>
-                  <CardTitle className="text-2xl mt-4 !text-gray-900 dark:!text-gray-100">
+                  <CardTitle className="text-2xl mt-4 !ink dark:!text-gray-100">
                     {industry.title}
                   </CardTitle>
                   <CardDescription className="!text-muted-foreground dark:!text-muted-foreground">
@@ -338,7 +337,7 @@ export default function EnhancedLandingPage() {
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border dark:border-border">
                     <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold ink dark:text-foreground">
                         {industry.stats.businesses}
                       </p>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -346,7 +345,7 @@ export default function EnhancedLandingPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-foreground">
+                      <p className="text-2xl font-bold ink dark:text-foreground">
                         {industry.stats.revenue}
                       </p>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -396,7 +395,7 @@ export default function EnhancedLandingPage() {
           <div className="mt-16 text-center">
             <Card className="max-w-2xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-foreground mb-4">
+                <h3 className="text-2xl font-semibold ink dark:text-foreground mb-4">
                   Ready to Build Your Own?
                 </h3>
                 <p className="text-muted-foreground dark:text-muted-foreground mb-6">
@@ -432,7 +431,7 @@ export default function EnhancedLandingPage() {
             ].map(item => (
               <Card key={item.name} className="p-6 text-center min-w-[200px]">
                 <item.icon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                <h4 className="font-semibold text-gray-900 dark:text-foreground">{item.name}</h4>
+                <h4 className="font-semibold ink dark:text-foreground">{item.name}</h4>
                 <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
                   {item.coming}
                 </p>
@@ -451,7 +450,7 @@ export default function EnhancedLandingPage() {
                 <div className="inline-flex p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl mb-4">
                   <prop.icon className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-foreground mb-2">
+                <h3 className="font-semibold ink dark:text-foreground mb-2">
                   {prop.title}
                 </h3>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">

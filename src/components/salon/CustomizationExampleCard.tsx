@@ -22,15 +22,15 @@ export function CustomizationExampleCard() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="text-gray-700 dark:text-gray-300">Grace period: 15 min</span>
+                <span className="ink dark:text-gray-300">Grace period: 15 min</span>
               </div>
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-muted-foreground" />
-                <span className="text-gray-700 dark:text-gray-300">No-show fee: 100%</span>
+                <span className="ink dark:text-gray-300">No-show fee: 100%</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-muted-foreground" />
-                <span className="text-gray-700 dark:text-gray-300">VIP fee: 25%</span>
+                <span className="ink dark:text-gray-300">VIP fee: 25%</span>
               </div>
             </div>
           </div>

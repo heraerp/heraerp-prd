@@ -548,9 +548,7 @@ export function CreateAppointmentModal({
           {customers.map(cust => (
             <div
               key={cust.id}
-              className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                customer.id === cust.id
-                  ? 'border-purple-300 bg-purple-50'
+              className={`p-3 rounded-lg border cursor-pointer transition-all ${ customer.id === cust.id ?'border-purple-300 bg-purple-50'
                   : 'border-border hover:border-border'
               }`}
               onClick={() => setCustomer(cust)}
@@ -639,9 +637,7 @@ export function CreateAppointmentModal({
         {services.map(service => (
           <Card
             key={service.id}
-            className={`cursor-pointer transition-all ${
-              selectedService?.id === service.id
-                ? 'border-purple-300 bg-purple-50'
+            className={`cursor-pointer transition-all ${ selectedService?.id === service.id ?'border-purple-300 bg-purple-50'
                 : 'border-border hover:border-border'
             }`}
             onClick={() => setSelectedService(service)}
@@ -932,8 +928,7 @@ export function CreateAppointmentModal({
           {[1, 2, 3, 4].map(stepNumber => (
             <div key={stepNumber} className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  stepNumber <= step ? 'text-foreground' : 'bg-gray-700 text-muted-foreground'
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${ stepNumber <= step ?'text-foreground' : 'bg-gray-700 text-muted-foreground'
                 }`}
                 style={{
                   backgroundColor: stepNumber <= step ? config.color : undefined
@@ -943,7 +938,7 @@ export function CreateAppointmentModal({
               </div>
               {stepNumber < 4 && (
                 <div
-                  className={`w-16 h-1 ${stepNumber < step ? 'bg-purple-600' : 'bg-gray-700'}`}
+                  className={`w-16 h-1 ${stepNumber < step ?'bg-purple-600' : 'bg-gray-700'}`}
                 />
               )}
             </div>

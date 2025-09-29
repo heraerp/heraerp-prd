@@ -130,7 +130,7 @@ export default function CookieBanner() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold text-lg">Cookie Preferences</h3>
-                  <p className="text-slate-400 text-xs mt-0.5">Your privacy is important to us</p>
+                  <p className="ink-muted text-xs mt-0.5">Your privacy is important to us</p>
                 </div>
               </div>
               <button
@@ -138,7 +138,7 @@ export default function CookieBanner() {
                   setIsAnimating(false)
                   setTimeout(() => setVisible(false), 300)
                 }}
-                className="text-slate-400 hover:text-white transition-colors p-1"
+                className="ink-muted hover:text-white transition-colors p-1"
                 aria-label="Close cookie banner"
               >
                 <X className="w-5 h-5" />
@@ -175,7 +175,7 @@ export default function CookieBanner() {
                   <BarChart3 className="w-4 h-4 text-blue-400" />
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-xs font-medium truncate">Analytics</p>
-                    <p className="text-xs text-slate-500">Optional</p>
+                    <p className="text-xs ink-muted">Optional</p>
                   </div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function CookieBanner() {
                   <Megaphone className="w-4 h-4 text-purple-400" />
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-xs font-medium truncate">Marketing</p>
-                    <p className="text-xs text-slate-500">Optional</p>
+                    <p className="text-xs ink-muted">Optional</p>
                   </div>
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function CookieBanner() {
                   <Settings className="w-4 h-4 text-amber-400" />
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-xs font-medium truncate">Functional</p>
-                    <p className="text-xs text-slate-500">Optional</p>
+                    <p className="text-xs ink-muted">Optional</p>
                   </div>
                 </div>
               </div>
@@ -240,11 +240,11 @@ export default function CookieBanner() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-green-400" />
-                  <span className="text-xs text-slate-400">GDPR Compliant</span>
+                  <span className="text-xs ink-muted">GDPR Compliant</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span className="text-xs text-slate-400">Your Privacy Matters</span>
+                  <span className="text-xs ink-muted">Your Privacy Matters</span>
                 </div>
               </div>
             </div>
@@ -273,7 +273,7 @@ export default function CookieBanner() {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-white mb-2">Cookie Preferences Center</h2>
-                  <p className="text-slate-400">
+                  <p className="ink-muted">
                     When you visit our website, we may store or retrieve information on your
                     browser, mostly in the form of cookies. Control your personal Cookie Services
                     here.
@@ -281,7 +281,7 @@ export default function CookieBanner() {
                 </div>
                 <button
                   onClick={() => setShowPreferences(false)}
-                  className="text-slate-400 hover:text-white transition-colors p-2"
+                  className="ink-muted hover:text-white transition-colors p-2"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -305,19 +305,19 @@ export default function CookieBanner() {
                       <div className="absolute right-0.5 top-0.5 w-5 h-5 bg-green-500 rounded-full" />
                     </div>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm ink-muted leading-relaxed">
                     These cookies are necessary for the website to function and cannot be switched
                     off. They are usually set in response to actions you take, such as setting
                     privacy preferences, logging in, or filling forms.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Session Management
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Security Tokens
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Authentication
                     </span>
                   </div>
@@ -332,7 +332,7 @@ export default function CookieBanner() {
                       </div>
                       <div>
                         <h3 className="text-white font-semibold">Analytics Cookies</h3>
-                        <span className="text-xs text-slate-500 font-medium">Optional</span>
+                        <span className="text-xs ink-muted font-medium">Optional</span>
                       </div>
                     </div>
                     <button
@@ -352,19 +352,19 @@ export default function CookieBanner() {
                       />
                     </button>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm ink-muted leading-relaxed">
                     These cookies help us understand how visitors interact with our website by
                     collecting and reporting information anonymously. This helps us improve our
                     services.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Google Analytics
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Performance Metrics
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       User Behavior
                     </span>
                   </div>
@@ -379,7 +379,7 @@ export default function CookieBanner() {
                       </div>
                       <div>
                         <h3 className="text-white font-semibold">Marketing Cookies</h3>
-                        <span className="text-xs text-slate-500 font-medium">Optional</span>
+                        <span className="text-xs ink-muted font-medium">Optional</span>
                       </div>
                     </div>
                     <button
@@ -399,19 +399,19 @@ export default function CookieBanner() {
                       />
                     </button>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm ink-muted leading-relaxed">
                     These cookies are used to deliver advertisements more relevant to you and your
                     interests. They remember that you have visited our website and share this
                     information with advertisers.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Targeted Ads
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Social Media
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Remarketing
                     </span>
                   </div>
@@ -426,7 +426,7 @@ export default function CookieBanner() {
                       </div>
                       <div>
                         <h3 className="text-white font-semibold">Functional Cookies</h3>
-                        <span className="text-xs text-slate-500 font-medium">Optional</span>
+                        <span className="text-xs ink-muted font-medium">Optional</span>
                       </div>
                     </div>
                     <button
@@ -446,18 +446,18 @@ export default function CookieBanner() {
                       />
                     </button>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">
+                  <p className="text-sm ink-muted leading-relaxed">
                     These cookies enable enhanced functionality and personalization, such as videos
                     and live chats. They remember choices you make to give you enhanced features.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Language Preferences
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       Theme Settings
                     </span>
-                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md text-slate-400 border border-white/10">
+                    <span className="text-xs px-2 py-1 bg-white/5 rounded-md ink-muted border border-white/10">
                       User Preferences
                     </span>
                   </div>

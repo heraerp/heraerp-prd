@@ -83,7 +83,7 @@ export function AppointmentTimeline({ events, className }: AppointmentTimelinePr
 
   if (events.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 ink-muted">
         <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
         <p>No activity yet</p>
       </div>
@@ -115,18 +115,18 @@ export function AppointmentTimeline({ events, className }: AppointmentTimelinePr
                 </div>
                 <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                   <div>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm ink">
                       {getEventDescription(event)}{' '}
-                      <span className="font-medium text-gray-900">by {event.actor.name}</span>
+                      <span className="font-medium ink">by {event.actor.name}</span>
                     </p>
 
                     {/* Show additional details */}
                     {event.details.reason && (
-                      <p className="mt-1 text-sm text-gray-600">Reason: {event.details.reason}</p>
+                      <p className="mt-1 text-sm ink-muted">Reason: {event.details.reason}</p>
                     )}
 
                     {/* Show smart code and transaction ID for audit */}
-                    <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-500">
+                    <div className="mt-2 flex flex-wrap gap-2 text-xs ink-muted">
                       {event.smart_code && (
                         <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 font-mono">
                           {event.smart_code}
@@ -140,10 +140,10 @@ export function AppointmentTimeline({ events, className }: AppointmentTimelinePr
                     </div>
                   </div>
                   <div className="whitespace-nowrap text-right text-sm">
-                    <time dateTime={event.timestamp} className="text-gray-500">
+                    <time dateTime={event.timestamp} className="ink-muted">
                       {getRelativeTime(event.timestamp)}
                     </time>
-                    <div className="text-xs text-gray-400 mt-0.5">
+                    <div className="text-xs ink-muted mt-0.5">
                       {formatDateTime(event.timestamp)}
                     </div>
                   </div>

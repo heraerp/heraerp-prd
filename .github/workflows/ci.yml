@@ -1,59 +1,17 @@
 name: CI
-
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
-
+    branches: [ main ]
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        node-version: [20.x]
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Type check
-      run: npm run typecheck
-      
-    - name: Lint
-      run: npm run lint
-      
-    - name: Run tests
-      run: npm run test
-      env:
-        CI: true
-        
-    - name: Build
-      run: npm run build
-      env:
-        NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api' }}
-
-  # Fail fast - if any job fails, cancel others
-  cancel-on-failure:
-    runs-on: ubuntu-latest
-    if: failure()
-    steps:
-    - name: Cancel workflow
-      uses: actions/github-script@v7
-      with:
-        script: |
-          github.rest.actions.cancelWorkflowRun({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            run_id: context.runId
-          });
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build:ci

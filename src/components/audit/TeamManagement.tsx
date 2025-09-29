@@ -333,9 +333,7 @@ export function TeamManagement() {
               />
             )}
             <DialogContent
-              className="max-w-2xl bg-background border border-border shadow-2xl z-[100] 
-                         fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
-                         rounded-lg p-6"
+              className="max-w-2xl bg-background border border-border shadow-2xl z-[100] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg p-6"
               style={{
                 backgroundColor: 'white',
                 opacity: 1,
@@ -436,8 +434,7 @@ export function TeamManagement() {
               {teams.map(team => (
                 <div
                   key={team.id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                    selectedTeam?.id === team.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-muted'
+                  className={`p-4 border rounded-lg cursor-pointer transition-all ${ selectedTeam?.id === team.id ?'border-blue-500 bg-blue-50' : 'hover:bg-muted'
                   }`}
                   onClick={() => {
                     setSelectedTeam(team)
@@ -533,7 +530,7 @@ function CreateTeamForm({
     <div className="space-y-6 bg-background p-1">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="team_name" className="text-gray-700 font-medium">
+          <Label htmlFor="team_name" className="ink font-medium">
             Team Name
           </Label>
           <Input
@@ -545,7 +542,7 @@ function CreateTeamForm({
           />
         </div>
         <div>
-          <Label htmlFor="team_code" className="text-gray-700 font-medium">
+          <Label htmlFor="team_code" className="ink font-medium">
             Team Code
           </Label>
           <Input
@@ -633,14 +630,14 @@ function CreateTeamForm({
         <Button
           variant="outline"
           onClick={onCancel}
-          className="bg-background border-border text-gray-700 hover:bg-muted focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="bg-background border-border ink hover:bg-muted focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           Cancel
         </Button>
         <Button
           onClick={onSubmit}
           disabled={!formData.team_name || !formData.team_lead_name}
-          className="bg-blue-600 text-foreground hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-blue-600 text-foreground hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled: disabled:cursor-not-allowed"
         >
           Create Team
         </Button>
@@ -730,7 +727,7 @@ function TeamDetails({
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Utilization:</span>
                     <span
-                      className={`text-sm font-medium ${team.current_workload >= 90 ? 'text-red-600' : 'text-green-600'}`}
+                      className={`text-sm font-medium ${team.current_workload >= 90 ?'text-red-600' : 'text-green-600'}`}
                     >
                       {team.current_workload}%
                     </span>

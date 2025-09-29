@@ -83,9 +83,9 @@ export function ProductSelector({ products }: ProductSelectorProps) {
           </Badge>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="font-mono text-gray-500">{product.product_sku}</span>
+          <span className="font-mono ink-muted">{product.product_sku}</span>
           <div className="flex items-center gap-2">
-            <Package className="h-3 w-3 text-gray-400" />
+            <Package className="h-3 w-3 ink-muted" />
             <Badge
               variant={stockStatus.color as any}
               className={cn(
@@ -112,7 +112,7 @@ export function ProductSelector({ products }: ProductSelectorProps) {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 ink-muted h-4 w-4" />
         <Input
           type="search"
           placeholder="Search products..."
@@ -139,7 +139,7 @@ export function ProductSelector({ products }: ProductSelectorProps) {
               product.product_name.toLowerCase().includes(search.toLowerCase()) ||
               product.product_sku.toLowerCase().includes(search.toLowerCase())
           ).length === 0 && (
-            <p className="text-gray-500 col-span-2 text-center py-8">
+            <p className="ink-muted col-span-2 text-center py-8">
               No products found matching "{search}"
             </p>
           )}

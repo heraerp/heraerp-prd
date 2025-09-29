@@ -236,10 +236,10 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto text-slate-900 dark:text-white">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto ink dark:text-white">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <ReceiptIcon className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+          <DialogTitle className="flex items-center gap-2 ink dark:text-white">
+            <ReceiptIcon className="w-5 h-5 ink dark:text-slate-300" />
             Transaction Receipt
           </DialogTitle>
         </DialogHeader>
@@ -496,7 +496,7 @@ export function Receipt({ open, onClose, saleData }: ReceiptProps) {
           <Separator />
 
           {/* Footer */}
-          <div className="text-center text-xs text-slate-600 dark:text-slate-300 space-y-1">
+          <div className="text-center text-xs ink-muted dark:text-slate-300 space-y-1">
             <div>Thank you for your business!</div>
             <div>Please visit us again soon.</div>
             <div className="mt-3">Transaction ID: {saleData.transaction_id}</div>

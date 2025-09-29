@@ -49,7 +49,7 @@ export default function LoginPage() {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-salon-gradient">Welcome to HERA</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your salon management account</p>
+          <p className="mt-2 text-sm ink-muted">Sign in to your salon management account</p>
         </div>
 
         {/* Login Form */}
@@ -64,7 +64,7 @@ export default function LoginPage() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium ink mb-2">
                 Email address
               </label>
               <input
@@ -83,7 +83,7 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium ink mb-2">
                 Password
               </label>
               <div className="relative">
@@ -103,9 +103,9 @@ export default function LoginPage() {
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
+                    <EyeOff className="h-4 w-4 ink-muted" />
                   ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
+                    <Eye className="h-4 w-4 ink-muted" />
                   )}
                 </button>
               </div>
@@ -155,7 +155,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-xs text-gray-500">Powered by HERA Universal Architecture</p>
+          <p className="text-xs ink-muted">Powered by HERA Universal Architecture</p>
         </div>
       </div>
     </div>

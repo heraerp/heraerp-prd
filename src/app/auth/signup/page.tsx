@@ -116,7 +116,7 @@ export default function SignUpPage() {
       <div className="fixed inset-0 -z-10">
         <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
         <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
-        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
+        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-4000 dark:bg-pink-600 dark:" />
       </div>
 
       {/* Header with Logo - Same as homepage */}
@@ -138,7 +138,7 @@ export default function SignUpPage() {
             </Link>
 
             <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="!text-slate-700 dark:!text-slate-200">
+              <Button variant="outline" size="sm" className="!ink dark:!text-slate-200">
                 Sign In
               </Button>
             </Link>
@@ -152,12 +152,10 @@ export default function SignUpPage() {
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
               <div
-                className={`flex items-center ${step >= 1 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 1 ?'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                    step >= 1
-                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${ step >= 1 ?'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -166,15 +164,13 @@ export default function SignUpPage() {
                 <span className="ml-2 hidden sm:inline font-medium">Account</span>
               </div>
               <div
-                className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+                className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ?'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
               />
               <div
-                className={`flex items-center ${step >= 2 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 2 ?'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-                    step >= 2
-                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${ step >= 2 ?'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -183,7 +179,7 @@ export default function SignUpPage() {
                 <span className="ml-2 hidden sm:inline font-medium">Profile</span>
               </div>
               <div className={`w-16 h-1 rounded-full bg-slate-200 dark:bg-slate-700`} />
-              <div className="flex items-center text-muted-foreground dark:text-slate-500">
+              <div className="flex items-center text-muted-foreground dark:ink-muted">
                 <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shadow-lg">
                   <span className="font-semibold">3</span>
                 </div>
@@ -219,7 +215,7 @@ export default function SignUpPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="email"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink dark:text-slate-300"
                     >
                       Email Address
                     </Label>
@@ -238,7 +234,7 @@ export default function SignUpPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="password"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink dark:text-slate-300"
                     >
                       Password
                     </Label>
@@ -261,7 +257,7 @@ export default function SignUpPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="confirmPassword"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink dark:text-slate-300"
                     >
                       Confirm Password
                     </Label>
@@ -332,7 +328,7 @@ export default function SignUpPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="full_name"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink dark:text-slate-300"
                     >
                       Full Name
                     </Label>
@@ -350,7 +346,7 @@ export default function SignUpPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="phone"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink dark:text-slate-300"
                     >
                       Phone Number
                     </Label>
@@ -369,7 +365,7 @@ export default function SignUpPage() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="flex-1 h-12 border-input dark:border-input text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-muted"
+                      className="flex-1 h-12 border-input dark:border-input ink dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-muted"
                       onClick={() => router.push('/auth/organizations/new')}
                     >
                       Skip

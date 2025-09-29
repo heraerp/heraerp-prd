@@ -101,7 +101,7 @@ export function EmailSidebar({ currentFolder, onFolderChange, organizationId }: 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Mail className="h-5 w-5 text-blue-600" />
-            <span className="font-semibold text-gray-900 dark:text-gray-100">Email</span>
+            <span className="font-semibold ink dark:text-gray-100">Email</span>
           </div>
           <Button
             variant="ghost"

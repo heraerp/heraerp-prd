@@ -253,7 +253,7 @@ export function DailyInsights({
                 <Award className="w-8 h-8" />
                 <div>
                   <p className="font-semibold">Target Achieved! 🎉</p>
-                  <p className="text-sm opacity-90">Great job today!</p>
+                  <p className="text-sm">Great job today!</p>
                 </div>
               </div>
               <Zap className="w-12 h-12 opacity-20" />

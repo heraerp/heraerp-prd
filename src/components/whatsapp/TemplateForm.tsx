@@ -253,7 +253,7 @@ export function TemplateForm({
                       placeholder="APPOINTMENT_REMINDER"
                       className="font-mono"
                     />
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm ink-muted">
                       Uppercase letters, numbers, and underscores only
                     </p>
                     {form.formState.errors.name && (
@@ -298,7 +298,7 @@ export function TemplateForm({
                           <SelectItem value="authentication">Authentication</SelectItem>
                         </SelectContent>
                       </Select>
-                      <p className="text-sm text-gray-500">Utility templates are approved faster</p>
+                      <p className="text-sm ink-muted">Utility templates are approved faster</p>
                     </div>
                   </div>
 
@@ -323,7 +323,7 @@ export function TemplateForm({
                       rows={6}
                       maxLength={HERA_MSP_CONFIG.MAX_MESSAGE_LENGTH}
                     />
-                    <div className="flex justify-between text-sm text-gray-500">
+                    <div className="flex justify-between text-sm ink-muted">
                       <span>Use {`{{variable_name}}`} for dynamic content</span>
                       <span>
                         {form.watch('body')?.length || 0} / {HERA_MSP_CONFIG.MAX_MESSAGE_LENGTH}
@@ -347,7 +347,7 @@ export function TemplateForm({
                       <Image className="h-5 w-5 text-blue-600" />
                       <div>
                         <Label>Allow Media Attachments</Label>
-                        <p className="text-sm text-gray-500">Enable images, documents, and media</p>
+                        <p className="text-sm ink-muted">Enable images, documents, and media</p>
                       </div>
                     </div>
                     <Switch
@@ -361,7 +361,7 @@ export function TemplateForm({
                       <MousePointer className="h-5 w-5 text-purple-600" />
                       <div>
                         <Label>Interactive Elements</Label>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm ink-muted">
                           Buttons and quick replies (Coming Soon)
                         </p>
                       </div>
@@ -391,7 +391,7 @@ export function TemplateForm({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {variableFields.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 ink-muted">
                       <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
                       <p>No variables defined</p>
                       <p className="text-sm">Variables make templates dynamic and reusable</p>
@@ -464,12 +464,12 @@ export function TemplateForm({
                           {form.watch('language')?.toUpperCase()}
                         </Badge>
                       </div>
-                      <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                      <div className="text-sm ink dark:text-gray-300 whitespace-pre-wrap">
                         {getPreviewText()}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 ink-muted">
                       <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
                       <p>Enter template body to see preview</p>
                     </div>

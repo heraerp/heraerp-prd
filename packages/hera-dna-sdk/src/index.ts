@@ -3,9 +3,8 @@
  * Type-safe enforcement of the sacred 6-table architecture
  */
 
-// Re-export specific items to avoid conflicts
-export {
-  // Types
+// Type exports (need to use 'export type' with isolatedModules)
+export type {
   SmartCode,
   OrganizationId,
   EntityId,
@@ -17,16 +16,21 @@ export {
   UniversalTransaction,
   UniversalTransactionLine,
   SacredTable,
-  SACRED_TABLES,
   DNAOperation,
   DNAResponse,
-  DNAViolationError,
-  OrganizationIsolationError,
-  INDUSTRY_TYPES,
-  MODULE_TYPES,
   IndustryType,
   ModuleType,
   SmartCodeComponents,
+} from './types';
+
+// export type { DNAViolationError, OrganizationIsolationError } from './guardrails'; // File doesn't exist
+
+// Re-export specific items to avoid conflicts
+export {
+  // Constants and non-type exports
+  SACRED_TABLES,
+  INDUSTRY_TYPES,
+  MODULE_TYPES,
   // Functions
   createSmartCode,
   createOrganizationId,

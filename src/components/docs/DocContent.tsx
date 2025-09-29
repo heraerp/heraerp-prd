@@ -48,9 +48,7 @@ export default function DocContent({ content, tableOfContents, className }: DocC
         <div class="toc-item level-${item.level}">
           <a 
             href="#${item.id}" 
-            class="block py-1 text-xs hover:text-hera-primary transition-colors ${
-              item.level === 1
-                ? 'font-medium'
+            class="block py-1 text-xs hover:text-hera-primary transition-colors ${ item.level === 1 ?'font-medium'
                 : item.level === 2
                   ? 'ml-2'
                   : item.level === 3

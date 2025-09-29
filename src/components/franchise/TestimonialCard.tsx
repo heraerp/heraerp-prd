@@ -48,7 +48,7 @@ export function TestimonialCard({
             {rating}/5
           </span>
         </div>
-        <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-4">
+        <p className="ink dark:text-slate-300 text-sm leading-relaxed mb-4">
           "{testimonial}"
         </p>
         <div className="flex items-center">
@@ -113,7 +113,7 @@ export function TestimonialCard({
         <span className="text-sm text-muted-foreground dark:text-muted-foreground">{rating}/5</span>
       </div>
 
-      <blockquote className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
+      <blockquote className="ink dark:text-slate-300 leading-relaxed mb-6">
         "{testimonial}"
       </blockquote>
 

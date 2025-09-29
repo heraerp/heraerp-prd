@@ -55,14 +55,14 @@ function ToastCard({ toast, onClose }: { toast: any; onClose: () => void }) {
       <div className="flex justify-between items-start">
         <div className="flex-1">
           {toast.title && <div className="font-medium mb-1">{toast.title}</div>}
-          {toast.description && <div className="text-sm opacity-90">{toast.description}</div>}
+          {toast.description && <div className="text-sm">{toast.description}</div>}
         </div>
         <button
           onClick={e => {
             e.stopPropagation()
             onClose()
           }}
-          className="ml-2 text-lg opacity-50 hover:opacity-100"
+          className="ml-2 text-lg hover:opacity-100"
         >
           ×
         </button>

@@ -250,7 +250,7 @@ export function MovementModal({
                       >
                         <Icon className="w-6 h-6 mx-auto mb-2" />
                         <div className="font-medium">{config.label}</div>
-                        <div className="text-xs mt-1 opacity-70">{config.description}</div>
+                        <div className="text-xs mt-1">{config.description}</div>
                       </button>
                     )
                   })}

@@ -549,7 +549,7 @@ export function BookAppointmentModal({
                 {/* Center Column - Service Selection */}
                 <div className="space-y-4">
                   <Card className="p-4 border-2 hover:border-violet-200 dark:hover:border-violet-800 transition-colors h-fit">
-                    <h3 className="font-medium mb-3 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+                    <h3 className="font-medium mb-3 flex items-center gap-2 ink dark:text-gray-100">
                       <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
                         <Scissors className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </div>

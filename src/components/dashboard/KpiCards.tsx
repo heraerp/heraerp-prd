@@ -190,7 +190,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
                       {kpi.value}
                     </div>
                     {kpi.subtitle && (
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-xs dark:ink-muted mt-1">
                         {kpi.subtitle}
                       </p>
                     )}

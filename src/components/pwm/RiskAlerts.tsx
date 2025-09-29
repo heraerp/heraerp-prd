@@ -65,7 +65,7 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
             </span>
           </div>
           <Progress value={riskMetrics.overallScore * 10} className="h-3" />
-          <div className="flex justify-between mt-2 text-xs text-slate-500">
+          <div className="flex justify-between mt-2 text-xs ink-muted">
             <span>Low</span>
             <span>Moderate</span>
             <span>High</span>
@@ -78,34 +78,34 @@ export function RiskAlerts({ organizationId, insights }: RiskAlertsProps) {
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">Volatility</p>
             <p className="text-lg font-semibold text-foreground">{riskMetrics.volatility}%</p>
-            <p className="text-xs text-slate-500 mt-1">Annual</p>
+            <p className="text-xs ink-muted mt-1">Annual</p>
           </div>
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">Correlation</p>
             <p className="text-lg font-semibold text-foreground">{riskMetrics.correlation}</p>
-            <p className="text-xs text-slate-500 mt-1">To market</p>
+            <p className="text-xs ink-muted mt-1">To market</p>
           </div>
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">Max Drawdown</p>
             <p className="text-lg font-semibold text-red-400">{riskMetrics.maxDrawdown}%</p>
-            <p className="text-xs text-slate-500 mt-1">Last 12 months</p>
+            <p className="text-xs ink-muted mt-1">Last 12 months</p>
           </div>
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">VaR (95%)</p>
             <p className="text-lg font-semibold text-orange-400">
               ${Math.abs(riskMetrics.varAt95 / 1000000).toFixed(1)}M
             </p>
-            <p className="text-xs text-slate-500 mt-1">1-day</p>
+            <p className="text-xs ink-muted mt-1">1-day</p>
           </div>
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">Stress Test</p>
             <p className="text-lg font-semibold text-yellow-400">{riskMetrics.stressTestResult}%</p>
-            <p className="text-xs text-slate-500 mt-1">Market crash</p>
+            <p className="text-xs ink-muted mt-1">Market crash</p>
           </div>
           <div className="p-3 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-xs text-muted-foreground mb-1">Diversification</p>
             <p className="text-lg font-semibold text-emerald-400">Good</p>
-            <p className="text-xs text-slate-500 mt-1">15 sectors</p>
+            <p className="text-xs ink-muted mt-1">15 sectors</p>
           </div>
         </div>
       </Card>

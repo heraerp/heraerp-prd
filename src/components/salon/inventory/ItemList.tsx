@@ -152,7 +152,7 @@ export function ItemList({
                     {item.name}
                   </div>
                   {item.sku && (
-                    <div className="text-xs opacity-70" style={{ color: COLORS.lightText }}>
+                    <div className="text-xs" style={{ color: COLORS.lightText }}>
                       {item.sku}
                     </div>
                   )}

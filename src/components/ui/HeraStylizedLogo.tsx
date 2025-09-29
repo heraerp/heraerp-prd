@@ -19,7 +19,7 @@ export function HeraStylizedLogo({ className = '', size = 'lg' }: HeraStylizedLo
   const maskId = `heraMask-${Math.random().toString(36).substr(2, 9)}`
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -43,7 +43,7 @@ export function HeraStylizedLogo({ className = '', size = 'lg' }: HeraStylizedLo
             fontFamily="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
             fontSize={fontSize}
             fontWeight="900"
-            fill="white"
+            fill="currentColor"
             textAnchor="middle"
             dominantBaseline="middle"
             letterSpacing="0.08em"
@@ -72,7 +72,7 @@ export function HeraStylizedLogo({ className = '', size = 'lg' }: HeraStylizedLo
         width={width}
         height={height}
         rx={height * 0.15}
-        fill="white"
+        fill="currentColor"
         fillOpacity="0.95"
       />
 

@@ -164,11 +164,11 @@ const AppsModal: React.FC<{
           <div className="bg-gray-800 flex items-center justify-between p-6 border-b border-gray-700">
             <div>
               <h2 className="text-2xl font-bold text-white">All Applications</h2>
-              <p className="text-sm text-gray-400 mt-1">Access all your business applications</p>
+              <p className="text-sm ink-muted mt-1">Access all your business applications</p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-700 transition-colors text-gray-400 hover:text-white"
+              className="p-2 rounded-lg hover:bg-gray-700 transition-colors ink-muted hover:text-white"
             >
               <X className="h-6 w-6" />
             </button>
@@ -216,7 +216,7 @@ const AppsModal: React.FC<{
                       </span>
                     )}
                     {!installed && !app.comingSoon && (
-                      <span className="text-[9px] bg-gray-600 text-gray-400 px-2 py-0.5 rounded mt-1">
+                      <span className="text-[9px] bg-gray-600 ink-muted px-2 py-0.5 rounded mt-1">
                         NOT INSTALLED
                       </span>
                     )}
@@ -279,9 +279,9 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
           </div>
           <div className="lg:hidden">
             <h3 className="text-white font-semibold">HERA Enterprise</h3>
-            <p className="text-xs text-gray-400">Universal ERP</p>
+            <p className="text-xs ink-muted">Universal ERP</p>
           </div>
-          <span className="hidden lg:block text-[10px] text-gray-400 font-medium text-center">
+          <span className="hidden lg:block text-[10px] ink-muted font-medium text-center">
             HERA
           </span>
         </div>
@@ -294,10 +294,10 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
           className="w-full flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <Building2 className="h-5 w-5 text-gray-400" />
+            <Building2 className="h-5 w-5 ink-muted" />
             <div className="text-left">
               <p className="text-sm font-medium text-white">{currentOrganization?.name}</p>
-              <p className="text-xs text-gray-400 capitalize">{currentOrganization?.role}</p>
+              <p className="text-xs ink-muted capitalize">{currentOrganization?.role}</p>
             </div>
           </div>
           <ChevronDown
@@ -325,7 +325,7 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
                 )}
               >
                 <p className="text-sm font-medium">{org.name}</p>
-                <p className="text-xs opacity-60 capitalize">{org.role}</p>
+                <p className="text-xs capitalize">{org.role}</p>
               </button>
             ))}
           </div>
@@ -383,7 +383,7 @@ export function EnterpriseSidebar({ onNavigate }: EnterpriseSidebarProps) {
             </div>
             <div>
               <p className="text-sm font-medium text-white">{user?.name}</p>
-              <p className="text-xs text-gray-400">{user?.email}</p>
+              <p className="text-xs ink-muted">{user?.email}</p>
             </div>
           </div>
         </div>

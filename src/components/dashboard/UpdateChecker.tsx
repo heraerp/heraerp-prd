@@ -60,7 +60,7 @@ export function UpdateChecker() {
         disabled={isChecking}
         className="flex items-center gap-2"
       >
-        <RefreshCw className={`h-4 w-4 ${isChecking ? 'animate-spin' : ''}`} />
+        <RefreshCw className={`h-4 w-4 ${isChecking ?'animate-spin' : ''}`} />
         Check for Updates
       </Button>
 

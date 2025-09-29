@@ -312,7 +312,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Order Type */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Order Type</Label>
+              <Label className="text-sm font-medium ink mb-2 block">Order Type</Label>
               <div className="flex gap-2">
                 {(['dine_in', 'takeout', 'delivery'] as const).map(type => (
                   <Button
@@ -333,7 +333,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Customer Selection */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Customer</Label>
+              <Label className="text-sm font-medium ink mb-2 block">Customer</Label>
               <select
                 value={selectedCustomer?.id || ''}
                 onChange={e => {
@@ -354,7 +354,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
             {/* Table Number (for dine-in) */}
             {orderType === 'dine_in' && (
               <div className="mb-4">
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">Table Number</Label>
+                <Label className="text-sm font-medium ink mb-2 block">Table Number</Label>
                 <Input
                   placeholder="e.g., 5"
                   value={tableNumber}
@@ -365,7 +365,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Server Name */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Server</Label>
+              <Label className="text-sm font-medium ink mb-2 block">Server</Label>
               <Input
                 placeholder="Server name"
                 value={serverName}
@@ -375,7 +375,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Cart Items */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">
+              <Label className="text-sm font-medium ink mb-2 block">
                 Order Items ({cart.length})
               </Label>
               <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -429,7 +429,7 @@ export function NewOrderForm({ onOrderCreated, onClose }: NewOrderFormProps) {
 
             {/* Special Notes */}
             <div className="mb-4">
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Special Notes</Label>
+              <Label className="text-sm font-medium ink mb-2 block">Special Notes</Label>
               <textarea
                 placeholder="Any special instructions..."
                 value={specialNotes}

@@ -20,7 +20,7 @@ export function HeraAnimatedLogo({ className = '', size = 'lg' }: HeraAnimatedLo
   const waveId = `heraWave-${Math.random().toString(36).substr(2, 9)}`
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -110,7 +110,7 @@ export function HeraAnimatedLogo({ className = '', size = 'lg' }: HeraAnimatedLo
         width={width}
         height={height}
         rx={height * 0.15}
-        fill="white"
+        fill="currentColor"
         fillOpacity="0.95"
       />
 

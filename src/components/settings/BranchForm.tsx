@@ -259,7 +259,7 @@ export function BranchForm({
                     className="font-mono"
                     disabled={isEditMode}
                   />
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm ink-muted">
                     {isEditMode
                       ? 'Branch code cannot be changed'
                       : 'Uppercase letters, numbers, and underscores only'}
@@ -287,7 +287,7 @@ export function BranchForm({
                       ))}
                     </SelectContent>
                   </Select>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm ink-muted">
                     This sets appropriate defaults for smart codes and operating hours
                   </p>
                 </div>

@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Calendar, Check, Phone, Clock, Star, Zap, ArrowRight, Sparkles } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Book a Demo | HERA ERP',
@@ -8,207 +9,174 @@ export const metadata: Metadata = {
 
 export default function BookMeetingPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-4xl px-4 py-12">
-        <div className="mb-8 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">Book Your Personalized Demo</h1>
-          <p className="text-xl text-gray-600">
-            See how HERA can transform your specific business in just 30 minutes
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20">
+      {/* Background elements */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-5xl px-4 py-20">
+        {/* Hero Section */}
+        <div className="mb-12 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-950/30 rounded-full border border-blue-800 mb-6">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-semibold text-blue-400 uppercase tracking-wide">
+              Personalized Demo
+            </span>
+          </div>
+          <h1 className="mb-4 text-5xl font-bold ink">Book Your Personalized Demo</h1>
+          <p className="text-xl ink-muted max-w-2xl mx-auto">
+            See how HERA can transform your specific business in just 30 minutes.
+            No obligations, just insights tailored to your needs.
           </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Benefits */}
-          <div className="rounded-xl bg-white p-8">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">What to Expect</h2>
+          <div className="card-glass rounded-2xl p-8">
+            <h2 className="mb-6 text-2xl font-bold ink">What to Expect</h2>
 
-            <div className="space-y-4">
-              <div className="flex gap-3">
-                <svg
-                  className="mt-1 h-5 w-5 flex-shrink-0 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+            <div className="space-y-5">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                  <Check className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Tailored to Your Business</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold ink mb-1">Tailored to Your Business</h3>
+                  <p className="text-sm ink-muted">
                     See HERA configured for your specific industry and workflows
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <svg
-                  className="mt-1 h-5 w-5 flex-shrink-0 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">ROI Calculator</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold ink mb-1">ROI Calculator</h3>
+                  <p className="text-sm ink-muted">
                     Get a custom report showing your potential time and cost savings
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <svg
-                  className="mt-1 h-5 w-5 flex-shrink-0 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                  <ArrowRight className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Implementation Roadmap</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold ink mb-1">Implementation Roadmap</h3>
+                  <p className="text-sm ink-muted">
                     Clear 30-day plan to go from demo to fully operational
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <svg
-                  className="mt-1 h-5 w-5 flex-shrink-0 text-green-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">No Pressure</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold ink mb-1">No Pressure</h3>
+                  <p className="text-sm ink-muted">
                     Educational consultation with zero sales pressure
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 rounded-lg bg-blue-50 p-4">
-              <p className="text-sm font-semibold text-blue-900">Limited Time Offer</p>
-              <p className="mt-1 text-sm text-blue-700">
+            <div className="mt-8 rounded-lg bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-blue-800/30 p-4">
+              <p className="text-sm font-semibold ink">Limited Time Offer</p>
+              <p className="mt-1 text-sm ink-muted">
                 Book this month and receive free data migration (£2,000 value)
               </p>
             </div>
           </div>
 
           {/* Calendar Embed */}
-          <div className="rounded-xl bg-white p-8">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">
+          <div className="card-glass rounded-2xl p-8">
+            <h2 className="mb-4 text-xl font-semibold ink">
               Choose a Time That Works for You
             </h2>
 
             {/* Placeholder for calendar embed */}
-            <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-              <svg
-                className="mx-auto mb-4 h-12 w-12 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <p className="mb-4 text-gray-600">Calendar widget will appear here</p>
-              <p className="text-sm text-gray-500">
+            <div className="rounded-lg border-2 border-dashed border-blue-800/30 bg-slate-900/30 p-8 text-center">
+              <div className="mx-auto mb-4 h-12 w-12 flex items-center justify-center">
+                <Calendar className="h-12 w-12 ink-muted" />
+              </div>
+              <p className="mb-4 ink-muted">Calendar widget will appear here</p>
+              <p className="text-sm ink-muted">
                 Replace this with your Calendly, Cal.com, or custom booking widget
               </p>
 
               {/* Temporary booking links */}
-              <div className="mt-6 space-y-2">
+              <div className="mt-6 space-y-3">
                 <a
                   href="#"
-                  className="block rounded-lg bg-blue-600 py-3 text-white hover:bg-blue-700"
+                  className="btn-gradient block py-3"
                 >
-                  Schedule for This Week
+                  <span className="relative z-10">Schedule for This Week</span>
                 </a>
                 <a
                   href="#"
-                  className="block rounded-lg border border-gray-300 py-3 text-gray-700 hover:bg-gray-50"
+                  className="btn-quiet block py-3"
                 >
-                  Schedule for Next Week
+                  <span className="relative z-10">Schedule for Next Week</span>
                 </a>
               </div>
             </div>
 
-            <div className="mt-6 text-center text-sm text-gray-600">
-              <p>Prefer to talk now?</p>
-              <p className="mt-2 font-semibold text-gray-900">Call us: 0800 HERA ERP</p>
+            <div className="mt-6 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Phone className="w-4 h-4 text-blue-400" />
+                <p className="text-sm ink-muted">Prefer to talk now?</p>
+              </div>
+              <p className="font-semibold ink">Call us: 0800 HERA ERP</p>
             </div>
           </div>
         </div>
 
         {/* Testimonials */}
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          <div className="rounded-lg bg-white p-6">
-            <div className="mb-2 flex text-yellow-400">
-              {'★★★★★'.split('').map((star, i) => (
-                <span key={i}>{star}</span>
+          <div className="card-glass rounded-xl p-6">
+            <div className="mb-3 flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <p className="mb-2 text-sm text-gray-600">
+            <p className="mb-3 text-sm ink-muted leading-relaxed">
               "The demo was perfectly tailored to our restaurant operations. Saw exactly how it
               would work for us."
             </p>
-            <p className="text-sm font-semibold text-gray-900">Sarah M., Bristol</p>
+            <p className="text-sm font-semibold ink">Sarah M., Bristol</p>
           </div>
 
-          <div className="rounded-lg bg-white p-6">
-            <div className="mb-2 flex text-yellow-400">
-              {'★★★★★'.split('').map((star, i) => (
-                <span key={i}>{star}</span>
+          <div className="card-glass rounded-xl p-6">
+            <div className="mb-3 flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <p className="mb-2 text-sm text-gray-600">
+            <p className="mb-3 text-sm ink-muted leading-relaxed">
               "No pushy sales tactics. Just honest advice about improving our operations.
               Refreshing!"
             </p>
-            <p className="text-sm font-semibold text-gray-900">James T., Manchester</p>
+            <p className="text-sm font-semibold ink">James T., Manchester</p>
           </div>
 
-          <div className="rounded-lg bg-white p-6">
-            <div className="mb-2 flex text-yellow-400">
-              {'★★★★★'.split('').map((star, i) => (
-                <span key={i}>{star}</span>
+          <div className="card-glass rounded-xl p-6">
+            <div className="mb-3 flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <p className="mb-2 text-sm text-gray-600">
+            <p className="mb-3 text-sm ink-muted leading-relaxed">
               "The ROI calculator showed we'd save £3,200/month. We were live in 4 weeks and hit
               those numbers."
             </p>
-            <p className="text-sm font-semibold text-gray-900">Emma R., Leeds</p>
+            <p className="text-sm font-semibold ink">Emma R., Leeds</p>
           </div>
         </div>
       </div>

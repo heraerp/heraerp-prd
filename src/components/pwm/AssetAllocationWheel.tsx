@@ -222,7 +222,7 @@ export function AssetAllocationWheel({
             />
             <div className="min-w-0">
               <p className="text-sm font-medium text-slate-300 truncate">{allocation.category}</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs ink-muted">
                 {allocation.percentage.toFixed(1)}% • {formatCurrency(allocation.value)}
               </p>
             </div>

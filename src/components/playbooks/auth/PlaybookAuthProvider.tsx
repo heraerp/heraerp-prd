@@ -117,7 +117,7 @@ export function PlaybookAuthProvider({
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2 text-gray-600">Initializing playbooks...</span>
+        <span className="ml-2 ink-muted">Initializing playbooks...</span>
       </div>
     )
   }
@@ -131,8 +131,8 @@ export function PlaybookAuthProvider({
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
-          <p className="text-gray-600 mb-4">Please log in to access the playbooks system.</p>
+          <h2 className="text-xl font-semibold ink mb-2">Authentication Required</h2>
+          <p className="ink-muted mb-4">Please log in to access the playbooks system.</p>
           <PlaybookLoginForm />
         </div>
       </div>
@@ -189,7 +189,7 @@ function PlaybookLoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="block text-sm font-medium ink">
           Email
         </label>
         <input
@@ -204,7 +204,7 @@ function PlaybookLoginForm() {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="password" className="block text-sm font-medium ink">
           Password
         </label>
         <input
@@ -223,7 +223,7 @@ function PlaybookLoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:"
       >
         {isLoading ? 'Signing In...' : 'Sign In'}
       </button>
@@ -250,7 +250,7 @@ export function withPlaybookAuth<P extends object>(
     if (options?.requireAuth && !auth.isAuthenticated) {
       return (
         <div className="text-center py-8">
-          <p className="text-gray-600">Authentication required to access this page.</p>
+          <p className="ink-muted">Authentication required to access this page.</p>
         </div>
       )
     }
@@ -264,7 +264,7 @@ export function withPlaybookAuth<P extends object>(
       if (!hasAllPermissions) {
         return (
           <div className="text-center py-8">
-            <p className="text-gray-600">You don't have permission to access this page.</p>
+            <p className="ink-muted">You don't have permission to access this page.</p>
           </div>
         )
       }
@@ -277,7 +277,7 @@ export function withPlaybookAuth<P extends object>(
       if (!hasRequiredRole) {
         return (
           <div className="text-center py-8">
-            <p className="text-gray-600">You don't have the required role to access this page.</p>
+            <p className="ink-muted">You don't have the required role to access this page.</p>
           </div>
         )
       }
@@ -300,31 +300,31 @@ export function PlaybookAuthStatus() {
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg text-sm">
-      <h3 className="font-medium text-gray-900 mb-2">Authentication Status</h3>
+      <h3 className="font-medium ink mb-2">Authentication Status</h3>
       <div className="space-y-1">
         <div>
-          <span className="text-gray-600">Authenticated:</span>{' '}
+          <span className="ink-muted">Authenticated:</span>{' '}
           <span className={auth.isAuthenticated ? 'text-green-600' : 'text-red-600'}>
             {auth.isAuthenticated ? 'Yes' : 'No'}
           </span>
         </div>
         {auth.user && (
           <div>
-            <span className="text-gray-600">User:</span> {auth.user.name} ({auth.user.email})
+            <span className="ink-muted">User:</span> {auth.user.name} ({auth.user.email})
           </div>
         )}
         {auth.organization && (
           <div>
-            <span className="text-gray-600">Organization:</span> {auth.organization.name}
+            <span className="ink-muted">Organization:</span> {auth.organization.name}
           </div>
         )}
         {auth.user?.roles && (
           <div>
-            <span className="text-gray-600">Roles:</span> {auth.user.roles.join(', ')}
+            <span className="ink-muted">Roles:</span> {auth.user.roles.join(', ')}
           </div>
         )}
         <div>
-          <span className="text-gray-600">Can Manage Playbooks:</span>{' '}
+          <span className="ink-muted">Can Manage Playbooks:</span>{' '}
           <span className={auth.canManagePlaybooks() ? 'text-green-600' : 'text-red-600'}>
             {auth.canManagePlaybooks() ? 'Yes' : 'No'}
           </span>

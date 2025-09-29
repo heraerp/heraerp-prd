@@ -347,10 +347,10 @@ function SmartCodeTemplatesTab({
           >
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-sm text-gray-900 capitalize">
+                <h4 className="font-medium text-sm ink capitalize">
                   {name.replace('-', ' ')}
                 </h4>
-                <code className="text-xs text-gray-600 font-mono">{template}</code>
+                <code className="text-xs ink-muted font-mono">{template}</code>
               </div>
               <Button size="sm" variant="ghost">
                 Use
@@ -401,25 +401,25 @@ function ValidationDisplay({
       {/* Components Breakdown */}
       {showComponents && validation.components && (
         <div className="bg-gray-50 p-3 rounded-lg">
-          <h4 className="font-medium text-sm text-gray-900 mb-2">Components</h4>
+          <h4 className="font-medium text-sm ink mb-2">Components</h4>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
-              <span className="text-gray-600">Prefix:</span> {validation.components.prefix}
+              <span className="ink-muted">Prefix:</span> {validation.components.prefix}
             </div>
             <div>
-              <span className="text-gray-600">Industry:</span> {validation.components.industry}
+              <span className="ink-muted">Industry:</span> {validation.components.industry}
             </div>
             <div>
-              <span className="text-gray-600">Module:</span> {validation.components.module}
+              <span className="ink-muted">Module:</span> {validation.components.module}
             </div>
             <div>
-              <span className="text-gray-600">Type:</span> {validation.components.type}
+              <span className="ink-muted">Type:</span> {validation.components.type}
             </div>
             <div>
-              <span className="text-gray-600">Subtype:</span> {validation.components.subtype}
+              <span className="ink-muted">Subtype:</span> {validation.components.subtype}
             </div>
             <div>
-              <span className="text-gray-600">Version:</span> {validation.components.version}
+              <span className="ink-muted">Version:</span> {validation.components.version}
             </div>
           </div>
         </div>

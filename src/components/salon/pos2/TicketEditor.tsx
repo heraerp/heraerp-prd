@@ -348,7 +348,7 @@ export function TicketEditor({
       {/* Ticket Header */}
       <div className="p-6 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Current Ticket</h2>
+          <h2 className="text-xl font-semibold ink dark:text-white">Current Ticket</h2>
           <div className="flex gap-2">
             <AddDiscountDialog />
             <AddTipDialog />
@@ -356,7 +356,7 @@ export function TicketEditor({
         </div>
 
         {ticket.customer_name && (
-          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-2 text-sm ink-muted dark:text-slate-300">
             <User className="w-4 h-4" />
             <span>Customer: {ticket.customer_name}</span>
           </div>

@@ -147,21 +147,21 @@ export function AppointmentList({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm !text-gray-700 dark:!text-gray-300">
+                    <span className="text-sm !ink dark:!text-gray-300">
                       {formatDate(appointment.appointmentDate, 'MMMM d, yyyy')}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm !text-gray-700 dark:!text-gray-300">
+                    <span className="text-sm !ink dark:!text-gray-300">
                       {appointment.appointmentTime} ({appointment.duration} min)
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm !text-gray-700 dark:!text-gray-300">
+                    <span className="text-sm !ink dark:!text-gray-300">
                       {appointment.staffName}
                     </span>
                   </div>

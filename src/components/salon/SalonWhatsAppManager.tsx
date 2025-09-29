@@ -356,7 +356,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                   {stats.totalMessages}
                 </p>
               </div>
-              <MessageCircle className="w-8 h-8 text-green-600 opacity-50" />
+              <MessageCircle className="w-8 h-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -372,7 +372,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                   {stats.responseRate}%
                 </p>
               </div>
-              <TrendingUp className="w-8 h-8 text-primary opacity-50" />
+              <TrendingUp className="w-8 h-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -388,7 +388,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                   {stats.avgResponseTime}m
                 </p>
               </div>
-              <Clock className="w-8 h-8 text-purple-600 opacity-50" />
+              <Clock className="w-8 h-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -402,7 +402,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                   {stats.appointmentBookings}
                 </p>
               </div>
-              <Calendar className="w-8 h-8 text-orange-600 opacity-50" />
+              <Calendar className="w-8 h-8 text-orange-600" />
             </div>
           </CardContent>
         </Card>
@@ -416,7 +416,7 @@ export function SalonWhatsAppManager({ className }: SalonWhatsAppManagerProps) {
                   {stats.customerSatisfaction}
                 </p>
               </div>
-              <Star className="w-8 h-8 text-pink-600 opacity-50" />
+              <Star className="w-8 h-8 text-pink-600" />
             </div>
           </CardContent>
         </Card>

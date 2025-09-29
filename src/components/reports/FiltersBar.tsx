@@ -126,7 +126,7 @@ export function FiltersBar({
               <div className="space-y-2">
                 <Label
                   htmlFor="branch-select"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium ink dark:text-gray-300"
                 >
                   <Building2 className="inline h-3 w-3 mr-1" />
                   Branch
@@ -160,7 +160,7 @@ export function FiltersBar({
                   <div className="space-y-2">
                     <Label
                       htmlFor="date-select"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="text-sm font-medium ink dark:text-gray-300"
                     >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       Date
@@ -180,7 +180,7 @@ export function FiltersBar({
                   <div className="space-y-2">
                     <Label
                       htmlFor="month-select"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="text-sm font-medium ink dark:text-gray-300"
                     >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       Month
@@ -205,7 +205,7 @@ export function FiltersBar({
                   <div className="space-y-2">
                     <Label
                       htmlFor="from-date"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="text-sm font-medium ink dark:text-gray-300"
                     >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       From Date
@@ -225,7 +225,7 @@ export function FiltersBar({
                   <div className="space-y-2">
                     <Label
                       htmlFor="to-date"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="text-sm font-medium ink dark:text-gray-300"
                     >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       To Date
@@ -245,7 +245,7 @@ export function FiltersBar({
                   <div className="space-y-2">
                     <Label
                       htmlFor="as-of-date"
-                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      className="text-sm font-medium ink dark:text-gray-300"
                     >
                       <Calendar className="inline h-3 w-3 mr-1" />
                       As of Date
@@ -278,7 +278,7 @@ export function FiltersBar({
                   />
                   <Label
                     htmlFor="include-tips"
-                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                    className="text-sm ink dark:text-gray-300 cursor-pointer"
                   >
                     <DollarSign className="inline h-3 w-3 mr-1" />
                     Include Tips
@@ -299,7 +299,7 @@ export function FiltersBar({
                   />
                   <Label
                     htmlFor="service-only"
-                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                    className="text-sm ink dark:text-gray-300 cursor-pointer"
                   >
                     Services Only
                   </Label>
@@ -319,7 +319,7 @@ export function FiltersBar({
                   />
                   <Label
                     htmlFor="product-only"
-                    className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                    className="text-sm ink dark:text-gray-300 cursor-pointer"
                   >
                     Products Only
                   </Label>
@@ -338,7 +338,7 @@ export function FiltersBar({
                 />
                 <Label
                   htmlFor="consolidated"
-                  className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  className="text-sm ink dark:text-gray-300 cursor-pointer"
                 >
                   <Sliders3 className="inline h-3 w-3 mr-1" />
                   Consolidated View
@@ -349,7 +349,7 @@ export function FiltersBar({
 
           {/* Quick Date Presets */}
           <div className="flex flex-wrap gap-2 pt-2 border-t border-violet-200 dark:border-violet-800">
-            <span className="text-xs font-medium text-gray-500 mr-2 self-center">
+            <span className="text-xs font-medium ink-muted mr-2 self-center">
               Quick filters:
             </span>
 

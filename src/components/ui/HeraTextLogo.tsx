@@ -19,7 +19,7 @@ export function HeraTextLogo({ className = '', size = 'lg' }: HeraTextLogoProps)
   const patternId = `heraPattern-${Math.random().toString(36).substr(2, 9)}`
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -39,8 +39,8 @@ export function HeraTextLogo({ className = '', size = 'lg' }: HeraTextLogoProps)
 
         {/* Subtle pattern for texture */}
         <pattern id={patternId} x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="0.5" fill="#8b5cf6" opacity="0.3" />
-          <circle cx="3" cy="3" r="0.5" fill="#7dd3fc" opacity="0.3" />
+          <circle cx="1" cy="1" r="0.5" fill="currentColor" opacity="0.3" />
+          <circle cx="3" cy="3" r="0.5" fill="currentColor" opacity="0.3" />
         </pattern>
 
         {/* Glow effect */}
@@ -127,8 +127,8 @@ export function HeraTextLogo({ className = '', size = 'lg' }: HeraTextLogoProps)
       </g>
 
       {/* Decorative elements */}
-      <circle cx={width * 0.92} cy={height * 0.2} r="3" fill="#8b5cf6" opacity="0.6" />
-      <circle cx={width * 0.05} cy={height * 0.8} r="2" fill="#7dd3fc" opacity="0.6" />
+      <circle cx={width * 0.92} cy={height * 0.2} r="3" fill="currentColor" opacity="0.6" />
+      <circle cx={width * 0.05} cy={height * 0.8} r="2" fill="currentColor" opacity="0.6" />
 
       {/* Underline accent */}
       <rect

@@ -254,8 +254,7 @@ export const PostingControlsStep: React.FC<PostingControlsStepProps> = ({
                           />
                           <Badge
                             variant={period[module.key] === 'OPEN' ? 'default' : 'secondary'}
-                            className={`text-xs ${
-                              period[module.key] === 'OPEN'
+                            className={`text-xs ${ period[module.key] ==='OPEN'
                                 ? 'bg-green-100 text-green-800 hover:bg-green-200'
                                 : 'bg-muted text-gray-200 hover:bg-gray-700'
                             }`}

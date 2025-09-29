@@ -304,7 +304,7 @@ export default function UniversalBudgetDashboard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">Budget:</label>
+            <label className="text-sm font-medium ink">Budget:</label>
             <select
               value={selectedBudget || ''}
               onChange={e => setSelectedBudget(e.target.value)}
@@ -319,15 +319,13 @@ export default function UniversalBudgetDashboard({
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">Period:</label>
+            <label className="text-sm font-medium ink">Period:</label>
             <div className="ml-2 inline-flex">
               {(['MTD', 'QTD', 'YTD'] as const).map(period => (
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(period)}
-                  className={`px-3 py-1 text-sm font-medium border ${
-                    selectedPeriod === period
-                      ? 'bg-blue-600 text-foreground border-blue-600'
+                  className={`px-3 py-1 text-sm font-medium border ${ selectedPeriod === period ?'bg-blue-600 text-foreground border-blue-600'
                       : 'bg-background text-gray-700 border-border hover:bg-muted'
                   } ${period === 'MTD' ? 'rounded-l-md' : period === 'YTD' ? 'rounded-r-md' : ''}`}
                 >

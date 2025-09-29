@@ -194,7 +194,7 @@ export function JsonSchemaForm({
   if (!schema.properties) {
     return (
       <div className="p-4 border rounded-lg">
-        <p className="text-gray-500">No form schema available</p>
+        <p className="ink-muted">No form schema available</p>
       </div>
     )
   }

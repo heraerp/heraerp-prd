@@ -351,7 +351,7 @@ export function LeaveRequestModal({
                 {loading ? 'Submitting...' : 'Submit Request'}
               </Button>
             </div>
-            <p className="text-xs opacity-50 text-center">Press ⌘+Enter to submit</p>
+            <p className="text-xs text-center">Press ⌘+Enter to submit</p>
           </div>
         </DialogFooter>
       </DialogContent>

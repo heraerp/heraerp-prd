@@ -157,8 +157,7 @@ export function CaseFilterBar({ filters, onFiltersChange, onClear }: CaseFilterB
             <Badge
               key={option.value}
               variant={filters.priority?.includes(option.value) ? 'default' : 'outline'}
-              className={`cursor-pointer ${
-                filters.priority?.includes(option.value) ? option.color : ''
+              className={`cursor-pointer ${ filters.priority?.includes(option.value) ? option.color :''
               }`}
               onClick={() => handlePriorityToggle(option.value)}
             >
@@ -174,8 +173,7 @@ export function CaseFilterBar({ filters, onFiltersChange, onClear }: CaseFilterB
             <Badge
               key={option.value}
               variant={filters.rag?.includes(option.value) ? 'default' : 'outline'}
-              className={`cursor-pointer ${
-                filters.rag?.includes(option.value) ? option.color : ''
+              className={`cursor-pointer ${ filters.rag?.includes(option.value) ? option.color :''
               }`}
               onClick={() => handleRagToggle(option.value)}
             >

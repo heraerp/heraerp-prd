@@ -22,7 +22,9 @@ export const PUBLIC_ROUTES = [
   "/discover",
   "/how-it-works",
   "/pricing",
-  "/get-started"
+  "/get-started",
+  "/book-a-meeting",
+  "/about"
 ];
 
 export function isPublicRoute(pathname: string | null): boolean {
@@ -45,6 +47,9 @@ export default function PublicPageWrapper({ children }: { children: React.ReactN
       const root = document.documentElement;
       root.classList.remove("light");
       root.classList.add("dark");
+
+      // Add public-page class to body for public routes
+      document.body.classList.add('public-page');
 
       // Override theme storage for public pages
       const originalGetItem = localStorage.getItem.bind(localStorage);
@@ -85,10 +90,15 @@ export default function PublicPageWrapper({ children }: { children: React.ReactN
 
       return () => {
         observer.disconnect();
+        // Remove public-page class when leaving public routes
+        document.body.classList.remove('public-page');
         // Restore original localStorage methods
         localStorage.getItem = originalGetItem;
         localStorage.setItem = originalSetItem;
       };
+    } else {
+      // Remove public-page class for non-public routes
+      document.body.classList.remove('public-page');
     }
   }, [pathname, isPublicPage]);
 

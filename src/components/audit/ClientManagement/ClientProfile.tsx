@@ -261,7 +261,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                     disabled={!editMode}
                     className="rounded border-border"
                   />
-                  <span className="text-sm text-gray-700">Public Interest Entity (PIE)</span>
+                  <span className="text-sm ink">Public Interest Entity (PIE)</span>
                 </label>
               </div>
             </CardContent>
@@ -483,7 +483,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                         disabled={!editMode}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Independence Confirmed</span>
+                      <span className="text-sm ink">Independence Confirmed</span>
                     </div>
                     {independenceChecks.independence_confirmed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -506,7 +506,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                         disabled={!editMode}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Conflict Check Completed</span>
+                      <span className="text-sm ink">Conflict Check Completed</span>
                     </div>
                     {independenceChecks.conflict_check_completed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -529,7 +529,7 @@ export function ClientProfile({ clientId, mode = 'view' }: ClientProfileProps) {
                         disabled={!editMode}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Compliance Officer Approval</span>
+                      <span className="text-sm ink">Compliance Officer Approval</span>
                     </div>
                     {independenceChecks.compliance_approved ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />

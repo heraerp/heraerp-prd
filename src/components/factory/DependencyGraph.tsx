@@ -216,7 +216,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
 
             {selectedNode.type === 'module' && (
               <div className="mt-3 space-y-2">
-                <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                <p className="text-xs font-medium ink dark:text-gray-300">
                   Dependencies:
                 </p>
                 {edges
@@ -239,7 +239,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
 
             {selectedNode.type === 'capability' && (
               <div className="mt-3 space-y-2">
-                <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Required by:</p>
+                <p className="text-xs font-medium ink dark:text-gray-300">Required by:</p>
                 {edges
                   .filter(e => e.to === selectedNode.id)
                   .map((edge, idx) => {

@@ -367,7 +367,7 @@ export function KitchenDisplay() {
               {order.customer_name && (
                 <div className="flex items-center space-x-2 mb-3">
                   <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-gray-700">{order.customer_name}</span>
+                  <span className="text-sm ink">{order.customer_name}</span>
                 </div>
               )}
 
@@ -375,7 +375,7 @@ export function KitchenDisplay() {
               <div className="space-y-2 mb-4">
                 {order.items.map(item => (
                   <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-gray-700">
+                    <span className="ink">
                       {item.quantity}x {item.menu_item_name}
                     </span>
                     {item.special_instructions && (

@@ -146,14 +146,14 @@ interface APIResponse<T = any> {
 <Input id="name" value={name} onChange={setName} />
 
 // ✅ Good: Native HTML with explicit styling
-<label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+<label htmlFor="name" className="block text-sm font-medium ink mb-1">
   Name *
 </label>
 <input
   id="name"
   value={name}
   onChange={(e) => setName(e.target.value)}
-  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white ink"
 />
 ```
 

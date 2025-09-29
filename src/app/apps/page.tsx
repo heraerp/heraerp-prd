@@ -376,9 +376,7 @@ export default function AppsPage() {
             return (
               <Card
                 key={app.id}
-                className={`relative overflow-hidden transition-all duration-300 ${
-                  isDisabled
-                    ? 'opacity-60 cursor-not-allowed'
+                className={`relative overflow-hidden transition-all duration-300 ${ isDisabled ?'opacity-60 cursor-not-allowed'
                     : 'hover:shadow-xl hover:-translate-y-1 cursor-pointer'
                 }`}
                 onClick={() => !isDisabled && handleAppClick(app)}
@@ -386,8 +384,7 @@ export default function AppsPage() {
                 {/* Status Badge */}
                 {app.status !== 'production' && (
                   <div
-                    className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${
-                      app.status === 'beta' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-gray-700'
+                    className={`absolute top-4 right-4 px-3 py-1 text-xs font-medium rounded-full ${ app.status ==='beta' ? 'bg-blue-100 text-blue-700' : 'bg-muted text-gray-700'
                     }`}
                   >
                     {app.status === 'beta' ? 'Beta' : 'Coming Soon'}

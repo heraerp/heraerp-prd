@@ -62,8 +62,7 @@ export function StatusIndicator({
   return (
     <div className="flex items-center space-x-2">
       <div
-        className={`rounded-full ${sizeClasses[size]} ${colors[status]} ${
-          animated && status === 'success' ? 'animate-pulse' : ''
+        className={`rounded-full ${sizeClasses[size]} ${colors[status]} ${ animated && status ==='success' ? 'animate-pulse' : ''
         } ${animated && status === 'loading' ? 'animate-spin' : ''}`}
       />
       {showText && text && <span className="text-sm text-muted-foreground">{text}</span>}
@@ -95,8 +94,7 @@ export function PulseIndicator({ active, color = 'green', size = 'md' }: PulseIn
   return (
     <div className="relative">
       <div
-        className={`rounded-full ${sizeClasses[size]} ${colors[color]} ${
-          active ? 'animate-pulse' : 'opacity-50'
+        className={`rounded-full ${sizeClasses[size]} ${colors[color]} ${ active ?'animate-pulse' : 'opacity-50'
         }`}
       />
       {active && (
@@ -244,15 +242,15 @@ export function ProgressRing({
 
   return (
     <div className={`relative ${className}`}>
-      <svg width={size} height={size} className="transform -rotate-90">
+      <svg fill="none" stroke="currentColor" width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#e5e7eb"
+          stroke="currentColor"
           strokeWidth={strokeWidth}
-          fill="transparent"
+          fill="currentColor"
         />
         {/* Progress circle */}
         <circle
@@ -261,7 +259,7 @@ export function ProgressRing({
           r={radius}
           stroke={color}
           strokeWidth={strokeWidth}
-          fill="transparent"
+          fill="currentColor"
           strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
@@ -270,7 +268,7 @@ export function ProgressRing({
       </svg>
       {showPercentage && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-semibold text-gray-700">{Math.round(progress)}%</span>
+          <span className="text-xs font-semibold ink">{Math.round(progress)}%</span>
         </div>
       )}
     </div>
@@ -293,7 +291,7 @@ export function LoadingSpinner({ size = 'md', color = '#3b82f6', message }: Load
   return (
     <div className="flex flex-col items-center space-y-3">
       <div className={`${sizes[size]} animate-spin`}>
-        <svg className="w-full h-full" viewBox="0 0 24 24">
+        <svg fill="none" stroke="currentColor" className="w-full h-full" viewBox="0 0 24 24">
           <circle
             cx="12"
             cy="12"
@@ -370,8 +368,7 @@ export function MetricCard({
           )}
           {change !== undefined && (
             <span
-              className={`text-sm font-medium ${
-                trend === 'up'
+              className={`text-sm font-medium ${ trend ==='up'
                   ? 'text-green-600'
                   : trend === 'down'
                     ? 'text-red-600'
@@ -473,8 +470,7 @@ export function GlowButton({
 
   return (
     <motion.button
-      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-foreground font-semibold rounded-xl transition-all duration-200 ${className} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'
+      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-foreground font-semibold rounded-xl transition-all duration-200 ${className} ${ disabled ?'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'
       }`}
       onClick={disabled ? undefined : onClick}
       onHoverStart={() => setIsHovered(true)}

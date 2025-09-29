@@ -267,9 +267,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
           {[1, 2, 3, 4, 5].map(step => (
             <div key={step} className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step < currentStep
-                    ? 'bg-green-500 text-foreground'
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${ step < currentStep ?'bg-green-500 text-foreground'
                     : step === currentStep
                       ? 'bg-blue-500 text-foreground'
                       : 'bg-gray-700 text-muted-foreground'
@@ -279,7 +277,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
               </div>
               {step < 5 && (
                 <div
-                  className={`w-8 h-1 mx-1 ${step < currentStep ? 'bg-green-500' : 'bg-gray-700'}`}
+                  className={`w-8 h-1 mx-1 ${step < currentStep ?'bg-green-500' : 'bg-gray-700'}`}
                 />
               )}
             </div>
@@ -536,9 +534,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                   <div className="space-y-2">
                     <Label>EQCR Required</Label>
                     <div
-                      className={`p-3 rounded-lg border ${
-                        isEQCRRequired()
-                          ? 'bg-orange-50 border-orange-200'
+                      className={`p-3 rounded-lg border ${ isEQCRRequired() ?'bg-orange-50 border-orange-200'
                           : 'bg-green-50 border-green-200'
                       }`}
                     >
@@ -549,8 +545,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                           <CheckCircle2 className="w-4 h-4 text-green-600" />
                         )}
                         <span
-                          className={`text-sm font-medium ${
-                            isEQCRRequired() ? 'text-orange-800' : 'text-green-800'
+                          className={`text-sm font-medium ${ isEQCRRequired() ?'text-orange-800' : 'text-green-800'
                           }`}
                         >
                           {isEQCRRequired() ? 'Required' : 'Not Required'}
@@ -697,7 +692,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         onChange={e => updateField('independence_confirmed', e.target.checked)}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Independence Confirmed</span>
+                      <span className="text-sm ink">Independence Confirmed</span>
                     </div>
                     {engagementData.independence_confirmed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -714,7 +709,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         onChange={e => updateField('conflict_check_completed', e.target.checked)}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Conflict Check Completed</span>
+                      <span className="text-sm ink">Conflict Check Completed</span>
                     </div>
                     {engagementData.conflict_check_completed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -731,7 +726,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         onChange={e => updateField('aml_assessment_done', e.target.checked)}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">AML Assessment Completed</span>
+                      <span className="text-sm ink">AML Assessment Completed</span>
                     </div>
                     {engagementData.aml_assessment_done ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -748,7 +743,7 @@ export function NewEngagementModal({ children, onEngagementCreated }: NewEngagem
                         onChange={e => updateField('compliance_approval', e.target.checked)}
                         className="rounded border-border"
                       />
-                      <span className="text-sm text-gray-700">Compliance Officer Approval</span>
+                      <span className="text-sm ink">Compliance Officer Approval</span>
                     </div>
                     {engagementData.compliance_approval ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />

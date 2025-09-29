@@ -76,7 +76,7 @@ export function RevenueSparkline({ organizationId }: RevenueSparklineProps) {
           </CardTitle>
           {percentChange !== 0 && (
             <span
-              className={`text-sm font-medium ${percentChange > 0 ? 'text-green-600' : 'text-red-600'}`}
+              className={`text-sm font-medium ${percentChange > 0 ?'text-green-600' : 'text-red-600'}`}
             >
               {percentChange > 0 ? '+' : ''}
               {percentChange.toFixed(1)}%

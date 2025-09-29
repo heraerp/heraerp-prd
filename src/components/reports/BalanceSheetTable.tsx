@@ -116,7 +116,7 @@ export function BalanceSheetTable({
       liabilities: <CreditCard className="h-4 w-4 text-red-600" />,
       equity: <Users className="h-4 w-4 text-emerald-600" />
     }
-    return groupIcons[group] || <FileText className="h-4 w-4 text-gray-600" />
+    return groupIcons[group] || <FileText className="h-4 w-4 ink-muted" />
   }
 
   const getAmountColor = (amount: number, group: string) => {
@@ -348,7 +348,7 @@ export function BalanceSheetTable({
                 )}
               </div>
               {row.sub_group && !row.is_subtotal && (
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{row.sub_group}</div>
+                <div className="text-xs dark:ink-muted mt-1">{row.sub_group}</div>
               )}
             </div>
           </div>
@@ -366,14 +366,14 @@ export function BalanceSheetTable({
         </TableCell>
 
         {/* Percentage of Assets */}
-        <TableCell className="text-right text-sm text-gray-600 dark:text-gray-400">
+        <TableCell className="text-right text-sm dark:ink-muted">
           {row.percentage ? `${row.percentage.toFixed(1)}%` : '—'}
         </TableCell>
 
         {/* Comparison columns */}
         {showComparison && (
           <>
-            <TableCell className="text-right font-mono text-sm text-gray-600 dark:text-gray-400">
+            <TableCell className="text-right font-mono text-sm dark:ink-muted">
               {row.prior_period_amount ? formatCurrency(row.prior_period_amount) : '—'}
             </TableCell>
             <TableCell className="text-right">
@@ -442,7 +442,7 @@ export function BalanceSheetTable({
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-            <span className="ml-2 text-gray-600 dark:text-gray-400">
+            <span className="ml-2 dark:ink-muted">
               Loading balance sheet data...
             </span>
           </div>
@@ -461,7 +461,7 @@ export function BalanceSheetTable({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 dark:ink-muted">
             <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No balance sheet data available for the selected date.</p>
           </div>
@@ -518,7 +518,7 @@ export function BalanceSheetTable({
         </div>
 
         {/* Footer Notes */}
-        <div className="mt-4 space-y-2 text-xs text-gray-500 dark:text-gray-400">
+        <div className="mt-4 space-y-2 text-xs dark:ink-muted">
           <div className="flex flex-wrap gap-4">
             <span>• All amounts in {currency}</span>
             <span>• Percentages calculated as % of Total Assets</span>

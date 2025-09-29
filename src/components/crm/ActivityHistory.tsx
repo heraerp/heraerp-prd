@@ -424,7 +424,7 @@ export function ActivityHistory({
                         onClick={() => loadActivities(1)}
                         disabled={isLoading}
                       >
-                        <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ?'animate-spin' : ''}`} />
                         Refresh
                       </Button>
                       <Button variant="outline" size="sm" onClick={handleExport}>

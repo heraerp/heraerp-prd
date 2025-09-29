@@ -72,7 +72,7 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
           AED {service.price}
         </Badge>
       </div>
-      <div className="flex items-center gap-4 text-sm text-gray-500">
+      <div className="flex items-center gap-4 text-sm ink-muted">
         <span className="font-mono">{service.service_code}</span>
         <div className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
@@ -85,7 +85,7 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 ink-muted h-4 w-4" />
         <Input
           type="search"
           placeholder="Search services..."
@@ -112,7 +112,7 @@ export function ServiceSelector({ services }: ServiceSelectorProps) {
               service.service_name.toLowerCase().includes(search.toLowerCase()) ||
               service.service_code.toLowerCase().includes(search.toLowerCase())
           ).length === 0 && (
-            <p className="text-gray-500 col-span-2 text-center py-8">
+            <p className="ink-muted col-span-2 text-center py-8">
               No services found matching "{search}"
             </p>
           )}

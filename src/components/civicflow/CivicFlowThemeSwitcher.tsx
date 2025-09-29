@@ -62,8 +62,7 @@ export function CivicFlowThemeSwitcher() {
           >
             <div className="flex items-center w-full">
               <div
-                className={`w-2 h-2 rounded-full mr-3 ${
-                  t.value === 'civic-navy'
+                className={`w-2 h-2 rounded-full mr-3 ${ t.value ==='civic-navy'
                     ? 'bg-blue-900'
                     : t.value === 'civic-light'
                       ? 'bg-gray-300'

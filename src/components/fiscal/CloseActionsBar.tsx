@@ -137,10 +137,10 @@ export function CloseActionsBar({
               <div className="flex items-center gap-4">
                 <Calendar className="h-8 w-8 text-violet-600" />
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <div className="text-sm font-medium dark:ink-muted">
                     Current Period
                   </div>
-                  <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  <div className="text-xl font-bold ink dark:text-gray-100">
                     {currentPeriod ? currentPeriod.code : 'No Period'}
                   </div>
                   {currentPeriod && (
@@ -174,10 +174,10 @@ export function CloseActionsBar({
               <div className="flex items-center gap-4">
                 <FileText className="h-8 w-8 text-blue-600" />
                 <div>
-                  <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <div className="text-sm font-medium dark:ink-muted">
                     Checklist Status
                   </div>
-                  <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  <div className="text-xl font-bold ink dark:text-gray-100">
                     {isChecklistComplete ? 'Complete' : 'Incomplete'}
                   </div>
                   <div className="mt-1">
@@ -304,7 +304,7 @@ export function CloseActionsBar({
                 className="font-mono"
                 required
               />
-              <p className="text-sm text-gray-500">P&L balances will be posted to this account</p>
+              <p className="text-sm ink-muted">P&L balances will be posted to this account</p>
             </div>
 
             <div className="space-y-2">

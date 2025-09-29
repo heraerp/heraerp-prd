@@ -82,7 +82,7 @@ export default function ComingSoon({
                   {features.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-muted rounded-xl">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="ink">{feature}</span>
                     </div>
                   ))}
                 </div>

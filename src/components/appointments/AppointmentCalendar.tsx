@@ -147,8 +147,8 @@ export function AppointmentCalendar({
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-gray-400" />
-          <span className="text-sm font-medium text-gray-900">
+          <Clock className="w-4 h-4 ink-muted" />
+          <span className="text-sm font-medium ink">
             {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
           </span>
         </div>
@@ -156,21 +156,21 @@ export function AppointmentCalendar({
       </div>
 
       <div className="space-y-1">
-        <div className="flex items-center gap-1.5 text-sm text-gray-700">
-          <User className="w-3.5 h-3.5 text-gray-400" />
+        <div className="flex items-center gap-1.5 text-sm ink">
+          <User className="w-3.5 h-3.5 ink-muted" />
           <span className="font-medium">{appointment.customer.name}</span>
-          <span className="text-gray-400">with</span>
+          <span className="ink-muted">with</span>
           <span>{appointment.stylist.name}</span>
         </div>
 
         {appointment.services && appointment.services.length > 0 && (
-          <div className="text-xs text-gray-500">
+          <div className="text-xs ink-muted">
             {appointment.services.map(s => s.name).join(', ')}
           </div>
         )}
       </div>
 
-      <div className="mt-2 text-xs text-gray-400 font-mono group-hover:text-gray-600">
+      <div className="mt-2 text-xs font-mono group-hover:ink-muted">
         {appointment.code}
       </div>
     </button>
@@ -196,7 +196,7 @@ export function AppointmentCalendar({
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <h2 className="text-xl font-semibold text-gray-900">{getDateLabel()}</h2>
+          <h2 className="text-xl font-semibold ink">{getDateLabel()}</h2>
           <ButtonPrimary onClick={goToToday} variant="outline" size="sm">
             Today
           </ButtonPrimary>
@@ -240,7 +240,7 @@ export function AppointmentCalendar({
         {Object.entries(groupedAppointments).length === 0 ? (
           <div className="text-center py-12">
             <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No appointments scheduled</p>
+            <p className="ink-muted mb-4">No appointments scheduled</p>
             <ButtonPrimary
               onClick={() => (window.location.href = '/appointments/new')}
               variant="primary"
@@ -265,9 +265,9 @@ export function AppointmentCalendar({
 
               return (
                 <div key={dateKey}>
-                  <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  <h3 className="text-sm font-medium ink mb-3">
                     {dateLabel}
-                    <span className="ml-2 text-xs text-gray-500">
+                    <span className="ml-2 text-xs ink-muted">
                       ({dayAppointments.length} appointment{dayAppointments.length !== 1 ? 's' : ''}
                       )
                     </span>

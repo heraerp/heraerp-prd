@@ -582,7 +582,7 @@ export default function SalonAppointmentsFacetedGrid() {
             <div className="flex items-center gap-2 mt-2">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <p className="!text-gray-700 dark:!text-gray-300 text-sm font-medium">
+                <p className="!ink dark:!text-gray-300 text-sm font-medium">
                   {sortedAppointments.length} active appointments
                 </p>
               </div>
@@ -596,7 +596,7 @@ export default function SalonAppointmentsFacetedGrid() {
           <div className="flex items-center gap-3">
             <Button
               onClick={exportToCSV}
-              className="bg-background dark:bg-muted border border-border dark:border-border text-gray-700 dark:text-gray-300 hover:bg-muted dark:hover:bg-accent shadow-sm"
+              className="bg-background dark:bg-muted border border-border dark:border-border ink dark:text-gray-300 hover:bg-muted dark:hover:bg-accent shadow-sm"
               size="sm"
             >
               <Download className="w-4 h-4 mr-2" />
@@ -818,7 +818,7 @@ export default function SalonAppointmentsFacetedGrid() {
                       <div className="mt-4 space-y-4 animate-in slide-in-from-top-1 duration-200">
                         {/* Price Range */}
                         <div>
-                          <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
+                          <label className="text-xs font-medium !ink dark:!text-gray-300 mb-2 block uppercase tracking-wider">
                             Price Range (AED)
                           </label>
                           <div className="flex items-center gap-2">
@@ -852,7 +852,7 @@ export default function SalonAppointmentsFacetedGrid() {
 
                         {/* Duration Range */}
                         <div>
-                          <label className="text-xs font-medium !text-gray-700 dark:!text-gray-300 mb-2 block uppercase tracking-wider">
+                          <label className="text-xs font-medium !ink dark:!text-gray-300 mb-2 block uppercase tracking-wider">
                             Duration (minutes)
                           </label>
                           <div className="flex items-center gap-2">
@@ -1059,7 +1059,7 @@ export default function SalonAppointmentsFacetedGrid() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-100 dark:!text-foreground font-medium">
                             {formatDate(apt.date)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !ink dark:!text-gray-300">
                             {apt.time}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -1074,7 +1074,7 @@ export default function SalonAppointmentsFacetedGrid() {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !ink dark:!text-gray-300">
                             {apt.stylist}
                           </td>
                           <td className="px-6 py-4">
@@ -1092,10 +1092,10 @@ export default function SalonAppointmentsFacetedGrid() {
                               {apt.status}
                             </Badge>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !ink dark:!text-gray-300">
                             {apt.payment}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm !text-gray-700 dark:!text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm !ink dark:!text-gray-300">
                             {formatDuration(apt.duration)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium !text-gray-100 dark:!text-foreground">

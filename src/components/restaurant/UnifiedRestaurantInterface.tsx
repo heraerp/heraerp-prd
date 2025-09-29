@@ -212,14 +212,12 @@ export function UnifiedRestaurantInterface() {
 
   return (
     <div
-      className={`min-h-screen bg-gray-900 transition-all duration-300 ${
-        darkMode ? 'bg-background' : 'bg-gradient-to-br from-gray-900 via-white to-gray-100'
+      className={`min-h-screen bg-gray-900 transition-all duration-300 ${ darkMode ?'bg-background' : 'bg-gradient-to-br from-gray-900 via-white to-gray-100'
       }`}
     >
       {/* Header - Jobs-inspired minimal header */}
       <header
-        className={`sticky top-0 z-50 backdrop-blur-xl ${
-          darkMode ? 'bg-background/80 border-gray-800' : 'bg-background/80 border-border/50'
+        className={`sticky top-0 z-50 backdrop-blur-xl ${ darkMode ?'bg-background/80 border-gray-800' : 'bg-background/80 border-border/50'
         } border-b`}
       >
         <div className="max-w-7xl mx-auto px-6">
@@ -231,12 +229,12 @@ export function UnifiedRestaurantInterface() {
               </div>
               <div>
                 <h1
-                  className={`text-lg font-semibold ${darkMode ? 'text-foreground' : 'text-gray-100'}`}
+                  className={`text-lg font-semibold ${darkMode ?'text-foreground' : 'text-gray-100'}`}
                 >
                   {organization?.organization_name || 'Restaurant'}
                 </h1>
                 <p
-                  className={`text-xs ${darkMode ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+                  className={`text-xs ${darkMode ?'text-muted-foreground' : 'text-muted-foreground'}`}
                 >
                   {isClient ? formatDate(currentTime, 'EEEE, MMM d · h:mm a') : 'Loading...'}
                 </p>
@@ -247,17 +245,14 @@ export function UnifiedRestaurantInterface() {
             <div className="flex-1 max-w-md mx-8">
               <div className="relative">
                 <Search
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
-                    darkMode ? 'text-muted-foreground' : 'text-muted-foreground'
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${ darkMode ?'text-muted-foreground' : 'text-muted-foreground'
                   }`}
                 />
                 <Input
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Search everything... ⌘K"
-                  className={`pl-10 pr-4 py-2 rounded-full border-0 shadow-sm transition-all ${
-                    darkMode
-                      ? 'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
+                  className={`pl-10 pr-4 py-2 rounded-full border-0 shadow-sm transition-all ${ darkMode ?'bg-muted text-foreground placeholder-gray-400 focus:bg-muted-foreground/10'
                       : 'bg-muted text-gray-100 placeholder-gray-500 focus:bg-background focus:shadow-md'
                   }`}
                   onFocus={() => setIsCommandPaletteOpen(true)}
@@ -271,7 +266,7 @@ export function UnifiedRestaurantInterface() {
               <div className="flex items-center space-x-2">
                 <PulseIndicator active={true} color="green" size="sm" />
                 <span
-                  className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-muted-foreground'}`}
+                  className={`text-xs font-medium ${darkMode ?'text-gray-300' : 'text-muted-foreground'}`}
                 >
                   Live
                 </span>
@@ -368,9 +363,7 @@ export function UnifiedRestaurantInterface() {
           {unifiedViews.map(view => (
             <Card
               key={view.id}
-              className={`p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
-                view.gradient
-              } border-2 group ${darkMode ? 'hover:shadow-gray-900/50' : 'hover:shadow-gray-900/10'}`}
+              className={`p-8 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl ${ view.gradient } border-2 group ${darkMode ?'hover:shadow-gray-900/50' : 'hover:shadow-gray-900/10'}`}
               onClick={() => {
                 if (view.id === 'tables') {
                   navigateTo('/restaurant/table-management')
@@ -421,7 +414,7 @@ export function UnifiedRestaurantInterface() {
                   >
                     <div className="flex items-center space-x-3">
                       {action.icon}
-                      <span className="text-sm font-medium text-gray-700">{action.label}</span>
+                      <span className="text-sm font-medium ink">{action.label}</span>
                     </div>
                     <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/action:text-muted-foreground group-hover/action:translate-x-1 transition-all" />
                   </div>
@@ -436,8 +429,7 @@ export function UnifiedRestaurantInterface() {
 
         {/* Bottom Status Bar - Minimal but informative */}
         <div
-          className={`mt-12 p-4 rounded-2xl ${
-            darkMode ? 'bg-muted/50 border-border' : 'bg-background/50 border-border'
+          className={`mt-12 p-4 rounded-2xl ${ darkMode ?'bg-muted/50 border-border' : 'bg-background/50 border-border'
           } backdrop-blur-xl border`}
         >
           <div className="flex items-center justify-between text-sm">

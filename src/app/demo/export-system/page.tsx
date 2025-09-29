@@ -215,16 +215,13 @@ export default function ExportSystemDemoPage() {
                       onClick={() =>
                         setSelectedCategory(categoryKey as keyof typeof HERA_DNA_CATEGORIES)
                       }
-                      className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                        isSelected
-                          ? 'border-primary bg-primary/5'
+                      className={`p-4 rounded-lg border cursor-pointer transition-all ${ isSelected ?'border-primary bg-primary/5'
                           : 'hover:border-primary/50 hover:bg-accent'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${ isSelected ?'bg-primary text-primary-foreground' : 'bg-muted'
                           }`}
                         >
                           <Icon className="w-5 h-5" />

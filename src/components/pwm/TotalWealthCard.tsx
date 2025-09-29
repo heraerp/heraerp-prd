@@ -70,7 +70,7 @@ export function TotalWealthCard({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-medium text-muted-foreground">Total Net Worth</h2>
-          <div className="text-sm text-slate-500">
+          <div className="text-sm ink-muted">
             {new Date(lastUpdated).toLocaleTimeString([], {
               hour: '2-digit',
               minute: '2-digit'
@@ -127,19 +127,19 @@ export function TotalWealthCard({
         {/* Performance Indicators */}
         <div className="grid grid-cols-3 gap-4 mt-6">
           <div className="text-center p-3 rounded-lg bg-muted/50">
-            <div className="text-xs text-slate-500 mb-1">24h High</div>
+            <div className="text-xs ink-muted mb-1">24h High</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(totalWealth * 1.002)}
             </div>
           </div>
           <div className="text-center p-3 rounded-lg bg-muted/50">
-            <div className="text-xs text-slate-500 mb-1">24h Low</div>
+            <div className="text-xs ink-muted mb-1">24h Low</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(totalWealth * 0.998)}
             </div>
           </div>
           <div className="text-center p-3 rounded-lg bg-muted/50">
-            <div className="text-xs text-slate-500 mb-1">24h Volume</div>
+            <div className="text-xs ink-muted mb-1">24h Volume</div>
             <div className="text-sm font-semibold text-slate-300">
               {formatCurrency(Math.abs(dailyChange) * 10)}
             </div>

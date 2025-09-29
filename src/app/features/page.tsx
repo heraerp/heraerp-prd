@@ -32,10 +32,10 @@ export default function FeaturesPage() {
       <section className="pt-16 pb-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl lg:text-6xl font-bold ink mb-6">
               Features That Set HERA Apart
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl ink-muted">
               Revolutionary universal architecture that adapts to any business, powered by AI and
               built for the future.
             </p>
@@ -94,7 +94,7 @@ export default function FeaturesPage() {
                   <feature.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <p className="ink-muted">{feature.description}</p>
               </Card>
             ))}
           </div>
@@ -119,7 +119,7 @@ export default function FeaturesPage() {
                 ].map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{item}</span>
+                    <span className="ink">{item}</span>
                   </div>
                 ))}
               </div>
@@ -137,7 +137,7 @@ export default function FeaturesPage() {
                 ].map((item, index) => (
                   <div key={index} className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{item}</span>
+                    <span className="ink">{item}</span>
                   </div>
                 ))}
               </div>
@@ -176,7 +176,7 @@ export default function FeaturesPage() {
               <Card key={index} className="p-6 text-center">
                 <feature.icon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-600">{feature.description}</p>
+                <p className="text-sm ink-muted">{feature.description}</p>
               </Card>
             ))}
           </div>
@@ -187,7 +187,7 @@ export default function FeaturesPage() {
       <section className="py-16 px-6 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4">Industry-Specific Solutions</h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-center ink-muted mb-12 max-w-2xl mx-auto">
             HERA's universal architecture adapts perfectly to any industry. Each implementation
             includes industry-specific workflows, reports, and integrations.
           </p>
@@ -232,7 +232,7 @@ export default function FeaturesPage() {
                 <h3 className="text-xl font-semibold mb-3">{solution.industry}</h3>
                 <ul className="space-y-2">
                   {solution.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-sm text-gray-600">
+                    <li key={featureIndex} className="flex items-center text-sm ink-muted">
                       <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
                       {feature}
                     </li>
@@ -278,7 +278,7 @@ export default function FeaturesPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400 text-sm">© 2024 HERA. All rights reserved.</p>
+          <p className="ink-muted text-sm">© 2024 HERA. All rights reserved.</p>
         </div>
       </footer>
     </div>

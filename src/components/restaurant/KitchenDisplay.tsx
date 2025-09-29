@@ -479,7 +479,7 @@ export function KitchenDisplay({
           <p className="text-muted-foreground">Real-time order management and tracking</p>
         </div>
         <Button onClick={() => loadData()} variant="outline" disabled={updating}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${updating ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-4 w-4 mr-2 ${updating ?'animate-spin' : ''}`} />
           {updating ? 'Updating...' : 'Refresh'}
         </Button>
       </div>

@@ -5,13 +5,14 @@ import path from "path";
 import { execSync } from "child_process";
 
 // Helper to pick random element
-function pick<T>(arr: T[]): T { 
-  return arr[Math.floor(Math.random() * arr.length)]; 
+function pick<T>(arr: T[]): T | undefined {
+  if (arr.length === 0) return undefined;
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 // Helper to format date
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split('T')[0] || '';
 }
 
 // Helper to ensure directory exists
@@ -19,6 +20,20 @@ function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+// Define types
+interface City {
+  city: string;
+  region: string;
+  country: string;
+  landmarks: string[];
+}
+
+interface Topic {
+  pillar: string;
+  angle: string;
+  benefits: string[];
 }
 
 // Load data
@@ -30,12 +45,17 @@ if (!fs.existsSync(citiesPath) || !fs.existsSync(topicsPath)) {
   process.exit(1);
 }
 
-const cities = JSON.parse(fs.readFileSync(citiesPath, "utf8"));
-const topics = JSON.parse(fs.readFileSync(topicsPath, "utf8"));
+const cities: City[] = JSON.parse(fs.readFileSync(citiesPath, "utf8"));
+const topics: Topic[] = JSON.parse(fs.readFileSync(topicsPath, "utf8"));
 
 // Pick random city and topic
 const city = pick(cities);
 const topic = pick(topics);
+
+if (!city || !topic) {
+  console.error("❌ Failed to pick random city or topic");
+  process.exit(1);
+}
 
 console.log(`📍 Generating blog for: ${city.city}, ${city.country}`);
 console.log(`📚 Topic: ${topic.pillar}`);
@@ -55,12 +75,17 @@ const ideationCmd = [
 ].join(" ");
 
 console.log("🧠 Generating content brief...");
-let brief;
+let brief: any;
 try {
   const briefOutput = execSync(ideationCmd, { stdio: ["ignore", "pipe", "inherit"] }).toString();
   brief = JSON.parse(briefOutput);
 } catch (error) {
   console.error("❌ Failed to generate content brief:", error);
+  process.exit(1);
+}
+
+if (!brief) {
+  console.error("❌ Brief is empty");
   process.exit(1);
 }
 

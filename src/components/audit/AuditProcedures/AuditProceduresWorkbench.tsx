@@ -242,8 +242,7 @@ export function AuditProceduresWorkbench() {
           return (
             <Card
               key={area.value}
-              className={`cursor-pointer transition-all hover:shadow-lg ${
-                selectedArea === area.value ? 'ring-2 ring-blue-500 shadow-lg' : ''
+              className={`cursor-pointer transition-all hover:shadow-lg ${ selectedArea === area.value ?'ring-2 ring-blue-500 shadow-lg' : ''
               }`}
               onClick={() => setSelectedArea(area.value)}
             >
@@ -325,7 +324,7 @@ export function AuditProceduresWorkbench() {
 
                     <div className="mt-3">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-gray-700">Progress</span>
+                        <span className="text-sm font-medium ink">Progress</span>
                         <span className="text-sm font-bold text-gray-100">
                           {procedure.completion_percentage}%
                         </span>

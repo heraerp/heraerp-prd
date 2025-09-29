@@ -30,10 +30,10 @@ export default function Error({
           <CardContent className="space-y-4">
             {process.env.NODE_ENV === 'development' && (
               <div className="bg-gray-100 p-4 rounded-md">
-                <h4 className="font-medium text-sm text-gray-700 mb-2">Error Details:</h4>
-                <pre className="text-xs text-gray-600 overflow-auto">{error.message}</pre>
+                <h4 className="font-medium text-sm ink mb-2">Error Details:</h4>
+                <pre className="text-xs ink-muted overflow-auto">{error.message}</pre>
                 {error.digest && (
-                  <p className="text-xs text-gray-500 mt-2">Digest: {error.digest}</p>
+                  <p className="text-xs ink-muted mt-2">Digest: {error.digest}</p>
                 )}
               </div>
             )}

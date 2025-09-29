@@ -12,8 +12,8 @@ import dotenv from 'dotenv'
 // Load environment variables
 dotenv.config()
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL']!
+const supabaseServiceKey = process.env['SUPABASE_SERVICE_ROLE_KEY']!
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('❌ Missing required environment variables')
@@ -123,7 +123,7 @@ async function readSQLFiles() {
     const functions = functionMatches.map(match => {
       const funcName = match.replace(/CREATE OR REPLACE FUNCTION\s+/i, '').trim()
       return funcName.split('(')[0] // Remove parameters
-    })
+    }).filter((f): f is string => f !== undefined)
 
     sqlContents.push({ file, content, functions })
     log(`📄 ${file}: Found ${functions.length} functions`, 'cyan')

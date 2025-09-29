@@ -341,7 +341,7 @@ export function DeliveryPlatformManager() {
           </div>
           <button
             onClick={loadPlatforms}
-            className="flex items-center space-x-2 px-4 py-2 bg-muted text-gray-700 rounded-lg hover:bg-gray-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-muted ink rounded-lg hover:bg-gray-700 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Refresh</span>
@@ -533,7 +533,7 @@ export function DeliveryPlatformManager() {
                       <Copy className="w-3 h-3" />
                     </button>
                   </div>
-                  <p className="text-xs font-mono text-gray-700 bg-muted p-2 rounded mt-1 break-all">
+                  <p className="text-xs font-mono ink bg-muted p-2 rounded mt-1 break-all">
                     {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}
                     /api/v1/delivery-platforms/{platform.id}/webhook
                   </p>
@@ -573,7 +573,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="platform_name"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Platform Name *
                       </label>
@@ -591,7 +591,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="platform_type"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Platform Type *
                       </label>
@@ -619,7 +619,7 @@ export function DeliveryPlatformManager() {
                   <div>
                     <label
                       htmlFor="api_endpoint"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium ink mb-1"
                     >
                       API Endpoint *
                     </label>
@@ -638,7 +638,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="api_key"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         API Key
                       </label>
@@ -655,7 +655,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="secret_key"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Secret Key
                       </label>
@@ -674,7 +674,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="restaurant_id"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Restaurant ID
                       </label>
@@ -691,7 +691,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="store_id"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Store ID
                       </label>
@@ -715,7 +715,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="commission_rate"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Commission Rate (%)
                       </label>
@@ -743,7 +743,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="delivery_fee"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Delivery Fee ($)
                       </label>
@@ -770,7 +770,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="minimum_order"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Minimum Order Value ($)
                       </label>
@@ -797,7 +797,7 @@ export function DeliveryPlatformManager() {
                     <div>
                       <label
                         htmlFor="max_distance"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                        className="block text-sm font-medium ink mb-1"
                       >
                         Max Delivery Distance (km)
                       </label>
@@ -837,7 +837,7 @@ export function DeliveryPlatformManager() {
                         }
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium ink">
                         Auto-accept incoming orders
                       </span>
                     </label>
@@ -849,7 +849,7 @@ export function DeliveryPlatformManager() {
                         onChange={e => setFormData({ ...formData, sync_menu: e.target.checked })}
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium ink">
                         Sync menu items with platform
                       </span>
                     </label>
@@ -863,7 +863,7 @@ export function DeliveryPlatformManager() {
                         }
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium ink">
                         Sync inventory levels
                       </span>
                     </label>
@@ -879,7 +879,7 @@ export function DeliveryPlatformManager() {
                       setEditingPlatform(null)
                       resetForm()
                     }}
-                    className="px-4 py-2 text-gray-700 bg-muted rounded-lg hover:bg-gray-700 transition-colors border border-border"
+                    className="px-4 py-2 ink bg-muted rounded-lg hover:bg-gray-700 transition-colors border border-border"
                   >
                     Cancel
                   </button>

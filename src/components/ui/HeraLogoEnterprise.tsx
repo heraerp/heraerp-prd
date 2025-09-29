@@ -35,7 +35,7 @@ export function HeraLogoEnterprise({
   const stops = gradientStops[variant]
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -63,7 +63,7 @@ export function HeraLogoEnterprise({
 
         {/* Scaling pattern mask */}
         <mask id="scaleMask">
-          <rect width="100%" height="100%" fill="white" />
+          <rect width="100%" height="100%" fill="currentColor" />
         </mask>
       </defs>
 

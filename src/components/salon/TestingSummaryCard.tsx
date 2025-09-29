@@ -63,15 +63,15 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <CheckCircle className="w-6 h-6 mx-auto mb-1 text-green-600" />
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Validate Logic</p>
+            <p className="text-xs font-medium ink dark:text-gray-300">Validate Logic</p>
           </div>
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <AlertCircle className="w-6 h-6 mx-auto mb-1 text-yellow-600" />
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Find Edge Cases</p>
+            <p className="text-xs font-medium ink dark:text-gray-300">Find Edge Cases</p>
           </div>
           <div className="text-center p-3 bg-background/50 dark:bg-muted/50 rounded-lg">
             <XCircle className="w-6 h-6 mx-auto mb-1 text-red-600" />
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Prevent Errors</p>
+            <p className="text-xs font-medium ink dark:text-gray-300">Prevent Errors</p>
           </div>
         </div>
 
@@ -88,9 +88,7 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-2 h-2 rounded-full ${
-                      test.passRate === 100
-                        ? 'bg-green-500'
+                    className={`w-2 h-2 rounded-full ${ test.passRate === 100 ?'bg-green-500'
                         : test.passRate >= 80
                           ? 'bg-yellow-500'
                           : 'bg-red-500'

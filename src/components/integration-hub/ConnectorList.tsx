@@ -58,7 +58,7 @@ export function ConnectorList({ organizationId }: ConnectorListProps) {
       case 'configuring':
         return <AlertCircle className="h-4 w-4 text-yellow-500" />
       default:
-        return <Clock className="h-4 w-4 text-gray-500" />
+        return <Clock className="h-4 w-4 ink-muted" />
     }
   }
 

@@ -91,8 +91,8 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-3xl font-bold text-primary">Hair Talkz</h2>
-              <p className="text-gray-600 mt-1">Premium Salon & Spa</p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="ink-muted mt-1">Premium Salon & Spa</p>
+              <p className="text-sm ink-muted mt-2">
                 123 Business Bay, Dubai, UAE
                 <br />
                 Tel: +971 4 123 4567
@@ -105,18 +105,18 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <Badge className={cn('mt-2', getStatusColor(invoice.header.status))}>
                 {invoice.header.status.toUpperCase()}
               </Badge>
-              <p className="text-sm text-gray-500 mt-2">{formatDate(invoice.header.created_at)}</p>
+              <p className="text-sm ink-muted mt-2">{formatDate(invoice.header.created_at)}</p>
             </div>
           </div>
 
           {/* Customer Info */}
           {invoice.header.customer && (
             <div className="border rounded-lg p-4 bg-gray-50">
-              <h4 className="font-semibold text-sm text-gray-600 mb-2">Bill To:</h4>
+              <h4 className="font-semibold text-sm ink-muted mb-2">Bill To:</h4>
               <p className="font-medium">{invoice.header.customer.name}</p>
-              <p className="text-sm text-gray-600">Customer Code: {invoice.header.customer.code}</p>
+              <p className="text-sm ink-muted">Customer Code: {invoice.header.customer.code}</p>
               {invoice.header.appointment_id && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm ink-muted">
                   Appointment: {invoice.header.appointment_id}
                 </p>
               )}
@@ -143,7 +143,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
                     <td className="py-3">
                       <div>
                         <p className="font-medium">{line.description}</p>
-                        <p className="text-xs text-gray-500">{line.smart_code}</p>
+                        <p className="text-xs ink-muted">{line.smart_code}</p>
                       </div>
                     </td>
                     <td className="text-center py-3">{line.qty !== undefined ? line.qty : '-'}</td>
@@ -172,12 +172,12 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
           {/* Totals */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Services Subtotal</span>
+              <span className="ink-muted">Services Subtotal</span>
               <span>{formatCurrency(invoice.totals.subtotal_services)}</span>
             </div>
             {invoice.totals.subtotal_items > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Products Subtotal</span>
+                <span className="ink-muted">Products Subtotal</span>
                 <span>{formatCurrency(invoice.totals.subtotal_items)}</span>
               </div>
             )}
@@ -188,11 +188,11 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Taxable Amount</span>
+              <span className="ink-muted">Taxable Amount</span>
               <span>{formatCurrency(invoice.totals.taxable_subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">
+              <span className="ink-muted">
                 VAT ({(invoice.totals.tax_rate * 100).toFixed(0)}%)
               </span>
               <span>{formatCurrency(invoice.totals.tax_total)}</span>
@@ -217,22 +217,22 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <div className="space-y-2 bg-green-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-green-800">Payment Information</h4>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Payment Method</span>
+                  <span className="ink-muted">Payment Method</span>
                   <span className="font-medium capitalize">{invoice.payment.method}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Amount Paid</span>
+                  <span className="ink-muted">Amount Paid</span>
                   <span className="font-medium">{formatCurrency(invoice.payment.amount)}</span>
                 </div>
                 {invoice.payment.reference && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Reference</span>
+                    <span className="ink-muted">Reference</span>
                     <span className="font-mono text-xs">{invoice.payment.reference}</span>
                   </div>
                 )}
                 {invoice.payment.card_last_four && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Card</span>
+                    <span className="ink-muted">Card</span>
                     <span className="font-mono">****{invoice.payment.card_last_four}</span>
                   </div>
                 )}
@@ -241,7 +241,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
           )}
 
           {/* Footer */}
-          <div className="text-center text-sm text-gray-500 pt-6">
+          <div className="text-center text-sm ink-muted pt-6">
             <p>Thank you for your business!</p>
             <p className="mt-2">
               Transaction ID: {invoice.header.txn_id}

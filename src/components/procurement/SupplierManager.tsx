@@ -273,7 +273,7 @@ export function SupplierManager() {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${i < stars ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+        className={`w-4 h-4 ${i < stars ?'text-yellow-400 fill-current' : 'text-gray-300'}`}
       />
     ))
   }
@@ -581,7 +581,7 @@ export function SupplierManager() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setViewingSupplier(supplier)}
-                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-center space-x-2"
+                  className="flex-1 px-4 py-2 text-sm font-medium ink bg-background border border-border rounded-md hover:bg-muted transition-colors flex items-center justify-center space-x-2"
                 >
                   <Eye className="w-4 h-4" />
                   <span>View</span>
@@ -649,7 +649,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Supplier Name *
                     </label>
                     <input
@@ -663,7 +663,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <label className="block text-sm font-medium ink mb-2">Category</label>
                     <select
                       value={formData.category}
                       onChange={e => setFormData({ ...formData, category: e.target.value })}
@@ -684,7 +684,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Contact Person *
                     </label>
                     <input
@@ -698,7 +698,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <label className="block text-sm font-medium ink mb-2">Email *</label>
                     <input
                       type="email"
                       required
@@ -710,7 +710,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium ink mb-2">Phone</label>
                     <input
                       type="tel"
                       value={formData.phone}
@@ -721,7 +721,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                    <label className="block text-sm font-medium ink mb-2">Website</label>
                     <input
                       type="url"
                       value={formData.website}
@@ -738,7 +738,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Business Terms</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Payment Terms
                     </label>
                     <select
@@ -756,7 +756,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Credit Limit
                     </label>
                     <input
@@ -772,7 +772,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                    <label className="block text-sm font-medium ink mb-2">Currency</label>
                     <select
                       value={formData.currency}
                       onChange={e => setFormData({ ...formData, currency: e.target.value })}
@@ -793,7 +793,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Address</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Address Line 1
                     </label>
                     <input
@@ -806,7 +806,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium ink mb-2">
                       Address Line 2
                     </label>
                     <input
@@ -820,7 +820,7 @@ export function SupplierManager() {
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                      <label className="block text-sm font-medium ink mb-2">City</label>
                       <input
                         type="text"
                         value={formData.city}
@@ -831,7 +831,7 @@ export function SupplierManager() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                      <label className="block text-sm font-medium ink mb-2">State</label>
                       <input
                         type="text"
                         value={formData.state}
@@ -842,7 +842,7 @@ export function SupplierManager() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium ink mb-2">
                         Postal Code
                       </label>
                       <input
@@ -855,7 +855,7 @@ export function SupplierManager() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium ink mb-2">
                         Country
                       </label>
                       <input
@@ -872,7 +872,7 @@ export function SupplierManager() {
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium ink mb-2">
                   Description/Notes
                 </label>
                 <textarea
@@ -893,14 +893,14 @@ export function SupplierManager() {
                     resetForm()
                   }}
                   disabled={isLoading}
-                  className="px-6 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted transition-colors disabled:opacity-50"
+                  className="px-6 py-2 ink bg-background border border-border rounded-lg hover:bg-muted transition-colors disabled:"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
+                  className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 transition-colors disabled: flex items-center space-x-2"
                 >
                   {isLoading && <RefreshCw className="w-4 h-4 animate-spin" />}
                   <span>{isLoading ? 'Creating...' : 'Create Supplier'}</span>

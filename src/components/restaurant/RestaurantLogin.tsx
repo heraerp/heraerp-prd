@@ -38,7 +38,7 @@ export function RestaurantLogin() {
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-200 to-red-200 rounded-full opacity-30 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-red-200 to-pink-200 rounded-full opacity-30 blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-red-200 to-pink-200 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative w-full max-w-md">
@@ -64,7 +64,7 @@ export function RestaurantLogin() {
 
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="email" className="text-gray-700 font-medium">
+                  <Label htmlFor="email" className="ink font-medium">
                     Email
                   </Label>
                   <Input
@@ -79,7 +79,7 @@ export function RestaurantLogin() {
                 </div>
 
                 <div>
-                  <Label htmlFor="password" className="text-gray-700 font-medium">
+                  <Label htmlFor="password" className="ink font-medium">
                     Password
                   </Label>
                   <Input
@@ -97,7 +97,7 @@ export function RestaurantLogin() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-foreground font-semibold rounded-xl shadow-lg shadow-orange-500/25 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full h-12 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-foreground font-semibold rounded-xl shadow-lg shadow-orange-500/25 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled: disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isLoading ? (
                   <>
@@ -114,7 +114,7 @@ export function RestaurantLogin() {
             <div className="mt-8 pt-6 border-t border-orange-100">
               <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200/50">
                 <h3 className="text-sm font-semibold text-gray-100 mb-3">Try Demo Account</h3>
-                <div className="space-y-2 text-sm text-gray-700">
+                <div className="space-y-2 text-sm ink">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Restaurant:</span>
                     <span className="font-medium">Mario's Italian Bistro</span>

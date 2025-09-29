@@ -37,7 +37,7 @@ export function CommissionSummary({ commission, stylistName }: CommissionSummary
 
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center gap-2 ink-muted">
               <DollarSign className="h-4 w-4" />
               <span className="text-sm">Service Total</span>
             </div>
@@ -45,7 +45,7 @@ export function CommissionSummary({ commission, stylistName }: CommissionSummary
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center gap-2 ink-muted">
               <TrendingUp className="h-4 w-4" />
               <span className="text-sm">Rate</span>
             </div>
@@ -53,7 +53,7 @@ export function CommissionSummary({ commission, stylistName }: CommissionSummary
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-gray-600">
+            <div className="flex items-center gap-2 ink-muted">
               <User className="h-4 w-4" />
               <span className="text-sm">Commission</span>
             </div>
@@ -65,7 +65,7 @@ export function CommissionSummary({ commission, stylistName }: CommissionSummary
 
         {stylistName && (
           <div className="pt-3 border-t border-purple-200">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm ink-muted">
               Stylist: <span className="font-medium text-gray-800">{stylistName}</span>
             </p>
           </div>

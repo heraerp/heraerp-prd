@@ -87,7 +87,7 @@ export function MessageContextMenu({
         <ContextMenuSeparator />
 
         <ContextMenuItem onClick={onStar}>
-          <Star className={`mr-2 h-4 w-4 ${isStarred ? 'fill-current text-yellow-500' : ''}`} />
+          <Star className={`mr-2 h-4 w-4 ${isStarred ?'fill-current text-yellow-500' : ''}`} />
           {isStarred ? 'Unstar' : 'Star'}
         </ContextMenuItem>
 

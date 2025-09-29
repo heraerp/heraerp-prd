@@ -336,9 +336,7 @@ export function DocumentManager({
               <CardContent className="p-6">
                 {/* Drag & Drop Area */}
                 <div
-                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                    dragActive
-                      ? 'border-blue-500 bg-blue-50'
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${ dragActive ?'border-blue-500 bg-blue-50'
                       : 'border-border hover:border-gray-400'
                   }`}
                   onDragEnter={handleDrag}

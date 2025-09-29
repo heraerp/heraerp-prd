@@ -186,7 +186,7 @@ export default function CreateOrganizationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,var(--ink-primary)_70%,transparent_100%)]" />
 
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
@@ -219,7 +219,7 @@ export default function CreateOrganizationPage() {
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
                     Create Organization
                   </h1>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                  <p className="text-sm ink dark:text-gray-300 font-medium">
                     Set up your new business
                   </p>
                 </div>
@@ -241,7 +241,7 @@ export default function CreateOrganizationPage() {
             <CardTitle className="text-3xl font-bold text-gray-100 dark:text-foreground text-center mb-3">
               Organization Details
             </CardTitle>
-            <CardDescription className="text-gray-700 dark:text-gray-300 text-center text-lg leading-relaxed max-w-lg mx-auto">
+            <CardDescription className="ink dark:text-gray-300 text-center text-lg leading-relaxed max-w-lg mx-auto">
               Create a new organization to manage your business. Each organization gets its own
               subdomain and completely isolated data.
             </CardDescription>
@@ -277,7 +277,7 @@ export default function CreateOrganizationPage() {
                   disabled={isLoading}
                   className="h-14 text-lg bg-background/70 dark:bg-muted/70 backdrop-blur-sm border-2 border-border/60 dark:border-border/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/60 dark:focus:border-blue-400/60 transition-all shadow-sm rounded-xl text-gray-100 dark:text-foreground placeholder-gray-500 dark:placeholder-gray-400"
                 />
-                <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                <p className="text-sm ink dark:text-gray-300 font-medium">
                   Your business or company name
                 </p>
               </div>
@@ -322,7 +322,7 @@ export default function CreateOrganizationPage() {
                     })}
                   </SelectContent>
                 </Select>
-                <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                <p className="text-sm ink dark:text-gray-300 font-medium">
                   Choose the type of business you're setting up
                 </p>
               </div>
@@ -409,7 +409,7 @@ export default function CreateOrganizationPage() {
             <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
               Custom Domain
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm ink dark:text-gray-300 leading-relaxed">
               Professional branded URL for your business
             </p>
           </div>
@@ -420,7 +420,7 @@ export default function CreateOrganizationPage() {
             <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
               Team Collaboration
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm ink dark:text-gray-300 leading-relaxed">
               Invite unlimited team members anytime
             </p>
           </div>
@@ -431,7 +431,7 @@ export default function CreateOrganizationPage() {
             <h3 className="font-bold text-lg mb-2 text-gray-100 dark:text-foreground">
               Instant Setup
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm ink dark:text-gray-300 leading-relaxed">
               Start using your enterprise tools immediately
             </p>
           </div>

@@ -68,11 +68,11 @@ export default function BottomSheetDemo() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 md:p-8">
       {/* Header */}
       <div className="max-w-6xl mx-auto mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+        <h1 className="text-4xl font-bold ink dark:text-white mb-2 flex items-center gap-2">
           <Smartphone className="h-8 w-8 text-blue-600" />
           HERA Bottom Sheet Demo
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="ink-muted dark:text-gray-300">
           Production-ready mobile UI component with gesture support
         </p>
       </div>
@@ -82,7 +82,7 @@ export default function BottomSheetDemo() {
         {/* Basic Example */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-2">Basic Example</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm dark:ink-muted mb-4">
             Simple bottom sheet with title and content
           </p>
           <HeraButtonDNA onClick={basicSheet.open} fullWidth>
@@ -96,7 +96,7 @@ export default function BottomSheetDemo() {
             <Share2 className="h-5 w-5" />
             Share Sheet
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm dark:ink-muted mb-4">
             iOS-style share action sheet
           </p>
           <HeraButtonDNA onClick={shareSheet.open} fullWidth variant="secondary">
@@ -110,7 +110,7 @@ export default function BottomSheetDemo() {
             <User className="h-5 w-5" />
             Form Input
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm dark:ink-muted mb-4">
             Bottom sheet with form inputs
           </p>
           <HeraButtonDNA onClick={formSheet.open} fullWidth variant="outline">
@@ -124,7 +124,7 @@ export default function BottomSheetDemo() {
             <Filter className="h-5 w-5" />
             Filters
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm dark:ink-muted mb-4">
             Advanced filtering options
           </p>
           <HeraButtonDNA onClick={filterSheet.open} fullWidth>
@@ -136,7 +136,7 @@ export default function BottomSheetDemo() {
         {/* Fullscreen Sheet */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-2">Fullscreen Mode</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Takes up entire viewport</p>
+          <p className="text-sm dark:ink-muted mb-4">Takes up entire viewport</p>
           <HeraButtonDNA onClick={fullscreenSheet.open} fullWidth variant="secondary">
             Open Fullscreen
           </HeraButtonDNA>
@@ -148,7 +148,7 @@ export default function BottomSheetDemo() {
             <Settings className="h-5 w-5" />
             Custom Snaps
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm dark:ink-muted mb-4">
             Multiple height snap points
           </p>
           <HeraButtonDNA onClick={customSnapSheet.open} fullWidth variant="outline">
@@ -196,7 +196,7 @@ export default function BottomSheetDemo() {
         description="This is a basic bottom sheet example"
       >
         <div className="space-y-4">
-          <p className="text-gray-700 dark:text-gray-300">
+          <p className="ink dark:text-gray-300">
             This is a simple bottom sheet with default settings. You can drag it up and down to see
             different snap points, or swipe down to dismiss.
           </p>
@@ -230,7 +230,7 @@ export default function BottomSheetDemo() {
             >
               <span className="text-2xl">{option.icon}</span>
               <span className="flex-1 font-medium">{option.label}</span>
-              <ChevronRight className="h-5 w-5 text-gray-400" />
+              <ChevronRight className="h-5 w-5 ink-muted" />
             </button>
           ))}
         </div>
@@ -259,7 +259,7 @@ export default function BottomSheetDemo() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
               Name
             </label>
             <input
@@ -270,7 +270,7 @@ export default function BottomSheetDemo() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
               Email
             </label>
             <input
@@ -281,7 +281,7 @@ export default function BottomSheetDemo() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
               Phone
             </label>
             <input
@@ -304,7 +304,7 @@ export default function BottomSheetDemo() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Filters</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Refine your search</p>
+              <p className="text-sm dark:ink-muted">Refine your search</p>
             </div>
             <button
               onClick={() => setFilters(filterOptions)}
@@ -334,7 +334,7 @@ export default function BottomSheetDemo() {
         <div className="space-y-6">
           {filters.map(filter => (
             <div key={filter.id}>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium ink dark:text-gray-300 mb-2">
                 {filter.label}
               </label>
               <select
@@ -373,7 +373,7 @@ export default function BottomSheetDemo() {
         }
       >
         <div className="space-y-4 py-4">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="dark:ink-muted">
             Select your preferred payment method for this purchase
           </p>
 
@@ -381,22 +381,20 @@ export default function BottomSheetDemo() {
             <button
               key={method.id}
               onClick={() => setSelectedPayment(method.id)}
-              className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
-                selectedPayment === method.id
-                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+              className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${ selectedPayment === method.id ?'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
               }`}
             >
               <span className="text-2xl">{method.icon}</span>
               <div className="flex-1 text-left">
                 <p className="font-medium">{method.label}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{method.sublabel}</p>
+                <p className="text-sm dark:ink-muted">{method.sublabel}</p>
               </div>
               {selectedPayment === method.id && <Check className="h-5 w-5 text-blue-600" />}
             </button>
           ))}
 
-          <button className="w-full p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
+          <button className="w-full p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl dark:ink-muted hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
             + Add New Payment Method
           </button>
         </div>
@@ -414,7 +412,7 @@ export default function BottomSheetDemo() {
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-xl">
             <h4 className="font-semibold mb-2">Snap Points Demo</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm dark:ink-muted">
               This sheet has 3 snap points: 200px, 50%, and 90% of screen height. Try dragging to
               different heights!
             </p>
@@ -422,24 +420,24 @@ export default function BottomSheetDemo() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <Calendar className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
+              <Calendar className="h-6 w-6 dark:ink-muted mb-2" />
               <p className="font-medium">Schedule</p>
-              <p className="text-sm text-gray-500">View calendar</p>
+              <p className="text-sm ink-muted">View calendar</p>
             </div>
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <MapPin className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
+              <MapPin className="h-6 w-6 dark:ink-muted mb-2" />
               <p className="font-medium">Location</p>
-              <p className="text-sm text-gray-500">Set location</p>
+              <p className="text-sm ink-muted">Set location</p>
             </div>
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <ImageIcon className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
+              <ImageIcon className="h-6 w-6 dark:ink-muted mb-2" />
               <p className="font-medium">Media</p>
-              <p className="text-sm text-gray-500">Add photos</p>
+              <p className="text-sm ink-muted">Add photos</p>
             </div>
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <CreditCard className="h-6 w-6 text-gray-600 dark:text-gray-400 mb-2" />
+              <CreditCard className="h-6 w-6 dark:ink-muted mb-2" />
               <p className="font-medium">Payment</p>
-              <p className="text-sm text-gray-500">Add card</p>
+              <p className="text-sm ink-muted">Add card</p>
             </div>
           </div>
 
@@ -449,7 +447,7 @@ export default function BottomSheetDemo() {
             {[1, 2, 3, 4, 5].map(i => (
               <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <p className="font-medium">Section {i}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm dark:ink-muted">
                   This is scrollable content within the bottom sheet. The sheet maintains its snap
                   points while allowing internal scrolling.
                 </p>

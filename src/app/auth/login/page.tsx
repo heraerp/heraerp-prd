@@ -13,19 +13,17 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Loader2,
-  LogIn,
   AlertCircle,
   Eye,
   EyeOff,
   Mail,
   Lock,
-  Sparkles,
-  Shield,
-  Building2,
   ChevronRight
 } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
+import Navbar from '@/app/components/Navbar'
+import Footer from '@/app/components/Footer'
 
 function LoginForm() {
   const router = useRouter()
@@ -92,61 +90,75 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 relative overflow-hidden">
-      {/* Background Pattern - Same as homepage */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob dark:bg-blue-600 dark:opacity-20" />
-        <div className="absolute top-40 right-20 w-72 sm:w-96 h-72 sm:h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000 dark:bg-purple-600 dark:opacity-20" />
-        <div className="absolute -bottom-20 left-40 w-72 sm:w-96 h-72 sm:h-96 bg-pink-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-4000 dark:bg-pink-600 dark:opacity-20" />
+    <div className="min-h-screen h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 w-full relative overflow-auto">
+      {/* Force full viewport background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
+      {/* Animated background gradients - match partners page style */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        {/* Large floating gradient orbs */}
+        <div className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-blue-500/15 to-cyan-400/10 rounded-full blur-3xl animate-float-glow" />
+        <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/15 to-pink-400/10 rounded-full blur-3xl animate-float-glow animation-delay-2000" />
+        <div className="absolute top-1/3 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-indigo-500/15 to-violet-400/10 rounded-full blur-3xl animate-pulse-glow animation-delay-4000" />
+        <div className="absolute top-1/3 -right-40 w-[600px] h-[600px] bg-gradient-to-br from-rose-500/15 to-amber-400/10 rounded-full blur-3xl animate-pulse-glow animation-delay-1000" />
+        <div className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-cyan-500/15 to-emerald-400/10 rounded-full blur-3xl animate-float-glow animation-delay-3000" />
+        <div className="absolute -bottom-40 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-violet-500/15 to-purple-400/10 rounded-full blur-3xl animate-float-glow animation-delay-5000" />
+
+        {/* Subtle animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/8 via-purple-500/8 to-pink-500/8 animate-gradient-shift" />
+      </div>
+
+      {/* Header */}
+      <div className="relative z-10">
+        <Navbar />
       </div>
 
       {/* Scrollable Content Container */}
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 flex flex-col">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="w-full max-w-md mx-auto px-4 py-8 sm:py-12">
-            {/* Logo and branding */}
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-background dark:bg-muted/50 backdrop-blur-xl rounded-3xl mb-6 shadow-xl border border-border dark:border-border transform hover:scale-105 transition-all duration-300">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Building2 className="w-12 h-12 text-white" />
-                </div>
+          <div className="w-full max-w-md mx-auto px-4 py-6 sm:py-8">
+
+            {/* Welcome Badge */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 mb-4">
+                <span className="text-indigo-400 text-sm font-medium">
+                  🚀 Launching October 1st
+                </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-gray-100 dark:to-slate-200 bg-clip-text text-transparent mb-3">
-                HERA Enterprise
-              </h1>
-              <p className="text-sm sm:text-base text-muted-foreground dark:text-muted-foreground font-light">
-                Universal Business Platform
-              </p>
             </div>
 
             {/* Sign In / Demo Tabs */}
             <div className="mb-8">
-              <div className="flex rounded-lg bg-slate-100 dark:bg-muted/50 p-1">
-                <button className="flex-1 py-2 px-4 rounded-md bg-background dark:bg-background shadow-sm text-sm font-medium text-foreground dark:text-foreground">
+              <div className="flex rounded-xl card-glass border border-border p-1">
+                <button className="flex-1 py-2.5 px-4 rounded-lg bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-sm font-medium text-white">
                   Sign In
                 </button>
                 <button
                   onClick={() =>
                     document.getElementById('demo-section')?.scrollIntoView({ behavior: 'smooth' })
                   }
-                  className="flex-1 py-2 px-4 rounded-md text-sm font-medium text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-colors"
+                  className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium ink-muted hover:text-white hover:bg-white/5 transition-all"
                 >
                   Try Demo
                 </button>
               </div>
             </div>
 
-            {/* Glassmorphic login card */}
-            <Card className="bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-xl border border-border dark:border-border mb-8">
-              <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className="text-xl font-semibold text-foreground dark:text-foreground">
-                  Welcome Back
-                </CardTitle>
-                <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
-                  Enter your credentials to continue
-                </CardDescription>
-              </CardHeader>
+            {/* Enhanced Glassmorphic login card */}
+            <div className="relative group mb-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl blur-2xl group-hover:from-indigo-500/20 group-hover:to-purple-500/20 transition-all" />
+              <Card className="relative card-glass backdrop-blur-xl border border-indigo-500/20 shadow-2xl">
+                <CardHeader className="text-center pb-4 pt-8">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <Lock className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                    Welcome Back
+                  </CardTitle>
+                  <CardDescription className="text-sm ink-muted mt-2">
+                    Enter your credentials to access your dashboard
+                  </CardDescription>
+                </CardHeader>
 
               <CardContent className="px-6 pb-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -163,7 +175,7 @@ function LoginForm() {
                   <div className="space-y-3">
                     <Label
                       htmlFor="email"
-                      className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                      className="text-sm font-medium ink"
                     >
                       Email Address
                     </Label>
@@ -187,13 +199,13 @@ function LoginForm() {
                     <div className="flex items-center justify-between">
                       <Label
                         htmlFor="password"
-                        className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                        className="text-sm font-medium ink"
                       >
                         Password
                       </Label>
                       <Link
                         href="/auth/forgot-password"
-                        className="text-sm font-medium text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="text-sm font-medium text-indigo-400 hover:text-purple-400 transition-colors"
                       >
                         Forgot?
                       </Link>
@@ -228,7 +240,7 @@ function LoginForm() {
                   <div className="pt-2">
                     <Button
                       type="submit"
-                      className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center rounded-lg"
+                      className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium text-sm shadow-lg hover:shadow-xl transition-all rounded-xl border border-indigo-500/20"
                       disabled={isLoading || !email || !password}
                     >
                       {isLoading ? (
@@ -246,11 +258,11 @@ function LoginForm() {
                   </div>
 
                   <div className="text-center">
-                    <span className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    <span className="text-sm ink-muted">
                       Don't have an account?{' '}
                       <Link
                         href="/auth/signup"
-                        className="font-semibold text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        className="font-semibold text-indigo-400 hover:text-purple-400 transition-colors"
                       >
                         Sign up
                       </Link>
@@ -259,86 +271,114 @@ function LoginForm() {
                 </form>
               </CardContent>
             </Card>
+            </div>
 
-            {/* Demo Section */}
+            {/* Enhanced Demo Section */}
             <div id="demo-section" className="mt-16 mb-8">
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-foreground dark:text-foreground mb-2">
-                  Try Demo Modules
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 mb-4">
+                  <span className="text-emerald-400 text-sm font-medium">
+                    🎮 Interactive Demos
+                  </span>
+                </div>
+                <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-3">
+                  Experience HERA
                 </h2>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-                  Experience HERA with pre-configured industry solutions
+                <p className="text-base ink-muted max-w-md mx-auto">
+                  Explore fully-functional industry solutions with sample data. No signup required.
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <DemoModuleSelector />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-cyan-500/5 rounded-2xl blur-xl" />
+                <div className="relative card-glass rounded-2xl p-6 border border-emerald-500/20">
+                  <DemoModuleSelector />
+                </div>
               </div>
             </div>
 
-            {/* Enterprise features */}
+            {/* Enhanced Enterprise features */}
             <div className="mt-12 mb-8">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-primary dark:text-blue-400">99.9%</div>
-                  <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
-                    Uptime SLA
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur-xl group-hover:from-blue-500/20 group-hover:to-cyan-500/20 transition-all" />
+                  <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">99.9%</div>
+                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
+                      Uptime SLA
+                    </div>
                   </div>
                 </div>
-                <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-primary dark:text-blue-400">SOC 2</div>
-                  <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
-                    Certified
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:from-purple-500/20 group-hover:to-pink-500/20 transition-all" />
+                  <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SOC 2</div>
+                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
+                      Certified
+                    </div>
                   </div>
                 </div>
-                <div className="bg-background/60 dark:bg-card/60 backdrop-blur-sm rounded-xl p-6 border border-border dark:border-border text-center">
-                  <div className="text-2xl font-bold text-primary dark:text-blue-400">24/7</div>
-                  <div className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
-                    Support
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-2xl blur-xl group-hover:from-emerald-500/20 group-hover:to-teal-500/20 transition-all" />
+                  <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">24/7</div>
+                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
+                      Support
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="mt-12 pb-8 text-center space-y-3">
-              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
-                By signing in, you agree to our{' '}
-                <Link
-                  href="/terms"
-                  className="text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-                >
-                  Terms
-                </Link>{' '}
-                and{' '}
-                <Link
-                  href="/privacy"
-                  className="text-primary hover:text-primary dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-500">
-                © 2024 HERA ERP • Enterprise Edition v1.2.0
-              </p>
-            </div>
           </div>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="relative z-10">
+        <Footer showGradient={false} />
       </div>
     </div>
   )
 }
 
 export default function CentralLoginPage() {
+  // Override body background for this page
+  useEffect(() => {
+    const originalBackground = document.body.style.background
+    const originalMargin = document.body.style.margin
+    const originalPadding = document.body.style.padding
+
+    document.body.style.background = 'linear-gradient(to bottom right, rgb(2 6 23), rgb(15 23 42), rgb(30 58 138 / 0.2))'
+    document.body.style.margin = '0'
+    document.body.style.padding = '0'
+
+    return () => {
+      document.body.style.background = originalBackground
+      document.body.style.margin = originalMargin
+      document.body.style.padding = originalPadding
+    }
+  }, [])
+
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-background dark:bg-muted/50 backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border dark:border-border">
-              <Loader2 className="w-10 h-10 animate-spin text-primary dark:text-blue-400" />
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 relative">
+          {/* Force full viewport background */}
+          <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950/20 -z-20" />
+          <div className="relative z-10">
+            <Navbar />
+          </div>
+          <div className="flex items-center justify-center min-h-[80vh]">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 card-glass backdrop-blur-xl rounded-2xl mb-4 shadow-xl border border-border">
+                <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+              </div>
+              <p className="ink-muted">Loading...</p>
             </div>
-            <p className="text-muted-foreground dark:text-muted-foreground">Loading...</p>
+          </div>
+          <div className="relative z-10">
+            <Footer showGradient={false} />
           </div>
         </div>
       }

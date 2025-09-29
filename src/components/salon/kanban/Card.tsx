@@ -83,7 +83,7 @@ export function Card({
         {/* Header with time and actions */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
-            <Clock className="w-3 h-3 text-gray-400" />
+            <Clock className="w-3 h-3 ink-muted" />
             <span className="font-medium">
               {startTime} - {endTime}
             </span>
@@ -132,7 +132,7 @@ export function Card({
 
         {/* Customer name */}
         <div className="flex items-center gap-2">
-          <User className="w-3 h-3 text-gray-400" />
+          <User className="w-3 h-3 ink-muted" />
           <span className="font-medium text-sm">{card.customer_name}</span>
           {card.flags?.vip && <Star className="w-3 h-3 text-amber-500 fill-amber-500" />}
           {card.flags?.new && (
@@ -143,19 +143,19 @@ export function Card({
         </div>
 
         {/* Service */}
-        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center gap-2 text-sm dark:ink-muted">
           <Scissors className="w-3 h-3" />
           <span>{card.service_name}</span>
         </div>
 
         {/* Stylist */}
         {card.stylist_name && (
-          <div className="text-xs text-gray-500 dark:text-gray-500">with {card.stylist_name}</div>
+          <div className="text-xs dark:ink-muted">with {card.stylist_name}</div>
         )}
 
         {/* Status indicator */}
         {card.status !== 'DRAFT' && (
-          <div className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+          <div className="text-xs dark:ink-muted mt-2">
             Status: {card.status.replace('_', ' ').toLowerCase()}
             {card.status === 'TO_PAY' && (
               <span className="ml-2 text-amber-600 dark:text-amber-400">💳 POS Ready</span>

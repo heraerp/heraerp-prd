@@ -82,10 +82,10 @@ export async function middleware(request: NextRequest) {
 
     // Check if it's a demo route
     const firstSegment = pathname.split('/')[1]
-    if (DEMO_ROUTES.includes(firstSegment)) {
+    if (firstSegment && DEMO_ROUTES.includes(firstSegment)) {
       // Demo pages are publicly accessible with seed data
       requestHeaders.set('x-hera-demo-mode', 'true')
-      requestHeaders.set('x-hera-demo-type', firstSegment)
+      requestHeaders.set('x-hera-demo-type', firstSegment || '')
       return NextResponse.next({ headers: requestHeaders })
     }
 
@@ -141,11 +141,11 @@ function getSubdomain(hostname: string): string | null {
   const host = hostname.split(':')[0]
   
   // Split by dots
-  const parts = host.split('.')
-  
+  const parts = host ? host.split('.') : []
+
   // Need at least subdomain.domain.tld
   if (parts.length >= 3) {
-    return parts[0]
+    return parts[0] || null
   }
   
   return null

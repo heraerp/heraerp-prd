@@ -275,8 +275,7 @@ export function UniversalWorkflowTracker({
                 {history.slice(0, 5).map((item, index) => (
                   <div
                     key={index}
-                    className={`flex items-start gap-3 text-sm p-2 rounded-lg ${
-                      item.isActive ? 'bg-muted' : ''
+                    className={`flex items-start gap-3 text-sm p-2 rounded-lg ${ item.isActive ?'bg-muted' : ''
                     }`}
                   >
                     <div

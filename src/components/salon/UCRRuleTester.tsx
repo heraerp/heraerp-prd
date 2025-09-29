@@ -358,8 +358,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
     return (
       <Card
         key={scenario.id}
-        className={`cursor-pointer transition-all hover:shadow-lg ${
-          selectedScenario === scenario.id ? 'ring-2 ring-purple-500' : ''
+        className={`cursor-pointer transition-all hover:shadow-lg ${ selectedScenario === scenario.id ?'ring-2 ring-purple-500' : ''
         }`}
         onClick={() => setSelectedScenario(scenario.id)}
       >
@@ -666,7 +665,7 @@ export function UCRRuleTester({ ruleId, rule, onClose }: UCRRuleTesterProps) {
                 <p className="text-2xl font-bold">{passRate.toFixed(0)}%</p>
               </div>
               <TrendingUp
-                className={`w-8 h-8 ${passRate >= 80 ? 'text-green-500' : 'text-red-500'}`}
+                className={`w-8 h-8 ${passRate >= 80 ?'text-green-500' : 'text-red-500'}`}
               />
             </div>
           </CardContent>

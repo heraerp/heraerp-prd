@@ -519,7 +519,7 @@ export function PurchaseOrderManager() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => viewPODetails(po)}
-                      className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
+                      className="px-3 py-1.5 text-sm font-medium ink bg-background border border-border rounded-md hover:bg-muted"
                     >
                       <Eye className="w-4 h-4 mr-1 inline" />
                       View
@@ -598,7 +598,7 @@ export function PurchaseOrderManager() {
                 <div>
                   <label
                     htmlFor="supplier_id"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Supplier *
                   </label>
@@ -622,7 +622,7 @@ export function PurchaseOrderManager() {
                 <div>
                   <label
                     htmlFor="expected_delivery"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Expected Delivery
                   </label>
@@ -640,7 +640,7 @@ export function PurchaseOrderManager() {
               {/* Line Items */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Line Items *</label>
+                  <label className="block text-sm font-medium ink">Line Items *</label>
                   <button
                     type="button"
                     onClick={addLineItem}
@@ -735,7 +735,7 @@ export function PurchaseOrderManager() {
 
               {/* Notes */}
               <div>
-                <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="notes" className="block text-sm font-medium ink mb-1">
                   Notes
                 </label>
                 <textarea
@@ -756,14 +756,14 @@ export function PurchaseOrderManager() {
                     setShowCreateModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
+                  className="px-4 py-2 ink bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || formData.lines.length === 0}
-                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled: disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -887,7 +887,7 @@ export function PurchaseOrderManager() {
               {viewingPO.notes && (
                 <div>
                   <h3 className="font-semibold text-gray-100 mb-3">Notes</h3>
-                  <p className="text-gray-700 text-sm">{viewingPO.notes}</p>
+                  <p className="ink text-sm">{viewingPO.notes}</p>
                 </div>
               )}
 
@@ -895,7 +895,7 @@ export function PurchaseOrderManager() {
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-border">
                 <button
                   onClick={() => setShowViewModal(false)}
-                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
+                  className="px-4 py-2 ink bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Close
                 </button>

@@ -246,9 +246,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-foreground">{code.smart_code}</p>
                       <Badge
-                        className={`ml-2 ${
-                          code.auto_posting_rate >= 85
-                            ? 'bg-emerald-100 text-emerald-800'
+                        className={`ml-2 ${ code.auto_posting_rate >= 85 ?'bg-emerald-100 text-emerald-800'
                             : code.auto_posting_rate >= 70
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-red-100 text-red-800'
@@ -269,7 +267,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </div>
               ))}
               {smartCodePerformance.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 ink-muted">
                   <BarChart3 className="w-12 h-12 mx-auto mb-2 text-slate-300" />
                   <p>No Smart Code data available for this period</p>
                 </div>
@@ -315,7 +313,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </div>
               ))}
               {pendingReview.length === 0 && (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 ink-muted">
                   <CheckCircle className="w-12 h-12 mx-auto mb-2 text-slate-300" />
                   <p>No transactions pending review</p>
                   <p className="text-sm">All transactions are being processed automatically!</p>
@@ -352,7 +350,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </div>
                 <p className="text-2xl font-bold text-emerald-900">{metrics.auto_posted_count}</p>
                 <p className="text-sm text-emerald-600 font-medium">Auto Posted</p>
-                <p className="text-xs text-slate-500 mt-1">High confidence (85%+)</p>
+                <p className="text-xs ink-muted mt-1">High confidence (85%+)</p>
               </div>
 
               {/* Pending Review */}
@@ -362,7 +360,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </div>
                 <p className="text-2xl font-bold text-amber-900">{metrics.pending_review_count}</p>
                 <p className="text-sm text-amber-600 font-medium">Pending Review</p>
-                <p className="text-xs text-slate-500 mt-1">Medium confidence (60-85%)</p>
+                <p className="text-xs ink-muted mt-1">Medium confidence (60-85%)</p>
               </div>
 
               {/* Manual Required */}
@@ -372,7 +370,7 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                 </div>
                 <p className="text-2xl font-bold text-red-900">{metrics.manual_required_count}</p>
                 <p className="text-sm text-red-600 font-medium">Manual Required</p>
-                <p className="text-xs text-slate-500 mt-1">Low confidence (&lt;60%)</p>
+                <p className="text-xs ink-muted mt-1">Low confidence (&lt;60%)</p>
               </div>
             </div>
 

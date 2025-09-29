@@ -82,7 +82,7 @@ export function TopHoldingsGrid({ holdings, currency, onHoldingClick }: TopHoldi
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-bold text-slate-500">#{index + 1}</span>
+                  <span className="text-xs font-bold ink-muted">#{index + 1}</span>
                   <h4 className="font-semibold text-foreground truncate">{holding.entity_name}</h4>
                 </div>
                 <div className="flex items-center gap-2">

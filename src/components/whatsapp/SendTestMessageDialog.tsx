@@ -263,7 +263,7 @@ export function SendTestMessageDialog({
                   {...form.register('phone_number')}
                   placeholder="+971501234567"
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   Include country code (e.g., +971 for UAE, +1 for US)
                 </p>
                 {form.formState.errors.phone_number && (
@@ -363,7 +363,7 @@ export function SendTestMessageDialog({
                       WhatsApp Message
                     </span>
                   </div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  <div className="text-sm ink dark:text-gray-300 whitespace-pre-wrap">
                     {previewText}
                   </div>
                 </div>

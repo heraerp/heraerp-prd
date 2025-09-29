@@ -214,7 +214,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             <div className="flex flex-wrap items-center gap-4">
               {/* Stylist Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium ink dark:text-gray-300">
                   Stylist:
                 </span>
                 <Select value={selectedStylist} onValueChange={setSelectedStylist}>
@@ -255,7 +255,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* Service Type Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium ink dark:text-gray-300">
                   Service:
                 </span>
                 <Select defaultValue="all">
@@ -294,7 +294,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* VIP Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium ink dark:text-gray-300">
                   Client Type:
                 </span>
                 <Select defaultValue="all">
@@ -337,7 +337,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                   {todayStats.appointments}
                 </p>
               </div>
-              <Calendar className="w-8 h-8 text-pink-600 opacity-50" />
+              <Calendar className="w-8 h-8 text-pink-600" />
             </div>
           </CardContent>
         </Card>
@@ -351,7 +351,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                   {todayStats.revenue}
                 </p>
               </div>
-              <Sparkles className="w-8 h-8 text-purple-600 opacity-50" />
+              <Sparkles className="w-8 h-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -367,7 +367,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                   {todayStats.newClients}
                 </p>
               </div>
-              <Users className="w-8 h-8 text-amber-600 opacity-50" />
+              <Users className="w-8 h-8 text-amber-600" />
             </div>
           </CardContent>
         </Card>
@@ -383,7 +383,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
                   {todayStats.vipClients}
                 </p>
               </div>
-              <Crown className="w-8 h-8 text-emerald-600 opacity-50" />
+              <Crown className="w-8 h-8 text-emerald-600" />
             </div>
           </CardContent>
         </Card>

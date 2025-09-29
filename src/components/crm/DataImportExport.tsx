@@ -478,7 +478,7 @@ export function DataImportExport({
               {/* Import Results */}
               {importResult && (
                 <Card
-                  className={`border ${importResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
+                  className={`border ${importResult.success ?'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">

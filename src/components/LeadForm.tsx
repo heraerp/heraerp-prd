@@ -66,7 +66,7 @@ function LeadFormContent({
       data-form-id={formId}
     >
       <div>
-        <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="mb-1 block text-sm font-medium ink">
           Your Name *
         </label>
         <input
@@ -75,16 +75,13 @@ function LeadFormContent({
           type="text"
           required
           placeholder="John Smith"
-          className="
-            w-full rounded-xl border-2 border-gray-200 px-4 py-3
-            transition-colors focus:border-blue-500 focus:outline-none
-          "
+          className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="mb-1 block text-sm font-medium ink">
           Work Email *
         </label>
         <input
@@ -94,16 +91,13 @@ function LeadFormContent({
           required
           placeholder="john@company.co.uk"
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-          className="
-            w-full rounded-xl border-2 border-gray-200 px-4 py-3
-            transition-colors focus:border-blue-500 focus:outline-none
-          "
+          className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <label htmlFor="company" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="company" className="mb-1 block text-sm font-medium ink">
           Company Name
         </label>
         <input
@@ -111,16 +105,13 @@ function LeadFormContent({
           name="company"
           type="text"
           placeholder="Acme Ltd (optional)"
-          className="
-            w-full rounded-xl border-2 border-gray-200 px-4 py-3
-            transition-colors focus:border-blue-500 focus:outline-none
-          "
+          className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none"
           disabled={isSubmitting}
         />
       </div>
 
       <div>
-        <label htmlFor="phone" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="phone" className="mb-1 block text-sm font-medium ink">
           Phone Number
         </label>
         <input
@@ -128,10 +119,7 @@ function LeadFormContent({
           name="phone"
           type="tel"
           placeholder="07123 456789 (optional)"
-          className="
-            w-full rounded-xl border-2 border-gray-200 px-4 py-3
-            transition-colors focus:border-blue-500 focus:outline-none
-          "
+          className="w-full rounded-xl border-2 border-gray-200 px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none"
           disabled={isSubmitting}
         />
       </div>
@@ -141,21 +129,16 @@ function LeadFormContent({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="
-          w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 
-          py-4 font-semibold text-white
-          transition-all hover:from-blue-700 hover:to-indigo-700
-          disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed
-        "
+        className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-4 font-semibold text-white transition-all hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed"
       >
         {isSubmitting ? 'Sending...' : 'Get Your Free Guide'}
       </button>
 
-      <p className="text-center text-xs text-gray-500">
+      <p className="text-center text-xs ink-muted">
         🔒 Your data is safe. No spam, ever.
         <br />
         By submitting, you agree to our{' '}
-        <a href="/privacy" className="underline hover:text-gray-700">
+        <a href="/privacy" className="underline hover:ink">
           Privacy Policy
         </a>
       </p>

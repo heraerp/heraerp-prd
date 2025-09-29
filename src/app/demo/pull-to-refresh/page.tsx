@@ -137,8 +137,8 @@ function DemoContent({ data, refreshCount, onProgrammaticRefresh }: DemoContentP
     <div className="min-h-full bg-white p-4 dark:bg-gray-950">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sales Dashboard</h1>
-        <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+        <h1 className="text-2xl font-bold ink dark:text-gray-100">Sales Dashboard</h1>
+        <div className="mt-2 flex items-center gap-4 text-sm ink-muted">
           <span>Last updated: {data.lastUpdated}</span>
           <Badge variant="secondary">
             Refreshed {refreshCount} time{refreshCount !== 1 ? 's' : ''}
@@ -191,7 +191,7 @@ function DemoContent({ data, refreshCount, onProgrammaticRefresh }: DemoContentP
       {/* Instructions */}
       <Card className="mb-6 bg-gray-50 p-6 dark:bg-gray-900/50">
         <h2 className="mb-4 text-lg font-semibold">Pull-to-Refresh Demo</h2>
-        <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="space-y-2 text-sm dark:ink-muted">
           <p>• Pull down from the top to refresh the dashboard data</p>
           <p>• Try different indicator styles using the tabs above</p>
           <p>• The custom indicator shows progress percentage</p>
@@ -207,7 +207,7 @@ function DemoContent({ data, refreshCount, onProgrammaticRefresh }: DemoContentP
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Order #{1000 + i}</h3>
-                <p className="text-sm text-gray-500">Customer {i + 1}</p>
+                <p className="text-sm ink-muted">Customer {i + 1}</p>
               </div>
               <Badge>${(Math.random() * 500 + 50).toFixed(2)}</Badge>
             </div>
@@ -231,7 +231,7 @@ function StatCard({ title, value, icon: Icon, trend, color }: StatCardProps) {
     <Card className="p-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">{title}</p>
+          <p className="text-sm ink-muted">{title}</p>
           <p className="mt-2 text-2xl font-bold">{value}</p>
           <p className={`mt-1 text-sm ${color}`}>{trend}</p>
         </div>

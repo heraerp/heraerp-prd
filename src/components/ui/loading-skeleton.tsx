@@ -22,8 +22,7 @@ export function LoadingSkeleton({
         {Array.from({ length: lines }).map((_, index) => (
           <div
             key={index}
-            className={`h-4 ${baseClasses} rounded ${className} ${
-              index === lines - 1 ? 'w-3/4' : 'w-full'
+            className={`h-4 ${baseClasses} rounded ${className} ${ index === lines - 1 ?'w-3/4' : 'w-full'
             }`}
           />
         ))}

@@ -99,7 +99,7 @@ export function ClosingChecklistPanel({
         <CardContent className="py-8">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-5 w-5 animate-spin text-violet-600 mr-2" />
-            <span className="text-gray-600 dark:text-gray-400">Loading checklist...</span>
+            <span className="dark:ink-muted">Loading checklist...</span>
           </div>
         </CardContent>
       </Card>
@@ -161,8 +161,8 @@ export function ClosingChecklistPanel({
         {/* Progress Summary */}
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Completion</span>
-            <span className="font-medium text-gray-900 dark:text-gray-100">
+            <span className="dark:ink-muted">Completion</span>
+            <span className="font-medium ink dark:text-gray-100">
               {completionStats.completed} of {completionStats.total}
             </span>
           </div>
@@ -189,8 +189,8 @@ export function ClosingChecklistPanel({
         <CardContent className="space-y-4">
           {checklist.length === 0 ? (
             <div className="text-center py-8">
-              <Info className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <Info className="h-8 w-8 ink-muted mx-auto mb-2" />
+              <p className="text-sm dark:ink-muted">
                 No checklist items configured
               </p>
             </div>
@@ -198,7 +198,7 @@ export function ClosingChecklistPanel({
             <div className="space-y-3">
               {groupedItems.map(([group, items]) => (
                 <div key={group} className="space-y-2">
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <div className="text-xs font-medium dark:ink-muted uppercase tracking-wider">
                     {group.charAt(0).toUpperCase() + group.slice(1)}
                   </div>
                   {items.map(item => (
@@ -246,17 +246,17 @@ export function ClosingChecklistPanel({
                           </label>
 
                           {item.description && (
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-xs dark:ink-muted">
                               {item.description}
                             </p>
                           )}
 
                           {item.completed && item.completed_at && (
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <div className="flex items-center gap-2 text-xs ink-muted">
                               <CheckCircle className="h-3 w-3" />
                               <span>Completed {formatDate(item.completed_at)}</span>
                               {item.completed_by && (
-                                <span className="text-gray-400">by {item.completed_by}</span>
+                                <span className="ink-muted">by {item.completed_by}</span>
                               )}
                             </div>
                           )}

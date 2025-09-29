@@ -29,11 +29,11 @@ export default function Footer({ showGradient = true }: FooterProps) {
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-cyan-400 text-white font-bold text-lg">
                   H
                 </span>
-                <span className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+                <span className="text-xl font-semibold tracking-tight ink dark:text-slate-50">
                   HERA ERP
                 </span>
               </Link>
-              <p className="max-w-md text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+              <p className="max-w-md text-sm leading-relaxed dark:ink-muted">
                 Enterprise ERP with modern patterns, fast implementation, and
                 AI-driven continuous improvement. Built for the future of business.
               </p>
@@ -105,26 +105,26 @@ export default function Footer({ showGradient = true }: FooterProps) {
 
             {/* product links */}
             <nav aria-label="Product" className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold ink dark:text-slate-50 uppercase tracking-wider">
                 Product
               </h3>
               <div className="flex flex-col space-y-3">
-                <Link href="/demo" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Book a Demo</Link>
-                <Link href="/pricing-request" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Request Pricing</Link>
-                <Link href="/partners" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Partners</Link>
-                <Link href="/blog" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Blog & Updates</Link>
+                <Link href="/demo" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Book a Demo</Link>
+                <Link href="/pricing-request" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Request Pricing</Link>
+                <Link href="/partners" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Partners</Link>
+                <Link href="/blog" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Blog & Updates</Link>
               </div>
             </nav>
 
             {/* company links */}
             <nav aria-label="Company" className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold ink dark:text-slate-50 uppercase tracking-wider">
                 Company
               </h3>
               <div className="flex flex-col space-y-3">
-                <Link href="/contact" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Contact Us</Link>
-                <Link href="/policy" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Privacy & Cookies</Link>
-                <Link href="/terms" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors py-0.5">Terms of Service</Link>
+                <Link href="/contact" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Contact Us</Link>
+                <Link href="/policy" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Privacy & Cookies</Link>
+                <Link href="/terms" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Terms of Service</Link>
                 <button
                   className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-0.5 text-left"
                   onClick={() => {
@@ -139,7 +139,7 @@ export default function Footer({ showGradient = true }: FooterProps) {
           </div>
 
           {/* bottom row */}
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-700 px-8 py-6 text-sm text-slate-600 dark:text-slate-400 md:flex-row md:px-12">
+          <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-700 px-8 py-6 text-sm dark:ink-muted md:flex-row md:px-12">
             <p>© {new Date().getFullYear()} HERA ERP Ltd. All rights reserved.</p>
             <p className="text-sm">Built on modern enterprise patterns (patent pending).</p>
           </div>
@@ -165,7 +165,7 @@ function SocialIcon({
       aria-label={label}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 backdrop-blur-md hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-300 dark:border-slate-600 ink dark:text-slate-300 bg-slate-100 dark:bg-slate-800 backdrop-blur-md hover:bg-slate-200 dark:hover:bg-slate-700 transition"
     >
       {children}
     </a>

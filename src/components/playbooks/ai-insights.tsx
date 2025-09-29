@@ -128,9 +128,9 @@ export function AIAnomalyCard({ anomaly }: { anomaly: AIAnomaly }) {
           <h4 className="font-medium text-sm">
             {anomaly.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
           </h4>
-          <p className="text-sm text-gray-700 mt-1">{anomaly.description}</p>
+          <p className="text-sm ink mt-1">{anomaly.description}</p>
           {anomaly.metrics && (
-            <div className="mt-2 text-xs text-gray-600">
+            <div className="mt-2 text-xs ink-muted">
               {Object.entries(anomaly.metrics).map(([key, value]) => (
                 <span key={key} className="mr-3">
                   {key}: <span className="font-medium">{JSON.stringify(value)}</span>
@@ -138,7 +138,7 @@ export function AIAnomalyCard({ anomaly }: { anomaly: AIAnomaly }) {
               ))}
             </div>
           )}
-          <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+          <div className="mt-2 flex items-center gap-4 text-xs ink-muted">
             <span>Detected: {new Date(anomaly.detected_at).toLocaleString()}</span>
             <AIConfidenceIndicator confidence={anomaly.confidence} size="small" showLabel={false} />
           </div>
@@ -249,7 +249,7 @@ export function RunProgressSummary({ runId }: { runId: string }) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Overall Progress</span>
-            <span className="text-sm text-gray-500">{summary.progressPercentage.toFixed(1)}%</span>
+            <span className="text-sm ink-muted">{summary.progressPercentage.toFixed(1)}%</span>
           </div>
           <Progress value={summary.progressPercentage} className="h-2" />
         </div>
@@ -269,7 +269,7 @@ export function RunProgressSummary({ runId }: { runId: string }) {
         {summary.estimatedCompletion && (
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Estimated Completion</span>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm ink-muted">
               {new Date(summary.estimatedCompletion).toLocaleString()}
             </span>
           </div>
@@ -368,7 +368,7 @@ export function ProactiveNudgeList() {
             </Badge>
           </AlertTitle>
           <AlertDescription>
-            <p className="text-sm text-gray-600 mt-1">{nudge.ai_reasoning}</p>
+            <p className="text-sm ink-muted mt-1">{nudge.ai_reasoning}</p>
             <div className="mt-3 flex items-center gap-3">
               <Button size="sm" variant="default">
                 {nudge.action}

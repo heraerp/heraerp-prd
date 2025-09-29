@@ -277,7 +277,7 @@ export function ServiceWhatsAppActions({
             <div className="space-y-2">
               <Label>Message Preview</Label>
               <div className="bg-muted dark:bg-muted p-4 rounded-lg">
-                <pre className="whitespace-pre-wrap text-xs !text-gray-700 dark:!text-gray-300 font-mono">
+                <pre className="whitespace-pre-wrap text-xs !ink dark:!text-gray-300 font-mono">
                   {getCampaignPreview()}
                 </pre>
               </div>

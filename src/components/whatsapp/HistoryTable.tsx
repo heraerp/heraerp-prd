@@ -133,7 +133,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
         )
       default:
         return (
-          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+          <Badge variant="outline" className="ink border-gray-300 bg-gray-50">
             Unknown
           </Badge>
         )
@@ -154,7 +154,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
         <CardContent className="py-12">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-6 w-6 animate-spin text-green-600 mr-3" />
-            <span className="text-gray-600 dark:text-gray-400">Loading message history...</span>
+            <span className="dark:ink-muted">Loading message history...</span>
           </div>
         </CardContent>
       </Card>
@@ -166,11 +166,11 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
       <Card>
         <CardContent className="py-12">
           <div className="text-center">
-            <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <MessageSquare className="h-12 w-12 mx-auto mb-4 ink-muted" />
+            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">
               No messages found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="dark:ink-muted">
               {filteredMessages.length === 0 && messages.length > 0
                 ? 'No messages match your current filters. Try adjusting your search criteria.'
                 : 'No WhatsApp messages have been sent yet.'}
@@ -187,7 +187,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
         {/* Results Summary */}
         <div className="p-4 border-b bg-gray-50 dark:bg-gray-800/50">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm dark:ink-muted">
               Showing {startIndex + 1}-{Math.min(endIndex, totalMessages)} of {totalMessages}{' '}
               messages
               {filteredMessages.length !== messages.length && (
@@ -235,12 +235,12 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                   <TableCell>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <User className="h-3 w-3 text-gray-400" />
+                        <User className="h-3 w-3 ink-muted" />
                         <span className="font-medium text-sm">
                           {message.entity_name || message.to_customer_code}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 text-xs ink-muted">
                         <Phone className="h-3 w-3" />
                         <span className="font-mono">{formatPhoneNumber(message.to_phone)}</span>
                       </div>
@@ -252,7 +252,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                     <div className="space-y-1">
                       <div className="font-mono text-sm">{message.template_name}</div>
                       {message.hera_template_id && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs ink-muted">
                           MSP ID: {message.hera_template_id}
                         </div>
                       )}
@@ -263,23 +263,23 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                   <TableCell>
                     <div className="max-w-xs">
                       {message.message_body ? (
-                        <div className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                        <div className="text-sm ink dark:text-gray-300 truncate">
                           {message.message_body.substring(0, 60)}
                           {message.message_body.length > 60 && '...'}
                         </div>
                       ) : (
-                        <div className="text-xs text-gray-500 italic">Template message</div>
+                        <div className="text-xs ink-muted italic">Template message</div>
                       )}
                     </div>
                   </TableCell>
 
                   {/* Sent At */}
                   <TableCell>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm dark:ink-muted">
                       {message.created_at ? (
                         <>
                           <div>{new Date(message.created_at).toLocaleDateString('en-AE')}</div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs ink-muted">
                             {new Date(message.created_at).toLocaleTimeString('en-AE', {
                               hour: '2-digit',
                               minute: '2-digit'
@@ -315,7 +315,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
         {(hasNextPage || hasPrevPage) && (
           <div className="p-4 border-t bg-gray-50 dark:bg-gray-800/50">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm dark:ink-muted">
                 Page {Math.floor(startIndex / (filters.limit || 50)) + 1} of{' '}
                 {Math.ceil(totalMessages / (filters.limit || 50))}
               </div>

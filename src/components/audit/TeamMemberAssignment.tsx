@@ -347,9 +347,7 @@ export function TeamMemberAssignment({
                 />
               )}
               <DialogContent
-                className="max-w-lg bg-background border border-border shadow-2xl z-[100]
-                           fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]
-                           rounded-lg p-6"
+                className="max-w-lg bg-background border border-border shadow-2xl z-[100] fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-lg p-6"
                 style={{
                   backgroundColor: 'white',
                   opacity: 1,

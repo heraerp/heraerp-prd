@@ -120,7 +120,7 @@ export function ValuationCard({
                   <TrendingDown className="w-4 h-4" />
                 ) : null}
                 <span>{trend.percentage}%</span>
-                <span className="text-xs font-normal opacity-70">vs {trend.period}</span>
+                <span className="text-xs font-normal">vs {trend.period}</span>
               </div>
             )}
           </div>

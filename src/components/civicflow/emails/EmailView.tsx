@@ -154,7 +154,7 @@ export function EmailView({
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onToggleFlag}>
-              <Flag className="h-4 w-4 text-gray-400" />
+              <Flag className="h-4 w-4 ink-muted" />
             </Button>
 
             <Button
@@ -163,19 +163,19 @@ export function EmailView({
               className="h-8 w-8 p-0"
               onClick={() => onMove('archive')}
             >
-              <Archive className="h-4 w-4 text-gray-400" />
+              <Archive className="h-4 w-4 ink-muted" />
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onDelete}>
-              <Trash2 className="h-4 w-4 text-gray-400" />
+              <Trash2 className="h-4 w-4 ink-muted" />
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <Print className="h-4 w-4 text-gray-400" />
+              <Print className="h-4 w-4 ink-muted" />
             </Button>
 
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4 text-gray-400" />
+              <MoreHorizontal className="h-4 w-4 ink-muted" />
             </Button>
           </div>
         </div>

@@ -102,7 +102,7 @@ export default async function BlogPost({ params }: PageProps) {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="mb-4 flex items-center gap-2 text-sm dark:ink-muted">
             <span>{post.meta.city}</span>
             <span>•</span>
             <span>{post.meta.pillar}</span>
@@ -115,15 +115,15 @@ export default async function BlogPost({ params }: PageProps) {
               })}
             </time>
           </div>
-          <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
+          <h1 className="mb-4 text-4xl font-bold ink dark:text-white sm:text-5xl">
             {post.meta.title}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">{post.meta.hero_subtitle}</p>
+          <p className="text-xl ink-muted dark:text-gray-300">{post.meta.hero_subtitle}</p>
           <div className="mt-8 flex flex-wrap gap-2">
             {post.meta.trust_signals.slice(0, 3).map((signal, idx) => (
               <span
                 key={idx}
-                className="rounded-full bg-white/80 dark:bg-gray-700/80 px-4 py-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="rounded-full bg-white/80 dark:bg-gray-700/80 px-4 py-1 text-sm font-medium ink dark:text-gray-300"
               >
                 ✓ {signal}
               </span>
@@ -142,49 +142,49 @@ export default async function BlogPost({ params }: PageProps) {
               <nav className="space-y-2 text-sm">
                 <a
                   href="#the-manual-reporting-crisis"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   The Manual Reporting Crisis
                 </a>
                 <a
                   href="#why-traditional-solutions-fall-short"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   Why Traditional Solutions Fall Short
                 </a>
                 <a
                   href="#how-modern-finance-automation-transforms-operations"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   How Modern Finance Automation Transforms Operations
                 </a>
                 <a
                   href="#real-results-bristol-business-case-study"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   Real Results: Bristol Business Case Study
                 </a>
                 <a
                   href="#implementation-your-30-day-roadmap"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   Implementation: Your 30-Day Roadmap
                 </a>
                 <a
                   href="#roi-calculator-for-bristol-businesses"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   ROI Calculator for Bristol Businesses
                 </a>
                 <a
                   href="#common-questions-from-bristol-business-owners"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   Common Questions from Bristol Business Owners
                 </a>
                 <a
                   href="#your-next-steps"
-                  className="block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  className="block dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   Your Next Steps
                 </a>

@@ -91,7 +91,7 @@ export function DeleteConfirmationDialog({
                     style={{ color: COLORS.champagne }}
                   >
                     <span className="font-medium">{service.name}</span>
-                    {service.code && <span className="text-xs opacity-60">({service.code})</span>}
+                    {service.code && <span className="text-xs">({service.code})</span>}
                   </div>
                 ))}
               </div>

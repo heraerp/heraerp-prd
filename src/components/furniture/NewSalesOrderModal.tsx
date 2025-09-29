@@ -1219,7 +1219,7 @@ export default function NewSalesOrderModal({
                 <Button
                   onClick={handleSubmitOrder}
                   disabled={!selectedCustomer || lineItems.length === 0 || isSubmitting}
-                  className="w-full bg-gradient-to-r from-[var(--color-accent-indigo)] to-[var(--color-accent-teal)] hover:from-[var(--color-accent-teal)] hover:to-[var(--color-accent-teal)] text-[var(--color-text-primary)] shadow-lg disabled:opacity-50"
+                  className="w-full bg-gradient-to-r from-[var(--color-accent-indigo)] to-[var(--color-accent-teal)] hover:from-[var(--color-accent-teal)] hover:to-[var(--color-accent-teal)] text-[var(--color-text-primary)] shadow-lg disabled:"
                 >
                   {isSubmitting ? 'Creating Order...' : 'Create Sales Order'}
                 </Button>

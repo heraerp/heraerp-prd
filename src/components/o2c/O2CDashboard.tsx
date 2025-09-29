@@ -314,7 +314,7 @@ export function O2CDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => fetchO2CData()} disabled={refreshing}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ?'animate-spin' : ''}`} />
             Refresh
           </Button>
           <Button size="sm">

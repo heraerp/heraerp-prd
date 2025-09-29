@@ -157,7 +157,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
         <CardContent className="space-y-4">
           {/* Subdomain Input */}
           <div className="space-y-2">
-            <Label htmlFor="subdomain" className="!text-gray-700 dark:!text-gray-300">
+            <Label htmlFor="subdomain" className="!ink dark:!text-gray-300">
               Subdomain *
             </Label>
             <div className="flex items-center gap-2">
@@ -184,7 +184,7 @@ export default function SubdomainSettingsForm({ slug, current, onSave }: Props) 
 
           {/* Custom Domains */}
           <div className="space-y-2">
-            <Label className="!text-gray-700 dark:!text-gray-300">Custom Domains (Optional)</Label>
+            <Label className="!ink dark:!text-gray-300">Custom Domains (Optional)</Label>
             <div className="flex gap-2">
               <Input
                 value={domainDraft}

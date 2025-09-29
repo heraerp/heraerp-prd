@@ -220,7 +220,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               {getEnabledChannelCount()} enabled
             </Badge>
           </CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm dark:ink-muted">
             Choose how you want to receive notifications
           </p>
         </CardHeader>
@@ -230,9 +230,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    watchedValues.emailEnabled
-                      ? 'bg-blue-100 dark:bg-blue-950/30 text-blue-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.emailEnabled ?'bg-blue-100 dark:bg-blue-950/30 text-blue-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -240,7 +238,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                 </div>
                 <div>
                   <Label className="font-medium">Email</Label>
-                  <p className="text-sm text-gray-500">Send notifications via email</p>
+                  <p className="text-sm ink-muted">Send notifications via email</p>
                 </div>
               </div>
               <Switch
@@ -253,9 +251,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    watchedValues.smsEnabled
-                      ? 'bg-green-100 dark:bg-green-950/30 text-green-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.smsEnabled ?'bg-green-100 dark:bg-green-950/30 text-green-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -263,7 +259,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                 </div>
                 <div>
                   <Label className="font-medium">SMS</Label>
-                  <p className="text-sm text-gray-500">Send text messages</p>
+                  <p className="text-sm ink-muted">Send text messages</p>
                 </div>
               </div>
               <Switch
@@ -276,9 +272,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    watchedValues.whatsappEnabled
-                      ? 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.whatsappEnabled ?'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -286,7 +280,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                 </div>
                 <div>
                   <Label className="font-medium">WhatsApp</Label>
-                  <p className="text-sm text-gray-500">Send WhatsApp messages</p>
+                  <p className="text-sm ink-muted">Send WhatsApp messages</p>
                 </div>
               </div>
               <Switch
@@ -299,9 +293,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    watchedValues.pushEnabled
-                      ? 'bg-purple-100 dark:bg-purple-950/30 text-purple-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.pushEnabled ?'bg-purple-100 dark:bg-purple-950/30 text-purple-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -309,7 +301,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                 </div>
                 <div>
                   <Label className="font-medium">Push Notifications</Label>
-                  <p className="text-sm text-gray-500">Browser/app notifications</p>
+                  <p className="text-sm ink-muted">Browser/app notifications</p>
                 </div>
               </div>
               <Switch
@@ -340,14 +332,14 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               {getEnabledEventCount()} enabled
             </Badge>
           </CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm dark:ink-muted">
             Choose which events trigger notifications
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           {Object.entries(eventsByCategory).map(([category, events]) => (
             <div key={category}>
-              <div className="font-medium text-gray-900 dark:text-gray-100 mb-3">{category}</div>
+              <div className="font-medium ink dark:text-gray-100 mb-3">{category}</div>
               <div className="grid gap-3">
                 {events.map(event => (
                   <div
@@ -355,10 +347,10 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
                     className="flex items-center justify-between p-3 border rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <event.icon className="h-4 w-4 text-gray-600" />
+                      <event.icon className="h-4 w-4 ink-muted" />
                       <div>
                         <Label className="font-medium text-sm">{event.label}</Label>
-                        <p className="text-xs text-gray-500">{event.description}</p>
+                        <p className="text-xs ink-muted">{event.description}</p>
                       </div>
                     </div>
                     <Switch
@@ -386,7 +378,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <Volume2 className="h-4 w-4" />
             Quiet Hours
           </CardTitle>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm dark:ink-muted">
             Suppress non-urgent notifications during specified hours
           </p>
         </CardHeader>
@@ -394,7 +386,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Enable Quiet Hours</Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm ink-muted">
                 Automatically suppress notifications during quiet hours
               </p>
             </div>

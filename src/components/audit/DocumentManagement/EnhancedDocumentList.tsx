@@ -444,7 +444,7 @@ export function EnhancedDocumentList({
           return (
             <Card
               key={document.id}
-              className={`border-0 shadow-lg ${overdue ? 'border-l-4 border-red-500' : ''}`}
+              className={`border-0 shadow-lg ${overdue ?'border-l-4 border-red-500' : ''}`}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
@@ -565,7 +565,7 @@ export function EnhancedDocumentList({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-3">
                           <div>
-                            <label className="text-sm font-medium text-gray-700">
+                            <label className="text-sm font-medium ink">
                               Document Code
                             </label>
                             <p className="text-sm text-gray-100 font-mono">
@@ -573,7 +573,7 @@ export function EnhancedDocumentList({
                             </p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-700">Category</label>
+                            <label className="text-sm font-medium ink">Category</label>
                             <p className="text-sm text-gray-100">
                               {document.category} -{' '}
                               {document.category === 'A'
@@ -584,7 +584,7 @@ export function EnhancedDocumentList({
                             </p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-700">Priority</label>
+                            <label className="text-sm font-medium ink">Priority</label>
                             <Badge
                               className={getPriorityStyling(document.priority)}
                               variant="outline"
@@ -595,14 +595,14 @@ export function EnhancedDocumentList({
                         </div>
                         <div className="space-y-3">
                           <div>
-                            <label className="text-sm font-medium text-gray-700">Due Date</label>
+                            <label className="text-sm font-medium ink">Due Date</label>
                             <p className="text-sm text-gray-100">
                               {new Date(document.due_date).toLocaleDateString()}
                             </p>
                           </div>
                           {document.received_date && (
                             <div>
-                              <label className="text-sm font-medium text-gray-700">
+                              <label className="text-sm font-medium ink">
                                 Received Date
                               </label>
                               <p className="text-sm text-gray-100">
@@ -611,7 +611,7 @@ export function EnhancedDocumentList({
                             </div>
                           )}
                           <div>
-                            <label className="text-sm font-medium text-gray-700">Version</label>
+                            <label className="text-sm font-medium ink">Version</label>
                             <p className="text-sm text-gray-100">v{document.version}</p>
                           </div>
                         </div>
@@ -619,7 +619,7 @@ export function EnhancedDocumentList({
 
                       {document.review_notes && (
                         <div className="mt-4">
-                          <label className="text-sm font-medium text-gray-700">Review Notes</label>
+                          <label className="text-sm font-medium ink">Review Notes</label>
                           <div className="mt-1 p-3 bg-muted rounded-lg">
                             <p className="text-sm text-gray-100">{document.review_notes}</p>
                           </div>

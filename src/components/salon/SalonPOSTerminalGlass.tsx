@@ -167,7 +167,7 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 const AnimatedBackground = () => (
   <div className="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
     <div className="absolute -top-40 -right-40 h-80 w-80 animate-blob rounded-full bg-purple-500 mix-blend-multiply blur-xl opacity-20"></div>
-    <div className="absolute -bottom-40 -left-40 h-80 w-80 animate-blob rounded-full bg-pink-500 mix-blend-multiply blur-xl opacity-20 animation-delay-2000"></div>
+    <div className="absolute -bottom-40 -left-40 h-80 w-80 animate-blob rounded-full bg-pink-500 mix-blend-multiply blur-xl animation-delay-2000"></div>
     <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 animate-blob rounded-full bg-indigo-500 mix-blend-multiply blur-xl opacity-20 animation-delay-4000"></div>
   </div>
 )
@@ -1547,12 +1547,12 @@ export function SalonPOSTerminalGlass({
                         Playbook Mode
                       </span>
                     ) : (
-                      <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 text-xs">
+                      <span className="px-2 py-1 rounded-full bg-gray-100 ink text-xs">
                         Legacy Mode
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-white/60">Book services and process payments</p>
+                  <p className="text-sm ink-faint">Book services and process payments</p>
                 </div>
 
                 {/* Branch Selector */}
@@ -1730,7 +1730,7 @@ export function SalonPOSTerminalGlass({
                           <div className="mb-2 flex items-start justify-between">
                             <div className="flex-1">
                               <h3 className="font-semibold text-white">{service.entity_name}</h3>
-                              <p className="mt-1 text-sm text-white/60 line-clamp-2">
+                              <p className="mt-1 text-sm ink-faint line-clamp-2">
                                 {service.metadata?.description}
                               </p>
                             </div>
@@ -1742,7 +1742,7 @@ export function SalonPOSTerminalGlass({
                               <p className="text-2xl font-bold text-white">
                                 {formatCurrency(service.metadata?.price || 0)}
                               </p>
-                              <div className="mt-1 flex items-center gap-3 text-xs text-white/60">
+                              <div className="mt-1 flex items-center gap-3 text-xs ink-faint">
                                 <span className="flex items-center">
                                   <Clock className="mr-1 h-3 w-3" />
                                   {formatDuration(service.metadata?.duration || 0)}
@@ -1813,20 +1813,20 @@ export function SalonPOSTerminalGlass({
                                       </Badge>
                                     )}
                                   </h3>
-                                  <p className="mt-1 text-sm text-white/60">
+                                  <p className="mt-1 text-sm ink-faint">
                                     {service.metadata?.description}
                                   </p>
                                   <div className="mt-2 flex items-center gap-4 text-sm">
-                                    <span className="flex items-center text-white/60">
+                                    <span className="flex items-center ink-faint">
                                       <Icon className="mr-1 h-4 w-4" />
                                       {service.metadata?.category}
                                     </span>
-                                    <span className="flex items-center text-white/60">
+                                    <span className="flex items-center ink-faint">
                                       <Clock className="mr-1 h-4 w-4" />
                                       {formatDuration(service.metadata?.duration || 0)}
                                     </span>
                                     {service.metadata?.rating && (
-                                      <span className="flex items-center text-white/60">
+                                      <span className="flex items-center ink-faint">
                                         <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
                                         {service.metadata.rating}
                                       </span>
@@ -1905,7 +1905,7 @@ export function SalonPOSTerminalGlass({
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsCartCollapsed(false)}
-                    className="p-1 h-6 w-6 text-white/60 hover:text-white"
+                    className="p-1 h-6 w-6 ink-faint hover:text-white"
                   >
                     <ChevronRight className="h-3 w-3" />
                   </Button>
@@ -1936,7 +1936,7 @@ export function SalonPOSTerminalGlass({
                   <div className="text-center">
                     <ShoppingBag className="mx-auto h-12 w-12 text-purple-400 mb-3" />
                     <p className="text-lg font-medium text-white">Your cart is empty</p>
-                    <p className="text-sm text-white/60 mt-1">Add services to get started</p>
+                    <p className="text-sm ink-faint mt-1">Add services to get started</p>
                     <p className="text-xs text-white/40 mt-2">Basket is ready and visible</p>
                   </div>
                 ) : (
@@ -1951,7 +1951,7 @@ export function SalonPOSTerminalGlass({
                             <div className="flex-1">
                               <h4 className="font-medium text-white">{item.service.entity_name}</h4>
                               {item.stylist && (
-                                <p className="text-sm text-white/60 mt-1">
+                                <p className="text-sm ink-faint mt-1">
                                   with {item.stylist.entity_name}
                                 </p>
                               )}
@@ -1969,7 +1969,7 @@ export function SalonPOSTerminalGlass({
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                                className="h-8 w-8 ink-faint hover:text-white hover:bg-white/10"
                                 onClick={() =>
                                   updateQuantity(item.service.id, -1, item.stylist?.id)
                                 }
@@ -1982,7 +1982,7 @@ export function SalonPOSTerminalGlass({
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                                className="h-8 w-8 ink-faint hover:text-white hover:bg-white/10"
                                 onClick={() => updateQuantity(item.service.id, 1, item.stylist?.id)}
                               >
                                 <Plus className="h-3 w-3" />
@@ -2010,7 +2010,7 @@ export function SalonPOSTerminalGlass({
           {cart.length > 0 && (
             <div className="border-t border-white/10 p-6">
               <div className="space-y-3">
-                <div className="flex justify-between text-sm text-white/60">
+                <div className="flex justify-between text-sm ink-faint">
                   <span>Subtotal</span>
                   <span>{formatCurrency(calculateSubtotal())}</span>
                 </div>
@@ -2022,7 +2022,7 @@ export function SalonPOSTerminalGlass({
                   </div>
                 )}
 
-                <div className="flex justify-between text-sm text-white/60">
+                <div className="flex justify-between text-sm ink-faint">
                   <span>Total Duration</span>
                   <span>{formatDuration(calculateTotalDuration())}</span>
                 </div>
@@ -2050,7 +2050,7 @@ export function SalonPOSTerminalGlass({
           {isCartCollapsed && cart.length > 0 && (
             <div className="px-2 py-3 border-t border-border/20">
               <div className="text-center">
-                <p className="text-xs text-white/60 mb-1">Total</p>
+                <p className="text-xs ink-faint mb-1">Total</p>
                 <p className="text-sm font-semibold text-white">
                   {formatCurrency(calculateTotal())}
                 </p>
@@ -2115,7 +2115,7 @@ export function SalonPOSTerminalGlass({
                             )}
                             <div>
                               <p className="font-medium">{stylist.entity_name}</p>
-                              <p className="text-xs text-white/60">
+                              <p className="text-xs ink-faint">
                                 {stylist.metadata?.specialties?.slice(0, 2).join(', ')}
                               </p>
                             </div>
@@ -2148,7 +2148,7 @@ export function SalonPOSTerminalGlass({
                         )}
                         <div className="flex-1">
                           <h4 className="font-medium text-white">{selectedStylist.entity_name}</h4>
-                          <p className="text-sm text-white/60 mt-1">
+                          <p className="text-sm ink-faint mt-1">
                             {selectedStylist.metadata?.role}
                           </p>
                           {selectedStylist.metadata?.experience_years && (
@@ -2283,7 +2283,7 @@ export function SalonPOSTerminalGlass({
 
                 {/* Chair Status Legend */}
                 <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                  <p className="text-xs font-medium text-white/60 mb-2">Station Status</p>
+                  <p className="text-xs font-medium ink-faint mb-2">Station Status</p>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-green-400" />
@@ -2426,11 +2426,11 @@ export function SalonPOSTerminalGlass({
             <div className="mt-6 space-y-3">
               <div className="rounded-lg bg-white/5 p-4">
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-white/60">
+                  <div className="flex justify-between ink-faint">
                     <span>Services</span>
                     <span>{cart.reduce((sum, item) => sum + item.quantity, 0)} items</span>
                   </div>
-                  <div className="flex justify-between text-white/60">
+                  <div className="flex justify-between ink-faint">
                     <span>Duration</span>
                     <span>{formatDuration(calculateTotalDuration())}</span>
                   </div>
@@ -2512,7 +2512,7 @@ export function SalonPOSTerminalGlass({
                 </div>
                 {cashReceived && Number(cashReceived) >= calculateTotal() && (
                   <div className="rounded-lg bg-white/5 p-4">
-                    <p className="text-sm text-white/60">Change</p>
+                    <p className="text-sm ink-faint">Change</p>
                     <p className="text-xl font-semibold text-green-400">
                       {formatCurrency(Number(cashReceived) - calculateTotal())}
                     </p>
@@ -2523,7 +2523,7 @@ export function SalonPOSTerminalGlass({
               <TabsContent value="card" className="mt-4">
                 <div className="rounded-lg bg-white/5 p-4 text-center">
                   <CreditCard className="mx-auto mb-3 h-12 w-12 text-white/40" />
-                  <p className="text-sm text-white/60">Ready for card payment</p>
+                  <p className="text-sm ink-faint">Ready for card payment</p>
                   <p className="mt-2 text-2xl font-semibold text-white">
                     {formatCurrency(calculateTotal())}
                   </p>
@@ -2533,7 +2533,7 @@ export function SalonPOSTerminalGlass({
               <TabsContent value="online" className="mt-4">
                 <div className="rounded-lg bg-white/5 p-4 text-center">
                   <Zap className="mx-auto mb-3 h-12 w-12 text-white/40" />
-                  <p className="text-sm text-white/60">Send payment link</p>
+                  <p className="text-sm ink-faint">Send payment link</p>
                   <p className="mt-2 text-2xl font-semibold text-white">
                     {formatCurrency(calculateTotal())}
                   </p>
@@ -2634,7 +2634,7 @@ export function SalonPOSTerminalGlass({
               {loadedAppointment && (
                 <div className="rounded-lg bg-white/5 p-4 space-y-2">
                   <p className="text-sm font-medium text-white">Appointment Details</p>
-                  <div className="space-y-1 text-sm text-white/60">
+                  <div className="space-y-1 text-sm ink-faint">
                     <p>Customer: {loadedAppointment.customer?.name || 'Unknown'}</p>
                     <p>
                       Date/Time:{' '}

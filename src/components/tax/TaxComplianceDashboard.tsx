@@ -170,7 +170,7 @@ export function TaxComplianceDashboard({ organizationId }: TaxComplianceDashboar
     return (
       <Badge
         variant={config.variant}
-        className={`flex items-center gap-1 ${config.className || ''}`}
+        className={`flex items-center gap-1 ${config.className ||''}`}
       >
         <Icon className="h-3 w-3" />
         {status}

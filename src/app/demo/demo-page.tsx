@@ -14,8 +14,8 @@ export default function DemoPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Experience HERA ERP</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold ink mb-4">Experience HERA ERP</h1>
+          <p className="text-xl ink-muted max-w-2xl mx-auto">
             Try our industry-specific ERP solutions with real demo data. No registration required.
           </p>
         </div>
@@ -23,17 +23,17 @@ export default function DemoPage() {
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-lg border shadow-sm p-6">
             <h3 className="text-xl font-semibold mb-2">Hair Talkz Salon</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="ink-muted mb-4">
               Beauty salon management with appointment booking and client management
             </p>
 
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <div className="flex items-center gap-4 text-sm ink-muted mb-4">
               <span>Duration: 30 minutes</span>
               <span>Role: Demo Receptionist</span>
             </div>
 
             <div className="space-y-2 mb-4">
-              <div className="text-sm font-medium text-gray-700">Features:</div>
+              <div className="text-sm font-medium ink">Features:</div>
               <div className="flex flex-wrap gap-2">
                 <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                   Appointment Management

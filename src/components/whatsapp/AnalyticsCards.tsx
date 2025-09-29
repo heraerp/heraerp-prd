@@ -111,9 +111,9 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{statusCounts.total.toLocaleString()}</div>
-          <p className="text-xs text-gray-600 mt-1">{getTimeRangeLabel()}</p>
+          <p className="text-xs ink-muted mt-1">{getTimeRangeLabel()}</p>
           <div className="mt-2">
-            <div className="text-xs text-gray-500">Daily average: {metrics.avgDaily} messages</div>
+            <div className="text-xs ink-muted">Daily average: {metrics.avgDaily} messages</div>
           </div>
         </CardContent>
       </Card>
@@ -129,7 +129,7 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{metrics.deliveryRate}%</div>
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs ink-muted mt-1">
             {statusCounts.delivered + statusCounts.read} of {statusCounts.total} delivered
           </p>
           <div className="mt-2">
@@ -149,7 +149,7 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{metrics.readRate}%</div>
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs ink-muted mt-1">
             {statusCounts.read} of {statusCounts.delivered} read
           </p>
           <div className="mt-2">
@@ -169,7 +169,7 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{metrics.failureRate}%</div>
-          <p className="text-xs text-gray-600 mt-1">{statusCounts.failed} failed messages</p>
+          <p className="text-xs ink-muted mt-1">{statusCounts.failed} failed messages</p>
           <div className="mt-2">
             {metrics.failureRate <= 5 ? (
               <Badge variant="outline" className="text-green-700 border-green-300 bg-green-50">
@@ -196,12 +196,12 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{templateStats.length}</div>
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs ink-muted mt-1">
             Templates used {getTimeRangeLabel().toLowerCase()}
           </p>
           {templateStats.length > 0 && (
             <div className="mt-2">
-              <div className="text-xs text-gray-500">
+              <div className="text-xs ink-muted">
                 Top: {templateStats[0]?.name} ({templateStats[0]?.total} msgs)
               </div>
             </div>
@@ -213,7 +213,7 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Status Breakdown</CardTitle>
-          <Clock className="h-4 w-4 text-gray-600" />
+          <Clock className="h-4 w-4 ink-muted" />
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -254,10 +254,10 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
               : 0}
             %
           </div>
-          <p className="text-xs text-gray-600 mt-1">Overall messaging effectiveness</p>
+          <p className="text-xs ink-muted mt-1">Overall messaging effectiveness</p>
           <div className="mt-2">
             {statusCounts.total === 0 ? (
-              <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+              <Badge variant="outline" className="ink border-gray-300 bg-gray-50">
                 No Data
               </Badge>
             ) : (
@@ -305,7 +305,7 @@ export function AnalyticsCards({ data, timeRange }: AnalyticsCardsProps) {
                 </div>
               </>
             ) : (
-              <div className="text-gray-500 text-center py-4">
+              <div className="ink-muted text-center py-4">
                 Start sending messages to see engagement metrics
               </div>
             )}

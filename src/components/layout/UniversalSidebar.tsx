@@ -118,8 +118,7 @@ export function UniversalSidebar({
   return (
     <TooltipProvider>
       <div
-        className={`
-          ${isExpanded ? 'w-64' : 'w-16'}
+        className={`${isExpanded ?'w-64' : 'w-16'}
           bg-gradient-to-b ${accentGradient}
           backdrop-blur-md
           h-screen 
@@ -143,7 +142,7 @@ export function UniversalSidebar({
         {/* Header */}
         <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
-            <div className={`flex items-center ${!isExpanded && 'justify-center'}`}>
+            <div className={`flex items-center ${!isExpanded &&'justify-center'}`}>
               <div
                 className={`w-8 h-8 bg-gradient-to-br ${brandGradient} rounded-lg flex items-center justify-center`}
               >
@@ -204,9 +203,7 @@ export function UniversalSidebar({
                 <Button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
-                  className={`
-                    w-full 
-                    ${!isExpanded ? 'justify-center p-0 h-10' : 'justify-start'}
+                  className={`w-full ${!isExpanded ?'justify-center p-0 h-10' : 'justify-start'}
                     ${
                       active
                         ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50'
@@ -223,7 +220,7 @@ export function UniversalSidebar({
                   size={isExpanded ? 'sm' : 'icon'}
                 >
                   <div
-                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-muted-foreground'}`}
+                    className={`${isExpanded ?'mr-3' : ''} ${active ? 'text-purple-600' : 'text-muted-foreground'}`}
                   >
                     {item.icon}
                   </div>
@@ -269,7 +266,7 @@ export function UniversalSidebar({
         <div
           className={`absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t ${accentGradient} to-transparent backdrop-blur-sm`}
         >
-          <div className={`${isExpanded ? 'space-y-2' : 'space-y-1'}`}>
+          <div className={`${isExpanded ?'space-y-2' : 'space-y-1'}`}>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <Button
@@ -323,7 +320,7 @@ export function UniversalSidebar({
                 <Button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
-                  className={`h-24 flex flex-col items-center justify-center gap-2 bg-background/80 hover:bg-background text-gray-700 hover:shadow-lg transition-all duration-200 border border-purple-200/50 ${item.color}`}
+                  className={`h-24 flex flex-col items-center justify-center gap-2 bg-background/80 hover:bg-background ink hover:shadow-lg transition-all duration-200 border border-purple-200/50 ${item.color}`}
                   variant="outline"
                 >
                   <div className="text-purple-600">{item.icon}</div>

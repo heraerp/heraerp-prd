@@ -54,7 +54,7 @@ export function BranchSelector({
     >
       <SelectTrigger className={cn('w-full', className)}>
         <div className="flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-gray-500" />
+          <Building2 className="h-4 w-4 ink-muted" />
           <SelectValue placeholder={loading ? 'Loading...' : placeholder} />
         </div>
       </SelectTrigger>
@@ -68,12 +68,12 @@ export function BranchSelector({
           <SelectItem key={branch.id} value={branch.id} className="hera-select-item">
             <div className="flex flex-col">
               <span className="font-medium">{branch.name}</span>
-              {branch.code && <span className="text-xs text-gray-500">{branch.code}</span>}
+              {branch.code && <span className="text-xs ink-muted">{branch.code}</span>}
             </div>
           </SelectItem>
         ))}
         {branches.length === 0 && !loading && (
-          <div className="px-2 py-4 text-center text-sm text-gray-500">No branches available</div>
+          <div className="px-2 py-4 text-center text-sm ink-muted">No branches available</div>
         )}
       </SelectContent>
     </Select>
@@ -132,7 +132,7 @@ export function MultiBranchSelector({
           <button
             type="button"
             onClick={onDeselectAll}
-            className="text-xs text-gray-600 hover:text-gray-800"
+            className="text-xs ink-muted hover:text-gray-800"
             disabled={loading}
           >
             Clear
@@ -155,13 +155,13 @@ export function MultiBranchSelector({
             />
             <div className="flex-1">
               <div className="text-sm font-medium">{branch.name}</div>
-              {branch.code && <div className="text-xs text-gray-500">{branch.code}</div>}
+              {branch.code && <div className="text-xs ink-muted">{branch.code}</div>}
             </div>
           </label>
         ))}
       </div>
 
-      <div className="text-xs text-gray-500">
+      <div className="text-xs ink-muted">
         {selectedBranches.length} of {branches.length} selected
       </div>
     </div>

@@ -237,7 +237,7 @@ export function UniversalAppointmentCalendar({
           <button
             onClick={() => onSlotClick?.('', '')}
             style={{ backgroundColor: primaryColor }}
-            className="px-4 py-2 text-foreground rounded-lg hover:opacity-90 flex items-center space-x-2"
+            className="px-4 py-2 text-foreground rounded-lg hover: flex items-center space-x-2"
           >
             <Plus className="w-4 h-4" />
             <span>New {config.appointmentLabels.singular}</span>

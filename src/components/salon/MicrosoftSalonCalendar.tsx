@@ -396,7 +396,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                 </Button>
                 <Button
                   variant="outline"
-                  className="text-sm font-medium min-w-[120px] text-gray-700 dark:text-gray-200"
+                  className="text-sm font-medium min-w-[120px] ink dark:text-gray-200"
                 >
                   Today
                 </Button>
@@ -468,7 +468,7 @@ export function MicrosoftSalonCalendar({ className, onNewBooking }: MicrosoftSal
                     key={slot.time}
                     className="h-16 border-b border-gray-100 dark:border-gray-800 px-2 py-1"
                   >
-                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="text-xs font-semibold ink dark:text-gray-300">
                       {slot.displayTime}
                     </span>
                   </div>

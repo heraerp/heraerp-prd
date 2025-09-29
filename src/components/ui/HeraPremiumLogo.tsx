@@ -26,7 +26,7 @@ export function HeraPremiumLogo({
   const maskId = `heraPremiumMask-${Math.random().toString(36).substr(2, 9)}`
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
@@ -112,13 +112,13 @@ export function HeraPremiumLogo({
 
         {/* Subtle pattern for depth */}
         <pattern id={patternId} x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="0.5" fill="#8b5cf6" opacity="0.1" />
+          <circle cx="2" cy="2" r="0.5" fill="currentColor" opacity="0.1" />
         </pattern>
 
         {/* Mask for icon cutout */}
         <mask id={maskId}>
-          <rect x="0" y="0" width={width} height={height} fill="white" />
-          <rect x="10" y="10" width={iconSize} height={iconSize} fill="black" />
+          <rect x="0" y="0" width={width} height={height} fill="currentColor" />
+          <rect x="10" y="10" width={iconSize} height={iconSize} fill="currentColor" />
         </mask>
       </defs>
 
@@ -129,7 +129,7 @@ export function HeraPremiumLogo({
         width={width}
         height={height}
         rx={height * 0.2}
-        fill="white"
+        fill="currentColor"
         fillOpacity="0.98"
         filter="url(#premiumShadow)"
       />
@@ -180,14 +180,14 @@ export function HeraPremiumLogo({
             M ${iconSize * 0.25} ${iconSize * 0.5}
             L ${iconSize * 0.75} ${iconSize * 0.5}
           `}
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
         {/* Decorative dot */}
-        <circle cx={iconSize * 0.85} cy={iconSize * 0.15} r="2" fill="white" opacity="0.8" />
+        <circle cx={iconSize * 0.85} cy={iconSize * 0.15} r="2" fill="currentColor" opacity="0.8" />
       </g>
 
       {/* Main text with premium typography */}
@@ -227,7 +227,7 @@ export function HeraPremiumLogo({
           fontFamily="'Inter', -apple-system, sans-serif"
           fontSize={fontSize * 0.3}
           fontWeight="400"
-          fill="#64748b"
+          fill="currentColor"
           letterSpacing="0.05em"
         >
           ENTERPRISE PLATFORM

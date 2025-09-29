@@ -297,7 +297,7 @@ export function SendMessageDialog({
         )
       default:
         return (
-          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+          <Badge variant="outline" className="ink border-gray-300 bg-gray-50">
             <User className="h-3 w-3 mr-1" />
             Unknown
           </Badge>
@@ -379,7 +379,7 @@ export function SendMessageDialog({
                   {...form.register('phone_number')}
                   placeholder="+971501234567"
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   Include country code (e.g., +971 for UAE, +1 for US)
                 </p>
                 {form.formState.errors.phone_number && (
@@ -506,7 +506,7 @@ export function SendMessageDialog({
                       WhatsApp Message Preview
                     </span>
                   </div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  <div className="text-sm ink dark:text-gray-300 whitespace-pre-wrap">
                     {previewText}
                   </div>
                 </div>

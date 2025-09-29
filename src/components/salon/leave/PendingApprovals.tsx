@@ -118,9 +118,7 @@ export function PendingApprovals({ organizationId }: PendingApprovalsProps) {
 
                     <div className="flex items-center gap-2">
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-md border ${getLeaveTypeStyle(
-                          request.leaveType
-                        )}`}
+                        className={`px-2 py-1 text-xs font-medium rounded-md border ${getLeaveTypeStyle( request.leaveType )}`}
                       >
                         {request.leaveType.charAt(0).toUpperCase() + request.leaveType.slice(1)}{' '}
                         Leave

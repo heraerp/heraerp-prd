@@ -72,7 +72,7 @@ export function DeleteProductDialog({
               >
                 Delete Product
               </AlertDialogTitle>
-              <p className="text-sm opacity-60 mt-1" style={{ color: COLORS.lightText }}>
+              <p className="text-sm mt-1" style={{ color: COLORS.lightText }}>
                 This action cannot be undone
               </p>
             </div>
@@ -101,7 +101,7 @@ export function DeleteProductDialog({
                     {product.entity_name}
                   </p>
                   {product.entity_code && (
-                    <p className="text-sm opacity-60" style={{ color: COLORS.lightText }}>
+                    <p className="text-sm" style={{ color: COLORS.lightText }}>
                       {product.entity_code}
                     </p>
                   )}
@@ -110,7 +110,7 @@ export function DeleteProductDialog({
 
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs" style={{ color: COLORS.lightText }}>
                     Stock
                   </p>
                   <p className="font-semibold mt-1" style={{ color: COLORS.champagne }}>
@@ -118,7 +118,7 @@ export function DeleteProductDialog({
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs" style={{ color: COLORS.lightText }}>
                     Price
                   </p>
                   <p className="font-semibold mt-1" style={{ color: COLORS.gold }}>
@@ -126,7 +126,7 @@ export function DeleteProductDialog({
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs opacity-60" style={{ color: COLORS.lightText }}>
+                  <p className="text-xs" style={{ color: COLORS.lightText }}>
                     Value
                   </p>
                   <p className="font-semibold mt-1" style={{ color: COLORS.champagne }}>
@@ -147,7 +147,7 @@ export function DeleteProductDialog({
                 <Trash2 className="w-5 h-5 text-red-400 mt-0.5" />
                 <div>
                   <p className="font-medium text-red-400 mb-2">Warning: Permanent Deletion</p>
-                  <ul className="text-sm space-y-1 opacity-80" style={{ color: COLORS.lightText }}>
+                  <ul className="text-sm space-y-1" style={{ color: COLORS.lightText }}>
                     <li>• Product information will be permanently removed</li>
                     <li>• Stock history and transaction records will remain for audit</li>
                     <li>• This action cannot be undone</li>
@@ -173,7 +173,7 @@ export function DeleteProductDialog({
                 border: '1px solid ' + COLORS.bronze + '33'
               }}
             >
-              <p className="text-sm opacity-70" style={{ color: COLORS.lightText }}>
+              <p className="text-sm" style={{ color: COLORS.lightText }}>
                 <strong>Alternative:</strong> Consider archiving this product instead to preserve
                 historical data while removing it from active use.
               </p>

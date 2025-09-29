@@ -96,7 +96,7 @@ export function AlertsStrip({ organizationId }: AlertsStripProps) {
               <AlertDescription className="flex-1">
                 <Link
                   href={alert.link}
-                  className="font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500 rounded text-gray-700 dark:text-gray-300"
+                  className="font-medium hover:underline focus:outline-none focus:ring-2 focus:ring-purple-500 rounded ink dark:text-gray-300"
                 >
                   {alert.message}
                 </Link>

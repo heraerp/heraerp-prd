@@ -68,7 +68,7 @@ export function RuleMappingsTable({ mappings, onChange, errors = {} }: RuleMappi
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Account Mappings</h3>
+        <h3 className="text-sm font-medium ink dark:text-gray-300">Account Mappings</h3>
         <Button
           type="button"
           size="sm"
@@ -83,8 +83,8 @@ export function RuleMappingsTable({ mappings, onChange, errors = {} }: RuleMappi
 
       {mappings.length === 0 ? (
         <div className="text-center py-8 border rounded-lg bg-gray-50 dark:bg-gray-800/30">
-          <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <AlertCircle className="h-8 w-8 ink-muted mx-auto mb-2" />
+          <p className="text-sm dark:ink-muted">
             No mappings defined. Add at least one mapping.
           </p>
         </div>
@@ -230,7 +230,7 @@ export function RuleMappingsTable({ mappings, onChange, errors = {} }: RuleMappi
         </div>
       )}
 
-      <div className="text-xs text-gray-600 dark:text-gray-400">
+      <div className="text-xs dark:ink-muted">
         <p>• Account: GL account code (e.g., "4100" for sales revenue)</p>
         <p>• Amount Source: Which component of the transaction to use</p>
         <p>• Multiplier: Factor to apply (e.g., -1 for reversals, 0.05 for 5%)</p>

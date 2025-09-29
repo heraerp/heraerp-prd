@@ -54,7 +54,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto text-center">
             {/* Optimized Headline - Mobile Responsive */}
             <div className="mb-8 md:mb-12">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-thin text-gray-900 mb-6 md:mb-8 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-thin ink mb-6 md:mb-8 leading-tight">
                 Enterprise-grade ERP.
                 <br />
                 <span className="font-light text-primary">Small-business price.</span>
@@ -135,7 +135,7 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto">
             {/* Breathing Space */}
             <div className="text-center mb-20">
-              <h2 className="text-5xl font-thin text-gray-900 mb-8">The difference is clear.</h2>
+              <h2 className="text-5xl font-thin ink mb-8">The difference is clear.</h2>
             </div>
 
             {/* Clean Comparison Table with Enhanced Glassmorphism */}
@@ -193,7 +193,7 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-thin text-gray-900 mb-4">Try HERA Apps Now</h2>
+            <h2 className="text-4xl font-thin ink mb-4">Try HERA Apps Now</h2>
             <p className="text-xl font-light text-muted-foreground max-w-3xl mx-auto">
               Experience enterprise-grade functionality with industry-specific apps. No signup
               required - start planning your business immediately.
@@ -208,7 +208,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">✂️</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Budgeting</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Salon Budgeting</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Complete budgeting for beauty salons with service-based revenue planning, staff
                 productivity tracking, and seasonal analysis.
@@ -226,7 +226,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Target className="w-8 h-8 text-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Universal Budgeting</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Universal Budgeting</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Enterprise budgeting for any industry. Multi-dimensional planning, variance
                 analysis, and rolling forecasts built-in.
@@ -244,7 +244,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <DollarSign className="w-8 h-8 text-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Financial Management</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Financial Management</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Complete financial suite with GL, AR, AP, budgeting, and real-time reporting.
                 IFRS-compliant from day one.
@@ -262,7 +262,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">🧮</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Digital Accountant</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Digital Accountant</h3>
               <p className="text-muted-foreground font-light mb-4">
                 AI-powered accounting with natural language. Post journals, create invoices,
                 reconcile accounts through chat.
@@ -280,7 +280,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">🤖</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Auto-Journal Engine</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Auto-Journal Engine</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Intelligent journal entry automation with AI. 85%+ automation rate, 92% time
                 savings, zero manual intervention.
@@ -298,7 +298,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <span className="text-2xl">💅</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Salon Manager</h3>
+              <h3 className="text-xl font-semibold ink mb-2">Salon Manager</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Complete salon operations with AI. Book appointments, manage inventory, track
                 revenue, calculate commissions through natural language.
@@ -316,7 +316,7 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Wand2 className="w-8 h-8 text-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">MCP Conversion Tools</h3>
+              <h3 className="text-xl font-semibold ink mb-2">MCP Conversion Tools</h3>
               <p className="text-muted-foreground font-light mb-4">
                 Advanced development tools. SQL generation, code transformation, batch operations,
                 and automated deployment.
@@ -343,7 +343,7 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             {/* Breathing Space */}
             <div className="mb-16">
-              <blockquote className="text-4xl font-thin text-gray-900 leading-relaxed">
+              <blockquote className="text-4xl font-thin ink leading-relaxed">
                 "Every business deserves enterprise-grade tools
                 <br />
                 without enterprise complexity or cost.
@@ -357,7 +357,7 @@ export default function HomePage() {
                 <span className="text-muted-foreground font-light text-lg">HT</span>
               </div>
               <div className="text-left">
-                <p className="font-light text-gray-900 text-lg">HERA Team</p>
+                <p className="font-light ink text-lg">HERA Team</p>
                 <p className="text-muted-foreground font-light">Launching September 2025</p>
               </div>
             </div>

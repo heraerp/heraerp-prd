@@ -235,9 +235,7 @@ export function DocumentUpload({
       <CardContent className="space-y-6">
         {/* Upload Area */}
         <div
-          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-            dragOver
-              ? 'border-blue-500 bg-blue-50'
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${ dragOver ?'border-blue-500 bg-blue-50'
               : uploading
                 ? 'border-border bg-muted'
                 : 'border-border hover:border-gray-400'

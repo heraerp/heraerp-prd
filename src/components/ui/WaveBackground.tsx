@@ -31,7 +31,7 @@ export default function WaveBackground({
       className={`pointer-events-none ${positionClass} ${className}`}
       style={{ height }}
     >
-      <svg
+      <svg fill="none" stroke="currentColor"
         viewBox="0 0 1440 600"
         preserveAspectRatio="none"
         className={`h-full w-full ${blurClass}`}
@@ -68,28 +68,28 @@ export default function WaveBackground({
         {/* Base layer - largest wave */}
         <path
           d="M0,200 C240,120 360,280 600,220 C840,160 960,260 1200,200 C1320,168 1380,140 1440,120 L1440,600 L0,600 Z"
-          fill="url(#waveGrad1)"
+          fill="currentColor"
           opacity="0.9"
         />
 
         {/* Middle layer - offset wave for depth */}
         <path
           d="M0,260 C200,200 420,340 720,280 C960,230 1120,310 1440,260 L1440,600 L0,600 Z"
-          fill="url(#waveGrad2)"
+          fill="currentColor"
           opacity="0.85"
         />
 
         {/* Top layer - subtle highlight wave */}
         <path
           d="M0,160 C160,120 320,120 520,170 C760,230 1040,110 1440,180 L1440,600 L0,600 Z"
-          fill="url(#waveGrad3)"
+          fill="currentColor"
           opacity="0.35"
         />
 
         {/* Optional accent wave for more variation */}
         <path
           d="M0,320 C300,280 500,360 800,320 C1100,280 1300,340 1440,320 L1440,600 L0,600 Z"
-          fill="var(--wave-1)"
+          fill="currentColor"
           opacity="0.15"
         />
       </svg>

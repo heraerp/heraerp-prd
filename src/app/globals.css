@@ -37,6 +37,10 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
+  .section {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
   /* Force all semantic classes to use dark colors on public pages */
   html.dark .ink {
     color: rgb(248 250 252) !important; /* slate-50 */
@@ -295,6 +299,254 @@
   background: #f1f5f9;
   border-radius: 6px;
   margin: 4px 0;
+}
+
+/* ========================================================================== */
+/* Solutions Page Enterprise Components */
+/* ========================================================================== */
+
+@layer components {
+  /* Muted enterprise gradient button */
+  .btn-gradient{
+    @apply inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-medium transition;
+    @apply ring-1 focus-visible:ring-2 ring-offset-2;
+    color: var(--accent-contrast);
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border-color: color-mix(in oklab, var(--accent-contrast) 14%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.35);
+  }
+  .btn-gradient:hover{
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--accent-1) 92%, white 8%),
+      color-mix(in oklab, var(--accent-2) 92%, white 8%)
+    );
+  }
+  .btn-gradient:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-ring),
+                0 0 0 6px color-mix(in oklab, var(--surface-veil) 70%, transparent);
+  }
+
+  /* Gradient border shell & inner */
+  .g-shell { position: relative; border-radius: 1.25rem; padding: 1px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); }
+  .g-inner { border-radius: calc(1.25rem - 1px); }
+
+  /* Hover lift + glow (subtle) with reduced-motion safety */
+  .h-card { transform: translateY(0) scale(1);
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease; }
+  .h-card:hover { transform: translateY(-2px) scale(1.015); }
+  .h-card:hover .g-shell { filter: drop-shadow(0 10px 24px rgba(0,0,0,.45)); }
+  @media (prefers-reduced-motion: reduce){
+    .h-card{ transition: none; }
+    .h-card:hover{ transform: none; }
+  }
+
+  /* Animated gradient border (optional delight) */
+  @keyframes shift { 0%{ background-position: 0% 50%; } 100%{ background-position: 100% 50%; } }
+  .g-animated:hover { background-size: 200% 200%; animation: shift 2.4s ease infinite alternate; }
+
+  /* CTA pop reveal on hover & focus */
+  .pop { opacity: 0; transform: translateY(6px);
+    transition: opacity .18s ease, transform .18s ease; }
+  .card:focus-within .pop, .card:hover .pop { opacity: 1; transform: translateY(0); }
+
+  .btn-quiet {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--surface-veil)];
+    @apply bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 hover:text-white border border-slate-700;
+  }
+
+  /* Gradient shell for cards */
+  .g-shell {
+    position: relative;
+    border-radius: 1.25rem;
+    padding: 1px;
+    background: linear-gradient(135deg, rgb(59 130 246 / 0.5), rgb(147 51 234 / 0.5));
+    transition: all 0.3s ease;
+  }
+
+  .g-inner {
+    border-radius: calc(1.25rem - 1px);
+    background: rgb(15 23 42 / 0.9);
+  }
+
+  /* Hover card animation */
+  .h-card {
+    transform: translateY(0) scale(1);
+    transition: transform .25s ease, filter .25s ease;
+  }
+
+  .h-card:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+
+  .h-card:hover .g-shell {
+    filter: drop-shadow(0 20px 40px rgba(59, 130, 246, 0.3));
+    background: linear-gradient(135deg, rgb(59 130 246 / 0.7), rgb(147 51 234 / 0.7));
+  }
+
+  /* Animated gradient border */
+  @keyframes shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  .g-animated:hover {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+    background-size: 200% 200%;
+    animation: shift 3s ease infinite;
+  }
+
+  /* Pop animation for CTAs */
+  .pop {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+
+  .h-card:hover .pop,
+  .h-card:focus-within .pop {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Floating animation for wave backgrounds */
+  @keyframes float {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -30px) scale(1.05);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.95);
+    }
+  }
+
+  .animate-float {
+    animation: float 20s ease-in-out infinite;
+  }
+
+  /* Glowing float animation */
+  @keyframes float-glow {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+      filter: blur(3rem) brightness(1);
+    }
+    25% {
+      transform: translate(30px, -30px) scale(1.1);
+      filter: blur(3rem) brightness(1.2);
+    }
+    50% {
+      transform: translate(-20px, 20px) scale(0.95);
+      filter: blur(3rem) brightness(0.9);
+    }
+    75% {
+      transform: translate(-30px, -10px) scale(1.05);
+      filter: blur(3rem) brightness(1.1);
+    }
+  }
+
+  .animate-float-glow {
+    animation: float-glow 20s ease-in-out infinite;
+  }
+
+  /* Pulse with glow animation */
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  /* Gradient shift animation */
+  @keyframes gradient-shift {
+    0%, 100% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.5);
+    }
+  }
+
+  .animate-gradient-shift {
+    animation: gradient-shift 30s ease-in-out infinite;
+  }
+
+  /* Shimmer effect */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(200%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 15s linear infinite;
+  }
+
+  /* Wave flow animation */
+  @keyframes wave-flow {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-20px);
+    }
+  }
+
+  .animate-wave-flow {
+    animation: wave-flow 20s ease-in-out infinite;
+  }
+
+  /* Animation delay utilities */
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .h-card, .pop {
+      transition: none;
+    }
+    .h-card:hover {
+      transform: none;
+    }
+    .g-animated:hover {
+      animation: none;
+    }
+    .animate-float {
+      animation: none;
+    }
+  }
+
+  /* Small badge utilities for partners */
+  .pill {
+    @apply inline-flex items-center rounded-xl px-2.5 py-1 text-xs font-medium;
+    border: 1px solid var(--border-strong);
+    background: color-mix(in oklab, var(--surface-veil) 90%, transparent);
+    color: var(--ink-muted);
+  }
+
+  .tag {
+    @apply inline-flex items-center rounded-lg px-2 py-0.5 text-[12px];
+    background: color-mix(in oklab, var(--surface-veil) 85%, transparent);
+    color: var(--ink);
+  }
 }
 
 .appointment-scrollbar::-webkit-scrollbar-thumb {
@@ -3233,4 +3485,130 @@ html {
 /* Motion/accessibility */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* Public Page Dark Mode CSS Cascade */
+/* Low-specificity cascade for public pages to ensure readable text in dark mode */
+.public-page {
+  /* CSS custom properties for public page text colors */
+  --ink-primary: rgb(241 245 249);      /* slate-100 for dark mode */
+  --ink-secondary: rgb(203 213 225);    /* slate-300 for dark mode */
+  --ink-tertiary: rgb(148 163 184);     /* slate-400 for dark mode */
+}
+
+/* Semantic utility classes for public pages */
+.public-page .ink {
+  color: var(--ink-primary);
+}
+
+.public-page .ink-muted {
+  color: var(--ink-secondary);
+}
+
+.public-page .ink-faint {
+  color: var(--ink-tertiary);
+}
+
+.public-page .card-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Use :where() for zero specificity increase, allowing utility classes to override */
+.public-page :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--ink-primary);
+}
+
+.public-page :where(p, span, div, section, article, aside, nav, header, footer, main) {
+  color: var(--ink-secondary);
+}
+
+.public-page :where(a) {
+  color: var(--ink-secondary);
+}
+
+.public-page :where(a:hover) {
+  color: var(--ink-primary);
+}
+
+/* Small text, labels, and secondary content */
+.public-page :where(small, label, time, figcaption) {
+  color: var(--ink-tertiary);
+}
+
+/* Form elements */
+.public-page :where(input, textarea, select) {
+  color: var(--ink-primary);
+  background-color: rgb(30 41 59 / 0.5);  /* slate-800 with opacity */
+  border-color: rgb(71 85 105);           /* slate-600 */
+}
+
+.public-page :where(input::placeholder, textarea::placeholder) {
+  color: var(--ink-tertiary);
+}
+
+/* Buttons - ensure readable text */
+.public-page :where(button) {
+  color: inherit;
+}
+
+/* Tables */
+.public-page :where(th) {
+  color: var(--ink-primary);
+}
+
+.public-page :where(td) {
+  color: var(--ink-secondary);
+}
+
+/* Code and pre elements */
+.public-page :where(code, pre) {
+  color: var(--ink-primary);
+}
+
+/* Kill opacity-based softening on public pages */
+.public-page :where(.text-muted-foreground) {
+  opacity: 1;
+  color: var(--ink-tertiary);
+}
+
+/* SVG icons inherit current color */
+.public-page :where(svg) {
+  fill: currentColor;
+  color: inherit;
+}
+
+.public-page :where(svg path, svg circle, svg rect, svg polygon, svg polyline, svg line, svg ellipse) {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* Tailwind Typography (prose) customization for public pages in dark mode */
+.public-page .prose {
+  --tw-prose-body: var(--ink-primary);
+  --tw-prose-headings: var(--ink-primary);
+  --tw-prose-lead: var(--ink-secondary);
+  --tw-prose-links: var(--ink-primary);
+  --tw-prose-bold: var(--ink-primary);
+  --tw-prose-counters: var(--ink-secondary);
+  --tw-prose-bullets: var(--ink-secondary);
+  --tw-prose-hr: color-mix(in oklab, var(--ink-primary) 25%, transparent);
+  --tw-prose-quotes: var(--ink-primary);
+  --tw-prose-quote-borders: color-mix(in oklab, var(--ink-primary) 25%, transparent);
+  --tw-prose-captions: var(--ink-secondary);
+  --tw-prose-code: var(--ink-primary);
+  --tw-prose-pre-code: var(--ink-primary);
+  --tw-prose-pre-bg: color-mix(in oklab, black 80%, transparent);
+  --tw-prose-th-borders: color-mix(in oklab, var(--ink-primary) 25%, transparent);
+  --tw-prose-td-borders: color-mix(in oklab, var(--ink-primary) 15%, transparent);
+}
+
+/* Avatar component styles for about page */
+.avatar {
+  @apply rounded-full overflow-hidden border-2 border-white/20 dark:border-gray-600/30 shadow-lg;
+}
+
+.avatar-initial {
+  @apply w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg;
 }

@@ -74,7 +74,7 @@ export function PerformanceVisualization({
             {formatCurrency(payload[0].value)}
           </p>
           {payload[1] && (
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm ink-muted mt-1">
               Benchmark: {formatCurrency(payload[1].value)}
             </p>
           )}
@@ -210,25 +210,25 @@ export function PerformanceVisualization({
       {/* Stats Row */}
       <div className="grid grid-cols-4 gap-4 mt-6">
         <div>
-          <p className="text-xs text-slate-500 mb-1">High</p>
+          <p className="text-xs ink-muted mb-1">High</p>
           <p className="text-sm font-semibold text-slate-300">
             {formatCurrency(Math.max(...data.map(d => d.value)))}
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500 mb-1">Low</p>
+          <p className="text-xs ink-muted mb-1">Low</p>
           <p className="text-sm font-semibold text-slate-300">
             {formatCurrency(Math.min(...data.map(d => d.value)))}
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500 mb-1">Average</p>
+          <p className="text-xs ink-muted mb-1">Average</p>
           <p className="text-sm font-semibold text-slate-300">
             {formatCurrency(data.reduce((sum, d) => sum + d.value, 0) / data.length)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-slate-500 mb-1">Volatility</p>
+          <p className="text-xs ink-muted mb-1">Volatility</p>
           <p className="text-sm font-semibold text-slate-300">
             {(Math.random() * 10 + 5).toFixed(1)}%
           </p>

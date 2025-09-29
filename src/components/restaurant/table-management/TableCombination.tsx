@@ -282,9 +282,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                         <div
                           key={table.id}
                           onClick={() => toggleTableSelection(table.id)}
-                          className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                            selectedTables.includes(table.id)
-                              ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-200'
+                          className={`p-3 rounded-lg border cursor-pointer transition-all ${ selectedTables.includes(table.id) ?'bg-blue-50 border-blue-500 ring-2 ring-blue-200'
                               : 'border-border hover:border-border'
                           }`}
                         >
@@ -417,9 +415,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
                     {combo.tables.map(table => (
                       <Badge
                         key={table.id}
-                        className={`${
-                          table.id === combo.master_table_id
-                            ? 'bg-blue-100 text-blue-800'
+                        className={`${ table.id === combo.master_table_id ?'bg-blue-100 text-blue-800'
                             : 'bg-muted text-gray-200'
                         }`}
                       >
@@ -469,9 +465,7 @@ export function TableCombination({ tables, onTablesUpdate }: TableCombinationPro
               {combinableTables.map(table => (
                 <div
                   key={table.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                    selectedTables.includes(table.id)
-                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                  className={`p-3 border rounded-lg cursor-pointer transition-all ${ selectedTables.includes(table.id) ?'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
                       : 'border-border hover:border-border'
                   }`}
                   onClick={() => toggleTableSelection(table.id)}

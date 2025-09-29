@@ -37,7 +37,7 @@ export function HERAFooter({
           >
             {/* HERA Logo */}
             <div className="w-5 h-5 relative">
-              <svg
+              <svg stroke="currentColor"
                 width="20"
                 height="20"
                 viewBox="0 0 200 60"
@@ -56,7 +56,7 @@ export function HERAFooter({
                 {/* Simplified H for small size */}
                 <path
                   d="M15 12 L15 48 M15 30 L35 30 M35 12 L35 48"
-                  stroke="url(#heraGradientFooter)"
+                  stroke="currentColor"
                   strokeWidth="4"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -126,7 +126,7 @@ export function MinimalHERAFooter({ className }: { className?: string }) {
         className="group inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-muted-foreground transition-colors duration-200"
       >
         <div className="w-4 h-4">
-          <svg
+          <svg stroke="currentColor"
             width="16"
             height="16"
             viewBox="0 0 200 60"
@@ -143,7 +143,7 @@ export function MinimalHERAFooter({ className }: { className?: string }) {
             </defs>
             <path
               d="M15 12 L15 48 M15 30 L35 30 M35 12 L35 48"
-              stroke="url(#heraGradientMinimal)"
+              stroke="currentColor"
               strokeWidth="4"
               strokeLinecap="round"
               strokeLinejoin="round"

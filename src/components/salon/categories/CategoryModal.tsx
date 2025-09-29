@@ -212,7 +212,7 @@ export function CategoryModal({ open, onClose, category, onSave }: CategoryModal
                     <h3 className="font-medium" style={{ color: COLORS.champagne }}>
                       {watchedName || 'Category Name'}
                     </h3>
-                    <p className="text-sm opacity-60">
+                    <p className="text-sm">
                       {category ? `${category.service_count} services` : 'New category'}
                     </p>
                   </div>

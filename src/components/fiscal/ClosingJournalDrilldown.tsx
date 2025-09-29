@@ -148,7 +148,7 @@ export function ClosingJournalDrilldown({
         <CardContent className="py-12">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-6 w-6 animate-spin text-violet-600 mr-3" />
-            <span className="text-gray-600 dark:text-gray-400">Loading journal entries...</span>
+            <span className="dark:ink-muted">Loading journal entries...</span>
           </div>
         </CardContent>
       </Card>
@@ -264,7 +264,7 @@ export function ClosingJournalDrilldown({
           {/* Filters */}
           <div className="flex items-center gap-3 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ink-muted" />
               <Input
                 placeholder="Search by JE number or description..."
                 value={searchTerm}
@@ -293,7 +293,7 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <div className="text-sm font-medium dark:ink-muted">
                       Total JEs
                     </div>
                     <div className="text-2xl font-bold text-violet-700 dark:text-violet-300">
@@ -309,7 +309,7 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <div className="text-sm font-medium dark:ink-muted">
                       Total Debits
                     </div>
                     <div className="text-2xl font-bold text-green-700 dark:text-green-300">
@@ -325,7 +325,7 @@ export function ClosingJournalDrilldown({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <div className="text-sm font-medium dark:ink-muted">
                       Total Credits
                     </div>
                     <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">
@@ -342,7 +342,7 @@ export function ClosingJournalDrilldown({
           {filteredJournals.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600 dark:text-gray-400">No journal entries found</p>
+              <p className="dark:ink-muted">No journal entries found</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -363,18 +363,18 @@ export function ClosingJournalDrilldown({
                   <div className="flex items-start justify-between">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <span className="font-mono text-sm font-medium ink dark:text-gray-100">
                           {journal.transaction_code}
                         </span>
                         <Badge variant="outline" className="text-xs">
                           {getStepName(journal.smart_code)}
                         </Badge>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm ink-muted">
                           <Calendar className="inline h-3 w-3 mr-1" />
                           {formatDate(journal.transaction_date)}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm dark:ink-muted">
                         {journal.description}
                       </p>
                       <div className="flex items-center gap-4 text-sm">
@@ -384,7 +384,7 @@ export function ClosingJournalDrilldown({
                         <span className="text-blue-700 dark:text-blue-300">
                           CR: {formatCurrency(journal.total_credit)}
                         </span>
-                        <span className="text-gray-500">{journal.line_count} lines</span>
+                        <span className="ink-muted">{journal.line_count} lines</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -440,17 +440,17 @@ export function ClosingJournalDrilldown({
             {/* Journal Header Info */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Date</div>
+                <div className="text-sm font-medium dark:ink-muted">Date</div>
                 <div className="font-medium">
                   {selectedJournal && formatDate(selectedJournal.transaction_date)}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Status</div>
+                <div className="text-sm font-medium dark:ink-muted">Status</div>
                 <Badge variant="outline">{selectedJournal?.status}</Badge>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <div className="text-sm font-medium dark:ink-muted">
                   Total Debit
                 </div>
                 <div className="font-medium text-green-700 dark:text-green-300">
@@ -458,7 +458,7 @@ export function ClosingJournalDrilldown({
                 </div>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                <div className="text-sm font-medium dark:ink-muted">
                   Total Credit
                 </div>
                 <div className="font-medium text-blue-700 dark:text-blue-300">
@@ -478,22 +478,22 @@ export function ClosingJournalDrilldown({
                 <table className="w-full">
                   <thead className="border-b">
                     <tr>
-                      <th className="text-left py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-left py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Line
                       </th>
-                      <th className="text-left py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-left py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Account
                       </th>
-                      <th className="text-left py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-left py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Description
                       </th>
-                      <th className="text-right py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-right py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Debit
                       </th>
-                      <th className="text-right py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-right py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Credit
                       </th>
-                      <th className="text-left py-2 px-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <th className="text-left py-2 px-3 text-sm font-medium ink dark:text-gray-300">
                         Cost Center
                       </th>
                     </tr>
@@ -508,12 +508,12 @@ export function ClosingJournalDrilldown({
                         <td className="py-2 px-3">
                           <div className="text-sm">
                             <div className="font-mono">{line.account_code}</div>
-                            <div className="text-gray-600 dark:text-gray-400">
+                            <div className="dark:ink-muted">
                               {line.account_name}
                             </div>
                           </div>
                         </td>
-                        <td className="py-2 px-3 text-sm text-gray-600 dark:text-gray-400">
+                        <td className="py-2 px-3 text-sm dark:ink-muted">
                           {line.description || '-'}
                         </td>
                         <td className="py-2 px-3 text-sm text-right font-medium text-green-700 dark:text-green-300">
@@ -522,7 +522,7 @@ export function ClosingJournalDrilldown({
                         <td className="py-2 px-3 text-sm text-right font-medium text-blue-700 dark:text-blue-300">
                           {line.credit_amount > 0 ? formatCurrency(line.credit_amount) : '-'}
                         </td>
-                        <td className="py-2 px-3 text-sm text-gray-600 dark:text-gray-400">
+                        <td className="py-2 px-3 text-sm dark:ink-muted">
                           {line.cost_center || '-'}
                         </td>
                       </tr>

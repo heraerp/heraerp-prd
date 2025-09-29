@@ -247,7 +247,7 @@ export function ChannelConsent({
                   {...form.register('phone_number')}
                   placeholder="+971501234567"
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   Include country code (e.g., +971 for UAE, +1 for US)
                 </p>
                 {form.formState.errors.phone_number && (
@@ -280,7 +280,7 @@ export function ChannelConsent({
                   <Label htmlFor="opted_in" className="font-medium">
                     Allow WhatsApp Messages
                   </Label>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm ink-muted">
                     Customer consents to receive WhatsApp messages from your business
                   </p>
                 </div>
@@ -318,7 +318,7 @@ export function ChannelConsent({
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   {form.watch('consent_method') === 'explicit'
                     ? 'Customer actively opted in (recommended for compliance)'
                     : 'Customer implied consent through prior business relationship'}
@@ -333,7 +333,7 @@ export function ChannelConsent({
                   {...form.register('notes')}
                   placeholder="Additional consent details or context..."
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   Record any additional context about the consent process
                 </p>
               </div>
@@ -349,13 +349,13 @@ export function ChannelConsent({
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <Label className="text-gray-600">Current Status</Label>
+                    <Label className="ink-muted">Current Status</Label>
                     <p className="font-medium">
                       {existingPrefs.opted_in ? 'Opted In' : 'Opted Out'}
                     </p>
                   </div>
                   <div>
-                    <Label className="text-gray-600">Last Updated</Label>
+                    <Label className="ink-muted">Last Updated</Label>
                     <p className="font-medium">
                       {existingPrefs.consent_ts
                         ? new Date(existingPrefs.consent_ts).toLocaleDateString('en-AE')
@@ -363,13 +363,13 @@ export function ChannelConsent({
                     </p>
                   </div>
                   <div>
-                    <Label className="text-gray-600">Phone Number</Label>
+                    <Label className="ink-muted">Phone Number</Label>
                     <p className="font-medium font-mono">
                       {existingPrefs.phone_number || 'Not set'}
                     </p>
                   </div>
                   <div>
-                    <Label className="text-gray-600">Consent Method</Label>
+                    <Label className="ink-muted">Consent Method</Label>
                     <p className="font-medium">
                       {existingPrefs.consent_method === 'explicit'
                         ? 'Explicit'

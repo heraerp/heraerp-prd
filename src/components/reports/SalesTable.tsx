@@ -235,9 +235,9 @@ export function SalesTable({
           <TableCell className="font-medium">
             <div className="flex items-center gap-2">
               {reportType === 'daily' ? (
-                <Clock className="h-3 w-3 text-gray-500" />
+                <Clock className="h-3 w-3 ink-muted" />
               ) : (
-                <Calendar className="h-3 w-3 text-gray-500" />
+                <Calendar className="h-3 w-3 ink-muted" />
               )}
               {formatTimeOrDate(row)}
               {row.branch_name && (
@@ -277,18 +277,18 @@ export function SalesTable({
           </TableCell>
 
           {/* VAT */}
-          <TableCell className="text-right font-mono text-gray-600 dark:text-gray-400">
+          <TableCell className="text-right font-mono dark:ink-muted">
             {formatCurrency(row.vat)}
           </TableCell>
 
           {/* Gross Total */}
           <TableCell className="text-right">
             <div className="flex items-center justify-end gap-1">
-              <span className="font-mono font-semibold text-gray-900 dark:text-gray-100">
+              <span className="font-mono font-semibold ink dark:text-gray-100">
                 {formatCurrency(row.gross)}
               </span>
               {row.gross > 0 && (
-                <div className="flex items-center text-xs text-gray-500">
+                <div className="flex items-center text-xs ink-muted">
                   {/* Show trend if this is monthly data */}
                   {reportType === 'monthly' && index > 0 && (
                     <>
@@ -308,14 +308,14 @@ export function SalesTable({
           <TableCell className="text-right">
             <Badge
               variant="secondary"
-              className="font-mono bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+              className="font-mono bg-gray-100 ink dark:bg-gray-800 dark:text-gray-300"
             >
               {row.txn_count.toLocaleString(locale)}
             </Badge>
           </TableCell>
 
           {/* Average Ticket */}
-          <TableCell className="text-right font-mono text-sm text-gray-600 dark:text-gray-400">
+          <TableCell className="text-right font-mono text-sm dark:ink-muted">
             {formatCurrency(row.avg_ticket)}
           </TableCell>
 
@@ -367,7 +367,7 @@ export function SalesTable({
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-            <span className="ml-2 text-gray-600 dark:text-gray-400">Loading sales data...</span>
+            <span className="ml-2 dark:ink-muted">Loading sales data...</span>
           </div>
         </CardContent>
       </Card>
@@ -384,7 +384,7 @@ export function SalesTable({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 dark:ink-muted">
             <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No sales data available for the selected period.</p>
           </div>
@@ -448,7 +448,7 @@ export function SalesTable({
         </div>
 
         {/* Footer Note */}
-        <div className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+        <div className="mt-4 text-xs dark:ink-muted text-center">
           All amounts in {currency}. VAT rate: 5%.
           {reportType === 'daily' && ' Times shown in 24-hour format.'}
           {onDrillDown && ' Click on amounts to view transaction details.'}

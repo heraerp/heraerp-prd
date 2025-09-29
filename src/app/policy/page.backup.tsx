@@ -37,19 +37,19 @@ export default function PrivacyPolicyPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 href="/"
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="ink-muted dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Home
               </Link>
               <Link
                 href="/terms"
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="ink-muted dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Terms
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="ink-muted dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Contact
               </Link>
@@ -68,10 +68,10 @@ export default function PrivacyPolicyPage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
               Privacy & Cookie Policy
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl ink-muted dark:text-gray-300">
               Your privacy is our priority. GDPR-compliant data protection you can trust.
             </p>
-            <div className="flex items-center justify-center gap-4 mt-6 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center gap-4 mt-6 text-sm dark:ink-muted">
               <span>Effective: {effectiveDate}</span>
               <span>•</span>
               <span>Last Updated: {lastUpdated}</span>
@@ -83,10 +83,10 @@ export default function PrivacyPolicyPage() {
             <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <CardContent className="p-6">
                 <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                <h3 className="font-semibold mb-2 ink dark:text-gray-100">
                   Multi-Tenant Isolation
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-sm ink-muted dark:text-gray-300">
                   Perfect data separation with organization_id isolation
                 </p>
               </CardContent>
@@ -94,10 +94,10 @@ export default function PrivacyPolicyPage() {
             <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <CardContent className="p-6">
                 <Database className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                <h3 className="font-semibold mb-2 ink dark:text-gray-100">
                   Complete Audit Trail
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-sm ink-muted dark:text-gray-300">
                   Every action tracked with Smart Code intelligence
                 </p>
               </CardContent>
@@ -105,10 +105,10 @@ export default function PrivacyPolicyPage() {
             <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <CardContent className="p-6">
                 <Shield className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-                <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                <h3 className="font-semibold mb-2 ink dark:text-gray-100">
                   GDPR Compliant
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-sm ink-muted dark:text-gray-300">
                   Full compliance with EU data protection regulations
                 </p>
               </CardContent>
@@ -120,19 +120,19 @@ export default function PrivacyPolicyPage() {
             {/* Section 1: Introduction */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   1. Introduction
                 </CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray dark:prose-invert max-w-none">
-                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                <p className="ink dark:text-gray-300 mb-4">
                   HERA ERP Ltd. ("HERA", "we", "our", or "us") is committed to protecting and
                   respecting your privacy. This Privacy & Cookie Policy explains how we collect,
                   use, disclose, and safeguard your personal data when you visit our website at
                   heraerp.com or use our enterprise resource planning services.
                 </p>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                <p className="ink dark:text-gray-300 mb-4">
                   We comply with the General Data Protection Regulation (EU) 2016/679 ("GDPR"), the
                   UK Data Protection Act 2018, and other applicable data protection laws worldwide.
                   Our revolutionary 6-table universal architecture ensures perfect data isolation
@@ -154,17 +154,17 @@ export default function PrivacyPolicyPage() {
             {/* Section 2: Data Collection */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Database className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
                   2. What Data We Collect
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                  <h4 className="font-semibold ink dark:text-gray-100">
                     Personal Data You Provide:
                   </h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                  <ul className="space-y-2 ink dark:text-gray-300">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span>
@@ -197,10 +197,10 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                  <h4 className="font-semibold ink dark:text-gray-100">
                     Data We Collect Automatically:
                   </h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                  <ul className="space-y-2 ink dark:text-gray-300">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
                       <span>
@@ -239,22 +239,22 @@ export default function PrivacyPolicyPage() {
             {/* Section 3: How We Use Data */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   3. How We Use Your Data
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We process your personal data based on the following legal bases under GDPR:
                 </p>
 
                 <div className="space-y-4">
                   <div className="border-l-4 border-blue-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Contract Performance (Article 6(1)(b) GDPR)
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Providing HERA ERP services and support</li>
                       <li>• Managing your account and organization settings</li>
                       <li>• Processing transactions with Smart Code intelligence</li>
@@ -263,10 +263,10 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border-l-4 border-green-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Legitimate Interest (Article 6(1)(f) GDPR)
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Improving our services through analytics</li>
                       <li>• Ensuring platform security and preventing fraud</li>
                       <li>• Sending service updates and important notices</li>
@@ -275,10 +275,10 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border-l-4 border-purple-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Consent (Article 6(1)(a) GDPR)
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Sending marketing communications and newsletters</li>
                       <li>• Setting non-essential cookies for analytics</li>
                       <li>• Processing special categories of data (if applicable)</li>
@@ -286,10 +286,10 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border-l-4 border-red-500 pl-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Legal Obligation (Article 6(1)(c) GDPR)
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Complying with regulatory requirements</li>
                       <li>• Responding to lawful requests from authorities</li>
                       <li>• Maintaining records for tax and accounting purposes</li>
@@ -302,17 +302,17 @@ export default function PrivacyPolicyPage() {
             {/* Section 4: Data Storage & Security */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Lock className="w-6 h-6 text-green-600 dark:text-green-400" />
                   4. Data Storage & Security
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                  <h4 className="font-semibold ink dark:text-gray-100">
                     Technical & Organizational Measures:
                   </h4>
-                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                  <ul className="space-y-2 ink dark:text-gray-300">
                     <li className="flex items-start gap-2">
                       <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span>
@@ -359,12 +359,12 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100">Data Location:</h4>
-                  <p className="text-gray-700 dark:text-gray-300">
+                  <h4 className="font-semibold ink dark:text-gray-100">Data Location:</h4>
+                  <p className="ink dark:text-gray-300">
                     Primary data storage is within the European Economic Area (EEA). For
                     international transfers, we rely on:
                   </p>
-                  <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300 ml-4">
+                  <ul className="space-y-1 text-sm ink dark:text-gray-300 ml-4">
                     <li>• EU-approved Standard Contractual Clauses (SCCs)</li>
                     <li>• Adequacy decisions by the European Commission</li>
                     <li>• Your explicit consent for specific transfers</li>
@@ -384,22 +384,22 @@ export default function PrivacyPolicyPage() {
             {/* Section 5: Data Sharing */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Users className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                   5. Data Sharing & Third Parties
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We do not sell, rent, or trade your personal data. We only share data with:
                 </p>
 
                 <div className="space-y-3">
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Service Providers (Data Processors)
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>
                         • <strong>Supabase:</strong> Database and authentication services (EU/US
                         with SCCs)
@@ -417,13 +417,13 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Integration Partners (Optional)
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                    <p className="text-sm ink-muted dark:text-gray-300 mb-2">
                       Only if you explicitly enable these integrations:
                     </p>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Microsoft 365, Google Workspace</li>
                       <li>• LinkedIn, Mailchimp</li>
                       <li>• Banking and payment gateways</li>
@@ -432,10 +432,10 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Legal Requirements
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <ul className="space-y-1 text-sm ink dark:text-gray-300">
                       <li>• Law enforcement agencies (with valid legal basis)</li>
                       <li>• Regulatory bodies and government authorities</li>
                       <li>• Courts and tribunals</li>
@@ -449,13 +449,13 @@ export default function PrivacyPolicyPage() {
             {/* Section 6: Cookies */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Cookie className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   6. Cookies & Tracking Technologies
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We use cookies and similar technologies to enhance your experience:
                 </p>
 
@@ -505,7 +505,7 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="border-l-4 border-amber-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm ink dark:text-gray-300">
                     <strong>Managing Cookies:</strong> You can control cookies through our Cookie
                     Banner on first visit, or anytime via your browser settings. Note that disabling
                     cookies may affect functionality.
@@ -517,73 +517,73 @@ export default function PrivacyPolicyPage() {
             {/* Section 7: Your Rights */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Eye className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                   7. Your GDPR Rights
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   Under GDPR, you have the following rights regarding your personal data:
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Access
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Request a copy of your personal data we hold (Subject Access Request)
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Rectification
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Request correction of inaccurate or incomplete personal data
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Erasure
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Request deletion of your data ("right to be forgotten") where applicable
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Restriction
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Request limitation of processing in certain circumstances
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Data Portability
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Receive your data in a structured, machine-readable format
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500" />
                       Right to Object
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Object to processing based on legitimate interests or direct marketing
                     </p>
                   </div>
@@ -604,7 +604,7 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="border-l-4 border-red-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm ink dark:text-gray-300">
                     <strong>Right to Withdraw Consent:</strong> Where processing is based on
                     consent, you can withdraw it at any time without affecting the lawfulness of
                     processing before withdrawal.
@@ -612,7 +612,7 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="border-l-4 border-amber-500 pl-4">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm ink dark:text-gray-300">
                     <strong>Right to Complain:</strong> You have the right to lodge a complaint with
                     your local supervisory authority if you believe we have not handled your data
                     properly.
@@ -624,58 +624,58 @@ export default function PrivacyPolicyPage() {
             {/* Section 8: Data Retention */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Database className="w-6 h-6 text-red-600 dark:text-red-400" />
                   8. Data Retention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We retain personal data only as long as necessary for the purposes collected:
                 </p>
 
                 <div className="space-y-3">
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Active Account Data
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Retained for the duration of your subscription plus 30 days grace period
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Transaction & Audit Logs
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       7 years for compliance with financial regulations and accounting standards
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Marketing Data
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Until you unsubscribe or withdraw consent, reviewed annually
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Security Logs
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       90 days for security monitoring and incident response
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       Backup Data
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       30 days in encrypted backups for disaster recovery
                     </p>
                   </div>
@@ -694,18 +694,18 @@ export default function PrivacyPolicyPage() {
             {/* Section 9: International Transfers */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   9. International Data Transfers
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   Your data may be transferred outside the EEA. We ensure adequate protection
                   through:
                 </p>
 
-                <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <ul className="space-y-2 ink dark:text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <span>EU-approved Standard Contractual Clauses (SCCs) with all processors</span>
@@ -737,13 +737,13 @@ export default function PrivacyPolicyPage() {
             {/* Section 10: Children's Privacy */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Users className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                   10. Children's Privacy
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   HERA ERP is designed for business use and is not intended for children under 16.
                   We do not knowingly collect personal data from children. If you believe a child
                   has provided us with personal data, please contact us immediately at
@@ -755,18 +755,18 @@ export default function PrivacyPolicyPage() {
             {/* Section 11: Marketing */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Mail className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                   11. Marketing Communications
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We may send you marketing communications about our products, services, and updates
                   if:
                 </p>
 
-                <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <ul className="space-y-2 ink dark:text-gray-300">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <span>You have given explicit consent (opt-in)</span>
@@ -794,7 +794,7 @@ export default function PrivacyPolicyPage() {
             {/* Section 12: Contact & DPO */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Mail className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   12. Contact Information
                 </CardTitle>
@@ -802,10 +802,10 @@ export default function PrivacyPolicyPage() {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-3">
                       Data Controller
                     </h4>
-                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <div className="space-y-2 text-sm ink dark:text-gray-300">
                       <p>
                         <strong>HERA ERP Ltd.</strong>
                       </p>
@@ -816,10 +816,10 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-3">
                       Data Protection Officer
                     </h4>
-                    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <div className="space-y-2 text-sm ink dark:text-gray-300">
                       <p>📧 DPO: dpo@heraerp.com</p>
                       <p>📮 Postal: [Address if required]</p>
                       <p>📞 Phone: [If provided]</p>
@@ -828,13 +828,13 @@ export default function PrivacyPolicyPage() {
                 </div>
 
                 <div className="border-t pt-4 mt-4">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                  <h4 className="font-semibold ink dark:text-gray-100 mb-3">
                     Supervisory Authorities
                   </h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                  <p className="text-sm ink dark:text-gray-300 mb-2">
                     You may lodge a complaint with your local data protection authority:
                   </p>
-                  <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <ul className="space-y-1 text-sm dark:ink-muted">
                     <li>• UK: Information Commissioner's Office (ico.org.uk)</li>
                     <li>• Ireland: Data Protection Commission (dataprotection.ie)</li>
                     <li>• Germany: BfDI (bfdi.bund.de)</li>
@@ -847,13 +847,13 @@ export default function PrivacyPolicyPage() {
             {/* Section 13: Updates */}
             <Card className="border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                   13. Updates to This Policy
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className="ink dark:text-gray-300">
                   We may update this Privacy Policy from time to time to reflect changes in our
                   practices, technology, legal requirements, or business operations.
                 </p>
@@ -878,7 +878,7 @@ export default function PrivacyPolicyPage() {
                   </ul>
                 </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm dark:ink-muted">
                   The latest version will always be available at heraerp.com/policy
                 </p>
               </CardContent>
@@ -887,7 +887,7 @@ export default function PrivacyPolicyPage() {
             {/* HERA-Specific Features */}
             <Card className="border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-gray-900 dark:text-gray-100">
+                <CardTitle className="flex items-center gap-3 ink dark:text-gray-100">
                   <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   HERA's Advanced Privacy Features
                 </CardTitle>
@@ -895,40 +895,40 @@ export default function PrivacyPolicyPage() {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       🔒 Perfect Multi-Tenancy
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Sacred organization_id boundary ensures your data never mixes with others.
                       Mario's restaurant data is completely isolated from Dr. Smith's clinic.
                     </p>
                   </div>
 
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       🧬 Smart Code Intelligence
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       Every transaction tagged with business context for perfect audit trails.
                       Complete transparency without exposing sensitive data.
                     </p>
                   </div>
 
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       📊 6-Table Universal Architecture
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       All data stored in 6 sacred tables with consistent security model. No data
                       sprawl, no security gaps, perfect control.
                     </p>
                   </div>
 
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
                       🛡️ Enterprise Security DNA
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm ink-muted dark:text-gray-300">
                       SSO/SAML 2.0, RBAC, KMS encryption, rate limiting built-in. Enterprise-grade
                       security as standard, not an add-on.
                     </p>
@@ -951,13 +951,13 @@ export default function PrivacyPolicyPage() {
       <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-8 px-6 mt-16">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm dark:ink-muted">
               © 2025 HERA ERP Ltd. All rights reserved. | Privacy-first enterprise software.
             </p>
             <div className="flex items-center justify-center gap-6 text-sm">
               <Link
                 href="/terms"
-                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Terms of Service
               </Link>
@@ -966,13 +966,13 @@ export default function PrivacyPolicyPage() {
               </Link>
               <Link
                 href="/security"
-                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Security
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="dark:ink-muted hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Contact
               </Link>

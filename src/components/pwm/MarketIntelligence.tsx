@@ -256,7 +256,7 @@ export function MarketIntelligence({ organizationId }: MarketIntelligenceProps) 
                       </Badge>
                     ))}
                   </div>
-                  <span className="text-xs text-slate-500">{event.time}</span>
+                  <span className="text-xs ink-muted">{event.time}</span>
                 </div>
               </div>
             ))}

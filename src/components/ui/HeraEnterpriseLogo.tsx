@@ -29,7 +29,7 @@ export function HeraEnterpriseLogo({
   const actualWidth = variant === 'icon' ? iconSize + 16 : width
 
   return (
-    <svg
+    <svg stroke="currentColor"
       width={actualWidth}
       height={height}
       viewBox={`0 0 ${actualWidth} ${height}`}
@@ -93,18 +93,18 @@ export function HeraEnterpriseLogo({
                 M 0 ${iconSize * 0.3}
                 L ${iconSize * 0.6} ${iconSize * 0.3}
               `}
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="3"
               strokeLinecap="round"
               fill="none"
             />
 
             {/* Data nodes representing universal architecture */}
-            <circle cx="0" cy="0" r="4" fill="white" />
-            <circle cx={iconSize * 0.6} cy="0" r="4" fill="white" />
-            <circle cx="0" cy={iconSize * 0.6} r="4" fill="white" />
-            <circle cx={iconSize * 0.6} cy={iconSize * 0.6} r="4" fill="white" />
-            <circle cx={iconSize * 0.3} cy={iconSize * 0.3} r="5" fill="white" opacity="0.9" />
+            <circle cx="0" cy="0" r="4" fill="currentColor" />
+            <circle cx={iconSize * 0.6} cy="0" r="4" fill="currentColor" />
+            <circle cx="0" cy={iconSize * 0.6} r="4" fill="currentColor" />
+            <circle cx={iconSize * 0.6} cy={iconSize * 0.6} r="4" fill="currentColor" />
+            <circle cx={iconSize * 0.3} cy={iconSize * 0.3} r="5" fill="currentColor" opacity="0.9" />
 
             {/* Connecting lines for network effect */}
             <line
@@ -112,7 +112,7 @@ export function HeraEnterpriseLogo({
               y1="0"
               x2={iconSize * 0.3}
               y2={iconSize * 0.3}
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="1"
               opacity="0.4"
             />
@@ -121,7 +121,7 @@ export function HeraEnterpriseLogo({
               y1="0"
               x2={iconSize * 0.3}
               y2={iconSize * 0.3}
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="1"
               opacity="0.4"
             />
@@ -130,7 +130,7 @@ export function HeraEnterpriseLogo({
               y1={iconSize * 0.6}
               x2={iconSize * 0.3}
               y2={iconSize * 0.3}
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="1"
               opacity="0.4"
             />
@@ -139,7 +139,7 @@ export function HeraEnterpriseLogo({
               y1={iconSize * 0.6}
               x2={iconSize * 0.3}
               y2={iconSize * 0.3}
-              stroke="white"
+              stroke="currentColor"
               strokeWidth="1"
               opacity="0.4"
             />
@@ -171,7 +171,7 @@ export function HeraEnterpriseLogo({
               fontFamily="'Inter', -apple-system, sans-serif"
               fontSize={fontSize * 0.35}
               fontWeight="500"
-              fill="#64748b"
+              fill="currentColor"
               letterSpacing="0.08em"
             >
               UNIVERSAL ERP
@@ -185,7 +185,7 @@ export function HeraEnterpriseLogo({
             fontFamily="'Inter', -apple-system, sans-serif"
             fontSize={fontSize * 0.25}
             fontWeight="600"
-            fill="#a855f7"
+            fill="currentColor"
             opacity="0.8"
           >
             ™

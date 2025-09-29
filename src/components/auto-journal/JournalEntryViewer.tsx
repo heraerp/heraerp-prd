@@ -79,7 +79,7 @@ export function JournalEntryViewer({ entries, onViewEntry, onEditEntry }: Journa
         </Badge>
       )
     } else {
-      return <Badge className="bg-muted text-gray-700 border-border">Pending</Badge>
+      return <Badge className="bg-muted ink border-border">Pending</Badge>
     }
   }
 

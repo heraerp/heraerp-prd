@@ -122,7 +122,7 @@ export function CaseCard({ case: caseItem, onAction, onClick }: CaseCardProps) {
 
           {caseItem.due_date && (
             <div
-              className={`flex items-center gap-2 ${isOverdue ? 'text-red-600' : 'text-muted-foreground'}`}
+              className={`flex items-center gap-2 ${isOverdue ?'text-red-600' : 'text-muted-foreground'}`}
             >
               <Calendar className="h-4 w-4" />
               <span>

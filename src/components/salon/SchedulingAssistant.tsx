@@ -298,7 +298,7 @@ export function SchedulingAssistant({
           {hours.map((hour, idx) => (
             <div key={hour}>
               <div
-                className="border-t border-border dark:border-border text-sm text-gray-700 dark:text-gray-300 font-medium pt-1 pr-2 text-right"
+                className="border-t border-border dark:border-border text-sm ink dark:text-gray-300 font-medium pt-1 pr-2 text-right"
                 style={{ height: `${pixelsPerHour}px` }}
               >
                 {formatDate(new Date().setHours(hour, 0), 'h:mm a')}

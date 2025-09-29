@@ -462,7 +462,7 @@ export function CustomerManager() {
                     <div className="flex gap-2 pt-4 border-t border-gray-100">
                       <button
                         type="button"
-                        className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
+                        className="flex-1 px-3 py-1.5 text-sm font-medium ink bg-background border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
                         onClick={() => setEditingCustomer(customer)}
                       >
                         <Pencil className="w-4 h-4 mr-2" />

@@ -129,7 +129,7 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
         )
       case 'disabled':
         return (
-          <Badge variant="outline" className="text-gray-700 border-gray-300 bg-gray-50">
+          <Badge variant="outline" className="ink border-gray-300 bg-gray-50">
             Disabled
           </Badge>
         )
@@ -160,15 +160,15 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <Label className="text-gray-600">Name</Label>
+                  <Label className="ink-muted">Name</Label>
                   <p className="font-mono font-medium">{template.name}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-600">Language</Label>
+                  <Label className="ink-muted">Language</Label>
                   <p className="font-medium">{template.language.toUpperCase()}</p>
                 </div>
                 <div>
-                  <Label className="text-gray-600">Category</Label>
+                  <Label className="ink-muted">Category</Label>
                   <div>
                     <Badge variant="outline" className={getCategoryColor(template.category)}>
                       {template.category}
@@ -176,7 +176,7 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
                   </div>
                 </div>
                 <div>
-                  <Label className="text-gray-600">Status</Label>
+                  <Label className="ink-muted">Status</Label>
                   <div>{getStatusBadge()}</div>
                 </div>
               </div>
@@ -188,7 +188,7 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Variable Values</CardTitle>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm ink-muted">
                   Adjust these values to see how the template renders
                 </p>
               </CardHeader>
@@ -241,7 +241,7 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
                 {/* Message Bubble */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border max-w-[80%] ml-auto">
                   {/* Message Header */}
-                  <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-2 mb-2 text-xs ink-muted">
                     <MessageSquare className="h-3 w-3 text-green-600" />
                     <span>Template Message</span>
                     {template.hera_template_id && (
@@ -252,12 +252,12 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
                   </div>
 
                   {/* Message Content */}
-                  <div className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap text-sm leading-relaxed">
+                  <div className="ink dark:text-gray-100 whitespace-pre-wrap text-sm leading-relaxed">
                     {getPreviewText()}
                   </div>
 
                   {/* Message Footer */}
-                  <div className="flex items-center justify-end gap-1 mt-3 text-xs text-gray-400">
+                  <div className="flex items-center justify-end gap-1 mt-3 text-xs ink-muted">
                     <Clock className="h-3 w-3" />
                     <span>
                       {new Date().toLocaleTimeString('en-AE', {
@@ -271,7 +271,7 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
 
                 {/* Disclaimer */}
                 <div className="mt-4 text-center">
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs ink-muted">
                     This is a preview. Actual message appearance may vary.
                   </p>
                 </div>
@@ -295,16 +295,16 @@ export function TemplatePreview({ open, onOpenChange, template }: TemplatePrevie
           {(template.created_at || template.hera_template_id) && (
             <>
               <Separator />
-              <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+              <div className="grid grid-cols-2 gap-4 text-xs ink-muted">
                 {template.created_at && (
                   <div>
-                    <Label className="text-gray-600">Created</Label>
+                    <Label className="ink-muted">Created</Label>
                     <p>{new Date(template.created_at).toLocaleString('en-AE')}</p>
                   </div>
                 )}
                 {template.hera_template_id && (
                   <div>
-                    <Label className="text-gray-600">HERA MSP ID</Label>
+                    <Label className="ink-muted">HERA MSP ID</Label>
                     <p className="font-mono">{template.hera_template_id}</p>
                   </div>
                 )}

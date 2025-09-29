@@ -195,7 +195,7 @@ export function LeaveRequestList({
                 </tr>
               ) : filteredRequests.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center opacity-70">
+                  <td colSpan={7} className="px-6 py-12 text-center">
                     No leave requests found
                   </td>
                 </tr>
@@ -267,7 +267,7 @@ export function LeaveRequestList({
                         </Badge>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="text-sm opacity-70 truncate">
+                        <p className="text-sm truncate">
                           {request.metadata?.notes || '-'}
                         </p>
                       </td>
@@ -326,7 +326,7 @@ export function LeaveRequestList({
             Potential Conflicts
           </h4>
         </div>
-        <p className="text-sm opacity-70">No scheduling conflicts detected with appointments.</p>
+        <p className="text-sm">No scheduling conflicts detected with appointments.</p>
       </div>
 
       {/* Approval Drawer */}

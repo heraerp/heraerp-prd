@@ -140,11 +140,11 @@ export function AppointmentForm({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className={cn('space-y-6', className)}>
       <Card padding="lg">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Customer Information</h3>
+        <h3 className="text-lg font-semibold ink mb-6">Customer Information</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Customer</label>
+            <label className="block text-sm font-medium ink mb-2">Customer</label>
             <Controller
               name="customer_code"
               control={form.control}
@@ -170,7 +170,7 @@ export function AppointmentForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Stylist</label>
+            <label className="block text-sm font-medium ink mb-2">Stylist</label>
             <Controller
               name="stylist_code"
               control={form.control}
@@ -196,7 +196,7 @@ export function AppointmentForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Branch</label>
+            <label className="block text-sm font-medium ink mb-2">Branch</label>
             <Controller
               name="branch_code"
               control={form.control}
@@ -216,7 +216,7 @@ export function AppointmentForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+            <label className="block text-sm font-medium ink mb-2">Date</label>
             <input
               type="date"
               value={selectedDate}
@@ -229,7 +229,7 @@ export function AppointmentForm({
       </Card>
 
       <Card padding="lg">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Services</h3>
+        <h3 className="text-lg font-semibold ink mb-6">Services</h3>
 
         <div className="space-y-3">
           {MOCK_SERVICES.map(service => (
@@ -250,8 +250,8 @@ export function AppointmentForm({
                   className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
                 />
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">{service.name}</p>
-                  <p className="text-xs text-gray-500">{service.duration} minutes</p>
+                  <p className="text-sm font-medium ink">{service.name}</p>
+                  <p className="text-xs ink-muted">{service.duration} minutes</p>
                 </div>
               </div>
               <span className="text-sm font-medium text-foreground">{service.price} AED</span>
@@ -277,12 +277,12 @@ export function AppointmentForm({
 
       {selectedDate && watchStylist && totalDuration > 0 && (
         <Card padding="lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Available Time Slots</h3>
+          <h3 className="text-lg font-semibold ink mb-6">Available Time Slots</h3>
 
           {loadingSlots ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-              <span className="ml-2 text-sm text-gray-500">Loading available slots...</span>
+              <Loader2 className="w-6 h-6 animate-spin ink-muted" />
+              <span className="ml-2 text-sm ink-muted">Loading available slots...</span>
             </div>
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -323,7 +323,7 @@ export function AppointmentForm({
       )}
 
       <Card padding="lg">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Additional Notes</h3>
+        <h3 className="text-lg font-semibold ink mb-6">Additional Notes</h3>
 
         <Controller
           name="notes"

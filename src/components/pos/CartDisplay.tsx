@@ -26,7 +26,7 @@ export function CartDisplay() {
           <div key={index} className="flex items-center justify-between p-3 border-b last:border-0">
             <div className="flex-1">
               <p className="font-medium text-gray-800">{line.service_name}</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm ink-muted">
                 {line.duration_min} min • {formatCurrency(line.unit_price)}
               </p>
             </div>
@@ -70,10 +70,10 @@ export function CartDisplay() {
           <div key={index} className="flex items-center justify-between p-3 border-b last:border-0">
             <div className="flex-1">
               <p className="font-medium text-gray-800">{line.product_name}</p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm ink-muted">
                 SKU: {line.product_sku} • {formatCurrency(line.unit_price)}
                 {line.on_hand !== undefined && (
-                  <span className="ml-2 text-xs text-gray-400">({line.on_hand} in stock)</span>
+                  <span className="ml-2 text-xs ink-muted">({line.on_hand} in stock)</span>
                 )}
               </p>
             </div>
@@ -121,8 +121,8 @@ export function CartDisplay() {
           >
             <div className="flex-1">
               <p className="font-medium text-green-700">Discount</p>
-              {line.reason && <p className="text-sm text-gray-500">{line.reason}</p>}
-              {line.percentage && <p className="text-sm text-gray-500">{line.percentage}% off</p>}
+              {line.reason && <p className="text-sm ink-muted">{line.reason}</p>}
+              {line.percentage && <p className="text-sm ink-muted">{line.percentage}% off</p>}
             </div>
             <div className="flex items-center gap-2">
               <span className="w-20 text-right font-medium text-green-700">
@@ -174,7 +174,7 @@ export function CartDisplay() {
       </div>
 
       {lines.length === 0 ? (
-        <div className="p-8 text-center text-gray-500">
+        <div className="p-8 text-center ink-muted">
           <p>Your cart is empty</p>
           <p className="text-sm mt-2">Add services or products to get started</p>
         </div>
@@ -185,13 +185,13 @@ export function CartDisplay() {
           <div className="p-4 border-t space-y-2">
             {totals.subtotal_services > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Services Subtotal</span>
+                <span className="ink-muted">Services Subtotal</span>
                 <span>{formatCurrency(totals.subtotal_services)}</span>
               </div>
             )}
             {totals.subtotal_items > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Products Subtotal</span>
+                <span className="ink-muted">Products Subtotal</span>
                 <span>{formatCurrency(totals.subtotal_items)}</span>
               </div>
             )}
@@ -203,12 +203,12 @@ export function CartDisplay() {
             )}
 
             <div className="flex justify-between text-sm pt-2 border-t">
-              <span className="text-gray-600">Taxable Subtotal</span>
+              <span className="ink-muted">Taxable Subtotal</span>
               <span>{formatCurrency(totals.taxable_subtotal)}</span>
             </div>
 
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">VAT ({(totals.tax_rate * 100).toFixed(0)}%)</span>
+              <span className="ink-muted">VAT ({(totals.tax_rate * 100).toFixed(0)}%)</span>
               <span>{formatCurrency(totals.tax_total)}</span>
             </div>
 

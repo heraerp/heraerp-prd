@@ -232,7 +232,7 @@ function getSubdomain(hostname: string): string | null {
   const host = hostname.split(':')[0]
   
   // Handle subdomain.localhost pattern
-  if (host.includes('.localhost')) {
+  if (host && host.includes('.localhost')) {
     const parts = host.split('.')
     if (parts.length >= 2 && parts[0]) {
       return parts[0] // Return subdomain from subdomain.localhost
@@ -240,7 +240,7 @@ function getSubdomain(hostname: string): string | null {
   }
   
   // Split by dots for production domains
-  const parts = host.split('.')
+  const parts = host ? host.split('.') : []
   
   // Need at least subdomain.domain.tld
   if (parts.length >= 3 && parts[0]) {

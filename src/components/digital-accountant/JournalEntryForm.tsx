@@ -446,7 +446,7 @@ export function JournalEntryForm({ organizationId, onSuccess, isDarkMode }: Jour
                             {line.accountCode
                               ? `${line.accountCode} - ${line.accountName}`
                               : 'Select account...'}
-                            <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            <Search className="ml-2 h-4 w-4 shrink-0" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[400px] p-0">

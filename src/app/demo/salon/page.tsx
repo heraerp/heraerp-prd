@@ -14,7 +14,7 @@ export default function SalonDemoPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <p className="text-gray-600">Setting up salon demo...</p>
+        <p className="ink-muted">Setting up salon demo...</p>
       </div>
     </div>
   )

@@ -979,7 +979,7 @@ export function BookAppointmentModal({
                                         ? selectedServices[0].entity_name
                                         : 'New Appointment'}
                                     </p>
-                                    <p className="text-xs opacity-80">
+                                    <p className="text-xs">
                                       {startTime} - {endTime}
                                     </p>
                                   </div>

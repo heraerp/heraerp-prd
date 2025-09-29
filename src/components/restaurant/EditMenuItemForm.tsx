@@ -140,7 +140,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 <div>
                   <label
                     htmlFor="entity_name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Item Name *
                   </label>
@@ -159,7 +159,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 <div>
                   <label
                     htmlFor="entity_code"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Item Code
                   </label>
@@ -178,7 +178,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
               <div>
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium ink mb-1"
                 >
                   Description
                 </label>
@@ -200,7 +200,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="price" className="block text-sm font-medium ink mb-1">
                     Price *
                   </label>
                   <div className="relative">
@@ -222,7 +222,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 <div>
                   <label
                     htmlFor="prep_time"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Prep Time (minutes)
                   </label>
@@ -290,7 +290,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                         setCustomCategory('')
                       }
                     }}
-                    className="px-3 py-2 border border-border rounded-lg hover:bg-muted bg-background text-gray-700"
+                    className="px-3 py-2 border border-border rounded-lg hover:bg-muted bg-background ink"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -337,7 +337,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-green-600 text-foreground py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-medium"
+                className="flex-1 bg-green-600 text-foreground py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled: disabled:cursor-not-allowed flex items-center justify-center font-medium"
               >
                 {isSubmitting ? (
                   <>

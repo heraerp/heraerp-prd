@@ -322,7 +322,7 @@ export function PaymentDialog({
 
           {/* Payment Methods */}
           <div>
-            <h3 className="font-medium mb-3 text-slate-900 dark:text-white">Payment Methods</h3>
+            <h3 className="font-medium mb-3 ink dark:text-white">Payment Methods</h3>
             <Tabs value={activeTab} onValueChange={v => setActiveTab(v as any)}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="card" className="flex items-center gap-2">

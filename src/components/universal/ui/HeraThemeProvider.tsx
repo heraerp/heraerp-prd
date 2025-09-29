@@ -142,13 +142,7 @@ export function HeraThemeToggle({ className }: { className?: string }) {
   // Fallback button if ThemeToggle is not available
   return (
     <button
-      className={`
-        inline-flex items-center justify-center gap-2
-        rounded-md px-3 py-2 text-sm font-medium
-        transition-colors duration-200
-        bg-background hover:bg-accent hover:text-accent-foreground
-        border border-border
-        ${className || ''}
+      className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 bg-background hover:bg-accent hover:text-accent-foreground border border-border ${className ||''}
       `}
       title="Theme toggle"
     >

@@ -149,9 +149,9 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   })}
                   className="flex-1"
                 />
-                <Percent className="h-4 w-4 text-gray-400" />
+                <Percent className="h-4 w-4 ink-muted" />
               </div>
-              <p className="text-sm text-gray-500">Enter as decimal (0.05 = 5%)</p>
+              <p className="text-sm ink-muted">Enter as decimal (0.05 = 5%)</p>
               {form.formState.errors.vat_rate && (
                 <p className="text-sm text-red-600">{form.formState.errors.vat_rate.message}</p>
               )}
@@ -183,7 +183,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Auto-calculate Tax</Label>
-              <p className="text-sm text-gray-500">Automatically add VAT to service prices</p>
+              <p className="text-sm ink-muted">Automatically add VAT to service prices</p>
             </div>
             <Switch
               checked={form.watch('auto_calculate_tax')}
@@ -194,7 +194,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Tax-inclusive Pricing</Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm ink-muted">
                 Prices shown include tax (VAT is part of the price)
               </p>
             </div>
@@ -236,9 +236,9 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                 })}
                 className="flex-1"
               />
-              <Percent className="h-4 w-4 text-gray-400" />
+              <Percent className="h-4 w-4 ink-muted" />
             </div>
-            <p className="text-sm text-gray-500">Enter as decimal (0.35 = 35%)</p>
+            <p className="text-sm ink-muted">Enter as decimal (0.35 = 35%)</p>
             {form.formState.errors.commission_rate && (
               <p className="text-sm text-red-600">
                 {form.formState.errors.commission_rate.message}
@@ -249,7 +249,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Enable Tips</Label>
-              <p className="text-sm text-gray-500">Allow customers to add tips to payments</p>
+              <p className="text-sm ink-muted">Allow customers to add tips to payments</p>
             </div>
             <Switch
               checked={watchedValues.tipsEnabled}
@@ -261,7 +261,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="space-y-1">
                 <Label>Include Tips in Commission</Label>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm ink-muted">
                   Calculate commission on tips as well as service amount
                 </p>
               </div>
@@ -303,9 +303,9 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   })}
                   className="flex-1"
                 />
-                <Percent className="h-4 w-4 text-gray-400" />
+                <Percent className="h-4 w-4 ink-muted" />
               </div>
-              <p className="text-sm text-gray-500">Maximum discount percentage allowed</p>
+              <p className="text-sm ink-muted">Maximum discount percentage allowed</p>
             </div>
 
             <div className="space-y-2">
@@ -327,16 +327,16 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                   })}
                   className="flex-1"
                 />
-                <Percent className="h-4 w-4 text-gray-400" />
+                <Percent className="h-4 w-4 ink-muted" />
               </div>
-              <p className="text-sm text-gray-500">Discounts above this require manager approval</p>
+              <p className="text-sm ink-muted">Discounts above this require manager approval</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="space-y-1">
               <Label>Require Manager Approval</Label>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm ink-muted">
                 Manager approval needed for discounts above threshold
               </p>
             </div>
@@ -365,9 +365,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
               return (
                 <div
                   key={method.value}
-                  className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
-                    isSelected
-                      ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/30'
+                  className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${ isSelected ?'border-violet-300 bg-violet-50 dark:bg-violet-950/30'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => {
@@ -384,7 +382,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                 >
                   <div className="flex items-center gap-3">
                     <method.icon
-                      className={`h-4 w-4 ${isSelected ? 'text-violet-600' : 'text-gray-400'}`}
+                      className={`h-4 w-4 ${isSelected ?'text-violet-600' : 'text-gray-400'}`}
                     />
                     <span
                       className={
@@ -395,8 +393,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                     </span>
                   </div>
                   <div
-                    className={`w-4 h-4 rounded border-2 ${
-                      isSelected ? 'bg-violet-600 border-violet-600' : 'border-gray-300'
+                    className={`w-4 h-4 rounded border-2 ${ isSelected ?'bg-violet-600 border-violet-600' : 'border-gray-300'
                     }`}
                   >
                     {isSelected && (

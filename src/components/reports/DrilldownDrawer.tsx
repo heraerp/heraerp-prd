@@ -118,7 +118,7 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+          <span className="ml-2 text-sm dark:ink-muted">
             Loading transactions...
           </span>
         </div>
@@ -127,7 +127,7 @@ export function DrilldownDrawer({
 
     if (!data || data.transactions.length === 0) {
       return (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-8 dark:ink-muted">
           <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm">No transactions found for the selected criteria.</p>
         </div>
@@ -159,12 +159,12 @@ export function DrilldownDrawer({
                   </div>
 
                   {/* Description */}
-                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <div className="text-sm font-medium ink dark:text-gray-100">
                     {transaction.description}
                   </div>
 
                   {/* Additional Info */}
-                  <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-4 text-xs dark:ink-muted">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {formatDate(transaction.transaction_date)}
@@ -192,10 +192,10 @@ export function DrilldownDrawer({
 
                 {/* Amount and Action */}
                 <div className="text-right space-y-1">
-                  <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="text-lg font-semibold ink dark:text-gray-100">
                     {formatCurrency(transaction.total_amount)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs dark:ink-muted">
                     {transaction.line_count} line{transaction.line_count !== 1 ? 's' : ''}
                   </div>
                   <Button
@@ -219,7 +219,7 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+          <span className="ml-2 text-sm dark:ink-muted">
             Loading transaction details...
           </span>
         </div>
@@ -264,13 +264,13 @@ export function DrilldownDrawer({
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide">
                   Date
                 </label>
                 <p className="text-sm font-medium">{formatDate(transaction.transaction_date)}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide">
                   Total Amount
                 </label>
                 <p className="text-sm font-bold text-lg">
@@ -278,7 +278,7 @@ export function DrilldownDrawer({
                 </p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide">
                   Transaction Type
                 </label>
                 <p className="text-sm font-medium">
@@ -286,7 +286,7 @@ export function DrilldownDrawer({
                 </p>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide">
                   Smart Code
                 </label>
                 <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
@@ -298,7 +298,7 @@ export function DrilldownDrawer({
             {/* Reference Number */}
             {transaction.reference_number && (
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide">
                   Reference
                 </label>
                 <p className="text-sm font-medium">{transaction.reference_number}</p>
@@ -308,7 +308,7 @@ export function DrilldownDrawer({
             {/* Related Entities */}
             {related_entities && related_entities.length > 0 && (
               <div>
-                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
+                <label className="text-xs font-medium ink-muted uppercase tracking-wide mb-2 block">
                   Related Entities
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -351,7 +351,7 @@ export function DrilldownDrawer({
                       <TableCell>
                         <div>
                           <div className="font-medium text-sm">{line.description}</div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs ink-muted">
                             {line.entity_name} ({line.line_type})
                           </div>
                         </div>
@@ -404,7 +404,7 @@ export function DrilldownDrawer({
                         <TableCell>
                           <div>
                             <div className="font-medium text-sm">{entry.account_name}</div>
-                            <div className="text-xs text-gray-500">{entry.account_code}</div>
+                            <div className="text-xs ink-muted">{entry.account_code}</div>
                           </div>
                         </TableCell>
                         <TableCell className="text-right font-mono">
@@ -438,7 +438,7 @@ export function DrilldownDrawer({
 
     return (
       <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-900">
-        <div className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="text-sm dark:ink-muted">
           Showing {data.transactions.length} of {data.total_count} transactions
           {data.total_amount !== undefined && (
             <span className="ml-2">• Total: {formatCurrency(data.total_amount)}</span>
@@ -476,7 +476,7 @@ export function DrilldownDrawer({
 
             {totalPages > 5 && currentPage < totalPages - 2 && (
               <>
-                <MoreHorizontal className="h-3 w-3 text-gray-400" />
+                <MoreHorizontal className="h-3 w-3 ink-muted" />
                 <Button
                   variant="ghost"
                   size="sm"

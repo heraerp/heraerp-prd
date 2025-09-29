@@ -92,9 +92,7 @@ export function NewConnectorModal({ open, onClose, organizationId }: NewConnecto
               {vendors.map(vendor => (
                 <Card
                   key={vendor.id}
-                  className={`p-4 cursor-pointer transition-all ${
-                    selectedVendor === vendor.id
-                      ? 'ring-2 ring-primary border-primary'
+                  className={`p-4 cursor-pointer transition-all ${ selectedVendor === vendor.id ?'ring-2 ring-primary border-primary'
                       : 'hover:border-primary/50'
                   }`}
                   onClick={() => setSelectedVendor(vendor.id as IntegrationVendor)}

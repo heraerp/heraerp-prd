@@ -99,7 +99,7 @@ export function DevelopmentSidebar() {
 
   return (
     <div
-      className={`${sidebarCollapsed ? 'w-16' : 'w-80'} transition-all duration-300 bg-background border-r border-border flex flex-col`}
+      className={`${sidebarCollapsed ?'w-16' : 'w-80'} transition-all duration-300 bg-background border-r border-border flex flex-col`}
     >
       {/* Header */}
       <div className="p-6 border-b border-border">
@@ -145,18 +145,16 @@ export function DevelopmentSidebar() {
             <Link
               key={item.id}
               href={isDisabled ? '#' : item.href}
-              className={`block ${isDisabled ? 'pointer-events-none' : ''}`}
+              className={`block ${isDisabled ?'pointer-events-none' : ''}`}
             >
               <div
-                className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                  isActive
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-600 text-foreground shadow-lg'
+                className={`flex items-center gap-3 p-3 rounded-lg transition-all ${ isActive ?'bg-gradient-to-r from-purple-500 to-blue-600 text-foreground shadow-lg'
                     : isDisabled
                       ? 'text-muted-foreground cursor-not-allowed'
                       : 'text-gray-700 hover:bg-muted'
                 }`}
               >
-                <IconComponent className={`w-5 h-5 ${sidebarCollapsed ? 'mx-auto' : ''}`} />
+                <IconComponent className={`w-5 h-5 ${sidebarCollapsed ?'mx-auto' : ''}`} />
 
                 {!sidebarCollapsed && (
                   <div className="flex-1">
@@ -164,7 +162,7 @@ export function DevelopmentSidebar() {
                       <div>
                         <div className="font-medium">{item.name}</div>
                         <div
-                          className={`text-xs ${isActive ? 'text-purple-100' : 'text-muted-foreground'}`}
+                          className={`text-xs ${isActive ?'text-purple-100' : 'text-muted-foreground'}`}
                         >
                           {item.description}
                         </div>

@@ -232,10 +232,10 @@ export function SalonDemoAuth() {
               Hair Talkz Salon
             </h1>
           </div>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+          <p className="text-xl ink-muted dark:text-gray-300">
             Select your role to access the salon management system
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm dark:ink-muted mt-2">
             Enterprise-grade salon management with role-based access
           </p>
         </div>
@@ -254,11 +254,7 @@ export function SalonDemoAuth() {
             return (
               <div
                 key={user.email}
-                className={`
-                  relative cursor-pointer transition-all duration-300 rounded-2xl border-2
-                  ${
-                    isSelected
-                      ? 'border-purple-500 shadow-2xl shadow-purple-500/25'
+                className={`relative cursor-pointer transition-all duration-300 rounded-2xl border-2 ${ isSelected ?'border-purple-500 shadow-2xl shadow-purple-500/25'
                       : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
                   }
                   ${loading && !isSelected ? 'opacity-50' : ''}
@@ -271,8 +267,7 @@ export function SalonDemoAuth() {
               >
                 {/* Role-specific gradient background */}
                 <div
-                  className={`absolute inset-0 opacity-5 bg-gradient-to-br
-                  ${user.role === 'Owner' ? 'from-purple-500 to-pink-500' : ''}
+                  className={`absolute inset-0 opacity-5 bg-gradient-to-br ${user.role ==='Owner' ? 'from-purple-500 to-pink-500' : ''}
                   ${user.role === 'Receptionist' ? 'from-blue-500 to-cyan-500' : ''}
                   ${user.role === 'Accountant' ? 'from-green-500 to-emerald-500' : ''}
                   ${user.role === 'Administrator' ? 'from-orange-500 to-red-500' : ''}
@@ -283,8 +278,7 @@ export function SalonDemoAuth() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div
-                        className={`h-14 w-14 rounded-2xl flex items-center justify-center
-                        ${user.role === 'Owner' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : ''}
+                        className={`h-14 w-14 rounded-2xl flex items-center justify-center ${user.role ==='Owner' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : ''}
                         ${user.role === 'Receptionist' ? 'bg-gradient-to-br from-blue-500 to-cyan-500' : ''}
                         ${user.role === 'Accountant' ? 'bg-gradient-to-br from-green-500 to-emerald-500' : ''}
                         ${user.role === 'Administrator' ? 'bg-gradient-to-br from-orange-500 to-red-500' : ''}
@@ -293,13 +287,13 @@ export function SalonDemoAuth() {
                         <user.icon className="h-7 w-7 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                        <h3 className="text-xl font-bold ink dark:text-white">
                           {user.fullName}
                         </h3>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                        <p className="text-sm font-medium ink-muted dark:text-gray-300">
                           {user.role}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs dark:ink-muted">
                           {user.department}
                         </p>
                       </div>
@@ -309,23 +303,23 @@ export function SalonDemoAuth() {
                     )}
                   </div>
 
-                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+                  <p className="ink dark:text-gray-300 text-sm mb-4">
                     {user.description}
                   </p>
 
                   {/* Capabilities list with smooth expansion */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-48' : 'max-h-0'}`}
+                    className={`overflow-hidden transition-all duration-300 ${isExpanded ?'max-h-48' : 'max-h-0'}`}
                   >
                     <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
+                      <h4 className="text-xs font-semibold dark:ink-muted uppercase mb-2">
                         Capabilities
                       </h4>
                       <div className="grid grid-cols-1 gap-1">
                         {user.capabilities.map((capability, idx) => (
                           <div key={idx} className="flex items-center gap-2">
                             <div className="h-1 w-1 rounded-full bg-purple-400" />
-                            <span className="text-xs text-gray-600 dark:text-gray-300">
+                            <span className="text-xs ink-muted dark:text-gray-300">
                               {capability}
                             </span>
                           </div>
@@ -337,7 +331,7 @@ export function SalonDemoAuth() {
                   {/* Login hint */}
                   {!isExpanded && (
                     <div className="absolute bottom-2 right-2">
-                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                      <span className="text-xs dark:ink-muted">
                         Click to login
                       </span>
                     </div>
@@ -349,10 +343,10 @@ export function SalonDemoAuth() {
         </div>
 
         <div className="mt-10 text-center space-y-2">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm dark:ink-muted">
             This is a demonstration environment with sample Hair Talkz salon data
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-500">
+          <p className="text-xs dark:ink-muted">
             WhatsApp integrations and external communications are simulated in demo mode
           </p>
 

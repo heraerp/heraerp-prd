@@ -131,7 +131,7 @@ export function StatusToast({ toasts, onRemove }: StatusToastProps) {
                     {toast.title}
                   </h4>
                   {toast.message && (
-                    <p className="text-sm mt-0.5 opacity-80" style={{ color: COLORS.lightText }}>
+                    <p className="text-sm mt-0.5" style={{ color: COLORS.lightText }}>
                       {toast.message}
                     </p>
                   )}
@@ -140,7 +140,7 @@ export function StatusToast({ toasts, onRemove }: StatusToastProps) {
                 {toast.type !== 'loading' && (
                   <button
                     onClick={() => onRemove(toast.id)}
-                    className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+                    className="flex-shrink-0 hover:opacity-100 transition-opacity"
                   >
                     <X className="w-4 h-4" style={{ color: COLORS.lightText }} />
                   </button>

@@ -60,7 +60,7 @@ export function RuleFilterBar({
       <div className="flex items-center gap-4">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ink-muted" />
           <Input
             placeholder="Search by key or title..."
             value={searchTerm}
@@ -129,13 +129,13 @@ export function RuleFilterBar({
       </div>
 
       {/* Results Summary */}
-      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <div className="flex items-center gap-2 text-sm dark:ink-muted">
         <span>Showing</span>
         <Badge variant="outline" className="text-violet-700 border-violet-300">
           {filteredCount}
         </Badge>
         <span>of</span>
-        <Badge variant="outline" className="text-gray-700 border-gray-300">
+        <Badge variant="outline" className="ink border-gray-300">
           {totalRules}
         </Badge>
         <span>rules</span>

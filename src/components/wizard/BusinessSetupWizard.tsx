@@ -405,9 +405,7 @@ export const BusinessSetupWizard: React.FC = () => {
         {WIZARD_STEPS.map((step, index) => (
           <div
             key={step.id}
-            className={`flex items-center space-x-1 p-2 rounded ${
-              index === currentStep
-                ? 'bg-primary text-primary-foreground'
+            className={`flex items-center space-x-1 p-2 rounded ${ index === currentStep ?'bg-primary text-primary-foreground'
                 : completedSteps.has(index)
                   ? 'bg-green-100 text-green-700'
                   : 'bg-muted text-muted-foreground'

@@ -137,7 +137,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
           </CardTitle>
           <div className="flex items-center gap-2">
             {lastUpdated && (
-              <span className="text-xs text-slate-500">{lastUpdated.toLocaleTimeString()}</span>
+              <span className="text-xs ink-muted">{lastUpdated.toLocaleTimeString()}</span>
             )}
             <button
               onClick={fetchPortfolioData}
@@ -145,7 +145,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
               disabled={loading}
             >
               <RefreshCcw
-                className={`h-3 w-3 text-muted-foreground ${loading ? 'animate-spin' : ''}`}
+                className={`h-3 w-3 text-muted-foreground ${loading ?'animate-spin' : ''}`}
               />
             </button>
           </div>
@@ -177,7 +177,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
                 <div className="flex items-center gap-3">
                   <div>
                     <div className="text-sm font-medium text-slate-200">{holding.symbol}</div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs ink-muted">
                       {holding.shares.toLocaleString()} shares @{' '}
                       {formatCurrency(holding.currentPrice)}
                     </div>
@@ -203,7 +203,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
         </div>
 
         {holdings.length === 0 && !loading && (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 ink-muted">
             <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
             <p>No holdings found</p>
             <Button variant="outline" size="sm" className="mt-2">

@@ -469,8 +469,7 @@ export function SuppliersManagement({
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
-          i < rating ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'
+        className={`h-4 w-4 ${ i < rating ?'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'
         }`}
       />
     ))
@@ -855,9 +854,7 @@ export function SuppliersManagement({
                           </div>
                           <div className="w-full bg-gray-700 rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full ${
-                                onTimeRate >= 95
-                                  ? 'bg-green-600'
+                              className={`h-2 rounded-full ${ onTimeRate >= 95 ?'bg-green-600'
                                   : onTimeRate >= 85
                                     ? 'bg-yellow-600'
                                     : 'bg-red-600'

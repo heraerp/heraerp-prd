@@ -571,7 +571,7 @@ export function ProductManager() {
               <div className="flex items-center space-x-2 pt-2">
                 <button
                   type="button"
-                  className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
+                  className="flex-1 px-3 py-1.5 text-sm font-medium ink bg-background border border-border rounded-md hover:bg-muted"
                   onClick={e => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -584,7 +584,7 @@ export function ProductManager() {
                 </button>
                 <button
                   type="button"
-                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-background border border-border rounded-md hover:bg-muted"
+                  className="px-3 py-1.5 text-sm font-medium ink bg-background border border-border rounded-md hover:bg-muted"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
@@ -628,7 +628,7 @@ export function ProductManager() {
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="name" className="block text-sm font-medium ink mb-1">
                     Product Name *
                   </label>
                   <input
@@ -645,7 +645,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="category"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Category *
                   </label>
@@ -669,7 +669,7 @@ export function ProductManager() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="brand" className="block text-sm font-medium ink mb-1">
                     Brand
                   </label>
                   <input
@@ -683,7 +683,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="model" className="block text-sm font-medium ink mb-1">
                     Model
                   </label>
                   <input
@@ -699,7 +699,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="manufacturer"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Manufacturer
                   </label>
@@ -719,7 +719,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="unit_of_measure"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Unit of Measure *
                   </label>
@@ -742,7 +742,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="standard_cost"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Standard Cost
                   </label>
@@ -761,7 +761,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="list_price"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     List Price
                   </label>
@@ -780,7 +780,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="lead_time_days"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Lead Time (Days)
                   </label>
@@ -799,7 +799,7 @@ export function ProductManager() {
               {/* Physical Properties */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="weight" className="block text-sm font-medium ink mb-1">
                     Weight
                   </label>
                   <input
@@ -817,7 +817,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="dimensions"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Dimensions
                   </label>
@@ -833,7 +833,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="color" className="block text-sm font-medium ink mb-1">
                     Color
                   </label>
                   <input
@@ -849,7 +849,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="material"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Material
                   </label>
@@ -874,7 +874,7 @@ export function ProductManager() {
                     onChange={handleInputChange}
                     className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Hazardous Material</span>
+                  <span className="text-sm ink">Hazardous Material</span>
                 </label>
 
                 <label className="flex items-center space-x-2">
@@ -885,7 +885,7 @@ export function ProductManager() {
                     onChange={handleInputChange}
                     className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Perishable</span>
+                  <span className="text-sm ink">Perishable</span>
                 </label>
               </div>
 
@@ -893,7 +893,7 @@ export function ProductManager() {
               <div>
                 <label
                   htmlFor="storage_requirements"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium ink mb-1"
                 >
                   Storage Requirements
                 </label>
@@ -912,7 +912,7 @@ export function ProductManager() {
               <div>
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium ink mb-1"
                 >
                   Description
                 </label>
@@ -934,14 +934,14 @@ export function ProductManager() {
                     setShowCreateModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
+                  className="px-4 py-2 ink bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled: disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -978,7 +978,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="edit_name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Product Name *
                   </label>
@@ -996,7 +996,7 @@ export function ProductManager() {
                 <div>
                   <label
                     htmlFor="edit_category"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium ink mb-1"
                   >
                     Category *
                   </label>
@@ -1026,14 +1026,14 @@ export function ProductManager() {
                     setShowEditModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 text-gray-700 bg-background border border-border rounded-lg hover:bg-muted"
+                  className="px-4 py-2 ink bg-background border border-border rounded-lg hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-4 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 disabled: disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {isSubmitting ? (
                     <>

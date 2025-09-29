@@ -153,7 +153,7 @@ export function HeraChatbot({
       {/* Chat Window */}
       {isOpen && (
         <Card
-          className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme === 'dark' ? 'bg-background text-foreground' : 'bg-background'}`}
+          className={`fixed ${positionClasses[position]} z-50 w-96 h-[600px] flex flex-col shadow-2xl ${theme ==='dark' ? 'bg-background text-foreground' : 'bg-background'}`}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-600 to-pink-600 text-foreground rounded-t-lg">
@@ -163,7 +163,7 @@ export function HeraChatbot({
               </div>
               <div>
                 <h3 className="font-semibold">HERA AI Assistant</h3>
-                <p className="text-xs opacity-90">Powered by Universal Architecture</p>
+                <p className="text-xs">Powered by Universal Architecture</p>
               </div>
             </div>
             <Button
@@ -182,12 +182,11 @@ export function HeraChatbot({
               {messages.map(message => (
                 <div
                   key={message.id}
-                  className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-2 ${message.role ==='user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {message.role !== 'user' && (
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.role === 'error' ? 'bg-red-100' : 'bg-purple-100'
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${ message.role ==='error' ? 'bg-red-100' : 'bg-purple-100'
                       }`}
                     >
                       {message.role === 'error' ? (
@@ -198,10 +197,9 @@ export function HeraChatbot({
                     </div>
                   )}
 
-                  <div className={`max-w-[80%] ${message.role === 'user' ? 'order-1' : 'order-2'}`}>
+                  <div className={`max-w-[80%] ${message.role ==='user' ? 'order-1' : 'order-2'}`}>
                     <div
-                      className={`rounded-lg px-4 py-2 ${
-                        message.role === 'user'
+                      className={`rounded-lg px-4 py-2 ${ message.role ==='user'
                           ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-foreground'
                           : message.role === 'error'
                             ? 'bg-red-50 text-red-900 border border-red-200'
@@ -213,7 +211,7 @@ export function HeraChatbot({
                       <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                     </div>
                     <p
-                      className={`text-xs mt-1 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+                      className={`text-xs mt-1 ${theme ==='dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
                     >
                       {message.timestamp.toLocaleTimeString()}
                     </p>
@@ -233,7 +231,7 @@ export function HeraChatbot({
                     <Bot className="w-5 h-5 text-purple-600" />
                   </div>
                   <div
-                    className={`rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-muted' : 'bg-muted'}`}
+                    className={`rounded-lg px-4 py-2 ${theme ==='dark' ? 'bg-muted' : 'bg-muted'}`}
                   >
                     <Loader2 className="w-4 h-4 animate-spin" />
                   </div>
@@ -267,7 +265,7 @@ export function HeraChatbot({
               </Button>
             </div>
             <p
-              className={`text-xs mt-2 ${theme === 'dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
+              className={`text-xs mt-2 ${theme ==='dark' ? 'text-muted-foreground' : 'text-muted-foreground'}`}
             >
               Powered by HERA Universal Architecture •{' '}
               {organizationId === DEFAULT_ORG_ID ? 'Test Mode' : currentOrganization?.name}

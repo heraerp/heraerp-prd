@@ -168,7 +168,7 @@ export function TransactionsTable({
                 return (
                   <React.Fragment key={txn.id}>
                     <tr
-                      className={`hover:bg-muted dark:hover:bg-muted-foreground/10/50 ${hasDetails ? 'cursor-pointer' : ''}`}
+                      className={`hover:bg-muted dark:hover:bg-muted-foreground/10/50 ${hasDetails ?'cursor-pointer' : ''}`}
                       onClick={() => hasDetails && toggleRow(txn.id)}
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -195,8 +195,7 @@ export function TransactionsTable({
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <StatusIcon
-                            className={`w-4 h-4 ${
-                              txn.transaction_status === 'passed'
+                            className={`w-4 h-4 ${ txn.transaction_status ==='passed'
                                 ? 'text-green-500'
                                 : txn.transaction_status === 'failed'
                                   ? 'text-red-500'
@@ -208,8 +207,7 @@ export function TransactionsTable({
                             }`}
                           />
                           <span
-                            className={`text-sm ${
-                              txn.transaction_status === 'passed'
+                            className={`text-sm ${ txn.transaction_status ==='passed'
                                 ? 'text-green-700 dark:text-green-400'
                                 : txn.transaction_status === 'failed'
                                   ? 'text-red-700 dark:text-red-400'

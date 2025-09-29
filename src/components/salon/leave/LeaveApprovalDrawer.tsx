@@ -199,7 +199,7 @@ export function LeaveApprovalDrawer({
                 Balance Impact
               </h4>
             </div>
-            <p className="text-sm opacity-70">
+            <p className="text-sm">
               Current balance: 12 days remaining
               <br />
               After approval: {12 - (request.metadata?.days || 0)} days remaining
@@ -217,7 +217,7 @@ export function LeaveApprovalDrawer({
                 No Conflicts
               </h4>
             </div>
-            <p className="text-sm opacity-70">No appointments scheduled during this period</p>
+            <p className="text-sm">No appointments scheduled during this period</p>
           </div>
 
           {/* Approval Notes */}
@@ -311,7 +311,7 @@ export function LeaveApprovalDrawer({
         )}
 
         {request.status === 'pending' && (
-          <p className="text-xs opacity-50 mt-4">Press 'a' to approve, 'r' to reject</p>
+          <p className="text-xs mt-4">Press 'a' to approve, 'r' to reject</p>
         )}
       </SheetContent>
     </Sheet>

@@ -285,7 +285,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
       {/* Animated background pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,var(--ink-primary)_70%,transparent_100%)]" />
 
       {/* Glassmorphic orbs for depth */}
       <div className="absolute inset-0 overflow-hidden">
@@ -360,9 +360,7 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             return (
               <Card
                 key={app.id}
-                className={`bg-background/80 dark:bg-background/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${
-                  isSelected
-                    ? 'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl'
+                className={`bg-background/80 dark:bg-background/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${ isSelected ?'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl'
                     : 'border border-border/20 dark:border-border/50 hover:border-blue-300/50 dark:hover:border-blue-600/50 hover:shadow-xl'
                 }`}
                 onClick={() => toggleApp(app.id)}

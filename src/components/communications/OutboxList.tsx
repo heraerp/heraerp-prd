@@ -72,7 +72,7 @@ export function OutboxList() {
       case 'sending':
         return <Send className="h-3 w-3 text-blue-600" />
       default:
-        return <AlertCircle className="h-3 w-3 text-gray-600" />
+        return <AlertCircle className="h-3 w-3 ink-muted" />
     }
   }
 

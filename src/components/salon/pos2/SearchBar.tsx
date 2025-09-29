@@ -312,7 +312,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-500 dark:text-slate-300" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ink-muted dark:text-slate-300" />
         <Input
           ref={searchRef}
           id="pos-search-input"
@@ -323,7 +323,7 @@ export function SearchBar({ organizationId, onSelect }: SearchBarProps) {
           onFocus={() => {
             if (results.length > 0) setShowResults(true)
           }}
-          className="pl-10 pr-4 py-3 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+          className="pl-10 pr-4 py-3 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-300 dark:border-slate-600 dark:text-white placeholder: dark:placeholder:ink-muted"
         />
         {loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">

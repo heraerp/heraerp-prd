@@ -130,7 +130,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
 
         {/* Department Coverage */}
         <div className="mb-6">
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-sm font-medium ink dark:text-gray-300 mb-3">
             Department Coverage
           </h4>
           <div className="grid grid-cols-2 gap-3">
@@ -164,7 +164,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
 
         {/* Team Members on Leave */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-sm font-medium ink dark:text-gray-300 mb-3">
             Team Members
           </h4>
           <div className="space-y-3">
@@ -192,9 +192,7 @@ export function TeamLeaveOverview({ organizationId }: TeamLeaveOverviewProps) {
                     {formatDate(member.startDate, 'MMM d')} - {formatDate(member.endDate, 'MMM d')}
                   </span>
                   <span
-                    className={`px-2 py-1 text-xs font-medium rounded-md border ${getStatusStyle(
-                      member.status
-                    )}`}
+                    className={`px-2 py-1 text-xs font-medium rounded-md border ${getStatusStyle( member.status )}`}
                   >
                     {member.status === 'current' ? 'On Leave' : 'Upcoming'}
                   </span>

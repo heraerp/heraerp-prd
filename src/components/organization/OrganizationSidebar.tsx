@@ -125,9 +125,7 @@ export function OrganizationSidebar() {
                   <Button
                     variant={isActive(item.href) ? 'secondary' : 'ghost'}
                     size="icon"
-                    className={`relative ${
-                      isActive(item.href)
-                        ? 'bg-blue-100 text-primary hover:bg-blue-100'
+                    className={`relative ${ isActive(item.href) ?'bg-blue-100 text-primary hover:bg-blue-100'
                         : 'hover:bg-muted'
                     }`}
                   >

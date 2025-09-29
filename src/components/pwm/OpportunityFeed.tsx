@@ -178,14 +178,14 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
             {/* Metrics */}
             <div className="flex items-center gap-4 mb-4">
               <div>
-                <p className="text-xs text-slate-500">Potential Impact</p>
+                <p className="text-xs ink-muted">Potential Impact</p>
                 <p className="text-lg font-bold text-emerald-400">
                   +{formatImpact(opportunity.impact)}
                 </p>
               </div>
               <div className="h-8 w-px bg-slate-700" />
               <div>
-                <p className="text-xs text-slate-500">AI Confidence</p>
+                <p className="text-xs ink-muted">AI Confidence</p>
                 <p className="text-lg font-bold text-foreground">
                   {(opportunity.confidence * 100).toFixed(0)}%
                 </p>
@@ -194,7 +194,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
                 <>
                   <div className="h-8 w-px bg-slate-700" />
                   <div>
-                    <p className="text-xs text-slate-500">Timeframe</p>
+                    <p className="text-xs ink-muted">Timeframe</p>
                     <p className="text-sm font-medium text-foreground">
                       {(opportunity as any).timeframe}
                     </p>
@@ -234,7 +234,7 @@ export function OpportunityFeed({ organizationId, insights }: OpportunityFeedPro
             <p className="text-sm text-slate-300">
               AI continuously scans 50,000+ data points to identify opportunities
             </p>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs ink-muted mt-1">
               Last scan: 2 minutes ago • Next scan: in 58 minutes
             </p>
           </div>

@@ -20,16 +20,16 @@ export default function FreeGuidePage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left Column - Benefits */}
           <div>
-            <h1 className="mb-6 text-4xl font-bold text-gray-900 sm:text-5xl">
+            <h1 className="mb-6 text-4xl font-bold ink sm:text-5xl">
               Your Free SMB Growth Guide
             </h1>
-            <p className="mb-8 text-xl text-gray-600">
+            <p className="mb-8 text-xl ink-muted">
               Join 3,000+ UK business owners who've downloaded our practical guide to streamline
               operations and boost profitability.
             </p>
 
             <div className="mb-8 space-y-4">
-              <h2 className="text-2xl font-semibold text-gray-900">What's Inside:</h2>
+              <h2 className="text-2xl font-semibold ink">What's Inside:</h2>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <span className="mt-1 text-green-500">✓</span>
@@ -68,21 +68,21 @@ export default function FreeGuidePage() {
             </div>
 
             <div className="rounded-xl bg-white/50 p-6">
-              <h3 className="mb-3 font-semibold text-gray-900">What Readers Say:</h3>
-              <blockquote className="italic text-gray-700">
+              <h3 className="mb-3 font-semibold ink">What Readers Say:</h3>
+              <blockquote className="italic ink">
                 "This guide helped us reduce month-end from 5 days to 1 day. The cash flow templates
                 alone were worth downloading."
               </blockquote>
-              <p className="mt-2 text-sm text-gray-600">— Sarah M., Restaurant Owner, Manchester</p>
+              <p className="mt-2 text-sm ink-muted">— Sarah M., Restaurant Owner, Manchester</p>
             </div>
           </div>
 
           {/* Right Column - Form */}
           <div className="rounded-2xl bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-semibold text-gray-900">Get Your Free Guide</h2>
+            <h2 className="mb-6 text-2xl font-semibold ink">Get Your Free Guide</h2>
             <LeadForm formId="free-guide-page" />
 
-            <div className="mt-8 space-y-2 text-center text-sm text-gray-600">
+            <div className="mt-8 space-y-2 text-center text-sm ink-muted">
               <p>🎯 Average read time: 18 minutes</p>
               <p>📊 Includes: Templates, checklists, calculators</p>
               <p>🚀 Instant download to your email</p>
@@ -92,7 +92,7 @@ export default function FreeGuidePage() {
 
         {/* Trust Signals */}
         <div className="mt-16 border-t pt-8">
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-600">
+          <div className="flex flex-wrap justify-center gap-8 text-sm ink-muted">
             <span className="flex items-center gap-2">
               <span className="text-green-500">✓</span>
               500+ UK businesses

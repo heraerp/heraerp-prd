@@ -265,7 +265,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
               <div className="space-y-2">
                 {lastAllocation.allocations.map((alloc: any, idx: number) => (
                   <div key={idx} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-700">{alloc.cost_pool}</span>
+                    <span className="ink">{alloc.cost_pool}</span>
                     <div className="text-right">
                       <span className="font-medium">${alloc.total_allocated.toLocaleString()}</span>
                       <span className="text-muted-foreground ml-2">

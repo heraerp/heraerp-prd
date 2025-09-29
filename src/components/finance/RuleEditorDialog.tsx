@@ -170,7 +170,7 @@ export function RuleEditorDialog({
                 <Badge variant="outline">{formData.version}</Badge>
               </div>
               {mode === 'edit' && (
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs dark:ink-muted">
                   Key cannot be changed. Use "Clone to new version" for breaking changes.
                 </p>
               )}
@@ -302,7 +302,7 @@ export function RuleEditorDialog({
                 className="font-mono text-sm"
               />
               <div className="flex items-center justify-between">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs dark:ink-muted">
                   Optional conditional logic for when this rule applies
                 </p>
                 <Button type="button" size="sm" variant="outline" onClick={formatConditions}>

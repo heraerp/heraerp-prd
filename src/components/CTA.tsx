@@ -38,10 +38,7 @@ function CTAContent({ city, variants = [], className = '' }: CTAProps) {
 
   return (
     <aside
-      className={`
-        fixed bottom-0 left-0 right-0 z-40 
-        transform transition-transform duration-500
-        ${isVisible ? 'translate-y-0' : 'translate-y-full'}
+      className={`fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-500 ${isVisible ?'translate-y-0' : 'translate-y-full'}
         ${className}
       `}
     >
@@ -49,41 +46,29 @@ function CTAContent({ city, variants = [], className = '' }: CTAProps) {
         <div className="mx-auto max-w-7xl px-4 py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-center sm:text-left">
-              <strong className="block text-lg font-bold text-gray-900 dark:text-gray-100">
+              <strong className="block text-lg font-bold ink dark:text-gray-100">
                 Ready to transform your {city} business?
               </strong>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm ink-muted dark:text-gray-300">
                 Join 500+ UK businesses already saving 15+ hours per week
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Link
                 href={`/free-guide?${utm}`}
-                className="
-                  rounded-xl border-2 border-gray-200 dark:border-gray-600 
-                  bg-white dark:bg-gray-800 px-6 py-3 
-                  text-center font-semibold text-gray-700 dark:text-gray-200
-                  transition-all hover:border-gray-300 dark:hover:border-gray-500 
-                  hover:bg-gray-50 dark:hover:bg-gray-700
-                  hover:shadow-md
-                "
+                className="rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 px-6 py-3 text-center font-semibold ink dark:text-gray-200 transition-all hover:border-gray-300 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md"
               >
                 {ctaOptions[1]}
               </Link>
               <Link
                 href={`/book-a-meeting?${utm}`}
-                className="
-                  rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 
-                  px-6 py-3 text-center font-semibold text-white 
-                  transition-all hover:from-blue-700 hover:to-indigo-700
-                  hover:shadow-lg
-                "
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-center font-semibold text-white transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg"
               >
                 {ctaOptions[0]}
               </Link>
             </div>
           </div>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400 sm:justify-start">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-xs dark:ink-muted sm:justify-start">
             <span>✓ No credit card required</span>
             <span>✓ 14-day free trial</span>
             <span>✓ Cancel anytime</span>

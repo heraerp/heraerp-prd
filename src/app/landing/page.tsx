@@ -151,25 +151,25 @@ export default function LandingPage() {
               <div className="hidden md:flex items-center space-x-8">
                 <a
                   href="#proof"
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
+                  className="ink dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   The Proof
                 </a>
                 <a
                   href="#process"
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
+                  className="ink dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   How It Works
                 </a>
                 <a
                   href="#industries"
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
+                  className="ink dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   Industries
                 </a>
                 <a
                   href="#testimonials"
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
+                  className="ink dark:text-gray-300 hover:text-primary dark:hover:text-blue-400 font-medium transition-colors"
                 >
                   Success Stories
                 </a>
@@ -189,7 +189,7 @@ export default function LandingPage() {
                   Two Weeks
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-700 font-medium mb-8">
+              <p className="text-xl md:text-2xl ink font-medium mb-8">
                 Stop imagining. Start seeing your actual business running on HERA.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
@@ -246,7 +246,7 @@ export default function LandingPage() {
                     </span>
                   </div>
                 </div>
-                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                <ul className="space-y-3 ink dark:text-gray-300">
                   <li className="flex items-center gap-3 text-base font-medium">
                     <span className="text-green-500 text-xl">✓</span> Your actual business data
                   </li>
@@ -317,7 +317,7 @@ export default function LandingPage() {
                     tracking, staff scheduling - everything was there and working exactly how we
                     operate."
                   </p>
-                  <p className="text-gray-700 dark:text-gray-300 font-semibold text-base">
+                  <p className="ink dark:text-gray-300 font-semibold text-base">
                     Mario Rossi, Owner of Mario's Authentic Italian
                   </p>
                 </div>
@@ -337,8 +337,7 @@ export default function LandingPage() {
               {processSteps.map((step, index) => (
                 <Card
                   key={index}
-                  className={`p-6 cursor-pointer transition-all duration-300 ${
-                    activeStep === index ? 'border-2 border-violet-500 shadow-xl' : ''
+                  className={`p-6 cursor-pointer transition-all duration-300 ${ activeStep === index ?'border-2 border-violet-500 shadow-xl' : ''
                   }`}
                   onClick={() => setActiveStep(index)}
                 >
@@ -347,7 +346,7 @@ export default function LandingPage() {
                     <step.icon className="h-8 w-8 text-violet-600" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-100 mb-2">{step.title}</h3>
-                  <p className="text-gray-700 mb-4">{step.description}</p>
+                  <p className="ink mb-4">{step.description}</p>
                   {activeStep === index && (
                     <div className="mt-4 pt-4 border-t border-border">
                       <p className="text-sm text-muted-foreground">{step.details}</p>
@@ -464,7 +463,7 @@ export default function LandingPage() {
                       <Star key={j} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="ink mb-4">
                     "The speed is unbelievable. We went from initial consultation to seeing our
                     entire operation running on HERA in just 10 days."
                   </p>
@@ -481,19 +480,19 @@ export default function LandingPage() {
 
             {/* Trust Badges */}
             <div className="flex flex-wrap justify-center items-center gap-8">
-              <div className="flex items-center gap-2 text-gray-700">
+              <div className="flex items-center gap-2 ink">
                 <Shield className="h-6 w-6" />
                 <span className="font-semibold">SOC 2 Certified</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-700">
+              <div className="flex items-center gap-2 ink">
                 <Lock className="h-6 w-6" />
                 <span className="font-semibold">GDPR Compliant</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-700">
+              <div className="flex items-center gap-2 ink">
                 <Award className="h-6 w-6" />
                 <span className="font-semibold">ISO 27001</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-700">
+              <div className="flex items-center gap-2 ink">
                 <Globe className="h-6 w-6" />
                 <span className="font-semibold">99.9% Uptime</span>
               </div>
@@ -511,7 +510,7 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8">
               <Card className="p-6">
                 <h3 className="text-xl font-bold text-gray-100 mb-4">6 Universal Tables</h3>
-                <p className="text-gray-700 mb-4">
+                <p className="ink mb-4">
                   Our revolutionary architecture handles infinite complexity with just 6 tables,
                   eliminating the need for custom schemas.
                 </p>
@@ -534,7 +533,7 @@ export default function LandingPage() {
 
               <Card className="p-6">
                 <h3 className="text-xl font-bold text-gray-100 mb-4">Smart Code System</h3>
-                <p className="text-gray-700 mb-4">
+                <p className="ink mb-4">
                   Every business process is encoded with intelligent patterns that enable instant
                   configuration and automation.
                 </p>
@@ -553,7 +552,7 @@ export default function LandingPage() {
 
               <Card className="p-6">
                 <h3 className="text-xl font-bold text-gray-100 mb-4">AI-Native Architecture</h3>
-                <p className="text-gray-700 mb-4">
+                <p className="ink mb-4">
                   Built from the ground up with AI integration, enabling intelligent automation and
                   continuous optimization.
                 </p>
@@ -581,7 +580,7 @@ export default function LandingPage() {
               {faqs.map((faq, index) => (
                 <Card key={index} className="p-6">
                   <h3 className="text-lg font-semibold text-gray-100 mb-3">{faq.question}</h3>
-                  <p className="text-gray-700">{faq.answer}</p>
+                  <p className="ink">{faq.answer}</p>
                 </Card>
               ))}
             </div>

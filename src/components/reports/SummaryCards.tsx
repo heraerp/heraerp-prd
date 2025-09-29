@@ -140,29 +140,29 @@ export function SummaryCard({
       >
         {isClickable && (
           <div className="absolute top-2 right-2 opacity-50 group-hover:opacity-100 transition-opacity">
-            <ArrowUpRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+            <ArrowUpRight className="h-4 w-4 dark:ink-muted" />
           </div>
         )}
 
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
+          <CardTitle className="flex items-center justify-between text-sm font-medium ink dark:text-gray-300">
             <span className="flex items-center gap-2">
               {icon}
               {title}
             </span>
-            {isClickable && <Eye className="h-3 w-3 text-gray-400" />}
+            {isClickable && <Eye className="h-3 w-3 ink-muted" />}
           </CardTitle>
         </CardHeader>
 
         <CardContent className="pt-0">
           <div className="space-y-2">
             {/* Main Value */}
-            <div className="text-2xl font-bold !text-gray-900 dark:!text-gray-100">
+            <div className="text-2xl font-bold !ink dark:!text-gray-100">
               {typeof value === 'number' ? formatValue(value) : value}
             </div>
 
             {/* Subtitle */}
-            {subtitle && <p className="text-xs text-gray-600 dark:text-gray-400">{subtitle}</p>}
+            {subtitle && <p className="text-xs dark:ink-muted">{subtitle}</p>}
 
             {/* Trend Indicator */}
             {trend && (
@@ -180,13 +180,13 @@ export function SummaryCard({
                     {trend.value.toFixed(1)}%
                   </span>
                 </Badge>
-                <span className="text-xs text-gray-600 dark:text-gray-400">{trend.label}</span>
+                <span className="text-xs dark:ink-muted">{trend.label}</span>
               </div>
             )}
 
             {/* Comparison */}
             {comparison && (
-              <div className="text-xs text-gray-600 dark:text-gray-400">
+              <div className="text-xs dark:ink-muted">
                 vs {formatValue(comparison.value, comparison.type)} {comparison.label}
               </div>
             )}

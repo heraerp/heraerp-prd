@@ -1351,7 +1351,7 @@ export function HeraDnaUniversalResourceCalendar({
                 onCheckedChange={setShowLeaveRequests}
                 className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
               />
-              <span className="text-gray-700 dark:text-gray-300">Show leave requests</span>
+              <span className="ink dark:text-gray-300">Show leave requests</span>
             </div>
           </div>
         </div>
@@ -1400,7 +1400,7 @@ export function HeraDnaUniversalResourceCalendar({
                 </Button>
                 <Button
                   variant="outline"
-                  className="text-sm font-medium min-w-[120px] text-gray-700 dark:text-gray-200"
+                  className="text-sm font-medium min-w-[120px] ink dark:text-gray-200"
                   onClick={() => setSelectedDate(new Date())}
                 >
                   Today
@@ -1518,7 +1518,7 @@ export function HeraDnaUniversalResourceCalendar({
                     key={slot.time}
                     className="h-16 border-b border-gray-100 dark:border-gray-800 px-2 py-1"
                   >
-                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="text-xs font-semibold ink dark:text-gray-300">
                       {slot.displayTime}
                     </span>
                   </div>

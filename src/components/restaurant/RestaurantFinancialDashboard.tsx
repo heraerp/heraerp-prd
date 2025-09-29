@@ -223,7 +223,7 @@ export function RestaurantFinancialDashboard() {
                 </p>
                 {getRevenueTrend(metrics.revenue.trend)}
               </div>
-              <DollarSign className="w-8 h-8 text-orange-400 opacity-50" />
+              <DollarSign className="w-8 h-8 text-orange-400" />
             </div>
           </CardContent>
         </Card>
@@ -242,7 +242,7 @@ export function RestaurantFinancialDashboard() {
                   Margin: {metrics.profitability.netMargin}%
                 </p>
               </div>
-              <Target className="w-8 h-8 text-green-400 opacity-50" />
+              <Target className="w-8 h-8 text-green-400" />
             </div>
           </CardContent>
         </Card>
@@ -261,7 +261,7 @@ export function RestaurantFinancialDashboard() {
                   ${metrics.costs.food.toLocaleString()}
                 </p>
               </div>
-              <Package className="w-8 h-8 text-amber-400 opacity-50" />
+              <Package className="w-8 h-8 text-amber-400" />
             </div>
           </CardContent>
         </Card>
@@ -280,7 +280,7 @@ export function RestaurantFinancialDashboard() {
                   ${metrics.costs.labor.toLocaleString()}
                 </p>
               </div>
-              <Users className="w-8 h-8 text-blue-400 opacity-50" />
+              <Users className="w-8 h-8 text-blue-400" />
             </div>
           </CardContent>
         </Card>

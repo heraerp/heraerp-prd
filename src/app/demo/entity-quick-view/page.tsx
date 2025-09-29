@@ -147,10 +147,10 @@ export default function EntityQuickViewDemo() {
     <div className="container mx-auto py-8 px-4 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <h1 className="text-3xl font-bold ink dark:text-gray-100 mb-2">
           EntityQuickView Component Demo
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="dark:ink-muted">
           Hover over or click entities to see quick preview information. Long-press on mobile
           devices.
         </p>
@@ -172,7 +172,7 @@ export default function EntityQuickViewDemo() {
               onChange={e => setCustomDelay(Number(e.target.value))}
               className="w-full"
             />
-            <div className="text-xs text-gray-500 mt-1">{customDelay}ms</div>
+            <div className="text-xs ink-muted mt-1">{customDelay}ms</div>
           </div>
 
           <div>
@@ -260,10 +260,10 @@ export default function EntityQuickViewDemo() {
                   )}
 
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                    <h4 className="font-medium ink dark:text-gray-100">
                       {entity.entity_name}
                     </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm dark:ink-muted">
                       {entity.entity_code} • {entity.entity_type}
                     </p>
                   </div>
@@ -288,7 +288,7 @@ export default function EntityQuickViewDemo() {
                     <Package className="w-8 h-8 text-green-500" />
                     <div>
                       <h3 className="font-semibold text-lg">{entity.entity_name}</h3>
-                      <p className="text-sm text-gray-500">SKU: {entity.dynamic_fields?.sku}</p>
+                      <p className="text-sm ink-muted">SKU: {entity.dynamic_fields?.sku}</p>
                     </div>
                   </div>
                 </EntityQuickViewHeader>
@@ -299,20 +299,20 @@ export default function EntityQuickViewDemo() {
                       <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                         {formatCurrency(entity.dynamic_fields?.price || 0)}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm dark:ink-muted">
                         Cost: {formatCurrency(entity.dynamic_fields?.cost || 0)}
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">In Stock</span>
+                      <span className="text-sm dark:ink-muted">In Stock</span>
                       <span className="font-medium">
                         {entity.dynamic_fields?.stock_quantity} units
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Margin</span>
+                      <span className="text-sm dark:ink-muted">Margin</span>
                       <span className="font-medium text-green-600 dark:text-green-400">
                         {(
                           (1 -
@@ -337,10 +337,10 @@ export default function EntityQuickViewDemo() {
           >
             <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800 cursor-pointer hover:shadow-lg transition-shadow">
               <Package className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+              <h4 className="font-semibold ink dark:text-gray-100 mb-1">
                 Custom Product Preview
               </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm dark:ink-muted">
                 Hover to see custom rendered content
               </p>
             </div>
@@ -348,7 +348,7 @@ export default function EntityQuickViewDemo() {
 
           {/* Inline Example */}
           <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm dark:ink-muted mb-2">
               EntityQuickView also works inline with text. For example,{' '}
               <EntityQuickView
                 entity={DEMO_ENTITIES[0]}
@@ -371,10 +371,10 @@ export default function EntityQuickViewDemo() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                 <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium dark:ink-muted uppercase tracking-wider">
                       Entity
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium dark:ink-muted uppercase tracking-wider">
                       Type
                     </th>
                   </tr>
@@ -391,12 +391,12 @@ export default function EntityQuickViewDemo() {
                           showRelated={false}
                           onAction={handleAction}
                         >
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 cursor-help hover:text-blue-600 dark:hover:text-blue-400">
+                          <span className="text-sm font-medium ink dark:text-gray-100 cursor-help hover:text-blue-600 dark:hover:text-blue-400">
                             {entity.entity_name}
                           </span>
                         </EntityQuickView>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                      <td className="px-4 py-3 text-sm dark:ink-muted">
                         {entity.entity_type}
                       </td>
                     </tr>

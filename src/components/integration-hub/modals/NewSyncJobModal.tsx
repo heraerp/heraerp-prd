@@ -207,9 +207,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                 {(['full', 'incremental', 'delta'] as const).map(type => (
                   <Card
                     key={type}
-                    className={`p-3 cursor-pointer transition-all ${
-                      syncType === type
-                        ? 'ring-2 ring-primary border-primary'
+                    className={`p-3 cursor-pointer transition-all ${ syncType === type ?'ring-2 ring-primary border-primary'
                         : 'hover:border-primary/50'
                     }`}
                     onClick={() => setSyncType(type)}
@@ -234,9 +232,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                 {(['inbound', 'outbound', 'bidirectional'] as const).map(direction => (
                   <Card
                     key={direction}
-                    className={`p-3 cursor-pointer transition-all ${
-                      syncDirection === direction
-                        ? 'ring-2 ring-primary border-primary'
+                    className={`p-3 cursor-pointer transition-all ${ syncDirection === direction ?'ring-2 ring-primary border-primary'
                         : 'hover:border-primary/50'
                     }`}
                     onClick={() => setSyncDirection(direction)}
@@ -256,8 +252,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
               <Label>Schedule Type</Label>
               <div className="grid grid-cols-3 gap-3 mt-2">
                 <Card
-                  className={`p-3 cursor-pointer transition-all ${
-                    scheduleType === 'manual'
+                  className={`p-3 cursor-pointer transition-all ${ scheduleType ==='manual'
                       ? 'ring-2 ring-primary border-primary'
                       : 'hover:border-primary/50'
                   }`}
@@ -270,8 +265,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                 </Card>
 
                 <Card
-                  className={`p-3 cursor-pointer transition-all ${
-                    scheduleType === 'interval'
+                  className={`p-3 cursor-pointer transition-all ${ scheduleType ==='interval'
                       ? 'ring-2 ring-primary border-primary'
                       : 'hover:border-primary/50'
                   }`}
@@ -284,8 +278,7 @@ export function NewSyncJobModal({ open, onClose, organizationId }: NewSyncJobMod
                 </Card>
 
                 <Card
-                  className={`p-3 cursor-pointer transition-all ${
-                    scheduleType === 'cron'
+                  className={`p-3 cursor-pointer transition-all ${ scheduleType ==='cron'
                       ? 'ring-2 ring-primary border-primary'
                       : 'hover:border-primary/50'
                   }`}

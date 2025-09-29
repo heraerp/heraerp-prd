@@ -51,11 +51,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map(toast => (
           <div
             key={toast.id}
-            className={`
-              relative flex items-start gap-3 p-4 pr-8 rounded-lg shadow-lg
-              transition-all duration-300 ease-in-out transform translate-x-0
-              ${
-                toast.variant === 'destructive'
+            className={`relative flex items-start gap-3 p-4 pr-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform translate-x-0 ${ toast.variant ==='destructive'
                   ? 'bg-red-600 text-foreground'
                   : 'bg-background text-gray-100 border border-border'
               }
@@ -65,7 +61,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               {toast.title && <div className="font-semibold">{toast.title}</div>}
               {toast.description && (
                 <div
-                  className={`text-sm ${toast.variant === 'destructive' ? 'text-red-100' : 'text-muted-foreground'}`}
+                  className={`text-sm ${toast.variant ==='destructive' ? 'text-red-100' : 'text-muted-foreground'}`}
                 >
                   {toast.description}
                 </div>
@@ -73,9 +69,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             </div>
             <button
               onClick={() => dismiss(toast.id)}
-              className={`
-                absolute top-2 right-2 p-1 rounded-md
-                ${toast.variant === 'destructive' ? 'hover:bg-red-700' : 'hover:bg-muted'}
+              className={`absolute top-2 right-2 p-1 rounded-md ${toast.variant ==='destructive' ? 'hover:bg-red-700' : 'hover:bg-muted'}
               `}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

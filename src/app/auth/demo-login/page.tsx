@@ -154,7 +154,7 @@ function DemoLoginContent() {
               <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
             </div>
             <h2 className="text-xl font-semibold mb-2">Setting up demo environment</h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="dark:ink-muted">
               Please wait while we prepare your demo experience...
             </p>
           </div>
@@ -178,7 +178,7 @@ function DemoLoginContent() {
               </svg>
             </div>
             <h2 className="text-xl font-semibold mb-2">Demo ready!</h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="dark:ink-muted">
               Redirecting you to the demo dashboard...
             </p>
           </div>
@@ -202,7 +202,7 @@ function DemoLoginContent() {
               </svg>
             </div>
             <h2 className="text-xl font-semibold mb-2">Demo setup failed</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{errorMessage}</p>
+            <p className="dark:ink-muted mb-4">{errorMessage}</p>
             <button
               onClick={() => router.push('/demo')}
               className="text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
@@ -223,7 +223,7 @@ export default function DemoLoginPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-purple-600" />
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+            <p className="mt-2 dark:ink-muted">Loading...</p>
           </div>
         </div>
       }
