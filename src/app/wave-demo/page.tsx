@@ -1,7 +1,7 @@
 'use client'
 
 import WaveBackground from '@/components/ui/WaveBackground'
-import { WaveSection, WaveHero, WaveFeatures } from '@/components/ui/WaveSection'
+import WaveSection, { WaveHero, WaveFeatures } from '@/components/ui/WaveSection'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
