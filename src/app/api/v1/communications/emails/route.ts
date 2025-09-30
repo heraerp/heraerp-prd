@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-)
+// Initialize Supabase client conditionally
+const getSupabaseClient = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_KEY
+  
+  if (!url || !key) {
+    throw new Error('Supabase configuration missing')
+  }
+  
+  return createClient(url, key)
+}
 
 const querySchema = z.object({
   organizationId: z.string(),
@@ -23,6 +29,8 @@ export async function GET(req: NextRequest) {
   try {
     const searchParams = Object.fromEntries(req.nextUrl.searchParams)
     const params = querySchema.parse(searchParams)
+
+    const supabase = getSupabaseClient()
 
     // Build query
     let query = supabase
@@ -169,6 +177,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
+
+    const supabase = getSupabaseClient()
 
     // Fetch email transaction with all related data
     const { data: tx, error } = await supabase

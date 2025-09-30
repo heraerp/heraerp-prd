@@ -3,11 +3,17 @@ import { createHmac } from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-)
+// Initialize Supabase client conditionally
+const getSupabaseClient = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_KEY
+  
+  if (!url || !key) {
+    throw new Error('Supabase configuration missing')
+  }
+  
+  return createClient(url, key)
+}
 
 // Resend webhook event schema
 const webhookEventSchema = z.object({
@@ -109,6 +115,8 @@ export async function POST(req: NextRequest) {
       console.warn(`Unknown event type: ${event.type}`)
       return NextResponse.json({ received: true })
     }
+
+    const supabase = getSupabaseClient()
 
     // Find transaction by message_id
     const { data: transactions, error: searchError } = await supabase

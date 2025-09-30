@@ -3,14 +3,26 @@ import { Resend } from 'resend'
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 
-// Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY!)
+// Initialize Resend conditionally
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    throw new Error('Resend API key missing')
+  }
+  return new Resend(apiKey)
+}
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-)
+// Initialize Supabase client conditionally
+const getSupabaseClient = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_KEY
+  
+  if (!url || !key) {
+    throw new Error('Supabase configuration missing')
+  }
+  
+  return createClient(url, key)
+}
 
 const schema = z.object({
   organizationId: z.string(),
@@ -40,6 +52,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const input = schema.parse(body)
+
+    const supabase = getSupabaseClient()
+    const resend = getResendClient()
 
     // 1) Create universal_transactions header with status=queued
     const { data: tx, error: txError } = await supabase
