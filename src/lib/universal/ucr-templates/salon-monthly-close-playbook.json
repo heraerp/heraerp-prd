@@ -1,0 +1,73 @@
+{
+  "code": "HERA.SALON.FIN.PLB.MONTH_CLOSE.v1",
+  "kind": "playbook",
+  "version": "v1",
+  "metadata": {
+    "title": "Salon Monthly Close",
+    "description": "Month-end procedures for salon operations",
+    "author": "HERA Team",
+    "tags": ["salon", "finance", "playbook", "month-end"]
+  },
+  "playbook": {
+    "idempotency_key": "${p_organization_id}-${p_year}-${p_month}",
+    "steps": [
+      {
+        "name": "Calculate Commission",
+        "fn": "salon_calculate_commission_v1",
+        "params": {
+          "p_organization_id": "${p_organization_id}",
+          "p_year": "${p_year}",
+          "p_month": "${p_month}",
+          "p_smart_code": "HERA.SALON.FIN.CALC.COMMISSION.v1"
+        },
+        "on_error": "stop"
+      },
+      {
+        "name": "Post Inventory Adjustments",
+        "fn": "salon_post_inventory_v1",
+        "params": {
+          "p_organization_id": "${p_organization_id}",
+          "p_period_end": "${p_year}-${p_month}-${last_day_of_month}",
+          "p_smart_code": "HERA.SALON.INV.ADJ.POST.v1"
+        },
+        "on_error": "continue"
+      },
+      {
+        "name": "Update Loyalty Points",
+        "fn": "salon_update_loyalty_v1",
+        "params": {
+          "p_organization_id": "${p_organization_id}",
+          "p_year": "${p_year}",
+          "p_month": "${p_month}",
+          "p_smart_code": "HERA.SALON.CRM.LOYALTY.UPDATE.v1"
+        },
+        "on_error": "continue"
+      },
+      {
+        "name": "Generate Monthly Reports",
+        "fn": "salon_generate_reports_v1",
+        "params": {
+          "p_organization_id": "${p_organization_id}",
+          "p_report_period": "${p_year}-${p_month}",
+          "p_report_types": ["revenue", "commission", "inventory", "customer"],
+          "p_smart_code": "HERA.SALON.RPT.MONTHLY.v1"
+        },
+        "on_error": "continue"
+      },
+      {
+        "if": "${p_close_books}==true",
+        "then": [
+          {
+            "name": "Lock Period",
+            "fn": "fin_lock_period_v1",
+            "params": {
+              "p_organization_id": "${p_organization_id}",
+              "p_period": "${p_year}-${p_month}",
+              "p_smart_code": "HERA.FIN.PERIOD.LOCK.v1"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

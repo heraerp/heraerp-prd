@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
-import { useProductsPlaybook } from '@/hooks/useProductsPlaybook'
-import { useCategoriesPlaybook } from '@/hooks/useCategoriesPlaybook'
+import { useSalonContext } from '../SalonProvider'
+import { useHeraProducts } from '@/hooks/useHeraProducts'
+import { useHeraCategories } from '@/hooks/useHeraCategories'
 import { ProductList } from '@/components/salon/products/ProductList'
 import { ProductModal } from '@/components/salon/products/ProductModal'
 import { DeleteProductDialog } from '@/components/salon/products/DeleteProductDialog'
@@ -38,8 +39,7 @@ const COLORS = {
 }
 
 function SalonProductsPageContent() {
-  const { organization } = useHERAAuth()
-  const organizationId = organization?.id || ''
+  const { organizationId } = useSalonContext()
   const { showSuccess, showError, showLoading, removeToast } = useSalonToast()
 
   // State
@@ -55,7 +55,7 @@ function SalonProductsPageContent() {
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState('name_asc')
 
-  // Fetch products
+  // Fetch products using new Universal API v2
   const {
     products,
     isLoading,
@@ -64,20 +64,29 @@ function SalonProductsPageContent() {
     updateProduct,
     deleteProduct,
     archiveProduct
-  } = useProductsPlaybook({
-    organizationId,
-    includeArchived
+  } = useHeraProducts({
+    includeArchived,
+    searchQuery: '',
+    categoryFilter: '',
+    organizationId
   })
 
-  // Fetch categories for filtering
-  const { categories: categoryList } = useCategoriesPlaybook({
+  // Fetch categories for filtering using Universal API v2
+  const { categories: categoryList } = useHeraCategories({
     organizationId,
     includeArchived: false
   })
-  const categories = categoryList.map(cat => cat.entity_name)
+  const categories = categoryList
+    .filter(cat => cat && cat.entity_name)
+    .map(cat => cat.entity_name)
 
   // Filter products
   const filteredProducts = products.filter(product => {
+    // Skip invalid products
+    if (!product || !product.entity_name) {
+      return false
+    }
+
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
@@ -483,6 +492,17 @@ function SalonProductsPageContent() {
 }
 
 export default function SalonProductsPage() {
+  const { organizationId } = useSalonContext()
+  
+  // Wait for organizationId to be available
+  if (!organizationId) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    )
+  }
+  
   return (
     <StatusToastProvider>
       <SalonProductsPageContent />

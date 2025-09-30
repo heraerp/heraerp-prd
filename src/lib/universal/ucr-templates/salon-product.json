@@ -1,0 +1,120 @@
+{
+  "code": "HERA.SALON.INV.ENT.PRODUCT.v1",
+  "kind": "entity",
+  "version": "v1",
+  "metadata": {
+    "title": "Salon Retail Product",
+    "description": "Retail products sold at the salon",
+    "author": "HERA Team",
+    "tags": ["salon", "inventory", "product", "retail"]
+  },
+  "rules": {
+    "fields": {
+      "p_organization_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true
+      },
+      "p_smart_code": {
+        "type": "text",
+        "required": true
+      },
+      "p_entity_type": {
+        "type": "text",
+        "default": "product"
+      },
+      "p_entity_name": {
+        "type": "text",
+        "required": true,
+        "length": { "max": 500 },
+        "description": "Product name"
+      },
+      "p_entity_code": {
+        "type": "text",
+        "required": true,
+        "unique": true,
+        "regex": "^[A-Z0-9_-]{3,50}$",
+        "description": "Product SKU/barcode"
+      },
+      "brand": {
+        "type": "text",
+        "required": true,
+        "length": { "max": 100 }
+      },
+      "category": {
+        "type": "text",
+        "required": true,
+        "enum": ["shampoo", "conditioner", "treatment", "styling", "color", "tools", "accessories", "other"]
+      },
+      "unit_price": {
+        "type": "number",
+        "required": true,
+        "min": 0,
+        "max": 99999.99
+      },
+      "cost_price": {
+        "type": "number",
+        "min": 0,
+        "max": 99999.99,
+        "description": "Purchase cost per unit"
+      },
+      "stock_quantity": {
+        "type": "number",
+        "min": 0,
+        "default": 0,
+        "description": "Current stock on hand"
+      },
+      "reorder_point": {
+        "type": "number",
+        "min": 0,
+        "default": 5,
+        "description": "Minimum stock before reorder"
+      },
+      "supplier_entity_id": {
+        "type": "text",
+        "format": "uuid",
+        "description": "Link to supplier entity"
+      },
+      "size": {
+        "type": "text",
+        "description": "Product size/volume (e.g., '250ml')"
+      },
+      "professional_only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether product is for professional use only"
+      },
+      "commission_eligible": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether product sales earn commission"
+      },
+      "active": {
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "transforms": [
+      { "op": "uppercase", "fields": ["p_entity_code"] },
+      { "op": "trim", "fields": ["p_entity_name", "brand", "size"] },
+      {
+        "op": "compute",
+        "out": "markup_percentage",
+        "expr": "((unit_price - cost_price) / cost_price) * 100"
+      }
+    ],
+    "requires": [
+      {
+        "when": "professional_only==true",
+        "then": "category in ['color', 'treatment']"
+      }
+    ]
+  },
+  "procedures": [
+    {
+      "name": "Upsert Product",
+      "fn": "hera_entity_upsert_v1",
+      "params": "payload"
+    }
+  ]
+}

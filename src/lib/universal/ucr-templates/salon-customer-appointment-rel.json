@@ -1,0 +1,57 @@
+{
+  "code": "HERA.SALON.CRM.REL.CUST_APPT.v1",
+  "kind": "relationship",
+  "version": "v1",
+  "metadata": {
+    "title": "Customer → Appointment",
+    "description": "Links customer to their appointments",
+    "author": "HERA Team",
+    "tags": ["salon", "relationship", "customer", "appointment"]
+  },
+  "rules": {
+    "fields": {
+      "p_organization_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true
+      },
+      "p_smart_code": {
+        "type": "text",
+        "required": true
+      },
+      "p_from_entity_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true,
+        "description": "Customer entity ID"
+      },
+      "p_to_entity_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true,
+        "description": "Appointment transaction ID"
+      },
+      "p_relationship_type": {
+        "type": "text",
+        "default": "has_appointment"
+      },
+      "p_relationship_strength": {
+        "type": "number",
+        "min": 0,
+        "max": 1,
+        "default": 1
+      },
+      "p_relationship_data": {
+        "type": "json",
+        "description": "Additional relationship metadata"
+      }
+    }
+  },
+  "procedures": [
+    {
+      "name": "Link Customer to Appointment",
+      "fn": "hera_relationship_upsert_v1",
+      "params": "payload"
+    }
+  ]
+}

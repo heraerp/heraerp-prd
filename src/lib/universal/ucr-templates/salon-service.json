@@ -1,0 +1,101 @@
+{
+  "code": "HERA.SALON.SVC.ENT.SERVICE.v1",
+  "kind": "entity",
+  "version": "v1",
+  "metadata": {
+    "title": "Salon Service",
+    "description": "Service catalog for salon treatments",
+    "author": "HERA Team",
+    "tags": ["salon", "service", "catalog"]
+  },
+  "rules": {
+    "fields": {
+      "p_organization_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true
+      },
+      "p_smart_code": {
+        "type": "text",
+        "required": true
+      },
+      "p_entity_type": {
+        "type": "text",
+        "default": "service"
+      },
+      "p_entity_name": {
+        "type": "text",
+        "required": true,
+        "length": { "min": 3, "max": 200 },
+        "description": "Service name (e.g., 'Premium Hair Cut')"
+      },
+      "p_entity_code": {
+        "type": "text",
+        "required": true,
+        "unique": true,
+        "regex": "^[A-Z0-9_]{3,20}$",
+        "description": "Service code (e.g., 'HAIR_CUT_PREM')"
+      },
+      "category": {
+        "type": "text",
+        "required": true,
+        "enum": ["hair", "nails", "facial", "massage", "makeup", "other"],
+        "description": "Service category"
+      },
+      "duration_minutes": {
+        "type": "number",
+        "required": true,
+        "min": 15,
+        "max": 480,
+        "description": "Service duration in minutes"
+      },
+      "base_price": {
+        "type": "number",
+        "required": true,
+        "min": 0,
+        "max": 99999.99,
+        "description": "Base price before any adjustments"
+      },
+      "requires_patch_test": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether service requires allergy patch test"
+      },
+      "skill_level_required": {
+        "type": "text",
+        "enum": ["junior", "mid", "senior", "specialist"],
+        "default": "junior",
+        "description": "Minimum stylist skill level"
+      },
+      "max_concurrent": {
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "max": 10,
+        "description": "Max services that can be done simultaneously"
+      },
+      "active": {
+        "type": "boolean",
+        "default": true,
+        "description": "Whether service is currently offered"
+      }
+    },
+    "transforms": [
+      { "op": "uppercase", "fields": ["p_entity_code"] },
+      { "op": "trim", "fields": ["p_entity_name"] }
+    ],
+    "requires": [
+      {
+        "when": "requires_patch_test==true",
+        "then": "category in ['hair', 'facial']"
+      }
+    ]
+  },
+  "procedures": [
+    {
+      "name": "Upsert Service",
+      "fn": "hera_entity_upsert_v1",
+      "params": "payload"
+    }
+  ]
+}

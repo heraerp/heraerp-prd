@@ -1,0 +1,107 @@
+{
+  "code": "HERA.SALON.CRM.ENT.CUST.v1",
+  "kind": "entity",
+  "version": "v1",
+  "metadata": {
+    "title": "Salon Customer",
+    "description": "Customer profile for salon services with loyalty tracking",
+    "author": "HERA Team",
+    "tags": ["salon", "customer", "crm", "loyalty"]
+  },
+  "rules": {
+    "fields": {
+      "p_organization_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true,
+        "description": "Organization identifier"
+      },
+      "p_smart_code": {
+        "type": "text",
+        "required": true,
+        "description": "Smart Code for this entity type"
+      },
+      "p_entity_type": {
+        "type": "text",
+        "default": "customer",
+        "description": "Entity type identifier"
+      },
+      "p_entity_name": {
+        "type": "text",
+        "required": true,
+        "length": { "max": 500 },
+        "description": "Customer full name"
+      },
+      "email": {
+        "type": "text",
+        "format": "email",
+        "required": true,
+        "unique": true,
+        "description": "Customer email address"
+      },
+      "phone": {
+        "type": "text",
+        "regex": "^\\+?[0-9]{7,15}$",
+        "description": "Customer phone number"
+      },
+      "loyalty_tier": {
+        "type": "text",
+        "lookup": "tier_levels",
+        "default": "bronze",
+        "description": "Customer loyalty program tier"
+      },
+      "preferred_stylist": {
+        "type": "text",
+        "format": "uuid",
+        "description": "Preferred stylist entity ID"
+      },
+      "birthday": {
+        "type": "date",
+        "description": "Customer birthday for promotions"
+      },
+      "allergies": {
+        "type": "text",
+        "length": { "max": 1000 },
+        "description": "Product allergies or sensitivities"
+      },
+      "marketing_consent": {
+        "type": "boolean",
+        "default": false,
+        "description": "Consent for marketing communications"
+      },
+      "referral_source": {
+        "type": "text",
+        "enum": ["walk-in", "referral", "online", "social-media", "other"],
+        "description": "How customer found the salon"
+      }
+    },
+    "lookups": {
+      "tier_levels": {
+        "kind": "static",
+        "values": [
+          { "value": "bronze", "label": "Bronze Member" },
+          { "value": "silver", "label": "Silver Member" },
+          { "value": "gold", "label": "Gold Member" },
+          { "value": "platinum", "label": "Platinum Member" }
+        ]
+      }
+    },
+    "transforms": [
+      { "op": "lowercase", "fields": ["email"] },
+      { "op": "trim", "fields": ["p_entity_name", "phone", "allergies"] }
+    ],
+    "requires": [
+      {
+        "when": "marketing_consent==true",
+        "then": "email required"
+      }
+    ]
+  },
+  "procedures": [
+    {
+      "name": "Upsert Customer",
+      "fn": "hera_entity_upsert_v1",
+      "params": "payload"
+    }
+  ]
+}

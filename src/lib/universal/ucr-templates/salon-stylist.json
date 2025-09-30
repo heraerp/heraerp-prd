@@ -1,0 +1,108 @@
+{
+  "code": "HERA.SALON.HR.ENT.STYLIST.v1",
+  "kind": "entity",
+  "version": "v1",
+  "metadata": {
+    "title": "Salon Stylist/Therapist",
+    "description": "Staff member who provides salon services",
+    "author": "HERA Team",
+    "tags": ["salon", "hr", "employee", "stylist"]
+  },
+  "rules": {
+    "fields": {
+      "p_organization_id": {
+        "type": "text",
+        "format": "uuid",
+        "required": true
+      },
+      "p_smart_code": {
+        "type": "text",
+        "required": true
+      },
+      "p_entity_type": {
+        "type": "text",
+        "default": "stylist"
+      },
+      "p_entity_name": {
+        "type": "text",
+        "required": true,
+        "length": { "max": 500 },
+        "description": "Stylist full name"
+      },
+      "p_entity_code": {
+        "type": "text",
+        "required": true,
+        "unique": true,
+        "regex": "^STY[0-9]{4}$",
+        "description": "Stylist code (e.g., 'STY0001')"
+      },
+      "email": {
+        "type": "text",
+        "format": "email",
+        "required": true,
+        "unique": true
+      },
+      "phone": {
+        "type": "text",
+        "required": true,
+        "regex": "^\\+?[0-9]{7,15}$"
+      },
+      "skill_level": {
+        "type": "text",
+        "required": true,
+        "enum": ["junior", "mid", "senior", "specialist"],
+        "default": "junior"
+      },
+      "specialties": {
+        "type": "json",
+        "description": "Array of service categories stylist specializes in"
+      },
+      "commission_rate": {
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "default": 30,
+        "description": "Commission percentage"
+      },
+      "hire_date": {
+        "type": "date",
+        "required": true
+      },
+      "employment_status": {
+        "type": "text",
+        "enum": ["active", "on_leave", "terminated"],
+        "default": "active"
+      },
+      "working_hours": {
+        "type": "json",
+        "description": "Weekly schedule configuration"
+      },
+      "certifications": {
+        "type": "json",
+        "description": "Array of professional certifications"
+      }
+    },
+    "transforms": [
+      { "op": "uppercase", "fields": ["p_entity_code"] },
+      { "op": "lowercase", "fields": ["email"] },
+      { "op": "trim", "fields": ["p_entity_name", "phone"] }
+    ],
+    "requires": [
+      {
+        "when": "skill_level=='specialist'",
+        "then": "certifications != null"
+      },
+      {
+        "when": "employment_status=='terminated'",
+        "then": "termination_date != null"
+      }
+    ]
+  },
+  "procedures": [
+    {
+      "name": "Upsert Stylist",
+      "fn": "hera_entity_upsert_v1",
+      "params": "payload"
+    }
+  ]
+}
