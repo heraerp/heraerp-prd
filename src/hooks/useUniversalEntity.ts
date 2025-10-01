@@ -34,25 +34,9 @@ interface UseUniversalEntityConfig {
 
 // Helper to get authentication headers
 async function getAuthHeaders(): Promise<Record<string, string>> {
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  console.log('🔐 Session debug:', { 
-    hasSession: !!session, 
-    hasAccessToken: !!session?.access_token,
-    tokenPreview: session?.access_token ? session.access_token.substring(0, 20) + '...' : 'none'
-  })
-  
-  if (session?.access_token) {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`
-    }
-    console.log('🚀 Using Supabase token for API call')
-    return headers
-  }
-  
-  // Fallback to demo token for Hair Talkz salon
-  console.log('⚠️ Using fallback demo token')
+  // For the entity config demo, always use the demo token
+  // This ensures we have the correct organization_id and permissions
+  console.log('🚀 Using demo token for entity config demo')
   return {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer demo-token-salon-receptionist'
