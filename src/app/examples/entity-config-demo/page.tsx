@@ -5,14 +5,13 @@ import { useProducts, useServices, useCustomers, useEmployees } from '@/hooks/us
 import { HeraProvider } from '@/ui'
 
 function EntityConfigDemo() {
-  const orgId = process.env.NEXT_PUBLIC_DEFAULT_ORG_ID || 'demo-org-id'
   const [activeTab, setActiveTab] = useState('products')
 
   // One-liner entity hooks with full preset configuration
-  const products = useProducts({ organizationId: orgId })
-  const services = useServices({ organizationId: orgId })
-  const customers = useCustomers({ organizationId: orgId })
-  const employees = useEmployees({ organizationId: orgId })
+  const products = useProducts({})
+  const services = useServices({})
+  const customers = useCustomers({})
+  const employees = useEmployees({})
 
   const handleCreateProduct = async () => {
     try {

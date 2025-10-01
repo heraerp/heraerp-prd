@@ -8,7 +8,7 @@ import { useUniversalEntity } from './useUniversalEntity'
 import { ENTITY_PRESETS, type EntityConfig, type DynamicFieldDef } from './universal-entity.config'
 
 export type UseEntityOptions = {
-  organizationId: string
+  organizationId?: string
   filters?: Record<string, any>
   includeRelationships?: boolean
   includeDynamicData?: boolean
@@ -35,10 +35,8 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
 
   // Use the base universal entity hook with enhanced configuration
   const result = useUniversalEntity({
-    organizationId: options.organizationId,
-    filters: enhancedFilters,
-    includeRelationships: options.includeRelationships ?? true,
-    includeDynamicData: options.includeDynamicData ?? true
+    entity_type: config.entityType,
+    filters: enhancedFilters
   })
 
   // Helper to create entity with preset configuration
@@ -49,17 +47,12 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
       dynamicFields?: Record<string, any>
       metadata?: Record<string, any>
     }) => {
-      if (!result.createEntity) {
+      if (!result.create) {
         throw new Error('Create function not available')
       }
 
       // Build dynamic fields from preset config + provided values
-      const dynamicFieldsToSet: Array<{
-        field_name: string
-        field_value: any
-        field_type: string
-        smart_code: string
-      }> = []
+      const dynamic_fields: Record<string, any> = {}
 
       // Add preset dynamic fields with defaults
       if (config.dynamicFields) {
@@ -68,33 +61,32 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
           const valueToUse = providedValue !== undefined ? providedValue : fieldDef.defaultValue
 
           if (valueToUse !== undefined) {
-            dynamicFieldsToSet.push({
-              field_name: fieldDef.name,
-              field_value: valueToUse,
-              field_type: fieldDef.type,
+            dynamic_fields[fieldDef.name] = {
+              value: valueToUse,
+              type: fieldDef.type,
               smart_code: fieldDef.smartCode
-            })
+            }
           }
         }
       }
 
       // Create the entity with preset smart code
-      return result.createEntity({
+      return result.create({
         entity_type: config.entityType,
         entity_name: data.entity_name,
         entity_code: data.entity_code,
         smart_code: config.baseSmartCode,
         metadata: data.metadata,
-        dynamicFields: dynamicFieldsToSet
+        dynamic_fields
       })
     }
-  }, [result.createEntity, config])
+  }, [result.create, config])
 
   // Helper to update dynamic fields with type safety
   const updateDynamicField = useMemo(() => {
     return async (entityId: string, fieldName: string, value: any) => {
-      if (!result.setDynamicField) {
-        throw new Error('setDynamicField function not available')
+      if (!result.update) {
+        throw new Error('update function not available')
       }
 
       // Find field definition in preset
@@ -103,14 +95,19 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
         throw new Error(`Field '${fieldName}' not found in preset ${preset}`)
       }
 
-      return result.setDynamicField(entityId, {
-        field_name: fieldName,
-        field_value: value,
-        field_type: fieldDef.type,
-        smart_code: fieldDef.smartCode
+      // Update the dynamic field via entity update
+      return result.update({
+        entity_id: entityId,
+        dynamic_fields: {
+          [fieldName]: {
+            value: value,
+            type: fieldDef.type,
+            smart_code: fieldDef.smartCode
+          }
+        }
       })
     }
-  }, [result.setDynamicField, config.dynamicFields, preset])
+  }, [result.update, config.dynamicFields, preset])
 
   // Helper to get dynamic field definition
   const getFieldDef = useMemo(() => {
@@ -141,18 +138,32 @@ export function useEntity<TPreset extends keyof typeof ENTITY_PRESETS>(
 
   return {
     // Base functionality from useUniversalEntity
-    ...result,
-
+    data: result.entities,
+    isLoading: result.isLoading,
+    error: result.error,
+    refetch: result.refetch,
+    
     // Preset configuration
     config,
-
+    
     // Enhanced create with preset configuration
     createEntity,
-
+    
     // Dynamic field helpers
     updateDynamicField,
     getFieldDef,
-    validateRequiredFields
+    validateRequiredFields,
+    
+    // Mutation functions
+    create: result.create,
+    update: result.update,
+    delete: result.delete,
+    archive: result.archive,
+    
+    // Loading states
+    isCreating: result.isCreating,
+    isUpdating: result.isUpdating,
+    isDeleting: result.isDeleting
   }
 }
 
