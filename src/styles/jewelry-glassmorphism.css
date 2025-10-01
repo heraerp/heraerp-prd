@@ -1,0 +1,994 @@
+/**
+ * HERA Jewelry Glassmorphism Styles - Royal Blue & Gold Accent
+ * Regal luxury palette with sophisticated blue and gold elegance
+ */
+
+/* CSS Custom Properties - Royal Blue & Gold Accent (WCAG AA Compliant) */
+:root {
+  /* Royal Blue Palette - Based on #2B3A67 with enhanced contrast */
+  --jewelry-blue-50: #f0f2f8;
+  --jewelry-blue-100: #dde2ee;
+  --jewelry-blue-200: #c1cade;
+  --jewelry-blue-300: #9ba8c6;
+  --jewelry-blue-400: #7086ab;
+  --jewelry-blue-500: #2B3A67; /* Royal Blue */
+  --jewelry-blue-600: #253352;
+  --jewelry-blue-700: #1f2a43;
+  --jewelry-blue-800: #1b2339;
+  --jewelry-blue-900: #1A1F3D; /* Midnight Blue */
+
+  /* Gold Accent Palette - Enhanced for contrast */
+  --jewelry-gold-50: #fffdf4;
+  --jewelry-gold-100: #fffae8;
+  --jewelry-gold-200: #fff4c5;
+  --jewelry-gold-300: #ffeb97;
+  --jewelry-gold-400: #E6C200; /* Darkened for better contrast */
+  --jewelry-gold-500: #D4AF00; /* Darkened primary gold for WCAG compliance */
+  --jewelry-gold-600: #B8960B; /* Enhanced contrast */
+  --jewelry-gold-700: #9A7B09;
+  --jewelry-gold-800: #7D6207;
+  --jewelry-gold-900: #614C05;
+
+  /* Supporting Colors - Enhanced Contrast */
+  --jewelry-cream: #FDF6E3;
+  --jewelry-slate: #4A5568; /* Darkened for better contrast */
+  --jewelry-midnight: #1A1F3D;
+  --jewelry-royal: #2B3A67;
+
+  /* High Contrast Text Colors for WCAG AA Compliance */
+  --jewelry-text-on-light: #1A1F3D; /* Dark blue on light backgrounds */
+  --jewelry-text-on-dark: #FDF6E3; /* Cream on dark backgrounds */
+  --jewelry-text-on-blue: #FFD700; /* Bright gold on blue */
+  --jewelry-text-muted-light: #4A5568; /* Enhanced slate for muted text */
+  --jewelry-text-muted-dark: #C1CADE; /* Light blue for muted dark text */
+
+  /* Status Colors - High Contrast */
+  --jewelry-success: #166534;
+  --jewelry-warning: #d97706;
+  --jewelry-error: #dc2626;
+  --jewelry-info: #1e40af;
+
+  /* Glassmorphism Variables - Royal Blue & Gold Theme */
+  --glass-backdrop: rgba(253, 246, 227, 0.95);
+  --glass-surface: rgba(253, 246, 227, 0.85);
+  --glass-border: rgba(43, 58, 103, 0.15);
+  --glass-shadow: 0 4px 16px 0 rgba(26, 31, 61, 0.15);
+  --glass-shadow-large: 0 8px 32px 0 rgba(26, 31, 61, 0.25);
+  --glass-shadow-gold: 0 4px 16px 0 rgba(255, 215, 0, 0.2);
+  --glass-blur: 8px;
+  --glass-blur-strong: 12px;
+}
+
+/* Dark mode adjustments - Enhanced for Royal Blue & Gold */
+.dark {
+  --glass-backdrop: rgba(26, 31, 61, 0.95);
+  --glass-surface: rgba(43, 58, 103, 0.3);
+  --glass-border: rgba(255, 215, 0, 0.2);
+  --glass-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+  --glass-shadow-large: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Base Glassmorphism Classes */
+.jewelry-glass-card {
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.2s ease;
+}
+
+.jewelry-glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-large);
+  border-color: var(--jewelry-gold-400);
+}
+
+.jewelry-glass-backdrop {
+  background: var(--glass-backdrop);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+}
+
+/* Royal Background Gradients */
+.jewelry-gradient-primary {
+  background: linear-gradient(135deg, 
+    var(--jewelry-cream) 0%, 
+    var(--jewelry-blue-50) 50%, 
+    var(--jewelry-cream) 100%);
+}
+
+.jewelry-gradient-secondary {
+  background: linear-gradient(135deg, 
+    var(--jewelry-blue-50) 0%, 
+    var(--jewelry-blue-100) 50%, 
+    var(--jewelry-blue-200) 100%);
+}
+
+.jewelry-gradient-luxury {
+  background: linear-gradient(135deg, 
+    var(--jewelry-cream) 0%, 
+    var(--jewelry-gold-50) 25%, 
+    var(--jewelry-blue-50) 50%, 
+    var(--jewelry-gold-50) 75%, 
+    var(--jewelry-cream) 100%);
+}
+
+.jewelry-gradient-premium {
+  background: radial-gradient(circle at center, 
+    var(--jewelry-cream) 0%, 
+    var(--jewelry-blue-50) 40%, 
+    var(--jewelry-gold-50) 100%);
+}
+
+.jewelry-gradient-royal {
+  background: linear-gradient(135deg, 
+    var(--jewelry-royal) 0%, 
+    var(--jewelry-blue-600) 50%, 
+    var(--jewelry-midnight) 100%);
+}
+
+/* Dark mode gradient adjustments */
+.dark .jewelry-gradient-primary,
+.dark .jewelry-gradient-secondary,
+.dark .jewelry-gradient-luxury,
+.dark .jewelry-gradient-premium {
+  background: linear-gradient(135deg, 
+    var(--jewelry-midnight) 0%, 
+    var(--jewelry-royal) 50%, 
+    var(--jewelry-midnight) 100%);
+}
+
+/* Subtle Animations */
+.jewelry-float {
+  animation: jewelry-float 4s ease-in-out infinite;
+}
+
+@keyframes jewelry-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Royal Shimmer Effects */
+.jewelry-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.jewelry-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 215, 0, 0.15),
+    transparent
+  );
+  animation: jewelry-shimmer 4s infinite;
+}
+
+@keyframes jewelry-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Royal Pulse Effect */
+.jewelry-pulse-glow {
+  animation: jewelry-pulse-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes jewelry-pulse-glow {
+  from {
+    box-shadow: var(--glass-shadow);
+  }
+  to {
+    box-shadow: var(--glass-shadow-large), var(--glass-shadow-gold);
+  }
+}
+
+/* Elegant Scale Hover Effect */
+.jewelry-scale-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jewelry-scale-hover:hover {
+  transform: scale(1.01);
+  box-shadow: var(--glass-shadow-large);
+}
+
+/* Royal Buttons - WCAG AA Compliant Colors */
+.jewelry-btn-primary {
+  background: var(--jewelry-royal);
+  color: var(--jewelry-gold-400); /* Enhanced contrast */
+  border: 2px solid var(--jewelry-royal);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.2s ease;
+}
+
+.jewelry-btn-primary:hover {
+  background: var(--jewelry-blue-700); /* Darker for better contrast */
+  border-color: var(--jewelry-blue-700);
+  color: var(--jewelry-gold-300); /* Brighter for contrast */
+  transform: translateY(-1px);
+  box-shadow: var(--glass-shadow-large), var(--glass-shadow-gold);
+}
+
+.jewelry-btn-primary:focus {
+  outline: 2px solid var(--jewelry-gold-400);
+  outline-offset: 2px;
+}
+
+.jewelry-btn-secondary {
+  background: var(--jewelry-cream);
+  color: var(--jewelry-text-on-light); /* High contrast text */
+  border: 2px solid var(--jewelry-blue-400);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.jewelry-btn-secondary:hover {
+  background: var(--jewelry-gold-100);
+  border-color: var(--jewelry-gold-600);
+  transform: translateY(-1px);
+  color: var(--jewelry-text-on-light);
+}
+
+.jewelry-btn-secondary:focus {
+  outline: 2px solid var(--jewelry-gold-600);
+  outline-offset: 2px;
+}
+
+.dark .jewelry-btn-secondary {
+  background: var(--jewelry-royal);
+  color: var(--jewelry-text-on-dark);
+  border-color: var(--jewelry-gold-500);
+}
+
+.dark .jewelry-btn-secondary:hover {
+  background: var(--jewelry-blue-700);
+  border-color: var(--jewelry-gold-400);
+  color: var(--jewelry-text-on-dark);
+}
+
+/* Royal Glass Panels */
+.jewelry-glass-panel {
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.jewelry-glass-panel-strong {
+  background: var(--jewelry-cream);
+  border: 1px solid var(--jewelry-blue-200);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow-large);
+}
+
+.dark .jewelry-glass-panel-strong {
+  background: var(--jewelry-royal);
+  border-color: var(--jewelry-gold-500);
+}
+
+/* Glass Navigation */
+.jewelry-glass-nav {
+  background: rgba(253, 246, 227, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--jewelry-blue-200);
+  box-shadow: 0 2px 8px rgba(26, 31, 61, 0.1);
+}
+
+.dark .jewelry-glass-nav {
+  background: rgba(26, 31, 61, 0.95);
+  border-bottom-color: var(--jewelry-gold-500);
+}
+
+/* Modern Navigation Styles */
+.jewelry-glass-navbar {
+  background: rgba(253, 246, 227, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212, 175, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(26, 31, 61, 0.1);
+}
+
+.dark .jewelry-glass-navbar {
+  background: rgba(26, 31, 61, 0.95);
+  border-bottom-color: rgba(212, 175, 0, 0.3);
+}
+
+.jewelry-glass-dropdown {
+  background: rgba(253, 246, 227, 0.98);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 0, 0.2);
+  box-shadow: 0 20px 40px rgba(26, 31, 61, 0.2);
+}
+
+.dark .jewelry-glass-dropdown {
+  background: rgba(26, 31, 61, 0.95);
+  border-color: rgba(212, 175, 0, 0.3);
+}
+
+.jewelry-glass-btn {
+  background: rgba(253, 246, 227, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.dark .jewelry-glass-btn {
+  background: rgba(26, 31, 61, 0.8);
+  border-color: rgba(212, 175, 0, 0.3);
+}
+
+.jewelry-glass-btn:hover {
+  background: rgba(212, 175, 0, 0.1);
+  border-color: rgba(212, 175, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.jewelry-glass-input {
+  background: rgba(253, 246, 227, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 0, 0.2);
+  color: var(--jewelry-text-on-light);
+}
+
+.dark .jewelry-glass-input {
+  background: rgba(26, 31, 61, 0.9);
+  border-color: rgba(212, 175, 0, 0.3);
+  color: var(--jewelry-text-on-dark);
+}
+
+.jewelry-glass-input::placeholder {
+  color: var(--jewelry-text-muted-light);
+}
+
+.dark .jewelry-glass-input::placeholder {
+  color: var(--jewelry-text-muted-dark);
+}
+
+/* Animated Gradient Background */
+.jewelry-animated-gradient {
+  background: linear-gradient(
+    120deg,
+    rgba(212, 175, 0, 0.1),
+    rgba(43, 58, 103, 0.15),
+    rgba(212, 175, 0, 0.08)
+  );
+  background-size: 200% 200%;
+  animation: jewelry-gradient-shift 15s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jewelry-animated-gradient {
+    animation: none;
+  }
+}
+
+@keyframes jewelry-gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Typography Enhancement - WCAG AA Compliant Colors */
+.jewelry-heading {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--jewelry-text-on-light);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.dark .jewelry-heading {
+  color: var(--jewelry-text-on-dark);
+}
+
+.jewelry-text-luxury {
+  color: var(--jewelry-royal);
+  font-weight: 600;
+}
+
+.dark .jewelry-text-luxury {
+  color: var(--jewelry-text-muted-dark);
+}
+
+.jewelry-text-accent {
+  color: var(--jewelry-blue-700); /* Darker for better contrast */
+  font-weight: 600;
+}
+
+.dark .jewelry-text-accent {
+  color: var(--jewelry-blue-200); /* Lighter for dark mode contrast */
+}
+
+.jewelry-text-gold {
+  color: var(--jewelry-gold-600); /* Enhanced contrast */
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(26, 31, 61, 0.1);
+}
+
+.dark .jewelry-text-gold {
+  color: var(--jewelry-gold-400);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.jewelry-text-royal {
+  color: var(--jewelry-royal);
+  font-weight: 600;
+}
+
+.dark .jewelry-text-royal {
+  color: var(--jewelry-blue-200); /* Enhanced contrast for dark mode */
+}
+
+/* WCAG AA Compliant Text Utilities */
+.jewelry-text-high-contrast {
+  color: var(--jewelry-text-on-light);
+}
+
+.dark .jewelry-text-high-contrast {
+  color: var(--jewelry-text-on-dark);
+}
+
+.jewelry-text-muted {
+  color: var(--jewelry-text-muted-light);
+}
+
+.dark .jewelry-text-muted {
+  color: var(--jewelry-text-muted-dark);
+}
+
+/* Premium Status Indicators */
+.jewelry-status-active {
+  background: var(--jewelry-success);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #15803d;
+}
+
+.jewelry-status-pending {
+  background: var(--jewelry-warning);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #b45309;
+}
+
+.jewelry-status-inactive {
+  background: var(--jewelry-slate);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #52525b;
+}
+
+.jewelry-status-luxury {
+  background: var(--jewelry-royal);
+  color: var(--jewelry-gold-400);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--jewelry-blue-600);
+}
+
+.jewelry-status-premium {
+  background: var(--jewelry-gold-500);
+  color: var(--jewelry-midnight);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--jewelry-gold-600);
+}
+
+/* Enhanced Input Fields - WCAG AA Compliant */
+.jewelry-input {
+  background: var(--jewelry-cream);
+  border: 2px solid var(--jewelry-blue-300); /* Enhanced border contrast */
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: var(--jewelry-text-on-light);
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.jewelry-input:focus {
+  outline: none;
+  border-color: var(--jewelry-gold-600); /* Darker gold for better contrast */
+  box-shadow: 0 0 0 3px rgba(212, 175, 0, 0.25); /* Enhanced focus ring */
+}
+
+.jewelry-input::placeholder {
+  color: var(--jewelry-text-muted-light);
+}
+
+.dark .jewelry-input {
+  background: var(--jewelry-royal);
+  border-color: var(--jewelry-gold-500);
+  color: var(--jewelry-text-on-dark);
+}
+
+.dark .jewelry-input:focus {
+  border-color: var(--jewelry-gold-400);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+.dark .jewelry-input::placeholder {
+  color: var(--jewelry-text-muted-dark);
+}
+
+/* Custom Checkbox Styles - Royal Blue & Gold */
+.jewelry-checkbox {
+  appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--jewelry-blue-400);
+  border-radius: 0.25rem;
+  background: var(--jewelry-cream);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.jewelry-checkbox:checked {
+  background: var(--jewelry-royal);
+  border-color: var(--jewelry-royal);
+}
+
+.jewelry-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--jewelry-gold-400);
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.jewelry-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 0, 0.25);
+}
+
+.jewelry-checkbox:hover {
+  border-color: var(--jewelry-gold-500);
+  background: var(--jewelry-gold-50);
+}
+
+.jewelry-checkbox:checked:hover {
+  background: var(--jewelry-blue-700);
+  border-color: var(--jewelry-blue-700);
+}
+
+.dark .jewelry-checkbox {
+  background: var(--jewelry-royal);
+  border-color: var(--jewelry-gold-500);
+}
+
+.dark .jewelry-checkbox:checked {
+  background: var(--jewelry-gold-600);
+  border-color: var(--jewelry-gold-600);
+}
+
+.dark .jewelry-checkbox:checked::after {
+  color: var(--jewelry-midnight);
+}
+
+.dark .jewelry-checkbox:hover {
+  border-color: var(--jewelry-gold-400);
+  background: var(--jewelry-blue-800);
+}
+
+.dark .jewelry-checkbox:checked:hover {
+  background: var(--jewelry-gold-500);
+  border-color: var(--jewelry-gold-500);
+}
+
+/* Professional Tables - WCAG AA Compliant */
+.jewelry-table {
+  background: var(--jewelry-cream);
+  border: 1px solid var(--jewelry-blue-200);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+}
+
+.jewelry-table th {
+  background: var(--jewelry-royal);
+  color: var(--jewelry-gold-300); /* Enhanced contrast on blue background */
+  font-weight: 700;
+  padding: 1rem;
+  border-bottom: 1px solid var(--jewelry-blue-600);
+  font-size: 0.875rem;
+}
+
+.jewelry-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--jewelry-blue-100);
+  transition: background-color 0.2s ease;
+  font-size: 0.875rem;
+  color: var(--jewelry-text-on-light); /* High contrast text */
+}
+
+.jewelry-table tr:hover td {
+  background: var(--jewelry-gold-100); /* Subtle hover effect */
+  color: var(--jewelry-text-on-light);
+}
+
+.dark .jewelry-table {
+  background: var(--jewelry-royal);
+  border-color: var(--jewelry-gold-500);
+}
+
+.dark .jewelry-table th {
+  background: var(--jewelry-midnight);
+  color: var(--jewelry-gold-300); /* Bright on dark background */
+}
+
+.dark .jewelry-table td {
+  color: var(--jewelry-text-on-dark);
+  border-bottom-color: var(--jewelry-blue-700);
+}
+
+.dark .jewelry-table tr:hover td {
+  background: var(--jewelry-blue-700);
+  color: var(--jewelry-text-on-dark);
+}
+
+/* Loading Spinner */
+.jewelry-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--jewelry-blue-200);
+  border-top: 3px solid var(--jewelry-gold-500);
+  border-radius: 50%;
+  animation: jewelry-spin 1s linear infinite;
+}
+
+@keyframes jewelry-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Navigation Enhancement */
+.jewelry-nav-item {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.jewelry-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--jewelry-gold-500), var(--jewelry-gold-400));
+  transition: all 0.2s ease;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.jewelry-nav-item:hover::after,
+.jewelry-nav-item.active::after {
+  width: 100%;
+}
+
+/* Card Stack Effect */
+.jewelry-card-stack {
+  position: relative;
+}
+
+.jewelry-card-stack::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: -4px;
+  bottom: -4px;
+  background: rgba(43, 58, 103, 0.1);
+  border-radius: 0.75rem;
+  z-index: -1;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Royal Enhancements */
+.jewelry-luxury-border {
+  border: 2px solid transparent;
+  background: linear-gradient(var(--jewelry-cream), var(--jewelry-cream)) padding-box,
+              linear-gradient(45deg, var(--jewelry-gold-400), var(--jewelry-royal)) border-box;
+}
+
+.dark .jewelry-luxury-border {
+  background: linear-gradient(var(--jewelry-royal), var(--jewelry-royal)) padding-box,
+              linear-gradient(45deg, var(--jewelry-gold-400), var(--jewelry-gold-600)) border-box;
+}
+
+.jewelry-gold-accent {
+  border-left: 4px solid var(--jewelry-gold-500);
+  padding-left: 1rem;
+}
+
+.jewelry-royal-accent {
+  border-left: 4px solid var(--jewelry-royal);
+  padding-left: 1rem;
+}
+
+/* Royal Crown Effect */
+.jewelry-crown-glow {
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.3),
+    0 0 40px rgba(43, 58, 103, 0.2);
+  animation: jewelry-crown-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes jewelry-crown-pulse {
+  from {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.3),
+      0 0 40px rgba(43, 58, 103, 0.2);
+  }
+  to {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.5),
+      0 0 60px rgba(43, 58, 103, 0.3);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .jewelry-glass-card {
+    backdrop-filter: blur(6px);
+  }
+  
+  .jewelry-float {
+    animation-duration: 3s;
+  }
+  
+  .jewelry-glass-panel,
+  .jewelry-glass-panel-strong {
+    padding: 1rem;
+  }
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .jewelry-shimmer::before,
+  .jewelry-float,
+  .jewelry-pulse-glow,
+  .jewelry-spinner,
+  .jewelry-crown-glow {
+    animation: none;
+  }
+  
+  .jewelry-scale-hover:hover {
+    transform: none;
+  }
+  
+  .jewelry-glass-card:hover {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .jewelry-glass-card,
+  .jewelry-glass-panel,
+  .jewelry-glass-panel-strong {
+    border-width: 2px;
+    border-color: var(--jewelry-royal);
+    background: var(--jewelry-cream);
+  }
+  
+  .dark .jewelry-glass-card,
+  .dark .jewelry-glass-panel,
+  .dark .jewelry-glass-panel-strong {
+    background: var(--jewelry-midnight);
+    border-color: var(--jewelry-gold-400);
+  }
+}
+
+/* WCAG AA Icon Contrast Enhancement */
+.jewelry-icon-gold {
+  color: var(--jewelry-gold-600) !important;
+}
+
+.dark .jewelry-icon-gold {
+  color: var(--jewelry-gold-400) !important;
+}
+
+.jewelry-icon-blue {
+  color: var(--jewelry-blue-600) !important;
+}
+
+.dark .jewelry-icon-blue {
+  color: var(--jewelry-blue-300) !important;
+}
+
+.jewelry-icon-high-contrast {
+  color: var(--jewelry-text-on-light) !important;
+}
+
+.dark .jewelry-icon-high-contrast {
+  color: var(--jewelry-text-on-dark) !important;
+}
+
+/* Status Icon Colors - WCAG Compliant */
+.jewelry-icon-success {
+  color: var(--jewelry-success) !important;
+}
+
+.jewelry-icon-warning {
+  color: var(--jewelry-warning) !important;
+}
+
+.jewelry-icon-error {
+  color: var(--jewelry-error) !important;
+}
+
+.jewelry-icon-info {
+  color: var(--jewelry-info) !important;
+}
+
+/* Jewelry-specific text colors for empty states */
+.jewelry-empty-state {
+  color: var(--jewelry-cream) !important;
+}
+
+.dark .jewelry-empty-state {
+  color: var(--jewelry-blue-200) !important;
+}
+
+.jewelry-champagne-text {
+  color: var(--jewelry-cream) !important;
+  opacity: 0.8;
+}
+
+/* Inventory-specific styles */
+.jewelry-glass-card-subtle {
+  background: rgba(253, 246, 227, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(43, 58, 103, 0.1);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.dark .jewelry-glass-card-subtle {
+  background: rgba(43, 58, 103, 0.2);
+  border-color: rgba(255, 215, 0, 0.1);
+}
+
+.jewelry-glass-card-subtle:hover {
+  background: rgba(253, 246, 227, 0.8);
+  border-color: rgba(43, 58, 103, 0.2);
+}
+
+.dark .jewelry-glass-card-subtle:hover {
+  background: rgba(43, 58, 103, 0.3);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+/* Enhanced status icons */
+.jewelry-icon-success {
+  color: var(--jewelry-success) !important;
+}
+
+.jewelry-icon-warning {
+  color: var(--jewelry-warning) !important;
+}
+
+.jewelry-icon-error {
+  color: var(--jewelry-error) !important;
+}
+
+.jewelry-icon-info {
+  color: var(--jewelry-info) !important;
+}
+
+/* Inventory grid animations */
+.jewelry-inventory-grid-enter {
+  animation: jewelry-inventory-enter 0.4s ease-out;
+}
+
+@keyframes jewelry-inventory-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Enhanced hover effects for inventory items */
+.jewelry-inventory-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jewelry-inventory-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    var(--glass-shadow-large),
+    0 0 20px rgba(212, 175, 0, 0.15);
+}
+
+/* Scrollbar Utilities */
+.scrollbar-hide {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Smooth horizontal scrolling for navbar */
+.jewelry-navbar-scroll {
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+}
+
+.jewelry-navbar-scroll > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Print Styles */
+@media print {
+  .jewelry-glass-card,
+  .jewelry-glass-panel,
+  .jewelry-glass-panel-strong {
+    background: white !important;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  
+  .jewelry-gradient-primary,
+  .jewelry-gradient-secondary,
+  .jewelry-gradient-luxury,
+  .jewelry-gradient-premium,
+  .jewelry-gradient-royal {
+    background: white !important;
+  }
+  
+  .jewelry-text-gold,
+  .jewelry-text-accent,
+  .jewelry-text-royal {
+    color: #000 !important;
+  }
+}
