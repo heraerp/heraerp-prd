@@ -486,7 +486,7 @@ export default function JewelryIntegrationsPage() {
       setupTime: '4 hours',
       requirements: ['Zoho account', 'Data mapping', 'User training'],
       benefits: ['Complete CRM suite', 'Sales automation', 'Custom workflows'],
-      pricing: 'น1,200/user/month',
+      pricing: 'ยน1,200/user/month',
       documentation: 'https://help.zoho.com/portal/crm',
       supportLevel: 'enterprise'
     }
@@ -592,7 +592,7 @@ export default function JewelryIntegrationsPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return `น${amount.toLocaleString()}`
+    return `ยน${amount.toLocaleString()}`
   }
 
   const formatPercentage = (value: number) => {
@@ -692,7 +692,7 @@ export default function JewelryIntegrationsPage() {
                 
                 <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">น18,450</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">ยน18,450</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Monthly Cost</p>
                   <div className="flex items-center justify-center mt-2 text-yellow-500">
                     <TrendingUp size={16} />

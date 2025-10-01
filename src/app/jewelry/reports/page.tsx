@@ -251,7 +251,7 @@ export default function JewelryReportsPage() {
   const dashboardMetrics: ReportMetric[] = [
     {
       label: 'Total Revenue',
-      value: 'น2,850,000',
+      value: 'ยน2,850,000',
       change: 12.5,
       trend: 'up',
       icon: DollarSign
@@ -272,7 +272,7 @@ export default function JewelryReportsPage() {
     },
     {
       label: 'Inventory Value',
-      value: 'น3,200,000',
+      value: 'ยน3,200,000',
       change: 5.7,
       trend: 'up',
       icon: Package
@@ -536,7 +536,7 @@ export default function JewelryReportsPage() {
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-jewelry-blue-200">
                       <div>
                         <p className="jewelry-text-muted text-sm">Total Revenue</p>
-                        <p className="jewelry-text-high-contrast font-bold text-lg">น450,000</p>
+                        <p className="jewelry-text-high-contrast font-bold text-lg">ยน450,000</p>
                       </div>
                       <div>
                         <p className="jewelry-text-muted text-sm">Growth Rate</p>
@@ -570,7 +570,7 @@ export default function JewelryReportsPage() {
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
                             <span className="jewelry-text-high-contrast font-medium">{category.label}</span>
-                            <span className="jewelry-text-high-contrast font-bold">น{(category.value / 1000).toFixed(0)}K</span>
+                            <span className="jewelry-text-high-contrast font-bold">ยน{(category.value / 1000).toFixed(0)}K</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div 
