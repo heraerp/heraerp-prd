@@ -1,7 +1,7 @@
 /**
  * HERA DNA Schema Manager
  * Manages the separation between System Schema and User Data
- * Smart Code: HERA.DNA.SCHEMA.MANAGER.v1
+ * Smart Code: HERA.DNA.SCHEMA.MANAGER.V1
  */
 
 import { createClient } from '@supabase/supabase-js'

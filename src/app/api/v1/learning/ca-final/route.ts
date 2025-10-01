@@ -20,7 +20,7 @@ const SMART_CODES = {
   // K-12 Education
   K12_MATH: 'HERA.K12.MATH.v1',
   K12_SCIENCE: 'HERA.K12.SCI.v1',
-  K12_ENGLISH: 'HERA.K12.LANG.ENGLISH.v1',
+  K12_ENGLISH: 'HERA.K12.LANG.ENGLISH.V1',
   K12_HISTORY: 'HERA.K12.HIST.v1',
 
   // University Level
@@ -53,22 +53,22 @@ const SMART_CODES = {
 
   // STEM Fields
   MATHEMATICS: 'HERA.UNI.MATH.v1',
-  PHYSICS: 'HERA.UNI.SCI.PHYSICS.v1',
-  CHEMISTRY: 'HERA.UNI.SCI.CHEMISTRY.v1',
-  BIOLOGY: 'HERA.UNI.SCI.BIOLOGY.v1',
-  COMPUTER_SCIENCE: 'HERA.UNI.TECH.CS.v1',
+  PHYSICS: 'HERA.UNI.SCI.PHYSICS.V1',
+  CHEMISTRY: 'HERA.UNI.SCI.CHEMISTRY.V1',
+  BIOLOGY: 'HERA.UNI.SCI.BIOLOGY.V1',
+  COMPUTER_SCIENCE: 'HERA.UNI.TECH.CS.V1',
   ENGINEERING: 'HERA.UNI.ENG.v1',
 
   // Medical & Healthcare
-  MEDICAL_EDUCATION: 'HERA.PROF.MED.EDUCATION.v1',
-  NURSING: 'HERA.PROF.MED.NURSING.v1',
-  HEALTHCARE_ADMIN: 'HERA.PROF.MED.ADMIN.v1',
-  PHARMACY: 'HERA.PROF.MED.PHARMACY.v1',
+  MEDICAL_EDUCATION: 'HERA.PROF.MED.EDUCATION.V1',
+  NURSING: 'HERA.PROF.MED.NURSING.V1',
+  HEALTHCARE_ADMIN: 'HERA.PROF.MED.ADMIN.V1',
+  PHARMACY: 'HERA.PROF.MED.PHARMACY.V1',
 
   // Legal & Compliance
-  LAW_EDUCATION: 'HERA.PROF.LAW.EDUCATION.v1',
-  LEGAL_COMPLIANCE: 'HERA.PROF.LAW.COMPLIANCE.v1',
-  REGULATORY: 'HERA.PROF.LAW.REGULATORY.v1',
+  LAW_EDUCATION: 'HERA.PROF.LAW.EDUCATION.V1',
+  LEGAL_COMPLIANCE: 'HERA.PROF.LAW.COMPLIANCE.V1',
+  REGULATORY: 'HERA.PROF.LAW.REGULATORY.V1',
 
   // Languages
   LANGUAGE_ENGLISH: 'HERA.LANG.ENGLISH.v1',
@@ -85,41 +85,41 @@ const SMART_CODES = {
   // === UNIVERSAL TRANSFERABLE SKILLS ===
   // These can be reused across ALL contexts
   CRITICAL_THINKING: 'HERA.UNI.SKILL.CRITICAL_THINKING.v1',
-  COMMUNICATION: 'HERA.UNI.SKILL.COMMUNICATION.v1',
+  COMMUNICATION: 'HERA.UNI.SKILL.COMMUNICATION.V1',
   PROBLEM_SOLVING: 'HERA.UNI.SKILL.PROBLEM_SOLVING.v1',
-  COLLABORATION: 'HERA.UNI.SKILL.COLLABORATION.v1',
+  COLLABORATION: 'HERA.UNI.SKILL.COLLABORATION.V1',
   DIGITAL_LITERACY: 'HERA.UNI.SKILL.DIGITAL_LITERACY.v1',
-  RESEARCH: 'HERA.UNI.SKILL.RESEARCH.v1',
-  PRESENTATION: 'HERA.UNI.SKILL.PRESENTATION.v1',
+  RESEARCH: 'HERA.UNI.SKILL.RESEARCH.V1',
+  PRESENTATION: 'HERA.UNI.SKILL.PRESENTATION.V1',
   TIME_MANAGEMENT: 'HERA.UNI.SKILL.TIME_MANAGEMENT.v1',
-  LEADERSHIP: 'HERA.UNI.SKILL.LEADERSHIP.v1',
+  LEADERSHIP: 'HERA.UNI.SKILL.LEADERSHIP.V1',
 
   // === CROSS-DOMAIN CONCEPTS ===
   // Concepts that appear in multiple subjects
   FINANCIAL_ACCOUNTING: 'HERA.UNI.CONCEPT.FIN_ACCOUNTING.v1', // CA + MBA + Commerce + CPA
   BUSINESS_LAW: 'HERA.UNI.CONCEPT.BUSINESS_LAW.v1', // CA + MBA + Law
-  ECONOMICS: 'HERA.UNI.CONCEPT.ECONOMICS.v1', // CA + MBA + Economics
-  STATISTICS: 'HERA.UNI.CONCEPT.STATISTICS.v1', // Math + Science + Business + Psychology
-  ETHICS: 'HERA.UNI.CONCEPT.ETHICS.v1', // Business + Medical + Legal + Engineering
+  ECONOMICS: 'HERA.UNI.CONCEPT.ECONOMICS.V1', // CA + MBA + Economics
+  STATISTICS: 'HERA.UNI.CONCEPT.STATISTICS.V1', // Math + Science + Business + Psychology
+  ETHICS: 'HERA.UNI.CONCEPT.ETHICS.V1', // Business + Medical + Legal + Engineering
   PROJECT_MANAGEMENT: 'HERA.UNI.CONCEPT.PROJECT_MGMT.v1', // Business + Engineering + IT
   DATA_ANALYSIS: 'HERA.UNI.CONCEPT.DATA_ANALYSIS.v1', // Science + Business + Social Science
 
   // === ASSESSMENT & CONTENT FORMATS ===
-  MULTIPLE_CHOICE: 'HERA.UNI.ASSESS.MCQ.v1',
-  ESSAY: 'HERA.UNI.ASSESS.ESSAY.v1',
-  PRACTICAL: 'HERA.UNI.ASSESS.PRACTICAL.v1',
-  PORTFOLIO: 'HERA.UNI.ASSESS.PORTFOLIO.v1',
-  PEER_REVIEW: 'HERA.UNI.ASSESS.PEER.v1',
+  MULTIPLE_CHOICE: 'HERA.UNI.ASSESS.MCQ.V1',
+  ESSAY: 'HERA.UNI.ASSESS.ESSAY.V1',
+  PRACTICAL: 'HERA.UNI.ASSESS.PRACTICAL.V1',
+  PORTFOLIO: 'HERA.UNI.ASSESS.PORTFOLIO.V1',
+  PEER_REVIEW: 'HERA.UNI.ASSESS.PEER.V1',
 
-  VIDEO_CONTENT: 'HERA.UNI.FORMAT.VIDEO.v1',
-  AUDIO_CONTENT: 'HERA.UNI.FORMAT.AUDIO.v1',
-  INTERACTIVE: 'HERA.UNI.FORMAT.INTERACTIVE.v1',
-  SIMULATION: 'HERA.UNI.FORMAT.SIMULATION.v1',
+  VIDEO_CONTENT: 'HERA.UNI.FORMAT.VIDEO.V1',
+  AUDIO_CONTENT: 'HERA.UNI.FORMAT.AUDIO.V1',
+  INTERACTIVE: 'HERA.UNI.FORMAT.INTERACTIVE.V1',
+  SIMULATION: 'HERA.UNI.FORMAT.SIMULATION.V1',
 
   // === ACCESSIBILITY & SPECIAL NEEDS ===
   ACCESSIBILITY: 'HERA.UNI.ACCESS.v1',
-  VISUAL_IMPAIRED: 'HERA.UNI.ACCESS.VISUAL.v1',
-  HEARING_IMPAIRED: 'HERA.UNI.ACCESS.HEARING.v1',
+  VISUAL_IMPAIRED: 'HERA.UNI.ACCESS.VISUAL.V1',
+  HEARING_IMPAIRED: 'HERA.UNI.ACCESS.HEARING.V1',
   LEARNING_DISABILITY: 'HERA.UNI.ACCESS.LEARNING_DISABILITY.v1',
 
   // === REGIONAL & CULTURAL ===
@@ -132,7 +132,7 @@ const SMART_CODES = {
   // === CONTENT STORAGE WITH UNIVERSAL CLASSIFICATION ===
   SAVED_CONTENT: 'HERA.UNI.EDU.CONTENT.SAVED.V1',
   REUSABLE_QUESTION: 'HERA.UNI.EDU.QUESTION.REUSABLE.V1',
-  UNIVERSAL_CONCEPT: 'HERA.UNI.EDU.CONCEPT.v1',
+  UNIVERSAL_CONCEPT: 'HERA.UNI.EDU.CONCEPT.V1',
 
   // Dynamic Updates
   DYNAMIC_UPDATE: 'HERA.UNI.EDU.TOPIC.DYNAMIC.V1',
@@ -323,7 +323,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: 'Failed to fetch learning data',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.CA.EDU.ERROR.FETCH.v1',
+        smart_code: 'HERA.CA.EDU.ERROR.FETCH.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -557,7 +557,7 @@ export async function POST(request: NextRequest) {
               success: false,
               error: 'Failed to save generated content',
               details: error instanceof Error ? error.message : 'Unknown error',
-              smart_code: 'HERA.CA.EDU.ERROR.SAVE.v1',
+              smart_code: 'HERA.CA.EDU.ERROR.SAVE.V1',
               timestamp: new Date().toISOString()
             },
             { status: 500 }
@@ -645,7 +645,7 @@ export async function POST(request: NextRequest) {
               success: false,
               error: 'Failed to retrieve saved questions',
               details: error instanceof Error ? error.message : 'Unknown error',
-              smart_code: 'HERA.CA.EDU.ERROR.RETRIEVE.v1',
+              smart_code: 'HERA.CA.EDU.ERROR.RETRIEVE.V1',
               timestamp: new Date().toISOString()
             },
             { status: 500 }
@@ -773,7 +773,7 @@ export async function POST(request: NextRequest) {
               success: false,
               error: 'Failed to generate fresh questions',
               details: error instanceof Error ? error.message : 'Unknown error',
-              smart_code: 'HERA.CA.EDU.ERROR.GENERATE.v1',
+              smart_code: 'HERA.CA.EDU.ERROR.GENERATE.V1',
               timestamp: new Date().toISOString()
             },
             { status: 500 }
@@ -946,7 +946,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Failed to process request',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.CA.EDU.ERROR.PROCESS.v1',
+        smart_code: 'HERA.CA.EDU.ERROR.PROCESS.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -1843,7 +1843,7 @@ function getQuestionsWithSmartCodeMatching(filters: any) {
         difficulty_level: 'medium',
         tags: ['depreciation', 'accounting', 'assets', 'calculation'],
         primary_smart_code: 'HERA.CA.EDU.QUESTION.FINANCIAL_ACCOUNTING.MEDIUM.v1',
-        secondary_smart_codes: ['HERA.UNI.FIN.ACCOUNTING.v1'],
+        secondary_smart_codes: ['HERA.UNI.FIN.ACCOUNTING.V1'],
         cross_subject_applicable: true,
         reuse_domains: ['CA', 'MBA', 'Commerce'],
         usage_count: 25,
@@ -1877,7 +1877,7 @@ function getCrossSubjectReusableQuestions(filters: any) {
       subject_domain: 'UNIVERSAL',
       difficulty_level: 'medium',
       tags: ['costs', 'business', 'economics', 'accounting'],
-      primary_smart_code: 'HERA.UNI.CONCEPT.ECONOMICS.v1',
+      primary_smart_code: 'HERA.UNI.CONCEPT.ECONOMICS.V1',
       secondary_smart_codes: [SMART_CODES.FINANCIAL_ACCOUNTING, SMART_CODES.CRITICAL_THINKING],
       cross_subject_applicable: true,
       reuse_domains: ['CA', 'MBA', 'Economics', 'Commerce', 'Finance', 'Management'],

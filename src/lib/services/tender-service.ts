@@ -276,7 +276,7 @@ class TenderService {
   }): Promise<string> {
     // Use universal API to create tender entity
     const entity = await universalApi.createEntity({
-      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
+      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1',
       entity_name: tender.title,
       entity_code: tender.code,
       smart_code: 'HERA.FURNITURE.TENDER.NOTICE.ACTIVE.V1'
@@ -311,7 +311,7 @@ class TenderService {
       entity_type: 'workflow_status',
       entity_name: 'Active Status',
       entity_code: 'STATUS-ACTIVE',
-      smart_code: 'HERA.WORKFLOW.STATUS.ACTIVE.v1'
+      smart_code: 'HERA.WORKFLOW.STATUS.ACTIVE.V1'
     })
 
     await universalApi.createRelationship({
@@ -325,7 +325,7 @@ class TenderService {
     await universalApi.createTransaction({
       transaction_type: 'tender_discovery',
       reference_entity_id: entity.id,
-      smart_code: 'HERA.FURNITURE.TENDER.DISCOVERED.v1',
+      smart_code: 'HERA.FURNITURE.TENDER.DISCOVERED.V1',
       total_amount: 0,
       metadata: {
         tender_code: tender.code,

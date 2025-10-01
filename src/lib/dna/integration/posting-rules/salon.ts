@@ -8,7 +8,7 @@ import type { PostingRule } from '../finance-integration-dna'
 export const POSTING_RULES: PostingRule[] = [
   // Salon Service Sale
   {
-    smart_code: 'HERA.SALON.SALE.SERVICE.v1',
+    smart_code: 'HERA.SALON.SALE.SERVICE.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'dr|cr'],
@@ -38,7 +38,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Product Sale (Retail)
   {
-    smart_code: 'HERA.SALON.SALE.PRODUCT.v1',
+    smart_code: 'HERA.SALON.SALE.PRODUCT.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'quantity', 'amount'],
@@ -76,7 +76,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Stylist Commission
   {
-    smart_code: 'HERA.SALON.PAYROLL.COMMISSION.v1',
+    smart_code: 'HERA.SALON.PAYROLL.COMMISSION.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id', 'employee_id'],
       required_lines: ['amount', 'commission_rate'],
@@ -102,7 +102,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Supply Purchase
   {
-    smart_code: 'HERA.SALON.EXPENSE.SUPPLIES.v1',
+    smart_code: 'HERA.SALON.EXPENSE.SUPPLIES.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'amount'],
@@ -158,7 +158,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Booth Rental Income
   {
-    smart_code: 'HERA.SALON.RENTAL.BOOTH.v1',
+    smart_code: 'HERA.SALON.RENTAL.BOOTH.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['stylist_id', 'amount', 'period'],
@@ -184,7 +184,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Tips Distribution
   {
-    smart_code: 'HERA.SALON.TIPS.DISTRIBUTION.v1',
+    smart_code: 'HERA.SALON.TIPS.DISTRIBUTION.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['employee_id', 'amount'],

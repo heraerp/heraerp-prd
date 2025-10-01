@@ -2,7 +2,7 @@
 
 /**
  * HERA DNA Universal Calendar Component
- * Smart Code: HERA.UI.DNA.CALENDAR.UNIVERSAL.v1
+ * Smart Code: HERA.UI.DNA.CALENDAR.UNIVERSAL.V1
  *
  * A production-ready, industry-agnostic calendar that works with HERA's Sacred Six Tables.
  * Supports any business: Salon, Restaurant, Healthcare, Professional Services, etc.

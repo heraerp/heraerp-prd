@@ -141,7 +141,7 @@ export async function setDynamicData(orgId: string, body: {
 export async function setDynamicDataBatch(baseUrl: string, params: {
   p_organization_id: string;
   p_entity_id: string;
-  p_smart_code: string; // e.g., 'HERA.SALON.PROD.DYN.v1'
+  p_smart_code: string; // e.g., 'HERA.SALON.PROD.DYN.V1'
   p_fields: DynamicFieldInput[];
 }) {
   const res = await fetch(`${baseUrl}/api/universal/dynamic-data/batch`, {

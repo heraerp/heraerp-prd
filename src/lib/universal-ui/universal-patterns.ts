@@ -253,21 +253,21 @@ export const universalActionPatterns = {
       label: 'Create New',
       type: 'create' as const,
       icon: 'plus',
-      smart_code: 'HERA.UI.ACTION.CREATE.v1'
+      smart_code: 'HERA.UI.ACTION.CREATE.V1'
     },
     edit: {
       id: 'edit',
       label: 'Edit',
       type: 'edit' as const,
       icon: 'edit',
-      smart_code: 'HERA.UI.ACTION.EDIT.v1'
+      smart_code: 'HERA.UI.ACTION.EDIT.V1'
     },
     delete: {
       id: 'delete',
       label: 'Delete',
       type: 'delete' as const,
       icon: 'trash',
-      smart_code: 'HERA.UI.ACTION.DELETE.v1',
+      smart_code: 'HERA.UI.ACTION.DELETE.V1',
       confirmation: {
         title: 'Delete Item',
         message: 'Are you sure you want to delete this item?',
@@ -279,7 +279,7 @@ export const universalActionPatterns = {
       label: 'View',
       type: 'navigate' as const,
       icon: 'eye',
-      smart_code: 'HERA.UI.ACTION.VIEW.v1'
+      smart_code: 'HERA.UI.ACTION.VIEW.V1'
     }
   },
 
@@ -290,14 +290,14 @@ export const universalActionPatterns = {
       label: 'Approve',
       type: 'workflow' as const,
       icon: 'check-circle',
-      smart_code: 'HERA.UI.ACTION.APPROVE.v1'
+      smart_code: 'HERA.UI.ACTION.APPROVE.V1'
     },
     reject: {
       id: 'reject',
       label: 'Reject',
       type: 'workflow' as const,
       icon: 'x-circle',
-      smart_code: 'HERA.UI.ACTION.REJECT.v1',
+      smart_code: 'HERA.UI.ACTION.REJECT.V1',
       confirmation: {
         title: 'Reject Item',
         message: 'Please provide a reason for rejection',
@@ -309,7 +309,7 @@ export const universalActionPatterns = {
       label: 'Submit for Approval',
       type: 'workflow' as const,
       icon: 'send',
-      smart_code: 'HERA.UI.ACTION.SUBMIT.v1'
+      smart_code: 'HERA.UI.ACTION.SUBMIT.V1'
     }
   },
 
@@ -334,7 +334,7 @@ export const universalActionPatterns = {
       label: 'Print',
       type: 'custom' as const,
       icon: 'printer',
-      smart_code: 'HERA.UI.ACTION.PRINT.v1'
+      smart_code: 'HERA.UI.ACTION.PRINT.V1'
     }
   }
 }
@@ -349,7 +349,7 @@ export const universalWidgetPatterns = {
     id: 'stats-widget',
     type: 'stats',
     title,
-    smart_code: 'HERA.UI.WIDGET.STATS.v1',
+    smart_code: 'HERA.UI.WIDGET.STATS.V1',
     config: {},
     layout: { position: { row: 0, col: 0 }, size: { width: 12, height: 1 } },
     data_source: {
@@ -363,7 +363,7 @@ export const universalWidgetPatterns = {
     id: 'form-widget',
     type: 'form',
     title,
-    smart_code: 'HERA.UI.WIDGET.FORM.v1',
+    smart_code: 'HERA.UI.WIDGET.FORM.V1',
     config: { fields },
     layout: { position: { row: 1, col: 0 }, size: { width: 12, height: 2 } }
   }),
@@ -373,7 +373,7 @@ export const universalWidgetPatterns = {
     id: 'grid-widget',
     type: 'grid',
     title,
-    smart_code: 'HERA.UI.WIDGET.GRID.v1',
+    smart_code: 'HERA.UI.WIDGET.GRID.V1',
     config: {
       columns,
       pagination: {
@@ -395,7 +395,7 @@ export const universalWidgetPatterns = {
     id: 'chart-widget',
     type: 'chart',
     title,
-    smart_code: 'HERA.UI.WIDGET.CHART.v1',
+    smart_code: 'HERA.UI.WIDGET.CHART.V1',
     config: {
       chart_type: chartType as any,
       series
@@ -408,7 +408,7 @@ export const universalWidgetPatterns = {
     id: 'timeline-widget',
     type: 'timeline',
     title,
-    smart_code: 'HERA.UI.WIDGET.TIMELINE.v1',
+    smart_code: 'HERA.UI.WIDGET.TIMELINE.V1',
     config: {
       time_field: 'created_at',
       event_template: '{{user}} {{action}} - {{description}}'

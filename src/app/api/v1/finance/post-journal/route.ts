@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         organization_id: organizationId,
         total_amount: amount,
         description: reference || `Manual Journal Entry`,
-        smart_code: smartCode || 'HERA.SALON.JOURNAL.MANUAL.v1',
+        smart_code: smartCode || 'HERA.SALON.JOURNAL.MANUAL.V1',
         status: 'posted',
         metadata: {
           source: 'salon_digital_accountant',

@@ -1,6 +1,6 @@
 /**
  * HERA DNA Universal Calendar - JSON Schemas & Validation
- * Smart Code: HERA.SCHEMA.CALENDAR.VALIDATION.v1
+ * Smart Code: HERA.SCHEMA.CALENDAR.VALIDATION.V1
  *
  * Complete validation schemas for calendar operations using Zod
  */

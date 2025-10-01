@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS FILTERS BAR
-// Smart Code: HERA.UI.REPORTS.FILTERS.v1
+// Smart Code: HERA.UI.REPORTS.FILTERS.V1
 // Universal filters for all report types with salon theme
 // ================================================================================
 

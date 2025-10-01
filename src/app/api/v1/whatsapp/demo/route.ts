@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   return NextResponse.json({
     status: 'success',
-    component: 'HERA.WHATSAPP.DEMO.API.v1',
+    component: 'HERA.WHATSAPP.DEMO.API.V1',
     description: 'WhatsApp Six Tables Demo API',
     available_scenarios: {
       basic: 'Create conversation and exchange messages',

@@ -18,7 +18,7 @@
           "p_organization_id": "${p_organization_id}",
           "p_year": "${p_year}",
           "p_month": "${p_month}",
-          "p_smart_code": "HERA.SALON.FIN.CALC.COMMISSION.v1"
+          "p_smart_code": "HERA.SALON.FIN.CALC.COMMISSION.V1"
         },
         "on_error": "stop"
       },
@@ -28,7 +28,7 @@
         "params": {
           "p_organization_id": "${p_organization_id}",
           "p_period_end": "${p_year}-${p_month}-${last_day_of_month}",
-          "p_smart_code": "HERA.SALON.INV.ADJ.POST.v1"
+          "p_smart_code": "HERA.SALON.INV.ADJ.POST.V1"
         },
         "on_error": "continue"
       },
@@ -39,7 +39,7 @@
           "p_organization_id": "${p_organization_id}",
           "p_year": "${p_year}",
           "p_month": "${p_month}",
-          "p_smart_code": "HERA.SALON.CRM.LOYALTY.UPDATE.v1"
+          "p_smart_code": "HERA.SALON.CRM.LOYALTY.UPDATE.V1"
         },
         "on_error": "continue"
       },
@@ -50,7 +50,7 @@
           "p_organization_id": "${p_organization_id}",
           "p_report_period": "${p_year}-${p_month}",
           "p_report_types": ["revenue", "commission", "inventory", "customer"],
-          "p_smart_code": "HERA.SALON.RPT.MONTHLY.v1"
+          "p_smart_code": "HERA.SALON.RPT.MONTHLY.V1"
         },
         "on_error": "continue"
       },
@@ -63,7 +63,7 @@
             "params": {
               "p_organization_id": "${p_organization_id}",
               "p_period": "${p_year}-${p_month}",
-              "p_smart_code": "HERA.FIN.PERIOD.LOCK.v1"
+              "p_smart_code": "HERA.FIN.PERIOD.LOCK.V1"
             }
           }
         ]

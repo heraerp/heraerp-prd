@@ -192,7 +192,7 @@ export class SmartCodeEngine {
   private registerBuiltInCRMSmartCodes(): void {
     // Lead Management
     this.registerSmartCode({
-      code: 'HERA.CRM.LEAD.CREATE.v1',
+      code: 'HERA.CRM.LEAD.CREATE.V1',
       domain: 'CRM',
       entity: 'LEAD',
       action: 'CREATE',
@@ -215,7 +215,7 @@ export class SmartCodeEngine {
     })
 
     this.registerSmartCode({
-      code: 'HERA.CRM.OPP.CREATE.v1',
+      code: 'HERA.CRM.OPP.CREATE.V1',
       domain: 'CRM',
       entity: 'OPPORTUNITY',
       action: 'CREATE',
@@ -247,7 +247,7 @@ export class SmartCodeEngine {
 
   private registerBuiltInFinancialSmartCodes(): void {
     this.registerSmartCode({
-      code: 'HERA.FIN.INVOICE.CREATE.v1',
+      code: 'HERA.FIN.INVOICE.CREATE.V1',
       domain: 'FINANCIAL',
       entity: 'INVOICE',
       action: 'CREATE',
@@ -275,7 +275,7 @@ export class SmartCodeEngine {
     })
 
     this.registerSmartCode({
-      code: 'HERA.FIN.PAYMENT.RECORD.v1',
+      code: 'HERA.FIN.PAYMENT.RECORD.V1',
       domain: 'FINANCIAL',
       entity: 'PAYMENT',
       action: 'RECORD',
@@ -304,7 +304,7 @@ export class SmartCodeEngine {
 
   private registerBuiltInHealthcareSmartCodes(): void {
     this.registerSmartCode({
-      code: 'HERA.HEALTH.PATIENT.REGISTER.v1',
+      code: 'HERA.HEALTH.PATIENT.REGISTER.V1',
       domain: 'HEALTHCARE',
       entity: 'PATIENT',
       action: 'REGISTER',
@@ -328,7 +328,7 @@ export class SmartCodeEngine {
 
   private registerBuiltInEducationSmartCodes(): void {
     this.registerSmartCode({
-      code: 'HERA.EDU.STUDENT.ENROLL.v1',
+      code: 'HERA.EDU.STUDENT.ENROLL.V1',
       domain: 'EDUCATION',
       entity: 'STUDENT',
       action: 'ENROLL',
@@ -357,7 +357,7 @@ export class SmartCodeEngine {
 
   private registerBuiltInManufacturingSmartCodes(): void {
     this.registerSmartCode({
-      code: 'HERA.MFG.WO.CREATE.v1',
+      code: 'HERA.MFG.WO.CREATE.V1',
       domain: 'MANUFACTURING',
       entity: 'WORK_ORDER',
       action: 'CREATE',
@@ -386,7 +386,7 @@ export class SmartCodeEngine {
 
   private registerBuiltInRetailSmartCodes(): void {
     this.registerSmartCode({
-      code: 'HERA.RETAIL.SALE.PROCESS.v1',
+      code: 'HERA.RETAIL.SALE.PROCESS.V1',
       domain: 'RETAIL',
       entity: 'SALE',
       action: 'PROCESS',

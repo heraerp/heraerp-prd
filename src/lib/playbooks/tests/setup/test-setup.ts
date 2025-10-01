@@ -16,7 +16,7 @@ expect.extend({
       message: () =>
         pass
           ? `expected ${received} not to be a valid smart code`
-          : `expected ${received} to be a valid smart code (format: HERA.DOMAIN.SUBDOMAIN.TYPE.v1)`
+          : `expected ${received} to be a valid smart code (format: HERA.DOMAIN.SUBDOMAIN.TYPE.V1)`
     }
   },
 

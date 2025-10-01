@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       entity_type: 'sync_job',
       entity_name: `Eventbrite Sync - ${new Date().toISOString()}`,
       entity_code: `SYNC-EVENTBRITE-${Date.now()}`,
-      smart_code: 'HERA.INTEGRATION.SYNC.JOB.v1',
+      smart_code: 'HERA.INTEGRATION.SYNC.JOB.V1',
       organization_id: orgId,
       metadata: {
         connector_id: body.connector_id,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.INTEGRATION.SYNC.STARTED.v1',
+        smart_code: 'HERA.INTEGRATION.SYNC.STARTED.V1',
         metadata: {
           job_id: jobId,
           connector_id: body.connector_id,
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
           entity_type: 'event',
           entity_name: ebEvent.name,
           entity_code: `EVENT-EB-${ebEvent.id}`,
-          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.V1',
           organization_id: orgId
         }
 
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
               entity_type: 'event_invite',
               entity_name: `Attendee ${i + 1} - ${ebEvent.name}`,
               entity_code: `INVITE-EB-${ebEvent.id}-${i}`,
-              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1',
               organization_id: orgId
             }
 
@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
               'X-Organization-Id': orgId
             },
             body: JSON.stringify({
-              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.REGISTRATION.INGESTED.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.REGISTRATION.INGESTED.V1',
               metadata: {
                 source: 'eventbrite',
                 event_id: eventId,
@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.INTEGRATION.SYNC.COMPLETED.v1',
+          smart_code: 'HERA.INTEGRATION.SYNC.COMPLETED.V1',
           metadata: {
             job_id: jobId,
             connector_id: body.connector_id,

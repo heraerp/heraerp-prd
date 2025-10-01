@@ -2,7 +2,7 @@
 
 /**
  * HERA Employee Manager View
- * Smart Code: HERA.HR.EMPLOYEE.MANAGER.VIEW.v1
+ * Smart Code: HERA.HR.EMPLOYEE.MANAGER.VIEW.V1
  *
  * Dedicated interface for employee leave management with role-based access:
  * - Employee View: Request own leave, view own schedule

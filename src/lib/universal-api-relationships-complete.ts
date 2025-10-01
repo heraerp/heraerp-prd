@@ -388,7 +388,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
     return this.query({
       entity: 'core_relationships',
       organization_id: organizationId,
-      smart_code: 'HERA.REL.QUERY.COMPLETE.v1',
+      smart_code: 'HERA.REL.QUERY.COMPLETE.V1',
       query: advancedQuery,
       performance: {
         cache_ttl: 300,
@@ -433,7 +433,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.AI.CLASSIFY.v1',
+          smart_code: 'HERA.REL.AI.CLASSIFY.V1',
           operation: 'update',
           data: { id: relationshipId },
           ai_requests: {
@@ -451,7 +451,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.VALIDATE.RULES.v1',
+          smart_code: 'HERA.REL.VALIDATE.RULES.V1',
           operation: 'update',
           data: { id: relationshipId },
           ai_requests: {
@@ -500,7 +500,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.CREATE.BIDIRECTIONAL.v1',
+          smart_code: 'HERA.REL.CREATE.BIDIRECTIONAL.V1',
           operation: 'transaction',
           operations
         })
@@ -516,7 +516,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.UPDATE.VERSION.v1',
+          smart_code: 'HERA.REL.UPDATE.VERSION.V1',
           operation: 'update',
           data: {
             id: relationshipId,
@@ -540,7 +540,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.CHAIN.ANALYSIS.v1',
+          smart_code: 'HERA.REL.CHAIN.ANALYSIS.V1',
           query: {
             recursive: {
               start_entity: startEntityId,
@@ -561,7 +561,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'core_relationships',
           organization_id: organizationId,
-          smart_code: 'HERA.REL.STRENGTH.ANALYTICS.v1',
+          smart_code: 'HERA.REL.STRENGTH.ANALYTICS.V1',
           query: {
             filters: {
               $or: [{ from_entity_id: entityId }, { to_entity_id: entityId }]
@@ -727,7 +727,7 @@ export class UniversalAPIRelationshipsComplete extends UniversalAPISacredSix {
       schemaValidation: await this.query({
         entity: 'core_relationships',
         organization_id: organizationId,
-        smart_code: 'HERA.REL.SCHEMA.VALIDATION.v1',
+        smart_code: 'HERA.REL.SCHEMA.VALIDATION.V1',
         query: {
           aggregations: [
             {

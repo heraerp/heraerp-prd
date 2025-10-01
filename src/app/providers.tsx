@@ -4,6 +4,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useState, useEffect } from 'react'
 import { onOrgChange, offOrgChange } from '@/lib/api-client'
+import { registerRules } from '@/lib/universal/v2/hooks'
+import { jewelryRules } from '@/lib/jewelry/rulesPack'
+import { registerFinanceRules } from '@/lib/financeDNA'
+import { applyJewelryFinanceRules } from '@/lib/financeDNA/packs/jewelry'
 import type { OrgId } from '@/types/common'
 
 // Create a stable query client instance
@@ -58,8 +62,21 @@ function OrgChangeListener({ queryClient }: { queryClient: QueryClient }) {
   return null // This component doesn't render anything
 }
 
+// Register domain rules on app boot
+if (typeof window !== 'undefined') {
+  // Only register rules in browser to avoid SSR issues
+  registerRules('HERA.JEWELRY', jewelryRules)
+  registerFinanceRules('JEWELRY', applyJewelryFinanceRules)
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => getQueryClient())
+
+  // Register rules on client side
+  useEffect(() => {
+    registerRules('HERA.JEWELRY', jewelryRules)
+    registerFinanceRules('JEWELRY', applyJewelryFinanceRules)
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>

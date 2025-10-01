@@ -1,6 +1,6 @@
 /**
  * HERA Guardrails - Sacred Rules Enforcement
- * Smart Code: HERA.CORE.GUARDRAILS.VALIDATOR.v1
+ * Smart Code: HERA.CORE.GUARDRAILS.VALIDATOR.V1
  */
 
 export const SACRED_TABLES = [

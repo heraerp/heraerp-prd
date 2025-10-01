@@ -66,7 +66,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       id: event.id,
       entity_code: event.entity_code,
       entity_name: event.entity_name,
-      smart_code: event.smart_code || 'HERA.PUBLICSECTOR.CRM.EVENT.v1',
+      smart_code: event.smart_code || 'HERA.PUBLICSECTOR.CRM.EVENT.V1',
       organization_id: event.organization_id,
       event_type: getFieldValue('event_type') || 'other',
       description: getFieldValue('description'),

@@ -338,7 +338,7 @@ export class BalanceSheetDNAService {
       // Generate summary data
       const summaryResponse = await this.api.query({
         action: 'custom_query',
-        smart_code: 'HERA.FIN.BS.SUMMARY.v1',
+        smart_code: 'HERA.FIN.BS.SUMMARY.V1',
         query: 'generate_balance_sheet_summary',
         params: {
           p_organization_id: this.organizationId,
@@ -361,7 +361,7 @@ export class BalanceSheetDNAService {
       if (includeRatios) {
         const ratiosResponse = await this.api.query({
           action: 'custom_query',
-          smart_code: 'HERA.FIN.BS.RATIOS.v1',
+          smart_code: 'HERA.FIN.BS.RATIOS.V1',
           query: 'calculate_balance_sheet_ratios',
           params: {
             p_organization_id: this.organizationId,
@@ -452,7 +452,7 @@ export class BalanceSheetDNAService {
       // Generate consolidated data using SQL function
       const consolidatedResponse = await this.api.query({
         action: 'custom_query',
-        smart_code: 'HERA.FIN.BS.CONSOLIDATED.v1',
+        smart_code: 'HERA.FIN.BS.CONSOLIDATED.V1',
         query: 'generate_consolidated_balance_sheet',
         params: {
           p_organization_ids: organizationIds,

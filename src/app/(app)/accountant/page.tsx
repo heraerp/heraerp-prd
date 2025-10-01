@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA ACCOUNTANT DASHBOARD
-// Smart Code: HERA.SALON.DASHBOARD.ACCOUNTANT.v1
+// Smart Code: HERA.SALON.DASHBOARD.ACCOUNTANT.V1
 // Dashboard for salon accountants with financial focus
 // ================================================================================
 

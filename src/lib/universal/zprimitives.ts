@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const SMART_CODE_REGEX =
   /^HERA\.[A-Z0-9]+(?:\.[A-Z0-9]+){2,}\.v\d+$/i; 
-// e.g. HERA.SALON.CRM.ENT.CUST.v1 (at least 4 segments + version)
+// e.g. HERA.SALON.CRM.ENT.CUST.V1 (at least 4 segments + version)
 
 export const UUID = z.string().uuid();
 

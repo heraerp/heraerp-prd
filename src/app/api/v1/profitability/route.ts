@@ -24,7 +24,7 @@ const MOCK_DATA = {
       parent_center_id: null,
       cost_allocation_basis: 'machine_hours',
       status: 'active',
-      smart_code: 'HERA.PROF.PC.MFG.v1',
+      smart_code: 'HERA.PROF.PC.MFG.V1',
       metrics: {
         revenue: 2450000,
         direct_costs: 1450000,
@@ -42,7 +42,7 @@ const MOCK_DATA = {
       parent_center_id: null,
       cost_allocation_basis: 'revenue',
       status: 'active',
-      smart_code: 'HERA.PROF.PC.SALES.v1',
+      smart_code: 'HERA.PROF.PC.SALES.V1',
       metrics: {
         revenue: 1850000,
         direct_costs: 925000,
@@ -61,7 +61,7 @@ const MOCK_DATA = {
       product_name: 'Premium Widget A',
       bom_id: 'bom_001',
       costing_method: 'standard',
-      smart_code: 'HERA.COST.PROD.CALC.v1',
+      smart_code: 'HERA.COST.PROD.CALC.V1',
       cost_components: {
         direct_material: 45.5,
         direct_labor: 22.3,
@@ -88,7 +88,7 @@ const MOCK_DATA = {
       total_driver_units: 3600,
       rate_per_unit: 125.0,
       allocation_method: 'activity_based',
-      smart_code: 'HERA.COST.POOL.MH.v1',
+      smart_code: 'HERA.COST.POOL.MH.V1',
       status: 'active'
     },
     {
@@ -101,7 +101,7 @@ const MOCK_DATA = {
       total_driver_units: 120,
       rate_per_unit: 1500.0,
       allocation_method: 'activity_based',
-      smart_code: 'HERA.COST.POOL.SETUP.v1',
+      smart_code: 'HERA.COST.POOL.SETUP.V1',
       status: 'active'
     }
   ],
@@ -395,10 +395,10 @@ async function calculateProductCost(searchParams: URLSearchParams) {
     },
     total_cost: 160.3,
     smart_codes_used: [
-      'HERA.COST.PROD.CALC.v1',
-      'HERA.COST.PROD.MATERIAL.v1',
-      'HERA.COST.PROD.LABOR.v1',
-      'HERA.COST.PROD.OVERHEAD.v1'
+      'HERA.COST.PROD.CALC.V1',
+      'HERA.COST.PROD.MATERIAL.V1',
+      'HERA.COST.PROD.LABOR.V1',
+      'HERA.COST.PROD.OVERHEAD.V1'
     ]
   }
 
@@ -430,7 +430,7 @@ async function createProfitCenter(data: any, organizationId: string) {
     parent_center_id: data.parent_center_id || null,
     cost_allocation_basis: data.cost_allocation_basis || 'direct',
     status: 'active',
-    smart_code: 'HERA.PROF.PC.CREATE.v1',
+    smart_code: 'HERA.PROF.PC.CREATE.V1',
     created_at: new Date().toISOString(),
     created_by: 'current_user'
   }
@@ -463,7 +463,7 @@ async function createCostPool(data: any, organizationId: string) {
     cost_driver: data.cost_driver,
     total_cost: data.total_cost || 0,
     allocation_method: 'activity_based',
-    smart_code: 'HERA.COST.POOL.CREATE.v1',
+    smart_code: 'HERA.COST.POOL.CREATE.V1',
     status: 'active',
     created_at: new Date().toISOString()
   }
@@ -482,7 +482,7 @@ async function allocateCosts(data: any, organizationId: string) {
     organization_id: organizationId,
     allocation_period: data.period || new Date().toISOString().slice(0, 7),
     allocation_method: data.method || 'activity_based',
-    smart_code: 'HERA.COST.ALLOC.ABC.v1',
+    smart_code: 'HERA.COST.ALLOC.ABC.V1',
     allocations: [
       {
         cost_pool: 'Machine Hours Pool',
@@ -532,7 +532,7 @@ async function updateProductCost(data: any, organizationId: string) {
       direct_labor: 23.5,
       overhead: 20.8
     },
-    smart_code: 'HERA.COST.PROD.CALC.v1',
+    smart_code: 'HERA.COST.PROD.CALC.V1',
     updated_at: new Date().toISOString(),
     updated_by: 'current_user'
   }
@@ -553,7 +553,7 @@ async function runProfitabilityAnalysis(data: any, organizationId: string) {
     organization_id: organizationId,
     analysis_type: analysisType,
     period: data.period || 'current_month',
-    smart_codes_used: ['HERA.PROF.ANAL.PROD.v1', 'HERA.PROF.ANAL.CUST.v1', 'HERA.PROF.ANAL.SEG.v1'],
+    smart_codes_used: ['HERA.PROF.ANAL.PROD.V1', 'HERA.PROF.ANAL.CUST.V1', 'HERA.PROF.ANAL.SEG.V1'],
     results: {
       by_profit_center: MOCK_DATA.profit_centers.map(pc => ({
         center: pc.center_name,

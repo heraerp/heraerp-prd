@@ -32,7 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
           id: kpiId,
           entity_code: 'KPI-DEMO',
           entity_name: 'Demo KPI',
-          smart_code: 'HERA.PUBLICSECTOR.CRM.KPI.DEMO.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.KPI.DEMO.V1',
           organization_id: orgId,
           definition: {
             name: 'Demo KPI',

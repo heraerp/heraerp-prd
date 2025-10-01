@@ -240,7 +240,7 @@ export default function DailySalesReportPage() {
             quantity: 1,
             unit_amount: 150.0,
             line_amount: 150.0,
-            smart_code: 'HERA.SALON.SERVICE.HAIRCUT.v1'
+            smart_code: 'HERA.SALON.SERVICE.HAIRCUT.V1'
           },
           {
             line_number: 2,
@@ -251,7 +251,7 @@ export default function DailySalesReportPage() {
             quantity: 1,
             unit_amount: 100.0,
             line_amount: 100.0,
-            smart_code: 'HERA.SALON.SERVICE.COLOR.v1'
+            smart_code: 'HERA.SALON.SERVICE.COLOR.V1'
           },
           {
             line_number: 3,
@@ -262,7 +262,7 @@ export default function DailySalesReportPage() {
             quantity: 1,
             unit_amount: 12.5,
             line_amount: 12.5,
-            smart_code: 'HERA.SALON.TAX.VAT.v1'
+            smart_code: 'HERA.SALON.TAX.VAT.V1'
           }
         ],
         related_entities: [
@@ -308,7 +308,7 @@ export default function DailySalesReportPage() {
             account_code: '6500',
             account_name: 'Staff Commission',
             debit_amount: 100.0,
-            smart_code: 'HERA.FIN.GL.COMMISSION.v1'
+            smart_code: 'HERA.FIN.GL.COMMISSION.V1'
           },
           {
             account_code: '2200',

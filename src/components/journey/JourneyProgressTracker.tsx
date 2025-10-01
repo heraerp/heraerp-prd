@@ -2,7 +2,7 @@
 
 /**
  * HERA Journey Progress Tracker Component
- * Smart Code: HERA.UI.JOURNEY.PROGRESS.TRACKER.v1
+ * Smart Code: HERA.UI.JOURNEY.PROGRESS.TRACKER.V1
  *
  * Displays user progress through the HERA onboarding journey
  */

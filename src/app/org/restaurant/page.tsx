@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * HERA Authenticated Restaurant Dashboard
- * Smart Code: HERA.RESTAURANT.DASHBOARD.AUTH.v1
+ * Smart Code: HERA.RESTAURANT.DASHBOARD.AUTH.V1
  *
  * Multi-tenant restaurant dashboard with proper head office and branch hierarchy
  * Can be used by any restaurant group with multiple locations

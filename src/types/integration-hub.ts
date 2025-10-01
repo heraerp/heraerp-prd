@@ -6,7 +6,7 @@ export interface IntegrationConnector {
   entity_type: 'integration_connector'
   entity_name: string
   entity_code: string // e.g., 'CONN-MS365', 'CONN-GOOGLE'
-  smart_code: string // e.g., 'HERA.INTEGRATIONS.CONNECTOR.MS365.v1'
+  smart_code: string // e.g., 'HERA.INTEGRATIONS.CONNECTOR.MS365.V1'
   organization_id: string
   vendor: IntegrationVendor
   status: 'active' | 'inactive' | 'error' | 'configuring'
@@ -62,7 +62,7 @@ export interface DataMapping {
   entity_type: 'integration_mapping'
   entity_name: string
   entity_code: string // e.g., 'MAP-MS365-CONTACTS'
-  smart_code: string // e.g., 'HERA.INTEGRATIONS.MAPPING.MS365.CONTACTS.v1'
+  smart_code: string // e.g., 'HERA.INTEGRATIONS.MAPPING.MS365.CONTACTS.V1'
   organization_id: string
   connector_id: string
   source_schema: DataSchema
@@ -120,7 +120,7 @@ export interface SyncJob {
   entity_type: 'integration_sync_job'
   entity_name: string
   entity_code: string // e.g., 'SYNC-MS365-CONTACTS-DAILY'
-  smart_code: string // e.g., 'HERA.INTEGRATIONS.SYNC.MS365.CONTACTS.DAILY.v1'
+  smart_code: string // e.g., 'HERA.INTEGRATIONS.SYNC.MS365.CONTACTS.DAILY.V1'
   organization_id: string
   connector_id: string
   mapping_id: string
@@ -169,7 +169,7 @@ export interface SyncRun {
   entity_type: 'integration_sync_run'
   entity_name: string
   entity_code: string // e.g., 'RUN-SYNC-MS365-CONTACTS-20240125-143000'
-  smart_code: string // e.g., 'HERA.INTEGRATIONS.RUN.MS365.CONTACTS.v1'
+  smart_code: string // e.g., 'HERA.INTEGRATIONS.RUN.MS365.CONTACTS.V1'
   organization_id: string
   sync_job_id: string
   status: 'running' | 'completed' | 'failed' | 'cancelled'
@@ -215,7 +215,7 @@ export interface DataContract {
   entity_type: 'integration_contract'
   entity_name: string
   entity_code: string // e.g., 'CONTRACT-MS365-CONTACTS-v2'
-  smart_code: string // e.g., 'HERA.INTEGRATIONS.CONTRACT.MS365.CONTACTS.v2'
+  smart_code: string // e.g., 'HERA.INTEGRATIONS.CONTRACT.MS365.CONTACTS.V2'
   organization_id: string
   vendor: IntegrationVendor
   resource: string

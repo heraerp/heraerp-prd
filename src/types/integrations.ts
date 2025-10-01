@@ -7,6 +7,8 @@ export type VendorType =
   | 'eventbrite'
   | 'office365'
   | 'google'
+  | 'meetup'
+  | 'facebook'
 
 export type ConnectorStatus = 'active' | 'inactive' | 'error' | 'expired'
 
@@ -217,5 +219,15 @@ export const OAUTH_CONFIGS: Record<VendorType, Partial<OAuthConfig>> = {
       'https://www.googleapis.com/auth/gmail.readonly',
       'https://www.googleapis.com/auth/calendar.readonly'
     ]
+  },
+  meetup: {
+    authorization_url: 'https://secure.meetup.com/oauth2/authorize',
+    token_url: 'https://secure.meetup.com/oauth2/access',
+    scopes: ['basic', 'event_management']
+  },
+  facebook: {
+    authorization_url: 'https://www.facebook.com/v18.0/dialog/oauth',
+    token_url: 'https://graph.facebook.com/v18.0/oauth/access_token',
+    scopes: ['pages_show_list', 'pages_read_engagement', 'pages_manage_posts', 'pages_manage_metadata']
   }
 }

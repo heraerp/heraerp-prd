@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             entity_type: 'enterprise_config',
             entity_name: data.name,
             entity_code: `ENT-CONFIG-${Date.now()}`,
-            smart_code: 'HERA.ADMIN.CONFIG.ENTERPRISE.v1',
+            smart_code: 'HERA.ADMIN.CONFIG.ENTERPRISE.V1',
             organization_id: ctx.organizationId,
             metadata: {
               ...data.config,

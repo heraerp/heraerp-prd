@@ -1,6 +1,6 @@
 // HERA Universal Business Systems
 // Backend systems that work across ALL industries using the 6-table architecture
-// Smart Code: HERA.UNIV.SYSTEMS.EXPORT.v1
+// Smart Code: HERA.UNIV.SYSTEMS.EXPORT.V1
 
 // Appointment System - Universal appointment management
 export * from './appointments/universal-appointment-system'

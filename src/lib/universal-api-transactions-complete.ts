@@ -623,7 +623,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.APPROVAL.HISTORY.v1',
+          smart_code: 'HERA.TXN.APPROVAL.HISTORY.V1',
           query: {
             filters: { id: transactionId },
             include_audit_trail: true,
@@ -780,7 +780,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'universal_transactions',
           organization_id: organizationId,
-          smart_code: 'HERA.TXN.VERSION.HISTORY.v1',
+          smart_code: 'HERA.TXN.VERSION.HISTORY.V1',
           query: {
             filters: { id: transactionId },
             audit_trail: {
@@ -954,7 +954,7 @@ export class UniversalAPITransactionsComplete extends UniversalAPISacredSix {
       schemaValidation: await this.query({
         entity: 'universal_transactions',
         organization_id: organizationId,
-        smart_code: 'HERA.TXN.SCHEMA.VALIDATION.v1',
+        smart_code: 'HERA.TXN.SCHEMA.VALIDATION.V1',
         query: {
           aggregations: [
             {

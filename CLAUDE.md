@@ -2,6 +2,71 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚨 CRITICAL DEVELOPMENT RULES - READ FIRST, DURING, AND ALWAYS
+
+**MANDATORY**: These rules prevent common mistakes and ensure production stability.
+
+### 🔴 ALWAYS CHECK BEFORE MAKING CHANGES:
+1. **NO DUMMY DATA IN PRODUCTION** - This is a production system. Never use fallback/dummy data.
+2. **USE UNIVERSAL API V2 ONLY** - All API calls must use `/api/v2/*` endpoints with proper headers
+3. **VERIFY FILE IMPORTS** - Check circular dependencies, especially between schemas.ts and guardrails.ts
+4. **USE DYNAMIC DATA** - Store business data in `core_dynamic_data`, NOT in metadata
+5. **TEST ACTUAL API CALLS** - Don't assume RPC functions exist, verify with real database queries
+
+### 🛑 COMMON MISTAKES TO AVOID:
+1. **Circular Import Error**: Extract shared types to separate files (like zprimitives.ts)
+2. **Empty String in Select**: Use `undefined` instead of empty string for Select components
+3. **Missing Return Statements**: Always return values in map functions
+4. **Invalid Query Parameters**: Support both `p_` prefix and regular parameter names
+5. **Undefined Entity Names**: Add validation to skip entities without required fields
+
+### ✅ CORRECT PATTERNS:
+```typescript
+// API V2 Call
+import { apiV2 } from '@/lib/client/fetchV2'
+const { data } = await apiV2.get('entities', { entity_type: 'product' })
+
+// Dynamic Data Storage (via API v2)
+await apiV2.post('entities/dynamic-data', {
+  entity_id: entityId,
+  field_name: 'price',
+  field_value: 99.99,
+  field_type: 'number',
+  smart_code: 'HERA.PRODUCT.PRICE.V1'
+})
+
+// Select Component
+<Select value={category || undefined}>
+  <SelectItem value="hair">Hair Services</SelectItem>
+</Select>
+
+// Safe Entity Mapping
+products.filter(p => p.entity_name).map(product => ({
+  id: product.id,
+  name: product.entity_name || 'Unnamed'
+}))
+```
+
+### 🔍 ALWAYS VERIFY:
+- Check if API endpoint exists before calling
+- Validate data exists before using it
+- Ensure proper error handling with detailed messages
+- Test with real data, not assumptions
+- Use TypeScript strict mode to catch issues early
+
+## 🚨 DO & DON'T Checklist (API v2 Enforcement)
+
+### ✅ DO:
+- Always use `/api/v2/**` routes
+- Always include `x-hera-api-version: v2` header
+- Always include `"apiVersion": "v2"` in request bodies
+- Use helpers: `fetchV2()`, `fetchV2Json()`, `apiV2.*`, `useApiV2()`
+
+### ❌ DON'T:
+- Never call `/api/*` without `/v2`
+- Never import `@supabase/supabase-js` directly in routes/UI
+- Never bypass `assertV2()` or `v2Body()` in server routes
+
 ## ⚠️ HERA FIELD PLACEMENT POLICY (MANDATORY - ENFORCE ALWAYS)
 
 **CRITICAL**: Default field placement policy for maintaining HERA's universal architecture integrity.
@@ -50,6 +115,31 @@ metadata: {
 - **Require metadata_category**: Before allowing any metadata usage
 - **Block Status Fields**: Redirect to `universal_transactions` pattern
 - **Validate Business Logic**: Ensure business fields use dynamic data
+
+## 🚀 UNIVERSAL API V2 - USE THIS FOR ALL DEVELOPMENT (Added 2024-01-10)
+
+**CRITICAL**: We now have a Universal API that handles ALL entity CRUD operations. Use this instead of creating entity-specific APIs!
+
+### Universal API Pattern
+```typescript
+// One API endpoint for EVERYTHING
+POST/GET/PUT/DELETE /api/v2/entities
+
+// One React hook for ANY entity
+const products = useUniversalEntity({ entity_type: 'product' })
+const services = useUniversalEntity({ entity_type: 'service' })
+const customers = useUniversalEntity({ entity_type: 'customer' })
+
+// Entity builder for easy creation
+import { EntityBuilder, SmartCodes } from '@/lib/universal/entity-builder'
+
+const product = new EntityBuilder('product', 'Shampoo', SmartCodes.product.entity)
+  .numberField('price', 89.99, SmartCodes.product.fields.price)
+  .textField('brand', 'HERA Pro', SmartCodes.product.fields.brand)
+  .build()
+```
+
+**See**: `/UNIVERSAL-API-V2.md` for complete documentation and migration guide
 
 ## 🧬 HERA DNA SMART CODE RULES (MANDATORY - READ ALWAYS)
 
@@ -200,8 +290,8 @@ localhost:3000/urp-demo                               # Interactive URP demo
 # HERA Enterprise Features (ENTERPRISE GA READY) 🔐
 node scripts/test-enterprise-features.js              # Test all enterprise capabilities
 # Access enterprise endpoints
-curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/metrics  # Prometheus metrics
-curl -H "Authorization: Bearer $JWT" localhost:3000/api/v1/audit/events  # Audit trail
+curl -H "Authorization: Bearer $JWT" -H "x-hera-api-version: v2" localhost:3000/api/v2/metrics  # Prometheus metrics
+curl -H "Authorization: Bearer $JWT" -H "x-hera-api-version: v2" localhost:3000/api/v2/audit/events  # Audit trail
 # Enterprise admin UI
 localhost:3000/admin/audit                            # Real-time audit viewer
 
@@ -286,19 +376,26 @@ Our complete implementation proves HERA's universal architecture works for sophi
 ### **🔧 Enterprise Endpoints**
 ```bash
 # Metrics endpoint (Prometheus format)
-GET /api/v1/metrics
+GET /api/v2/metrics
+Header: x-hera-api-version: v2
 
 # Audit event query
-GET /api/v1/audit/events?organization_id={org}&timeRange=24h
+GET /api/v2/audit/events?organization_id={org}&timeRange=24h
+Header: x-hera-api-version: v2
 
 # Real-time audit stream (SSE)
-GET /api/v1/audit/stream?organization_id={org}
+GET /api/v2/audit/stream?organization_id={org}
+Header: x-hera-api-version: v2
 
 # Guardrail validation (dry-run)
-POST /api/v1/guardrails/validate
+POST /api/v2/guardrails/validate
+Header: x-hera-api-version: v2
+Body: { "apiVersion": "v2", ... }
 
 # Enterprise operations
-POST /api/v1/enterprise
+POST /api/v2/enterprise
+Header: x-hera-api-version: v2
+Body: { "apiVersion": "v2", ... }
 ```
 
 ### **📚 Enterprise Documentation**
@@ -343,7 +440,7 @@ localhost:3000/~organization       # Local development
 
 ### **🔧 Key Components (ALWAYS USE THESE)**
 - **MultiOrgAuthProvider** - Use instead of any old auth components
-- **Organization Management** - Full CRUD via `/api/v1/organizations`
+- **Organization Management** - Full CRUD via `/api/v2/organizations`
 - **Subdomain Routing** - Automatic organization detection via middleware
 - **App Installation** - Per-organization app management system
 
@@ -405,10 +502,11 @@ const { currentOrganization, isAuthenticated } = useMultiOrgAuth()
 if (!currentOrganization) return <div>Please select an organization</div>
 
 // ALWAYS include organization_id in API calls
-const data = await universalApi.createEntity({
+const { data } = await apiV2.post('entities', {
   entity_type: 'customer',
   entity_name: 'Test Customer',
-  organization_id: currentOrganization.id  // CRITICAL
+  organization_id: currentOrganization.id,  // CRITICAL
+  smart_code: 'HERA.CRM.CUSTOMER.V1'
 })
 ```
 
@@ -682,11 +780,11 @@ node explore-system-org.js copy-to <org-id>
 - AI-ready with confidence scores and classification fields built-in
 - Perfect multi-tenancy with organization_id isolation
 
-**✅ Universal API** (`/src/app/api/v1/universal/` + `/src/lib/universal-api.ts`)
-- Complete CRUD operations on all 6 universal tables
+**✅ Universal API v2** (`/src/app/api/v2/entities/` + `/src/lib/client/fetchV2.ts`)
+- Complete CRUD operations on all 6 universal tables via `/api/v2/*` endpoints
 - Multi-tenant security with JWT authentication and RBAC
-- TypeScript client with full type safety and intelligent error handling
-- Mock mode for development without database
+- TypeScript client with full type safety: `apiV2.get()`, `apiV2.post()`, etc.
+- Enforced v2 headers and body validation
 - Batch operations, data validation, and performance optimization
 
 **✅ Universal UI** (`src/components/` + reusable patterns)
@@ -721,10 +819,10 @@ node explore-system-org.js copy-to <org-id>
 - **Consolidation Methods**: Support for group company reporting
 - **Industry Compliance**: Works across all business types globally
 
-### **🔧 Universal API IFRS Functions**
+### **🔧 Universal API v2 IFRS Functions**
 ```typescript
 // Setup IFRS-compliant COA (automatic with setupBusiness)
-await universalApi.setupIFRSChartOfAccounts({
+const { data } = await apiV2.post('ifrs/chart-of-accounts', {
   organizationId: 'org-123',
   industry: 'restaurant',
   country: 'AE',
@@ -732,10 +830,14 @@ await universalApi.setupIFRSChartOfAccounts({
 })
 
 // Retrieve COA with complete IFRS lineage
-const coa = await universalApi.getIFRSChartOfAccounts('org-123')
+const { data: coa } = await apiV2.get('ifrs/chart-of-accounts', {
+  organization_id: 'org-123'
+})
 
 // Validate IFRS compliance
-const validation = await universalApi.validateIFRSCompliance('org-123')
+const { data: validation } = await apiV2.post('ifrs/validate', {
+  organization_id: 'org-123'
+})
 ```
 
 ### **🌍 Universal Coverage**
@@ -761,45 +863,51 @@ const validation = await universalApi.validateIFRSCompliance('org-123')
 
 ### **Quick Usage**:
 ```typescript
-import { universalApi } from '@/lib/universal-api'
-
-// Set context (automatic organization_id filtering)
-universalApi.setOrganizationId('your-org-id')
+import { apiV2 } from '@/lib/client/fetchV2'
 
 // Create any business entity
-await universalApi.createEntity({
+const { data: entity } = await apiV2.post('entities', {
   entity_type: 'customer',
   entity_name: 'VIP Customer',
-  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'
+  smart_code: 'HERA.CRM.CUST.ENT.PROF.V1',
+  organization_id: 'your-org-id'
 })
 
 // Add unlimited custom fields without schema changes
-await universalApi.setDynamicField(entityId, 'vip_tier', 'platinum')
+const { data } = await apiV2.post('entities/dynamic-data', {
+  entity_id: entity.entity_id,
+  field_name: 'vip_tier',
+  field_value: 'platinum',
+  field_type: 'text',
+  smart_code: 'HERA.CRM.CUST.TIER.V1'
+})
 
 // Create business transactions
-await universalApi.createTransaction({
+const { data: transaction } = await apiV2.post('transactions', {
   transaction_type: 'sale',
-  smart_code: 'HERA.CRM.SALE.TXN.ORDER.v1',
+  smart_code: 'HERA.CRM.SALE.TXN.ORDER.V1',
   total_amount: 5000.00,
+  organization_id: 'your-org-id',
   line_items: [
     { entity_id: productId, quantity: 2, unit_price: 2500.00 }
   ]
 })
 
 // Complete business setup in one call
-const business = await universalApi.setupBusiness({
+const { data: business } = await apiV2.post('setup/business', {
   organization_name: "Your Business",
   owner_name: "Owner Name",
   business_type: "restaurant"
 })
 ```
 
-### **API Endpoint**: `/api/v1/universal`
-- **GET** `?action=schema` - Complete schema information with table relationships
-- **GET** `?action=read&table=TABLE_NAME` - Read records with automatic filtering
-- **POST** - Create, batch create, validate with business rule enforcement
-- **PUT** - Update records with optimistic locking
-- **DELETE** - Delete records with cascade handling
+### **API v2 Endpoints**: 
+- **GET** `/api/v2/entities` - Read entities with filtering
+- **POST** `/api/v2/entities` - Create new entities
+- **PUT** `/api/v2/entities` - Update entities
+- **DELETE** `/api/v2/entities/[id]` - Delete entities
+- **POST** `/api/v2/entities/dynamic-data` - Set dynamic fields
+- **POST** `/api/v2/transactions` - Create transactions
 
 ### **Revolutionary Impact**:
 - **One API** replaces 500+ traditional ERP endpoints
@@ -1427,19 +1535,30 @@ HERA now includes comprehensive enterprise-grade budgeting and forecasting capab
 
 ```typescript
 // Process transaction for automatic journal creation
-const result = await universalApi.processTransactionForAutoJournal(transactionId)
+const { data: result } = await apiV2.post('auto-journal/process', {
+  transaction_id: transactionId
+})
 
 // Run end-of-day batch processing
-const batchResult = await universalApi.runBatchJournalProcessing()
+const { data: batchResult } = await apiV2.post('auto-journal/batch-process', {
+  organization_id: orgId
+})
 
 // Check if transaction requires journal entry
-const relevance = await universalApi.checkTransactionJournalRelevance(transactionData)
+const { data: relevance } = await apiV2.post('auto-journal/check-relevance', {
+  transaction: transactionData
+})
 
 // Get automation statistics and insights
-const stats = await universalApi.getAutoJournalStatistics(7) // Last 7 days
+const { data: stats } = await apiV2.get('auto-journal/statistics', {
+  days: 7
+})
 
 // Enhanced transaction creation with auto-journal
-const enhanced = await universalApi.createTransactionWithAutoJournal(transactionData)
+const { data: enhanced } = await apiV2.post('transactions', {
+  ...transactionData,
+  auto_journal: true
+})
 ```
 
 ### **📊 Business Impact**
@@ -1598,33 +1717,40 @@ const professionalConfig = {
 The Auto-Journal DNA Component is fully integrated into the Universal API:
 
 ```typescript
-import { universalApi } from '@/lib/universal-api'
-
-// Set organization context
-universalApi.setOrganizationId('your-org-id')
+import { apiV2 } from '@/lib/client/fetchV2'
 
 // Process transaction with industry-specific rules
-const result = await universalApi.processTransactionWithDNA(transactionId)
+const { data: result } = await apiV2.post('auto-journal/dna/process', {
+  transaction_id: transactionId,
+  organization_id: 'your-org-id'
+})
 
 // Run batch processing with optimal strategies  
-const batchResult = await universalApi.runDNABatchProcessing()
+const { data: batchResult } = await apiV2.post('auto-journal/dna/batch', {
+  organization_id: 'your-org-id'
+})
 
 // Get comprehensive statistics
-const stats = await universalApi.getDNAAutoJournalStatistics(7) // Last 7 days
+const { data: stats } = await apiV2.get('auto-journal/dna/statistics', {
+  days: 7,
+  organization_id: 'your-org-id'
+})
 
 // Configure industry-specific settings
-const configResult = await universalApi.configureAutoJournalDNA({
+const { data: configResult } = await apiV2.post('auto-journal/dna/configure', {
+  organization_id: 'your-org-id',
   thresholds: {
     immediate_processing: 1500  // Custom threshold
   }
 })
 
 // Enhanced transaction creation with auto-journal
-const enhanced = await universalApi.createTransactionWithDNAAutoJournal({
+const { data: enhanced } = await apiV2.post('transactions', {
   transaction_type: 'sale',
-  smart_code: 'HERA.REST.SALE.ORDER.v1',
+  smart_code: 'HERA.REST.SALE.ORDER.V1',
   total_amount: 450.00,
-  organization_id: 'your-org-id'
+  organization_id: 'your-org-id',
+  auto_journal: true
 })
 ```
 
@@ -1736,61 +1862,64 @@ Every HERA instance automatically includes:
 
 ```typescript
 // Automatic budget creation during business setup
-const budgetResult = await universalApi.createBudget({
-  organizationId,
-  budgetName: '2024 Annual Operating Budget',
-  budgetCode: 'BUDGET-2024-ORG',
-  budgetType: 'operating', // operating | capital | cash_flow | project
-  fiscalYear: 2024,
-  budgetPeriod: 'annual', // monthly | quarterly | annual | rolling
-  budgetMethod: 'zero_based' // zero_based | incremental | activity_based | driver_based
+const { data: budgetResult } = await apiV2.post('budgets', {
+  organization_id: organizationId,
+  budget_name: '2024 Annual Operating Budget',
+  budget_code: 'BUDGET-2024-ORG',
+  budget_type: 'operating', // operating | capital | cash_flow | project
+  fiscal_year: 2024,
+  budget_period: 'annual', // monthly | quarterly | annual | rolling
+  budget_method: 'zero_based', // zero_based | incremental | activity_based | driver_based
+  smart_code: 'HERA.FIN.BUDGET.OPERATING.ANNUAL.V1'
 })
 
 // Create budget line items with multi-dimensional breakdown
-const linesResult = await universalApi.createBudgetLineItems({
-  budgetId: budget.id,
-  organizationId,
-  lineItems: [
+const { data: linesResult } = await apiV2.post('budgets/line-items', {
+  budget_id: budgetResult.budget.id,
+  organization_id: organizationId,
+  line_items: [
     {
-      glAccountId: 'GL_ACCOUNT_4100',
-      accountCode: '4100',
-      accountName: 'Revenue - Food Sales',
-      totalAmount: 120000,
-      budgetMethod: 'driver_based',
-      budgetDriver: 'customer_count',
-      driverAssumptions: {
+      gl_account_id: 'GL_ACCOUNT_4100',
+      account_code: '4100',
+      account_name: 'Revenue - Food Sales',
+      total_amount: 120000,
+      budget_method: 'driver_based',
+      budget_driver: 'customer_count',
+      driver_assumptions: {
         customers_per_month: 300,
         average_spend: 33.33
       },
-      monthlyBreakdown: [8000, 8000, 10000, 10000, 11000, 11000, 10000, 10000, 10000, 11000, 11000, 13000],
+      monthly_breakdown: [8000, 8000, 10000, 10000, 11000, 11000, 10000, 10000, 10000, 11000, 11000, 13000],
       dimensions: {
-        costCenter: 'RESTAURANT_MAIN',
-        profitCenter: 'DINING_OPERATIONS',
-        productLine: 'FOOD_BEVERAGES',
+        cost_center: 'RESTAURANT_MAIN',
+        profit_center: 'DINING_OPERATIONS',
+        product_line: 'FOOD_BEVERAGES',
         geography: 'DUBAI_BRANCH'
-      }
+      },
+      smart_code: 'HERA.FIN.BUDGET.LINE.REVENUE.V1'
     }
   ]
 })
 
 // Real-time variance analysis
-const varianceAnalysis = await universalApi.getBudgetVarianceAnalysis({
-  budgetId: budget.id,
-  organizationId,
+const { data: varianceAnalysis } = await apiV2.get('budgets/variance-analysis', {
+  budget_id: budgetResult.budget.id,
+  organization_id: organizationId,
   period: 'YTD', // MTD | QTD | YTD
-  varianceThreshold: 5.0
+  variance_threshold: 5.0
 })
 
 // Rolling forecasts with scenario planning
-const forecast = await universalApi.createRollingForecast({
-  organizationId,
-  forecastName: '12-Month Rolling Forecast',
-  forecastHorizon: 12,
+const { data: forecast } = await apiV2.post('budgets/rolling-forecast', {
+  organization_id: organizationId,
+  forecast_name: '12-Month Rolling Forecast',
+  forecast_horizon: 12,
   scenarios: [
     { name: 'Base Case', probability: 60, assumptions: { growth_rate: 15 } },
     { name: 'Optimistic', probability: 25, assumptions: { growth_rate: 25 } },
     { name: 'Pessimistic', probability: 15, assumptions: { growth_rate: 5 } }
-  ]
+  ],
+  smart_code: 'HERA.FIN.FORECAST.ROLLING.MONTHLY.V1'
 })
 ```
 
@@ -2064,44 +2193,44 @@ Equipment: HERA.ICECREAM.EQP.PUR.MACHINE.v1 → (-) Investing Outflow
 ### **🔧 Universal Cashflow API Functions**
 
 ```typescript
-import { universalApi } from '@/lib/universal-api'
+import { apiV2 } from '@/lib/client/fetchV2'
 
 // Generate comprehensive cashflow statement
-const statement = await universalApi.generateCashflowStatement({
-  organizationId: 'org-uuid',
+const { data: statement } = await apiV2.post('cashflow/generate', {
+  organization_id: 'org-uuid',
   period: '2025-09',
   method: 'direct', // direct | indirect
   currency: 'AED',
-  includeForecasting: true,
-  includeBenchmarking: true
+  include_forecasting: true,
+  include_benchmarking: true
 })
 
 // Get industry-specific cashflow configuration
-const config = await universalApi.getCashflowDNAConfig({
-  organizationId: 'org-uuid',
-  industryType: 'restaurant'
+const { data: config } = await apiV2.get('cashflow/dna-config', {
+  organization_id: 'org-uuid',
+  industry_type: 'restaurant'
 })
 
 // Generate 12-month cashflow forecast
-const forecast = await universalApi.generateCashflowForecast({
-  organizationId: 'org-uuid',
+const { data: forecast } = await apiV2.post('cashflow/forecast', {
+  organization_id: 'org-uuid',
   periods: 12,
-  includeSeasonality: true,
-  includeScenarios: ['base', 'optimistic', 'pessimistic']
+  include_seasonality: true,
+  include_scenarios: ['base', 'optimistic', 'pessimistic']
 })
 
 // Real-time cashflow analysis
-const analysis = await universalApi.analyzeCashflowTrends({
-  organizationId: 'org-uuid',
-  analysisType: 'variance', // variance | trend | benchmark
-  comparisonPeriod: 6 // months
+const { data: analysis } = await apiV2.post('cashflow/analyze-trends', {
+  organization_id: 'org-uuid',
+  analysis_type: 'variance', // variance | trend | benchmark
+  comparison_period: 6 // months
 })
 
 // Integration with Auto-Journal DNA
-const integration = await universalApi.integrateCashflowWithAutoJournal({
-  organizationId: 'org-uuid',
-  realTimeUpdates: true,
-  refreshInterval: 300 // 5 minutes
+const { data: integration } = await apiV2.post('cashflow/integrate-auto-journal', {
+  organization_id: 'org-uuid',
+  real_time_updates: true,
+  refresh_interval: 300 // 5 minutes
 })
 ```
 

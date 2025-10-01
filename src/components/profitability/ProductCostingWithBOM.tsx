@@ -173,7 +173,7 @@ export function ProductCostingWithBOM({
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="outline">BOM: {selectedProduct.bom_id}</Badge>
-                <Badge variant="outline">HERA.COST.PROD.CALC.v1</Badge>
+                <Badge variant="outline">HERA.COST.PROD.CALC.V1</Badge>
                 <Button
                   size="sm"
                   variant="outline"
@@ -366,7 +366,7 @@ export function ProductCostingWithBOM({
                       Material costs are automatically synchronized with the BOM system in real-time
                     </p>
                     <Badge variant="outline" className="mt-2 text-xs">
-                      HERA.PROF.INT.BOM.v1
+                      HERA.PROF.INT.BOM.V1
                     </Badge>
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export function ProductCostingWithBOM({
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="outline" className="text-xs">
-                        HERA.COST.VAR.PRICE.v1
+                        HERA.COST.VAR.PRICE.V1
                       </Badge>
                       <span className="text-xs text-yellow-600">Impact: +$3.87/unit</span>
                     </div>
@@ -417,7 +417,7 @@ export function ProductCostingWithBOM({
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                       <Badge variant="outline" className="text-xs">
-                        HERA.PROF.AI.OPT.v1
+                        HERA.PROF.AI.OPT.V1
                       </Badge>
                       <span className="text-xs text-green-600">Potential savings: $8.40/unit</span>
                     </div>

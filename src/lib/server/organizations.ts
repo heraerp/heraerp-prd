@@ -1,6 +1,6 @@
 /**
  * Server-side organization utilities
- * Smart Code: HERA.LIB.SERVER.ORGS.v1
+ * Smart Code: HERA.LIB.SERVER.ORGS.V1
  */
 
 import { createClient } from '@supabase/supabase-js'

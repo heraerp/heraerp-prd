@@ -225,7 +225,7 @@ export const FINANCE_DNA_POSTING_RULES: PostingRule[] = [
 
   // Salon-Specific Patterns
   {
-    smart_code: 'HERA.SALON.SALE.SERVICE.v1',
+    smart_code: 'HERA.SALON.SALE.SERVICE.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'dr|cr']
@@ -422,7 +422,7 @@ export class FinanceDNAService {
 
 // Export the DNA pattern
 export const FINANCE_INTEGRATION_DNA = {
-  name: 'HERA.DNA.FINANCE.INTEGRATION.v1',
+  name: 'HERA.DNA.FINANCE.INTEGRATION.V1',
   description: 'Universal Finance↔SD↔MM↔HR Integration Pattern',
   components: {
     PostingRules: FINANCE_DNA_POSTING_RULES,

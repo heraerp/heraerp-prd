@@ -1,6 +1,6 @@
 /**
  * Universal Report Viewer Component
- * Smart Code: HERA.UI.URP.VIEWER.v1
+ * Smart Code: HERA.UI.URP.VIEWER.V1
  *
  * React component for displaying URP reports
  */

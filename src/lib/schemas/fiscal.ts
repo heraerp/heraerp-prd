@@ -1,6 +1,6 @@
 // ================================================================================
 // FISCAL SCHEMAS - ZEST VALIDATION
-// Smart Code: HERA.LIB.SCHEMAS.FISCAL.v1
+// Smart Code: HERA.LIB.SCHEMAS.FISCAL.V1
 // Production-ready fiscal period and configuration schemas
 // ================================================================================
 

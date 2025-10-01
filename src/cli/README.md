@@ -31,8 +31,8 @@ The HERA CLI accelerates local development and validation against the Sacred Six
 
 Examples
 
-- `npm run hera -- smart-code validate "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --semantic --json`
-- `npm run hera -- tx create --org $ORG --type SALE --code "HERA.RETAIL.ORDERS.SALE.ONLINE.v1" --lines '[{"line_number":1,"line_type":"ITEM","line_amount":19.99,"smart_code":"HERA.RETAIL.ORDERS.LINE.ITEM.v1"}]' --json`
+- `npm run hera -- smart-code validate "HERA.RETAIL.ORDERS.SALE.ONLINE.V1" --semantic --json`
+- `npm run hera -- tx create --org $ORG --type SALE --code "HERA.RETAIL.ORDERS.SALE.ONLINE.V1" --lines '[{"line_number":1,"line_type":"ITEM","line_amount":19.99,"smart_code":"HERA.RETAIL.ORDERS.LINE.ITEM.V1"}]' --json`
 - `npm run hera -- tx list --org $ORG --since 2025-01-01 --json`
 
 ## Troubleshooting

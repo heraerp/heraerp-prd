@@ -458,7 +458,7 @@ export class PostingRulesEngine implements IPostingRulesEngine {
       field_name: `gl_mapping_${smartCode}`,
       field_type: 'json',
       field_value_json: accounts,
-      smart_code: 'HERA.FIN.GL.MAPPING.v1',
+      smart_code: 'HERA.FIN.GL.MAPPING.V1',
       is_system_field: true
     })
 

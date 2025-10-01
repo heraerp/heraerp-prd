@@ -1,6 +1,6 @@
 /**
  * HERA Workflow Engine Types
- * Smart Code: HERA.WORKFLOW.ENGINE.TYPES.v1
+ * Smart Code: HERA.WORKFLOW.ENGINE.TYPES.V1
  *
  * Type definitions for the HERA Workflow Engine
  * Built on the sacred 6-table architecture

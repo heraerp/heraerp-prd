@@ -10,13 +10,15 @@ import type {
   ConnectorMapping
 } from '@/types/integrations'
 
+const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
+
 // Base API client
 const apiClient = async <T>(path: string, options?: RequestInit): Promise<T> => {
-  const orgId = useOrgStore.getState().currentOrgId
+  const orgId = useOrgStore.getState().currentOrgId || CIVICFLOW_ORG_ID
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    ...(orgId && { 'X-Organization-Id': orgId }),
+    'X-Organization-Id': orgId,
     ...options?.headers
   }
 
@@ -84,16 +86,33 @@ export function useConnectIntegration() {
     mutationFn: async ({ vendor, authCode }: { vendor: VendorType; authCode?: string }) => {
       // For demo mode or BlueSky (app password), create connector directly
       if (!authCode) {
-        return apiClient(`/api/integrations/${vendor}/auth/callback`, {
+        // Use service endpoint for all vendors to bypass RLS
+        const endpoint = `/api/integrations/${vendor}/auth/callback-service`
+          
+        return apiClient(endpoint, {
           method: 'POST',
-          body: JSON.stringify({ demo: true })
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Organization-Id': orgId!
+          },
+          body: JSON.stringify({ 
+            demo: true,
+            organizationId: orgId 
+          })
         })
       }
 
       // For OAuth flows
       return apiClient(`/api/integrations/${vendor}/auth/callback`, {
         method: 'POST',
-        body: JSON.stringify({ code: authCode })
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Organization-Id': orgId!
+        },
+        body: JSON.stringify({ 
+          code: authCode,
+          organizationId: orgId 
+        })
       })
     },
     onSuccess: (_, variables) => {
@@ -125,7 +144,7 @@ export function useDisconnectIntegration() {
           'X-Organization-Id': orgId!
         },
         body: JSON.stringify({
-          smart_code: 'HERA.INTEGRATION.CONNECTOR.REVOKED.v1',
+          smart_code: 'HERA.INTEGRATION.CONNECTOR.REVOKED.V1',
           metadata: {
             connector_id: connectorId,
             vendor

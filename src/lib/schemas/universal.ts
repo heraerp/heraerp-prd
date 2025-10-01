@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA UNIVERSAL SCHEMAS - STUB FOR AUTH IMPLEMENTATION
-// Smart Code: HERA.SCHEMAS.UNIVERSAL.STUB.v1
+// Smart Code: HERA.SCHEMAS.UNIVERSAL.STUB.V1
 // Minimal schema definitions for frontend auth, will be expanded later
 // ================================================================================
 

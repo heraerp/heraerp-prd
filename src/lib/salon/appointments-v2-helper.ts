@@ -34,7 +34,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
 
   const payload = {
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.APPT.BOOK.CREATE.v1',
+    smart_code: 'HERA.SALON.APPT.BOOK.CREATE.V1',
     transaction_type: 'appointment',
     transaction_date: new Date().toISOString(),
     // Keep source/target aligned with existing salon logic (customer -> staff)
@@ -53,7 +53,7 @@ export async function bookAppointmentV2(args: BookArgs): Promise<{
     lines: [
       {
         line_type: 'service',
-        smart_code: 'HERA.SALON.SERVICE.HAIRCUT.LADIES.v1',
+        smart_code: 'HERA.SALON.SERVICE.HAIRCUT.LADIES.V1',
         entity_id: serviceId,
         quantity: 1,
         unit_amount: price
@@ -92,7 +92,7 @@ export async function updateAppointmentV2(args: UpdateArgs): Promise<void> {
 
   const payload = {
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.APPT.BOOK.UPDATE.v1',
+    smart_code: 'HERA.SALON.APPT.BOOK.UPDATE.V1',
     transaction_type: 'appointment',
     transaction_date: new Date().toISOString(),
     business_context: {
@@ -125,7 +125,7 @@ export async function cancelAppointmentV2(args: {
 
   const payload = {
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.APPT.BOOK.CANCEL.v1',
+    smart_code: 'HERA.SALON.APPT.BOOK.CANCEL.V1',
     transaction_type: 'appointment',
     transaction_date: new Date().toISOString(),
     business_context: {
@@ -156,7 +156,7 @@ export async function noShowAppointmentV2(args: {
 
   const payload = {
     organization_id: organizationId,
-    smart_code: 'HERA.SALON.APPT.BOOK.NOSHOW.v1',
+    smart_code: 'HERA.SALON.APPT.BOOK.NOSHOW.V1',
     transaction_type: 'appointment',
     transaction_date: new Date().toISOString(),
     business_context: {

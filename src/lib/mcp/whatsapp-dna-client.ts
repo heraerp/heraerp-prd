@@ -18,15 +18,15 @@ import {
 
 // WhatsApp-specific smart codes as constants
 export const WHATSAPP_SMART_CODES = {
-  THREAD_CREATE: createSmartCode('HERA.WHATSAPP.INBOX.THREAD.v1'),
-  MESSAGE_TEXT: createSmartCode('HERA.WHATSAPP.MESSAGE.TEXT.v1'),
-  MESSAGE_MEDIA: createSmartCode('HERA.WHATSAPP.MESSAGE.MEDIA.v1'),
-  MESSAGE_INTERACTIVE: createSmartCode('HERA.WHATSAPP.MESSAGE.INTERACTIVE.v1'),
-  NOTE_INTERNAL: createSmartCode('HERA.WHATSAPP.NOTE.INTERNAL.v1'),
-  TEMPLATE_REGISTER: createSmartCode('HERA.WHATSAPP.TEMPLATE.REGISTER.v1'),
-  CAMPAIGN_CREATE: createSmartCode('HERA.WHATSAPP.CAMPAIGN.OUTBOUND.v1'),
-  PAYMENT_LINK: createSmartCode('HERA.AR.PAYMENT.LINK.SHARE.v1'),
-  CUSTOMER_WHATSAPP: createSmartCode('HERA.CRM.CUSTOMER.WHATSAPP.v1')
+  THREAD_CREATE: createSmartCode('HERA.WHATSAPP.INBOX.THREAD.V1'),
+  MESSAGE_TEXT: createSmartCode('HERA.WHATSAPP.MESSAGE.TEXT.V1'),
+  MESSAGE_MEDIA: createSmartCode('HERA.WHATSAPP.MESSAGE.MEDIA.V1'),
+  MESSAGE_INTERACTIVE: createSmartCode('HERA.WHATSAPP.MESSAGE.INTERACTIVE.V1'),
+  NOTE_INTERNAL: createSmartCode('HERA.WHATSAPP.NOTE.INTERNAL.V1'),
+  TEMPLATE_REGISTER: createSmartCode('HERA.WHATSAPP.TEMPLATE.REGISTER.V1'),
+  CAMPAIGN_CREATE: createSmartCode('HERA.WHATSAPP.CAMPAIGN.OUTBOUND.V1'),
+  PAYMENT_LINK: createSmartCode('HERA.AR.PAYMENT.LINK.SHARE.V1'),
+  CUSTOMER_WHATSAPP: createSmartCode('HERA.CRM.CUSTOMER.WHATSAPP.V1')
 } as const
 
 export class WhatsAppDNAClient {
@@ -182,7 +182,7 @@ export class WhatsAppDNAClient {
       template.id,
       'body',
       params.body,
-      createSmartCode('HERA.WHATSAPP.TEMPLATE.BODY.v1')
+      createSmartCode('HERA.WHATSAPP.TEMPLATE.BODY.V1')
     )
 
     // Store variables if present
@@ -191,7 +191,7 @@ export class WhatsAppDNAClient {
         template.id,
         'variables',
         params.variables,
-        createSmartCode('HERA.WHATSAPP.TEMPLATE.VARS.v1')
+        createSmartCode('HERA.WHATSAPP.TEMPLATE.VARS.V1')
       )
     }
 
@@ -223,7 +223,7 @@ export class WhatsAppDNAClient {
       campaign.id,
       'audience_query',
       params.audienceQuery,
-      createSmartCode('HERA.WHATSAPP.CAMPAIGN.AUDIENCE.v1')
+      createSmartCode('HERA.WHATSAPP.CAMPAIGN.AUDIENCE.V1')
     )
 
     return campaign.id

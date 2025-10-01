@@ -425,7 +425,7 @@ export default function NewSalesOrderModal({
         transaction_date: orderDetails.order_date,
         source_entity_id: selectedCustomer.id,
         total_amount: totals.total,
-        smart_code: 'HERA.FURNITURE.SALES.ORDER.v1',
+        smart_code: 'HERA.FURNITURE.SALES.ORDER.V1',
         metadata: {
           delivery_date: orderDetails.delivery_date,
           payment_terms: orderDetails.payment_terms,
@@ -455,7 +455,7 @@ export default function NewSalesOrderModal({
             quantity: item.quantity.toString(),
             unit_price: item.unit_price,
             line_amount: item.line_amount,
-            smart_code: 'HERA.FURNITURE.SALES.LINE.v1',
+            smart_code: 'HERA.FURNITURE.SALES.LINE.V1',
             metadata: {
               product_name: item.product.entity_name,
               product_code: item.product.entity_code,
@@ -470,7 +470,7 @@ export default function NewSalesOrderModal({
           entity_type: 'workflow_status',
           entity_name: 'Pending Approval',
           entity_code: 'STATUS-PENDING-APPROVAL',
-          smart_code: 'HERA.FURNITURE.STATUS.PENDING.v1',
+          smart_code: 'HERA.FURNITURE.STATUS.PENDING.V1',
           organization_id: organizationId
         })
 
@@ -479,7 +479,7 @@ export default function NewSalesOrderModal({
             from_entity_id: orderId,
             to_entity_id: statusResponse.data.id,
             relationship_type: 'has_status',
-            smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1',
+            smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.V1',
             relationship_data: {
               status: 'pending_approval',
               created_at: new Date().toISOString(),

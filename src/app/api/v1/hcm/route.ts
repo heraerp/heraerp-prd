@@ -105,7 +105,7 @@ async function createEmployee(data: any, organizationId: string) {
       organization_id: organizationId,
       entity_type: 'employee',
       entity_name: name,
-      smart_code: 'HERA.HCM.EMP.MASTER.v1',
+      smart_code: 'HERA.HCM.EMP.MASTER.V1',
       metadata: {
         email,
         department,
@@ -127,7 +127,7 @@ async function createEmployee(data: any, organizationId: string) {
     organization_id: organizationId,
     transaction_type: 'employee_onboarding',
     transaction_code: `ONBOARD-${employee.entity_code}`,
-    smart_code: 'HERA.HCM.EMP.ONBOARD.v1',
+    smart_code: 'HERA.HCM.EMP.ONBOARD.V1',
     transaction_date: new Date().toISOString(),
     from_entity_id: employee.id,
     metadata: {
@@ -173,7 +173,7 @@ async function terminateEmployee(employeeId: string, data: any, organizationId: 
       organization_id: organizationId,
       transaction_type: 'employee_termination',
       transaction_code: `TERM-${employeeId}-${Date.now()}`,
-      smart_code: 'HERA.HCM.EMP.TERMINATE.v1',
+      smart_code: 'HERA.HCM.EMP.TERMINATE.V1',
       transaction_date: termination_date,
       from_entity_id: employeeId,
       metadata: {
@@ -248,7 +248,7 @@ async function runPayroll(employeeIds: string[], data: any, organizationId: stri
         organization_id: organizationId,
         transaction_type: 'payroll_run',
         transaction_code: `PAY-${employee.entity_code}-${pay_period}`,
-        smart_code: 'HERA.HCM.PAY.RUN.v1',
+        smart_code: 'HERA.HCM.PAY.RUN.V1',
         transaction_date: new Date().toISOString(),
         from_entity_id: employee.id,
         total_amount: net,
@@ -319,7 +319,7 @@ async function clockInOut(employeeId: string, data: any, organizationId: string)
         organization_id: organizationId,
         transaction_type: 'time_clock',
         transaction_code: `CLOCK-${employeeId}-${Date.now()}`,
-        smart_code: 'HERA.HCM.TIME.CLOCK.v1',
+        smart_code: 'HERA.HCM.TIME.CLOCK.V1',
         transaction_date: timestamp,
         from_entity_id: employeeId,
         metadata: {

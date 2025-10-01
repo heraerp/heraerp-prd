@@ -47,7 +47,7 @@ function MyComponent() {
 
 #### PageHeaderDNA
 
-**Smart Code**: `HERA.DNA.UI.HEADER.GLASS.v1`  
+**Smart Code**: `HERA.DNA.UI.HEADER.GLASS.V1`  
 **Linked Hook**: `useHERAAuth`
 
 Page headers with gradient backgrounds, back navigation, and action buttons.
@@ -65,7 +65,7 @@ Page headers with gradient backgrounds, back navigation, and action buttons.
 
 #### HERAGradientBackground
 
-**Smart Code**: `HERA.DNA.UI.BACKGROUND.GRADIENT.v1`
+**Smart Code**: `HERA.DNA.UI.BACKGROUND.GRADIENT.V1`
 
 Animated gradient backgrounds for visual appeal.
 
@@ -79,7 +79,7 @@ Animated gradient backgrounds for visual appeal.
 
 #### CardDNA (Base Card)
 
-**Smart Code**: `HERA.DNA.UI.CARD.GLASS.v1`  
+**Smart Code**: `HERA.DNA.UI.CARD.GLASS.V1`  
 **Linked Hook**: `useReadEntities`
 
 Enhanced cards with glassmorphism effects, hover states, and icons.
@@ -96,7 +96,7 @@ Enhanced cards with glassmorphism effects, hover states, and icons.
 
 #### EntityCardGlass
 
-**Smart Code**: `HERA.DNA.UI.ENTITY.CARD.GLASS.v1`  
+**Smart Code**: `HERA.DNA.UI.ENTITY.CARD.GLASS.V1`  
 **Linked Hooks**: `useReadEntities` + `useGetDynamicFields`
 
 Specialized glassmorphism card for displaying entities with dynamic fields.
@@ -107,7 +107,7 @@ const entity = {
   entity_type: 'customer',
   entity_name: 'Acme Corp',
   entity_code: 'CUST-001',
-  smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'
+  smart_code: 'HERA.CRM.CUST.ENT.PROF.V1'
 }
 
 const dynamicFields = {
@@ -135,7 +135,7 @@ const dynamicFields = {
 
 #### FormFieldDNA
 
-**Smart Code**: `HERA.DNA.UI.FORM.FIELD.v1`  
+**Smart Code**: `HERA.DNA.UI.FORM.FIELD.V1`  
 **Linked Hooks**: `useCreateEntity`, `useUpdateEntity`
 
 Complete form field with label, icon, helper text, and error states.
@@ -378,7 +378,7 @@ Scroll areas with enhanced visible scrollbars in both light and dark modes.
 
 #### StatCardDNA
 
-**Smart Code**: `HERA.DNA.UI.STAT.CARD.v1`  
+**Smart Code**: `HERA.DNA.UI.STAT.CARD.V1`  
 **Linked Hook**: `useReadEntities`
 
 Statistics display cards with trend indicators.
@@ -406,7 +406,7 @@ import { StatCardDNA, StatCardGrid } from '@/src/lib/dna/components/ui/hera-dna-
 
 #### MiniStatCardDNA
 
-**Smart Code**: `HERA.DNA.UI.STAT.MINI.v1`
+**Smart Code**: `HERA.DNA.UI.STAT.MINI.V1`
 
 Compact statistics cards for dashboards.
 
@@ -423,7 +423,7 @@ Compact statistics cards for dashboards.
 
 #### BottomSheet
 
-**Smart Code**: `HERA.DNA.UI.MOBILE.SHEET.v1`
+**Smart Code**: `HERA.DNA.UI.MOBILE.SHEET.V1`
 
 Mobile-optimized bottom sheet for filters and actions.
 
@@ -441,7 +441,7 @@ Mobile-optimized bottom sheet for filters and actions.
 
 ### Glass Card Classes
 
-**Smart Code**: `HERA.DNA.UI.UTIL.GLASS.v1`
+**Smart Code**: `HERA.DNA.UI.UTIL.GLASS.V1`
 
 ```typescript
 import { glassCardClasses } from '@/src/lib/dna/components/ui/hera-dna-ui-registry'
@@ -472,7 +472,7 @@ HERA_GLASS_THEME.shadow.lg // "shadow-lg shadow-black/15"
 
 ### Entity List Pattern
 
-**Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.LIST.v1`
+**Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.LIST.V1`
 
 ```typescript
 import {
@@ -519,7 +519,7 @@ function CustomerList() {
 
 ### Entity Form Pattern
 
-**Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.FORM.v1`
+**Smart Code**: `HERA.DNA.UI.PATTERN.ENTITY.FORM.V1`
 
 ```typescript
 function CustomerForm() {
@@ -535,7 +535,7 @@ function CustomerForm() {
     const result = await createEntity({
       entity_type: 'customer',
       entity_name: formData.name,
-      smart_code: 'HERA.CRM.CUST.ENT.PROF.v1'
+      smart_code: 'HERA.CRM.CUST.ENT.PROF.V1'
     })
 
     if (result.data) {

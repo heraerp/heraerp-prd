@@ -474,7 +474,7 @@ const CustomerDetailModal = ({
             id: '3',
             transaction_type: 'LOYALTY',
             transaction_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-            smart_code: 'HERA.SALON.LOYALTY.POINTS.v1',
+            smart_code: 'HERA.SALON.LOYALTY.POINTS.V1',
             description: 'Earned 46 points',
             amount: 46,
             type: 'earn'

@@ -1036,7 +1036,7 @@ HERA.FIN.AA.TXN.DEPR.V1       - Asset depreciation
 🔄 CONDITIONAL JOURNAL (Based on Amount/Rules):
 HERA.REST.POS.TXN.SALE.V1     - Restaurant sale (batch if small)
 HERA.INV.RCV.TXN.IN.V1        - Inventory receipt (immediate if large)
-HERA.HR.EXP.TXN.REIM.v1       - Expense reimbursement (batch if small)
+HERA.HR.EXP.TXN.REIM.V1       - Expense reimbursement (batch if small)
 
 ❌ NEVER CREATE JOURNAL:
 HERA.CRM.CUS.ENT.PROF.DRAFT   - Draft customer profile

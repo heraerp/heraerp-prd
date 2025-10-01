@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
           LEFT JOIN core_dynamic_data d ON d.entity_id = t.id 
             AND d.organization_id = $1
           WHERE t.organization_id = $1
-            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1'
+            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1'
             AND ($2 = '' OR (
               t.entity_name ILIKE '%' || $2 || '%'
               OR t.entity_code ILIKE '%' || $2 || '%'
@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
             ) as status
           FROM core_entities t
           WHERE t.organization_id = $1
-            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1'
+            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1'
             AND ($2 = '' OR (
               t.entity_name ILIKE '%' || $2 || '%'
               OR t.entity_code ILIKE '%' || $2 || '%'
@@ -159,7 +159,7 @@ export async function GET(request: NextRequest) {
           AND ut.reference_entity_id IN (
             SELECT id FROM core_entities
             WHERE organization_id = $1
-              AND entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1'
+              AND entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1'
           )
         GROUP BY ut.reference_entity_id
       `

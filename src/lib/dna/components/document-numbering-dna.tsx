@@ -271,7 +271,7 @@ async function trackDocumentNumberGeneration(
         smart_code: 'HERA.DNA.DOCUMENT.NUMBERING.UNIVERSAL.V1'
       }),
       {
-        smart_code: 'HERA.DNA.DOCUMENT.TRACKING.v1',
+        smart_code: 'HERA.DNA.DOCUMENT.TRACKING.V1',
         field_category: 'document_numbering_dna'
       }
     )

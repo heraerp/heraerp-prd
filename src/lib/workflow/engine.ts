@@ -1,6 +1,6 @@
 /**
  * HERA Workflow Engine
- * Smart Code: HERA.WORKFLOW.ENGINE.CORE.v1
+ * Smart Code: HERA.WORKFLOW.ENGINE.CORE.V1
  *
  * Core workflow execution engine using the sacred 6-table architecture
  * All workflow state is stored in universal tables with smart codes

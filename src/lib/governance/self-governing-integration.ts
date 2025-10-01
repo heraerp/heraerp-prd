@@ -1,7 +1,7 @@
 /**
  * HERA Self-Governing Standards Integration
  * Connects the self-governing standards (6 tables) with the admin interface
- * Smart Code: HERA.GOVERNANCE.INTEGRATION.MANAGER.v1
+ * Smart Code: HERA.GOVERNANCE.INTEGRATION.MANAGER.V1
  */
 
 import { universalApi } from '@/lib/universal-api'

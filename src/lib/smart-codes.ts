@@ -75,23 +75,23 @@ export const HERA_CODES = {
   SALON: {
     POS: {
       SALE: {
-        HEADER: heraCode('HERA.SALON.POS.SALE.HEADER.v1'),
+        HEADER: heraCode('HERA.SALON.POS.SALE.HEADER.V1'),
         LINE: {
-          SERVICE: heraCode('HERA.SALON.POS.LINE.SERVICE.v1'),
-          PRODUCT: heraCode('HERA.SALON.POS.LINE.PRODUCT.v1'),
-          DISCOUNT: heraCode('HERA.SALON.POS.LINE.DISCOUNT.v1'),
-          TIP: heraCode('HERA.SALON.POS.LINE.TIP.v1'),
-          TAX: heraCode('HERA.SALON.POS.LINE.TAX.v1')
+          SERVICE: heraCode('HERA.SALON.POS.LINE.SERVICE.V1'),
+          PRODUCT: heraCode('HERA.SALON.POS.LINE.PRODUCT.V1'),
+          DISCOUNT: heraCode('HERA.SALON.POS.LINE.DISCOUNT.V1'),
+          TIP: heraCode('HERA.SALON.POS.LINE.TIP.V1'),
+          TAX: heraCode('HERA.SALON.POS.LINE.TAX.V1')
         },
         PAYMENT: {
-          CASH: heraCode('HERA.SALON.POS.PAYMENT.CASH.v1'),
-          CARD: heraCode('HERA.SALON.POS.PAYMENT.CARD.v1'),
-          VOUCHER: heraCode('HERA.SALON.POS.PAYMENT.VOUCHER.v1'),
-          OTHER: heraCode('HERA.SALON.POS.PAYMENT.OTHER.v1')
+          CASH: heraCode('HERA.SALON.POS.PAYMENT.CASH.V1'),
+          CARD: heraCode('HERA.SALON.POS.PAYMENT.CARD.V1'),
+          VOUCHER: heraCode('HERA.SALON.POS.PAYMENT.VOUCHER.V1'),
+          OTHER: heraCode('HERA.SALON.POS.PAYMENT.OTHER.V1')
         },
         COMMISSION: {
-          EXPENSE: heraCode('HERA.SALON.POS.LINE.COMMISSION.EXPENSE.v1'),
-          PAYABLE: heraCode('HERA.SALON.POS.LINE.COMMISSION.PAYABLE.v1')
+          EXPENSE: heraCode('HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1'),
+          PAYABLE: heraCode('HERA.SALON.POS.LINE.COMMISSION.PAYABLE.V1')
         }
       }
     }
@@ -100,17 +100,17 @@ export const HERA_CODES = {
   // CRM Smart Codes
   CRM: {
     CUSTOMER: {
-      ENTITY: heraCode('HERA.CRM.CUST.ENT.PROF.v1')
+      ENTITY: heraCode('HERA.CRM.CUST.ENT.PROF.V1')
     },
     SALE: {
-      TRANSACTION: heraCode('HERA.CRM.SALE.TXN.ORDER.v1')
+      TRANSACTION: heraCode('HERA.CRM.SALE.TXN.ORDER.V1')
     }
   },
 
   // Finance Smart Codes
   FIN: {
     GL: {
-      ACCOUNT: heraCode('HERA.FIN.GL.ACC.TXN.POST.v1')
+      ACCOUNT: heraCode('HERA.FIN.GL.ACC.TXN.POST.V1')
     }
   }
 } as const

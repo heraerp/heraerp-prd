@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     total_amount: 0,
     source_entity_id: conversation.id,
     target_entity_id: null,
-    smart_code: 'HERA.WHATSAPP.MSG.INBOUND.v1',
+    smart_code: 'HERA.WHATSAPP.MSG.INBOUND.V1',
     metadata: {
       message_id: 'debug_msg_' + Date.now(),
       text: 'Debug test message',

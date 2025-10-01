@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       entity_type: 'sync_job',
       entity_name: `BlueSky Sync - ${new Date().toISOString()}`,
       entity_code: `SYNC-BLUESKY-${Date.now()}`,
-      smart_code: 'HERA.INTEGRATION.SYNC.JOB.v1',
+      smart_code: 'HERA.INTEGRATION.SYNC.JOB.V1',
       organization_id: orgId,
       metadata: {
         connector_id: body.connector_id,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.INTEGRATION.SYNC.STARTED.v1',
+        smart_code: 'HERA.INTEGRATION.SYNC.STARTED.V1',
         metadata: {
           job_id: jobId,
           connector_id: body.connector_id,
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
           entity_type: 'comm_message',
           entity_name: post.text.substring(0, 50) + '...',
           entity_code: `MSG-BSKY-${post.cid}`,
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.BLUESKY.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.BLUESKY.V1',
           organization_id: orgId
         }
 
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
               'X-Organization-Id': orgId
             },
             body: JSON.stringify({
-              smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.INGESTED.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.INGESTED.V1',
               metadata: {
                 source: 'bluesky',
                 post_uri: post.uri,
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.INTEGRATION.SYNC.COMPLETED.v1',
+          smart_code: 'HERA.INTEGRATION.SYNC.COMPLETED.V1',
           metadata: {
             job_id: jobId,
             connector_id: body.connector_id,

@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT ACTIVITY PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.ACTIVITY.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.ACTIVITY.V1
 // Activity timeline for appointment history
 // ================================================================================
 

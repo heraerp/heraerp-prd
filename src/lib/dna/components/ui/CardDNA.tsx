@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UI - CARD COMPONENT
-// Smart Code: HERA.DNA.UI.CARD.v1
+// Smart Code: HERA.DNA.UI.CARD.V1
 // Enhanced card with hover effects and proper dark mode
 // ================================================================================
 

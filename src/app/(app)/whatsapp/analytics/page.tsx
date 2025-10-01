@@ -1,6 +1,6 @@
 // ================================================================================
 // WHATSAPP ANALYTICS PAGE - MESSAGE ANALYTICS & INSIGHTS
-// Smart Code: HERA.UI.WHATSAPP.ANALYTICS.v1
+// Smart Code: HERA.UI.WHATSAPP.ANALYTICS.V1
 // Production-ready analytics dashboard with insights and performance tracking
 // ================================================================================
 

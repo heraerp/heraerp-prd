@@ -355,7 +355,7 @@ export const orgApi = {
       entity_type: payload.entity_type || 'organization',
       entity_name: payload.entity_name || payload.name,
       entity_code: payload.entity_code,
-      smart_code: payload.smart_code || 'HERA.CRM.ORGS.ENTITY.ORGANIZATION.v1',
+      smart_code: payload.smart_code || 'HERA.CRM.ORGS.ENTITY.ORGANIZATION.V1',
       status: payload.status || 'active',
       properties: payload.metadata || payload.data || {}
     }
@@ -409,7 +409,7 @@ export const orgApi = {
     const body = {
       entity_type: 'person',
       entity_name: payload.entity_name || payload.name,
-      smart_code: payload.smart_code || 'HERA.CRM.CONTACTS.ENTITY.PERSON.v1',
+      smart_code: payload.smart_code || 'HERA.CRM.CONTACTS.ENTITY.PERSON.V1',
       status: 'active',
       properties: payload.metadata || payload.data || {}
     }
@@ -443,12 +443,12 @@ export const orgApi = {
   async logActivity(orgId: string, entityId: string, activity: any): Promise<void> {
     const smartCode =
       activity.type === 'email'
-        ? 'HERA.CRM.ACTIVITY.EMAIL.SENT.v1'
+        ? 'HERA.CRM.ACTIVITY.EMAIL.SENT.V1'
         : activity.type === 'call'
-          ? 'HERA.CRM.ACTIVITY.CALL.LOG.v1'
+          ? 'HERA.CRM.ACTIVITY.CALL.LOG.V1'
           : activity.type === 'meeting'
-            ? 'HERA.CRM.ACTIVITY.MEETING.HELD.v1'
-            : 'HERA.CRM.ACTIVITY.NOTE.v1'
+            ? 'HERA.CRM.ACTIVITY.MEETING.HELD.V1'
+            : 'HERA.CRM.ACTIVITY.NOTE.V1'
 
     const response = await fetch(`${API_BASE}/transactions`, {
       method: 'POST',

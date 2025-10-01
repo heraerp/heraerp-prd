@@ -1,6 +1,6 @@
 /**
  * HERA CLI Zod Validation Schemas
- * Smart Code: HERA.CLI.VALIDATION.SCHEMAS.v1
+ * Smart Code: HERA.CLI.VALIDATION.SCHEMAS.V1
  */
 
 import { z } from 'zod'

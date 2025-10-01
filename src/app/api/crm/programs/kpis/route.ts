@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       .from('core_dynamic_data')
       .select('field_value_number')
       .eq('organization_id', orgId)
-      .eq('field_code', 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.v1')
+      .eq('field_code', 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.V1')
       .not('field_value_number', 'is', null)
 
     const avgBudget = budgetData?.length

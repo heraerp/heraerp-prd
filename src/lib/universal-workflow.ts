@@ -86,7 +86,7 @@ export class UniversalWorkflow {
           to_entity_id: status.id,
           relationship_type: 'has_stage',
           organization_id: this.organizationId,
-          smart_code: 'HERA.WORKFLOW.STAGE.LINK.v1',
+          smart_code: 'HERA.WORKFLOW.STAGE.LINK.V1',
           relationship_data: {
             order: stage.order,
             is_initial: stage.isInitial,
@@ -106,7 +106,7 @@ export class UniversalWorkflow {
             to_entity_id: toStatusId,
             relationship_type: 'can_transition_to',
             organization_id: this.organizationId,
-            smart_code: 'HERA.WORKFLOW.TRANSITION.ALLOWED.v1',
+            smart_code: 'HERA.WORKFLOW.TRANSITION.ALLOWED.V1',
             relationship_data: {
               requires_approval: transition.requiresApproval || false,
               automatic: transition.automatic || false,
@@ -142,7 +142,7 @@ export class UniversalWorkflow {
         to_entity_id: initialStatus.id,
         relationship_type: 'has_workflow_status',
         organization_id: this.organizationId,
-        smart_code: 'HERA.WORKFLOW.ASSIGN.INITIAL.v1',
+        smart_code: 'HERA.WORKFLOW.ASSIGN.INITIAL.V1',
         relationship_data: {
           workflow_template_id: workflowTemplateId,
           started_at: new Date().toISOString(),

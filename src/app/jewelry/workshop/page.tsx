@@ -710,7 +710,7 @@ export default function JewelryWorkshopPage() {
                       <div className="flex justify-between items-center pt-4 border-t border-jewelry-blue-200">
                         <div className="text-sm">
                           <span className="jewelry-text-muted">Profit: </span>
-                          <span className="jewelry-text-high-contrast font-bold">น{job.profit.toLocaleString()}</span>
+                          <span className="jewelry-text-high-contrast font-bold">ยน{job.profit.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">
@@ -818,7 +818,7 @@ export default function JewelryWorkshopPage() {
                     <div className="flex justify-between items-center pt-4 border-t border-jewelry-blue-200">
                       <div className="text-sm">
                         <p className="jewelry-text-muted">Current: <span className="jewelry-text-high-contrast font-medium">{craftsman.currentJobs} jobs</span></p>
-                        <p className="jewelry-text-muted">Rate: <span className="jewelry-text-high-contrast font-medium">น{craftsman.hourlyRate}/hr</span></p>
+                        <p className="jewelry-text-muted">Rate: <span className="jewelry-text-high-contrast font-medium">ยน{craftsman.hourlyRate}/hr</span></p>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">

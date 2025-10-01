@@ -369,7 +369,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'learning_science' },
             confidence_score: 0.9,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.DIFFICULTY.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.DIFFICULTY.V1'
           }
         )
 
@@ -430,7 +430,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'metrics', range: '0-1' },
             confidence_score: 0.95,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.APPLICABILITY.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.APPLICABILITY.V1'
           },
           {
             entity_id: entity.entity_id,
@@ -456,7 +456,7 @@ export class UniversalEntityCreator {
             field_metadata: { category: 'relationships', count: element.prerequisites.length },
             confidence_score: 0.8,
             ai_generated: true,
-            smart_code: 'HERA.EDU.UNIVERSAL.PREREQUISITES.v1'
+            smart_code: 'HERA.EDU.UNIVERSAL.PREREQUISITES.V1'
           })
         }
 

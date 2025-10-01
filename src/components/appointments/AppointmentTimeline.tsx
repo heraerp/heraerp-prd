@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT TIMELINE
-// Smart Code: HERA.COMPONENTS.APPOINTMENT.TIMELINE.v1
+// Smart Code: HERA.COMPONENTS.APPOINTMENT.TIMELINE.V1
 // Activity timeline with chronological events
 // ================================================================================
 

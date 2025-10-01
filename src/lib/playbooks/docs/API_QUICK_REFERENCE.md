@@ -52,10 +52,10 @@ PATCH /api/v1/playbooks/context/:orchestration_id
 
 | Type         | Pattern                         | Example                         |
 | ------------ | ------------------------------- | ------------------------------- |
-| **Playbook** | `HERA.PLY.{INDUSTRY}.{NAME}.v1` | `HERA.PLY.SALON.APPOINTMENT.v1` |
-| **Worker**   | `HERA.WKR.{TYPE}.{NAME}.v1`     | `HERA.WKR.ENTITY.CREATE.v1`     |
-| **Signal**   | `HERA.SIG.{TYPE}.{EVENT}.v1`    | `HERA.SIG.ENTITY.CREATED.v1`    |
-| **Context**  | `HERA.CTX.{SCOPE}.{TYPE}.v1`    | `HERA.CTX.GLOBAL.STATE.v1`      |
+| **Playbook** | `HERA.PLY.{INDUSTRY}.{NAME}.v1` | `HERA.PLY.SALON.APPOINTMENT.V1` |
+| **Worker**   | `HERA.WKR.{TYPE}.{NAME}.v1`     | `HERA.WKR.ENTITY.CREATE.V1`     |
+| **Signal**   | `HERA.SIG.{TYPE}.{EVENT}.v1`    | `HERA.SIG.ENTITY.CREATED.V1`    |
+| **Context**  | `HERA.CTX.{SCOPE}.{TYPE}.v1`    | `HERA.CTX.GLOBAL.STATE.V1`      |
 
 ## Required Fields Checklist
 

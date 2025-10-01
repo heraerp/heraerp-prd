@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'customer',
         entity_name: name,
         entity_code: clientCode,
-        smart_code: 'HERA.SALON.CLIENT.PROFILE.v1',
+        smart_code: 'HERA.SALON.CLIENT.PROFILE.V1',
         status: 'active',
         metadata: {
           source: 'salon_app',
@@ -172,47 +172,47 @@ export async function POST(request: NextRequest) {
 
     // Create dynamic data fields
     const dynamicFields = [
-      { field_name: 'phone', field_value_text: phone, smart_code: 'HERA.SALON.CLIENT.PHONE.v1' },
-      { field_name: 'email', field_value_text: email, smart_code: 'HERA.SALON.CLIENT.EMAIL.v1' },
+      { field_name: 'phone', field_value_text: phone, smart_code: 'HERA.SALON.CLIENT.PHONE.V1' },
+      { field_name: 'email', field_value_text: email, smart_code: 'HERA.SALON.CLIENT.EMAIL.V1' },
       {
         field_name: 'birth_date',
         field_value_date: birthDate,
-        smart_code: 'HERA.SALON.CLIENT.BIRTHDATE.v1'
+        smart_code: 'HERA.SALON.CLIENT.BIRTHDATE.V1'
       },
       {
         field_name: 'preferred_stylist',
         field_value_text: preferredStylist || '',
-        smart_code: 'HERA.SALON.CLIENT.STYLIST.v1'
+        smart_code: 'HERA.SALON.CLIENT.STYLIST.V1'
       },
       {
         field_name: 'notes',
         field_value_text: notes || '',
-        smart_code: 'HERA.SALON.CLIENT.NOTES.v1'
+        smart_code: 'HERA.SALON.CLIENT.NOTES.V1'
       },
       {
         field_name: 'loyalty_points',
         field_value_number: 0,
-        smart_code: 'HERA.SALON.CLIENT.LOYALTY.v1'
+        smart_code: 'HERA.SALON.CLIENT.LOYALTY.V1'
       },
       {
         field_name: 'total_spent',
         field_value_number: 0,
-        smart_code: 'HERA.SALON.CLIENT.SPENT.v1'
+        smart_code: 'HERA.SALON.CLIENT.SPENT.V1'
       },
       {
         field_name: 'visit_count',
         field_value_number: 0,
-        smart_code: 'HERA.SALON.CLIENT.VISITS.v1'
+        smart_code: 'HERA.SALON.CLIENT.VISITS.V1'
       },
       {
         field_name: 'allergies',
         field_value_text: allergies || '',
-        smart_code: 'HERA.SALON.CLIENT.ALLERGIES.v1'
+        smart_code: 'HERA.SALON.CLIENT.ALLERGIES.V1'
       },
       {
         field_name: 'preferences',
         field_value_text: preferences || '',
-        smart_code: 'HERA.SALON.CLIENT.PREFERENCES.v1'
+        smart_code: 'HERA.SALON.CLIENT.PREFERENCES.V1'
       }
     ].filter(
       field =>

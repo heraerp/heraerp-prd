@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS DRILL-DOWN DRAWER
-// Smart Code: HERA.UI.REPORTS.DRILLDOWN.v1
+// Smart Code: HERA.UI.REPORTS.DRILLDOWN.V1
 // Transaction details drawer with smart code visibility and pagination
 // ================================================================================
 

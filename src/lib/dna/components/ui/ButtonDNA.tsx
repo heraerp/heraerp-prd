@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UI - BUTTON COMPONENT
-// Smart Code: HERA.DNA.UI.BUTTON.v1
+// Smart Code: HERA.DNA.UI.BUTTON.V1
 // Enhanced button with consistent dark mode styling
 // ================================================================================
 

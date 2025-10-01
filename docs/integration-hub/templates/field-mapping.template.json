@@ -1,0 +1,246 @@
+{
+  "name": "{Vendor} Events Mapping",
+  "version": "1.0.0",
+  "vendor": "{vendor}",
+  "description": "Field mapping configuration for {Vendor} to HERA Universal Architecture",
+  "smart_code_patterns": {
+    "organization": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.{ACTION}.v1",
+    "event": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.{ACTION}.v1",
+    "attendee": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.{ACTION}.v1",
+    "post": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.POST.{ACTION}.v1",
+    "relationship": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.REL.{TYPE}.v1"
+  },
+  "entity_mappings": {
+    "organization": {
+      "target_type": "organization_profile",
+      "identifier_field": "id",
+      "code_prefix": "{vendor}:",
+      "name_field": "name",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.SYNC.v1",
+      "business_rules": {
+        "source": "{vendor}",
+        "visibility": "PUBLIC"
+      },
+      "field_mappings": [
+        {
+          "source": "id",
+          "target": "metadata.external_id",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "description",
+          "target": "description",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.DESC.v1"
+        },
+        {
+          "source": "memberCount",
+          "target": "member_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.MEMBERS.v1"
+        },
+        {
+          "source": "websiteUrl",
+          "target": "website_url", 
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.WEBSITE.v1"
+        },
+        {
+          "source": "logoUrl",
+          "target": "logo_url",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.ORG.LOGO.v1"
+        }
+      ]
+    },
+    "event": {
+      "target_type": "event",
+      "identifier_field": "id",
+      "code_prefix": "{vendor}:event:",
+      "name_field": "name",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.SYNC.v1",
+      "business_rules": {
+        "source": "{vendor}"
+      },
+      "field_mappings": [
+        {
+          "source": "id",
+          "target": "metadata.external_id",
+          "type": "direct"
+        },
+        {
+          "source": "url",
+          "target": "metadata.event_url",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "startTime",
+          "target": "start_date",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.START.v1"
+        },
+        {
+          "source": "endTime",
+          "target": "end_date",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.END.v1"
+        },
+        {
+          "source": "timezone",
+          "target": "timezone",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.TZ.v1"
+        },
+        {
+          "source": "description",
+          "target": "description",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.DESC.v1"
+        },
+        {
+          "source": "attendeeCount",
+          "target": "attendee_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.ATTENDEES.v1"
+        },
+        {
+          "source": "maxAttendees",
+          "target": "max_attendees",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.CAPACITY.v1"
+        },
+        {
+          "source": "venue",
+          "target": "venue_data",
+          "field_type": "json",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.EVENT.VENUE.v1"
+        }
+      ]
+    },
+    "attendee": {
+      "target_type": "event_invite",
+      "identifier_field": "id",
+      "code_prefix": "{vendor}:attendee:",
+      "name_field": "_computed_name",
+      "name_template": "{name} RSVP",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.UPSERT.v1",
+      "business_rules": {
+        "source": "{vendor}"
+      },
+      "field_mappings": [
+        {
+          "source": "status",
+          "target": "business_rules.rsvp_status",
+          "type": "direct"
+        },
+        {
+          "source": "userId",
+          "target": "metadata.user_id",
+          "type": "direct"
+        },
+        {
+          "source": "eventId",
+          "target": "metadata.event_id",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "name",
+          "target": "attendee_name",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.NAME.v1"
+        },
+        {
+          "source": "email",
+          "target": "email",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.EMAIL.v1"
+        },
+        {
+          "source": "registeredAt",
+          "target": "registered_at",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.DATE.v1"
+        },
+        {
+          "source": "status",
+          "target": "status",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.RSVP.STATUS.v1"
+        }
+      ]
+    }
+  },
+  "relationship_mappings": [
+    {
+      "name": "Organization has Event",
+      "type": "ORGANIZATION_HAS_EVENT",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.REL.ORG_EVENT.v1",
+      "from": {
+        "entity_type": "organization_profile",
+        "resolve_by": "organizerId"
+      },
+      "to": {
+        "entity_type": "event",
+        "resolve_by": "id"
+      }
+    },
+    {
+      "name": "Event has Attendee",
+      "type": "EVENT_HAS_ATTENDEE", 
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.{VENDOR}.REL.EVENT_ATTENDEE.v1",
+      "from": {
+        "entity_type": "event",
+        "resolve_by": "eventId"
+      },
+      "to": {
+        "entity_type": "event_invite",
+        "resolve_by": "id"
+      }
+    }
+  ],
+  "transform_functions": {
+    "unix_to_iso": {
+      "description": "Convert Unix timestamp to ISO 8601 string",
+      "type": "builtin"
+    },
+    "truncate": {
+      "description": "Truncate text to specified length",
+      "type": "builtin",
+      "params": ["length"]
+    },
+    "lowercase": {
+      "description": "Convert text to lowercase",
+      "type": "builtin"
+    },
+    "uppercase": {
+      "description": "Convert text to uppercase",
+      "type": "builtin"
+    }
+  },
+  "sync_settings": {
+    "batch_size": 50,
+    "rate_limit": {
+      "requests_per_minute": 60,
+      "requests_per_day": 10000
+    },
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff_type": "exponential",
+      "initial_delay_ms": 1000
+    },
+    "delta_sync": {
+      "enabled": true,
+      "timestamp_field": "lastModified",
+      "lookback_window_hours": 24
+    }
+  }
+}

@@ -129,15 +129,15 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     switch (type) {
       case 'campaign':
         entityType = 'marketing_campaign'
-        smartCode = 'HERA.SALON.MARKETING.CAMPAIGN.v1'
+        smartCode = 'HERA.SALON.MARKETING.CAMPAIGN.V1'
         break
       case 'segment':
         entityType = 'customer_segment'
-        smartCode = 'HERA.SALON.MARKETING.SEGMENT.v1'
+        smartCode = 'HERA.SALON.MARKETING.SEGMENT.V1'
         break
       case 'template':
         entityType = 'email_template'
-        smartCode = 'HERA.SALON.MARKETING.TEMPLATE.v1'
+        smartCode = 'HERA.SALON.MARKETING.TEMPLATE.V1'
         break
       default:
         throw new Error('Invalid type')

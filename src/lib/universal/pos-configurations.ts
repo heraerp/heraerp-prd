@@ -1,7 +1,7 @@
 // ================================================================================
 // HERA UNIVERSAL POS CONFIGURATIONS
 // Industry-specific presets for the Universal POS DNA Component
-// Smart Code: HERA.UI.POS.CONFIG.PRESETS.v1
+// Smart Code: HERA.UI.POS.CONFIG.PRESETS.V1
 // ================================================================================
 
 import {

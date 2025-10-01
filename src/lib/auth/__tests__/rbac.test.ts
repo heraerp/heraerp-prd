@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA RBAC UNIT TESTS
-// Smart Code: HERA.AUTH.RBAC.TEST.v1
+// Smart Code: HERA.AUTH.RBAC.TEST.V1
 // Unit tests for role-based access control
 // ================================================================================
 

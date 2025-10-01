@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 // ================================================================================
 // MCP SQL CONVERTER - Progressive to Production Database Converter
 // Analyzes progressive pages and generates SQL/MCP commands for database setup
-// Smart Code: HERA.MCP.SQL.CONVERTER.v1
+// Smart Code: HERA.MCP.SQL.CONVERTER.V1
 // ================================================================================
 
 import React, { useState } from 'react'

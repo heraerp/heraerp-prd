@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
           LEFT JOIN core_relationships r ON r.from_entity_id = t.id
             AND r.relationship_type = 'has_status'
           WHERE t.organization_id = $1
-            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.v1'
+            AND t.entity_type = 'HERA.FURNITURE.TENDER.NOTICE.V1'
           ORDER BY t.id, r.created_at DESC
         )
         SELECT 
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         `
         )
         .eq('organization_id', organizationId)
-        .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
+        .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.V1')
         .then(result => {
           if (result.error) return { data: null, error: result.error }
 

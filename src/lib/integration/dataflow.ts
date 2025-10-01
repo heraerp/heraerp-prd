@@ -28,7 +28,7 @@ export const dataFlows: DataFlowConfig[] = [
       },
       {
         entity_type: 'event_invite',
-        smart_code_pattern: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
+        smart_code_pattern: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1',
         description: 'Event registrations, attendees, and check-ins'
       }
     ],
@@ -112,7 +112,7 @@ export const dataFlows: DataFlowConfig[] = [
     payloads: [
       {
         entity_type: 'audience_segment',
-        smart_code_pattern: 'HERA.PUBLICSECTOR.CRM.AUDIENCE.SEGMENT.v1',
+        smart_code_pattern: 'HERA.PUBLICSECTOR.CRM.AUDIENCE.SEGMENT.V1',
         description: 'Citizen segments for targeted communications'
       },
       {

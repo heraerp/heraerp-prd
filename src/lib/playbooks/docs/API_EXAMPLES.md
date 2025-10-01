@@ -40,7 +40,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "playbook": {
       "name": "Customer Onboarding",
       "description": "Standard workflow for onboarding new enterprise customers",
-      "smart_code": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.v1",
+      "smart_code": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.V1",
       "type": "workflow",
       "category": "sales",
       "version": "1.0.0",
@@ -107,7 +107,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Qualification Review",
           "description": "Sales manager reviews and qualifies the opportunity",
-          "smart_code": "HERA.CRM.STEP.CUSTOMER.QUALIFICATION.v1",
+          "smart_code": "HERA.CRM.STEP.CUSTOMER.QUALIFICATION.V1",
           "step_type": "approval",
           "sequence": 2,
           "is_required": true,
@@ -258,7 +258,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
   "success": true,
   "data": {
     "playbook_id": "pb_123e4567-e89b-12d3-a456-426614174000",
-    "smart_code": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.v1",
+    "smart_code": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.V1",
     "version": "1.0.0",
     "status": "active",
     "created_at": "2024-01-15T10:30:00Z",
@@ -312,7 +312,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs \
     "organization_id": "org_123e4567-e89b-12d3-a456-426614174000",
     "run": {
       "playbook_id": "pb_123e4567-e89b-12d3-a456-426614174000",
-      "smart_code": "HERA.CRM.RUN.CUSTOMER.ONBOARDING.v1",
+      "smart_code": "HERA.CRM.RUN.CUSTOMER.ONBOARDING.V1",
       "context": {
         "entity_type": "customer",
         "entity_id": "cust_987654321",
@@ -349,7 +349,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbook-runs \
     "current_step": 1,
     "created_at": "2024-01-15T11:00:00Z",
     "started_at": "2024-01-15T11:00:01Z",
-    "smart_code": "HERA.CRM.RUN.CUSTOMER.ONBOARDING.v1",
+    "smart_code": "HERA.CRM.RUN.CUSTOMER.ONBOARDING.V1",
     "steps_status": [
       {
         "step_id": "step_001",
@@ -827,7 +827,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "playbook": {
       "name": "New Patient Intake",
       "description": "Complete intake process for new patients including medical history and insurance",
-      "smart_code": "HERA.HEALTHCARE.PLAYBOOK.PATIENT.INTAKE.v1",
+      "smart_code": "HERA.HEALTHCARE.PLAYBOOK.PATIENT.INTAKE.V1",
       "type": "workflow",
       "category": "clinical",
       "version": "2.0.0",
@@ -840,7 +840,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Registration",
           "description": "Collect basic patient demographics",
-          "smart_code": "HERA.HEALTHCARE.STEP.PATIENT.REGISTRATION.v1",
+          "smart_code": "HERA.HEALTHCARE.STEP.PATIENT.REGISTRATION.V1",
           "step_type": "form",
           "sequence": 1,
           "is_required": true,
@@ -877,7 +877,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Insurance Verification",
           "description": "Verify patient insurance coverage",
-          "smart_code": "HERA.HEALTHCARE.STEP.INSURANCE.VERIFICATION.v1",
+          "smart_code": "HERA.HEALTHCARE.STEP.INSURANCE.VERIFICATION.V1",
           "step_type": "automated",
           "sequence": 2,
           "is_required": true,
@@ -908,7 +908,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Clinical Review",
           "description": "Provider reviews intake information",
-          "smart_code": "HERA.HEALTHCARE.STEP.CLINICAL.REVIEW.v1",
+          "smart_code": "HERA.HEALTHCARE.STEP.CLINICAL.REVIEW.V1",
           "step_type": "approval",
           "sequence": 4,
           "is_required": true,
@@ -932,7 +932,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "playbook": {
       "name": "Product Quality Inspection",
       "description": "Multi-stage quality control process for manufactured products",
-      "smart_code": "HERA.MFG.PLAYBOOK.QC.INSPECTION.v1",
+      "smart_code": "HERA.MFG.PLAYBOOK.QC.INSPECTION.V1",
       "type": "workflow",
       "category": "quality",
       "version": "3.0.0",
@@ -945,7 +945,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Visual Inspection",
           "description": "Initial visual quality check",
-          "smart_code": "HERA.MFG.STEP.QC.VISUAL.v1",
+          "smart_code": "HERA.MFG.STEP.QC.VISUAL.V1",
           "step_type": "task",
           "sequence": 1,
           "is_required": true,
@@ -966,7 +966,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Dimensional Verification",
           "description": "Measure critical dimensions",
-          "smart_code": "HERA.MFG.STEP.QC.DIMENSIONAL.v1",
+          "smart_code": "HERA.MFG.STEP.QC.DIMENSIONAL.V1",
           "step_type": "task",
           "sequence": 2,
           "is_required": true,
@@ -980,7 +980,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Functional Testing",
           "description": "Test product functionality",
-          "smart_code": "HERA.MFG.STEP.QC.FUNCTIONAL.v1",
+          "smart_code": "HERA.MFG.STEP.QC.FUNCTIONAL.V1",
           "step_type": "automated",
           "sequence": 3,
           "is_required": true,
@@ -994,7 +994,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "QC Approval",
           "description": "Final quality approval",
-          "smart_code": "HERA.MFG.STEP.QC.APPROVAL.v1",
+          "smart_code": "HERA.MFG.STEP.QC.APPROVAL.V1",
           "step_type": "approval",
           "sequence": 4,
           "is_required": true,
@@ -1026,7 +1026,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "playbook": {
       "name": "Commercial Loan Approval",
       "description": "End-to-end commercial loan approval process",
-      "smart_code": "HERA.FINANCE.PLAYBOOK.LOAN.COMMERCIAL.v1",
+      "smart_code": "HERA.FINANCE.PLAYBOOK.LOAN.COMMERCIAL.V1",
       "type": "workflow",
       "category": "lending",
       "version": "4.2.0",
@@ -1039,7 +1039,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Application Submission",
           "description": "Initial loan application and documentation",
-          "smart_code": "HERA.FINANCE.STEP.LOAN.APPLICATION.v1",
+          "smart_code": "HERA.FINANCE.STEP.LOAN.APPLICATION.V1",
           "step_type": "form",
           "sequence": 1,
           "is_required": true,
@@ -1068,7 +1068,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Underwriting Review",
           "description": "Manual underwriting and risk assessment",
-          "smart_code": "HERA.FINANCE.STEP.LOAN.UNDERWRITING.v1",
+          "smart_code": "HERA.FINANCE.STEP.LOAN.UNDERWRITING.V1",
           "step_type": "task",
           "sequence": 3,
           "is_required": true,
@@ -1086,7 +1086,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Committee Approval",
           "description": "Loan committee decision",
-          "smart_code": "HERA.FINANCE.STEP.LOAN.COMMITTEE.v1",
+          "smart_code": "HERA.FINANCE.STEP.LOAN.COMMITTEE.V1",
           "step_type": "approval",
           "sequence": 4,
           "is_required": true,
@@ -1122,7 +1122,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "playbook": {
       "name": "Critical System Incident Response",
       "description": "Incident management for P1/P2 system failures",
-      "smart_code": "HERA.IT.PLAYBOOK.INCIDENT.CRITICAL.v1",
+      "smart_code": "HERA.IT.PLAYBOOK.INCIDENT.CRITICAL.V1",
       "type": "workflow",
       "category": "operations",
       "version": "2.1.0",
@@ -1135,7 +1135,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Incident Detection",
           "description": "Automatic incident detection and classification",
-          "smart_code": "HERA.IT.STEP.INCIDENT.DETECTION.v1",
+          "smart_code": "HERA.IT.STEP.INCIDENT.DETECTION.V1",
           "step_type": "automated",
           "sequence": 1,
           "is_required": true,
@@ -1170,7 +1170,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Resolution Implementation",
           "description": "Implement fix or workaround",
-          "smart_code": "HERA.IT.STEP.INCIDENT.RESOLUTION.v1",
+          "smart_code": "HERA.IT.STEP.INCIDENT.RESOLUTION.V1",
           "step_type": "task",
           "sequence": 3,
           "is_required": true,
@@ -1184,7 +1184,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
         {
           "name": "Post-Incident Review",
           "description": "RCA and improvement planning",
-          "smart_code": "HERA.IT.STEP.INCIDENT.REVIEW.v1",
+          "smart_code": "HERA.IT.STEP.INCIDENT.REVIEW.V1",
           "step_type": "task",
           "sequence": 4,
           "is_required": false,
@@ -1241,7 +1241,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
       "value": "HERA.CRM.PLAYBOOK.TEST",
       "reason": "Smart code must end with version (e.g., .v1)",
       "valid_pattern": "HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.{VERSION}",
-      "example": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.v1"
+      "example": "HERA.CRM.PLAYBOOK.CUSTOMER.ONBOARDING.V1"
     }
   }
 }
@@ -1257,7 +1257,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "action": "create",
     "playbook": {
       "name": "Test Playbook",
-      "smart_code": "HERA.CRM.PLAYBOOK.TEST.v1"
+      "smart_code": "HERA.CRM.PLAYBOOK.TEST.V1"
     }
   }'
 ```
@@ -1330,7 +1330,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "organization_id": "org_123e4567-e89b-12d3-a456-426614174000",
     "playbook": {
       "name": "Fast Track Approval",
-      "smart_code": "HERA.FINANCE.PLAYBOOK.FASTTRACK.v1",
+      "smart_code": "HERA.FINANCE.PLAYBOOK.FASTTRACK.V1",
       "type": "workflow",
       "steps": [
         {
@@ -1378,7 +1378,7 @@ curl -X POST https://api.heraerp.com/api/v1/playbooks \
     "organization_id": "org_123e4567-e89b-12d3-a456-426614174000",
     "playbook": {
       "name": "Circular Test",
-      "smart_code": "HERA.TEST.PLAYBOOK.CIRCULAR.v1",
+      "smart_code": "HERA.TEST.PLAYBOOK.CIRCULAR.V1",
       "type": "workflow",
       "steps": [
         {

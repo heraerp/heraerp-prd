@@ -500,8 +500,8 @@ const MyForm = () => {
                 Analytics and reports for business intelligence and compliance
               </p>
               <div className="space-y-1">
-                <code className="text-xs block">HERA.RPT.SALES.DAILY.v1</code>
-                <code className="text-xs block">HERA.RPT.AR.AGING.v1</code>
+                <code className="text-xs block">HERA.RPT.SALES.DAILY.V1</code>
+                <code className="text-xs block">HERA.RPT.AR.AGING.V1</code>
               </div>
             </div>
           </div>

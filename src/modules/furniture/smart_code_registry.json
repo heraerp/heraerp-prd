@@ -1,20 +1,20 @@
 {
   "module": {
-    "code": "HERA.MANUFACTURING.FURNITURE.MODULE.v1",
+    "code": "HERA.MANUFACTURING.FURNITURE.MODULE.V1",
     "description": "Furniture Manufacturing Industry Module for Cochin, India"
   },
   "masters": {
     "product": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1",
       "description": "Product master (FG/RM/WIP)",
       "types": ["FINISHED_GOOD", "RAW_MATERIAL", "WORK_IN_PROGRESS"]
     },
     "bom": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.BOM.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.BOM.V1",
       "description": "Bill of Materials master"
     },
     "routing": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.ROUTING.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.ROUTING.V1",
       "description": "Production routing master"
     },
     "work_center": {
@@ -22,37 +22,37 @@
       "description": "Work center master"
     },
     "machine": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.MACHINE.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.MACHINE.V1",
       "description": "Machine/equipment master"
     },
     "location": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.LOCATION.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.LOCATION.V1",
       "description": "Storage location master"
     },
     "employee": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.EMPLOYEE.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.EMPLOYEE.V1",
       "description": "Employee master with PF/ESI details"
     },
     "account": {
-      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.ACCOUNT.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.MASTER.ACCOUNT.V1",
       "description": "Chart of accounts master"
     }
   },
   "sales": {
     "proforma": {
-      "header": "HERA.MANUFACTURING.FURNITURE.SALES.PROFORMA.HEADER.v1",
-      "line": "HERA.MANUFACTURING.FURNITURE.SALES.PROFORMA.LINE.v1"
+      "header": "HERA.MANUFACTURING.FURNITURE.SALES.PROFORMA.HEADER.V1",
+      "line": "HERA.MANUFACTURING.FURNITURE.SALES.PROFORMA.LINE.V1"
     },
     "sales_order": {
-      "header": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1",
-      "line": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.v1"
+      "header": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.V1",
+      "line": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.V1"
     },
     "invoice": {
-      "header": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.HEADER.v1",
-      "line": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.LINE.v1"
+      "header": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.HEADER.V1",
+      "line": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.LINE.V1"
     },
     "dispatch": {
-      "code": "HERA.MANUFACTURING.FURNITURE.SALES.DISPATCH.v1",
+      "code": "HERA.MANUFACTURING.FURNITURE.SALES.DISPATCH.V1",
       "description": "Dispatch/delivery note"
     }
   },
@@ -63,16 +63,16 @@
       "operation": "HERA.MANUFACTURING.FURNITURE.MFG.PROD_ORDER.OP.v1"
     },
     "execution": {
-      "cutting_list": "HERA.MANUFACTURING.FURNITURE.MFG.CUTTING.LIST.v1",
-      "op_start": "HERA.MANUFACTURING.FURNITURE.MFG.OP.START.v1",
-      "op_complete": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.v1"
+      "cutting_list": "HERA.MANUFACTURING.FURNITURE.MFG.CUTTING.LIST.V1",
+      "op_start": "HERA.MANUFACTURING.FURNITURE.MFG.OP.START.V1",
+      "op_complete": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.V1"
     },
     "inventory": {
       "fg_receipt": "HERA.MANUFACTURING.FURNITURE.MFG.INVENTORY.FG_RECEIPT.v1"
     },
     "quality": {
-      "scrap": "HERA.MANUFACTURING.FURNITURE.MFG.QC.SCRAP.v1",
-      "rework": "HERA.MANUFACTURING.FURNITURE.MFG.QC.REWORK.v1"
+      "scrap": "HERA.MANUFACTURING.FURNITURE.MFG.QC.SCRAP.V1",
+      "rework": "HERA.MANUFACTURING.FURNITURE.MFG.QC.REWORK.V1"
     }
   },
   "finance": {
@@ -81,29 +81,29 @@
       "labor_applied": "HERA.MANUFACTURING.FURNITURE.FINANCE.COST.LABOR_APPLIED.GL.LINE.v1",
       "overhead_applied": "HERA.MANUFACTURING.FURNITURE.FINANCE.COST.OH_APPLIED.GL.LINE.v1",
       "fg_receipt": "HERA.MANUFACTURING.FURNITURE.FINANCE.COST.FG_RECEIPT.GL.LINE.v1",
-      "cogs": "HERA.MANUFACTURING.FURNITURE.FINANCE.COST.COGS.GL.LINE.v1"
+      "cogs": "HERA.MANUFACTURING.FURNITURE.FINANCE.COST.COGS.GL.LINE.V1"
     },
     "tax": {
-      "gst_output": "HERA.MANUFACTURING.FURNITURE.FINANCE.TAX.GST.OUTPUT.GL.LINE.v1",
-      "gst_input": "HERA.MANUFACTURING.FURNITURE.FINANCE.TAX.GST.INPUT.GL.LINE.v1"
+      "gst_output": "HERA.MANUFACTURING.FURNITURE.FINANCE.TAX.GST.OUTPUT.GL.LINE.V1",
+      "gst_input": "HERA.MANUFACTURING.FURNITURE.FINANCE.TAX.GST.INPUT.GL.LINE.V1"
     },
     "receivables": {
-      "advance": "HERA.MANUFACTURING.FURNITURE.FINANCE.AR.ADVANCE.GL.LINE.v1"
+      "advance": "HERA.MANUFACTURING.FURNITURE.FINANCE.AR.ADVANCE.GL.LINE.V1"
     }
   },
   "hr": {
     "payroll": {
-      "run_header": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.v1",
-      "earnings": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EARNINGS.LINE.v1",
-      "deduction": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.v1",
+      "run_header": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.V1",
+      "earnings": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EARNINGS.LINE.V1",
+      "deduction": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.V1",
       "employer_contrib": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EMPLOYER_CONTRIB.LINE.v1",
       "bank_payout": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.BANK_PAYOUT.LINE.v1"
     },
     "compliance": {
-      "pf_gl": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.GL.LINE.v1",
-      "esi_gl": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.GL.LINE.v1",
-      "pf_remittance": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.REMITTANCE.v1",
-      "esi_remittance": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.REMITTANCE.v1"
+      "pf_gl": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.GL.LINE.V1",
+      "esi_gl": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.GL.LINE.V1",
+      "pf_remittance": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.REMITTANCE.V1",
+      "esi_remittance": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.REMITTANCE.V1"
     }
   },
   "version": "1.0.0",

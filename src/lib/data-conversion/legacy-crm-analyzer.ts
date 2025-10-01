@@ -184,7 +184,7 @@ export class HERALegacyCRMConverter {
         city: record.city,
         status: 'active',
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.ORG.CRM.IMPORT.v1'
+        smart_code: 'HERA.ORG.CRM.IMPORT.V1'
       })
     }
 
@@ -200,7 +200,7 @@ export class HERALegacyCRMConverter {
           country: record.country,
           status: 'active',
           created_at: new Date(record.created_at),
-          smart_code: 'HERA.ORG.AGENCY.RATING.v1'
+          smart_code: 'HERA.ORG.AGENCY.RATING.V1'
         })
       }
     }
@@ -220,7 +220,7 @@ export class HERALegacyCRMConverter {
       status: record.status || 'active',
       created_at: new Date(record.created_at || new Date()),
       updated_at: new Date(record.updated_at || new Date()),
-      smart_code: 'HERA.CRM.CUSTOMER.COMPANY.v1',
+      smart_code: 'HERA.CRM.CUSTOMER.COMPANY.V1',
       confidence_score: 0.95,
       classification: 'imported_customer'
     })
@@ -238,7 +238,7 @@ export class HERALegacyCRMConverter {
         status: record.status || 'active',
         created_at: new Date(record.created_at || new Date()),
         updated_at: new Date(record.updated_at || new Date()),
-        smart_code: 'HERA.CRM.PROJECT.RATING.v1',
+        smart_code: 'HERA.CRM.PROJECT.RATING.V1',
         confidence_score: 0.9,
         classification: 'customer_project'
       })
@@ -255,7 +255,7 @@ export class HERALegacyCRMConverter {
         entity_code: this.generateEntityCode('CONT', record.promoter_name_1),
         status: 'active',
         created_at: new Date(record.created_at || new Date()),
-        smart_code: 'HERA.CRM.CONTACT.PROMOTER.v1',
+        smart_code: 'HERA.CRM.CONTACT.PROMOTER.V1',
         confidence_score: 0.85,
         classification: 'key_contact'
       })
@@ -271,7 +271,7 @@ export class HERALegacyCRMConverter {
         entity_code: this.generateEntityCode('CONT', record.promoter_name_2),
         status: 'active',
         created_at: new Date(record.created_at || new Date()),
-        smart_code: 'HERA.CRM.CONTACT.PROMOTER.v1',
+        smart_code: 'HERA.CRM.CONTACT.PROMOTER.V1',
         confidence_score: 0.85,
         classification: 'secondary_contact'
       })
@@ -288,7 +288,7 @@ export class HERALegacyCRMConverter {
         entity_code: this.generateEntityCode('SERV', record.services),
         status: 'active',
         created_at: new Date(record.created_at || new Date()),
-        smart_code: 'HERA.CRM.SERVICE.OFFERING.v1',
+        smart_code: 'HERA.CRM.SERVICE.OFFERING.V1',
         confidence_score: 0.8,
         classification: 'service_offering'
       })
@@ -520,7 +520,7 @@ export class HERALegacyCRMConverter {
         relationship_type: 'owns_project',
         relationship_strength: 1.0,
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.REL.CUSTOMER.PROJECT.v1'
+        smart_code: 'HERA.REL.CUSTOMER.PROJECT.V1'
       })
     }
 
@@ -534,7 +534,7 @@ export class HERALegacyCRMConverter {
         relationship_type: 'has_contact',
         relationship_strength: 0.9,
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.REL.CUSTOMER.CONTACT.v1'
+        smart_code: 'HERA.REL.CUSTOMER.CONTACT.V1'
       })
     }
 
@@ -548,7 +548,7 @@ export class HERALegacyCRMConverter {
         relationship_type: 'has_contact',
         relationship_strength: 0.8,
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.REL.CUSTOMER.CONTACT.v1'
+        smart_code: 'HERA.REL.CUSTOMER.CONTACT.V1'
       })
     }
 
@@ -562,7 +562,7 @@ export class HERALegacyCRMConverter {
         relationship_type: 'requires_service',
         relationship_strength: 0.95,
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.REL.PROJECT.SERVICE.v1'
+        smart_code: 'HERA.REL.PROJECT.SERVICE.V1'
       })
     }
 
@@ -585,7 +585,7 @@ export class HERALegacyCRMConverter {
             relationship_type: aiRel.relationship_type,
             relationship_strength: aiRel.confidence,
             created_at: new Date(record.created_at),
-            smart_code: 'HERA.REL.AI.DETECTED.v1',
+            smart_code: 'HERA.REL.AI.DETECTED.V1',
             ai_detected: true,
             ai_context: aiRel.business_context
           } as any)
@@ -612,7 +612,7 @@ export class HERALegacyCRMConverter {
               relationship_type: 'references',
               relationship_strength: fkPattern.confidence,
               created_at: new Date(record.created_at),
-              smart_code: 'HERA.REL.FK.PATTERN.v1',
+              smart_code: 'HERA.REL.FK.PATTERN.V1',
               ai_detected: true,
               ai_pattern: fkPattern.pattern
             } as any)
@@ -639,7 +639,7 @@ export class HERALegacyCRMConverter {
         status: record.status || 'active',
         created_at: new Date(record.created_at),
         updated_at: new Date(record.updated_at),
-        smart_code: 'HERA.TXN.PROJECT.VALUATION.v1',
+        smart_code: 'HERA.TXN.PROJECT.VALUATION.V1',
         metadata: {
           company_name: record.company_name,
           sector: record.sector,
@@ -661,7 +661,7 @@ export class HERALegacyCRMConverter {
         currency: 'INR',
         status: 'scheduled',
         created_at: new Date(record.created_at),
-        smart_code: 'HERA.TXN.CRM.FOLLOWUP.v1',
+        smart_code: 'HERA.TXN.CRM.FOLLOWUP.V1',
         metadata: {
           activity_type: 'follow_up_call',
           feedback: record.feedback,

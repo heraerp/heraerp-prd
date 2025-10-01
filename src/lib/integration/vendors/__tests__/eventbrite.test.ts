@@ -44,7 +44,7 @@ describe('EventbriteAdapter', () => {
       expect(normalized.entity_type).toBe('event')
       expect(normalized.entity_name).toBe('Test Event')
       expect(normalized.entity_code).toBe('EB-eb-123')
-      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.WEBINAR.v1')
+      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.WEBINAR.V1')
 
       expect(normalized.dynamic_data['EVENT.META.V1']).toEqual({
         title: 'Test Event',
@@ -100,7 +100,7 @@ describe('EventbriteAdapter', () => {
 
       const normalized = normalizeEvent('org-123', conferenceEvent)
       expect(normalized.dynamic_data['EVENT.META.V1'].type).toBe('conference')
-      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.CONFERENCE.v1')
+      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.CONFERENCE.V1')
     })
   })
 
@@ -133,7 +133,7 @@ describe('EventbriteAdapter', () => {
       expect(normalized.entity_type).toBe('event_invite')
       expect(normalized.entity_name).toBe('John Doe')
       expect(normalized.entity_code).toBe('EB-ATT-att-123')
-      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1')
+      expect(normalized.smart_code).toBe('HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1')
 
       expect(normalized.dynamic_data['INVITE.META.V1']).toEqual({
         status: 'attended',

@@ -110,7 +110,7 @@ export function SchedulingAssistant({
       //   method: 'POST',
       //   body: JSON.stringify({
       //     organization_id: organizationId,
-      //     smart_code: 'HERA.SALON.CALENDAR.AVAILABILITY.v1',
+      //     smart_code: 'HERA.SALON.CALENDAR.AVAILABILITY.V1',
       //     stylist_id: stylistId,
       //     resource_id: resourceId,
       //     services: services.map(s => ({ service_id: s.id, quantity: 1 })),

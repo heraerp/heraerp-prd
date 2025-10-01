@@ -586,7 +586,7 @@ export default function JewelryIntelligencePage() {
   ]
 
   const formatCurrency = (amount: number) => {
-    return `น${amount.toLocaleString()}`
+    return `ยน${amount.toLocaleString()}`
   }
 
   const formatPercentage = (value: number) => {

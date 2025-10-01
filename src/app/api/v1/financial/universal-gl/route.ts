@@ -220,8 +220,8 @@ function generateSmartCode(transactionType: string, details: any): string {
     payment: 'HERA.FIN.GL.TXN.PAY.V1',
     receipt: 'HERA.FIN.GL.TXN.RCP.V1',
     expense: 'HERA.FIN.GL.TXN.EXP.V1',
-    inventory: 'HERA.INV.TXN.ADJ.v1',
-    payroll: 'HERA.HR.PAY.TXN.SAL.v1'
+    inventory: 'HERA.INV.TXN.ADJ.V1',
+    payroll: 'HERA.HR.PAY.TXN.SAL.V1'
   }
 
   return codeMap[transactionType] || 'HERA.FIN.GL.TXN.GEN.V1'

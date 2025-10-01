@@ -1,6 +1,6 @@
 // ================================================================================
 // FISCAL SETTINGS PAGE - SETTINGS
-// Smart Code: HERA.UI.SETTINGS.FISCAL.v1
+// Smart Code: HERA.UI.SETTINGS.FISCAL.V1
 // Production-ready fiscal year and period management using Sacred Six storage
 // ================================================================================
 

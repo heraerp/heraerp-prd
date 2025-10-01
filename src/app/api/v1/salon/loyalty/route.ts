@@ -295,7 +295,7 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
       entity_name: 'VIP Rewards Program',
       entity_code: `LOYALTY-${organizationId}`,
       status: 'active',
-      smart_code: 'HERA.SALON.LOYALTY.PROGRAM.v1',
+      smart_code: 'HERA.SALON.LOYALTY.PROGRAM.V1',
       metadata: {
         description: 'Earn points on every visit and unlock exclusive rewards',
         points_per_currency: 1,
@@ -369,7 +369,7 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
       entity_name: tier.name,
       entity_code: `TIER-${tier.name.toUpperCase()}`,
       status: 'active',
-      smart_code: 'HERA.SALON.LOYALTY.TIER.v1',
+      smart_code: 'HERA.SALON.LOYALTY.TIER.V1',
       metadata: tier
     })
   }
@@ -419,7 +419,7 @@ async function createDefaultLoyaltyProgram(organizationId: string): Promise<Loya
       entity_name: reward.name,
       entity_code: `REWARD-${Date.now()}`,
       status: 'active',
-      smart_code: 'HERA.SALON.LOYALTY.REWARD.v1',
+      smart_code: 'HERA.SALON.LOYALTY.REWARD.V1',
       metadata: reward
     })
   }
@@ -782,7 +782,7 @@ async function createReward(organizationId: string, data: any) {
       entity_name: data.name,
       entity_code: `REWARD-${Date.now()}`,
       status: 'active',
-      smart_code: 'HERA.SALON.LOYALTY.REWARD.v1',
+      smart_code: 'HERA.SALON.LOYALTY.REWARD.V1',
       metadata: {
         description: data.description,
         points_required: data.pointsRequired,

@@ -49,7 +49,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_type: 'service',
         entity_name: service.name,
         entity_code: service.code,
-        smart_code: 'HERA.SALON.CATALOG.SERVICE.v1',
+        smart_code: 'HERA.SALON.CATALOG.SERVICE.V1',
         status: 'active',
         metadata: {
           price: service.price,
@@ -69,7 +69,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_id: serviceEntity.id,
         field_name: 'price',
         field_value_number: service.price,
-        smart_code: 'HERA.SALON.SERVICE.PRICE.v1'
+        smart_code: 'HERA.SALON.SERVICE.PRICE.V1'
       })
 
       // Add duration as dynamic data
@@ -78,7 +78,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_id: serviceEntity.id,
         field_name: 'duration_minutes',
         field_value_number: service.duration,
-        smart_code: 'HERA.SALON.SERVICE.DURATION.v1'
+        smart_code: 'HERA.SALON.SERVICE.DURATION.V1'
       })
     }
   }
@@ -165,7 +165,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_type: 'customer',
         entity_name: customer.name,
         entity_code: customer.code,
-        smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.V1',
         status: 'active',
         metadata: {
           phone: customer.phone,
@@ -187,14 +187,14 @@ async function createBasicSalonData(supabase: any, orgId: string) {
           entity_id: customerEntity.id,
           field_name: 'phone',
           field_value_text: customer.phone,
-          smart_code: 'HERA.SALON.CUSTOMER.PHONE.v1'
+          smart_code: 'HERA.SALON.CUSTOMER.PHONE.V1'
         },
         {
           organization_id: orgId,
           entity_id: customerEntity.id,
           field_name: 'email',
           field_value_text: customer.email,
-          smart_code: 'HERA.SALON.CUSTOMER.EMAIL.v1'
+          smart_code: 'HERA.SALON.CUSTOMER.EMAIL.V1'
         }
       ])
     }
@@ -254,7 +254,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
           entity_type: 'appointment',
           entity_name: `Appointment - ${apt.time}`,
           entity_code: `APT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          smart_code: 'HERA.SALON.BOOKING.APPOINTMENT.v1',
+          smart_code: 'HERA.SALON.BOOKING.APPOINTMENT.V1',
           status: 'active',
           metadata: {
             customer_id: customerId,
@@ -276,7 +276,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
           organization_id: orgId,
           transaction_type: 'sale',
           transaction_code: `SALE-${Date.now()}`,
-          smart_code: 'HERA.SALON.SALE.SERVICE.v1',
+          smart_code: 'HERA.SALON.SALE.SERVICE.V1',
           from_entity_id: customerId,
           to_entity_id: aptEntity.id,
           total_amount: service.price,
@@ -309,7 +309,7 @@ async function createBasicSalonData(supabase: any, orgId: string) {
         entity_type: 'product',
         entity_name: product.name,
         entity_code: product.code,
-        smart_code: 'HERA.SALON.INVENTORY.PRODUCT.v1',
+        smart_code: 'HERA.SALON.INVENTORY.PRODUCT.V1',
         status: 'active',
         metadata: {
           stock_quantity: product.stock,
@@ -328,14 +328,14 @@ async function createBasicSalonData(supabase: any, orgId: string) {
           entity_id: productEntity.id,
           field_name: 'stock_quantity',
           field_value_number: product.stock,
-          smart_code: 'HERA.SALON.INVENTORY.STOCK.v1'
+          smart_code: 'HERA.SALON.INVENTORY.STOCK.V1'
         },
         {
           organization_id: orgId,
           entity_id: productEntity.id,
           field_name: 'retail_price',
           field_value_number: product.price,
-          smart_code: 'HERA.SALON.PRODUCT.PRICE.v1'
+          smart_code: 'HERA.SALON.PRODUCT.PRICE.V1'
         }
       ])
     }

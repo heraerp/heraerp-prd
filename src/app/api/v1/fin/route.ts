@@ -792,7 +792,7 @@ async function consolidateCompanies(supabase: any, organizationId: string, data:
       organization_id: organizationId,
       transaction_type: 'consolidation',
       transaction_code: `CONSOL-${Date.now()}`,
-      smart_code: 'HERA.FIN.CONSOL.REPORT.v1',
+      smart_code: 'HERA.FIN.CONSOL.REPORT.V1',
       transaction_date: validated.consolidationDate,
       metadata: {
         companies: validated.companies,
@@ -1027,7 +1027,7 @@ async function createBudget(supabase: any, organizationId: string, data: any) {
       entity_type: 'budget',
       entity_name: budgetName,
       entity_code: `BUDGET-${fiscalYear}-${Date.now()}`,
-      smart_code: 'HERA.FIN.BUDGET.CREATE.v1',
+      smart_code: 'HERA.FIN.BUDGET.CREATE.V1',
       metadata: {
         fiscal_year: fiscalYear,
         budget_type: budgetType,
@@ -1048,7 +1048,7 @@ async function createBudget(supabase: any, organizationId: string, data: any) {
       reference_entity_id: budget.id,
       from_entity_id: line.accountId,
       total_amount: line.annualAmount,
-      smart_code: 'HERA.FIN.BUDGET.LINE.v1',
+      smart_code: 'HERA.FIN.BUDGET.LINE.V1',
       metadata: {
         account_code: line.accountCode,
         monthly_breakdown: line.monthlyBreakdown || Array(12).fill(line.annualAmount / 12),

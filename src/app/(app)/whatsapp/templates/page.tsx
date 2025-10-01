@@ -1,6 +1,6 @@
 // ================================================================================
 // WHATSAPP TEMPLATES PAGE - MESSAGE TEMPLATE MANAGER
-// Smart Code: HERA.UI.WHATSAPP.TEMPLATES.v1
+// Smart Code: HERA.UI.WHATSAPP.TEMPLATES.V1
 // Production-ready template manager with validation and live preview
 // ================================================================================
 

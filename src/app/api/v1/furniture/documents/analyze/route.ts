@@ -282,7 +282,7 @@ export async function POST(request: NextRequest) {
         analyzed_at: new Date().toISOString(),
         confidence_score: analysis.confidence
       },
-      smart_code: 'HERA.FURNITURE.DOCUMENT.ANALYSIS.v1'
+      smart_code: 'HERA.FURNITURE.DOCUMENT.ANALYSIS.V1'
     })
 
     if (analysisError) {

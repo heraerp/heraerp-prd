@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS INVOICE PAGE
-// Smart Code: HERA.PAGE.POS.INVOICE.v1
+// Smart Code: HERA.PAGE.POS.INVOICE.V1
 // Invoice display page with print support
 // ================================================================================
 

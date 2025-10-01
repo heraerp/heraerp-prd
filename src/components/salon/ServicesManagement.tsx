@@ -1,7 +1,7 @@
 'use client'
 /**
  * Services Management System
- * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.v1
+ * Smart Code: HERA.SALON.SERVICES.MANAGEMENT.V1
  *
  * Complete CRUD system for salon services and categories
  * Features:

@@ -252,7 +252,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.TRANSITIONED.v1',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.TRANSITIONED.V1',
         metadata: {
           journey_id: body.journey_id,
           from_stage_id: currentStageId,

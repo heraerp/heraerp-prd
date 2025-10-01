@@ -1,6 +1,6 @@
 // ================================================================================
 // BOOK APPOINTMENT MODAL
-// Smart Code: HERA.UI.SALON.APPOINTMENT.BOOK.MODAL.v1
+// Smart Code: HERA.UI.SALON.APPOINTMENT.BOOK.MODAL.V1
 // POS-style appointment booking modal with service selection and checkout
 // ================================================================================
 

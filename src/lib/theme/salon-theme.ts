@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA SALON THEME CONFIGURATION
-// Smart Code: HERA.UI.THEME.SALON.v1
+// Smart Code: HERA.UI.THEME.SALON.V1
 // Stunning color palette with WCAG AA compliance for salon industry
 // ================================================================================
 

@@ -273,7 +273,7 @@ export async function GET(request: NextRequest) {
         entity_name: service.entity_name,
         entity_code: service.entity_code || null,
         status: service.status,
-        smart_code: service.smart_code || 'HERA.SALON.SERVICE.CATALOG.UNCLASSIFIED.v1',
+        smart_code: service.smart_code || 'HERA.SALON.SERVICE.CATALOG.UNCLASSIFIED.V1',
         created_at: service.created_at || null,
         updated_at: service.updated_at || null,
         // Extract from dynamic data

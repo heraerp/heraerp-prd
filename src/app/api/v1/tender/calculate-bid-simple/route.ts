@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         e =>
           e.id === tenderId &&
           e.organization_id === organizationId &&
-          e.entity_type === 'HERA.FURNITURE.TENDER.NOTICE.v1'
+          e.entity_type === 'HERA.FURNITURE.TENDER.NOTICE.V1'
       )
 
       if (!tender) {

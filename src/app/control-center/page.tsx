@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * HERA Control Center Dashboard
- * Smart Code: HERA.UI.CONTROL.CENTER.DASHBOARD.v1
+ * Smart Code: HERA.UI.CONTROL.CENTER.DASHBOARD.V1
  *
  * Visual dashboard for the Master Control Center
  */

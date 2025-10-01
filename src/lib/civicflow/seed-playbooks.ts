@@ -441,7 +441,7 @@ export async function seedCivicFlowPlaybooks() {
           from_entity_id: playbookEntity.id,
           to_entity_id: stepEntity.id,
           relationship_type: 'has_step',
-          smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.v1',
+          smart_code: 'HERA.CIVICFLOW.RELATIONSHIP.PLAYBOOK.STEP.CONFIG.V1',
           metadata: {
             sequence: step.sequence
           }

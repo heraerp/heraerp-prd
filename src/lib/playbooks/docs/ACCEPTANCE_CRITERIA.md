@@ -204,7 +204,7 @@ ORDER BY t.created_at ASC;
       "event": "ENTITY_CREATED",
       "actor": "orchestrator",
       "entity_id": "cust_abc123",
-      "smart_code": "HERA.SALON.CRM.CUSTOMER.v1"
+      "smart_code": "HERA.SALON.CRM.CUSTOMER.V1"
     },
     {
       "timestamp": "2025-09-19T10:00:03Z",
@@ -281,17 +281,17 @@ universal_transactions
     {
       "field_name": "preferred_stylist",
       "field_value_text": "Sarah Johnson",
-      "smart_code": "HERA.SALON.CRM.PREF.STYLIST.v1"
+      "smart_code": "HERA.SALON.CRM.PREF.STYLIST.V1"
     },
     {
       "field_name": "hair_type",
       "field_value_text": "Curly, thick",
-      "smart_code": "HERA.SALON.CRM.HAIR.TYPE.v1"
+      "smart_code": "HERA.SALON.CRM.HAIR.TYPE.V1"
     },
     {
       "field_name": "allergies",
       "field_value_text": "Sensitive to peroxide",
-      "smart_code": "HERA.SALON.CRM.ALLERGIES.v1"
+      "smart_code": "HERA.SALON.CRM.ALLERGIES.V1"
     }
   ]
 }
@@ -306,12 +306,12 @@ universal_transactions
     {
       "field_name": "spice_level",
       "field_value_number": 3,
-      "smart_code": "HERA.REST.MENU.SPICE.LEVEL.v1"
+      "smart_code": "HERA.REST.MENU.SPICE.LEVEL.V1"
     },
     {
       "field_name": "dietary_tags",
       "field_value_json": ["vegetarian", "gluten-free"],
-      "smart_code": "HERA.REST.MENU.DIETARY.TAGS.v1"
+      "smart_code": "HERA.REST.MENU.DIETARY.TAGS.V1"
     }
   ]
 }
@@ -325,29 +325,29 @@ universal_transactions
 // Salon Industry
 const salonSmartCodes = {
   entities: {
-    customer: 'HERA.SALON.CRM.CUSTOMER.v1',
-    stylist: 'HERA.SALON.HR.STYLIST.v1',
-    service: 'HERA.SALON.SVC.SERVICE.v1',
-    product: 'HERA.SALON.INV.PRODUCT.v1'
+    customer: 'HERA.SALON.CRM.CUSTOMER.V1',
+    stylist: 'HERA.SALON.HR.STYLIST.V1',
+    service: 'HERA.SALON.SVC.SERVICE.V1',
+    product: 'HERA.SALON.INV.PRODUCT.V1'
   },
   transactions: {
-    appointment: 'HERA.SALON.SVC.APPOINTMENT.v1',
-    sale: 'HERA.SALON.POS.SALE.v1',
-    payment: 'HERA.SALON.FIN.PAYMENT.v1'
+    appointment: 'HERA.SALON.SVC.APPOINTMENT.V1',
+    sale: 'HERA.SALON.POS.SALE.V1',
+    payment: 'HERA.SALON.FIN.PAYMENT.V1'
   }
 }
 
 // Healthcare Industry
 const healthcareSmartCodes = {
   entities: {
-    patient: 'HERA.HEALTH.PAT.PATIENT.v1',
-    provider: 'HERA.HEALTH.HR.PROVIDER.v1',
-    medication: 'HERA.HEALTH.INV.MEDICATION.v1'
+    patient: 'HERA.HEALTH.PAT.PATIENT.V1',
+    provider: 'HERA.HEALTH.HR.PROVIDER.V1',
+    medication: 'HERA.HEALTH.INV.MEDICATION.V1'
   },
   transactions: {
-    visit: 'HERA.HEALTH.SVC.VISIT.v1',
-    prescription: 'HERA.HEALTH.RX.PRESCRIPTION.v1',
-    claim: 'HERA.HEALTH.FIN.CLAIM.v1'
+    visit: 'HERA.HEALTH.SVC.VISIT.V1',
+    prescription: 'HERA.HEALTH.RX.PRESCRIPTION.V1',
+    claim: 'HERA.HEALTH.FIN.CLAIM.V1'
   }
 }
 ```

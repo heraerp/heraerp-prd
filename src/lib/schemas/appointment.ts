@@ -34,7 +34,7 @@ export const Appointment = z.object({
     'closed',
     'cancelled'
   ]),
-  smart_code: z.string(), // e.g., HERA.SALON.APPOINTMENT.BOOKING.v1
+  smart_code: z.string(), // e.g., HERA.SALON.APPOINTMENT.BOOKING.V1
   metadata: z.record(z.any()).optional(),
   services: z
     .array(

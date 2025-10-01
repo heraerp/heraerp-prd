@@ -1,9 +1,9 @@
 {
   "modules": [
     {
-      "id": "HERA.FURNITURE.CORE.MODULE.v1",
+      "id": "HERA.FURNITURE.CORE.MODULE.V1",
       "name": "Furniture Manufacturing Core",
-      "smartCode": "HERA.FURNITURE.CORE.MODULE.v1",
+      "smartCode": "HERA.FURNITURE.CORE.MODULE.V1",
       "description": "Core furniture manufacturing with products, BOM, production planning, and inventory management",
       "category": "industry",
       "features": [
@@ -21,12 +21,12 @@
       }
     },
     {
-      "id": "HERA.FURNITURE.FINANCE.MODULE.v1",
+      "id": "HERA.FURNITURE.FINANCE.MODULE.V1",
       "name": "Furniture Finance & GST",
-      "smartCode": "HERA.FURNITURE.FINANCE.MODULE.v1",
+      "smartCode": "HERA.FURNITURE.FINANCE.MODULE.V1",
       "description": "India-specific financial management with GST compliance and auto-journal posting",
       "category": "addon",
-      "dependencies": ["HERA.FURNITURE.CORE.MODULE.v1"],
+      "dependencies": ["HERA.FURNITURE.CORE.MODULE.V1"],
       "features": [
         "GST-compliant invoicing (CGST/SGST)",
         "HSN code management",
@@ -42,9 +42,9 @@
       }
     },
     {
-      "id": "HERA.FURNITURE.HR.MODULE.v1",
+      "id": "HERA.FURNITURE.HR.MODULE.V1",
       "name": "HR & Payroll (PF/ESI)",
-      "smartCode": "HERA.FURNITURE.HR.MODULE.v1",
+      "smartCode": "HERA.FURNITURE.HR.MODULE.V1",
       "description": "Indian payroll with PF/ESI statutory compliance for furniture manufacturers",
       "category": "addon",
       "features": [
@@ -62,12 +62,12 @@
       }
     },
     {
-      "id": "HERA.FURNITURE.QUALITY.MODULE.v1",
+      "id": "HERA.FURNITURE.QUALITY.MODULE.V1",
       "name": "Quality Control & Inspection",
-      "smartCode": "HERA.FURNITURE.QUALITY.MODULE.v1",
+      "smartCode": "HERA.FURNITURE.QUALITY.MODULE.V1",
       "description": "Quality management for furniture production with inspection checklists",
       "category": "addon",
-      "dependencies": ["HERA.FURNITURE.CORE.MODULE.v1"],
+      "dependencies": ["HERA.FURNITURE.CORE.MODULE.V1"],
       "features": [
         "Quality inspection checklists",
         "Defect tracking and analysis",
@@ -84,10 +84,10 @@
   ],
   "bundles": [
     {
-      "id": "HERA.FURNITURE.STARTER.BUNDLE.v1",
+      "id": "HERA.FURNITURE.STARTER.BUNDLE.V1",
       "name": "Furniture Starter Pack",
       "description": "Essential modules for small furniture manufacturers",
-      "modules": ["HERA.FURNITURE.CORE.MODULE.v1", "HERA.FURNITURE.FINANCE.MODULE.v1"],
+      "modules": ["HERA.FURNITURE.CORE.MODULE.V1", "HERA.FURNITURE.FINANCE.MODULE.V1"],
       "pricing": {
         "monthly": 129,
         "yearly": 1299,
@@ -95,14 +95,14 @@
       }
     },
     {
-      "id": "HERA.FURNITURE.PROFESSIONAL.BUNDLE.v1",
+      "id": "HERA.FURNITURE.PROFESSIONAL.BUNDLE.V1",
       "name": "Furniture Professional",
       "description": "Complete solution for established furniture manufacturers",
       "modules": [
-        "HERA.FURNITURE.CORE.MODULE.v1",
-        "HERA.FURNITURE.FINANCE.MODULE.v1",
-        "HERA.FURNITURE.HR.MODULE.v1",
-        "HERA.FURNITURE.QUALITY.MODULE.v1"
+        "HERA.FURNITURE.CORE.MODULE.V1",
+        "HERA.FURNITURE.FINANCE.MODULE.V1",
+        "HERA.FURNITURE.HR.MODULE.V1",
+        "HERA.FURNITURE.QUALITY.MODULE.V1"
       ],
       "pricing": {
         "monthly": 199,

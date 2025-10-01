@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Balance Sheet (Classified & Comparative)
- * Smart Code: HERA.FINANCE.BS.REPORT.v1
+ * Smart Code: HERA.FINANCE.BS.REPORT.V1
  *
  * Classified balance sheet with current/non-current breakdown
  * Built on 6-table foundation with smart code intelligence

@@ -106,8 +106,8 @@ export async function summarizeSalesByBranchDay({
           field: 'smart_code',
           operator: 'in',
           value: [
-            'HERA.SALON.SALES.ORDER.SERVICE.v1',
-            'HERA.SALON.SALES.ORDER.PRODUCT.v1',
+            'HERA.SALON.SALES.ORDER.SERVICE.V1',
+            'HERA.SALON.SALES.ORDER.PRODUCT.V1',
             'HERA.SALON.POS.TXN.SALE.V1'
           ]
         },
@@ -313,7 +313,7 @@ export function buildDailyJournalPayload(
     },
     lines: lines.map((line, index) => ({
       line_number: index + 1,
-      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.v1',
+      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.V1',
       entity_id: line.account_id,
       debit: line.debit,
       credit: line.credit,

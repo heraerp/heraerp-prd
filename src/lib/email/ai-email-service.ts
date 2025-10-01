@@ -69,7 +69,7 @@ export class AIEmailService {
         },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.EMAIL.AI.COMPOSE.v1',
+          smart_code: 'HERA.EMAIL.AI.COMPOSE.V1',
           task_type: 'email_composition',
           prompt: this.buildEmailPrompt(request),
           temperature: 0.7,
@@ -125,7 +125,7 @@ export class AIEmailService {
         },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.EMAIL.AI.REPLY.v1',
+          smart_code: 'HERA.EMAIL.AI.REPLY.V1',
           task_type: 'email_reply',
           prompt: `Generate 3 professional reply suggestions for this email:\n\n${emailContent}`,
           temperature: 0.6,
@@ -170,7 +170,7 @@ export class AIEmailService {
         },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.EMAIL.AI.IMPROVE.v1',
+          smart_code: 'HERA.EMAIL.AI.IMPROVE.V1',
           task_type: 'email_improvement',
           prompt: improvementPrompt,
           temperature: 0.5,
@@ -214,7 +214,7 @@ export class AIEmailService {
         },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.EMAIL.AI.ANALYZE.v1',
+          smart_code: 'HERA.EMAIL.AI.ANALYZE.V1',
           task_type: 'email_analysis',
           prompt: `Analyze the tone, sentiment, and professionalism of this email and provide suggestions for improvement:\n\n${content}`,
           temperature: 0.3,
@@ -261,7 +261,7 @@ export class AIEmailService {
         },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.EMAIL.AI.TEMPLATE.v1',
+          smart_code: 'HERA.EMAIL.AI.TEMPLATE.V1',
           task_type: 'template_generation',
           prompt: templatePrompt,
           temperature: 0.6,

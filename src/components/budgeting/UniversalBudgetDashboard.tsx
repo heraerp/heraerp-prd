@@ -241,7 +241,7 @@ export default function UniversalBudgetDashboard({
             </div>
             <div className="mt-4">
               <Badge variant="outline" className="text-xs">
-                HERA.FIN.BUDGET.TOTAL.v1
+                HERA.FIN.BUDGET.TOTAL.V1
               </Badge>
             </div>
           </CardContent>
@@ -260,7 +260,7 @@ export default function UniversalBudgetDashboard({
             </div>
             <div className="mt-4">
               <Badge variant="outline" className="text-xs">
-                HERA.FIN.BUDGET.ACTUAL.v1
+                HERA.FIN.BUDGET.ACTUAL.V1
               </Badge>
             </div>
           </CardContent>

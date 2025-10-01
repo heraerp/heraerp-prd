@@ -17,7 +17,7 @@ import {
   Info
 } from 'lucide-react'
 
-// Smart Code: HERA.UI.ERROR.STATES.ENHANCED.v1
+// Smart Code: HERA.UI.ERROR.STATES.ENHANCED.V1
 // Comprehensive error handling for restaurant platform
 
 interface ErrorBoundaryProps {

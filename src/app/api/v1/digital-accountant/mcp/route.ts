@@ -1,6 +1,6 @@
 /**
  * HERA MCP-Powered Digital Accountant
- * Smart Code: HERA.MCP.DIGITAL.ACCOUNTANT.v1
+ * Smart Code: HERA.MCP.DIGITAL.ACCOUNTANT.V1
  *
  * Uses Claude as the brain via MCP tools instead of pattern matching
  */

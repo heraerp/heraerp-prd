@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       entity_type: 'connector',
       entity_name: 'BlueSky Integration',
       entity_code: `CONN-BLUESKY-${Date.now()}`,
-      smart_code: 'HERA.INTEGRATION.CONNECTOR.BLUESKY.v1',
+      smart_code: 'HERA.INTEGRATION.CONNECTOR.BLUESKY.V1',
       organization_id: orgId
     }
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.INTEGRATION.CONNECTOR.AUTHED.v1',
+        smart_code: 'HERA.INTEGRATION.CONNECTOR.AUTHED.V1',
         metadata: {
           connector_id: connectorId,
           vendor: 'bluesky',

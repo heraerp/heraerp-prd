@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS SALE PAGE
-// Smart Code: HERA.PAGE.POS.SALE.v1
+// Smart Code: HERA.PAGE.POS.SALE.V1
 // Point of sale page with cart management
 // ================================================================================
 

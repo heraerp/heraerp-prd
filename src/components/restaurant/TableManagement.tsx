@@ -292,7 +292,7 @@ export function TableManagement({
       // Load tables
       const tablesResponse = await universalApi.getEntities({
         entity_type: 'table',
-        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.v1'
+        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.V1'
       })
       const tablesData = extractData(tablesResponse) as RestaurantTable[]
 
@@ -306,7 +306,7 @@ export function TableManagement({
       // Load reservations
       const reservationsResponse = await universalApi.getEntities({
         entity_type: 'reservation',
-        smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.v1'
+        smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.V1'
       })
       setReservations(extractData(reservationsResponse) as Reservation[])
     } catch (err) {
@@ -338,7 +338,7 @@ export function TableManagement({
         entity_type: 'table',
         entity_name: `Table ${table.number}`,
         entity_code: `TBL-${table.number.toString().padStart(3, '0')}`,
-        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.v1',
+        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.V1',
         metadata: {
           table_number: table.number,
           section: table.section,
@@ -402,7 +402,7 @@ export function TableManagement({
         entity_type: 'table',
         entity_name: `Table ${tableForm.table_number}`,
         entity_code: `TBL-${tableForm.table_number.padStart(3, '0')}`,
-        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.v1',
+        smart_code: smartCodes.TABLE || 'HERA.RESTAURANT.TABLE.ENTITY.V1',
         metadata: {
           table_number: parseInt(tableForm.table_number),
           section: tableForm.section,
@@ -441,7 +441,7 @@ export function TableManagement({
         entity_type: 'reservation',
         entity_name: `${reservationForm.customer_name} Party`,
         entity_code: `RES-${formatDate(new Date(), 'yyyy-MM-dd')}-${Date.now().toString().slice(-4)}`,
-        smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.v1',
+        smart_code: smartCodes.RESERVATION || 'HERA.RESTAURANT.TABLE.RESERVATION.V1',
         metadata: {
           table_id: reservationForm.table_id,
           table_number: (selectedTable.metadata as any)?.table_number,

@@ -223,7 +223,7 @@ export function BookAppointmentModalModern({
           id: customer.id,
           entity_name: customer.entity_name,
           entity_code: customer.entity_code || customer.id,
-          smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+          smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.V1',
           phone: (customer.metadata as any)?.phone || '',
           email: (customer.metadata as any)?.email || '',
           vip_level: (customer.metadata as any)?.vip_level || null,
@@ -352,7 +352,7 @@ export function BookAppointmentModalModern({
         quantity: 1,
         unit_price: service.price,
         line_amount: service.price,
-        smart_code: 'HERA.SALON.APPOINTMENT.LINE.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.LINE.V1',
         metadata: {
           service_name: service.entity_name,
           duration: service.duration,

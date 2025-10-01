@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
     // Create audit log entry using HERA universal structure
     const auditEntry = {
       transaction_type: 'bpo_settings_update',
-      smart_code: 'HERA.BPO.SETTINGS.UPDATED.v1',
+      smart_code: 'HERA.BPO.SETTINGS.UPDATED.V1',
       user_id: userId,
       changes: Object.keys(settings),
       timestamp: new Date().toISOString(),

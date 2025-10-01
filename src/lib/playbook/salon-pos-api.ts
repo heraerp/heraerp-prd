@@ -50,7 +50,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.SERVICE.CREATE.v1',
+        smart_code: 'HERA.SALON.POS.SERVICE.CREATE.V1',
         actor_user_id: this.actorUserId,
         service
       })
@@ -80,7 +80,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.SERVICE.UPDATE.v1',
+        smart_code: 'HERA.SALON.POS.SERVICE.UPDATE.V1',
         actor_user_id: this.actorUserId,
         service: { id, ...updates }
       })
@@ -94,7 +94,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.SERVICE.DELETE.v1',
+        smart_code: 'HERA.SALON.POS.SERVICE.DELETE.V1',
         actor_user_id: this.actorUserId,
         service: { id }
       })
@@ -114,7 +114,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.PRODUCT.CREATE.v1',
+        smart_code: 'HERA.SALON.POS.PRODUCT.CREATE.V1',
         actor_user_id: this.actorUserId,
         product
       })
@@ -147,7 +147,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.CUSTOMER.CREATE.v1',
+        smart_code: 'HERA.SALON.POS.CUSTOMER.CREATE.V1',
         actor_user_id: this.actorUserId,
         customer
       })
@@ -172,7 +172,7 @@ export class SalonPOSApi {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orgId: this.orgId,
-        smart_code: 'HERA.SALON.POS.TICKET.CREATE.v1',
+        smart_code: 'HERA.SALON.POS.TICKET.CREATE.V1',
         workstationId
       })
     })

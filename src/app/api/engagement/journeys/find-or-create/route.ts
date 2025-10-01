@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       entity_type: 'engagement_journey',
       entity_name: `${subjectName} - Journey`,
       entity_code: `JOURNEY-${subject_id}-${Date.now()}`,
-      smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.v1',
+      smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.V1',
       organization_id: orgId,
       metadata: {
         subject_id
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.CREATED.v1',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.CREATED.V1',
         metadata: {
           journey_id: journeyId,
           subject_id,

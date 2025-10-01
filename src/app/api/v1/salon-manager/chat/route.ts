@@ -19,7 +19,7 @@ const INTENT_PATTERNS = {
       /can.*book/i,
       /need.*appointment/i
     ],
-    smartCode: 'HERA.SALON.APPOINTMENT.BOOKING.v1'
+    smartCode: 'HERA.SALON.APPOINTMENT.BOOKING.V1'
   },
   searchAppointment: {
     patterns: [
@@ -34,7 +34,7 @@ const INTENT_PATTERNS = {
       /when\s+is.*appointment/i,
       /\w+'s\s+appointment/i
     ],
-    smartCode: 'HERA.SALON.APPOINTMENT.SEARCH.v1'
+    smartCode: 'HERA.SALON.APPOINTMENT.SEARCH.V1'
   },
   analytics: {
     patterns: [
@@ -47,7 +47,7 @@ const INTENT_PATTERNS = {
       /forecast/i,
       /predict/i
     ],
-    smartCode: 'HERA.SALON.AI.ANALYTICS.v1'
+    smartCode: 'HERA.SALON.AI.ANALYTICS.V1'
   },
   availability: {
     patterns: [
@@ -58,7 +58,7 @@ const INTENT_PATTERNS = {
       /open.*slot/i,
       /who.*available/i
     ],
-    smartCode: 'HERA.SALON.AVAILABILITY.CHECK.v1'
+    smartCode: 'HERA.SALON.AVAILABILITY.CHECK.V1'
   },
   inventory: {
     patterns: [
@@ -69,7 +69,7 @@ const INTENT_PATTERNS = {
       /check.*stock/i,
       /low.*stock/i
     ],
-    smartCode: 'HERA.SALON.INVENTORY.CHECK.v1'
+    smartCode: 'HERA.SALON.INVENTORY.CHECK.V1'
   },
   revenue: {
     patterns: [
@@ -80,7 +80,7 @@ const INTENT_PATTERNS = {
       /income/i,
       /total.*sales/i
     ],
-    smartCode: 'HERA.SALON.REVENUE.ANALYSIS.v1'
+    smartCode: 'HERA.SALON.REVENUE.ANALYSIS.V1'
   },
   commission: {
     patterns: [
@@ -90,11 +90,11 @@ const INTENT_PATTERNS = {
       /stylist.*earning/i,
       /performance/i
     ],
-    smartCode: 'HERA.SALON.COMMISSION.CALC.v1'
+    smartCode: 'HERA.SALON.COMMISSION.CALC.V1'
   },
   birthday: {
     patterns: [/birthday/i, /birth.*month/i, /client.*birthday/i, /birthday.*list/i],
-    smartCode: 'HERA.SALON.CLIENT.BIRTHDAY.v1'
+    smartCode: 'HERA.SALON.CLIENT.BIRTHDAY.V1'
   },
   schedule: {
     patterns: [
@@ -104,7 +104,7 @@ const INTENT_PATTERNS = {
       /calendar/i,
       /booking.*list/i
     ],
-    smartCode: 'HERA.SALON.SCHEDULE.VIEW.v1'
+    smartCode: 'HERA.SALON.SCHEDULE.VIEW.V1'
   }
 }
 

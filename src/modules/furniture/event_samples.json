@@ -4,7 +4,7 @@
       "transaction_type": "sales_order",
       "transaction_code": "SO-2025-001234",
       "transaction_date": "2025-01-09",
-      "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1",
+      "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.V1",
       "organization_id": "550e8400-e29b-41d4-a716-446655440001",
       "total_amount": 354000.0,
       "currency_code": "INR",
@@ -28,7 +28,7 @@
         "quantity": 100,
         "unit_price": 2500.0,
         "line_amount": 250000.0,
-        "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.v1",
+        "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.V1",
         "metadata": {
           "line_data": {
             "product_code": "DESK-STD-001",
@@ -47,7 +47,7 @@
         "quantity": 10,
         "unit_price": 5500.0,
         "line_amount": 55000.0,
-        "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.v1",
+        "smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.LINE.V1",
         "metadata": {
           "line_data": {
             "product_code": "TABLE-TEACH-001",
@@ -169,7 +169,7 @@
       "transaction_type": "payroll_run",
       "transaction_code": "PAY-2025-01-JAN",
       "transaction_date": "2025-01-31",
-      "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.v1",
+      "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.V1",
       "organization_id": "550e8400-e29b-41d4-a716-446655440001",
       "total_amount": 850000.0,
       "currency_code": "INR",
@@ -194,7 +194,7 @@
         "quantity": 1,
         "unit_price": 50000.0,
         "line_amount": 50000.0,
-        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EARNINGS.LINE.v1",
+        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.EARNINGS.LINE.V1",
         "metadata": {
           "line_data": {
             "employee_code": "EMP001",
@@ -214,7 +214,7 @@
         "quantity": 1,
         "unit_price": 6000.0,
         "line_amount": 6000.0,
-        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.v1",
+        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.V1",
         "metadata": {
           "line_data": {
             "deduction_type": "EPF_EMPLOYEE",
@@ -230,7 +230,7 @@
         "quantity": 1,
         "unit_price": 375.0,
         "line_amount": 375.0,
-        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.v1",
+        "smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.DEDUCTION.LINE.V1",
         "metadata": {
           "line_data": {
             "deduction_type": "ESI_EMPLOYEE",

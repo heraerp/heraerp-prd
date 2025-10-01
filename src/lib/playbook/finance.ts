@@ -1,6 +1,6 @@
 /**
  * HERA Playbook Finance API with Branch Accounting
- * Smart Code: HERA.LIB.PLAYBOOK.FINANCE.v1
+ * Smart Code: HERA.LIB.PLAYBOOK.FINANCE.V1
  *
  * Provides financial posting operations with branch dimension:
  * - Enforces branch_id on relevant transactions

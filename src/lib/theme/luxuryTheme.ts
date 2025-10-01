@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA LUXURY THEME UTILITIES
-// Smart Code: HERA.UI.THEME.LUXURY.UTILS.v1
+// Smart Code: HERA.UI.THEME.LUXURY.UTILS.V1
 // Luxury color palette and styling utilities for consistent application theming
 // ================================================================================
 

@@ -1,6 +1,6 @@
 /**
  * HERA Document Upload API
- * Smart Code: HERA.DOCS.UPLOAD.API.v1
+ * Smart Code: HERA.DOCS.UPLOAD.API.V1
  *
  * Handles document uploads for transaction evidence
  * Supports PDF and image formats with multi-tenant isolation
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'document',
         entity_name: fileName,
         entity_code: `DOC-${timestamp}`,
-        smart_code: 'HERA.DOCS.EVIDENCE.UPLOAD.v1',
+        smart_code: 'HERA.DOCS.EVIDENCE.UPLOAD.V1',
         metadata: {
           file_path: filePath,
           file_type: file.type,
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
         from_entity_id: transactionId,
         to_entity_id: documentEntity.id,
         relationship_type: 'has_document',
-        smart_code: 'HERA.DOCS.REL.TRANSACTION.v1',
+        smart_code: 'HERA.DOCS.REL.TRANSACTION.V1',
         metadata: {
           document_type: 'evidence',
           upload_timestamp: new Date().toISOString()
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
         from_entity_id: entityId,
         to_entity_id: documentEntity.id,
         relationship_type: 'has_document',
-        smart_code: 'HERA.DOCS.REL.ENTITY.v1',
+        smart_code: 'HERA.DOCS.REL.ENTITY.V1',
         metadata: {
           document_type: 'attachment',
           upload_timestamp: new Date().toISOString()

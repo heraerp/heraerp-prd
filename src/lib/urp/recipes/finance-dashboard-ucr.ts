@@ -7,7 +7,7 @@
  * - Forecasting and projections
  * - Industry benchmarking
  *
- * @module HERA.URP.RECIPE.FINANCE.DASHBOARD.CASHFLOW.v1
+ * @module HERA.URP.RECIPE.FINANCE.DASHBOARD.CASHFLOW.V1
  */
 
 import { ReportRecipe, ReportContext, ReportResult } from '../types/report-types'

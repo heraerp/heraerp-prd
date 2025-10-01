@@ -1,6 +1,6 @@
 /**
  * HERA Universal Configuration Rule Resolver
- * Smart Code: HERA.UNIV.CONFIG.RESOLVER.v1
+ * Smart Code: HERA.UNIV.CONFIG.RESOLVER.V1
  *
  * Core resolution engine for configuration rules
  */

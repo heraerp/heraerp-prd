@@ -280,7 +280,7 @@ async function createEmailCampaign(data: any, organizationId: string) {
     transaction_type: 'email_campaign_created',
     organizationId: organizationId,
     reference_number: createdCampaign.entity_code,
-    smart_code: 'HERA.EMAIL.CAMPAIGN.CREATE.v1',
+    smart_code: 'HERA.EMAIL.CAMPAIGN.CREATE.V1',
     metadata: {
       campaign_id: createdCampaign.id,
       campaign_name,
@@ -346,7 +346,7 @@ async function sendEmailCampaign(data: any) {
     transaction_type: 'email_campaign_sent',
     organizationId: campaign.organizationId,
     reference_number: campaign.entity_code,
-    smart_code: 'HERA.EMAIL.CAMPAIGN.SEND.v1',
+    smart_code: 'HERA.EMAIL.CAMPAIGN.SEND.V1',
     total_amount: recipients.length,
     metadata: {
       campaign_id,

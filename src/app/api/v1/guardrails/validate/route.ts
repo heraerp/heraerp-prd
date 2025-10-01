@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         guardrailErrors.push({
           field: 'smart_code',
-          message: 'Invalid smart code format. Use lowercase v (e.g., HERA.FIN.GL.JE.v1)',
+          message: 'Invalid smart code format. Use lowercase v (e.g., HERA.FIN.GL.JE.V1)',
           attempted_value: payload.smart_code
         })
       }

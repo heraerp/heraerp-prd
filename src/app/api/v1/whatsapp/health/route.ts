@@ -16,42 +16,42 @@ const SACRED_TABLES = [
 // WhatsApp smart codes catalog
 const WHATSAPP_SMART_CODES = {
   // Thread/Conversation
-  'HERA.WHATSAPP.INBOX.THREAD.v1': 'WhatsApp conversation thread',
-  'HERA.WHATSAPP.INBOX.ASSIGN.v1': 'Assign conversation to agent',
-  'HERA.WHATSAPP.INBOX.RESOLVE.v1': 'Resolve conversation',
+  'HERA.WHATSAPP.INBOX.THREAD.V1': 'WhatsApp conversation thread',
+  'HERA.WHATSAPP.INBOX.ASSIGN.V1': 'Assign conversation to agent',
+  'HERA.WHATSAPP.INBOX.RESOLVE.V1': 'Resolve conversation',
 
   // Messages
-  'HERA.WHATSAPP.MESSAGE.TEXT.v1': 'Text message',
-  'HERA.WHATSAPP.MESSAGE.MEDIA.v1': 'Media message (image/video/document)',
-  'HERA.WHATSAPP.MESSAGE.INTERACTIVE.v1': 'Interactive message (buttons/lists)',
-  'HERA.WHATSAPP.MESSAGE.TEMPLATE.v1': 'Template message',
+  'HERA.WHATSAPP.MESSAGE.TEXT.V1': 'Text message',
+  'HERA.WHATSAPP.MESSAGE.MEDIA.V1': 'Media message (image/video/document)',
+  'HERA.WHATSAPP.MESSAGE.INTERACTIVE.V1': 'Interactive message (buttons/lists)',
+  'HERA.WHATSAPP.MESSAGE.TEMPLATE.V1': 'Template message',
 
   // Internal
-  'HERA.WHATSAPP.NOTE.INTERNAL.v1': 'Internal note on conversation',
+  'HERA.WHATSAPP.NOTE.INTERNAL.V1': 'Internal note on conversation',
 
   // Templates
-  'HERA.WHATSAPP.TEMPLATE.REGISTER.v1': 'Register message template',
-  'HERA.WHATSAPP.TEMPLATE.BODY.v1': 'Template body content',
-  'HERA.WHATSAPP.TEMPLATE.VARS.v1': 'Template variables',
+  'HERA.WHATSAPP.TEMPLATE.REGISTER.V1': 'Register message template',
+  'HERA.WHATSAPP.TEMPLATE.BODY.V1': 'Template body content',
+  'HERA.WHATSAPP.TEMPLATE.VARS.V1': 'Template variables',
 
   // Campaign
-  'HERA.WHATSAPP.CAMPAIGN.OUTBOUND.v1': 'Outbound campaign',
-  'HERA.WHATSAPP.CAMPAIGN.AUDIENCE.v1': 'Campaign audience query',
-  'HERA.WHATSAPP.CAMPAIGN.DELIVERY.v1': 'Campaign delivery to recipient',
+  'HERA.WHATSAPP.CAMPAIGN.OUTBOUND.V1': 'Outbound campaign',
+  'HERA.WHATSAPP.CAMPAIGN.AUDIENCE.V1': 'Campaign audience query',
+  'HERA.WHATSAPP.CAMPAIGN.DELIVERY.V1': 'Campaign delivery to recipient',
 
   // Payments
-  'HERA.AR.PAYMENT.LINK.SHARE.v1': 'Share payment link',
-  'HERA.AR.PAYMENT.COLLECTION.WHATSAPP.v1': 'Payment collection via WhatsApp',
+  'HERA.AR.PAYMENT.LINK.SHARE.V1': 'Share payment link',
+  'HERA.AR.PAYMENT.COLLECTION.WHATSAPP.V1': 'Payment collection via WhatsApp',
 
   // Relationships
   'HERA.WHATSAPP.REL.THREAD_TO_ENTITY.v1': 'Thread to entity relationship',
 
   // Customer
-  'HERA.CRM.CUSTOMER.WHATSAPP.v1': 'WhatsApp customer',
+  'HERA.CRM.CUSTOMER.WHATSAPP.V1': 'WhatsApp customer',
 
   // Notifications
-  'HERA.AR.NOTIFY.INVOICE.DUE.v1': 'Invoice due notification',
-  'HERA.SALON.NOTIFY.APPOINTMENT.v1': 'Appointment notification'
+  'HERA.AR.NOTIFY.INVOICE.DUE.V1': 'Invoice due notification',
+  'HERA.SALON.NOTIFY.APPOINTMENT.V1': 'Appointment notification'
 }
 
 /**

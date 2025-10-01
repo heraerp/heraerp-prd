@@ -212,7 +212,7 @@ async function updateStaffStatus(
           from_entity_id: staffId,
           to_entity_id: targetStatus.id,
           relationship_type: 'has_workflow_status',
-          smart_code: 'HERA.WORKFLOW.STAFF.STATUS.v1',
+          smart_code: 'HERA.WORKFLOW.STAFF.STATUS.V1',
           relationship_data: {
             is_active: true,
             assigned_at: new Date().toISOString(),
@@ -243,7 +243,7 @@ async function createCheckInEvent(
       entity_type: 'event',
       entity_name: 'Client Check-In',
       entity_code: `EVENT-CHECKIN-${Date.now()}`,
-      smart_code: 'HERA.SALON.EVENT.CHECKIN.v1',
+      smart_code: 'HERA.SALON.EVENT.CHECKIN.V1',
       metadata: {
         event_type: 'check_in',
         appointment_id: appointmentId,

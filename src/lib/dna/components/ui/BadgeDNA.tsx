@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA DNA UI - BADGE COMPONENT
-// Smart Code: HERA.DNA.UI.BADGE.v1
+// Smart Code: HERA.DNA.UI.BADGE.V1
 // Enhanced badge with proper dark mode contrast
 // ================================================================================
 

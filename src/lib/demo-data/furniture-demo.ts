@@ -165,7 +165,7 @@ export async function createFurnitureDemoData(organizationId: string) {
           from_entity_id: productIds['DESK-STD-001'],
           to_entity_id: materialIds[item.material],
           relationship_type: 'HAS_COMPONENT',
-          smart_code: 'HERA.FURNITURE.BOM.COMPONENT.v1',
+          smart_code: 'HERA.FURNITURE.BOM.COMPONENT.V1',
           metadata: {
             quantity: item.quantity,
             unit_of_measure: item.unit
@@ -209,7 +209,7 @@ export async function createFurnitureDemoData(organizationId: string) {
         entity_type: 'customer',
         entity_name: customer.name,
         entity_code: customer.code,
-        smart_code: 'HERA.FURNITURE.MASTER.CUSTOMER.v1',
+        smart_code: 'HERA.FURNITURE.MASTER.CUSTOMER.V1',
         metadata: {
           customer_type: 'B2B',
           gstin: customer.gstin,
@@ -237,7 +237,7 @@ export async function createFurnitureDemoData(organizationId: string) {
         entity_type: 'vendor',
         entity_name: vendor.name,
         entity_code: vendor.code,
-        smart_code: 'HERA.FURNITURE.MASTER.VENDOR.v1',
+        smart_code: 'HERA.FURNITURE.MASTER.VENDOR.V1',
         metadata: {
           vendor_type: 'material_supplier',
           gstin: vendor.gstin,
@@ -265,7 +265,7 @@ export async function createFurnitureDemoData(organizationId: string) {
         entity_type: 'employee',
         entity_name: emp.name,
         entity_code: emp.code,
-        smart_code: 'HERA.FURNITURE.MASTER.EMPLOYEE.v1',
+        smart_code: 'HERA.FURNITURE.MASTER.EMPLOYEE.V1',
         metadata: {
           role: emp.role,
           department: 'Production',

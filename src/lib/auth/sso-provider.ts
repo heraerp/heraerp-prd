@@ -234,7 +234,7 @@ export class SSOProvider {
         entity_type: 'user',
         entity_name: attributes.name || email,
         entity_code: email,
-        smart_code: 'HERA.SECURITY.USER.SSO.v1',
+        smart_code: 'HERA.SECURITY.USER.SSO.V1',
         organization_id: organizationId,
         metadata: {
           provisioned_by: 'sso',
@@ -322,7 +322,7 @@ export class SSOProvider {
       transaction_type: 'session_create',
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.SECURITY.SESSION.CREATE.v1',
+      smart_code: 'HERA.SECURITY.SESSION.CREATE.V1',
       organization_id: session.organization_id,
       metadata: {
         user_id: session.user_id,
@@ -347,7 +347,7 @@ export class SSOProvider {
         field_name: 'refresh_token',
         field_value_text: await this.encryptToken(refreshToken),
         field_type: 'encrypted_text',
-        smart_code: 'HERA.SECURITY.TOKEN.REFRESH.v1',
+        smart_code: 'HERA.SECURITY.TOKEN.REFRESH.V1',
         organization_id: session.organization_id,
         metadata: {
           session_id: txn.id,

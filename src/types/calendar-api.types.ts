@@ -1,6 +1,6 @@
 /**
  * HERA DNA Universal Calendar API Types
- * Smart Code: HERA.API.CALENDAR.CONTRACTS.v1
+ * Smart Code: HERA.API.CALENDAR.CONTRACTS.V1
  *
  * Complete API contracts for calendar operations using Sacred Six Tables
  */

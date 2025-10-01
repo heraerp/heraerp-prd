@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Payroll Processing System
- * Smart Code: HERA.SALON.PAYROLL.MODULE.v1
+ * Smart Code: HERA.SALON.PAYROLL.MODULE.V1
  *
  * Complete payroll system with direct deposit, commissions, taxes,
  * and multi-location compliance - all on 6-table foundation
@@ -114,7 +114,7 @@ const mockEmployees: Employee[] = [
     entity_name: 'Sarah Johnson',
     entity_code: 'EMP-001',
     entity_type: 'employee',
-    smart_code: 'HERA.SALON.EMPLOYEE.STYLIST.v1',
+    smart_code: 'HERA.SALON.EMPLOYEE.STYLIST.V1',
     classification: 'employee',
     department: 'Hair Styling',
     pay_schedule: 'bi-weekly',
@@ -146,7 +146,7 @@ const mockEmployees: Employee[] = [
     entity_name: 'Emma Davis',
     entity_code: 'CTR-001',
     entity_type: 'employee',
-    smart_code: 'HERA.SALON.CONTRACTOR.BOOTH.v1',
+    smart_code: 'HERA.SALON.CONTRACTOR.BOOTH.V1',
     classification: 'booth_renter',
     department: 'Nails',
     pay_schedule: 'monthly',
@@ -162,7 +162,7 @@ const mockPayrollRuns: PayrollRun[] = [
   {
     id: '1',
     transaction_type: 'PAYROLL_RUN',
-    smart_code: 'HERA.SALON.PAYROLL.RUN.v1',
+    smart_code: 'HERA.SALON.PAYROLL.RUN.V1',
     run_date: new Date('2024-03-15'),
     pay_period_start: new Date('2024-03-01'),
     pay_period_end: new Date('2024-03-14'),

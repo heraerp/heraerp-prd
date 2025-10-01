@@ -138,7 +138,7 @@ async function setupSalonDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'service',
       entity_name: service.name,
-      smart_code: 'HERA.SALON.SERVICE.CATALOG.v1',
+      smart_code: 'HERA.SALON.SERVICE.CATALOG.V1',
       metadata: {
         price: service.price,
         duration_minutes: service.duration,
@@ -158,7 +158,7 @@ async function setupSalonDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'employee',
       entity_name: member.name,
-      smart_code: 'HERA.SALON.STAFF.MEMBER.v1',
+      smart_code: 'HERA.SALON.STAFF.MEMBER.V1',
       metadata: {
         role: member.role,
         specialties: member.specialties,
@@ -181,7 +181,7 @@ async function setupSalonDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'customer',
       entity_name: clientName,
-      smart_code: 'HERA.SALON.CLIENT.PROFILE.v1',
+      smart_code: 'HERA.SALON.CLIENT.PROFILE.V1',
       metadata: {
         phone: `555-${Math.floor(Math.random() * 9000) + 1000}`,
         email: `${clientName.toLowerCase().replace(' ', '.')}@example.com`,
@@ -206,7 +206,7 @@ async function setupIceCreamDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'product',
       entity_name: flavor.name,
-      smart_code: 'HERA.ICECREAM.PRODUCT.FLAVOR.v1',
+      smart_code: 'HERA.ICECREAM.PRODUCT.FLAVOR.V1',
       metadata: {
         category: flavor.category,
         cost_per_liter: flavor.costPerLiter,
@@ -227,7 +227,7 @@ async function setupIceCreamDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'location',
       entity_name: outlet.name,
-      smart_code: 'HERA.ICECREAM.OUTLET.STORE.v1',
+      smart_code: 'HERA.ICECREAM.OUTLET.STORE.V1',
       metadata: {
         outlet_type: outlet.type,
         storage_capacity_liters: outlet.capacity,
@@ -270,7 +270,7 @@ async function setupRestaurantDemoData(orgId: string) {
       await universalApi.createEntity({
         entity_type: 'product',
         entity_name: item.name,
-        smart_code: 'HERA.REST.MENU.ITEM.v1',
+        smart_code: 'HERA.REST.MENU.ITEM.V1',
         metadata: {
           category: category.name,
           price: item.price,
@@ -288,7 +288,7 @@ async function setupRestaurantDemoData(orgId: string) {
       entity_type: 'location',
       entity_name: `Table ${i}`,
       entity_code: `T${i.toString().padStart(2, '0')}`,
-      smart_code: 'HERA.REST.TABLE.DINING.v1',
+      smart_code: 'HERA.REST.TABLE.DINING.V1',
       metadata: {
         capacity: i <= 10 ? 2 : 4,
         section: i <= 10 ? 'main' : 'patio',
@@ -312,7 +312,7 @@ async function setupHealthcareDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'service',
       entity_name: service.name,
-      smart_code: 'HERA.HEALTH.SERVICE.MEDICAL.v1',
+      smart_code: 'HERA.HEALTH.SERVICE.MEDICAL.V1',
       metadata: {
         price: service.price,
         duration_minutes: service.duration,
@@ -332,7 +332,7 @@ async function setupHealthcareDemoData(orgId: string) {
     await universalApi.createEntity({
       entity_type: 'employee',
       entity_name: doctor.name,
-      smart_code: 'HERA.HEALTH.STAFF.DOCTOR.v1',
+      smart_code: 'HERA.HEALTH.STAFF.DOCTOR.V1',
       metadata: {
         role: 'physician',
         specialty: doctor.specialty,
@@ -373,7 +373,7 @@ async function setupJewelryDemoData(orgId: string) {
       await universalApi.createEntity({
         entity_type: 'product',
         entity_name: product.name,
-        smart_code: 'HERA.JEWELRY.PRODUCT.ITEM.v1',
+        smart_code: 'HERA.JEWELRY.PRODUCT.ITEM.V1',
         metadata: {
           category: category.name,
           price: product.price,

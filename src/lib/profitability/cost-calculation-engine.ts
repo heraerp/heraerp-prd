@@ -164,7 +164,7 @@ export class CostCalculationEngine {
         unit_cost: unitCost,
         total_cost: unitCost * quantity,
         source: 'bom_explosion',
-        smart_code: 'HERA.COST.PROD.MATERIAL.v1'
+        smart_code: 'HERA.COST.PROD.MATERIAL.V1'
       })
 
       // Recursively calculate sub-components
@@ -220,7 +220,7 @@ export class CostCalculationEngine {
         unit_cost: rate,
         total_cost: (hours / efficiency) * rate,
         source: 'routing',
-        smart_code: 'HERA.COST.PROD.LABOR.v1'
+        smart_code: 'HERA.COST.PROD.LABOR.V1'
       })
     }
 
@@ -256,7 +256,7 @@ export class CostCalculationEngine {
           unit_cost: pool.rate_per_unit,
           total_cost: driverConsumption * pool.rate_per_unit,
           source: 'activity_based_costing',
-          smart_code: 'HERA.COST.PROD.OVERHEAD.v1'
+          smart_code: 'HERA.COST.PROD.OVERHEAD.V1'
         })
       }
     }
@@ -281,7 +281,7 @@ export class CostCalculationEngine {
         unit_cost: directCosts * overheadRate,
         total_cost: directCosts * overheadRate,
         source: 'percentage_allocation',
-        smart_code: 'HERA.COST.PROD.OVERHEAD.v1'
+        smart_code: 'HERA.COST.PROD.OVERHEAD.V1'
       }
     ]
   }
@@ -447,7 +447,7 @@ export class CostCalculationEngine {
     components.forEach(c => codes.add(c.smart_code))
 
     // Add calculation method smart code
-    codes.add('HERA.COST.PROD.CALC.v1')
+    codes.add('HERA.COST.PROD.CALC.V1')
 
     return Array.from(codes)
   }
@@ -486,7 +486,7 @@ export class CostCalculationEngine {
           price_variance: priceVar,
           quantity_variance: qtyVar,
           total_variance: priceVar + qtyVar,
-          smart_code: 'HERA.COST.VAR.PRICE.v1'
+          smart_code: 'HERA.COST.VAR.PRICE.V1'
         })
 
         // Aggregate by type

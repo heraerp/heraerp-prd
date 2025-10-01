@@ -207,7 +207,7 @@ export function BookAppointmentModal({
             id: customer.id,
             entity_name: customer.entity_name,
             entity_code: customer.entity_code || customer.id,
-            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.V1',
             phone: customer.phone || '',
             email: customer.email || '',
             vip_level: customer.vip_tier || null,
@@ -241,7 +241,7 @@ export function BookAppointmentModal({
             id: 'rocky',
             entity_name: 'Rocky',
             entity_code: 'STAFF-001',
-            smart_code: 'HERA.SALON.STAFF.CELEBRITY.v1',
+            smart_code: 'HERA.SALON.STAFF.CELEBRITY.V1',
             avatar: 'R',
             skills: ['Brazilian Blowout', 'Keratin', 'Bridal', 'Color Specialist'],
             level: 'celebrity',
@@ -273,7 +273,7 @@ export function BookAppointmentModal({
             id: 'cust-1',
             entity_name: 'Sarah Johnson',
             entity_code: 'CUST-001',
-            smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.V1',
             phone: '+971500000001',
             email: 'sarah@example.com',
             vip_level: 'gold',
@@ -283,7 +283,7 @@ export function BookAppointmentModal({
             id: 'cust-2',
             entity_name: 'Emma Davis',
             entity_code: 'CUST-002',
-            smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.V1',
             phone: '+971500000002',
             email: 'emma@example.com',
             vip_level: 'silver',
@@ -379,7 +379,7 @@ export function BookAppointmentModal({
             id: customer.id,
             entity_name: customer.entity_name,
             entity_code: customer.entity_code || customer.id,
-            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.v1',
+            smart_code: customer.smart_code || 'HERA.SALON.CRM.CUSTOMER.V1',
             phone: (customer.metadata as any)?.phone || '',
             email: (customer.metadata as any)?.email || '',
             vip_level: (customer.metadata as any)?.vip_level || null,
@@ -504,7 +504,7 @@ export function BookAppointmentModal({
         target_entity_id: selectedStylist.id,
         total_amount: finalPrice,
         transaction_status: isHold ? 'hold' : 'confirmed',
-        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
+        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.V1',
         business_context: {
           end_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
           hold: isHold,
@@ -527,7 +527,7 @@ export function BookAppointmentModal({
         target_entity_id: selectedStylist.id,
         total_amount: finalPrice,
         transaction_status: isHold ? 'hold' : 'confirmed',
-        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.v1',
+        smart_code: 'HERA.SALON.CALENDAR.APPOINTMENT.V1',
         business_context: {
           end_time: `${formatDate(selectedDate, 'yyyy-MM-dd')}T${endTime}:00Z`,
           hold: isHold,
@@ -586,7 +586,7 @@ export function BookAppointmentModal({
           transactionId,
           'appointment_notes',
           notes,
-          'HERA.SALON.NOTES.APPOINTMENT.v1'
+          'HERA.SALON.NOTES.APPOINTMENT.V1'
         )
       }
 

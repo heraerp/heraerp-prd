@@ -12,13 +12,13 @@ import { PageHeader } from '@/components/universal/PageHeader'
 const SALON_CONFIG = {
   organizationId: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon
   smartCodes: {
-    SERVICE: 'HERA.SALON.SVC.SERVICE.v1',
-    STYLIST: 'HERA.SALON.HR.STYLIST.v1',
-    CUSTOMER: 'HERA.SALON.CRM.CUSTOMER.v1',
-    APPOINTMENT: 'HERA.SALON.APPT.BOOKING.v1',
-    SALE: 'HERA.SALON.TXN.SALE.v1',
-    PAYMENT: 'HERA.SALON.TXN.PAYMENT.v1',
-    TABLE: 'HERA.SALON.ENT.TABLE.v1' // For waiting area seats
+    SERVICE: 'HERA.SALON.SVC.SERVICE.V1',
+    STYLIST: 'HERA.SALON.HR.STYLIST.V1',
+    CUSTOMER: 'HERA.SALON.CRM.CUSTOMER.V1',
+    APPOINTMENT: 'HERA.SALON.APPT.BOOKING.V1',
+    SALE: 'HERA.SALON.TXN.SALE.V1',
+    PAYMENT: 'HERA.SALON.TXN.PAYMENT.V1',
+    TABLE: 'HERA.SALON.ENT.TABLE.V1' // For waiting area seats
   }
 }
 

@@ -1,6 +1,6 @@
 // ================================================================================
 // UNIVERSAL REPORTS HOOK
-// Smart Code: HERA.HOOK.REPORTS.UNIVERSAL.v1
+// Smart Code: HERA.HOOK.REPORTS.UNIVERSAL.V1
 // Financial reports from universal_transactions with organization filtering
 // ================================================================================
 

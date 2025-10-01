@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS PAYMENT PAGE
-// Smart Code: HERA.PAGE.POS.PAYMENT.v1
+// Smart Code: HERA.PAGE.POS.PAYMENT.V1
 // Payment processing page with method selection
 // ================================================================================
 

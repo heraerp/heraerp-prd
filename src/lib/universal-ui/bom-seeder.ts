@@ -339,14 +339,14 @@ export class BOMSeeder {
 
       // Assign status (Released)
       const statusEntity = await universalApi.getEntityBySmartCode(
-        'HERA.WORKFLOW.STATUS.RELEASED.v1'
+        'HERA.WORKFLOW.STATUS.RELEASED.V1'
       )
       if (statusEntity.data) {
         await universalApi.createRelationship({
           from_entity_id: result.data.id,
           to_entity_id: statusEntity.data.id,
           relationship_type: 'has_status',
-          smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1'
+          smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.V1'
         })
       }
 

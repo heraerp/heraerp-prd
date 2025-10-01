@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA API CLIENT UNIT TESTS
-// Smart Code: HERA.API.CLIENT.TEST.v1
+// Smart Code: HERA.API.CLIENT.TEST.V1
 // Unit tests for organization-aware API client
 // ================================================================================
 

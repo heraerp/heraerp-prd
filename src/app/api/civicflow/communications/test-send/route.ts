@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       organization_id: orgId,
       transaction_type: 'comm_message_out',
       transaction_code: generateTransactionCode('TEST'),
-      smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.TEST.SEND.v1',
+      smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.TEST.SEND.V1',
       reference_entity_id: template_id,
       metadata: {
         channel,
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         organization_id: orgId,
         transaction_type: 'comm_test_send_simulated',
         transaction_code: generateTransactionCode('LOG'),
-        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.LOG.TEST.v1',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.LOG.TEST.V1',
         reference_entity_id: template_id,
         metadata: {
           action: 'test_send_simulated',

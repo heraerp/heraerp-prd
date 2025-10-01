@@ -101,8 +101,8 @@ Format: `HERA.MANUFACTURING.FURNITURE.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}`
 
 Examples:
 
-- Master: `HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1`
-- Transaction: `HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1`
+- Master: `HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1`
+- Transaction: `HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.V1`
 - GL Line: `HERA.MANUFACTURING.FURNITURE.FINANCE.COST.MATERIAL_ISSUE.GL.LINE.v1`
 
 ## Configuration
@@ -141,12 +141,12 @@ Examples:
 -- Products
 INSERT INTO core_entities (organization_id, entity_type, entity_name, entity_code, smart_code)
 VALUES ('your-org-id', 'product', 'Standard Classroom Desk', 'DESK-STD-001',
-        'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1');
+        'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1');
 
 -- Add specifications
 INSERT INTO core_dynamic_data (entity_id, field_name, field_value_text, smart_code)
 VALUES ('product-id', 'product_type', 'FINISHED_GOOD',
-        'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.v1');
+        'HERA.MANUFACTURING.FURNITURE.MASTER.PRODUCT.V1');
 ```
 
 ### 2. Create Transactions
@@ -158,7 +158,7 @@ INSERT INTO universal_transactions (
   transaction_date, smart_code, total_amount, metadata
 ) VALUES (
   'your-org-id', 'sales_order', 'SO-2025-001234',
-  '2025-01-09', 'HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1',
+  '2025-01-09', 'HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.V1',
   354000.00, '{"business_context": {...}}'::jsonb
 );
 ```

@@ -340,7 +340,7 @@ export default function JewelryEcommercePage() {
       subcategory: 'engagement',
       brand: 'Royal Collection',
       sku: 'RC-DR-001',
-      description: 'Exquisite platinum engagement ring featuring a brilliant 2-carat center diamond with pavé band.',
+      description: 'Exquisite platinum engagement ring featuring a brilliant 2-carat center diamond with pavÃ© band.',
       shortDescription: 'Platinum engagement ring with 2ct diamond',
       price: 450000,
       comparePrice: 525000,
@@ -350,7 +350,7 @@ export default function JewelryEcommercePage() {
       weight: 4.8,
       dimensions: { length: 20, width: 20, height: 8 },
       materials: ['Platinum 950', 'Diamond'],
-      gemstones: ['2ct Diamond (F, VS1)', '0.5ct Pavé Diamonds'],
+      gemstones: ['2ct Diamond (F, VS1)', '0.5ct PavÃ© Diamonds'],
       certification: ['GIA Certified', 'Hallmarked'],
       images: [
         { url: '/jewelry/ring-main.jpg', alt: 'Diamond Ring Main View', isPrimary: true },
@@ -363,7 +363,7 @@ export default function JewelryEcommercePage() {
       },
       seo: {
         title: 'Royal Diamond Engagement Ring - 2 Carat Platinum Setting',
-        description: 'Shop our exquisite Royal Diamond Engagement Ring featuring a brilliant 2-carat center diamond in platinum setting with pavé band.',
+        description: 'Shop our exquisite Royal Diamond Engagement Ring featuring a brilliant 2-carat center diamond in platinum setting with pavÃ© band.',
         keywords: ['diamond engagement ring', 'platinum ring', '2 carat diamond', 'bridal jewelry'],
         slug: 'royal-diamond-engagement-ring-2ct-platinum'
       },
@@ -588,7 +588,7 @@ export default function JewelryEcommercePage() {
   ]
 
   const formatCurrency = (amount: number) => {
-    return `¹${amount.toLocaleString()}`
+    return `Â¹${amount.toLocaleString()}`
   }
 
   const formatPercentage = (value: number) => {

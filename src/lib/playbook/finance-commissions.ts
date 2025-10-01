@@ -268,7 +268,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: commissionAmount,
-        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.EXPENSE.v1'),
+        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.EXPENSE.V1'),
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,
@@ -282,7 +282,7 @@ async function calculateCommissions(
       commissionLines.push({
         line_number: commissionLineNumber++,
         line_amount: -commissionAmount, // Negative for credit
-        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.PAYABLE.v1'),
+        smart_code: heraCode('HERA.SALON.POS.LINE.COMMISSION.PAYABLE.V1'),
         line_data: {
           branch_id: transactionData.business_context.branch_id,
           stylist_id: stylistId,

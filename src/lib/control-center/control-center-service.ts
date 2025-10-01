@@ -1,6 +1,6 @@
 /**
  * HERA Control Center Service
- * Smart Code: HERA.CONTROL.CENTER.SERVICE.v1
+ * Smart Code: HERA.CONTROL.CENTER.SERVICE.V1
  *
  * Core service for the Master Control Center MCP
  */

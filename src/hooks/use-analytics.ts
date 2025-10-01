@@ -175,7 +175,7 @@ export function useUpdateKPI() {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.KPI.UPDATED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.KPI.UPDATED.V1',
           metadata: {
             kpi_id: request.kpi_id,
             current_value: request.current_value,

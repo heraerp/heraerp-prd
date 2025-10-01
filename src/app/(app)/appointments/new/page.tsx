@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA NEW APPOINTMENT PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.NEW.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.NEW.V1
 // Book new appointment page
 // ================================================================================
 

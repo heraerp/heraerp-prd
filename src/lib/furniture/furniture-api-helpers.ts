@@ -46,7 +46,7 @@ export const furnitureApi = {
     await initializeFurnitureApi()
 
     return universalApi.createEntity({
-      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1',
+      entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1',
       ...data
     })
   },
@@ -68,7 +68,7 @@ export const furnitureApi = {
     const result = await universalApi.read({
       table: 'core_entities',
       filter: {
-        entity_type: 'HERA.FURNITURE.TENDER.NOTICE.v1'
+        entity_type: 'HERA.FURNITURE.TENDER.NOTICE.V1'
       }
     })
 

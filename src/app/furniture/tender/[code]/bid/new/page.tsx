@@ -125,7 +125,7 @@ export default function NewBidPage() {
     setLoading(true)
     try {
       const bidData = {
-        entity_type: 'HERA.FURNITURE.TENDER.BID.v1',
+        entity_type: 'HERA.FURNITURE.TENDER.BID.V1',
         entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`,
         entity_name: `Bid for ${code}`,
         smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',
@@ -172,7 +172,7 @@ export default function NewBidPage() {
     setLoading(true)
     try {
       const bidData = {
-        entity_type: 'HERA.FURNITURE.TENDER.BID.v1',
+        entity_type: 'HERA.FURNITURE.TENDER.BID.V1',
         entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`,
         entity_name: `Bid for ${code}`,
         smart_code: 'HERA.FURNITURE.TENDER.BID.SUBMITTED.V1',

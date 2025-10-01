@@ -869,7 +869,7 @@ export function GLModule({
 
 // Export as HERA DNA Component
 export const GL_MODULE_DNA = {
-  id: 'HERA.FIN.GL.MODULE.v1',
+  id: 'HERA.FIN.GL.MODULE.V1',
   name: 'General Ledger Module',
   description: 'Complete GL management with journal entries, COA, reporting, and period management',
   component: GLModule,

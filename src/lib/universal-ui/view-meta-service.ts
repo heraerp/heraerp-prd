@@ -941,7 +941,7 @@ export class ViewMetaService {
         entity_type: 'view_metadata',
         entity_name: metadata.title,
         entity_code: `VIEW_${metadata.smart_code}`,
-        smart_code: 'HERA.UI.VIEW.METADATA.v1'
+        smart_code: 'HERA.UI.VIEW.METADATA.V1'
       })
 
       if (result.success && result.data) {
@@ -951,7 +951,7 @@ export class ViewMetaService {
           entity_id: result.data.id,
           field_name: 'view_metadata',
           field_value_json: metadata,
-          smart_code: 'HERA.UI.VIEW.CONFIG.v1'
+          smart_code: 'HERA.UI.VIEW.CONFIG.V1'
         })
 
         return true

@@ -1,6 +1,6 @@
 /**
  * HERA Salon Appointment Workflow
- * Smart Code: HERA.SALON.WORKFLOW.APPOINTMENT.v1
+ * Smart Code: HERA.SALON.WORKFLOW.APPOINTMENT.V1
  *
  * Complete end-to-end appointment lifecycle using HERA Workflow Engine
  * Sacred 6-table architecture with payment guardrails
@@ -51,7 +51,7 @@ export const salonAppointmentWorkflow: WorkflowDefinition = {
   name: 'Salon Appointment Lifecycle',
   description: 'Complete appointment flow from booking to review with payment guardrails',
   version: '1.0.0',
-  smart_code: 'HERA.SALON.WORKFLOW.APPOINTMENT.v1',
+  smart_code: 'HERA.SALON.WORKFLOW.APPOINTMENT.V1',
 
   // Initial trigger - appointment creation
   trigger: {

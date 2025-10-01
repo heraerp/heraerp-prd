@@ -334,7 +334,7 @@ export async function POST(request: NextRequest) {
             entity_type: 'customer',
             entity_name: customer_info.name || 'Walk-in Customer',
             entity_code: customer_info.phone,
-            smart_code: 'HERA.REST.CUSTOMER.WALKIN.v1',
+            smart_code: 'HERA.REST.CUSTOMER.WALKIN.V1',
             status: 'active'
           })
           .select()
@@ -350,7 +350,7 @@ export async function POST(request: NextRequest) {
               entity_id: customerId,
               field_name: 'phone',
               field_value_text: customer_info.phone,
-              smart_code: 'HERA.REST.CUSTOMER.PHONE.v1'
+              smart_code: 'HERA.REST.CUSTOMER.PHONE.V1'
             })
           }
           if (customer_info.email) {
@@ -358,7 +358,7 @@ export async function POST(request: NextRequest) {
               entity_id: customerId,
               field_name: 'email',
               field_value_text: customer_info.email,
-              smart_code: 'HERA.REST.CUSTOMER.EMAIL.v1'
+              smart_code: 'HERA.REST.CUSTOMER.EMAIL.V1'
             })
           }
 
@@ -398,7 +398,7 @@ export async function POST(request: NextRequest) {
       quantity: item.quantity,
       unit_price: item.unit_price,
       line_amount: item.line_amount,
-      smart_code: 'HERA.REST.ORDER.LINE.v1'
+      smart_code: 'HERA.REST.ORDER.LINE.V1'
     }))
 
     const { error: linesError } = await supabase
@@ -418,7 +418,7 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'order_type',
         field_value_text: order_type,
-        smart_code: 'HERA.REST.ORDER.TYPE.v1'
+        smart_code: 'HERA.REST.ORDER.TYPE.V1'
       },
       {
         entity_id: orderTransaction.id,
@@ -452,7 +452,7 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'table_number',
         field_value_text: table_number,
-        smart_code: 'HERA.REST.ORDER.TABLE.v1'
+        smart_code: 'HERA.REST.ORDER.TABLE.V1'
       })
     }
 
@@ -479,7 +479,7 @@ export async function POST(request: NextRequest) {
         entity_id: orderTransaction.id,
         field_name: 'special_instructions',
         field_value_text: special_instructions,
-        smart_code: 'HERA.REST.ORDER.INSTRUCTIONS.v1'
+        smart_code: 'HERA.REST.ORDER.INSTRUCTIONS.V1'
       })
     }
 

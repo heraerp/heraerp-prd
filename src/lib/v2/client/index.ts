@@ -13,16 +13,42 @@ export * from './dynamic-client'
 export { entityClientV2 } from './entity-client'
 export { relationshipClientV2, relationshipHelpers } from './relationship-client'
 export { txnClientV2, txnHelpers } from './txn-client'
-// export { dynamicClientV2 } from './dynamic-client';
+export { dynamicClientV2 } from './dynamic-client'
 
-// Create unified v2 client
+// Create unified v2 client (using async imports to avoid require issues)
 export const heraV2Client = {
-  entity: require('./entity-client').entityClientV2,
-  relationship: require('./relationship-client').relationshipClientV2,
-  transaction: require('./txn-client').txnClientV2,
-  // dynamic: require('./dynamic-client').dynamicClientV2,
-  helpers: {
-    relationship: require('./relationship-client').relationshipHelpers,
-    transaction: require('./txn-client').txnHelpers
+  async entity() {
+    const { entityClientV2 } = await import('./entity-client')
+    return entityClientV2
+  },
+  
+  async relationship() {
+    const { relationshipClientV2 } = await import('./relationship-client')
+    return relationshipClientV2
+  },
+  
+  async transaction() {
+    const { txnClientV2 } = await import('./txn-client')
+    return txnClientV2
+  },
+  
+  async dynamic() {
+    const { dynamicClientV2 } = await import('./dynamic-client')
+    return dynamicClientV2
+  },
+  
+  async helpers() {
+    const [
+      { relationshipHelpers },
+      { txnHelpers }
+    ] = await Promise.all([
+      import('./relationship-client'),
+      import('./txn-client')
+    ])
+    
+    return {
+      relationship: relationshipHelpers,
+      transaction: txnHelpers
+    }
   }
 }

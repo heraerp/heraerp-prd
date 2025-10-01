@@ -88,7 +88,7 @@ function generateMockMovements(
         id: `${id}-L${j + 1}`,
         transaction_id: id,
         line_no: j + 1,
-        smart_code: heraCode('HERA.INVENTORY.LINE.ITEM.v1'),
+        smart_code: heraCode('HERA.INVENTORY.LINE.ITEM.V1'),
         entity_id: `ITM-${String(Math.floor(Math.random() * 15) + 1).padStart(3, '0')}`,
         qty: type === 'ISSUE' ? -qty : qty, // Negative for issues
         uom: 'unit',
@@ -181,10 +181,10 @@ export async function listMovements(params: {
       params.types && params.types.length > 0
         ? params.types.map(t => heraCode(`HERA.INVENTORY.MOVE.${t}.v1`))
         : [
-            heraCode('HERA.INVENTORY.MOVE.RECEIPT.v1'),
-            heraCode('HERA.INVENTORY.MOVE.ISSUE.v1'),
-            heraCode('HERA.INVENTORY.MOVE.TRANSFER.v1'),
-            heraCode('HERA.INVENTORY.MOVE.ADJUST.v1')
+            heraCode('HERA.INVENTORY.MOVE.RECEIPT.V1'),
+            heraCode('HERA.INVENTORY.MOVE.ISSUE.V1'),
+            heraCode('HERA.INVENTORY.MOVE.TRANSFER.V1'),
+            heraCode('HERA.INVENTORY.MOVE.ADJUST.V1')
           ]
 
     const url = withParams('/universal_transactions', {
@@ -361,7 +361,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
   try {
     const journalHeader = {
       organization_id: movement.organization_id,
-      smart_code: heraCode('HERA.FINANCE.JOURNAL.INVENTORY.v1'),
+      smart_code: heraCode('HERA.FINANCE.JOURNAL.INVENTORY.V1'),
       when_ts: movement.when_ts,
       reference: `${movement.metadata?.type}/${movement.transaction_code}`,
       total_amount: movement.total_amount,
@@ -375,7 +375,7 @@ export async function postAccountingForMovement(movement: Movement): Promise<{
 
     const journalLines = entries.map((entry, i) => ({
       line_no: i + 1,
-      smart_code: heraCode('HERA.FINANCE.JOURNAL.LINE.v1'),
+      smart_code: heraCode('HERA.FINANCE.JOURNAL.LINE.V1'),
       account_code: entry.account,
       debit_amount: entry.debit || 0,
       credit_amount: entry.credit || 0,

@@ -106,7 +106,7 @@ export const relationshipHelpers = {
     organization_id: string,
     entity_id: string,
     status_entity_id: string,
-    smart_code: string = 'HERA.WORKFLOW.STATUS.ASSIGN.v1'
+    smart_code: string = 'HERA.WORKFLOW.STATUS.ASSIGN.V1'
   ) => {
     return relationshipClientV2.upsert({
       organization_id,

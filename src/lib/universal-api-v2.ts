@@ -240,16 +240,6 @@ class UniversalAPIv2 {
       query = query.or(searchConditions)
     }
 
-    // Sorting
-    if (options.orderBy) {
-      query = query.order(options.orderBy, { ascending: options.orderDirection === 'asc' })
-    }
-
-    // Field selection
-    if (options.select?.length) {
-      query = query.select(options.select.join(','))
-    }
-
     return query
   }
 
@@ -260,16 +250,14 @@ class UniversalAPIv2 {
     const page = options.page || 1
     const pageSize = options.pageSize || this.defaultPageSize
 
-    // Get total count
-    const countQuery = query
-    const { count } = await countQuery
-
     // Apply pagination
     const from = (page - 1) * pageSize
     const to = from + pageSize - 1
-    query = query.range(from, to)
-
-    const { data, error } = await query
+    
+    // Execute query with count
+    const { data, error, count } = await query
+      .range(from, to)
+      .select('*', { count: 'exact' })
 
     if (error) throw error
 
@@ -432,22 +420,76 @@ class UniversalAPIv2 {
     try {
       const orgId = this.ensureOrganizationId(options.organizationId)
 
+      console.log('[UniversalAPI v2] getEntities called:', {
+        orgId,
+        filters: options.filters,
+        mockMode: this.mockMode
+      })
+
       if (this.mockMode) {
         return { success: true, data: [], error: null }
       }
 
       const { result, executionTime } = await this.executeWithTiming(async () => {
-        // Use organization-aware Supabase client for RLS
-        const orgSupabase = getSupabaseWithOrg(orgId)
-        let query = orgSupabase.from('core_entities').select('*')
+        // Use direct supabase import for now
+        let query = supabase
+          .from('core_entities')
+          .select('*', { count: 'exact' })
 
-        // Apply standard query options
-        query = this.applyQueryOptions(query, { ...options, organizationId: orgId })
+        // Apply organization filter
+        query = query.eq('organization_id', orgId)
 
-        // Handle pagination
-        const { data, count } = await this.paginateQuery(query, options)
+        // Apply filters
+        if (options.filters) {
+          Object.entries(options.filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              if (Array.isArray(value)) {
+                if (value.length > 0) {
+                  query = query.in(key, value)
+                }
+              } else {
+                query = query.eq(key, value)
+              }
+            }
+          })
+        }
 
-        return { data, count }
+        // Apply search
+        if (options.search && options.searchFields?.length) {
+          const searchConditions = options.searchFields
+            .map(field => `${field}.ilike.%${options.search}%`)
+            .join(',')
+          query = query.or(searchConditions)
+        }
+
+        // Apply ordering
+        if (options.orderBy) {
+          query = query.order(options.orderBy, { ascending: options.orderDirection === 'asc' })
+        } else {
+          query = query.order('created_at', { ascending: false })
+        }
+
+        // Apply pagination
+        const page = options.page || 1
+        const pageSize = options.pageSize || this.defaultPageSize
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+        query = query.range(from, to)
+
+        // Execute query
+        const { data, error, count } = await query
+
+        if (error) {
+          console.error('[UniversalAPI v2] getEntities error:', error)
+          throw error
+        }
+
+        console.log('[UniversalAPI v2] getEntities result:', {
+          dataCount: data?.length || 0,
+          totalCount: count
+        })
+
+        return { data: data || [], count: count || 0 }
       })
 
       const page = options.page || 1

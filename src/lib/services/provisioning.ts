@@ -125,7 +125,7 @@ export class ProvisioningService {
           entity_type: 'employee',
           entity_name: request.ownerName,
           entity_code: `EMP-OWNER-${Date.now()}`,
-          smart_code: 'HERA.HR.EMPLOYEE.OWNER.v1',
+          smart_code: 'HERA.HR.EMPLOYEE.OWNER.V1',
           metadata: {
             email: request.ownerEmail,
             role: 'owner',
@@ -153,9 +153,9 @@ export class ProvisioningService {
 
       // 6. Grant core modules (always included)
       const coreModules = [
-        'HERA.CORE.ENTITIES.MODULE.v1',
-        'HERA.CORE.TRANSACTIONS.MODULE.v1',
-        'HERA.CORE.ACCOUNTING.MODULE.v1'
+        'HERA.CORE.ENTITIES.MODULE.V1',
+        'HERA.CORE.TRANSACTIONS.MODULE.V1',
+        'HERA.CORE.ACCOUNTING.MODULE.V1'
       ]
       for (const moduleCode of coreModules) {
         await entitlementsService.grantModuleAccess({
@@ -314,7 +314,7 @@ export class ProvisioningService {
             organization_id: organizationId,
             entity_type: 'product',
             entity_name: item.name,
-            smart_code: 'HERA.REST.MENU.ITEM.v1',
+            smart_code: 'HERA.REST.MENU.ITEM.V1',
             metadata: { category: item.category }
           })
 
@@ -363,7 +363,7 @@ export class ProvisioningService {
             entity_type: 'appointment_type',
             entity_name: appt.name,
             entity_code: appt.code,
-            smart_code: 'HERA.HEALTH.APPT.TYPE.v1',
+            smart_code: 'HERA.HEALTH.APPT.TYPE.V1',
             metadata: { duration_minutes: appt.duration }
           })
 

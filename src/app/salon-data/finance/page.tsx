@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Finance Dashboard
- * Smart Code: HERA.SALON.FINANCE.DASHBOARD.v1
+ * Smart Code: HERA.SALON.FINANCE.DASHBOARD.V1
  *
  * Finance management hub for salon operations
  */

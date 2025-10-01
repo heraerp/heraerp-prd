@@ -439,7 +439,7 @@ export class EventbriteAdapter {
       entity_name:
         `${attendee.profile.first_name || ''} ${attendee.profile.last_name || attendee.profile.email}`.trim(),
       entity_code: `EB-ATT-${attendee.id}`,
-      smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
+      smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1',
       dynamic_data: {
         'INVITE.META.V1': {
           status: this.mapAttendeeStatus(attendee),

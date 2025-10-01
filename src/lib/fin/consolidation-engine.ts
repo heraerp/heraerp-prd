@@ -316,7 +316,7 @@ export class ConsolidationEngine {
       const eliminationEntry = {
         transaction_type: 'consolidation_elimination',
         transaction_code: `ELIM-${Date.now()}`,
-        smart_code: 'HERA.FIN.CONSOL.ELIMINATE.v1',
+        smart_code: 'HERA.FIN.CONSOL.ELIMINATE.V1',
         description: elimination.description,
         elimination_type: elimination.eliminationType,
         amount: elimination.amount
@@ -434,7 +434,7 @@ export class ConsolidationEngine {
         organization_id: this.organizationId,
         transaction_type: 'consolidation',
         transaction_code: `CONSOL-${new Date().toISOString().slice(0, 10)}-${Date.now()}`,
-        smart_code: 'HERA.FIN.CONSOL.REPORT.v1',
+        smart_code: 'HERA.FIN.CONSOL.REPORT.V1',
         transaction_date: params.consolidationDate,
         metadata: {
           parameters: params,

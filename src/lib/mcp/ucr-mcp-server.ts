@@ -1,6 +1,6 @@
 /**
  * HERA UCR MCP Server
- * Smart Code: HERA.MCP.UCR.ORCHESTRATOR.v1
+ * Smart Code: HERA.MCP.UCR.ORCHESTRATOR.V1
  *
  * Model Context Protocol server for Universal Configuration Rules orchestration
  * Integrated directly into the HERA app for rule management without schema changes
@@ -838,7 +838,7 @@ class UCRMCPServer {
     universalApi.setOrganizationId(organization_id)
     const deploymentTxn = await universalApi.createTransaction({
       transaction_type: 'ucr_deployment',
-      smart_code: 'HERA.GOV.UCR.DEPLOY.v1',
+      smart_code: 'HERA.GOV.UCR.DEPLOY.V1',
       reference_number: `deploy-${rule_id}-${Date.now()}`,
       total_amount: 0,
       metadata: {

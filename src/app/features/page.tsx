@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA FEATURES PAGE
-// Smart Code: HERA.PAGE.FEATURES.PUBLIC.v1
+// Smart Code: HERA.PAGE.FEATURES.PUBLIC.V1
 // Public features overview page
 // ================================================================================
 

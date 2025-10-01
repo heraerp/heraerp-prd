@@ -1,6 +1,6 @@
 // ================================================================================
 // TYPESCRIPT TYPE TESTS FOR APPOINTMENT SYSTEM
-// Smart Code: HERA.TEST.TYPES.APPOINTMENT.v1
+// Smart Code: HERA.TEST.TYPES.APPOINTMENT.V1
 // Validates TypeScript interfaces and type safety for appointment functions
 // ================================================================================
 

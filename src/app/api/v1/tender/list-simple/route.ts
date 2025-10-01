@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         `
         )
         .eq('organization_id', organizationId)
-        .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.v1')
+        .eq('entity_type', 'HERA.FURNITURE.TENDER.NOTICE.V1')
         .range(offset, offset + limit - 1)
 
       if (search) {

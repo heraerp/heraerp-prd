@@ -1,6 +1,6 @@
 // ================================================================================
 // ROLES MANAGEMENT PAGE - SETTINGS
-// Smart Code: HERA.UI.SETTINGS.ROLES.v1
+// Smart Code: HERA.UI.SETTINGS.ROLES.V1
 // Production-ready role management using Sacred Six storage
 // ================================================================================
 

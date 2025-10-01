@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT DETAIL PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.DETAIL.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.DETAIL.V1
 // Appointment detail view with actions and metadata
 // ================================================================================
 

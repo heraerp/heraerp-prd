@@ -2,7 +2,7 @@
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
-/** * HERA Furniture AI Manager * Smart Code: HERA.FURNITURE.AI.MANAGER.v1 * * AI-powered business intelligence and management system * Natural language business operations for furniture manufacturers */
+/** * HERA Furniture AI Manager * Smart Code: HERA.FURNITURE.AI.MANAGER.V1 * * AI-powered business intelligence and management system * Natural language business operations for furniture manufacturers */
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

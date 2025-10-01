@@ -1,6 +1,6 @@
 /**
  * HERA Appointment Management Hook - Playbook Version
- * Smart Code: HERA.HOOKS.APPOINTMENTS.PLAYBOOK.v1
+ * Smart Code: HERA.HOOKS.APPOINTMENTS.PLAYBOOK.V1
  *
  * Uses Playbook API for appointment operations
  * Follows HERA guardrails with Sacred Six tables

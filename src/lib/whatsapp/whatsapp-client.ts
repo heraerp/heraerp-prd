@@ -102,7 +102,7 @@ export class WhatsAppClient {
         entity_name: data.display_name,
         entity_code: `WA-${this.organizationId.slice(0, 8)}`,
         organization_id: this.organizationId,
-        smart_code: 'HERA.WHATSAPP.ACCOUNT.BUSINESS.v1',
+        smart_code: 'HERA.WHATSAPP.ACCOUNT.BUSINESS.V1',
         metadata: {
           whatsapp_number: data.phone_number,
           business_id: data.business_id || `WABA-${Date.now()}`,
@@ -256,7 +256,7 @@ export class WhatsAppClient {
         transaction_code: `WA-MSG-${Date.now()}`,
         organization_id: this.organizationId,
         total_amount: 0,
-        smart_code: 'HERA.WHATSAPP.MSG.OUTBOUND.v1',
+        smart_code: 'HERA.WHATSAPP.MSG.OUTBOUND.V1',
         metadata: {
           to: to,
           message: message,

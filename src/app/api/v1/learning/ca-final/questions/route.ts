@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 // HERA Smart Codes for Question Generation
 const QUESTION_SMART_CODES = {
-  MCQ: 'HERA.CA.EDU.QUEST.MCQ.v1',
-  DESCRIPTIVE: 'HERA.CA.EDU.QUEST.DESC.v1',
-  CASE_STUDY: 'HERA.CA.EDU.QUEST.CASE.v1',
-  TRUE_FALSE: 'HERA.CA.EDU.QUEST.TF.v1'
+  MCQ: 'HERA.CA.EDU.QUEST.MCQ.V1',
+  DESCRIPTIVE: 'HERA.CA.EDU.QUEST.DESC.V1',
+  CASE_STUDY: 'HERA.CA.EDU.QUEST.CASE.V1',
+  TRUE_FALSE: 'HERA.CA.EDU.QUEST.TF.V1'
 }
 
 // AI-Generated CA Final Questions Database

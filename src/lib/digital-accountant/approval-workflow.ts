@@ -4,7 +4,7 @@
  * Enterprise-grade approval workflows for accounting operations
  * Supports multi-level approvals with role-based routing
  *
- * Smart Code: HERA.FIN.ACCT.APPROVAL.v1
+ * Smart Code: HERA.FIN.ACCT.APPROVAL.V1
  */
 
 import { supabase } from '@/lib/supabase'

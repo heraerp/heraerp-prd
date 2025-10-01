@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       transaction_date: new Date(),
       total_amount: 0,
       organization_id: orgId,
-      smart_code: 'HERA.INTEGRATION.CONNECTOR.TEST.v1',
+      smart_code: 'HERA.INTEGRATION.CONNECTOR.TEST.V1',
       metadata: {
         connector_id: connectorId,
         vendor: 'eventbrite',

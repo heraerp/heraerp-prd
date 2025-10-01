@@ -60,7 +60,7 @@ export function RestaurantIntegratedDashboard() {
       status: 'active',
       description: 'Real-time budget vs actual variance analysis',
       icon: <Calculator className="w-5 h-5" />,
-      smartCode: 'HERA.FIN.BUDGET.OPERATING.v1'
+      smartCode: 'HERA.FIN.BUDGET.OPERATING.V1'
     },
     {
       name: 'Universal API',
@@ -78,35 +78,35 @@ export function RestaurantIntegratedDashboard() {
       name: 'Overview',
       icon: <BarChart3 className="w-5 h-5" />,
       component: <DashboardOverview />,
-      smartCode: 'HERA.REST.DASHBOARD.MAIN.v1'
+      smartCode: 'HERA.REST.DASHBOARD.MAIN.V1'
     },
     {
       id: 'pos',
       name: 'Point of Sale',
       icon: <ShoppingCart className="w-5 h-5" />,
       component: <RestaurantPOS />,
-      smartCode: 'HERA.REST.POS.SYSTEM.v1'
+      smartCode: 'HERA.REST.POS.SYSTEM.V1'
     },
     {
       id: 'kitchen',
       name: 'Kitchen Display',
       icon: <ChefHat className="w-5 h-5" />,
       component: <KitchenDisplaySystem />,
-      smartCode: 'HERA.REST.KDS.SYSTEM.v1'
+      smartCode: 'HERA.REST.KDS.SYSTEM.V1'
     },
     {
       id: 'financial',
       name: 'Financial Analytics',
       icon: <DollarSign className="w-5 h-5" />,
       component: <RestaurantFinancialDashboard />,
-      smartCode: 'HERA.REST.FIN.ANALYTICS.v1'
+      smartCode: 'HERA.REST.FIN.ANALYTICS.V1'
     },
     {
       id: 'costing',
       name: 'Recipe Costing',
       icon: <Calculator className="w-5 h-5" />,
       component: <RecipeCostingManager />,
-      smartCode: 'HERA.REST.RECIPE.COSTING.v1'
+      smartCode: 'HERA.REST.RECIPE.COSTING.V1'
     }
   ]
 

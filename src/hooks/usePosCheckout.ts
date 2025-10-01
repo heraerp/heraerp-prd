@@ -1,6 +1,6 @@
 // ================================================================================
 // POS CHECKOUT HOOK
-// Smart Code: HERA.HOOK.POS.CHECKOUT.v1
+// Smart Code: HERA.HOOK.POS.CHECKOUT.V1
 // Maps POS cart to universal_transaction payload with auto-journal posting
 // ================================================================================
 
@@ -134,7 +134,7 @@ export function usePosCheckout(): UsePosCheckoutReturn {
           quantity: 1,
           unit_amount: -discount_total,
           line_amount: -discount_total,
-          smart_code: 'HERA.SALON.DISCOUNT.TXN.v1'
+          smart_code: 'HERA.SALON.DISCOUNT.TXN.V1'
         })
       }
 

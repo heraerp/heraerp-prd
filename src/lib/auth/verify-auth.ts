@@ -28,14 +28,24 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
 
     const token = authHeader.substring(7)
 
-    // Handle demo token
+    // Handle demo tokens
     if (token === 'demo-token-salon-receptionist') {
       return {
-        id: 'demo|salon-receptionist',
+        id: '00000000-0000-0000-0000-000000000001', // Demo salon receptionist UUID
         email: 'demo@herasalon.com',
         organizationId: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon
         roles: ['receptionist'],
         permissions: ['read:services', 'write:services']
+      }
+    }
+    
+    if (token === 'demo-token-jewelry-admin') {
+      return {
+        id: '00000000-0000-0000-0000-000000000002', // Demo jewelry admin UUID
+        email: 'admin@luxejewelry.com',
+        organizationId: '80e6659c-3dfb-4fc8-b13a-70423ac4a9ce', // Luxe Jewelry Boutique
+        roles: ['admin'],
+        permissions: ['*']
       }
     }
 

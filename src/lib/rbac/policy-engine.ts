@@ -387,7 +387,7 @@ export class RBACPolicyEngine {
         transaction_type: 'policy_check',
         transaction_date: new Date().toISOString(),
         total_amount: 0,
-        smart_code: 'HERA.SECURITY.RBAC.DECISION.v1',
+        smart_code: 'HERA.SECURITY.RBAC.DECISION.V1',
         organization_id: params.organizationId,
         metadata: {
           user_id: params.userId,

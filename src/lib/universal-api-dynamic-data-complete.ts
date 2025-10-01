@@ -355,7 +355,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
     return this.query({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
-      smart_code: 'HERA.DYN.QUERY.COMPLETE.v1',
+      smart_code: 'HERA.DYN.QUERY.COMPLETE.V1',
       query: advancedQuery,
       performance: {
         cache_ttl: 300,
@@ -394,7 +394,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.VALIDATE.FIELD.v1',
+          smart_code: 'HERA.DYN.VALIDATE.FIELD.V1',
           operation: 'update',
           data: { id: fieldId },
           ai_requests: {
@@ -412,7 +412,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.CALCULATE.VALUE.v1',
+          smart_code: 'HERA.DYN.CALCULATE.VALUE.V1',
           operation: 'update',
           data: {
             id: fieldId,
@@ -437,7 +437,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.BULK.REORDER.v1',
+          smart_code: 'HERA.DYN.BULK.REORDER.V1',
           operation: 'transaction',
           operations
         })
@@ -468,7 +468,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
         return this.execute({
           entity: 'core_dynamic_data',
           organization_id: organizationId,
-          smart_code: 'HERA.DYN.ATTACH.FILE.v1',
+          smart_code: 'HERA.DYN.ATTACH.FILE.V1',
           operation: 'update',
           data: {
             id: fieldId,
@@ -652,7 +652,7 @@ export class UniversalAPIDynamicDataComplete extends UniversalAPISchemaComplete 
       schemaValidation: await this.query({
         entity: 'core_dynamic_data',
         organization_id: organizationId,
-        smart_code: 'HERA.DYN.SCHEMA.VALIDATION.v1',
+        smart_code: 'HERA.DYN.SCHEMA.VALIDATION.V1',
         query: {
           aggregations: [
             {

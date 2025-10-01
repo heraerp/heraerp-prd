@@ -1,6 +1,6 @@
 // ================================================================================
 // SYSTEM SETTINGS PAGE - SETTINGS (READONLY)
-// Smart Code: HERA.UI.SETTINGS.SYSTEM.v1
+// Smart Code: HERA.UI.SETTINGS.SYSTEM.V1
 // Production-ready system settings display using Sacred Six storage
 // ================================================================================
 
@@ -480,7 +480,7 @@ export default function SystemSettingsPage() {
               • System settings are read-only and managed by HERA administrators • Feature flags
               control which features are available to your organization • System health is monitored
               24/7 with automatic alerting • All system activities are logged with Smart Code:
-              HERA.SYS.SETTINGS.VIEW.v1 • Contact support if you need changes to system
+              HERA.SYS.SETTINGS.VIEW.V1 • Contact support if you need changes to system
               configuration
             </div>
           </div>

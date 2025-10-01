@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       transaction_date: new Date(),
       total_amount: 0,
       organization_id: orgId,
-      smart_code: 'HERA.INTEGRATION.SYNC.STARTED.v1',
+      smart_code: 'HERA.INTEGRATION.SYNC.STARTED.V1',
       metadata: {
         sync_run_id: syncRunResult.data.id,
         vendor,
@@ -214,7 +214,7 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
               transaction_date: new Date(),
               total_amount: 0,
               organization_id: orgId,
-              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CREATED.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CREATED.V1',
               metadata: {
                 event_id: eventResult.data.id,
                 provider_id: event.dynamic_data['EVENT.SOURCE.V1'].provider_id,
@@ -230,7 +230,7 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
               transaction_date: new Date(),
               total_amount: 0,
               organization_id: orgId,
-              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.UPDATED.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.UPDATED.V1',
               metadata: {
                 event_id: eventResult.data.id,
                 provider_id: event.dynamic_data['EVENT.SOURCE.V1'].provider_id,
@@ -299,7 +299,7 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
                   transaction_date: new Date(),
                   total_amount: 0,
                   organization_id: orgId,
-                  smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.REGISTRATION.INGESTED.v1',
+                  smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.REGISTRATION.INGESTED.V1',
                   metadata: {
                     invite_id: inviteResult.data.id,
                     event_id: eventResult.data.id,
@@ -317,7 +317,7 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
                     transaction_date: new Date(),
                     total_amount: 0,
                     organization_id: orgId,
-                    smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CHECKIN.RECORDED.v1',
+                    smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CHECKIN.RECORDED.V1',
                     metadata: {
                       invite_id: inviteResult.data.id,
                       event_id: eventResult.data.id,
@@ -398,8 +398,8 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
       organization_id: orgId,
       smart_code:
         stats.errors === 0
-          ? 'HERA.INTEGRATION.SYNC.COMPLETED.v1'
-          : 'HERA.INTEGRATION.SYNC.FAILED.v1',
+          ? 'HERA.INTEGRATION.SYNC.COMPLETED.V1'
+          : 'HERA.INTEGRATION.SYNC.FAILED.V1',
       metadata: {
         sync_run_id: syncRunId,
         vendor: 'eventbrite',
@@ -441,7 +441,7 @@ async function executeEventbritePull(orgId: string, syncRunId: string, isDemoMod
       transaction_date: new Date(),
       total_amount: 0,
       organization_id: orgId,
-      smart_code: 'HERA.INTEGRATION.SYNC.FAILED.v1',
+      smart_code: 'HERA.INTEGRATION.SYNC.FAILED.V1',
       metadata: {
         sync_run_id: syncRunId,
         vendor: 'eventbrite',

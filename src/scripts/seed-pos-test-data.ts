@@ -22,7 +22,7 @@ export async function seedPosTestData(organizationId: string): Promise<PosTestDa
       entity_type: 'service',
       entity_name: 'Test Hair Color Service',
       entity_code: 'TEST-HAIR-COLOR',
-      smart_code: heraCode('HERA.SALON.SVC.SERVICE.HAIR.COLOR.v1'),
+      smart_code: heraCode('HERA.SALON.SVC.SERVICE.HAIR.COLOR.V1'),
       organization_id: organizationId,
       metadata: {
         price: 150,
@@ -51,7 +51,7 @@ export async function seedPosTestData(organizationId: string): Promise<PosTestDa
       entity_type: 'customer',
       entity_name: 'Test Customer Jane',
       entity_code: 'TEST-CUSTOMER-001',
-      smart_code: heraCode('HERA.CRM.CUSTOMER.PROFILE.RETAIL.v1'),
+      smart_code: heraCode('HERA.CRM.CUSTOMER.PROFILE.RETAIL.V1'),
       organization_id: organizationId,
       metadata: {
         first_name: 'Jane',
@@ -79,7 +79,7 @@ export async function seedPosTestData(organizationId: string): Promise<PosTestDa
       entity_type: 'employee',
       entity_name: 'Test Stylist Maria',
       entity_code: 'TEST-STYLIST-001',
-      smart_code: heraCode('HERA.HR.EMPLOYEE.PROFILE.STYLIST.v1'),
+      smart_code: heraCode('HERA.HR.EMPLOYEE.PROFILE.STYLIST.V1'),
       organization_id: organizationId,
       metadata: {
         first_name: 'Maria',

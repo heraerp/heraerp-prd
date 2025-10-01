@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * POS Test Page - Quick Payment Test
- * Smart Code: HERA.RETAIL.POS.TEST.v1
+ * Smart Code: HERA.RETAIL.POS.TEST.V1
  */
 
 import React, { useState } from 'react'

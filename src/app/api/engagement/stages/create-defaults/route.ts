@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'engagement_stage',
         entity_name: stage.entity_name,
         entity_code: `STAGE-${stage.entity_name?.toUpperCase().replace(/\s/g, '_')}`,
-        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.v1',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.V1',
         organization_id: orgId
       }
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.CREATED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.CREATED.V1',
           metadata: {
             stage_id: stageId,
             stage_name: stage.entity_name,

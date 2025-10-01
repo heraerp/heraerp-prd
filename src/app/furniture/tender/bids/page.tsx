@@ -134,7 +134,7 @@ export default function BidsPage() {
 
       const response = await universalApi.read({
         table: 'core_entities',
-        filter: `entity_type=HERA.FURNITURE.TENDER.BID.v1`
+        filter: `entity_type=HERA.FURNITURE.TENDER.BID.V1`
       })
       if (response.data) {
         setBids(response.data as Bid[])
@@ -165,7 +165,7 @@ export default function BidsPage() {
   const handleDuplicate = async (bid: Bid) => {
     try {
       const newBid = {
-        entity_type: 'HERA.FURNITURE.TENDER.BID.v1',
+        entity_type: 'HERA.FURNITURE.TENDER.BID.V1',
         entity_code: `BID/KFW/${new Date().getFullYear()}/${Date.now()}`,
         entity_name: `Copy of ${bid.entity_name}`,
         smart_code: 'HERA.FURNITURE.TENDER.BID.DRAFTED.V1',

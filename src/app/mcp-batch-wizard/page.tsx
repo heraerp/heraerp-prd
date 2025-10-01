@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 // ================================================================================
 // MCP BATCH PRODUCTION WIZARD - Convert All Progressive Pages at Once
 // Batch converts entire progressive apps to production
-// Smart Code: HERA.MCP.BATCH.WIZARD.v1
+// Smart Code: HERA.MCP.BATCH.WIZARD.V1
 // ================================================================================
 
 import React, { useState } from 'react'

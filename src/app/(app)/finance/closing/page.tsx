@@ -1,6 +1,6 @@
 // ================================================================================
 // YEAR-END CLOSING DASHBOARD PAGE
-// Smart Code: HERA.UI.FINANCE.CLOSING.v1
+// Smart Code: HERA.UI.FINANCE.CLOSING.V1
 // Production-ready closing dashboard with workflow visualization
 // ================================================================================
 

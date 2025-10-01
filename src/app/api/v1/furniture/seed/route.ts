@@ -378,7 +378,7 @@ export async function POST(request: NextRequest) {
         transaction_code: 'SO-FRN-2025-0001',
         transaction_date: new Date().toISOString(),
         source_entity_id: marriott.id,
-        smart_code: 'HERA.FURNITURE.SALES.ORDER.v1',
+        smart_code: 'HERA.FURNITURE.SALES.ORDER.V1',
         metadata: {
           customer_po: 'MH-PO-2025-1234',
           delivery_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
@@ -435,7 +435,7 @@ export async function POST(request: NextRequest) {
           transaction_code: 'SO-FRN-2025-0002',
           transaction_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
           source_entity_id: itc.id,
-          smart_code: 'HERA.FURNITURE.SALES.ORDER.v1',
+          smart_code: 'HERA.FURNITURE.SALES.ORDER.V1',
           metadata: {
             customer_po: 'ITC-PO-2025-5678',
             delivery_date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),

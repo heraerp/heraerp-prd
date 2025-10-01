@@ -83,7 +83,7 @@ export default function Client({ id }: { id: string }) {
       entity_type: 'person',
       entity_name: contactName,
       organization_id: currentOrgId,
-      smart_code: 'HERA.CRM.CONTACTS.ENTITY.PERSON.v1',
+      smart_code: 'HERA.CRM.CONTACTS.ENTITY.PERSON.V1',
       metadata: {
         email: contactEmail,
         phone: contactPhone,

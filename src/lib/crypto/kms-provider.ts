@@ -172,7 +172,7 @@ export class KMSProvider {
           entity_type: 'encryption_key',
           entity_name: `DEK v${newVersion} - ${organizationId}`,
           entity_code: `${keyEntity.entity_code}-v${newVersion}`,
-          smart_code: 'HERA.SECURITY.CRYPTO.DEK.v1',
+          smart_code: 'HERA.SECURITY.CRYPTO.DEK.V1',
           organization_id: organizationId,
           metadata: {
             version: newVersion,
@@ -290,7 +290,7 @@ export class KMSProvider {
       entity_type: 'encryption_key',
       entity_name: `DEK - ${organizationId} - ${purpose}`,
       entity_code: `DEK-${organizationId}-${purpose}`,
-      smart_code: 'HERA.SECURITY.CRYPTO.DEK.v1',
+      smart_code: 'HERA.SECURITY.CRYPTO.DEK.V1',
       organization_id: organizationId,
       metadata: {
         version: 1,

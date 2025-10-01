@@ -64,7 +64,7 @@ UniversalRenderer (Main Component)
 ```tsx
 import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ;<UniversalRenderer
-  smartCode="HERA.FURN.BOM.ITEM.PRODUCT.v1"
+  smartCode="HERA.FURN.BOM.ITEM.PRODUCT.V1"
   viewType="detail"
   entityId={productId}
   organizationId={orgId}
@@ -88,7 +88,7 @@ import { UniversalRenderer } from '@/components/universal-ui/UniversalRenderer'
 ```json
 {
   "id": "view-id",
-  "smart_code": "HERA.MODULE.ENTITY.VIEW.v1",
+  "smart_code": "HERA.MODULE.ENTITY.VIEW.V1",
   "view_type": "detail",
   "title": "View Title",
   "widgets": [
@@ -174,7 +174,7 @@ The Furniture BOM implementation demonstrates:
 ### 3. Smart Code Intelligence
 
 ```
-HERA.FURN.BOM.ITEM.PRODUCT.v1
+HERA.FURN.BOM.ITEM.PRODUCT.V1
 ├── Industry: FURN (Furniture)
 ├── Module: BOM (Bill of Materials)
 ├── Type: ITEM (Product/Component)

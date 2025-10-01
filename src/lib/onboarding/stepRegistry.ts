@@ -100,13 +100,13 @@ export const getEnabledTours = tourRegistry.getEnabledTours.bind(tourRegistry)
  * Demonstrates the standard HERA console experience
  */
 const dashboardTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1',
   autoStart: false,
   allowSkip: true,
-  skipSmartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.SKIP.v1',
+  skipSmartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.SKIP.V1',
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.WELCOME.v1',
+      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.WELCOME.V1',
       selector: '[data-testid="page-title"]',
       titleKey: 'ui.onboard.console.dashboard.welcome.title',
       bodyKey: 'ui.onboard.console.dashboard.welcome.body',
@@ -117,7 +117,7 @@ const dashboardTour: HeraTour = {
       stepIndex: 0
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.FILTERS.v1',
+      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.FILTERS.V1',
       selector: '[data-testid="filters-panel"]',
       titleKey: 'ui.onboard.console.dashboard.filters.title',
       bodyKey: 'ui.onboard.console.dashboard.filters.body',
@@ -128,7 +128,7 @@ const dashboardTour: HeraTour = {
       stepIndex: 1
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.KPIS.v1',
+      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.KPIS.V1',
       selector: '[data-testid="kpi-cards"]',
       titleKey: 'ui.onboard.console.dashboard.kpis.title',
       bodyKey: 'ui.onboard.console.dashboard.kpis.body',
@@ -137,7 +137,7 @@ const dashboardTour: HeraTour = {
       stepIndex: 2
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.CREATE.v1',
+      smartCode: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.CREATE.V1',
       selector: '[data-testid="create-entity-button"]',
       titleKey: 'ui.onboard.console.dashboard.create.title',
       bodyKey: 'ui.onboard.console.dashboard.create.body',
@@ -153,12 +153,12 @@ const dashboardTour: HeraTour = {
  * Customer relationship management features
  */
 const crmTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.CRM.OVERVIEW.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.CRM.OVERVIEW.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.CRM.CUSTOMERS.LIST.v1',
+      smartCode: 'HERA.UI.ONBOARD.CRM.CUSTOMERS.LIST.V1',
       selector: '[data-testid="customers-table"]',
       titleKey: 'ui.onboard.crm.customers.title',
       bodyKey: 'ui.onboard.crm.customers.body',
@@ -168,7 +168,7 @@ const crmTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.CRM.PIPELINE.VIEW.v1',
+      smartCode: 'HERA.UI.ONBOARD.CRM.PIPELINE.VIEW.V1',
       selector: '[data-testid="sales-pipeline"]',
       titleKey: 'ui.onboard.crm.pipeline.title',
       bodyKey: 'ui.onboard.crm.pipeline.body',
@@ -185,12 +185,12 @@ const crmTour: HeraTour = {
  * General ledger and transaction features
  */
 const financialTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.FINANCIAL.OVERVIEW.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.FINANCIAL.OVERVIEW.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.FINANCIAL.GL.ACCOUNTS.v1',
+      smartCode: 'HERA.UI.ONBOARD.FINANCIAL.GL.ACCOUNTS.V1',
       selector: '[data-testid="gl-accounts-tree"]',
       titleKey: 'ui.onboard.financial.gl.title',
       bodyKey: 'ui.onboard.financial.gl.body',
@@ -200,7 +200,7 @@ const financialTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.FINANCIAL.TRANSACTIONS.LIST.v1',
+      smartCode: 'HERA.UI.ONBOARD.FINANCIAL.TRANSACTIONS.LIST.V1',
       selector: '[data-testid="transactions-table"]',
       titleKey: 'ui.onboard.financial.transactions.title',
       bodyKey: 'ui.onboard.financial.transactions.body',
@@ -217,12 +217,12 @@ const financialTour: HeraTour = {
  * Special tour for 30-day trial users
  */
 const progressiveTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.WELCOME.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.WELCOME.V1',
   autoStart: true, // Auto-start for first-time trial users
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.WELCOME.INTRO.v1',
+      smartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.WELCOME.INTRO.V1',
       selector: '[data-testid="progressive-banner"]',
       titleKey: 'ui.onboard.progressive.welcome.title',
       bodyKey: 'ui.onboard.progressive.welcome.body',
@@ -231,7 +231,7 @@ const progressiveTour: HeraTour = {
       hideBackButton: true
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.UPGRADE.CTA.v1',
+      smartCode: 'HERA.UI.ONBOARD.PROGRESSIVE.UPGRADE.CTA.V1',
       selector: '[data-testid="upgrade-button"]',
       titleKey: 'ui.onboard.progressive.upgrade.title',
       bodyKey: 'ui.onboard.progressive.upgrade.body',

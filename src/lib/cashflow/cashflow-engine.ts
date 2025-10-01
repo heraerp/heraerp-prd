@@ -1256,7 +1256,7 @@ export class UniversalCashflowAPI {
         description: 'Cashflow tracking system setup',
         reference_number: `CF-${organizationId}`,
         total_amount: 0,
-        smart_code: 'HERA.FIN.CF.SETUP.v1',
+        smart_code: 'HERA.FIN.CF.SETUP.V1',
         metadata: {
           industry,
           setup_date: new Date().toISOString(),

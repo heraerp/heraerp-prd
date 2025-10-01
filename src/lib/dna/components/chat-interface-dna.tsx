@@ -886,7 +886,7 @@ export function HeraChatInterface({
 
 // Export as HERA DNA Component
 export const HERA_CHAT_INTERFACE_DNA = {
-  id: 'HERA.UI.CHAT.INTERFACE.v1',
+  id: 'HERA.UI.CHAT.INTERFACE.V1',
   name: 'HERA Chat Interface',
   description:
     'Enterprise-grade chat interface with dark/light themes, auto-scroll, metrics, and quick actions',

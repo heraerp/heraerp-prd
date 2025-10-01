@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'connector',
         entity_name: 'Mailchimp Integration',
         entity_code: `CONN-MAILCHIMP-${Date.now()}`,
-        smart_code: 'HERA.INTEGRATION.CONNECTOR.MAILCHIMP.v1',
+        smart_code: 'HERA.PUBLICSECTOR.COMMS.EMAIL.MAILCHIMP.CONNECTOR.V1',
         organization_id: orgId
       }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       }
 
       const entityResult = await entityResponse.json()
-      const connectorId = entityResult.data.id
+      const connectorId = entityResult.entity_id
 
       // Add demo dynamic data
       const dynamicFields = [
@@ -46,25 +46,25 @@ export async function POST(request: NextRequest) {
           field_name: 'oauth_token',
           field_value_text: 'demo_token_••••••••',
           is_encrypted: true,
-          smart_code: 'HERA.INTEGRATION.FIELD.OAUTH_TOKEN.v1'
+          smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.OAUTH.TOKEN.V1'
         },
         {
           entity_id: connectorId,
           field_name: 'account_id',
           field_value_text: 'demo_account_12345',
-          smart_code: 'HERA.INTEGRATION.FIELD.ACCOUNT_ID.v1'
+          smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.ACCOUNT.ID.V1'
         },
         {
           entity_id: connectorId,
           field_name: 'account_name',
           field_value_text: 'Demo Mailchimp Account',
-          smart_code: 'HERA.INTEGRATION.FIELD.ACCOUNT_NAME.v1'
+          smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.ACCOUNT.NAME.V1'
         },
         {
           entity_id: connectorId,
           field_name: 'scopes',
           field_value_json: ['read', 'write'],
-          smart_code: 'HERA.INTEGRATION.FIELD.SCOPES.v1'
+          smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.OAUTH.SCOPES.V1'
         }
       ]
 
@@ -91,12 +91,25 @@ export async function POST(request: NextRequest) {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.INTEGRATION.CONNECTOR.AUTHED.v1',
-          metadata: {
-            connector_id: connectorId,
+          organization_id: orgId,
+          transaction_type: 'integration_auth',
+          smart_code: 'HERA.PUBLICSECTOR.COMMS.EMAIL.MAILCHIMP.AUTHED.V1',
+          transaction_date: new Date().toISOString(),
+          source_entity_id: connectorId,
+          business_context: {
             vendor: 'mailchimp',
             demo_mode: true
-          }
+          },
+          lines: [{
+            line_number: 1,
+            line_type: 'auth',
+            description: 'Mailchimp OAuth authentication completed',
+            metadata: {
+              connector_id: connectorId,
+              vendor: 'mailchimp',
+              demo_mode: true
+            }
+          }]
         })
       })
 
@@ -159,7 +172,7 @@ export async function POST(request: NextRequest) {
       entity_type: 'connector',
       entity_name: `Mailchimp - ${metadata.accountname}`,
       entity_code: `CONN-MAILCHIMP-${metadata.user_id}`,
-      smart_code: 'HERA.INTEGRATION.CONNECTOR.MAILCHIMP.v1',
+      smart_code: 'HERA.INTEGRATION.CONNECTOR.MAILCHIMP.V1',
       organization_id: orgId
     }
 
@@ -193,13 +206,13 @@ export async function POST(request: NextRequest) {
         field_name: 'oauth_refresh_token',
         field_value_text: tokenData.refresh_token,
         is_encrypted: true,
-        smart_code: 'HERA.INTEGRATION.FIELD.OAUTH_REFRESH_TOKEN.v1'
+        smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.OAUTH.REFRESH.V1'
       },
       {
         entity_id: connectorId,
         field_name: 'oauth_expires_at',
         field_value_text: new Date(Date.now() + tokenData.expires_in * 1000).toISOString(),
-        smart_code: 'HERA.INTEGRATION.FIELD.OAUTH_EXPIRES_AT.v1'
+        smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.OAUTH.EXPIRES.V1'
       },
       {
         entity_id: connectorId,
@@ -217,13 +230,13 @@ export async function POST(request: NextRequest) {
         entity_id: connectorId,
         field_name: 'api_endpoint',
         field_value_text: metadata.api_endpoint,
-        smart_code: 'HERA.INTEGRATION.FIELD.API_ENDPOINT.v1'
+        smart_code: 'HERA.PUBLICSECTOR.COMMS.FIELD.API.ENDPOINT.V1'
       },
       {
         entity_id: connectorId,
         field_name: 'scopes',
         field_value_json: tokenData.scope ? tokenData.scope.split(' ') : ['read', 'write'],
-        smart_code: 'HERA.INTEGRATION.FIELD.SCOPES.v1'
+        smart_code: 'HERA.INTEGRATION.FIELD.SCOPES.V1'
       }
     ]
 
@@ -250,13 +263,27 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.INTEGRATION.CONNECTOR.AUTHED.v1',
-        metadata: {
-          connector_id: connectorId,
+        organization_id: orgId,
+        transaction_type: 'integration_auth',
+        smart_code: 'HERA.PUBLICSECTOR.COMMS.EMAIL.MAILCHIMP.AUTHED.V1',
+        transaction_date: new Date().toISOString(),
+        source_entity_id: connectorId,
+        business_context: {
           vendor: 'mailchimp',
           account_id: metadata.user_id,
           account_name: metadata.accountname
-        }
+        },
+        lines: [{
+          line_number: 1,
+          line_type: 'auth',
+          description: `Mailchimp OAuth authentication completed for ${metadata.accountname}`,
+          metadata: {
+            connector_id: connectorId,
+            vendor: 'mailchimp',
+            account_id: metadata.user_id,
+            account_name: metadata.accountname
+          }
+        }]
       })
     })
 

@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
           WHERE ut.organization_id = $1
             AND ut.smart_code = 'HERA.FURNITURE.TENDER.COMPETITOR.WIN.DETECTED.V1'
             AND ut.created_at >= ${periodFilter}
-            AND ce.entity_type = 'HERA.FURNITURE.TENDER.COMPETITOR.v1'
+            AND ce.entity_type = 'HERA.FURNITURE.TENDER.COMPETITOR.V1'
           GROUP BY ce.entity_name
         ),
         our_wins AS (

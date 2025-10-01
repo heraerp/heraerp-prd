@@ -2,7 +2,7 @@
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
-/** * HERA Furniture Digital Accountant Integration * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.v1 * * Simplified accounting interface for furniture manufacturers * Natural language processing for non-accountants */
+/** * HERA Furniture Digital Accountant Integration * Smart Code: HERA.FURNITURE.DIGITAL.ACCOUNTANT.V1 * * Simplified accounting interface for furniture manufacturers * Natural language processing for non-accountants */
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'

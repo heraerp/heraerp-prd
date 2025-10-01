@@ -1,6 +1,6 @@
 /**
  * HERA Universal Profit & Loss DNA Service
- * Smart Code: HERA.FIN.PL.ENGINE.v1
+ * Smart Code: HERA.FIN.PL.ENGINE.V1
  *
  * Factory service for creating industry-optimized P&L reporting services
  * that work with HERA's universal 6-table architecture.
@@ -10,7 +10,7 @@ import { UniversalAPIClient } from '@/lib/universal-api'
 
 // Core P&L DNA Configuration
 export const PROFIT_LOSS_DNA_CONFIG = {
-  component_id: 'HERA.FIN.PL.ENGINE.v1',
+  component_id: 'HERA.FIN.PL.ENGINE.V1',
   component_name: 'Universal Profit & Loss Engine',
   version: '1.0.0',
 

@@ -128,10 +128,10 @@ export async function POST(request: NextRequest) {
         target_entity_id: conversationId, // Outbound
         external_reference: messageId,
         smart_code: template
-          ? 'HERA.WHATSAPP.MSG.TEMPLATE.v1'
+          ? 'HERA.WHATSAPP.MSG.TEMPLATE.V1'
           : interactive
-            ? 'HERA.WHATSAPP.MSG.INTERACTIVE.v1'
-            : 'HERA.WHATSAPP.MSG.OUTBOUND.v1',
+            ? 'HERA.WHATSAPP.MSG.INTERACTIVE.V1'
+            : 'HERA.WHATSAPP.MSG.OUTBOUND.V1',
         metadata: {
           message_id: messageId,
           text: text || template?.name || 'Interactive message',
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       transaction_date: new Date().toISOString(),
       total_amount: 0,
       reference_number: transaction.id,
-      smart_code: 'HERA.WHATSAPP.AUDIT.SEND.v1',
+      smart_code: 'HERA.WHATSAPP.AUDIT.SEND.V1',
       metadata: {
         action: 'message_sent',
         conversation_id: conversationId,

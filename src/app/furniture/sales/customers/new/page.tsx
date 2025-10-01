@@ -97,7 +97,7 @@ export default function NewCustomerPage() {
           entity_type: 'customer' as const,
           entity_name: formData.entity_name,
           entity_code: customerCode,
-          smart_code: 'HERA.FURNITURE.CUSTOMER.ENTITY.v1',
+          smart_code: 'HERA.FURNITURE.CUSTOMER.ENTITY.V1',
           metadata: {
             industry: 'furniture',
             customer_type: 'business',

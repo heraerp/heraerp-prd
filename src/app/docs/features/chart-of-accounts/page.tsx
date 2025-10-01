@@ -347,7 +347,7 @@ await universalApi.createRelationship({
   from_entity_id: childAccountId,
   to_entity_id: parentAccountId,
   relationship_type: 'CHILD_OF',
-  smart_code: 'HERA.FIN.GL.HIERARCHY.v1'
+  smart_code: 'HERA.FIN.GL.HIERARCHY.V1'
 })`}
               </pre>
             </div>

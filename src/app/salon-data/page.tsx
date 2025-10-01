@@ -1,7 +1,7 @@
 'use client'
 /**
  * HERA Salon Modern Full-Screen Dashboard
- * Smart Code: HERA.SALON.MODERN.DASHBOARD.v1
+ * Smart Code: HERA.SALON.MODERN.DASHBOARD.V1
  *
  * Full-screen mobile-friendly modern salon interface
  */

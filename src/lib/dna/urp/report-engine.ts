@@ -1,6 +1,6 @@
 /**
  * Universal Report Engine
- * Smart Code: HERA.DNA.URP.ENGINE.v1
+ * Smart Code: HERA.DNA.URP.ENGINE.V1
  *
  * Main orchestrator for Universal Report Pattern
  */

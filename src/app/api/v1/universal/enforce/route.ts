@@ -1,6 +1,6 @@
 /**
  * 🔐 HERA Universal Transaction Enforcement API
- * Smart Code: HERA.API.UNIVERSAL.ENFORCEMENT.v1
+ * Smart Code: HERA.API.UNIVERSAL.ENFORCEMENT.V1
  *
  * Mandatory middleware for ALL transaction creation
  * Ensures COA and Document Number compliance
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       enforcement_system: {
         version: '1.0.0',
-        smart_code: 'HERA.API.UNIVERSAL.ENFORCEMENT.v1',
+        smart_code: 'HERA.API.UNIVERSAL.ENFORCEMENT.V1',
         features: [
           'COA existence validation',
           'Document number generation',

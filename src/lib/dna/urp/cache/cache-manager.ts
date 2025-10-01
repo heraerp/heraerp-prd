@@ -1,6 +1,6 @@
 /**
  * URP Cache Manager
- * Smart Code: HERA.URP.CACHE.MANAGER.v1
+ * Smart Code: HERA.URP.CACHE.MANAGER.V1
  *
  * Organization-scoped caching for report data
  */

@@ -1,6 +1,6 @@
 // ================================================================================
 // WHATSAPP HISTORY PAGE - MESSAGE HISTORY
-// Smart Code: HERA.UI.WHATSAPP.HISTORY.v1
+// Smart Code: HERA.UI.WHATSAPP.HISTORY.V1
 // Production-ready message history with filters and status tracking
 // ================================================================================
 

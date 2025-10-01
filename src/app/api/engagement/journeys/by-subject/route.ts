@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
       id: activeJourney.id,
       entity_code: activeJourney.entity_code,
       entity_name: activeJourney.entity_name,
-      smart_code: activeJourney.smart_code || 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.v1',
+      smart_code: activeJourney.smart_code || 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.JOURNEY.V1',
       subject_id: subjectId,
       subject_type:
         (getFieldValue('subject_type') as 'constituent' | 'organization') ||

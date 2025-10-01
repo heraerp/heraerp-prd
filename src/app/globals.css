@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import HERA Jewelry Glassmorphism Theme */
+@import '../styles/jewelry-glassmorphism.css';
+
 /* Animation utilities for ISP module */
 @layer utilities {
   .animate-reverse {

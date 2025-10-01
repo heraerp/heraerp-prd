@@ -57,10 +57,10 @@ This is a complete ISP (Internet Service Provider) management system built with 
 ### Smart Code System
 
 ```
-HERA.TELECOM.SUBSCRIPTION.CREATE.v1
-HERA.TELECOM.BILLING.INVOICE.v1
-HERA.TELECOM.REVENUE.MONTHLY.SUMMARY.v1
-HERA.TELECOM.AGENT.PERFORMANCE.v1
+HERA.TELECOM.SUBSCRIPTION.CREATE.V1
+HERA.TELECOM.BILLING.INVOICE.V1
+HERA.TELECOM.REVENUE.MONTHLY.SUMMARY.V1
+HERA.TELECOM.AGENT.PERFORMANCE.V1
 ```
 
 ### UI Design
@@ -146,12 +146,12 @@ Navigate to: `http://localhost:3000/isp`
 universalApi.createEntity({
   entity_type: 'subscriber',
   entity_name: 'Customer Name',
-  smart_code: 'HERA.TELECOM.CUSTOMER.RETAIL.v1'
+  smart_code: 'HERA.TELECOM.CUSTOMER.RETAIL.V1'
 })
 
 universalApi.createTransaction({
   transaction_type: 'billing',
-  smart_code: 'HERA.TELECOM.BILLING.INVOICE.v1'
+  smart_code: 'HERA.TELECOM.BILLING.INVOICE.V1'
 })
 ```
 

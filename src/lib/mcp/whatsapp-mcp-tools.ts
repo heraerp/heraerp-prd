@@ -254,7 +254,7 @@ export class MCPTools {
         entity_type: 'appointment',
         entity_name: `Appointment ${new Date(input.slot.start).toLocaleDateString()}`,
         entity_code: `APT-${Date.now()}`,
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         metadata: {
           service_ids: input.service_ids,
           stylist_id: input.stylist_id,

@@ -1,6 +1,6 @@
 /**
  * Universal Report Pattern (URP) Primitives
- * Smart Code: HERA.DNA.URP.PRIMITIVES.v1
+ * Smart Code: HERA.DNA.URP.PRIMITIVES.V1
  *
  * Core building blocks for all HERA reports
  */

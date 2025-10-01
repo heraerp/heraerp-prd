@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
         total_amount,
         currency: 'USD',
         status: 'pending', // New orders start as pending for kitchen workflow
-        smart_code: 'HERA.REST.SALE.ORDER.v1', // Smart Code triggers auto-posting
+        smart_code: 'HERA.REST.SALE.ORDER.V1', // Smart Code triggers auto-posting
         metadata: {
           order_type: order_type || 'dine_in',
           customer_id: customer_id,
@@ -253,7 +253,7 @@ export async function POST(request: NextRequest) {
         transaction_number,
         total_amount,
         status: 'completed',
-        smart_code: 'HERA.REST.SALE.ORDER.v1',
+        smart_code: 'HERA.REST.SALE.ORDER.V1',
         gl_posting: {
           required: true,
           journal_entry_created: !!journalEntry,

@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
           id: invite.id,
           entity_code: invite.entity_code,
           entity_name: invite.entity_name,
-          smart_code: invite.smart_code || 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
+          smart_code: invite.smart_code || 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1',
           organization_id: invite.organization_id,
           event_id: inviteEventId || '',
           event_name: eventName,

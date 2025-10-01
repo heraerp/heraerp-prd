@@ -184,7 +184,7 @@ async function buildExpenseJournalPayload(
     // Expense line (debit)
     lines.push({
       line_number: lineNumber++,
-      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.v1',
+      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.V1',
       entity_id: expenseLine.account_id,
       debit: netAmount,
       credit: 0,
@@ -205,7 +205,7 @@ async function buildExpenseJournalPayload(
       if (vatAccount) {
         lines.push({
           line_number: lineNumber++,
-          smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.v1',
+          smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.V1',
           entity_id: vatAccount,
           debit: taxAmount,
           credit: 0,
@@ -230,7 +230,7 @@ async function buildExpenseJournalPayload(
     if (apAccount) {
       lines.push({
         line_number: lineNumber++,
-        smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.v1',
+        smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.V1',
         entity_id: apAccount,
         debit: 0,
         credit: totalAmount,
@@ -246,7 +246,7 @@ async function buildExpenseJournalPayload(
     // Direct payment from cash/bank/credit card
     lines.push({
       line_number: lineNumber++,
-      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.v1',
+      smart_code: 'HERA.FINANCE.JOURNAL.LINE.GL.V1',
       entity_id: request.payment_account_id!,
       debit: 0,
       credit: totalAmount,
@@ -263,7 +263,7 @@ async function buildExpenseJournalPayload(
     header: {
       organization_id: request.organization_id,
       transaction_type: 'expense',
-      smart_code: 'HERA.FINANCE.EXPENSE.CAPTURE.v1',
+      smart_code: 'HERA.FINANCE.EXPENSE.CAPTURE.V1',
       when_ts: request.when_ts,
       branch_id: request.branch_id,
       transaction_currency_code: request.currency,
@@ -341,7 +341,7 @@ async function storeAttachments(
             entity_id: transaction_id,
             field_name: `attachment_line_${i + 1}`,
             field_value_file_url: line.attachment_url,
-            smart_code: 'HERA.FINANCE.EXPENSE.ATTACHMENT.v1'
+            smart_code: 'HERA.FINANCE.EXPENSE.ATTACHMENT.V1'
           }
         })
       }
@@ -473,7 +473,7 @@ export async function getExpenseHistory({
 
     const filters = [
       { field: 'organization_id', operator: 'eq', value: organization_id },
-      { field: 'smart_code', operator: 'eq', value: 'HERA.FINANCE.EXPENSE.CAPTURE.v1' }
+      { field: 'smart_code', operator: 'eq', value: 'HERA.FINANCE.EXPENSE.CAPTURE.V1' }
     ]
 
     if (branch_id) {

@@ -539,13 +539,13 @@ export default function LandingPage() {
                 </p>
                 <div className="bg-cyan-50 rounded p-4">
                   <p className="text-sm font-mono text-cyan-700">
-                    HERA.REST.POS.SALE.v1
+                    HERA.REST.POS.SALE.V1
                     <br />
-                    HERA.HLTH.PAT.VISIT.v1
+                    HERA.HLTH.PAT.VISIT.V1
                     <br />
-                    HERA.MFG.PROD.ORDER.v1
+                    HERA.MFG.PROD.ORDER.V1
                     <br />
-                    HERA.PROF.TIME.BILL.v1
+                    HERA.PROF.TIME.BILL.V1
                   </p>
                 </div>
               </Card>

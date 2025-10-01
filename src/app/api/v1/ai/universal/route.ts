@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           success: true,
           data: batchResults,
-          smart_code: 'HERA.AI.BATCH.COMPLETE.v1',
+          smart_code: 'HERA.AI.BATCH.COMPLETE.V1',
           timestamp: new Date().toISOString(),
           metadata: {
             total_requests: requests.length,
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Internal AI processing error',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.AI.ERROR.INTERNAL.v1',
+        smart_code: 'HERA.AI.ERROR.INTERNAL.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -204,7 +204,7 @@ export async function GET(request: NextRequest) {
             smart_codes: AI_SMART_CODES,
             system_health: 'healthy'
           },
-          smart_code: 'HERA.AI.STATUS.HEALTHY.v1',
+          smart_code: 'HERA.AI.STATUS.HEALTHY.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -241,7 +241,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           success: true,
           message: 'AI cache cleared successfully',
-          smart_code: 'HERA.AI.CACHE.CLEARED.v1',
+          smart_code: 'HERA.AI.CACHE.CLEARED.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -268,7 +268,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: 'Failed to process AI status request',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.AI.ERROR.STATUS.v1',
+        smart_code: 'HERA.AI.ERROR.STATUS.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }

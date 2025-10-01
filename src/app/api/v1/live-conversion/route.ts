@@ -98,7 +98,7 @@ class MCPCommandExecutor {
         entity_name: params.name,
         entity_code: `USER-${params.organizationId}-${Date.now()}`,
         organization_id: params.organizationId,
-        smart_code: 'HERA.USER.LIVE.PROD.v1',
+        smart_code: 'HERA.USER.LIVE.PROD.V1',
         metadata: {
           email: params.email,
           role: params.role,
@@ -282,7 +282,7 @@ class MCPCommandExecutor {
       entity_name: `Universal POS - ${params.config}`,
       entity_code: `POS-CONFIG-${params.org}`,
       organization_id: params.org,
-      smart_code: 'HERA.POS.CONFIG.LIVE.v1',
+      smart_code: 'HERA.POS.CONFIG.LIVE.V1',
       metadata: {
         business_type: params.config,
         pos_features: {

@@ -102,7 +102,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             currency_code: body.currency || 'AED',
             tax_inclusive: false
           },
-          smart_code: 'HERA.SALON.SERVICE.CATALOG.PRICE.v1'
+          smart_code: 'HERA.SALON.SERVICE.CATALOG.PRICE.V1'
         }
 
         const { error: priceError } = await supabase.from('core_dynamic_data').upsert(priceData, {
@@ -122,7 +122,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           field_name: 'service.duration_min',
           field_type: 'number',
           field_value_number: body.duration_mins,
-          smart_code: 'HERA.SALON.SERVICE.CATALOG.DURATION.v1'
+          smart_code: 'HERA.SALON.SERVICE.CATALOG.DURATION.V1'
         }
 
         const { error: durationError } = await supabase
@@ -144,7 +144,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           field_name: 'service.category',
           field_type: 'text',
           field_value_text: body.category,
-          smart_code: 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1'
+          smart_code: 'HERA.SALON.SERVICE.CATALOG.CATEGORY.V1'
         }
 
         const { error: categoryError } = await supabase

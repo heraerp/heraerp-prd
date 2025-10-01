@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS EXPORT BUTTONS
-// Smart Code: HERA.UI.REPORTS.EXPORT.v1
+// Smart Code: HERA.UI.REPORTS.EXPORT.V1
 // CSV export and print functionality with accessibility
 // ================================================================================
 

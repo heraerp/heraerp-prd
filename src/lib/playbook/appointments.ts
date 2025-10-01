@@ -370,7 +370,7 @@ export async function postReschedule(params: {
       body: JSON.stringify({
         organization_id: params.organization_id,
         transaction_type: 'reschedule',
-        smart_code: heraCode('HERA.SALON.APPOINTMENT.RESCHEDULE.v1'),
+        smart_code: heraCode('HERA.SALON.APPOINTMENT.RESCHEDULE.V1'),
         reference_entity_id: params.appointment_id,
         when_ts: new Date().toISOString(),
         metadata: {
@@ -388,7 +388,7 @@ export async function postReschedule(params: {
       entity_id: params.appointment_id,
       field_name: 'appointment_status',
       field_value_text: 'BOOKED',
-      smart_code: heraCode('HERA.SALON.APPOINTMENT.STATUS.v1'),
+      smart_code: heraCode('HERA.SALON.APPOINTMENT.STATUS.V1'),
       metadata: {
         updated_at: new Date().toISOString()
       }
@@ -432,7 +432,7 @@ export async function confirmDraft(params: {
       entity_id: params.appointment_id,
       field_name: 'appointment_status',
       field_value_text: 'BOOKED',
-      smart_code: heraCode('HERA.SALON.APPOINTMENT.STATUS.v1'),
+      smart_code: heraCode('HERA.SALON.APPOINTMENT.STATUS.V1'),
       metadata: {
         updated_by: params.confirmed_by,
         updated_at: new Date().toISOString()
@@ -487,7 +487,7 @@ export async function confirmDraft(params: {
                 data: {
                   organization_id: params.organization_id,
                   transaction_type: 'whatsapp_notification',
-                  smart_code: heraCode('HERA.SALON.WHATSAPP.APPOINTMENT.CONFIRM.v1'),
+                  smart_code: heraCode('HERA.SALON.WHATSAPP.APPOINTMENT.CONFIRM.V1'),
                   reference_entity_id: params.appointment_id,
                   transaction_date: new Date().toISOString(),
                   total_amount: 0,
@@ -535,7 +535,7 @@ export async function upsertKanbanRank(params: {
       entity_id: params.appointment_id,
       field_name: 'kanban_rank',
       field_value_text: params.rank,
-      smart_code: heraCode('HERA.UI.KANBAN.RANK.v1'),
+      smart_code: heraCode('HERA.UI.KANBAN.RANK.V1'),
       metadata: {
         column: params.column,
         branch_id: params.branch_id,

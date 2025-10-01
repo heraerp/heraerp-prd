@@ -243,7 +243,7 @@ export function RuleEditorDialog({
                 id="rule-smart-code"
                 value={formData.smart_code}
                 onChange={e => updateField('smart_code', e.target.value)}
-                placeholder="HERA.FIN.POSTING.RULE.v1"
+                placeholder="HERA.FIN.POSTING.RULE.V1"
                 className="font-mono"
               />
               {errors.smart_code && (
@@ -258,7 +258,7 @@ export function RuleEditorDialog({
                 id="rule-applies-to"
                 value={formData.applies_to.join(', ')}
                 onChange={e => updateAppliesTo(e.target.value)}
-                placeholder="HERA.POS.SALE.v1, HERA.POS.SALE.LINE.v1"
+                placeholder="HERA.POS.SALE.v1, HERA.POS.SALE.LINE.V1"
                 rows={2}
                 className="font-mono text-sm"
               />

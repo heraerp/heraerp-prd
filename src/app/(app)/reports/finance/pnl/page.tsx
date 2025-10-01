@@ -1,6 +1,6 @@
 // ================================================================================
 // PROFIT & LOSS STATEMENT PAGE
-// Smart Code: HERA.UI.REPORTS.PNL.v1
+// Smart Code: HERA.UI.REPORTS.PNL.V1
 // Production-ready P&L statement with hierarchical grouping and drill-downs
 // ================================================================================
 

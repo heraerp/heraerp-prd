@@ -141,7 +141,7 @@ export default function AccountsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           orgId: resolvedOrgId,
-          smart_code: 'HERA.CRM.ACCOUNT.UPDATE.v1',
+          smart_code: 'HERA.CRM.ACCOUNT.UPDATE.V1',
           idempotency_key: `${Date.now()}-${editingId}`,
           actor_user_id: '00000000-0000-0000-0000-000000000000',
           account: {
@@ -170,7 +170,7 @@ export default function AccountsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           orgId: resolvedOrgId,
-          smart_code: 'HERA.CRM.ACCOUNT.DELETE.v1',
+          smart_code: 'HERA.CRM.ACCOUNT.DELETE.V1',
           id
         })
       })
@@ -198,7 +198,7 @@ export default function AccountsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           orgId: resolvedOrgId,
-          smart_code: 'HERA.CRM.ACCOUNT.CREATE.v1',
+          smart_code: 'HERA.CRM.ACCOUNT.CREATE.V1',
           idempotency_key: `${Date.now()}-${form.name}`,
           actor_user_id: '00000000-0000-0000-0000-000000000000',
           account: {

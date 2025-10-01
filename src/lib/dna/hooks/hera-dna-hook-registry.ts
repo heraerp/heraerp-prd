@@ -1,6 +1,6 @@
 /**
  * HERA DNA HOOK REGISTRY
- * Smart Code: HERA.DNA.HOOKS.REGISTRY.v1
+ * Smart Code: HERA.DNA.HOOKS.REGISTRY.V1
  *
  * Centralized registry of all HERA DNA hooks organized by functionality
  * with CRUD patterns and smart codes for reusability

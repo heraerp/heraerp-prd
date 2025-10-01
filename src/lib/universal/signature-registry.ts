@@ -25,7 +25,7 @@ const FILE_PATH = process.env.FN_SIGNATURES_FILE; // absolute or relative path t
 
 // For dynamic (existing tables): we look up a single config entity and read a JSON field
 const CFG_ORG_ID = process.env.SIGNATURE_CONFIG_ORG_ID ?? ''; // required for dynamic source
-const CFG_SMART_CODE = process.env.SIGNATURE_CONFIG_SMART_CODE ?? 'HERA.UNIV.CONFIG.FNSIG.v1';
+const CFG_SMART_CODE = process.env.SIGNATURE_CONFIG_SMART_CODE ?? 'HERA.UNIV.CONFIG.FNSIG.V1';
 const CFG_ENTITY_CODE = process.env.SIGNATURE_CONFIG_ENTITY_CODE ?? ''; // either smart code or entity code
 const CFG_FIELD = process.env.SIGNATURE_CONFIG_FIELD ?? 'function_signatures'; // field_name in core_dynamic_data
 

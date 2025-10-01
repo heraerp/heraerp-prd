@@ -17,7 +17,7 @@ const INTENT_PATTERNS = {
       /cash\s+sale/i,
       /card\s+sale/i
     ],
-    smartCode: 'HERA.SALON.SALE.POSTED.v1'
+    smartCode: 'HERA.SALON.SALE.POSTED.V1'
   },
   salonExpense: {
     patterns: [
@@ -27,7 +27,7 @@ const INTENT_PATTERNS = {
       /purchased\s+/i,
       /buy\s+supplies/i
     ],
-    smartCode: 'HERA.SALON.EXPENSE.POSTED.v1'
+    smartCode: 'HERA.SALON.EXPENSE.POSTED.V1'
   },
   salonCommission: {
     patterns: [
@@ -36,7 +36,7 @@ const INTENT_PATTERNS = {
       /commission\s+for/i,
       /pay\s+[\w\s]+\s+\d+%/i // "Pay Sarah 40%"
     ],
-    smartCode: 'HERA.SALON.PAYROLL.COMMISSION.v1'
+    smartCode: 'HERA.SALON.PAYROLL.COMMISSION.V1'
   },
   salonPayCommission: {
     patterns: [
@@ -46,7 +46,7 @@ const INTENT_PATTERNS = {
       /^confirm\s+payment$/i, // "confirm payment"
       /^pay\s+commission\s+now$/i // "pay commission now"
     ],
-    smartCode: 'HERA.SALON.PAYROLL.PAY.v1'
+    smartCode: 'HERA.SALON.PAYROLL.PAY.V1'
   },
   salonSummary: {
     patterns: [
@@ -56,7 +56,7 @@ const INTENT_PATTERNS = {
       /show.*sales/i,
       /how.*much.*today/i
     ],
-    smartCode: 'HERA.SALON.REPORT.DAILY.v1'
+    smartCode: 'HERA.SALON.REPORT.DAILY.V1'
   },
   journal: {
     patterns: [
@@ -90,7 +90,7 @@ const INTENT_PATTERNS = {
       /approve.*transaction/i,
       /^\w+-\d+\s+post$/i
     ],
-    smartCode: 'HERA.FIN.POST.TRANSACTION.v1'
+    smartCode: 'HERA.FIN.POST.TRANSACTION.V1'
   },
   payment: {
     patterns: [
@@ -115,7 +115,7 @@ const INTENT_PATTERNS = {
       /trial.*balance/i,
       /income.*statement/i
     ],
-    smartCode: 'HERA.FIN.REPORT.FINANCIAL.v1'
+    smartCode: 'HERA.FIN.REPORT.FINANCIAL.V1'
   },
   vat: {
     patterns: [/vat.*calculation/i, /tax.*period/i, /vat.*return/i, /calculate.*vat/i],
@@ -1205,7 +1205,7 @@ export async function POST(request: NextRequest) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 action: 'custom_request',
-                smart_code: 'HERA.SALON.AI.CHAT.v1',
+                smart_code: 'HERA.SALON.AI.CHAT.V1',
                 task_type: 'chat',
                 prompt: `You are a friendly salon accounting assistant. The user said: "${message}". 
                 

@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA SMART CODE PICKER
-// Smart Code: HERA.UI.SMARTCODE.PICKER.v1
+// Smart Code: HERA.UI.SMARTCODE.PICKER.V1
 // Intelligent business classification code selector with hierarchical navigation
 // ================================================================================
 

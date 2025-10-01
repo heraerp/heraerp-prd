@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      component: 'HERA.MCP.WHATSAPP.TOOLS.v1',
+      component: 'HERA.MCP.WHATSAPP.TOOLS.V1',
       tools,
       capabilities: [
         'WhatsApp conversation analytics',

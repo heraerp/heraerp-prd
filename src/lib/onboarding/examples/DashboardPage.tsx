@@ -23,7 +23,7 @@ function DashboardContent() {
     if (!hasSeenTour && !isActive) {
       // Start tour after a short delay to ensure page is loaded
       setTimeout(() => {
-        startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1', { auto: true })
+        startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1', { auto: true })
       }, 1000)
     }
   }, [startTour, isActive])
@@ -43,7 +43,7 @@ function DashboardContent() {
 
             {/* Help button to restart tour */}
             <button
-              onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1')}
+              onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1')}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-foreground bg-blue-600 hover:bg-blue-700"
               disabled={isActive}
             >
@@ -203,10 +203,10 @@ function DashboardContent() {
 
 // Example mini-tour for a specific widget
 const widgetTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.WIDGET.KPI.v1' as const,
+  tourSmartCode: 'HERA.UI.ONBOARD.WIDGET.KPI.V1' as const,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.WIDGET.KPI.INTRO.v1' as const,
+      smartCode: 'HERA.UI.ONBOARD.WIDGET.KPI.INTRO.V1' as const,
       selector: '[data-testid="kpi-cards"]',
       titleKey: 'ui.onboard.widget.kpi.intro.title',
       bodyKey: 'ui.onboard.widget.kpi.intro.body',
@@ -239,7 +239,7 @@ export default function DashboardPage() {
   return (
     <HeraOnboardingProvider
       organizationId={organizationId}
-      enabledTours={['HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1', 'HERA.UI.ONBOARD.WIDGET.KPI.v1']}
+      enabledTours={['HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1', 'HERA.UI.ONBOARD.WIDGET.KPI.V1']}
       messages={customMessages}
       theme="light"
       onEmit={(txn, lines) => {

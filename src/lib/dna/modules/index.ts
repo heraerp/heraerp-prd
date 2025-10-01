@@ -27,8 +27,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // FINANCIAL MODULES (FI)
   // ============================================
-  'HERA.FIN.GL.MODULE.v1': {
-    id: 'HERA.FIN.GL.MODULE.v1',
+  'HERA.FIN.GL.MODULE.V1': {
+    id: 'HERA.FIN.GL.MODULE.V1',
     name: 'General Ledger Module',
     category: 'financial',
     type: 'module',
@@ -37,8 +37,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Complete GL management with journal entries, COA, and period management'
   },
 
-  'HERA.FIN.AP.MODULE.v1': {
-    id: 'HERA.FIN.AP.MODULE.v1',
+  'HERA.FIN.AP.MODULE.V1': {
+    id: 'HERA.FIN.AP.MODULE.V1',
     name: 'Accounts Payable Module',
     category: 'financial',
     type: 'module',
@@ -47,8 +47,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Vendor management, invoice processing, and payment workflows'
   },
 
-  'HERA.FIN.AR.MODULE.v1': {
-    id: 'HERA.FIN.AR.MODULE.v1',
+  'HERA.FIN.AR.MODULE.V1': {
+    id: 'HERA.FIN.AR.MODULE.V1',
     name: 'Accounts Receivable Module',
     category: 'financial',
     type: 'module',
@@ -57,8 +57,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Customer management, invoicing, and collections'
   },
 
-  'HERA.FIN.FA.MODULE.v1': {
-    id: 'HERA.FIN.FA.MODULE.v1',
+  'HERA.FIN.FA.MODULE.V1': {
+    id: 'HERA.FIN.FA.MODULE.V1',
     name: 'Fixed Assets Module',
     category: 'financial',
     type: 'module',
@@ -77,8 +77,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: '85% automation rate for journal entries'
   },
 
-  'HERA.FIN.CASHFLOW.SYSTEM.v1': {
-    id: 'HERA.FIN.CASHFLOW.SYSTEM.v1',
+  'HERA.FIN.CASHFLOW.SYSTEM.V1': {
+    id: 'HERA.FIN.CASHFLOW.SYSTEM.V1',
     name: 'Universal Cashflow DNA',
     category: 'financial',
     type: 'system',
@@ -90,8 +90,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // INVENTORY & SUPPLY CHAIN
   // ============================================
-  'HERA.INV.UNIVERSAL.MODULE.v1': {
-    id: 'HERA.INV.UNIVERSAL.MODULE.v1',
+  'HERA.INV.UNIVERSAL.MODULE.V1': {
+    id: 'HERA.INV.UNIVERSAL.MODULE.V1',
     name: 'Universal Inventory Module',
     category: 'inventory',
     type: 'module',
@@ -102,8 +102,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // SALES & ORDER MANAGEMENT
   // ============================================
-  'HERA.SALES.O2C.MODULE.v1': {
-    id: 'HERA.SALES.O2C.MODULE.v1',
+  'HERA.SALES.O2C.MODULE.V1': {
+    id: 'HERA.SALES.O2C.MODULE.V1',
     name: 'Order-to-Cash Module',
     category: 'sales',
     type: 'module',
@@ -112,8 +112,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Complete order-to-cash workflow'
   },
 
-  'HERA.UI.POS.UNIVERSAL.ENGINE.v1': {
-    id: 'HERA.UI.POS.UNIVERSAL.ENGINE.v1',
+  'HERA.UI.POS.UNIVERSAL.ENGINE.V1': {
+    id: 'HERA.UI.POS.UNIVERSAL.ENGINE.V1',
     name: 'Universal POS Engine',
     category: 'sales',
     type: 'component',
@@ -125,8 +125,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // PROCUREMENT
   // ============================================
-  'HERA.PROC.P2P.MODULE.v1': {
-    id: 'HERA.PROC.P2P.MODULE.v1',
+  'HERA.PROC.P2P.MODULE.V1': {
+    id: 'HERA.PROC.P2P.MODULE.V1',
     name: 'Purchase-to-Pay Module',
     category: 'procurement',
     type: 'module',
@@ -137,8 +137,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // HUMAN CAPITAL
   // ============================================
-  'HERA.HCM.CORE.MODULE.v1': {
-    id: 'HERA.HCM.CORE.MODULE.v1',
+  'HERA.HCM.CORE.MODULE.V1': {
+    id: 'HERA.HCM.CORE.MODULE.V1',
     name: 'Human Capital Management',
     category: 'hcm',
     type: 'module',
@@ -149,8 +149,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // ERP INTEGRATIONS
   // ============================================
-  'HERA.SAP.FI.MODULE.v1': {
-    id: 'HERA.SAP.FI.MODULE.v1',
+  'HERA.SAP.FI.MODULE.V1': {
+    id: 'HERA.SAP.FI.MODULE.V1',
     name: 'SAP FI Integration',
     category: 'integration',
     type: 'integration',
@@ -162,8 +162,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // INDUSTRY-SPECIFIC
   // ============================================
-  'HERA.SALON.DNA.MODULE.v1': {
-    id: 'HERA.SALON.DNA.MODULE.v1',
+  'HERA.SALON.DNA.MODULE.V1': {
+    id: 'HERA.SALON.DNA.MODULE.V1',
     name: 'Salon Management DNA',
     category: 'industry',
     type: 'module',
@@ -172,8 +172,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Complete salon business management'
   },
 
-  'HERA.REST.DNA.MODULE.v1': {
-    id: 'HERA.REST.DNA.MODULE.v1',
+  'HERA.REST.DNA.MODULE.V1': {
+    id: 'HERA.REST.DNA.MODULE.V1',
     name: 'Restaurant Management DNA',
     category: 'industry',
     type: 'module',
@@ -184,8 +184,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // UI/UX COMPONENTS
   // ============================================
-  'HERA.UI.GLASS.PANEL.v1': {
-    id: 'HERA.UI.GLASS.PANEL.v1',
+  'HERA.UI.GLASS.PANEL.V1': {
+    id: 'HERA.UI.GLASS.PANEL.V1',
     name: 'Glass Panel Component',
     category: 'ui',
     type: 'component',
@@ -193,8 +193,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
     description: 'Glassmorphism panel with Fiori design'
   },
 
-  'HERA.UI.ENTERPRISE.TABLE.v1': {
-    id: 'HERA.UI.ENTERPRISE.TABLE.v1',
+  'HERA.UI.ENTERPRISE.TABLE.V1': {
+    id: 'HERA.UI.ENTERPRISE.TABLE.V1',
     name: 'Enterprise Data Table',
     category: 'ui',
     type: 'component',
@@ -206,8 +206,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // CALENDAR & SCHEDULING
   // ============================================
-  'HERA.CAL.UNIVERSAL.RESOURCE.v1': {
-    id: 'HERA.CAL.UNIVERSAL.RESOURCE.v1',
+  'HERA.CAL.UNIVERSAL.RESOURCE.V1': {
+    id: 'HERA.CAL.UNIVERSAL.RESOURCE.V1',
     name: 'Universal Resource Calendar',
     category: 'calendar',
     type: 'component',
@@ -219,8 +219,8 @@ export const HERA_DNA_MASTER_REGISTRY: Record<string, MasterModuleEntry> = {
   // ============================================
   // COMMUNICATION
   // ============================================
-  'HERA.COMM.WHATSAPP.DNA.v1': {
-    id: 'HERA.COMM.WHATSAPP.DNA.v1',
+  'HERA.COMM.WHATSAPP.DNA.V1': {
+    id: 'HERA.COMM.WHATSAPP.DNA.V1',
     name: 'WhatsApp Integration DNA',
     category: 'communication',
     type: 'integration',

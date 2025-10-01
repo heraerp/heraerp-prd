@@ -143,7 +143,7 @@ export function useCreateEvent() {
           entity_type: 'event',
           entity_name: data.entity_name,
           entity_code: `EVENT-${Date.now()}`,
-          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.V1',
           organization_id: orgId
         })
       })
@@ -201,7 +201,7 @@ export function useCreateEvent() {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CREATED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CREATED.V1',
           metadata: {
             event_id: eventId,
             event_type: data.event_type,
@@ -282,7 +282,7 @@ export function useUpdateEvent() {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.UPDATED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.UPDATED.V1',
           metadata: {
             event_id: id,
             updated_fields: Object.keys(data)
@@ -323,7 +323,7 @@ export function useSendInvitations() {
             entity_type: 'event_invite',
             entity_name: `Invitation - ${data.event_id}`,
             entity_code: `INVITE-${data.event_id}-${subjectId}`,
-            smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1',
+            smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1',
             organization_id: orgId
           })
         })
@@ -385,7 +385,7 @@ export function useSendInvitations() {
               'X-Organization-Id': orgId
             },
             body: JSON.stringify({
-              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.SENT.v1',
+              smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.SENT.V1',
               metadata: {
                 event_id: data.event_id,
                 invite_id: inviteId,
@@ -461,7 +461,7 @@ export function useRecordCheckin() {
           'X-Organization-Id': orgId
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CHECKIN.RECORDED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.EVENT.CHECKIN.RECORDED.V1',
           metadata: {
             event_id: data.event_id,
             invite_id: data.invite_id,

@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'document',
         entity_code: documentCode,
         entity_name: file.name,
-        smart_code: 'HERA.FURNITURE.DOCUMENT.INVOICE.v1',
+        smart_code: 'HERA.FURNITURE.DOCUMENT.INVOICE.V1',
         metadata: {
           document_type: documentType,
           file_size: file.size,
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
       organization_id: organizationId,
       field_name: 'file_url',
       field_value_text: publicUrl,
-      smart_code: 'HERA.FURNITURE.DOCUMENT.URL.v1',
+      smart_code: 'HERA.FURNITURE.DOCUMENT.URL.V1',
       field_value_json: {
         storage_path: filePath,
         upload_timestamp: new Date().toISOString()

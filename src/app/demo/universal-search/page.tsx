@@ -125,7 +125,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Daily Sales Report',
     subtitle: "View today's sales performance",
     url: '/reports/daily-sales',
-    smartCode: 'HERA.RPT.SALES.DAILY.v1',
+    smartCode: 'HERA.RPT.SALES.DAILY.V1',
     metadata: { isPopular: true }
   },
   {
@@ -135,7 +135,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Customer Aging Report',
     subtitle: 'Outstanding receivables by age',
     url: '/reports/customer-aging',
-    smartCode: 'HERA.RPT.AR.AGING.v1'
+    smartCode: 'HERA.RPT.AR.AGING.V1'
   },
   {
     id: 'rpt-3',
@@ -144,7 +144,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Inventory Valuation',
     subtitle: 'Current stock value by category',
     url: '/reports/inventory-valuation',
-    smartCode: 'HERA.RPT.INV.VAL.v1'
+    smartCode: 'HERA.RPT.INV.VAL.V1'
   },
 
   // Actions
@@ -155,7 +155,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Create New Invoice',
     subtitle: 'Quick action to create invoice',
     action: () => console.log('Create invoice'),
-    smartCode: 'HERA.ACTION.CREATE.INV.v1'
+    smartCode: 'HERA.ACTION.CREATE.INV.V1'
   },
   {
     id: 'act-2',
@@ -164,7 +164,7 @@ const mockSearchData: SearchResult[] = [
     title: 'Book Appointment',
     subtitle: 'Schedule a new appointment',
     action: () => console.log('Book appointment'),
-    smartCode: 'HERA.ACTION.BOOK.APPT.v1'
+    smartCode: 'HERA.ACTION.BOOK.APPT.V1'
   },
 
   // Help
@@ -175,7 +175,7 @@ const mockSearchData: SearchResult[] = [
     title: 'How to create a customer',
     subtitle: 'Step-by-step guide',
     url: '/help/create-customer',
-    smartCode: 'HERA.HELP.GUIDE.CUST.v1'
+    smartCode: 'HERA.HELP.GUIDE.CUST.V1'
   },
   {
     id: 'help-2',

@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA AUTH GUARD - ROLE-BASED ACCESS CONTROL
-// Smart Code: HERA.AUTH.GUARD.RBAC.v1
+// Smart Code: HERA.AUTH.GUARD.RBAC.V1
 // Guard component for protecting routes and features based on user roles
 // ================================================================================
 

@@ -115,7 +115,7 @@ export class ServerWorkflow {
         from_entity_id: entityId,
         to_entity_id: newStatusId,
         relationship_type: 'has_workflow_status',
-        smart_code: 'HERA.WORKFLOW.STATUS.TRANSITION.v1',
+        smart_code: 'HERA.WORKFLOW.STATUS.TRANSITION.V1',
         relationship_data: {
           is_active: true,
           assigned_at: new Date().toISOString(),
@@ -143,7 +143,7 @@ export class ServerWorkflow {
         from_entity_id: entityId,
         to_entity_id: statusId,
         relationship_type: 'has_workflow_status',
-        smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1',
+        smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.V1',
         relationship_data: {
           is_active: true,
           assigned_at: new Date().toISOString(),

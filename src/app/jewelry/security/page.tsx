@@ -200,7 +200,7 @@ export default function JewelrySecurityPage() {
       type: 'environmental',
       severity: 'low',
       title: 'Temperature Variation',
-      description: 'Temperature rose 2°C above optimal range in Display Case A',
+      description: 'Temperature rose 2Â°C above optimal range in Display Case A',
       location: 'Display Case A',
       timestamp: '2024-01-16 20:30:00',
       status: 'acknowledged',
@@ -564,7 +564,7 @@ export default function JewelrySecurityPage() {
                 
                 <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
                   <Gem className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">¹{(securityMetrics.totalValueSecured / 1000000).toFixed(1)}M</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">Â¹{(securityMetrics.totalValueSecured / 1000000).toFixed(1)}M</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Value Secured</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <Shield size={16} />
@@ -656,7 +656,7 @@ export default function JewelrySecurityPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="jewelry-text-high-contrast font-bold">¹{(zone.inventory.totalValue / 100000).toFixed(1)}L</p>
+                            <p className="jewelry-text-high-contrast font-bold">Â¹{(zone.inventory.totalValue / 100000).toFixed(1)}L</p>
                             <p className="jewelry-text-muted text-xs">{zone.inventory.totalItems} items</p>
                           </div>
                         </div>
@@ -664,7 +664,7 @@ export default function JewelrySecurityPage() {
                         <div className="grid grid-cols-3 gap-3 text-xs">
                           <div className="flex items-center gap-1">
                             <Thermometer className="jewelry-icon-gold" size={12} />
-                            <span className="jewelry-text-muted">{zone.temperature}°C</span>
+                            <span className="jewelry-text-muted">{zone.temperature}Â°C</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Droplets className="jewelry-icon-gold" size={12} />

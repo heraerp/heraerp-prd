@@ -240,7 +240,7 @@ export class SAPIntegrationService {
         sap_document: sapDocument,
         transaction_snapshot: transaction
       },
-      smart_code: 'HERA.AUDIT.SAP.POST.v1'
+      smart_code: 'HERA.AUDIT.SAP.POST.V1'
     })
   }
 

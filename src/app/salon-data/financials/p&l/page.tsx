@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Profit & Loss Statement (Dubai/UAE)
- * Smart Code: HERA.FINANCE.PNL.REPORT.v1
+ * Smart Code: HERA.FINANCE.PNL.REPORT.V1
  *
  * VAT-aware P&L reporting with UAE compliance
  * Built on 6-table foundation with smart code intelligence

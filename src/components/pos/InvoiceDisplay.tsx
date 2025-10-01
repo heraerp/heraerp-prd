@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS INVOICE DISPLAY
-// Smart Code: HERA.UI.POS.INVOICE.v1
+// Smart Code: HERA.UI.POS.INVOICE.V1
 // Invoice display with print support
 // ================================================================================
 

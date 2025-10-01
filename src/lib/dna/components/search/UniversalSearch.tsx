@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA UNIVERSAL SEARCH
-// Smart Code: HERA.UI.SEARCH.UNIVERSAL.ENGINE.v1
+// Smart Code: HERA.UI.SEARCH.UNIVERSAL.ENGINE.V1
 // AI-powered global search with command palette interface
 // ================================================================================
 

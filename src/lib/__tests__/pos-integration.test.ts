@@ -90,7 +90,7 @@ describe('POS Integration Tests', () => {
 
       // Validate transaction header
       expect(transaction.transaction_type).toBe('sale') // Should be 'sale', not 'POS_SALE'
-      expect(transaction.smart_code).toBe(heraCode('HERA.SALON.POS.SALE.HEADER.v1'))
+      expect(transaction.smart_code).toBe(heraCode('HERA.SALON.POS.SALE.HEADER.V1'))
       expect(transaction.smart_code).toMatch(/\.v1$/) // Ensure lowercase .v1
       expect(transaction.total_amount).toBe(157.5)
       expect(transaction.organization_id).toBe(testData.organizationId)
@@ -110,9 +110,9 @@ describe('POS Integration Tests', () => {
 
       // Find specific line types
       const serviceLine = lines.find(
-        l => l.smart_code === heraCode('HERA.SALON.POS.LINE.SERVICE.v1')
+        l => l.smart_code === heraCode('HERA.SALON.POS.LINE.SERVICE.V1')
       )
-      const taxLine = lines.find(l => l.smart_code === heraCode('HERA.SALON.POS.LINE.TAX.v1'))
+      const taxLine = lines.find(l => l.smart_code === heraCode('HERA.SALON.POS.LINE.TAX.V1'))
       const paymentLine = lines.find(l => l.smart_code?.includes('PAYMENT'))
 
       // Validate service line
@@ -222,12 +222,12 @@ describe('POS Integration Tests', () => {
       // Test that heraCode helper properly formats smart codes
       const testCodes = [
         'HERA.SALON.POS.SALE.HEADER.V1', // uppercase V
-        'HERA.SALON.POS.SALE.HEADER.v1' // lowercase v
+        'HERA.SALON.POS.SALE.HEADER.V1' // lowercase v
       ]
 
       testCodes.forEach(code => {
         const formatted = heraCode(code)
-        expect(formatted).toBe('HERA.SALON.POS.SALE.HEADER.v1')
+        expect(formatted).toBe('HERA.SALON.POS.SALE.HEADER.V1')
         expect(formatted).toMatch(/\.v1$/)
       })
     })

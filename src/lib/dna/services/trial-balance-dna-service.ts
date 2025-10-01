@@ -38,7 +38,7 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       critical_accounts: ['Cash', 'Inventory - Food', 'Food Sales', 'Cost of Food Sold'],
       smart_codes: {
         revenue: 'HERA.REST.POS.TXN.SALE.V1',
-        cogs: 'HERA.REST.INV.COGS.v1',
+        cogs: 'HERA.REST.INV.COGS.V1',
         labor: 'HERA.REST.HR.PAY.STAFF.V1'
       }
     },
@@ -67,9 +67,9 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       },
       critical_accounts: ['Patient Receivables', 'Insurance Receivables', 'Medical Supplies'],
       smart_codes: {
-        patient_revenue: 'HERA.HLTH.PAT.PAYMENT.v1',
-        insurance_revenue: 'HERA.HLTH.INS.REIMBURSEMENT.v1',
-        supply_costs: 'HERA.HLTH.SUP.MEDICAL.v1'
+        patient_revenue: 'HERA.HLTH.PAT.PAYMENT.V1',
+        insurance_revenue: 'HERA.HLTH.INS.REIMBURSEMENT.V1',
+        supply_costs: 'HERA.HLTH.SUP.MEDICAL.V1'
       }
     },
 
@@ -87,7 +87,7 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
         'Manufacturing Equipment'
       ],
       smart_codes: {
-        sales: 'HERA.MFG.SALE.FINISHED.v1',
+        sales: 'HERA.MFG.SALE.FINISHED.V1',
         materials: 'HERA.MFG.PUR.RAW.MATERIALS.V1',
         labor: 'HERA.MFG.HR.PAY.PRODUCTION.V1'
       }
@@ -102,8 +102,8 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       },
       critical_accounts: ['Accounts Receivable', 'Work in Progress', 'Professional Fees'],
       smart_codes: {
-        fees: 'HERA.PROF.TIME.BILLING.v1',
-        expenses: 'HERA.PROF.EXP.OPERATING.v1',
+        fees: 'HERA.PROF.TIME.BILLING.V1',
+        expenses: 'HERA.PROF.EXP.OPERATING.V1',
         salaries: 'HERA.PROF.HR.PAY.CONSULTANT.V1'
       }
     },
@@ -124,7 +124,7 @@ export const TRIAL_BALANCE_DNA_CONFIG = {
       smart_codes: {
         sales: 'HERA.RETAIL.POS.TXN.SALE.V1',
         inventory: 'HERA.RETAIL.INV.PUR.MERCHANDISE.V1',
-        shrinkage: 'HERA.RETAIL.INV.SHRINKAGE.v1'
+        shrinkage: 'HERA.RETAIL.INV.SHRINKAGE.V1'
       }
     },
 
@@ -229,7 +229,7 @@ export class TrialBalanceDNAService {
       // Get trial balance data from universal API
       const response = await this.api.query({
         action: 'custom_query',
-        smart_code: 'HERA.FIN.TB.GENERATE.v1',
+        smart_code: 'HERA.FIN.TB.GENERATE.V1',
         query: 'get_trial_balance_data',
         params: {
           organization_id: this.organizationId,
@@ -266,7 +266,7 @@ export class TrialBalanceDNAService {
       if (includeValidation) {
         const validationResponse = await this.api.query({
           action: 'custom_query',
-          smart_code: 'HERA.FIN.TB.VALIDATE.v1',
+          smart_code: 'HERA.FIN.TB.VALIDATE.V1',
           query: 'validate_trial_balance',
           params: {
             organization_id: this.organizationId,
@@ -294,7 +294,7 @@ export class TrialBalanceDNAService {
       if (includeRatios) {
         const ratiosResponse = await this.api.query({
           action: 'custom_query',
-          smart_code: 'HERA.FIN.TB.RATIOS.v1',
+          smart_code: 'HERA.FIN.TB.RATIOS.V1',
           query: 'calculate_trial_balance_ratios',
           params: {
             organization_id: this.organizationId,

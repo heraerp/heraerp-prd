@@ -105,7 +105,7 @@ export async function postEventWithBranch(
     source_entity_id: branchEntityId,
     target_entity_id: ticket.customer_entity_id ?? null,
     total_amount: Number(ticket.total) || 0,
-    smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.v1'),
+    smart_code: heraCode('HERA.SALON.POS.SALE.HEADER.V1'),
     external_reference: extRef,
     business_context: { ticket_id: ticket.id },
     metadata: { ui: 'pos', tax_total: ticket.taxTotal ?? 0 },
@@ -162,7 +162,7 @@ export async function postEventWithBranch(
       quantity: item.qty,
       unit_amount: item.price,
       line_amount: item.qty * item.price,
-      smart_code: heraCode('HERA.SALON.POS.LINE.SERVICE.v1'),
+      smart_code: heraCode('HERA.SALON.POS.LINE.SERVICE.V1'),
       line_data: {
         stylist_entity_id: stylistEntityId,
         stylist_name: item.stylist_name ?? item.stylist?.name ?? null,
@@ -182,7 +182,7 @@ export async function postEventWithBranch(
       line_type: LINE.TAX,
       description: 'Sales Tax/VAT',
       line_amount: ticket.taxTotal,
-      smart_code: heraCode('HERA.SALON.POS.LINE.TAX.v1'),
+      smart_code: heraCode('HERA.SALON.POS.LINE.TAX.V1'),
       line_data: {}
     })
   }

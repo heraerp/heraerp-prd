@@ -58,6 +58,34 @@ const VENDOR_CONFIGS = {
     requiredFields: ['apiKey', 'dataCenter'],
     defaultEndpoint: 'https://{dataCenter}.api.mailchimp.com',
     capabilities: ['lists', 'campaigns', 'subscribers', 'templates']
+  },
+  linkedin: {
+    name: 'LinkedIn',
+    authType: 'oauth2',
+    requiredFields: ['clientId', 'clientSecret', 'redirectUri'],
+    defaultEndpoint: 'https://api.linkedin.com',
+    capabilities: ['organization', 'events', 'posts', 'attendees']
+  },
+  meetup: {
+    name: 'Meetup',
+    authType: 'oauth2',
+    requiredFields: ['clientId', 'clientSecret'],
+    defaultEndpoint: 'https://api.meetup.com',
+    capabilities: ['groups', 'events', 'members', 'rsvps']
+  },
+  facebook: {
+    name: 'Facebook',
+    authType: 'oauth2',
+    requiredFields: ['appId', 'appSecret', 'pageAccessToken'],
+    defaultEndpoint: 'https://graph.facebook.com',
+    capabilities: ['pages', 'events', 'posts', 'insights']
+  },
+  eventbrite: {
+    name: 'Eventbrite',
+    authType: 'oauth2',
+    requiredFields: ['clientId', 'clientSecret', 'privateToken'],
+    defaultEndpoint: 'https://www.eventbriteapi.com/v3',
+    capabilities: ['events', 'attendees', 'orders', 'venues']
   }
 }
 

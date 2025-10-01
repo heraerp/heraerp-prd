@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         run_header: {
           id: runId,
           transaction_type: 'playbook_run',
-          smart_code: 'HERA.PLAYBOOK.RUN.SIMPLE.v1',
+          smart_code: 'HERA.PLAYBOOK.RUN.SIMPLE.V1',
           status: 'in_progress',
           playbook_id: body.playbook_id,
           playbook_name: 'Playbook Run',
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
           step_type: 'system',
           worker_type: 'system',
           status: 'pending',
-          smart_code: 'HERA.PLAYBOOK.STEP.SIMPLE.v1',
+          smart_code: 'HERA.PLAYBOOK.STEP.SIMPLE.V1',
           estimated_duration_minutes: 5
         },
         execution_status: 'in_progress',

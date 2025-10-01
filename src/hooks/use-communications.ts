@@ -452,7 +452,7 @@ export function useCampaignSchedule() {
           ...(orgId && { 'X-Organization-Id': orgId })
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.SCHEDULED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.SCHEDULED.V1',
           ...data
         })
       })
@@ -484,7 +484,7 @@ export function useCampaignPause() {
           ...(orgId && { 'X-Organization-Id': orgId })
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.PAUSED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.PAUSED.V1',
           ...data
         })
       })
@@ -516,7 +516,7 @@ export function useCampaignResume() {
           ...(orgId && { 'X-Organization-Id': orgId })
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.RESUMED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.RESUMED.V1',
           ...data
         })
       })
@@ -548,7 +548,7 @@ export function useCampaignCancel() {
           ...(orgId && { 'X-Organization-Id': orgId })
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.CANCELLED.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.CANCELLED.V1',
           ...data
         })
       })
@@ -611,7 +611,7 @@ export function useRetryFailed() {
           ...(orgId && { 'X-Organization-Id': orgId })
         },
         body: JSON.stringify({
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.RETRY.v1',
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.MESSAGE.RETRY.V1',
           demo_guard: true,
           ...data
         })

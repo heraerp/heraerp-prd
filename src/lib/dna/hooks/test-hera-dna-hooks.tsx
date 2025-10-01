@@ -1,6 +1,6 @@
 /**
  * HERA DNA HOOKS TEST SUITE
- * Smart Code: HERA.DNA.HOOKS.TEST.v1
+ * Smart Code: HERA.DNA.HOOKS.TEST.V1
  *
  * Tests all HERA DNA hooks to ensure they're working correctly
  * with the new useHERAAuth system

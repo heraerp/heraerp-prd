@@ -1,6 +1,6 @@
 /**
  * Universal Report Pattern API
- * Smart Code: HERA.API.URP.ENDPOINT.v1
+ * Smart Code: HERA.API.URP.ENDPOINT.V1
  *
  * RESTful API for executing URP reports
  */
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     name: 'Universal Report Pattern API',
     version: '1.0.0',
-    smartCode: 'HERA.API.URP.ENDPOINT.v1',
+    smartCode: 'HERA.API.URP.ENDPOINT.V1',
     status: 'operational',
     endpoints: {
       execute: 'Execute a report recipe',

@@ -199,7 +199,7 @@ export default function CALearningPlatform() {
         case 'explain':
           action = 'custom_request'
           requestData = {
-            smart_code: 'HERA.CA.EDU.AI.EXPLAIN.v1',
+            smart_code: 'HERA.CA.EDU.AI.EXPLAIN.V1',
             task_type: 'learning',
             prompt:
               'Explain the concept of Input Tax Credit in GST with practical examples and legal sections'
@@ -695,7 +695,7 @@ export default function CALearningPlatform() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'custom_request',
-          smart_code: 'HERA.CA.EXPERT.HINT.v1',
+          smart_code: 'HERA.CA.EXPERT.HINT.V1',
           task_type: 'learning',
           prompt: `As a CA Final expert, provide a helpful hint (not the direct answer) for this question: "${currentQ.question}". Give a study tip or concept explanation to guide the student.`,
           max_tokens: 150,

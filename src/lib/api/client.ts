@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA API CLIENT - PRODUCTION READY
-// Smart Code: HERA.API.CLIENT.CORE.v1
+// Smart Code: HERA.API.CLIENT.CORE.V1
 // Minimal, typed API client with automatic token management and org resolution
 // ================================================================================
 

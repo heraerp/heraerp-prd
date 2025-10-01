@@ -58,7 +58,7 @@ export class SalonManagerService implements ISalonManagerService {
         from_entity_id: clientId,
         to_entity_id: stylist.id,
         total_amount: service.price,
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         metadata: {
           service_id: service.id,
           service_name: service.name,
@@ -77,7 +77,7 @@ export class SalonManagerService implements ISalonManagerService {
         quantity: 1,
         unit_price: service.price,
         line_amount: service.price,
-        smart_code: 'HERA.SALON.SERVICE.LINE.v1',
+        smart_code: 'HERA.SALON.SERVICE.LINE.V1',
         metadata: {
           service_type: service.category,
           commission_rate: stylist.commission_rate || 0.3
@@ -632,7 +632,7 @@ export class SalonManagerService implements ISalonManagerService {
       entity_type: 'customer',
       entity_name: name,
       entity_code: `CUST-${Date.now().toString().slice(-6)}`,
-      smart_code: 'HERA.SALON.CUSTOMER.PROFILE.v1',
+      smart_code: 'HERA.SALON.CUSTOMER.PROFILE.V1',
       metadata: {
         source: 'appointment_booking',
         created_by: this.userId

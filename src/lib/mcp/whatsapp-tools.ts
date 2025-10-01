@@ -1,7 +1,7 @@
 /**
  * HERA MCP WhatsApp Tools Integration
  * Integrated MCP tools for WhatsApp Business features
- * Smart Code: HERA.MCP.WHATSAPP.TOOLS.v1
+ * Smart Code: HERA.MCP.WHATSAPP.TOOLS.V1
  */
 
 import { createClient } from '@supabase/supabase-js'
@@ -14,7 +14,7 @@ const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey)
 
 // WhatsApp DNA Configuration
 export const WHATSAPP_DNA_CONFIG = {
-  component_id: 'HERA.WHATSAPP.BUSINESS.ENGINE.v1',
+  component_id: 'HERA.WHATSAPP.BUSINESS.ENGINE.V1',
   component_name: 'Universal WhatsApp Business Integration Engine',
   version: '1.0.0',
   capabilities: [
@@ -236,7 +236,7 @@ export async function createBookingFlow(
       entity_name: flow.flow_name,
       entity_code: flow.flow_id,
       organization_id: organizationId,
-      smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.v1',
+      smart_code: 'HERA.WHATSAPP.FLOW.BOOKING.V1',
       metadata: flow
     }
 
@@ -336,7 +336,7 @@ export async function getCustomerJourneyAnalytics(
 
     return {
       success: true,
-      component: 'HERA.WHATSAPP.JOURNEY.ANALYTICS.v1',
+      component: 'HERA.WHATSAPP.JOURNEY.ANALYTICS.V1',
       timestamp: new Date().toISOString(),
       organization_id: organizationId,
       data: {

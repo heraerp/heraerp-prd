@@ -232,7 +232,7 @@ export default function POSTestPage() {
   -H "Content-Type: application/json" \\
   -d '{
     "orgId": "${organization.id}",
-    "smart_code": "HERA.SALON.POS.SERVICE.CREATE.v1",
+    "smart_code": "HERA.SALON.POS.SERVICE.CREATE.V1",
     "service": {
       "entity_name": "Test Service",
       "price": 100,

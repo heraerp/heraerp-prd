@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA POS CART DISPLAY
-// Smart Code: HERA.UI.POS.CART.v1
+// Smart Code: HERA.UI.POS.CART.V1
 // Cart display with line management and totals
 // ================================================================================
 

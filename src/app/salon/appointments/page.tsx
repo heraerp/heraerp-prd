@@ -1,6 +1,6 @@
 // ================================================================================
 // SALON APPOINTMENTS PAGE - LIST VIEW (PLAYBOOK API)
-// Smart Code: HERA.PAGES.SALON.APPOINTMENTS.v1
+// Smart Code: HERA.PAGES.SALON.APPOINTMENTS.V1
 // Uses Playbook API for appointment operations with Sacred Six tables
 // ================================================================================
 

@@ -65,7 +65,7 @@ export const CORE_MODULES: ModuleConfig[] = [
   {
     id: 'core-dashboard',
     name: 'Dashboard',
-    smartCode: 'HERA.CORE.DASHBOARD.MODULE.v1',
+    smartCode: 'HERA.CORE.DASHBOARD.MODULE.V1',
     version: 'v1',
     description: 'Main dashboard and analytics',
     category: 'core',
@@ -92,7 +92,7 @@ export const CORE_MODULES: ModuleConfig[] = [
   {
     id: 'core-entities',
     name: 'Entity Management',
-    smartCode: 'HERA.CORE.ENTITIES.MODULE.v1',
+    smartCode: 'HERA.CORE.ENTITIES.MODULE.V1',
     version: 'v1',
     description: 'Universal entity management',
     category: 'core',
@@ -125,7 +125,7 @@ export const CORE_MODULES: ModuleConfig[] = [
   {
     id: 'core-accounting',
     name: 'Accounting',
-    smartCode: 'HERA.CORE.ACCOUNTING.MODULE.v1',
+    smartCode: 'HERA.CORE.ACCOUNTING.MODULE.V1',
     version: 'v1',
     description: 'Chart of accounts and journal entries',
     category: 'core',
@@ -146,7 +146,7 @@ export const CORE_MODULES: ModuleConfig[] = [
         exportName: 'ChartOfAccounts'
       }
     ],
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1'],
     permissions: ['accounting:view', 'accounting:create', 'accounting:post']
   }
 ]
@@ -156,7 +156,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
   {
     id: 'salon-pos',
     name: 'Salon POS',
-    smartCode: 'HERA.SALON.POS.MODULE.v1',
+    smartCode: 'HERA.SALON.POS.MODULE.V1',
     version: 'v1',
     description: 'Complete salon management system',
     category: 'industry',
@@ -204,7 +204,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
         exportName: 'AppointmentCalendar'
       }
     ],
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.ACCOUNTING.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.ACCOUNTING.MODULE.V1'],
     permissions: ['salon:access'],
     configuration: {
       defaults: {
@@ -233,7 +233,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
   {
     id: 'restaurant-pos',
     name: 'Restaurant POS',
-    smartCode: 'HERA.RESTAURANT.POS.MODULE.v1',
+    smartCode: 'HERA.RESTAURANT.POS.MODULE.V1',
     version: 'v1',
     description: 'Restaurant management and POS system',
     category: 'industry',
@@ -278,7 +278,7 @@ export const INDUSTRY_MODULES: ModuleConfig[] = [
         exportName: 'KitchenDisplay'
       }
     ],
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.ACCOUNTING.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.ACCOUNTING.MODULE.V1'],
     permissions: ['restaurant:access']
   }
 ]
@@ -315,7 +315,7 @@ export const ADDON_MODULES: ModuleConfig[] = [
         exportName: 'AutoJournalDashboard'
       }
     ],
-    dependencies: ['HERA.CORE.ACCOUNTING.MODULE.v1'],
+    dependencies: ['HERA.CORE.ACCOUNTING.MODULE.V1'],
     permissions: ['auto-journal:use'],
     configuration: {
       defaults: {
@@ -361,7 +361,7 @@ export const ENTERPRISE_MODULES: ModuleConfig[] = [
   {
     id: 'sso-enterprise',
     name: 'Enterprise SSO',
-    smartCode: 'HERA.ENTERPRISE.SSO.MODULE.v1',
+    smartCode: 'HERA.ENTERPRISE.SSO.MODULE.V1',
     version: 'v1',
     description: 'SAML 2.0 and OIDC single sign-on',
     category: 'enterprise',

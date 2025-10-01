@@ -307,7 +307,7 @@ export function HeraSidebar({
 
 // Export as HERA DNA Component
 export const HERA_SIDEBAR_DNA = {
-  id: 'HERA.UI.LAYOUT.SIDEBAR.v1',
+  id: 'HERA.UI.LAYOUT.SIDEBAR.V1',
   name: 'HERA Universal Sidebar',
   description: 'Reusable sidebar layout with navigation, apps modal, and customizable theming',
   component: HeraSidebar,

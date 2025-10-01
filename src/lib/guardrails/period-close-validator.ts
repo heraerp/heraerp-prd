@@ -196,7 +196,7 @@ export async function closeFiscalPeriod(params: {
     from_entity_id: periodId,
     to_entity_id: closedStatus.id,
     relationship_type: 'has_status',
-    smart_code: 'HERA.FIN.PERIOD.CLOSE.v1',
+    smart_code: 'HERA.FIN.PERIOD.CLOSE.V1',
     organization_id: organizationId,
     metadata: {
       closed_at: new Date().toISOString(),

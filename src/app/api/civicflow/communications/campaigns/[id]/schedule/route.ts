@@ -44,7 +44,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         organization_id: orgId,
         transaction_type: 'comm_campaign_scheduled',
         transaction_code: generateTransactionCode('CAMP'),
-        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.SCHEDULE.v1',
+        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.CAMPAIGN.SCHEDULE.V1',
         reference_entity_id: id,
         metadata: {
           ...body,
@@ -59,19 +59,19 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
           entity_id: id,
           field_name: 'status',
           field_value_text: 'scheduled',
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.STATUS.v1'
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.STATUS.V1'
         },
         {
           entity_id: id,
           field_name: 'schedule_at',
           field_value_text: body.schedule_at,
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.SCHEDULE.v1'
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.SCHEDULE.V1'
         },
         {
           entity_id: id,
           field_name: 'demo_scheduled',
           field_value_boolean: true,
-          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.DEMO.v1'
+          smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.DEMO.V1'
         }
       ])
 

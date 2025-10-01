@@ -460,7 +460,7 @@ export function SalonPOSTerminalGlass({
           entity_type: 'chair',
           entity_name: chair.entity_name,
           entity_code: chair.entity_code,
-          smart_code: 'HERA.SALON.STATION.CHAIR.v1',
+          smart_code: 'HERA.SALON.STATION.CHAIR.V1',
           metadata: chair.metadata,
           organization_id: organizationId
         })

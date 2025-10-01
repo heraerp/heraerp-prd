@@ -67,7 +67,7 @@ export const inviteSchema: JSONSchemaType<NormalizedInvite> = {
     entity_type: { type: 'string', const: 'event_invite' },
     entity_name: { type: 'string', minLength: 1 },
     entity_code: { type: 'string', pattern: '^EB-ATT-' },
-    smart_code: { type: 'string', const: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.v1' },
+    smart_code: { type: 'string', const: 'HERA.PUBLICSECTOR.CRM.EVENT.INVITE.V1' },
     dynamic_data: {
       type: 'object',
       properties: {

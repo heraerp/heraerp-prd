@@ -128,7 +128,7 @@ export async function GET(
       {
         success: false,
         error: error.message || 'Internal server error',
-        smart_code: `HERA.EDU.API.ERROR.v1`
+        smart_code: `HERA.EDU.API.ERROR.V1`
       },
       { status: 500 }
     )

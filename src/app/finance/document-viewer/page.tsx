@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Financial Document Viewer (Similar to SAP FB03)
- * Smart Code: HERA.FIN.DOC.VIEWER.v1
+ * Smart Code: HERA.FIN.DOC.VIEWER.V1
  *
  * Display financial documents with organization and fiscal year filtering
  */

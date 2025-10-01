@@ -1,6 +1,6 @@
 /**
  * HERA DNA UI COMPONENT REGISTRY
- * Smart Code: HERA.DNA.UI.REGISTRY.v1
+ * Smart Code: HERA.DNA.UI.REGISTRY.V1
  *
  * Enterprise-grade UI component library with glassmorphism design
  * All components include dark mode support and are linked to corresponding hooks

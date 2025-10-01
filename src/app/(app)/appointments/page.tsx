@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENTS LANDING PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.INDEX.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.INDEX.V1
 // Main appointments page that redirects to calendar view
 // ================================================================================
 

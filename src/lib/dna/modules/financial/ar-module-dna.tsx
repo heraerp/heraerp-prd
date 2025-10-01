@@ -1145,7 +1145,7 @@ export function ARModule({
 
 // Export as HERA DNA Component
 export const AR_MODULE_DNA = {
-  id: 'HERA.FIN.AR.MODULE.v1',
+  id: 'HERA.FIN.AR.MODULE.V1',
   name: 'Accounts Receivable Module',
   description:
     'Complete AR management with customer management, invoicing, payments, collections, and returns',

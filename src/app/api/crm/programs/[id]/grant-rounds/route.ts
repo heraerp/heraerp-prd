@@ -86,7 +86,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         entity_id: grantRound.id,
         field_name: 'budget',
         field_value_number: body.budget,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.BUDGET.v1'
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.BUDGET.V1'
       })
     }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         entity_id: grantRound.id,
         field_name: 'kpis',
         field_value_json: body.kpis,
-        smart_code: 'HERA.CRM.PROGRAMS.DYN.KPIS.v1'
+        smart_code: 'HERA.CRM.PROGRAMS.DYN.KPIS.V1'
       })
     }
 

@@ -342,7 +342,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     return this.query({
       entity: 'core_entities',
       organization_id: organizationId,
-      smart_code: 'HERA.ENT.QUERY.COMPLETE.v1',
+      smart_code: 'HERA.ENT.QUERY.COMPLETE.V1',
       query: advancedQuery,
       performance: {
         cache_ttl: 300,
@@ -381,7 +381,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
     return this.execute({
       entity: 'core_entities',
       organization_id: this.config.organizationId,
-      smart_code: 'HERA.ENT.UPDATE.COMPLETE.v1',
+      smart_code: 'HERA.ENT.UPDATE.COMPLETE.V1',
       operation: 'update',
       data: updateData,
       version: request.version?.toString(),
@@ -406,7 +406,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.execute({
           entity: 'core_entities',
           organization_id: organizationId,
-          smart_code: 'HERA.ENT.AI.CLASSIFY.v1',
+          smart_code: 'HERA.ENT.AI.CLASSIFY.V1',
           operation: 'update',
           data: { id: entityId },
           ai_requests: {
@@ -443,7 +443,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
         return this.query({
           entity: 'core_entities',
           organization_id: organizationId,
-          smart_code: 'HERA.ENT.HIERARCHY.QUERY.v1',
+          smart_code: 'HERA.ENT.HIERARCHY.QUERY.V1',
           query: {
             filters: { from_entity_id: rootEntityId },
             joins: [
@@ -586,7 +586,7 @@ export class UniversalAPISchemaComplete extends UniversalAPISacredSix {
       validation: await this.query({
         entity: 'core_entities',
         organization_id: organizationId,
-        smart_code: 'HERA.ENT.SCHEMA.VALIDATION.v1',
+        smart_code: 'HERA.ENT.SCHEMA.VALIDATION.V1',
         query: {
           aggregations: [
             {

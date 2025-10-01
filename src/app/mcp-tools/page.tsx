@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 // ================================================================================
 // MCP TOOLS DASHBOARD - Progressive to Production Conversion Suite
 // Central hub for all MCP-powered conversion tools
-// Smart Code: HERA.MCP.TOOLS.DASHBOARD.v1
+// Smart Code: HERA.MCP.TOOLS.DASHBOARD.V1
 // ================================================================================
 
 import React from 'react'

@@ -36,13 +36,13 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
           service.entity_code,
           'price',
           (service.metadata as any)?.price || 0,
-          'HERA.SALON.SERVICE.PRICE.v1'
+          'HERA.SALON.SERVICE.PRICE.V1'
         )
         await api.setDynamicField(
           service.entity_code,
           'duration',
           (service.metadata as any)?.duration || 60,
-          'HERA.SALON.SERVICE.DURATION.v1'
+          'HERA.SALON.SERVICE.DURATION.V1'
         )
       }
     }
@@ -90,7 +90,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
         staffEntity.id,
         'commission_rate',
         staff.commission_rate,
-        'HERA.SALON.STAFF.COMMISSION.v1'
+        'HERA.SALON.STAFF.COMMISSION.V1'
       )
     }
 
@@ -107,8 +107,8 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
       })
 
       // Set initial inventory
-      await api.setDynamicField(productEntity.id, 'quantity_on_hand', 20, 'HERA.INV.PRODUCT.QTY.v1')
-      await api.setDynamicField(productEntity.id, 'reorder_point', 5, 'HERA.INV.PRODUCT.REORDER.v1')
+      await api.setDynamicField(productEntity.id, 'quantity_on_hand', 20, 'HERA.INV.PRODUCT.QTY.V1')
+      await api.setDynamicField(productEntity.id, 'reorder_point', 5, 'HERA.INV.PRODUCT.REORDER.V1')
     }
 
     // 4. Create default payment methods
@@ -118,7 +118,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
         entity_type: 'payment_method',
         entity_name: method,
         entity_code: `PAY-${method.toUpperCase().replace(' ', '-')}`,
-        smart_code: 'HERA.FIN.PAYMENT.METHOD.v1',
+        smart_code: 'HERA.FIN.PAYMENT.METHOD.V1',
         metadata: {
           active: true,
           processing_fee: method.includes('Card') ? 2.9 : 0
@@ -154,7 +154,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
       entity_type: 'settings',
       entity_name: 'Salon Settings',
       entity_code: 'SETTINGS-SALON',
-      smart_code: 'HERA.SALON.SETTINGS.CONFIG.v1',
+      smart_code: 'HERA.SALON.SETTINGS.CONFIG.V1',
       metadata: settings
     })
 
@@ -170,7 +170,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
         entity_type: 'customer',
         entity_name: customer.name,
         entity_code: `CUST-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        smart_code: 'HERA.SALON.CUSTOMER.PROFILE.v1',
+        smart_code: 'HERA.SALON.CUSTOMER.PROFILE.V1',
         metadata: {
           email: customer.email,
           phone: customer.phone,
@@ -187,7 +187,7 @@ export async function setupSalonBusiness(options: SalonSetupOptions) {
         customerEntity.id,
         'loyalty_points',
         100,
-        'HERA.SALON.LOYALTY.POINTS.v1'
+        'HERA.SALON.LOYALTY.POINTS.V1'
       )
     }
 

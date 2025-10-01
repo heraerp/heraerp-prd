@@ -65,7 +65,7 @@ export const FACTORY_SMART_CODES = {
   DEPENDS_ON: 'HERA.UNIVERSAL.REL.DEPENDS_ON.v1',
   PACKAGED_AS: 'HERA.UNIVERSAL.REL.PACKAGED_AS.v1',
   GOVERNED_BY: 'HERA.UNIVERSAL.REL.GOVERNED_BY.v1',
-  VALIDATES: 'HERA.UNIVERSAL.REL.VALIDATES.v1'
+  VALIDATES: 'HERA.UNIVERSAL.REL.VALIDATES.V1'
 }
 
 export class UniversalFactory {
@@ -97,7 +97,7 @@ export class UniversalFactory {
       module.data.id,
       'module_manifest',
       JSON.stringify(manifest),
-      'HERA.UNIVERSAL.MODULE.MANIFEST.v1'
+      'HERA.UNIVERSAL.MODULE.MANIFEST.V1'
     )
 
     // Register dependencies
@@ -251,7 +251,7 @@ export class UniversalFactory {
       entity_type: 'artifact',
       entity_name: `${plan.manifest.name}-draft`,
       entity_code: `DRAFT-${Date.now()}`,
-      smart_code: 'HERA.UNIVERSAL.ARTIFACT.DRAFT.v1',
+      smart_code: 'HERA.UNIVERSAL.ARTIFACT.DRAFT.V1',
       metadata: {
         module_id: plan.module.id,
         structure

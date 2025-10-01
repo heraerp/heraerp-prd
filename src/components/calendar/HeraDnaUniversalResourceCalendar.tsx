@@ -2,7 +2,7 @@
 
 /**
  * HERA DNA Universal Resource Calendar
- * Smart Code: HERA.UI.CALENDAR.RESOURCE.UNIVERSAL.v1
+ * Smart Code: HERA.UI.CALENDAR.RESOURCE.UNIVERSAL.V1
  *
  * Universal multi-resource calendar that adapts to any business vertical:
  * - Salon: Stylists, Stations, Services

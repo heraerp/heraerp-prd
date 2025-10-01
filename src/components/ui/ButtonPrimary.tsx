@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA BUTTON PRIMARY - SALON THEME
-// Smart Code: HERA.UI.BUTTON.PRIMARY.SALON.v1
+// Smart Code: HERA.UI.BUTTON.PRIMARY.SALON.V1
 // Reusable primary button component with salon theme styling
 // ================================================================================
 

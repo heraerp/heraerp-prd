@@ -200,7 +200,7 @@ export function useServicesPlaybook({
 
         if (data.price !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.PRICE.v1', {
+            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.PRICE.V1', {
               amount: data.price,
               currency_code: data.currency || 'AED',
               tax_inclusive: false
@@ -212,7 +212,7 @@ export function useServicesPlaybook({
           dynamicPromises.push(
             upsertDynamicData(
               service.id,
-              'HERA.SALON.SERVICE.CATALOG.DURATION.v1',
+              'HERA.SALON.SERVICE.CATALOG.DURATION.V1',
               data.duration_mins
             )
           )
@@ -220,7 +220,7 @@ export function useServicesPlaybook({
 
         if (data.category) {
           dynamicPromises.push(
-            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1', data.category)
+            upsertDynamicData(service.id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.V1', data.category)
           )
         }
 
@@ -269,7 +269,7 @@ export function useServicesPlaybook({
 
         if (price !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.PRICE.v1', {
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.PRICE.V1', {
               amount: price,
               currency_code: currency || 'AED',
               tax_inclusive: false
@@ -279,13 +279,13 @@ export function useServicesPlaybook({
 
         if (duration_mins !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.DURATION.v1', duration_mins)
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.DURATION.V1', duration_mins)
           )
         }
 
         if (category !== undefined) {
           dynamicPromises.push(
-            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1', category)
+            upsertDynamicData(id, 'HERA.SALON.SERVICE.CATALOG.CATEGORY.V1', category)
           )
         }
 

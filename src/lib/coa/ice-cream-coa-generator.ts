@@ -450,7 +450,7 @@ export class IceCreamCOAGenerator {
         account_type: 'liability',
         parent_account: '2200',
         gst_rate: '18%',
-        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT18.v2`,
+        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT18.V2`,
         normal_balance: 'credit'
       })
 
@@ -461,7 +461,7 @@ export class IceCreamCOAGenerator {
         parent_account: '2200',
         gst_rate: '12%',
         description: 'For Kulfi and traditional products',
-        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT12.v2`,
+        smart_code: `HERA.IN.ICECREAM.GL.LIABILITY.GST.OUTPUT12.V2`,
         normal_balance: 'credit'
       })
     }

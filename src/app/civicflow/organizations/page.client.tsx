@@ -62,7 +62,7 @@ export default function Client() {
       entity_type: 'organization',
       entity_name: newOrgName,
       organization_id: currentOrgId,
-      smart_code: 'HERA.CRM.ORGS.ENTITY.ORGANIZATION.v1',
+      smart_code: 'HERA.CRM.ORGS.ENTITY.ORGANIZATION.V1',
       metadata: {
         type: newOrgType,
         engagement_stage: newOrgStage

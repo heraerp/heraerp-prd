@@ -65,7 +65,7 @@ export class SAPConnectorFactory {
       .from('core_dynamic_data')
       .select('field_name, field_value_text, field_value_json')
       .eq('organization_id', organizationId)
-      .eq('smart_code', 'HERA.ERP.FI.CONFIG.v1')
+      .eq('smart_code', 'HERA.ERP.FI.CONFIG.V1')
 
     if (error || !configData || configData.length === 0) {
       throw new Error('SAP configuration not found for organization')

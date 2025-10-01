@@ -100,7 +100,7 @@ export class AIFinanceIntegrator {
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
       transaction_type: 'goods_receipt',
-      smart_code: 'HERA.PROC.GR.AUTO.v1',
+      smart_code: 'HERA.PROC.GR.AUTO.V1',
       reference_number: goodsReceiptData.grNumber,
       total_amount: goodsReceiptData.totalValue,
       source_module: 'procurement',
@@ -136,7 +136,7 @@ export class AIFinanceIntegrator {
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
       transaction_type: 'sales_invoice',
-      smart_code: 'HERA.SALES.INV.AUTO.v1',
+      smart_code: 'HERA.SALES.INV.AUTO.V1',
       reference_number: invoiceData.invoiceNumber,
       total_amount: totalAmount,
       source_module: 'sales',
@@ -172,7 +172,7 @@ export class AIFinanceIntegrator {
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
       transaction_type: 'payroll_run',
-      smart_code: 'HERA.HR.PAYROLL.AUTO.v1',
+      smart_code: 'HERA.HR.PAYROLL.AUTO.V1',
       reference_number: `PAYROLL-${payrollData.payPeriod}`,
       total_amount: payrollData.grossPayroll,
       source_module: 'hr',
@@ -207,7 +207,7 @@ export class AIFinanceIntegrator {
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
       transaction_type: 'inventory_adjustment',
-      smart_code: 'HERA.INV.ADJ.AUTO.v1',
+      smart_code: 'HERA.INV.ADJ.AUTO.V1',
       reference_number: adjustmentData.adjustmentNumber,
       total_amount: Math.abs(totalValueChange),
       source_module: 'inventory',
@@ -235,7 +235,7 @@ export class AIFinanceIntegrator {
     const transactionData: BusinessTransactionEvent = {
       organization_id: this.organizationId,
       transaction_type: 'payment_receipt',
-      smart_code: 'HERA.CRM.PAYMENT.AUTO.v1',
+      smart_code: 'HERA.CRM.PAYMENT.AUTO.V1',
       reference_number: paymentData.paymentNumber,
       total_amount: paymentData.paymentAmount,
       source_module: 'crm',

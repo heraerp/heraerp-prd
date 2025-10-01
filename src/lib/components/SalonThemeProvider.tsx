@@ -1,6 +1,6 @@
 // ================================================================================
 // SALON THEME PROVIDER
-// Smart Code: HERA.UI.THEME.PROVIDER.v1
+// Smart Code: HERA.UI.THEME.PROVIDER.V1
 // Provides beautiful salon theme classes and utilities
 // ================================================================================
 

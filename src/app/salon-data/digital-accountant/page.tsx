@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Digital Accountant Integration
- * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.v1
+ * Smart Code: HERA.SALON.DIGITAL.ACCOUNTANT.V1
  *
  * Simplified accounting interface for salon owners
  * Natural language processing for non-accountants
@@ -611,7 +611,7 @@ Would you like to post this journal entry to the GL?`,
           amount,
           postingDate: new Date().toISOString(),
           reference: `Salon Transaction ${transactionId}`,
-          smartCode: 'HERA.SALON.MANUAL.POST.v1'
+          smartCode: 'HERA.SALON.MANUAL.POST.V1'
         })
       })
 

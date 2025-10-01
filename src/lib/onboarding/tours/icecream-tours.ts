@@ -10,13 +10,13 @@ import type { HeraTour } from '../types'
  * Main dashboard tour for new users
  */
 export const iceCreamDashboardTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.V1',
   autoStart: false,
   allowSkip: true,
-  skipSmartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.SKIP.v1',
+  skipSmartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.SKIP.V1',
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.WELCOME.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.WELCOME.V1',
       selector: '[data-testid="ice-cream-header"]',
       titleKey: 'ui.onboard.icecream.dashboard.welcome.title',
       bodyKey: 'ui.onboard.icecream.dashboard.welcome.body',
@@ -26,7 +26,7 @@ export const iceCreamDashboardTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.STATS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.STATS.V1',
       selector: '[data-testid="dashboard-stats"]',
       titleKey: 'ui.onboard.icecream.dashboard.stats.title',
       bodyKey: 'ui.onboard.icecream.dashboard.stats.body',
@@ -36,7 +36,7 @@ export const iceCreamDashboardTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.PRODUCTION.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.PRODUCTION.V1',
       selector: '[data-testid="production-status"]',
       titleKey: 'ui.onboard.icecream.dashboard.production.title',
       bodyKey: 'ui.onboard.icecream.dashboard.production.body',
@@ -45,7 +45,7 @@ export const iceCreamDashboardTour: HeraTour = {
       waitFor: '[data-testid="production-status"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.INVENTORY.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.INVENTORY.V1',
       selector: '[data-testid="inventory-levels"]',
       titleKey: 'ui.onboard.icecream.dashboard.inventory.title',
       bodyKey: 'ui.onboard.icecream.dashboard.inventory.body',
@@ -54,7 +54,7 @@ export const iceCreamDashboardTour: HeraTour = {
       waitFor: '[data-testid="inventory-levels"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.SIDEBAR.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.DASHBOARD.SIDEBAR.V1',
       selector: '[data-testid="hera-sidebar-nav"]',
       titleKey: 'ui.onboard.icecream.dashboard.sidebar.title',
       bodyKey: 'ui.onboard.icecream.dashboard.sidebar.body',
@@ -69,12 +69,12 @@ export const iceCreamDashboardTour: HeraTour = {
  * Production module tour
  */
 export const iceCreamProductionTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.OVERVIEW.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.OVERVIEW.V1',
       selector: '[data-testid="production-header"]',
       titleKey: 'ui.onboard.icecream.production.overview.title',
       bodyKey: 'ui.onboard.icecream.production.overview.body',
@@ -84,7 +84,7 @@ export const iceCreamProductionTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.BATCH.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.BATCH.V1',
       selector: '[data-testid="create-batch-button"]',
       titleKey: 'ui.onboard.icecream.production.batch.title',
       bodyKey: 'ui.onboard.icecream.production.batch.body',
@@ -93,7 +93,7 @@ export const iceCreamProductionTour: HeraTour = {
       waitFor: '[data-testid="create-batch-button"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.STATUS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.PRODUCTION.STATUS.V1',
       selector: '[data-testid="active-batches"]',
       titleKey: 'ui.onboard.icecream.production.status.title',
       bodyKey: 'ui.onboard.icecream.production.status.body',
@@ -107,12 +107,12 @@ export const iceCreamProductionTour: HeraTour = {
  * Inventory management tour
  */
 export const iceCreamInventoryTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.OVERVIEW.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.OVERVIEW.V1',
       selector: '[data-testid="inventory-header"]',
       titleKey: 'ui.onboard.icecream.inventory.overview.title',
       bodyKey: 'ui.onboard.icecream.inventory.overview.body',
@@ -122,7 +122,7 @@ export const iceCreamInventoryTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.MATERIALS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.MATERIALS.V1',
       selector: '[data-testid="raw-materials-section"]',
       titleKey: 'ui.onboard.icecream.inventory.materials.title',
       bodyKey: 'ui.onboard.icecream.inventory.materials.body',
@@ -130,7 +130,7 @@ export const iceCreamInventoryTour: HeraTour = {
       waitFor: '[data-testid="raw-materials-section"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.PRODUCTS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.INVENTORY.PRODUCTS.V1',
       selector: '[data-testid="finished-products-section"]',
       titleKey: 'ui.onboard.icecream.inventory.products.title',
       bodyKey: 'ui.onboard.icecream.inventory.products.body',
@@ -144,12 +144,12 @@ export const iceCreamInventoryTour: HeraTour = {
  * POS terminal tour
  */
 export const iceCreamPOSTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.INTRO.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.INTRO.V1',
       selector: '[data-testid="pos-header"]',
       titleKey: 'ui.onboard.icecream.pos.intro.title',
       bodyKey: 'ui.onboard.icecream.pos.intro.body',
@@ -159,7 +159,7 @@ export const iceCreamPOSTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.PRODUCTS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.PRODUCTS.V1',
       selector: '[data-testid="product-grid"]',
       titleKey: 'ui.onboard.icecream.pos.products.title',
       bodyKey: 'ui.onboard.icecream.pos.products.body',
@@ -168,7 +168,7 @@ export const iceCreamPOSTour: HeraTour = {
       waitFor: '[data-testid="product-grid"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.CART.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.POS.CART.V1',
       selector: '[data-testid="pos-cart"]',
       titleKey: 'ui.onboard.icecream.pos.cart.title',
       bodyKey: 'ui.onboard.icecream.pos.cart.body',
@@ -183,12 +183,12 @@ export const iceCreamPOSTour: HeraTour = {
  * Quality control tour
  */
 export const iceCreamQualityTour: HeraTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.INTRO.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.INTRO.V1',
       selector: '[data-testid="quality-header"]',
       titleKey: 'ui.onboard.icecream.quality.intro.title',
       bodyKey: 'ui.onboard.icecream.quality.intro.body',
@@ -198,7 +198,7 @@ export const iceCreamQualityTour: HeraTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.PENDING.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.PENDING.V1',
       selector: '[data-testid="pending-checks"]',
       titleKey: 'ui.onboard.icecream.quality.pending.title',
       bodyKey: 'ui.onboard.icecream.quality.pending.body',
@@ -206,7 +206,7 @@ export const iceCreamQualityTour: HeraTour = {
       waitFor: '[data-testid="pending-checks"]'
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.ACTIONS.v1',
+      smartCode: 'HERA.UI.ONBOARD.ICECREAM.QUALITY.ACTIONS.V1',
       selector: '[data-testid="quality-actions"]',
       titleKey: 'ui.onboard.icecream.quality.actions.title',
       bodyKey: 'ui.onboard.icecream.quality.actions.body',

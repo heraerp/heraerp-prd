@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA SALON DASHBOARD
-// Smart Code: HERA.SALON.DASHBOARD.MAIN.v1
+// Smart Code: HERA.SALON.DASHBOARD.MAIN.V1
 // Main dashboard for salon owners and managers
 // ================================================================================
 

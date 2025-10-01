@@ -1,6 +1,6 @@
 // ================================================================================
 // APPOINTMENT TO POS INTEGRATION HOOK
-// Smart Code: HERA.HOOK.APPOINTMENT.POS.v1
+// Smart Code: HERA.HOOK.APPOINTMENT.POS.V1
 // Converts completed appointments to POS checkout flow
 // ================================================================================
 

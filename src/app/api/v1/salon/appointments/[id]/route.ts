@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const appointmentResult = await universalApi.read('universal_transactions', {
       id: params.id,
       organization_id: organizationId,
-      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1'
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1'
     })
 
     if (!appointmentResult.success || !appointmentResult.data?.length) {

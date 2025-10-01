@@ -1,6 +1,6 @@
 // ================================================================================
 // APPOINTMENT SYSTEM TYPE SAFETY DEMONSTRATION
-// Smart Code: HERA.DEMO.TYPES.APPOINTMENT.v1
+// Smart Code: HERA.DEMO.TYPES.APPOINTMENT.V1
 // Demonstrates TypeScript type safety for appointment system
 // ================================================================================
 

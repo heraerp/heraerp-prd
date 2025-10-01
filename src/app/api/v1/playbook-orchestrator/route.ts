@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         await universalApi.createTransaction({
           transaction_type: 'playbook_orchestrator_event',
           organization_id: auth.organizationId!,
-          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.START.v1',
+          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.START.V1',
           total_amount: 0,
           metadata: {
             action: 'start',
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
         await universalApi.createTransaction({
           transaction_type: 'playbook_orchestrator_event',
           organization_id: auth.organizationId!,
-          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.STOP.v1',
+          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.STOP.V1',
           total_amount: 0,
           metadata: {
             action: 'stop',
@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
         await universalApi.createTransaction({
           transaction_type: 'playbook_orchestrator_event',
           organization_id: auth.organizationId!,
-          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.RESTART.v1',
+          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.RESTART.V1',
           total_amount: 0,
           metadata: {
             action: 'restart',
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
         await universalApi.createTransaction({
           transaction_type: 'playbook_orchestrator_event',
           organization_id: auth.organizationId!,
-          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.CONFIG.v1',
+          smart_code: 'HERA.PLAYBOOK.ORCHESTRATOR.CONFIG.V1',
           total_amount: 0,
           metadata: {
             action: 'configure',

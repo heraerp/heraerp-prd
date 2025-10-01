@@ -177,7 +177,7 @@ const DevelopmentMatrix = () => {
         'HERA.FIN.GL.TXN.JE.V1 - Journal entries',
         'HERA.INV.RCV.TXN.IN.V1 - Inventory receiving',
         'HERA.CRM.CUS.ENT.PROF.V1 - Customer profiles',
-        'HERA.HR.PAY.TXN.RUN.v1 - Payroll processing'
+        'HERA.HR.PAY.TXN.RUN.V1 - Payroll processing'
       ]
     }
   ]

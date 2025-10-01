@@ -1,7 +1,7 @@
 /**
  * HERA DNA Schema Hooks
  * React hooks for schema management with caching and real-time updates
- * Smart Code: HERA.DNA.SCHEMA.HOOKS.v1
+ * Smart Code: HERA.DNA.SCHEMA.HOOKS.V1
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'

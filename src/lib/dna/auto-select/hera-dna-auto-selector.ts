@@ -128,39 +128,39 @@ export class HeraDNAAutoSelector {
     const components: string[] = []
 
     // Core components always included
-    components.push('HERA.UI.GLASS.PANEL.v1')
-    components.push('HERA.UI.THEME.PROVIDER.v1')
+    components.push('HERA.UI.GLASS.PANEL.V1')
+    components.push('HERA.UI.THEME.PROVIDER.V1')
 
     // Navigation components
     if (/nav|menu|sidebar|header/i.test(prompt)) {
-      components.push('HERA.UI.GLASS.NAVBAR.FIORI.v1')
-      components.push('HERA.UI.SIDEBAR.ENTERPRISE.v1')
+      components.push('HERA.UI.GLASS.NAVBAR.FIORI.V1')
+      components.push('HERA.UI.SIDEBAR.ENTERPRISE.V1')
     }
 
     // Data display components
     if (/table|list|data|grid/i.test(prompt)) {
-      components.push('HERA.UI.GLASS.TABLE.FIORI.RESPONSIVE.v1')
-      components.push('HERA.UI.DATA.GRID.ENTERPRISE.v1')
+      components.push('HERA.UI.GLASS.TABLE.FIORI.RESPONSIVE.V1')
+      components.push('HERA.UI.DATA.GRID.ENTERPRISE.V1')
     }
 
     // Dashboard components
     if (/dashboard|analytics|metrics|kpi|chart/i.test(prompt)) {
-      components.push('HERA.UI.DASHBOARD.EXECUTIVE.GLASS.v1')
-      components.push('HERA.UI.STAT.CARD.DNA.v1')
-      components.push('HERA.UI.ANALYTICS.CHART.v1')
+      components.push('HERA.UI.DASHBOARD.EXECUTIVE.GLASS.V1')
+      components.push('HERA.UI.STAT.CARD.DNA.V1')
+      components.push('HERA.UI.ANALYTICS.CHART.V1')
     }
 
     // Form components
     if (/form|input|field|submit/i.test(prompt)) {
-      components.push('HERA.UI.FORM.ENTERPRISE.v1')
-      components.push('HERA.UI.INPUT.GLASS.v1')
-      components.push('HERA.UI.SELECT.GLASS.v1')
+      components.push('HERA.UI.FORM.ENTERPRISE.V1')
+      components.push('HERA.UI.INPUT.GLASS.V1')
+      components.push('HERA.UI.SELECT.GLASS.V1')
     }
 
     // Layout components
     if (/layout|page|template|structure/i.test(prompt)) {
-      components.push('HERA.UI.LAYOUT.DYNAMIC.PAGE.v1')
-      components.push('HERA.UI.LAYOUT.OBJECT.PAGE.v1')
+      components.push('HERA.UI.LAYOUT.DYNAMIC.PAGE.V1')
+      components.push('HERA.UI.LAYOUT.OBJECT.PAGE.V1')
     }
 
     // Industry-specific components
@@ -292,24 +292,24 @@ export class HeraDNAAutoSelector {
   private getIndustryComponents(industry: string): string[] {
     const industryComponents: Record<string, string[]> = {
       restaurant: [
-        'HERA.UI.POS.RESTAURANT.v1',
-        'HERA.UI.MENU.MANAGER.v1',
-        'HERA.UI.ORDER.TRACKER.v1'
+        'HERA.UI.POS.RESTAURANT.V1',
+        'HERA.UI.MENU.MANAGER.V1',
+        'HERA.UI.ORDER.TRACKER.V1'
       ],
       healthcare: [
-        'HERA.UI.PATIENT.RECORD.v1',
-        'HERA.UI.APPOINTMENT.SCHEDULER.v1',
-        'HERA.UI.PRESCRIPTION.MANAGER.v1'
+        'HERA.UI.PATIENT.RECORD.V1',
+        'HERA.UI.APPOINTMENT.SCHEDULER.V1',
+        'HERA.UI.PRESCRIPTION.MANAGER.V1'
       ],
       retail: [
-        'HERA.UI.INVENTORY.TRACKER.v1',
-        'HERA.UI.POS.RETAIL.v1',
-        'HERA.UI.CUSTOMER.LOYALTY.v1'
+        'HERA.UI.INVENTORY.TRACKER.V1',
+        'HERA.UI.POS.RETAIL.V1',
+        'HERA.UI.CUSTOMER.LOYALTY.V1'
       ],
       finance: [
-        'HERA.UI.PORTFOLIO.DASHBOARD.v1',
-        'HERA.UI.TRANSACTION.MONITOR.v1',
-        'HERA.UI.RISK.ANALYZER.v1'
+        'HERA.UI.PORTFOLIO.DASHBOARD.V1',
+        'HERA.UI.TRANSACTION.MONITOR.V1',
+        'HERA.UI.RISK.ANALYZER.V1'
       ]
     }
 

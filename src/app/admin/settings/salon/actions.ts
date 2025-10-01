@@ -19,7 +19,7 @@ async function assertNoRapidToggle(organizationId: string) {
         (t: any) =>
           t.organization_id === organizationId &&
           t.transaction_type === 'analytics_event' &&
-          t.smart_code === 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.v1'
+          t.smart_code === 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.V1'
       )
       .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
@@ -82,7 +82,7 @@ export async function toggleCommissionsAction(
     try {
       await universalApi.createTransaction({
         transaction_type: 'analytics_event',
-        smart_code: 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.v1',
+        smart_code: 'HERA.SALON.ANALYTICS.COMMISSION.TOGGLE.V1',
         total_amount: 0,
         from_entity_id: user.id, // Actor who made the change
         metadata: {

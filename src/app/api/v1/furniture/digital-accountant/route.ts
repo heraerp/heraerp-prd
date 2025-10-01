@@ -295,8 +295,8 @@ export async function POST(request: NextRequest) {
         total_amount: parsed.amount,
         smart_code:
           parsed.category === 'revenue'
-            ? 'HERA.FURNITURE.SALE.TXN.v1'
-            : 'HERA.FURNITURE.EXPENSE.TXN.v1',
+            ? 'HERA.FURNITURE.SALE.TXN.V1'
+            : 'HERA.FURNITURE.EXPENSE.TXN.V1',
         metadata: {
           source: 'digital_accountant',
           description: parsed.description,

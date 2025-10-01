@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Salon Inventory Management
- * Smart Code: HERA.SALON.INVENTORY.MODULE.v1
+ * Smart Code: HERA.SALON.INVENTORY.MODULE.V1
  *
  * Complete inventory system with reporting, commissions, alerts,
  * product ownership, and integrations - all on 6-table foundation
@@ -442,7 +442,7 @@ export default function SalonInventoryManagement() {
     const purchaseOrder = {
       organization_id: organizationId,
       transaction_type: 'PURCHASE_ORDER',
-      smart_code: 'HERA.PROCURE.PO.HEADER.v1',
+      smart_code: 'HERA.PROCURE.PO.HEADER.V1',
       total_amount: product.reorder_quantity * product.unit_cost,
       metadata: {
         vendor_id: 'VENDOR-001',

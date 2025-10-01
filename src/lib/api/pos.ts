@@ -259,7 +259,7 @@ export class PosApi {
           id: invoiceId,
           invoice_number: invoiceId,
           txn_id: txnId,
-          smart_code: 'HERA.SALON.POS.INVOICE.v1',
+          smart_code: 'HERA.SALON.POS.INVOICE.V1',
           organization_id: 'org-hairtalkz-001',
           customer: cart.customer_id
             ? {

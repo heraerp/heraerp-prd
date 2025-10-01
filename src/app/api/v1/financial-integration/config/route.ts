@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
       .from('core_dynamic_data')
       .select('field_name, field_value_text, field_value_json')
       .eq('organization_id', organizationId)
-      .eq('smart_code', 'HERA.ERP.FI.CONFIG.v1')
+      .eq('smart_code', 'HERA.ERP.FI.CONFIG.V1')
 
     if (error) throw error
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
           field_name: field.field_name,
           field_value_text: field.field_value_text,
           field_value_json: field.field_value_json,
-          smart_code: 'HERA.ERP.FI.CONFIG.v1'
+          smart_code: 'HERA.ERP.FI.CONFIG.V1'
         },
         {
           onConflict: 'organization_id,entity_id,field_name'

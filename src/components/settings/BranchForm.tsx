@@ -44,11 +44,11 @@ interface BranchFormProps {
 }
 
 const BUSINESS_TYPES = [
-  { value: 'salon', label: 'Salon & Beauty', smartCode: 'HERA.SALON.BRANCH.CORE.v1' },
-  { value: 'restaurant', label: 'Restaurant', smartCode: 'HERA.REST.BRANCH.CORE.v1' },
-  { value: 'retail', label: 'Retail Store', smartCode: 'HERA.RETAIL.BRANCH.CORE.v1' },
-  { value: 'healthcare', label: 'Healthcare', smartCode: 'HERA.HLTH.BRANCH.CORE.v1' },
-  { value: 'generic', label: 'Other Business', smartCode: 'HERA.ORG.BRANCH.CORE.v1' }
+  { value: 'salon', label: 'Salon & Beauty', smartCode: 'HERA.SALON.BRANCH.CORE.V1' },
+  { value: 'restaurant', label: 'Restaurant', smartCode: 'HERA.REST.BRANCH.CORE.V1' },
+  { value: 'retail', label: 'Retail Store', smartCode: 'HERA.RETAIL.BRANCH.CORE.V1' },
+  { value: 'healthcare', label: 'Healthcare', smartCode: 'HERA.HLTH.BRANCH.CORE.V1' },
+  { value: 'generic', label: 'Other Business', smartCode: 'HERA.ORG.BRANCH.CORE.V1' }
 ]
 
 const OPERATING_HOURS_PRESETS = {
@@ -98,7 +98,7 @@ export function BranchForm({
       entity_type: 'branch',
       entity_code: '',
       entity_name: '',
-      smart_code: 'HERA.ORG.BRANCH.CORE.v1',
+      smart_code: 'HERA.ORG.BRANCH.CORE.V1',
       is_active: true,
       location: {
         address: '',
@@ -140,7 +140,7 @@ export function BranchForm({
           entity_type: 'branch',
           entity_code: '',
           entity_name: '',
-          smart_code: 'HERA.ORG.BRANCH.CORE.v1',
+          smart_code: 'HERA.ORG.BRANCH.CORE.V1',
           is_active: true,
           location: {
             address: '',

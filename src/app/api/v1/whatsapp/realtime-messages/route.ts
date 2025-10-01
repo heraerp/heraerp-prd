@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
           organization_id: organizationId,
           transaction_type: 'whatsapp_message',
           transaction_code: `WA_OUT_${Date.now()}`,
-          smart_code: 'HERA.WHATSAPP.MESSAGE.OUTBOUND.v1',
+          smart_code: 'HERA.WHATSAPP.MESSAGE.OUTBOUND.V1',
           occurred_at: new Date().toISOString(),
           metadata: {
             phone_number: phoneNumber,

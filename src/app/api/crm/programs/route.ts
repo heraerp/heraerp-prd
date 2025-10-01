@@ -83,19 +83,19 @@ export async function GET(request: NextRequest) {
         // Extract program data from dynamic fields
         dynamicData.forEach(field => {
           switch (field.field_code) {
-            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.CODE.v1':
+            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.CODE.V1':
               programData.code = field.field_value_text
               break
-            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.TITLE.v1':
+            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.TITLE.V1':
               programData.title = field.field_value_text
               break
-            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.STATUS.v1':
+            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.STATUS.V1':
               programData.status = field.field_value_text
               break
-            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.TAGS.v1':
+            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.TAGS.V1':
               programData.tags = field.field_value_json || []
               break
-            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.v1':
+            case 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.V1':
               programData.budget = field.field_value_number
               break
             case 'HERA.PUBLICSECTOR.CRM.PROGRAM.SPONSOR_ORG_ID.v1':
@@ -216,7 +216,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'program',
         entity_name: `${data.code} – ${data.title}`,
         entity_code: data.code,
-        smart_code: 'HERA.PUBLICSECTOR.CRM.ENTITY.PROGRAM.v1'
+        smart_code: 'HERA.PUBLICSECTOR.CRM.ENTITY.PROGRAM.V1'
       })
       .select()
       .single()
@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.CODE.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.CODE.V1',
         field_value_text: data.code,
         field_type: 'text'
       })
@@ -240,7 +240,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.TITLE.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.TITLE.V1',
         field_value_text: data.title,
         field_type: 'text'
       })
@@ -250,7 +250,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.DESCRIPTION.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.DESCRIPTION.V1',
         field_value_text: data.description,
         field_type: 'text'
       })
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.STATUS.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.STATUS.V1',
         field_value_text: data.status,
         field_type: 'text'
       })
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.BUDGET.V1',
         field_value_number: data.budget,
         field_type: 'number'
       })
@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
       dynamicFields.push({
         organization_id: orgId,
         entity_id: program.id,
-        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.TAGS.v1',
+        field_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.TAGS.V1',
         field_value_json: data.tags,
         field_type: 'json'
       })
@@ -317,7 +317,7 @@ export async function POST(request: NextRequest) {
     await supabase.from('universal_transactions').insert({
       organization_id: orgId,
       transaction_type: 'program_created',
-      smart_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.CREATED.v1',
+      smart_code: 'HERA.PUBLICSECTOR.CRM.PROGRAM.CREATED.V1',
       reference_entity_id: program.id,
       metadata: {
         program_code: data.code,

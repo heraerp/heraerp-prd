@@ -157,7 +157,7 @@ export function UCRRuleManager({ organizationId, className }: UCRRuleManagerProp
     // Simulate rule execution
     const testContext = {
       entity_type: 'product',
-      smart_code: 'HERA.FURNITURE.PRODUCT.TEST.v1',
+      smart_code: 'HERA.FURNITURE.PRODUCT.TEST.V1',
       length_cm: 150,
       width_cm: 80,
       height_cm: 90,

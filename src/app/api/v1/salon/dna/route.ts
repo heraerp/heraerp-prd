@@ -1,7 +1,7 @@
 /**
  * Salon DNA API Route
  * Uses HERA DNA SDK with MCP for all operations
- * Smart Code: HERA.SALON.API.DNA.v1
+ * Smart Code: HERA.SALON.API.DNA.V1
  */
 
 import { NextRequest, NextResponse } from 'next/server'

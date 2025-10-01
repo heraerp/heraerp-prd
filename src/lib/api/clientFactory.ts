@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA API CLIENT FACTORY
-// Smart Code: HERA.API.CLIENT.FACTORY.v1
+// Smart Code: HERA.API.CLIENT.FACTORY.V1
 // Factory for creating API clients with sync support
 // ================================================================================
 

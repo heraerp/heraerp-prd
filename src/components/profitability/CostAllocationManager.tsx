@@ -171,7 +171,7 @@ export function CostAllocationManager({ organizationId }: { organizationId: stri
             <p className="text-sm text-blue-800">
               Using Smart Code:{' '}
               <Badge variant="outline" className="ml-1">
-                HERA.COST.ALLOC.ABC.v1
+                HERA.COST.ALLOC.ABC.V1
               </Badge>
             </p>
           </div>

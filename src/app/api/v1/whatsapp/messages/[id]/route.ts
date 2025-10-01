@@ -23,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           from_entity_id: messageId,
           to_entity_id: messageId,
           relationship_type: 'starred_message',
-          smart_code: 'HERA.WHATSAPP.MSG.STARRED.v1',
+          smart_code: 'HERA.WHATSAPP.MSG.STARRED.V1',
           metadata: { starred_at: new Date().toISOString() }
         })
         break

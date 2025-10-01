@@ -144,10 +144,10 @@ export async function GET(request: NextRequest) {
       .select('*, universal_transaction_lines(*)')
       .eq('organization_id', orgId)
       .in('smart_code', [
-        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.SENT.v1',
-        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.DELIVERED.v1',
-        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.OPENED.v1',
-        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.CLICKED.v1'
+        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.SENT.V1',
+        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.DELIVERED.V1',
+        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.OPENED.V1',
+        'HERA.PUBLICSECTOR.CRM.COMM.EMAIL.CLICKED.V1'
       ])
       .gte('created_at', filters.date_from)
       .lte('created_at', filters.date_to)

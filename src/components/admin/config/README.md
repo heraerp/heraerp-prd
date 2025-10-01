@@ -140,7 +140,7 @@ Rules follow HERA's smart code convention:
 HERA.{CATEGORY}.{TYPE}.{NAME}.v{VERSION}
 ```
 
-Example: `HERA.CRM.VALIDATION.CREDIT.LIMIT.v1`
+Example: `HERA.CRM.VALIDATION.CREDIT.LIMIT.V1`
 
 ### Condition Operators
 

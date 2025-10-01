@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA MOCK API CLIENT - DEVELOPMENT & TESTING
-// Smart Code: HERA.API.MOCK.CLIENT.v1
+// Smart Code: HERA.API.MOCK.CLIENT.V1
 // Mock implementation for development and testing without backend coupling
 // ================================================================================
 

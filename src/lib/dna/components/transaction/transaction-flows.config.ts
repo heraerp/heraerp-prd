@@ -134,7 +134,7 @@ export const salonBookingSteps: TransactionStep[] = [
     description: 'Review and confirm your appointment',
     icon: CheckCircle,
     component: null,
-    smartCode: 'HERA.SALON.BOOKING.CONFIRM.v1'
+    smartCode: 'HERA.SALON.BOOKING.CONFIRM.V1'
   }
 ]
 
@@ -216,7 +216,7 @@ export const restaurantOrderSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['paymentMethod'],
-    smartCode: 'HERA.REST.ORDER.PAYMENT.v1'
+    smartCode: 'HERA.REST.ORDER.PAYMENT.V1'
   }
 ]
 
@@ -278,7 +278,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['symptoms'],
-    smartCode: 'HERA.HLTH.APPT.SYMPTOMS.v1'
+    smartCode: 'HERA.HLTH.APPT.SYMPTOMS.V1'
   },
   {
     id: 'insurance',
@@ -300,7 +300,7 @@ export const healthcareAppointmentSteps: TransactionStep[] = [
         errors
       }
     },
-    smartCode: 'HERA.HLTH.APPT.INSURANCE.v1'
+    smartCode: 'HERA.HLTH.APPT.INSURANCE.V1'
   }
 ]
 
@@ -337,7 +337,7 @@ export const retailPurchaseSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['cartItems'],
-    smartCode: 'HERA.RETAIL.PURCHASE.CART.v1'
+    smartCode: 'HERA.RETAIL.PURCHASE.CART.V1'
   },
   {
     id: 'customer-info',
@@ -357,7 +357,7 @@ export const retailPurchaseSteps: TransactionStep[] = [
       }
     },
     requiredFields: ['email', 'phone'],
-    smartCode: 'HERA.RETAIL.PURCHASE.CONTACT.v1'
+    smartCode: 'HERA.RETAIL.PURCHASE.CONTACT.V1'
   },
   {
     id: 'shipping',
@@ -378,7 +378,7 @@ export const retailPurchaseSteps: TransactionStep[] = [
       }
     },
     requiredFields: ['shippingAddress', 'shippingCity', 'shippingPostal'],
-    smartCode: 'HERA.RETAIL.PURCHASE.SHIPPING.v1'
+    smartCode: 'HERA.RETAIL.PURCHASE.SHIPPING.V1'
   },
   {
     id: 'payment',
@@ -404,7 +404,7 @@ export const retailPurchaseSteps: TransactionStep[] = [
       return { valid: true }
     },
     requiredFields: ['paymentMethod'],
-    smartCode: 'HERA.RETAIL.PURCHASE.PAYMENT.v1'
+    smartCode: 'HERA.RETAIL.PURCHASE.PAYMENT.V1'
   }
 ]
 

@@ -4,7 +4,7 @@
  * Specialized report primitives for financial key performance indicators
  * Used by finance dashboard UCR and other financial reports
  *
- * @module HERA.URP.PRIMITIVES.FINANCE.KPI.v1
+ * @module HERA.URP.PRIMITIVES.FINANCE.KPI.V1
  */
 
 import { ReportContext, PrimitiveResult } from '../types/report-types'

@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         id: stage.id,
         entity_code: stage.entity_code,
         entity_name: stage.entity_name,
-        smart_code: stage.smart_code || 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.v1',
+        smart_code: stage.smart_code || 'HERA.PUBLICSECTOR.CRM.ENGAGEMENT.STAGE.V1',
         ordinal: getFieldValue('ordinal', 'number') || 1,
         description: getFieldValue('description'),
         color: getFieldValue('color') || 'bg-gray-500',

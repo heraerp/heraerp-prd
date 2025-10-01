@@ -170,7 +170,7 @@ const DEMO_CONFIGS = [
       },
       {
         name: 'BOM Dashboard',
-        smartCode: 'HERA.FURN.BOM.DASHBOARD.v1',
+        smartCode: 'HERA.FURN.BOM.DASHBOARD.V1',
         viewType: 'dashboard',
         description: 'Analytics and KPIs for BOM management',
         highlights: ['Stats, Chart, Grid widgets']

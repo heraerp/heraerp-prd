@@ -33,10 +33,10 @@ export class AppointmentsApi {
   // Create new appointment
   async create(payload: AppointmentCreate) {
     // Maps to POST /universal_transactions
-    // smart_code: HERA.SALON.APPOINTMENT.BOOKING.v1
+    // smart_code: HERA.SALON.APPOINTMENT.BOOKING.V1
     return this.api.post<Appointment>('/api/v1/salon/appointments', {
       ...payload,
-      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1'
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1'
     })
   }
 
@@ -104,7 +104,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 10 * 60 * 60 * 1000).toISOString(), // 10am
         end_time: new Date(today.getTime() + 11 * 60 * 60 * 1000).toISOString(), // 11am
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         services: [{ id: 'srv-001', name: 'Hair Cut & Style', duration: 60, price: 150 }],
         created_at: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString()
@@ -120,7 +120,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 9 * 60 * 60 * 1000).toISOString(), // 9am
         end_time: new Date(today.getTime() + 9.5 * 60 * 60 * 1000).toISOString(), // 9:30am
         status: 'in_progress',
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         services: [{ id: 'srv-002', name: 'Hair Color', duration: 30, price: 200 }],
         created_at: new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString(),
         updated_at: now.toISOString()
@@ -135,7 +135,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 14 * 60 * 60 * 1000).toISOString(), // 2pm
         end_time: new Date(today.getTime() + 15.5 * 60 * 60 * 1000).toISOString(), // 3:30pm
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         services: [{ id: 'srv-003', name: 'Hair Treatment', duration: 90, price: 300 }],
         created_at: new Date(now.getTime() - 72 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
@@ -151,7 +151,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() + 34 * 60 * 60 * 1000).toISOString(), // Tomorrow 10am
         end_time: new Date(today.getTime() + 35 * 60 * 60 * 1000).toISOString(), // Tomorrow 11am
         status: 'confirmed',
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         services: [{ id: 'srv-001', name: 'Hair Cut & Style', duration: 60, price: 150 }],
         created_at: new Date(now.getTime() - 12 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString()
@@ -167,7 +167,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         start_time: new Date(today.getTime() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
         end_time: new Date(today.getTime() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
         status: 'service_complete',
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         services: [{ id: 'srv-004', name: 'Manicure & Pedicure', duration: 60, price: 100 }],
         created_at: new Date(now.getTime() - 96 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date(now.getTime() - 1 * 60 * 60 * 1000).toISOString()
@@ -185,7 +185,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         event_type: 'created',
         actor: { id: 'user-001', name: 'Sarah Johnson', type: 'user' },
         details: { initial_status: 'draft' },
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         transaction_id: 'txn-001'
       },
       {
@@ -279,7 +279,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
       start_time: payload.start_time,
       end_time: payload.end_time,
       status: 'confirmed',
-      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
       services: [],
       notes: payload.notes,
       created_at: now,
@@ -297,7 +297,7 @@ export class MockAppointmentsApi extends AppointmentsApi {
         event_type: 'created',
         actor: { id: 'user-001', name: 'Current User', type: 'user' },
         details: { initial_status: 'confirmed' },
-        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPOINTMENT.BOOKING.V1',
         transaction_id: `txn-${Date.now()}`
       }
     ])

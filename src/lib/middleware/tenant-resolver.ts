@@ -120,7 +120,7 @@ export async function resolveTenant(subdomain: string): Promise<TenantContext | 
       const module = rel.module as any
       const config = moduleConfigs.find(c => c.entity_id === rel.to_entity_id)
 
-      // Parse version from smart code (e.g., HERA.SALON.POS.MODULE.v1 -> v1)
+      // Parse version from smart code (e.g., HERA.SALON.POS.MODULE.V1 -> v1)
       const smartCode = module?.smart_code || ''
       const version = smartCode.split('.').pop() || 'v1'
 

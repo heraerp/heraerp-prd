@@ -242,7 +242,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_entities',
       organization_id: organizationId,
-      smart_code: 'HERA.ENT.BULK.CREATE.v1',
+      smart_code: 'HERA.ENT.BULK.CREATE.V1',
       operation: 'bulk_create',
       batch: {
         items: entities,
@@ -261,7 +261,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: data.organization_id,
-      smart_code: 'HERA.DYN.FIELD.CREATE.v1',
+      smart_code: 'HERA.DYN.FIELD.CREATE.V1',
       operation: 'create',
       data
     })
@@ -279,7 +279,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.query({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
-      smart_code: 'HERA.DYN.FIELD.QUERY.v1',
+      smart_code: 'HERA.DYN.FIELD.QUERY.V1',
       query: { filters }
     })
   }
@@ -292,7 +292,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_dynamic_data',
       organization_id: organizationId,
-      smart_code: 'HERA.DYN.FIELD.UPDATE.v1',
+      smart_code: 'HERA.DYN.FIELD.UPDATE.V1',
       operation: 'update',
       data: { id, ...data }
     })
@@ -396,7 +396,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_relationships',
       organization_id: organizationId,
-      smart_code: 'HERA.REL.BULK.CREATE.v1',
+      smart_code: 'HERA.REL.BULK.CREATE.V1',
       operation: 'bulk_create',
       batch: {
         items: relationships,
@@ -418,7 +418,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.query({
       entity: 'core_relationships',
       organization_id: organizationId,
-      smart_code: 'HERA.REL.HIERARCHY.QUERY.v1',
+      smart_code: 'HERA.REL.HIERARCHY.QUERY.V1',
       query: {
         filters: {
           relationship_type: relationshipType,
@@ -507,7 +507,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: data.organization_id,
-      smart_code: 'HERA.TXN.LINE.CREATE.v1',
+      smart_code: 'HERA.TXN.LINE.CREATE.V1',
       operation: 'create',
       data
     })
@@ -523,7 +523,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.query({
       entity: 'universal_transaction_lines',
       organization_id: organizationId,
-      smart_code: 'HERA.TXN.LINE.QUERY.v1',
+      smart_code: 'HERA.TXN.LINE.QUERY.V1',
       query: { filters }
     })
   }
@@ -536,7 +536,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'universal_transaction_lines',
       organization_id: organizationId,
-      smart_code: 'HERA.TXN.LINE.UPDATE.v1',
+      smart_code: 'HERA.TXN.LINE.UPDATE.V1',
       operation: 'update',
       data: { id, ...data }
     })
@@ -592,7 +592,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
       operations.push({
         entity: 'core_dynamic_data',
         operation: 'bulk_create',
-        smart_code: 'HERA.DYN.BULK.CREATE.v1',
+        smart_code: 'HERA.DYN.BULK.CREATE.V1',
         data: { items: dynamicData }
       })
     }
@@ -608,7 +608,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
       operations.push({
         entity: 'core_relationships',
         operation: 'bulk_create',
-        smart_code: 'HERA.REL.BULK.CREATE.v1',
+        smart_code: 'HERA.REL.BULK.CREATE.V1',
         data: { items: relationshipData }
       })
     }
@@ -616,7 +616,7 @@ export class UniversalAPISacredSix extends UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_entities',
       organization_id: organizationId,
-      smart_code: 'HERA.COMPLETE.ENTITY.CREATE.v1',
+      smart_code: 'HERA.COMPLETE.ENTITY.CREATE.V1',
       operation: 'transaction',
       operations
     })

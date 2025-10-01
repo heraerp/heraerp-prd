@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT ACTIONS
-// Smart Code: HERA.COMPONENTS.APPOINTMENT.ACTIONS.v1
+// Smart Code: HERA.COMPONENTS.APPOINTMENT.ACTIONS.V1
 // State transition action buttons with validation
 // ================================================================================
 

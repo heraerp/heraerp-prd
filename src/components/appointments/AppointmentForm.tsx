@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT FORM
-// Smart Code: HERA.COMPONENTS.APPOINTMENT.FORM.v1
+// Smart Code: HERA.COMPONENTS.APPOINTMENT.FORM.V1
 // Booking form with validation and time slot selection
 // ================================================================================
 

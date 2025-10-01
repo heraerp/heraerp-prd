@@ -1,6 +1,6 @@
 // HERA Universal AI-Native Inventory System
 // Using Sacred 6-Table Schema - NO TABLE CHANGES REQUIRED
-// Smart Code: HERA.INV.AI.SYSTEM.v1
+// Smart Code: HERA.INV.AI.SYSTEM.V1
 
 import { v4 as uuidv4 } from 'uuid'
 

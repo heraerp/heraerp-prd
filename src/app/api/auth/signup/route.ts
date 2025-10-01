@@ -1,12 +1,11 @@
 // ================================================================================
 // HERA AUTH SIGNUP API
-// Smart Code: HERA.API.AUTH.SIGNUP.v1
+// Smart Code: HERA.API.AUTH.SIGNUP.V1
 // Handles user registration with organization creation
 // ================================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { SignupRequest } from '@/lib/schemas/universal'
 
 export async function POST(request: NextRequest) {
   try {

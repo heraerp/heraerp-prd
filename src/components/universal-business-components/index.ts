@@ -1,6 +1,6 @@
 // HERA Universal Business Components
 // Reusable business components that work across ALL industries
-// Smart Code: HERA.UNIV.COMPONENTS.EXPORT.v1
+// Smart Code: HERA.UNIV.COMPONENTS.EXPORT.V1
 
 // Appointment System - Complete appointment management for any business
 export * from './appointments'

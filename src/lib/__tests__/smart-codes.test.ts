@@ -9,14 +9,14 @@ import {
 describe('Smart Code Functions', () => {
   describe('heraCode', () => {
     it('should convert uppercase .V to lowercase .v', () => {
-      expect(heraCode('HERA.SALON.POS.SALE.HEADER.V1')).toBe('HERA.SALON.POS.SALE.HEADER.v1')
-      expect(heraCode('HERA.SALON.POS.LINE.SERVICE.V2')).toBe('HERA.SALON.POS.LINE.SERVICE.v2')
-      expect(heraCode('HERA.SALON.POS.LINE.TAX.V10')).toBe('HERA.SALON.POS.LINE.TAX.v10')
+      expect(heraCode('HERA.SALON.POS.SALE.HEADER.V1')).toBe('HERA.SALON.POS.SALE.HEADER.V1')
+      expect(heraCode('HERA.SALON.POS.LINE.SERVICE.V2')).toBe('HERA.SALON.POS.LINE.SERVICE.V2')
+      expect(heraCode('HERA.SALON.POS.LINE.TAX.V10')).toBe('HERA.SALON.POS.LINE.TAX.V10')
     })
 
     it('should not change already correct codes', () => {
-      expect(heraCode('HERA.SALON.POS.SALE.HEADER.v1')).toBe('HERA.SALON.POS.SALE.HEADER.v1')
-      expect(heraCode('HERA.SALON.POS.LINE.SERVICE.v2')).toBe('HERA.SALON.POS.LINE.SERVICE.v2')
+      expect(heraCode('HERA.SALON.POS.SALE.HEADER.V1')).toBe('HERA.SALON.POS.SALE.HEADER.V1')
+      expect(heraCode('HERA.SALON.POS.LINE.SERVICE.V2')).toBe('HERA.SALON.POS.LINE.SERVICE.V2')
     })
 
     it('should handle codes without version', () => {
@@ -26,9 +26,9 @@ describe('Smart Code Functions', () => {
 
   describe('isValidHeraCode', () => {
     it('should validate correct smart codes', () => {
-      expect(isValidHeraCode('HERA.SALON.POS.SALE.HEADER.v1')).toBe(true)
-      expect(isValidHeraCode('HERA.FIN.GL.ACC.ASSET.CASH.v1')).toBe(true)
-      expect(isValidHeraCode('HERA.MFG.BOM.REL.COMP.v1')).toBe(true)
+      expect(isValidHeraCode('HERA.SALON.POS.SALE.HEADER.V1')).toBe(true)
+      expect(isValidHeraCode('HERA.FIN.GL.ACC.ASSET.CASH.V1')).toBe(true)
+      expect(isValidHeraCode('HERA.MFG.BOM.REL.COMP.V1')).toBe(true)
     })
 
     it('should reject invalid smart codes', () => {
@@ -48,24 +48,24 @@ describe('Smart Code Functions', () => {
   describe('createHeraCode', () => {
     it('should create valid smart codes', () => {
       const code = createHeraCode(['SALON', 'POS', 'SALE', 'HEADER'])
-      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.v1')
+      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.V1')
       expect(isValidHeraCode(code)).toBe(true)
     })
 
     it('should handle custom version', () => {
       const code = createHeraCode(['SALON', 'POS', 'SALE', 'HEADER'], 2)
-      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.v2')
+      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.V2')
     })
 
     it('should convert segments to uppercase', () => {
       const code = createHeraCode(['salon', 'pos', 'sale', 'header'])
-      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.v1')
+      expect(code).toBe('HERA.SALON.POS.SALE.HEADER.V1')
     })
   })
 
   describe('parseHeraCode', () => {
     it('should parse valid smart codes', () => {
-      const parsed = parseHeraCode('HERA.SALON.POS.SALE.HEADER.v1')
+      const parsed = parseHeraCode('HERA.SALON.POS.SALE.HEADER.V1')
       expect(parsed).toEqual({
         prefix: 'HERA',
         industry: 'SALON',
@@ -76,7 +76,7 @@ describe('Smart Code Functions', () => {
     })
 
     it('should handle multi-digit versions', () => {
-      const parsed = parseHeraCode('HERA.SALON.POS.SALE.HEADER.v10')
+      const parsed = parseHeraCode('HERA.SALON.POS.SALE.HEADER.V10')
       expect(parsed?.version).toBe(10)
     })
 

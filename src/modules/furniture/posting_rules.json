@@ -19,7 +19,7 @@
       ]
     },
     "labor_absorption": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.V1",
       "rules": [
         {
           "description": "Direct Labor Applied to WIP",
@@ -37,7 +37,7 @@
       ]
     },
     "overhead_absorption": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.MFG.OP.COMPLETE.V1",
       "rules": [
         {
           "description": "Manufacturing Overhead Applied to WIP",
@@ -73,7 +73,7 @@
       ]
     },
     "cogs_on_dispatch": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.DISPATCH.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.DISPATCH.V1",
       "rules": [
         {
           "description": "Cost of Goods Sold on Dispatch",
@@ -91,7 +91,7 @@
       ]
     },
     "gst_output": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.HEADER.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.INVOICE.HEADER.V1",
       "rules": [
         {
           "description": "GST Output Tax - CGST",
@@ -124,7 +124,7 @@
       ]
     },
     "customer_advance": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.SALES.SO.HEADER.V1",
       "condition": "advance_amount > 0",
       "rules": [
         {
@@ -143,7 +143,7 @@
       ]
     },
     "payroll_salary": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.RUN.HEADER.V1",
       "rules": [
         {
           "description": "Salary Expense",
@@ -161,7 +161,7 @@
       ]
     },
     "pf_liability": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.GL.LINE.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.GL.LINE.V1",
       "rules": [
         {
           "description": "EPF Employee Contribution",
@@ -192,7 +192,7 @@
       ]
     },
     "esi_liability": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.GL.LINE.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.ESI.GL.LINE.V1",
       "rules": [
         {
           "description": "ESI Employee Contribution",
@@ -223,7 +223,7 @@
       ]
     },
     "pf_remittance": {
-      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.REMITTANCE.v1",
+      "trigger_smart_code": "HERA.MANUFACTURING.FURNITURE.HR.PAYROLL.PF.REMITTANCE.V1",
       "rules": [
         {
           "description": "EPF Remittance Payment",

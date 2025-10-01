@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { docsAuthMiddleware } from '@/middleware/docs-auth'
 
 // ================================================================================
 // HERA MIDDLEWARE - MULTI-TENANT & DEMO ROUTING
@@ -90,6 +91,19 @@ export async function middleware(request: NextRequest) {
   // Skip API routes and static files (do not process middleware for these)
   if (pathname.startsWith('/api/') || pathname.startsWith('/_next') || pathname.includes('.')) {
     return NextResponse.next()
+  }
+  
+  // Apply docs authentication to /docs routes (except login and public docs)
+  if (pathname.startsWith('/docs') && pathname !== '/docs/login') {
+    // Check if it's a public docs page (civicflow, etc)
+    const isPublicDocs = pathname.startsWith('/docs/civicflow') || 
+                        pathname === '/docs' ||
+                        PUBLIC_PAGES.some(page => pathname === page);
+    
+    if (!isPublicDocs) {
+      const authResponse = await docsAuthMiddleware(request);
+      if (authResponse) return authResponse;
+    }
   }
   
   // Ensure /demo page is accessible without redirect

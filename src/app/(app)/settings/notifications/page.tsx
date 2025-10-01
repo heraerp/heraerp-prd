@@ -1,6 +1,6 @@
 // ================================================================================
 // NOTIFICATIONS SETTINGS PAGE - SETTINGS
-// Smart Code: HERA.UI.SETTINGS.NOTIFICATIONS.v1
+// Smart Code: HERA.UI.SETTINGS.NOTIFICATIONS.V1
 // Production-ready notifications configuration using Sacred Six storage
 // ================================================================================
 

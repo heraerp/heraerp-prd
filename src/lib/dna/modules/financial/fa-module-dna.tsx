@@ -1303,7 +1303,7 @@ export function FAModule({
 
 // Export as HERA DNA Component
 export const FA_MODULE_DNA = {
-  id: 'HERA.FIN.FA.MODULE.v1',
+  id: 'HERA.FIN.FA.MODULE.V1',
   name: 'Fixed Assets Module',
   description:
     'Complete fixed asset management with registration, maintenance, depreciation, and transfers',
@@ -1377,10 +1377,10 @@ export const FA_MODULE_DNA = {
     'Organization context'
   ],
   smartCodes: [
-    'HERA.FIN.FA.FREEZER.v1',
+    'HERA.FIN.FA.FREEZER.V1',
     'HERA.FIN.FA.COLD_ROOM.v1',
-    'HERA.FIN.FA.VEHICLE.v1',
-    'HERA.FIN.FA.EQUIPMENT.v1',
+    'HERA.FIN.FA.VEHICLE.V1',
+    'HERA.FIN.FA.EQUIPMENT.V1',
     'HERA.FIN.FA.TXN.MAINT.V1',
     'HERA.FIN.FA.REL.PLACEMENT.V1',
     'HERA.FIN.FA.DEP.*',

@@ -252,7 +252,7 @@ export class LiveProductionConverter {
       entity_name: businessInfo.ownerName,
       entity_code: `USER-OWNER-${organizationId}`,
       organization_id: organizationId,
-      smart_code: 'HERA.USER.OWNER.PROD.v1',
+      smart_code: 'HERA.USER.OWNER.PROD.V1',
       metadata: {
         email: businessInfo.email,
         phone: businessInfo.phone,
@@ -275,7 +275,7 @@ export class LiveProductionConverter {
       entity_name: staff.name,
       entity_code: `STAFF-${organizationId}-${Date.now()}`,
       organization_id: organizationId,
-      smart_code: 'HERA.STAFF.MEMBER.PROD.v1',
+      smart_code: 'HERA.STAFF.MEMBER.PROD.V1',
       metadata: {
         specialty: staff.specialty,
         experience: staff.experience,
@@ -295,7 +295,7 @@ export class LiveProductionConverter {
       entity_name: customer.name,
       entity_code: customer.code || `CUST-${organizationId}-${Date.now()}`,
       organization_id: organizationId,
-      smart_code: 'HERA.CRM.CUSTOMER.PROD.v1',
+      smart_code: 'HERA.CRM.CUSTOMER.PROD.V1',
       metadata: {
         email: customer.email,
         phone: customer.phone,
@@ -318,7 +318,7 @@ export class LiveProductionConverter {
       entity_name: service.name,
       entity_code: service.code || `SVC-${organizationId}-${Date.now()}`,
       organization_id: organizationId,
-      smart_code: 'HERA.SERVICE.OFFERING.PROD.v1',
+      smart_code: 'HERA.SERVICE.OFFERING.PROD.V1',
       metadata: {
         category: service.category,
         price: service.price,
@@ -339,7 +339,7 @@ export class LiveProductionConverter {
       entity_name: product.name,
       entity_code: product.code || `PROD-${organizationId}-${Date.now()}`,
       organization_id: organizationId,
-      smart_code: 'HERA.PRODUCT.INVENTORY.PROD.v1',
+      smart_code: 'HERA.PRODUCT.INVENTORY.PROD.V1',
       metadata: {
         category: product.category,
         price: product.price,
@@ -362,7 +362,7 @@ export class LiveProductionConverter {
       transaction_type: 'sale',
       transaction_date: transaction.date || new Date().toISOString(),
       total_amount: transaction.total,
-      smart_code: 'HERA.TXN.SALE.PROD.v1',
+      smart_code: 'HERA.TXN.SALE.PROD.V1',
       metadata: {
         customer_id: transaction.customer_id,
         payment_method: transaction.payment_method,

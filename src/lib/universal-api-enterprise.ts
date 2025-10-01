@@ -857,7 +857,7 @@ export class UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_entities',
       organization_id: this.config.organizationId,
-      smart_code: 'HERA.COMMON.ENTITY.CREATE.v1',
+      smart_code: 'HERA.COMMON.ENTITY.CREATE.V1',
       operation: 'create',
       data
     })
@@ -867,7 +867,7 @@ export class UniversalAPIEnterprise {
     return this.execute({
       entity: 'core_entities',
       organization_id: this.config.organizationId,
-      smart_code: 'HERA.COMMON.ENTITY.UPDATE.v1',
+      smart_code: 'HERA.COMMON.ENTITY.UPDATE.V1',
       operation: 'update',
       data: { id, ...data }
     })
@@ -877,7 +877,7 @@ export class UniversalAPIEnterprise {
     return this.query({
       entity: 'core_entities',
       organization_id: this.config.organizationId,
-      smart_code: 'HERA.COMMON.ENTITY.QUERY.v1',
+      smart_code: 'HERA.COMMON.ENTITY.QUERY.V1',
       query: { filters }
     })
   }

@@ -1,7 +1,7 @@
 'use client'
 /**
  * HERA Salon Booking Workflow
- * Smart Code: HERA.SALON.BOOKING.WORKFLOW.v1
+ * Smart Code: HERA.SALON.BOOKING.WORKFLOW.V1
  *
  * Complete salon booking workflow with service selection, stylist matching, and intelligent scheduling
  */
@@ -181,7 +181,7 @@ export function SalonBookingWorkflow({
           duration: 30,
           price: 45,
           optional: true,
-          smartCode: 'HERA.SALON.ADDON.CONDITIONING.v1'
+          smartCode: 'HERA.SALON.ADDON.CONDITIONING.V1'
         },
         {
           id: 'addon-2',
@@ -189,7 +189,7 @@ export function SalonBookingWorkflow({
           duration: 15,
           price: 25,
           optional: true,
-          smartCode: 'HERA.SALON.ADDON.MASSAGE.v1'
+          smartCode: 'HERA.SALON.ADDON.MASSAGE.V1'
         }
       ]
     },
@@ -307,7 +307,7 @@ export function SalonBookingWorkflow({
       lastVisit: new Date('2024-11-15'),
       preferredStylist: 'stylist-rocky-001',
       notes: 'Prefers organic formulas, sensitive scalp',
-      smartCode: 'HERA.SALON.CUSTOMER.VIP.v1'
+      smartCode: 'HERA.SALON.CUSTOMER.VIP.V1'
     },
     {
       id: 'client-emma-001',
@@ -319,7 +319,7 @@ export function SalonBookingWorkflow({
       visitHistory: 8,
       lastVisit: new Date('2024-10-28'),
       preferredStylist: 'stylist-vinay-001',
-      smartCode: 'HERA.SALON.CUSTOMER.REGULAR.v1'
+      smartCode: 'HERA.SALON.CUSTOMER.REGULAR.V1'
     }
   ]
 
@@ -442,7 +442,7 @@ export function SalonBookingWorkflow({
       notes: specialNotes,
       totalDuration: calculateTotalDuration(),
       totalPrice: calculateTotalPrice(),
-      smartCode: 'HERA.SALON.BOOKING.COMPLETE.v1'
+      smartCode: 'HERA.SALON.BOOKING.COMPLETE.V1'
     }
 
     onBookingComplete?.(booking)

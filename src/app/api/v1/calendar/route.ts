@@ -1,6 +1,6 @@
 /**
  * HERA DNA Universal Calendar API
- * Smart Code: HERA.API.CALENDAR.UNIVERSAL.v1
+ * Smart Code: HERA.API.CALENDAR.UNIVERSAL.V1
  *
  * RESTful API for calendar operations using Sacred Six Tables architecture
  */

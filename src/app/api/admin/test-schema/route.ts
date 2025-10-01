@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceSupabaseClient } from '@/lib/supabase/service-client'
+import { createServiceClient } from '@/lib/supabase/service-client'
 
 // Quick test endpoint to verify schema
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServiceSupabaseClient()
+    const supabase = createServiceClient()
 
     // Test query to check basic schema
     const { data: tables, error } = await supabase

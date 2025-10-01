@@ -1,6 +1,6 @@
 // ================================================================================
 // REPORTS SUMMARY CARDS
-// Smart Code: HERA.UI.REPORTS.SUMMARY.v1
+// Smart Code: HERA.UI.REPORTS.SUMMARY.V1
 // Big numbers display with trend indicators and drill-down support
 // ================================================================================
 

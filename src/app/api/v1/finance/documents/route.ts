@@ -1,6 +1,6 @@
 /**
  * HERA Financial Documents API
- * Smart Code: HERA.FIN.API.DOCS.v1
+ * Smart Code: HERA.FIN.API.DOCS.V1
  *
  * Retrieve financial documents with advanced filtering
  */

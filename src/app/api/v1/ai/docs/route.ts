@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'generate_api_docs':
         const apiDocsResult = await universalAI.processRequest({
-          smart_code: 'HERA.AI.DOCS.API.GENERATE.v1',
+          smart_code: 'HERA.AI.DOCS.API.GENERATE.V1',
           task_type: 'analysis',
           prompt: `Generate comprehensive API documentation for this code:
 
@@ -48,7 +48,7 @@ Context: ${context || 'HERA Universal API'}`,
 
       case 'generate_component_docs':
         const componentDocsResult = await universalAI.processRequest({
-          smart_code: 'HERA.AI.DOCS.COMPONENT.GENERATE.v1',
+          smart_code: 'HERA.AI.DOCS.COMPONENT.GENERATE.V1',
           task_type: 'analysis',
           prompt: `Generate comprehensive component documentation for this React component:
 
@@ -144,7 +144,7 @@ Context: ${context || 'HERA Codebase Analysis'}`,
 
       case 'generate_changelog':
         const changelogResult = await universalAI.processRequest({
-          smart_code: 'HERA.AI.DOCS.CHANGELOG.GENERATE.v1',
+          smart_code: 'HERA.AI.DOCS.CHANGELOG.GENERATE.V1',
           task_type: 'analysis',
           prompt: `Generate a professional changelog entry from these changes:
 
@@ -168,7 +168,7 @@ Context: ${context || 'HERA System Update'}`,
 
       case 'generate_architecture_docs':
         const architectureDocsResult = await universalAI.processRequest({
-          smart_code: 'HERA.AI.DOCS.ARCHITECTURE.GENERATE.v1',
+          smart_code: 'HERA.AI.DOCS.ARCHITECTURE.GENERATE.V1',
           task_type: 'analysis',
           prompt: `Document the architecture and design patterns in this system:
 
@@ -218,7 +218,7 @@ Context: ${context || 'HERA Universal Architecture'}`,
         success: false,
         error: 'Failed to generate documentation',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.AI.DOCS.ERROR.GENERATION.v1',
+        smart_code: 'HERA.AI.DOCS.ERROR.GENERATION.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -263,7 +263,7 @@ export async function GET(request: NextRequest) {
               'Component catalog'
             ]
           },
-          smart_code: 'HERA.AI.DOCS.CAPABILITIES.v1',
+          smart_code: 'HERA.AI.DOCS.CAPABILITIES.V1',
           timestamp: new Date().toISOString()
         })
 
@@ -284,7 +284,7 @@ export async function GET(request: NextRequest) {
               context: 'HERA Universal API'
             }
           },
-          smart_code: 'HERA.AI.DOCS.INFO.v1',
+          smart_code: 'HERA.AI.DOCS.INFO.V1',
           timestamp: new Date().toISOString()
         })
     }
@@ -294,7 +294,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: 'Failed to process documentation request',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.AI.DOCS.ERROR.REQUEST.v1',
+        smart_code: 'HERA.AI.DOCS.ERROR.REQUEST.V1',
         timestamp: new Date().toISOString()
       },
       { status: 500 }

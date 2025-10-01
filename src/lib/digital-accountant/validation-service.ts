@@ -4,7 +4,7 @@
  * Comprehensive validation for accounting operations
  * Ensures data integrity, compliance, and business rule enforcement
  *
- * Smart Code: HERA.FIN.ACCT.VALIDATE.v1
+ * Smart Code: HERA.FIN.ACCT.VALIDATE.V1
  */
 
 import { supabase } from '@/lib/supabase'

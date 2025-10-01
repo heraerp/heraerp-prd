@@ -893,7 +893,7 @@ export function APModule({
 
 // Export as HERA DNA Component
 export const AP_MODULE_DNA = {
-  id: 'HERA.FIN.AP.MODULE.v1',
+  id: 'HERA.FIN.AP.MODULE.V1',
   name: 'Accounts Payable Module',
   description:
     'Complete AP management with vendor management, invoice processing, payments, and approvals',

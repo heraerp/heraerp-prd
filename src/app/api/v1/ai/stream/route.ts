@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
           const errorData = {
             type: 'error',
             error: error instanceof Error ? error.message : 'Streaming error',
-            smart_code: 'HERA.AI.STREAM.ERROR.v1',
+            smart_code: 'HERA.AI.STREAM.ERROR.V1',
             timestamp: new Date().toISOString()
           }
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorData)}\n\n`))
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Failed to initiate AI streaming',
         details: error instanceof Error ? error.message : 'Unknown error',
-        smart_code: 'HERA.AI.STREAM.ERROR.INIT.v1',
+        smart_code: 'HERA.AI.STREAM.ERROR.INIT.V1',
         timestamp: new Date().toISOString()
       }),
       {

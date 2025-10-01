@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
         entity_type: 'integration_connector',
         entity_name: 'Eventbrite - Demo Account',
         entity_code: `CONN-EVENTBRITE-${Date.now()}`,
-        smart_code: 'HERA.INTEGRATION.CONNECTOR.EVENTBRITE.v1',
+        smart_code: 'HERA.INTEGRATION.CONNECTOR.EVENTBRITE.V1',
         organization_id: orgId
       }
 
@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
             'X-Organization-Id': orgId
           },
           body: JSON.stringify({
-            smart_code: 'HERA.INTEGRATION.CONNECTOR.CONNECTED.v1',
+            smart_code: 'HERA.INTEGRATION.CONNECTOR.CONNECTED.V1',
             metadata: {
               connector_id: connectorId,
               vendor: 'eventbrite',

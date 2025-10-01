@@ -284,7 +284,7 @@ export class HybridSalonDNAClient {
           entity_type: 'appointment',
           entity_name: `Appointment - ${params.appointmentTime}`,
           entity_code: `APT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          smart_code: 'HERA.SALON.BOOKING.APPOINTMENT.v1',
+          smart_code: 'HERA.SALON.BOOKING.APPOINTMENT.V1',
           metadata: {
             customer_id: params.customerId,
             stylist_id: params.staffId,

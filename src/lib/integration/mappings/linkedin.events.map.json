@@ -1,0 +1,389 @@
+{
+  "name": "LinkedIn Events Mapping",
+  "version": "1.0.0",
+  "vendor": "linkedin",
+  "description": "Field mapping configuration for LinkedIn to HERA Universal Architecture",
+  "smart_code_patterns": {
+    "organization": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.{ACTION}.v1",
+    "event": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.{ACTION}.v1",
+    "attendee": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.{ACTION}.v1",
+    "post": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.{ACTION}.v1",
+    "relationship": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.{TYPE}.v1"
+  },
+  "entity_mappings": {
+    "organization": {
+      "target_type": "organization_profile",
+      "identifier_field": "id",
+      "code_prefix": "li:",
+      "name_field": "localizedName",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.SYNC.V1",
+      "business_rules": {
+        "source": "linkedin",
+        "visibility": "PUBLIC"
+      },
+      "field_mappings": [
+        {
+          "source": "vanityName",
+          "target": "business_rules.vanity_name",
+          "type": "direct"
+        },
+        {
+          "source": "id",
+          "target": "metadata.external_id",
+          "type": "direct"
+        },
+        {
+          "source": "_urn",
+          "target": "metadata.linkedin_urn",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "localizedDescription",
+          "target": "description",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.DESC.V1"
+        },
+        {
+          "source": "followersCount",
+          "target": "followers_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.FOLLOWERS.V1"
+        },
+        {
+          "source": "websiteUrl",
+          "target": "website_url", 
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.WEBSITE.V1"
+        },
+        {
+          "source": "industries",
+          "target": "industries",
+          "field_type": "json",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.INDUSTRIES.V1"
+        },
+        {
+          "source": "logoV2.original",
+          "target": "logo_url",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.LOGO.V1"
+        },
+        {
+          "source": "staffCountRange",
+          "target": "staff_count_range",
+          "field_type": "json",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.ORG.STAFF.V1"
+        }
+      ]
+    },
+    "event": {
+      "target_type": "event",
+      "identifier_field": "id",
+      "code_prefix": "li:event:",
+      "name_field": "name.text",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.SYNC.V1",
+      "business_rules": {
+        "source": "linkedin"
+      },
+      "field_mappings": [
+        {
+          "source": "visibility",
+          "target": "business_rules.visibility",
+          "type": "direct"
+        },
+        {
+          "source": "mode",
+          "target": "business_rules.mode",
+          "type": "direct"
+        },
+        {
+          "source": "isRegistrationRequired",
+          "target": "business_rules.is_registration_required",
+          "type": "direct"
+        },
+        {
+          "source": "id",
+          "target": "metadata.external_id",
+          "type": "direct"
+        },
+        {
+          "source": "eventUrl",
+          "target": "metadata.event_url",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "startAt",
+          "target": "start_date",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.START.V1"
+        },
+        {
+          "source": "endAt",
+          "target": "end_date",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.END.V1"
+        },
+        {
+          "source": "timezone",
+          "target": "timezone",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.TZ.V1"
+        },
+        {
+          "source": "description.text",
+          "target": "description",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.DESC.V1"
+        },
+        {
+          "source": "attendeeCount",
+          "target": "attendee_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.ATTENDEES.V1"
+        },
+        {
+          "source": "maxAttendees",
+          "target": "max_attendees",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.CAPACITY.V1"
+        },
+        {
+          "source": "registrationUrl",
+          "target": "registration_url",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.REGISTER.V1"
+        },
+        {
+          "source": "venue",
+          "target": "venue_data",
+          "field_type": "json",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.EVENT.VENUE.V1"
+        }
+      ]
+    },
+    "attendee": {
+      "target_type": "event_invite",
+      "identifier_field": "memberUrn|eventUrn",
+      "code_prefix": "li:",
+      "name_field": "_computed_name",
+      "name_template": "{firstName} {lastName} RSVP",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.UPSERT.V1",
+      "business_rules": {
+        "source": "linkedin"
+      },
+      "field_mappings": [
+        {
+          "source": "rsvpStatus",
+          "target": "business_rules.rsvp_status",
+          "type": "direct"
+        },
+        {
+          "source": "memberUrn",
+          "target": "metadata.member_urn",
+          "type": "direct"
+        },
+        {
+          "source": "eventUrn",
+          "target": "metadata.event_urn",
+          "type": "direct"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "firstName",
+          "target": "first_name",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.FNAME.V1"
+        },
+        {
+          "source": "lastName",
+          "target": "last_name",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.LNAME.V1"
+        },
+        {
+          "source": "headline",
+          "target": "headline",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.HEADLINE.V1"
+        },
+        {
+          "source": "profilePictureUrl",
+          "target": "profile_picture",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.PHOTO.V1"
+        },
+        {
+          "source": "registeredAt",
+          "target": "registered_at",
+          "field_type": "timestamp",
+          "transform": "unix_to_iso",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.DATE.V1"
+        },
+        {
+          "source": "rsvpStatus",
+          "target": "status",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.RSVP.STATUS.V1"
+        }
+      ]
+    },
+    "post": {
+      "target_type": "post",
+      "identifier_field": "id",
+      "code_prefix": "li:post:",
+      "name_field": "_computed_name",
+      "name_template": "{text.text|truncate:100}...",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.SYNC.V1",
+      "business_rules": {
+        "source": "linkedin"
+      },
+      "field_mappings": [
+        {
+          "source": "visibility",
+          "target": "business_rules.visibility",
+          "type": "direct"
+        },
+        {
+          "source": "lifecycleState",
+          "target": "business_rules.lifecycle_state",
+          "type": "direct"
+        },
+        {
+          "source": "id",
+          "target": "metadata.external_id",
+          "type": "direct"
+        },
+        {
+          "source": "authorUrn",
+          "target": "metadata.author_urn",
+          "type": "direct"
+        },
+        {
+          "source": "createdAt",
+          "target": "metadata.created_at",
+          "type": "timestamp",
+          "transform": "unix_to_iso"
+        }
+      ],
+      "dynamic_fields": [
+        {
+          "source": "text.text",
+          "target": "content",
+          "field_type": "text",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.CONTENT.V1"
+        },
+        {
+          "source": "engagement",
+          "target": "engagement_metrics",
+          "field_type": "json",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.ENGAGEMENT.V1"
+        },
+        {
+          "source": "engagement.likeCount",
+          "target": "like_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.LIKES.V1"
+        },
+        {
+          "source": "engagement.commentCount",
+          "target": "comment_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.COMMENTS.V1"
+        },
+        {
+          "source": "engagement.shareCount",
+          "target": "share_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.SHARES.V1"
+        },
+        {
+          "source": "engagement.clickCount",
+          "target": "click_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.CLICKS.V1"
+        },
+        {
+          "source": "engagement.impressionCount",
+          "target": "impression_count",
+          "field_type": "number",
+          "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.POST.IMPRESSIONS.V1"
+        }
+      ]
+    }
+  },
+  "relationship_mappings": [
+    {
+      "name": "Organization has Event",
+      "type": "ORGANIZATION_HAS_EVENT",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.ORG_EVENT.v1",
+      "from": {
+        "entity_type": "organization_profile",
+        "resolve_by": "organizerUrn"
+      },
+      "to": {
+        "entity_type": "event",
+        "resolve_by": "id"
+      }
+    },
+    {
+      "name": "Event has Attendee",
+      "type": "EVENT_HAS_ATTENDEE", 
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.EVENT_ATTENDEE.v1",
+      "from": {
+        "entity_type": "event",
+        "resolve_by": "eventUrn"
+      },
+      "to": {
+        "entity_type": "event_invite",
+        "resolve_by": "memberUrn"
+      }
+    },
+    {
+      "name": "Post belongs to Organization",
+      "type": "POST_BELONGS_TO_ORG",
+      "smart_code": "HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.REL.POST_ORG.v1",
+      "from": {
+        "entity_type": "post",
+        "resolve_by": "id"
+      },
+      "to": {
+        "entity_type": "organization_profile",
+        "resolve_by": "authorUrn"
+      }
+    }
+  ],
+  "transform_functions": {
+    "unix_to_iso": {
+      "description": "Convert Unix timestamp to ISO 8601 string",
+      "type": "builtin"
+    },
+    "truncate": {
+      "description": "Truncate text to specified length",
+      "type": "builtin",
+      "params": ["length"]
+    }
+  },
+  "sync_settings": {
+    "batch_size": 50,
+    "rate_limit": {
+      "requests_per_minute": 100,
+      "requests_per_day": 10000
+    },
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff_type": "exponential",
+      "initial_delay_ms": 1000
+    },
+    "delta_sync": {
+      "enabled": true,
+      "timestamp_field": "lastModified",
+      "lookback_window_hours": 24
+    }
+  }
+}

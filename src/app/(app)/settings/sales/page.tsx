@@ -1,6 +1,6 @@
 // ================================================================================
 // SALES SETTINGS PAGE - VAT, COMMISSION, TIPS
-// Smart Code: HERA.UI.SETTINGS.SALES.v1
+// Smart Code: HERA.UI.SETTINGS.SALES.V1
 // Production-ready sales policy configuration using Sacred Six storage
 // ================================================================================
 

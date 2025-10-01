@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { 
   ShoppingCart, Package, Search, Plus, Minus, X, 
   CreditCard, DollarSign, Receipt, User, Star,
   Calculator, Percent, Tag, Gift, Crown, Diamond,
-  Sparkles, RefreshCw, Trash2, Edit, Eye
+  Sparkles, RefreshCw, Trash2, Edit, Eye, Check,
+  Calendar, Clock, MapPin, Phone
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -63,6 +65,20 @@ export default function JewelryPOSPage() {
   
   // POS View Mode
   const [viewMode, setViewMode] = useState<'retail' | 'gold'>('retail')
+  
+  // Receipt Modal State
+  const [showReceiptModal, setShowReceiptModal] = useState(false)
+  const [lastTransaction, setLastTransaction] = useState<{
+    id: string
+    date: string
+    customer: Customer
+    items: CartItem[]
+    subtotal: number
+    discount: number
+    tax: number
+    total: number
+    paymentMethod: string
+  } | null>(null)
 
   // Sample jewelry items for retail mode
   const [retailItems] = useState<CartItem[]>([
@@ -73,6 +89,7 @@ export default function JewelryPOSPage() {
       price: 12500.00,
       quantity: 1,
       category: 'Rings',
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
       purity: '18K',
       weight: 3.2,
       makingCharges: 800,
@@ -85,6 +102,7 @@ export default function JewelryPOSPage() {
       price: 8750.00,
       quantity: 1,
       category: 'Bracelets',
+      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
       purity: '14K',
       weight: 15.5,
       makingCharges: 1200,
@@ -97,6 +115,7 @@ export default function JewelryPOSPage() {
       price: 4200.00,
       quantity: 1,
       category: 'Necklaces',
+      image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
       purity: 'Sterling Silver',
       weight: 25.0,
       makingCharges: 400,
@@ -109,6 +128,7 @@ export default function JewelryPOSPage() {
       price: 6800.00,
       quantity: 1,
       category: 'Earrings',
+      image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=400&h=400&fit=crop&crop=center',
       purity: '18K',
       weight: 4.8,
       makingCharges: 600,
@@ -121,6 +141,7 @@ export default function JewelryPOSPage() {
       price: 25000.00,
       quantity: 1,
       category: 'Watches',
+      image: 'https://images.unsplash.com/photo-1523170335258-f5c6c6bd6eaf?w=400&h=400&fit=crop&crop=center',
       purity: 'Platinum',
       weight: 120.0,
       makingCharges: 2500,
@@ -133,6 +154,7 @@ export default function JewelryPOSPage() {
       price: 3500.00,
       quantity: 1,
       category: 'Pendants',
+      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
       purity: '14K',
       weight: 2.1,
       makingCharges: 300,
@@ -221,19 +243,31 @@ export default function JewelryPOSPage() {
         return
       }
 
-      // Here you would integrate with the existing action system
-      const saleData = {
+      if (!selectedCustomer) {
+        alert('Please select a customer')
+        return
+      }
+
+      // Create transaction record
+      const transaction = {
+        id: `TXN-${Date.now()}`,
+        date: new Date().toISOString(),
         customer: selectedCustomer,
         items: cart,
         subtotal,
         discount: discountAmount,
         tax: taxAmount,
         total,
-        timestamp: new Date().toISOString()
+        paymentMethod: 'Credit Card'
       }
 
-      // For now, just show success
-      alert(`Sale completed successfully! Total: $${total.toLocaleString()}`)
+      // Store transaction
+      setLastTransaction(transaction)
+      
+      // Show receipt modal
+      setShowReceiptModal(true)
+      
+      // Clear cart
       clearCart()
     } catch (error) {
       console.error('Sale failed:', error)
@@ -392,11 +426,23 @@ export default function JewelryPOSPage() {
                     className="jewelry-glass-card p-4 group"
                   >
                     <div className="space-y-3">
-                      {/* Item Image Placeholder */}
-                      <div className="jewelry-crown-glow aspect-square rounded-lg bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 flex items-center justify-center relative overflow-hidden">
-                        <Package className="h-12 w-12 jewelry-icon-gold" />
+                      {/* Item Image */}
+                      <div className="jewelry-crown-glow aspect-square rounded-lg bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 relative overflow-hidden group">
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                          />
+                        ) : (
+                          <Package className="h-12 w-12 jewelry-icon-gold" />
+                        )}
                         <div className="absolute top-2 right-2">
-                          <Badge variant="outline" className="text-xs bg-white/20">
+                          <Badge variant="outline" className="text-xs bg-white/80 backdrop-blur-sm">
                             {item.category}
                           </Badge>
                         </div>
@@ -758,6 +804,159 @@ export default function JewelryPOSPage() {
           </div>
         </div>
       </div>
+
+      {/* Receipt Modal */}
+      <AnimatePresence>
+        {showReceiptModal && lastTransaction && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowReceiptModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl overflow-hidden max-w-md w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Receipt Header */}
+              <div className="bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 text-white p-6 text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
+                >
+                  <Receipt className="h-8 w-8" />
+                </motion.div>
+                <h2 className="text-2xl font-bold mb-2">Sale Completed!</h2>
+                <p className="text-white/90">Thank you for your business</p>
+              </div>
+
+              {/* Receipt Details */}
+              <div className="p-6 space-y-6">
+                {/* Transaction Info */}
+                <div className="text-center border-b border-gray-200 pb-4">
+                  <h3 className="text-lg font-semibold jewelry-text-royal">Transaction #{lastTransaction.id}</h3>
+                  <p className="text-sm text-gray-600">
+                    {new Date(lastTransaction.date).toLocaleDateString()} at {' '}
+                    {new Date(lastTransaction.date).toLocaleTimeString(undefined, { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </p>
+                </div>
+
+                {/* Customer Info */}
+                <div className="jewelry-glass-card p-4 rounded-xl">
+                  <h4 className="font-semibold jewelry-text-royal mb-2">Customer Information</h4>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <span className="font-medium jewelry-text-royal block">{lastTransaction.customer.name}</span>
+                      <span className="text-sm text-gray-600">{lastTransaction.customer.phone}</span>
+                      {lastTransaction.customer.vipStatus && (
+                        <div className="flex items-center gap-2 mt-1">
+                          <Crown className="h-3 w-3 jewelry-icon-gold" />
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            VIP Member
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold jewelry-text-royal">Items Purchased</h4>
+                  {lastTransaction.items.map((item) => (
+                    <div key={item.id} className="flex items-center gap-3 jewelry-glass-card p-3 rounded-xl">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden">
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                            sizes="48px"
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                          />
+                        ) : (
+                          <Package className="h-6 w-6 jewelry-icon-gold m-3" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <span className="font-medium jewelry-text-royal block text-sm">{item.name}</span>
+                        <span className="text-xs text-gray-600">{item.purity} • {item.weight}g</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-medium jewelry-text-royal block">${item.price.toLocaleString()}</span>
+                        <span className="text-xs text-gray-600">Qty: {item.quantity}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Payment Summary */}
+                <div className="jewelry-glass-card p-4 rounded-xl space-y-3">
+                  <h4 className="font-semibold jewelry-text-royal">Payment Summary</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="jewelry-text-royal font-medium">${lastTransaction.subtotal.toLocaleString()}</span>
+                    </div>
+                    {lastTransaction.discount > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Discount</span>
+                        <span className="text-red-500 font-medium">-${lastTransaction.discount.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Tax ({taxPercent}%)</span>
+                      <span className="jewelry-text-royal font-medium">${lastTransaction.tax.toFixed(2)}</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-2 flex justify-between">
+                      <span className="font-semibold jewelry-text-royal">Total</span>
+                      <span className="font-bold jewelry-text-gold text-lg">${lastTransaction.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+                    <CreditCard className="h-4 w-4 text-gray-600" />
+                    <span className="text-sm text-gray-600">Paid with {lastTransaction.paymentMethod}</span>
+                    <span className="text-sm font-medium text-green-600 ml-auto">✓ Completed</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    className="flex-1 jewelry-glass-btn py-4 rounded-xl font-medium jewelry-text-royal hover:bg-jewelry-gold-100 transition-colors"
+                    onClick={() => {
+                      window.print()
+                    }}
+                  >
+                    <Package className="h-5 w-5 inline mr-2" />
+                    Print Receipt
+                  </button>
+                  <button
+                    onClick={() => setShowReceiptModal(false)}
+                    className="flex-1 bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 text-white py-4 rounded-xl font-medium hover:from-jewelry-gold-500 hover:to-jewelry-gold-700 transition-all shadow-lg"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -205,7 +205,7 @@ export const useRealtimeOrders = ({
             entity_id: orderId,
             field_name: 'table_number',
             field_value_text: updates.table_number,
-            smart_code: 'HERA.REST.ORDER.TABLE.v1'
+            smart_code: 'HERA.REST.ORDER.TABLE.V1'
           })
         }
 

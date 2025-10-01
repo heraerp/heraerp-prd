@@ -186,7 +186,7 @@ export function useCustomers(organizationId?: string) {
         entity_name: customerData.name,
         entity_code: `CUST-${Date.now()}`,
         status: 'active',
-        smart_code: 'HERA.SALON.CUSTOMER.CREATE.v1',
+        smart_code: 'HERA.SALON.CUSTOMER.CREATE.V1',
         organizationId
       })
 
@@ -359,7 +359,7 @@ export function useCustomers(organizationId?: string) {
         entity_type: 'workflow_status',
         entity_name: `${tier} Loyalty Status`,
         entity_code: `LOYALTY-${tier.toUpperCase()}`,
-        smart_code: 'HERA.SALON.LOYALTY.STATUS.v1',
+        smart_code: 'HERA.SALON.LOYALTY.STATUS.V1',
         metadata: {
           tier_name: tier,
           color_code: getTierColor(tier)

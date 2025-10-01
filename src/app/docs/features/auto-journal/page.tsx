@@ -196,7 +196,7 @@ export default function AutoJournalDoc() {
               <h4 className="font-semibold mb-3">Rule-Based Processing (95%)</h4>
               <pre className="text-sm bg-canvas-inset p-3 rounded overflow-x-auto">
                 {`// Restaurant sale example
-if (smartCode === 'HERA.REST.SALE.ORDER.v1') {
+if (smartCode === 'HERA.REST.SALE.ORDER.V1') {
   return {
     debit: [
       { account: '1100', amount: total }

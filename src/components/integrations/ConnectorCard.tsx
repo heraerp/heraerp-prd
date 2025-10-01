@@ -65,6 +65,8 @@ interface ConnectorCardProps {
   icon: React.ComponentType<{ className?: string }>
   features: string[]
   color: string
+  accentColor?: string
+  darkColor?: string
   connector?: Connector
   isDemo: boolean
   onConfigureMapping?: () => void
@@ -77,6 +79,8 @@ export function ConnectorCard({
   icon: Icon,
   features,
   color,
+  accentColor,
+  darkColor,
   connector,
   isDemo,
   onConfigureMapping
@@ -100,7 +104,7 @@ export function ConnectorCard({
   const handleConnect = async () => {
     if (vendor === 'bluesky') {
       // BlueSky uses app passwords
-      if (!appPassword) {
+      if (!appPassword && !isDemo) {
         toast({
           title: 'App password required',
           description: 'Please enter your BlueSky app password',
@@ -109,13 +113,23 @@ export function ConnectorCard({
         return
       }
 
-      await connectMutation.mutateAsync({ vendor, authCode: appPassword })
+      // In demo mode, use a dummy password if none provided
+      const password = appPassword || (isDemo ? 'demo-password' : '')
+      await connectMutation.mutateAsync({ vendor, authCode: password })
       setShowConnectDialog(false)
       setAppPassword('')
     } else if (isDemo) {
       // Demo mode - create simulated connection
-      await connectMutation.mutateAsync({ vendor })
-      setShowConnectDialog(false)
+      try {
+        await connectMutation.mutateAsync({ vendor })
+        setShowConnectDialog(false)
+      } catch (error: any) {
+        console.error('Connection error:', error)
+        // Show error details in development
+        if (process.env.NODE_ENV === 'development') {
+          alert(`Connection failed: ${error.message}`)
+        }
+      }
     } else {
       // Production OAuth flow
       const config = OAUTH_CONFIGS[vendor]
@@ -170,21 +184,21 @@ export function ConnectorCard({
     switch (connector.status) {
       case 'active':
         return (
-          <Badge variant="default" className="gap-1">
+          <Badge variant="default" className="gap-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800">
             <CheckCircle className="h-3 w-3" />
             Connected
           </Badge>
         )
       case 'expired':
         return (
-          <Badge variant="secondary" className="gap-1">
+          <Badge variant="secondary" className="gap-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800">
             <Clock className="h-3 w-3" />
             Token Expired
           </Badge>
         )
       case 'error':
         return (
-          <Badge variant="destructive" className="gap-1">
+          <Badge variant="destructive" className="gap-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800">
             <XCircle className="h-3 w-3" />
             Error
           </Badge>
@@ -196,43 +210,51 @@ export function ConnectorCard({
 
   return (
     <>
-      <Card className={cn('relative overflow-hidden', isConnected && 'ring-2 ring-primary/20')}>
-        <div className={cn('absolute top-0 left-0 right-0 h-1', color)} />
+      <Card className={cn(
+        'relative overflow-hidden transition-all duration-200 hover:shadow-lg',
+        'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700',
+        isConnected && 'ring-2 ring-blue-500/20 border-blue-300 dark:border-blue-700'
+      )}>
+        <div className={cn('absolute top-0 left-0 right-0 h-1', color, darkColor)} />
 
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn('p-2 rounded-lg', color, 'bg-opacity-10')}>
-                <Icon className={cn('h-6 w-6', color.replace('bg-', 'text-'))} />
+              <div className={cn(
+                'p-3 rounded-lg',
+                color.replace('600', '100'),
+                darkColor?.replace('700', '900/30')
+              )}>
+                <Icon className={cn('h-6 w-6', accentColor || color.replace('bg-', 'text-'))} />
               </div>
               <div>
-                <CardTitle className="text-lg">{name}</CardTitle>
+                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">{name}</CardTitle>
                 {getStatusBadge()}
               </div>
             </div>
             {isConnected && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleSync}>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={handleSync} className="text-gray-700 dark:text-gray-300">
                     <RefreshCw className="h-4 w-4 mr-2" />
                     Sync Now
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowScheduleDialog(true)}>
+                  <DropdownMenuItem onClick={() => setShowScheduleDialog(true)} className="text-gray-700 dark:text-gray-300">
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule
                   </DropdownMenuItem>
                   {onConfigureMapping && (
-                    <DropdownMenuItem onClick={onConfigureMapping}>
+                    <DropdownMenuItem onClick={onConfigureMapping} className="text-gray-700 dark:text-gray-300">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure Mapping
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={handleDisconnect} className="text-destructive">
+                  <DropdownMenuItem onClick={handleDisconnect} className="text-red-600 dark:text-red-400">
                     <Unlink className="h-4 w-4 mr-2" />
                     Disconnect
                   </DropdownMenuItem>
@@ -240,16 +262,16 @@ export function ConnectorCard({
               </DropdownMenu>
             )}
           </div>
-          <CardDescription>{description}</CardDescription>
+          <CardDescription className="text-gray-700 dark:text-gray-300">{description}</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <p className="text-sm font-medium">Features:</p>
-            <ul className="text-sm text-muted-foreground space-y-1">
+            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Features:</p>
+            <ul className="text-sm space-y-1">
               {features.map((feature, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="text-muted-foreground">•</span>
+                <li key={i} className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
+                  <span className={cn('font-semibold mt-0.5', accentColor || 'text-gray-600 dark:text-gray-400')}>•</span>
                   <span>{feature}</span>
                 </li>
               ))}
@@ -257,23 +279,23 @@ export function ConnectorCard({
           </div>
 
           {isConnected && connector && (
-            <div className="space-y-2 border-t pt-4">
+            <div className="space-y-2 border-t border-gray-200 dark:border-gray-700 pt-4">
               {connector.account_name && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Account:</span>
-                  <span className="font-medium">{connector.account_name}</span>
+                  <span className="text-gray-700 dark:text-gray-400">Account:</span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">{connector.account_name}</span>
                 </div>
               )}
               {lastSync && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Last sync:</span>
-                  <span>{format(lastSync, 'MMM d, h:mm a')}</span>
+                  <span className="text-gray-700 dark:text-gray-400">Last sync:</span>
+                  <span className="text-gray-800 dark:text-gray-200">{format(lastSync, 'MMM d, h:mm a')}</span>
                 </div>
               )}
               {nextSync && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Next sync:</span>
-                  <span>{format(nextSync, 'MMM d, h:mm a')}</span>
+                  <span className="text-gray-700 dark:text-gray-400">Next sync:</span>
+                  <span className="text-gray-800 dark:text-gray-200">{format(nextSync, 'MMM d, h:mm a')}</span>
                 </div>
               )}
             </div>
@@ -284,7 +306,12 @@ export function ConnectorCard({
           {!isConnected ? (
             <Button
               onClick={() => setShowConnectDialog(true)}
-              className="w-full"
+              className={cn(
+                "w-full font-semibold",
+                color,
+                darkColor,
+                "text-white hover:opacity-90"
+              )}
               disabled={connectMutation.isPending}
             >
               <Link className="h-4 w-4 mr-2" />
@@ -294,7 +321,7 @@ export function ConnectorCard({
             <Button
               onClick={handleSync}
               variant="outline"
-              className="w-full"
+              className="w-full border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               disabled={syncMutation.isPending}
             >
               <RefreshCw className={cn('h-4 w-4 mr-2', syncMutation.isPending && 'animate-spin')} />

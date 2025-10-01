@@ -59,7 +59,7 @@ export async function createService(payload: {
   try {
     const body = {
       ...payload,
-      smart_code: heraCode('HERA.SALON.SVC.CATALOG.STANDARD.v1'),
+      smart_code: heraCode('HERA.SALON.SVC.CATALOG.STANDARD.V1'),
       entity_type: 'service', // Ensure entity_type is 'service' not 'svc'
       status: payload.status || 'active'
     }

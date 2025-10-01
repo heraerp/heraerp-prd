@@ -1,6 +1,6 @@
 // ================================================================================
 // WHATSAPP CUSTOMER PREFERENCES PAGE - CONSENT MANAGEMENT
-// Smart Code: HERA.UI.WHATSAPP.PREFERENCES.v1
+// Smart Code: HERA.UI.WHATSAPP.PREFERENCES.V1
 // Production-ready customer consent and preference management
 // ================================================================================
 

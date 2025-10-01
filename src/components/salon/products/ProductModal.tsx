@@ -56,7 +56,9 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
     organizationId,
     includeArchived: false
   })
-  const categories = categoryList.map(cat => cat.entity_name)
+  const categories = categoryList
+    .filter(cat => cat && cat.entity_name && cat.entity_name.trim() !== '')
+    .map(cat => cat.entity_name)
 
   const form = useForm<ProductForm>({
     resolver: zodResolver(ProductFormSchema),
@@ -214,19 +216,22 @@ export function ProductModal({ open, onClose, product, onSave }: ProductModalPro
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel style={{ color: COLORS.lightText }}>Category</FormLabel>
-                      <Select value={field.value || ''} onValueChange={field.onChange}>
+                      <Select value={field.value || undefined} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger className="bg-background/50 border-border">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">No category</SelectItem>
-                          {categories.map(category => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
+                          {categories.length === 0 ? (
+                            <SelectItem value="uncategorized">No categories available</SelectItem>
+                          ) : (
+                            categories.map(category => (
+                              <SelectItem key={category} value={category || 'uncategorized'}>
+                                {category}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 // ================================================================================
 // MCP PAGE PRODUCTION WIZARD - Convert Progressive Pages to Production
 // Removes hardcoding and connects to Universal API
-// Smart Code: HERA.MCP.PAGE.WIZARD.v1
+// Smart Code: HERA.MCP.PAGE.WIZARD.V1
 // ================================================================================
 
 import React, { useState } from 'react'

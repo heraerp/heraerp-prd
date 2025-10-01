@@ -166,7 +166,7 @@ export class RateLimiter {
         transaction_type: 'rate_limit',
         transaction_date: now.toISOString(),
         total_amount: 0,
-        smart_code: 'HERA.LIMITS.RATE.CHECK.v1',
+        smart_code: 'HERA.LIMITS.RATE.CHECK.V1',
         organization_id: 'SYSTEM',
         metadata: { key }
       })
@@ -241,7 +241,7 @@ export class RateLimiter {
       transaction_type: 'idempotency_cache',
       transaction_code: `IDEM-${Date.now()}`,
       external_reference: key, // Use the official column for idempotency
-      smart_code: 'HERA.API.IDEMPOTENCY.CACHE.v1',
+      smart_code: 'HERA.API.IDEMPOTENCY.CACHE.V1',
       organization_id,
       transaction_date: new Date().toISOString(),
       total_amount: 0,
@@ -328,7 +328,7 @@ export class RateLimiter {
       transaction_type: 'rate_limit_exceeded',
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.LIMITS.RATE.EXCEEDED.v1',
+      smart_code: 'HERA.LIMITS.RATE.EXCEEDED.V1',
       organization_id: organizationId,
       metadata: {
         ip_address: ipAddress,

@@ -53,7 +53,7 @@ const CORE_MODULES: ModuleDefinition[] = [
   {
     id: 'core-entities',
     name: 'Entity Management',
-    smartCode: 'HERA.CORE.ENTITIES.MODULE.v1',
+    smartCode: 'HERA.CORE.ENTITIES.MODULE.V1',
     description: 'Universal entity management system',
     features: ['Create entities', 'Dynamic fields', 'Relationships'],
     category: 'core'
@@ -61,7 +61,7 @@ const CORE_MODULES: ModuleDefinition[] = [
   {
     id: 'core-transactions',
     name: 'Transaction Processing',
-    smartCode: 'HERA.CORE.TRANSACTIONS.MODULE.v1',
+    smartCode: 'HERA.CORE.TRANSACTIONS.MODULE.V1',
     description: 'Universal transaction system',
     features: ['Create transactions', 'Line items', 'Smart codes'],
     category: 'core'
@@ -69,7 +69,7 @@ const CORE_MODULES: ModuleDefinition[] = [
   {
     id: 'core-accounting',
     name: 'Basic Accounting',
-    smartCode: 'HERA.CORE.ACCOUNTING.MODULE.v1',
+    smartCode: 'HERA.CORE.ACCOUNTING.MODULE.V1',
     description: 'Chart of accounts and journal entries',
     features: ['COA setup', 'Journal entries', 'Trial balance'],
     category: 'core'
@@ -81,7 +81,7 @@ const INDUSTRY_MODULES: ModuleDefinition[] = [
   {
     id: 'salon-pos',
     name: 'Salon POS System',
-    smartCode: 'HERA.SALON.POS.MODULE.v1',
+    smartCode: 'HERA.SALON.POS.MODULE.V1',
     description: 'Complete salon point-of-sale system',
     features: [
       'Appointment booking',
@@ -90,27 +90,27 @@ const INDUSTRY_MODULES: ModuleDefinition[] = [
       'Client management'
     ],
     pricing: { monthly: 99, yearly: 990, currency: 'USD' },
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.TRANSACTIONS.MODULE.V1'],
     category: 'industry'
   },
   {
     id: 'restaurant-pos',
     name: 'Restaurant POS System',
-    smartCode: 'HERA.RESTAURANT.POS.MODULE.v1',
+    smartCode: 'HERA.RESTAURANT.POS.MODULE.V1',
     description: 'Restaurant point-of-sale and kitchen management',
     features: ['Menu management', 'Order tracking', 'Kitchen display', 'Table management'],
     pricing: { monthly: 149, yearly: 1490, currency: 'USD' },
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.TRANSACTIONS.MODULE.V1'],
     category: 'industry'
   },
   {
     id: 'healthcare-emr',
     name: 'Healthcare EMR',
-    smartCode: 'HERA.HEALTHCARE.EMR.MODULE.v1',
+    smartCode: 'HERA.HEALTHCARE.EMR.MODULE.V1',
     description: 'Electronic medical records system',
     features: ['Patient records', 'Appointment scheduling', 'Prescriptions', 'Lab results'],
     pricing: { monthly: 299, yearly: 2990, currency: 'USD' },
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.TRANSACTIONS.MODULE.V1'],
     category: 'industry'
   }
 ]
@@ -124,27 +124,27 @@ const ADDON_MODULES: ModuleDefinition[] = [
     description: 'AI-powered automatic journal entry creation',
     features: ['85% automation', 'Smart classification', 'Batch processing'],
     pricing: { monthly: 49, yearly: 490, currency: 'USD' },
-    dependencies: ['HERA.CORE.ACCOUNTING.MODULE.v1'],
+    dependencies: ['HERA.CORE.ACCOUNTING.MODULE.V1'],
     category: 'addon'
   },
   {
     id: 'inventory-advanced',
     name: 'Advanced Inventory',
-    smartCode: 'HERA.INV.ADVANCED.MODULE.v1',
+    smartCode: 'HERA.INV.ADVANCED.MODULE.V1',
     description: 'Multi-location inventory with manufacturing',
     features: ['Multi-warehouse', 'Manufacturing', 'Lot tracking', 'Expiry dates'],
     pricing: { monthly: 79, yearly: 790, currency: 'USD' },
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1'],
     category: 'addon'
   },
   {
     id: 'analytics-ai',
     name: 'AI Analytics & Insights',
-    smartCode: 'HERA.AI.ANALYTICS.MODULE.v1',
+    smartCode: 'HERA.AI.ANALYTICS.MODULE.V1',
     description: 'AI-powered business analytics and predictions',
     features: ['Predictive analytics', 'Anomaly detection', 'Custom dashboards'],
     pricing: { monthly: 199, yearly: 1990, currency: 'USD' },
-    dependencies: ['HERA.CORE.ENTITIES.MODULE.v1', 'HERA.CORE.TRANSACTIONS.MODULE.v1'],
+    dependencies: ['HERA.CORE.ENTITIES.MODULE.V1', 'HERA.CORE.TRANSACTIONS.MODULE.V1'],
     category: 'addon'
   }
 ]
@@ -154,7 +154,7 @@ const ENTERPRISE_MODULES: ModuleDefinition[] = [
   {
     id: 'sso-saml',
     name: 'Enterprise SSO',
-    smartCode: 'HERA.ENTERPRISE.SSO.MODULE.v1',
+    smartCode: 'HERA.ENTERPRISE.SSO.MODULE.V1',
     description: 'SAML 2.0 and OIDC single sign-on',
     features: ['SAML 2.0', 'OIDC', 'Multi-factor auth', 'Directory sync'],
     pricing: { monthly: 299, yearly: 2990, currency: 'USD' },
@@ -163,7 +163,7 @@ const ENTERPRISE_MODULES: ModuleDefinition[] = [
   {
     id: 'api-gateway',
     name: 'API Gateway',
-    smartCode: 'HERA.ENTERPRISE.API.MODULE.v1',
+    smartCode: 'HERA.ENTERPRISE.API.MODULE.V1',
     description: 'Advanced API management and integrations',
     features: ['Rate limiting', 'API keys', 'Webhooks', 'Custom endpoints'],
     pricing: { monthly: 499, yearly: 4990, currency: 'USD' },
@@ -277,7 +277,7 @@ export class EntitlementsService {
           field_name: 'configuration',
           field_type: 'json',
           field_value_json: grant.configuration,
-          smart_code: 'HERA.CONFIG.MODULE.SETTINGS.v1'
+          smart_code: 'HERA.CONFIG.MODULE.SETTINGS.V1'
         })
       }
 
@@ -420,7 +420,7 @@ export class EntitlementsService {
         organization_id: metrics.organizationId,
         transaction_type: 'usage_metrics',
         transaction_date: new Date().toISOString(),
-        smart_code: 'HERA.USAGE.METRICS.TRACK.v1',
+        smart_code: 'HERA.USAGE.METRICS.TRACK.V1',
         metadata: {
           module_smart_code: metrics.moduleSmartCode,
           period: metrics.period,

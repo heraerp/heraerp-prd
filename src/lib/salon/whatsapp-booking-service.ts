@@ -122,7 +122,7 @@ export class WhatsAppBookingService {
       entity_type: 'customer',
       entity_name: request.customerName,
       entity_code: `CUST-${Date.now()}`,
-      smart_code: 'HERA.SALON.CUSTOMER.PERSON.v1',
+      smart_code: 'HERA.SALON.CUSTOMER.PERSON.V1',
       organization_id: this.organizationId
     })
 
@@ -131,7 +131,7 @@ export class WhatsAppBookingService {
       customer.id,
       'phone',
       request.customerPhone,
-      'HERA.SALON.CUSTOMER.PHONE.v1'
+      'HERA.SALON.CUSTOMER.PHONE.V1'
     )
 
     return customer
@@ -171,7 +171,7 @@ export class WhatsAppBookingService {
       total_amount: request.price,
       from_entity_id: customer.id, // Customer booking the appointment
       to_entity_id: stylist?.id || service.id, // Stylist or service as target
-      smart_code: 'HERA.SALON.APPOINTMENT.TXN.v1',
+      smart_code: 'HERA.SALON.APPOINTMENT.TXN.V1',
       metadata: {
         service_name: request.serviceName,
         stylist_name: request.stylistName || 'Any Available',
@@ -252,7 +252,7 @@ export class WhatsAppBookingService {
         appointmentId,
         'special_notes',
         request.specialNotes,
-        'HERA.SALON.APPOINTMENT.NOTES.v1'
+        'HERA.SALON.APPOINTMENT.NOTES.V1'
       )
     }
 
@@ -261,7 +261,7 @@ export class WhatsAppBookingService {
         appointmentId,
         'deposit_amount',
         request.depositAmount.toString(),
-        'HERA.SALON.APPOINTMENT.DEPOSIT.v1'
+        'HERA.SALON.APPOINTMENT.DEPOSIT.V1'
       )
     }
 
@@ -270,7 +270,7 @@ export class WhatsAppBookingService {
       appointmentId,
       'booking_channel',
       'whatsapp',
-      'HERA.SALON.APPOINTMENT.CHANNEL.v1'
+      'HERA.SALON.APPOINTMENT.CHANNEL.V1'
     )
   }
 

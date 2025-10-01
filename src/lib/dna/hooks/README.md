@@ -10,7 +10,7 @@ HERA DNA Hooks provide a standardized way to interact with the universal 6-table
 
 #### `useHERAAuth`
 
-**Smart Code**: `HERA.DNA.HOOKS.AUTH.CORE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.AUTH.CORE.V1`
 
 Core authentication hook for accessing user and organization context.
 
@@ -29,7 +29,7 @@ function MyComponent() {
 
 #### `useDemoOrganization`
 
-**Smart Code**: `HERA.DNA.HOOKS.AUTH.DEMO.v1`
+**Smart Code**: `HERA.DNA.HOOKS.AUTH.DEMO.V1`
 
 Handles demo organization context for non-authenticated users.
 
@@ -47,7 +47,7 @@ function DemoComponent() {
 
 #### Industry-Specific Auth Hooks
 
-**Smart Code**: `HERA.DNA.HOOKS.AUTH.INDUSTRY.v1`
+**Smart Code**: `HERA.DNA.HOOKS.AUTH.INDUSTRY.V1`
 
 ```typescript
 import {
@@ -71,7 +71,7 @@ function SalonDashboard() {
 
 #### `useCreateEntity`
 
-**Smart Code**: `HERA.DNA.HOOKS.CRUD.CREATE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.CRUD.CREATE.V1`
 
 Create any business entity in the universal system.
 
@@ -85,7 +85,7 @@ function CreateCustomerForm() {
     const result = await createEntity({
       entity_type: 'customer',
       entity_name: formData.name,
-      smart_code: 'HERA.SALON.CRM.CUSTOMER.v1',
+      smart_code: 'HERA.SALON.CRM.CUSTOMER.V1',
       metadata: {
         email: formData.email,
         phone: formData.phone,
@@ -102,7 +102,7 @@ function CreateCustomerForm() {
 
 #### `useReadEntities`
 
-**Smart Code**: `HERA.DNA.HOOKS.CRUD.READ.v1`
+**Smart Code**: `HERA.DNA.HOOKS.CRUD.READ.V1`
 
 Read entities with filtering.
 
@@ -117,7 +117,7 @@ function CustomerList() {
     const loadCustomers = async () => {
       const result = await readEntities({
         entity_type: 'customer',
-        smart_code: 'HERA.SALON.CRM.CUSTOMER.v1'
+        smart_code: 'HERA.SALON.CRM.CUSTOMER.V1'
       })
 
       if (result.data) {
@@ -140,7 +140,7 @@ function CustomerList() {
 
 #### `useUpdateEntity`
 
-**Smart Code**: `HERA.DNA.HOOKS.CRUD.UPDATE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.CRUD.UPDATE.V1`
 
 Update existing entities.
 
@@ -168,7 +168,7 @@ function EditCustomer({ customerId }) {
 
 #### `useDeleteEntity`
 
-**Smart Code**: `HERA.DNA.HOOKS.CRUD.DELETE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.CRUD.DELETE.V1`
 
 Delete entities (soft delete recommended).
 
@@ -196,7 +196,7 @@ function DeleteCustomerButton({ customerId }) {
 
 #### `useCreateTransaction`
 
-**Smart Code**: `HERA.DNA.HOOKS.TXN.CREATE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.TXN.CREATE.V1`
 
 Create business transactions.
 
@@ -211,7 +211,7 @@ function CreateSalonSale() {
       transaction_type: 'sale',
       transaction_date: new Date().toISOString(),
       total_amount: saleData.total,
-      smart_code: 'HERA.SALON.TXN.SALE.v1',
+      smart_code: 'HERA.SALON.TXN.SALE.V1',
       source_entity_id: saleData.customerId,
       target_entity_id: saleData.stylistId,
       metadata: {
@@ -227,7 +227,7 @@ function CreateSalonSale() {
 
 #### `useCreateTransactionLines`
 
-**Smart Code**: `HERA.DNA.HOOKS.TXN.LINES.CREATE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.TXN.LINES.CREATE.V1`
 
 Create transaction line items.
 
@@ -244,7 +244,7 @@ function AddTransactionLines({ transactionId, services }) {
       quantity: service.quantity,
       unit_price: service.price,
       line_amount: service.quantity * service.price,
-      smart_code: 'HERA.SALON.TXN.LINE.SERVICE.v1',
+      smart_code: 'HERA.SALON.TXN.LINE.SERVICE.V1',
       metadata: {
         service_name: service.name,
         duration_minutes: service.duration
@@ -261,7 +261,7 @@ function AddTransactionLines({ transactionId, services }) {
 
 #### `useSetDynamicField`
 
-**Smart Code**: `HERA.DNA.HOOKS.DYNAMIC.SET.v1`
+**Smart Code**: `HERA.DNA.HOOKS.DYNAMIC.SET.V1`
 
 Add custom fields to any entity without schema changes.
 
@@ -272,7 +272,7 @@ function CustomerPreferences({ customerId }) {
   const setDynamicField = useSetDynamicField()
 
   const savePreference = async (fieldName, value) => {
-    await setDynamicField(customerId, fieldName, value, 'HERA.SALON.CRM.PREFERENCE.v1')
+    await setDynamicField(customerId, fieldName, value, 'HERA.SALON.CRM.PREFERENCE.V1')
   }
 
   // Examples
@@ -285,7 +285,7 @@ function CustomerPreferences({ customerId }) {
 
 #### `useGetDynamicFields`
 
-**Smart Code**: `HERA.DNA.HOOKS.DYNAMIC.GET.v1`
+**Smart Code**: `HERA.DNA.HOOKS.DYNAMIC.GET.V1`
 
 Retrieve all dynamic fields for an entity.
 
@@ -329,7 +329,7 @@ function ShowCustomerDetails({ customerId }) {
 
 #### `useCreateRelationship`
 
-**Smart Code**: `HERA.DNA.HOOKS.REL.CREATE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.REL.CREATE.V1`
 
 Create relationships between entities.
 
@@ -344,7 +344,7 @@ function AssignCustomerToStylist({ customerId, stylistId }) {
       from_entity_id: customerId,
       to_entity_id: stylistId,
       relationship_type: 'preferred_stylist',
-      smart_code: 'HERA.SALON.REL.PREFERRED.STYLIST.v1',
+      smart_code: 'HERA.SALON.REL.PREFERRED.STYLIST.V1',
       metadata: {
         assigned_date: new Date().toISOString(),
         preference_level: 'primary'
@@ -358,7 +358,7 @@ function AssignCustomerToStylist({ customerId, stylistId }) {
 
 #### `useCreateEntityWithStatus`
 
-**Smart Code**: `HERA.DNA.HOOKS.COMPOSITE.ENTITY.STATUS.v1`
+**Smart Code**: `HERA.DNA.HOOKS.COMPOSITE.ENTITY.STATUS.V1`
 
 Create an entity with initial status (using relationships).
 
@@ -376,7 +376,7 @@ function CreateAppointment() {
       {
         entity_type: 'appointment',
         entity_name: `Appointment - ${appointmentData.customerName}`,
-        smart_code: 'HERA.SALON.APPT.BOOKING.v1',
+        smart_code: 'HERA.SALON.APPT.BOOKING.V1',
         metadata: {
           date: appointmentData.date,
           time: appointmentData.time,
@@ -393,7 +393,7 @@ function CreateAppointment() {
 
 #### `useCreateCompleteTransaction`
 
-**Smart Code**: `HERA.DNA.HOOKS.COMPOSITE.TXN.COMPLETE.v1`
+**Smart Code**: `HERA.DNA.HOOKS.COMPOSITE.TXN.COMPLETE.V1`
 
 Create transaction with lines in one operation.
 
@@ -410,7 +410,7 @@ function CompleteSalonSale() {
         transaction_type: 'sale',
         transaction_date: new Date().toISOString(),
         total_amount: saleData.total,
-        smart_code: 'HERA.SALON.TXN.SALE.v1',
+        smart_code: 'HERA.SALON.TXN.SALE.V1',
         source_entity_id: saleData.customerId,
         target_entity_id: saleData.stylistId
       },
@@ -421,7 +421,7 @@ function CompleteSalonSale() {
         quantity: 1,
         unit_price: service.price,
         line_amount: service.price,
-        smart_code: 'HERA.SALON.TXN.LINE.SERVICE.v1'
+        smart_code: 'HERA.SALON.TXN.LINE.SERVICE.V1'
       }))
     )
 
@@ -434,39 +434,39 @@ function CompleteSalonSale() {
 
 ### Authentication Hooks
 
-- `HERA.DNA.HOOKS.AUTH.CORE.v1` - Core authentication
-- `HERA.DNA.HOOKS.AUTH.DEMO.v1` - Demo organization
-- `HERA.DNA.HOOKS.AUTH.SALON.v1` - Salon authentication
-- `HERA.DNA.HOOKS.AUTH.RESTAURANT.v1` - Restaurant authentication
-- `HERA.DNA.HOOKS.AUTH.HEALTHCARE.v1` - Healthcare authentication
-- `HERA.DNA.HOOKS.AUTH.MANUFACTURING.v1` - Manufacturing authentication
+- `HERA.DNA.HOOKS.AUTH.CORE.V1` - Core authentication
+- `HERA.DNA.HOOKS.AUTH.DEMO.V1` - Demo organization
+- `HERA.DNA.HOOKS.AUTH.SALON.V1` - Salon authentication
+- `HERA.DNA.HOOKS.AUTH.RESTAURANT.V1` - Restaurant authentication
+- `HERA.DNA.HOOKS.AUTH.HEALTHCARE.V1` - Healthcare authentication
+- `HERA.DNA.HOOKS.AUTH.MANUFACTURING.V1` - Manufacturing authentication
 
 ### CRUD Hooks
 
-- `HERA.DNA.HOOKS.CRUD.CREATE.v1` - Create entities
-- `HERA.DNA.HOOKS.CRUD.READ.v1` - Read entities
-- `HERA.DNA.HOOKS.CRUD.UPDATE.v1` - Update entities
-- `HERA.DNA.HOOKS.CRUD.DELETE.v1` - Delete entities
+- `HERA.DNA.HOOKS.CRUD.CREATE.V1` - Create entities
+- `HERA.DNA.HOOKS.CRUD.READ.V1` - Read entities
+- `HERA.DNA.HOOKS.CRUD.UPDATE.V1` - Update entities
+- `HERA.DNA.HOOKS.CRUD.DELETE.V1` - Delete entities
 
 ### Transaction Hooks
 
-- `HERA.DNA.HOOKS.TXN.CREATE.v1` - Create transactions
-- `HERA.DNA.HOOKS.TXN.LINES.CREATE.v1` - Create transaction lines
+- `HERA.DNA.HOOKS.TXN.CREATE.V1` - Create transactions
+- `HERA.DNA.HOOKS.TXN.LINES.CREATE.V1` - Create transaction lines
 
 ### Dynamic Data Hooks
 
-- `HERA.DNA.HOOKS.DYNAMIC.SET.v1` - Set dynamic fields
-- `HERA.DNA.HOOKS.DYNAMIC.GET.v1` - Get dynamic fields
+- `HERA.DNA.HOOKS.DYNAMIC.SET.V1` - Set dynamic fields
+- `HERA.DNA.HOOKS.DYNAMIC.GET.V1` - Get dynamic fields
 
 ### Relationship Hooks
 
-- `HERA.DNA.HOOKS.REL.CREATE.v1` - Create relationships
-- `HERA.DNA.HOOKS.REL.GET.v1` - Get relationships
+- `HERA.DNA.HOOKS.REL.CREATE.V1` - Create relationships
+- `HERA.DNA.HOOKS.REL.GET.V1` - Get relationships
 
 ### Composite Hooks
 
-- `HERA.DNA.HOOKS.COMPOSITE.ENTITY.STATUS.v1` - Entity with status
-- `HERA.DNA.HOOKS.COMPOSITE.TXN.COMPLETE.v1` - Complete transaction
+- `HERA.DNA.HOOKS.COMPOSITE.ENTITY.STATUS.V1` - Entity with status
+- `HERA.DNA.HOOKS.COMPOSITE.TXN.COMPLETE.V1` - Complete transaction
 
 ## Best Practices
 

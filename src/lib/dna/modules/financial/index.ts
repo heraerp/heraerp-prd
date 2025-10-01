@@ -1,7 +1,7 @@
 /**
  * HERA Financial Modules Index
  * Central registry for all financial DNA modules
- * Smart Code: HERA.FIN.MODULE.INDEX.v1
+ * Smart Code: HERA.FIN.MODULE.INDEX.V1
  *
  * This index provides easy discovery and access to all financial modules
  */
@@ -33,8 +33,8 @@ interface ModuleMetadata {
  */
 export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
   // Core Financial Modules
-  'HERA.FIN.GL.MODULE.v1': {
-    id: 'HERA.FIN.GL.MODULE.v1',
+  'HERA.FIN.GL.MODULE.V1': {
+    id: 'HERA.FIN.GL.MODULE.V1',
     name: 'General Ledger Module',
     description:
       'Complete GL management with journal entries, COA, reporting, and period management',
@@ -61,8 +61,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
     relatedModules: ['AP', 'AR', 'FA', 'Auto-Journal Engine']
   },
 
-  'HERA.FIN.AP.MODULE.v1': {
-    id: 'HERA.FIN.AP.MODULE.v1',
+  'HERA.FIN.AP.MODULE.V1': {
+    id: 'HERA.FIN.AP.MODULE.V1',
     name: 'Accounts Payable Module',
     description: 'Vendor management, invoice processing, payment workflows, and aging analysis',
     category: 'financial',
@@ -89,8 +89,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
     relatedModules: ['GL', 'Cash Management', 'Purchase Order']
   },
 
-  'HERA.FIN.AR.MODULE.v1': {
-    id: 'HERA.FIN.AR.MODULE.v1',
+  'HERA.FIN.AR.MODULE.V1': {
+    id: 'HERA.FIN.AR.MODULE.V1',
     name: 'Accounts Receivable Module',
     description:
       'Customer management, invoice generation, collections workflow, and credit management',
@@ -118,8 +118,8 @@ export const FINANCIAL_MODULE_REGISTRY: Record<string, ModuleMetadata> = {
     relatedModules: ['GL', 'Sales Order', 'Cash Management']
   },
 
-  'HERA.FIN.FA.MODULE.v1': {
-    id: 'HERA.FIN.FA.MODULE.v1',
+  'HERA.FIN.FA.MODULE.V1': {
+    id: 'HERA.FIN.FA.MODULE.V1',
     name: 'Fixed Assets Module',
     description:
       'Asset lifecycle management from acquisition to disposal with depreciation automation',
@@ -162,14 +162,14 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
     description: '8-step automated year-end closing with GL integration'
   },
   // Dashboards
-  'HERA.FIN.UI.DASHBOARD.v1': {
+  'HERA.FIN.UI.DASHBOARD.V1': {
     name: 'FIN Dashboard',
     location: '/src/components/fin/FINDashboard.tsx',
     description: 'Central financial management dashboard with cash position and KPIs'
   },
 
   // Cashflow System
-  'HERA.FIN.CASHFLOW.SYSTEM.v1': {
+  'HERA.FIN.CASHFLOW.SYSTEM.V1': {
     name: 'Universal Cashflow DNA',
     location: '/src/components/cashflow/CashflowDashboard.tsx',
     cli: '/mcp-server/cashflow-dna-cli.js',
@@ -199,13 +199,13 @@ export const FINANCIAL_COMPONENT_REGISTRY = {
   },
 
   // Financial Reports
-  'HERA.FIN.TRIAL.BALANCE.v1': {
+  'HERA.FIN.TRIAL.BALANCE.V1': {
     name: 'Trial Balance DNA',
     cli: '/mcp-server/trial-balance-dna-cli.js',
     description: 'Professional trial balance with industry configurations'
   },
 
-  'HERA.FIN.BALANCE.SHEET.v1': {
+  'HERA.FIN.BALANCE.SHEET.V1': {
     name: 'Balance Sheet DNA',
     sql: '/database/dna-updates/balance-sheet-dna.sql',
     description: 'Automated balance sheet generation'

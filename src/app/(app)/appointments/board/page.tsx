@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT BOARD PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.BOARD.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.BOARD.V1
 // Kanban-style pipeline view of appointments
 // ================================================================================
 

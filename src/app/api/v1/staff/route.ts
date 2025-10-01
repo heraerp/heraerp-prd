@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         entity_type: 'employee',
         entity_name: name,
         entity_code: entityCode,
-        smart_code: 'HERA.SALON.HR.EMPLOYEE.PROFILE.v1',
+        smart_code: 'HERA.SALON.HR.EMPLOYEE.PROFILE.V1',
         metadata: { role },
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         field_name: 'phone',
         field_value_text: phone,
         field_type: 'text',
-        smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.PHONE.v1',
+        smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.PHONE.V1',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         field_name: 'email',
         field_value_text: email,
         field_type: 'text',
-        smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.EMAIL.v1',
+        smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.EMAIL.V1',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       field_name: 'role',
       field_value_text: role || 'stylist',
       field_type: 'text',
-      smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.ROLE.v1',
+      smart_code: 'HERA.SALON.HR.EMPLOYEE.DYN.ROLE.V1',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     })

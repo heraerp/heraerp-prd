@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA DNA UNIVERSAL TRANSACTION FLOW
-// Smart Code: HERA.UI.TXN.FLOW.UNIVERSAL.ENGINE.v1
+// Smart Code: HERA.UI.TXN.FLOW.UNIVERSAL.ENGINE.V1
 // Enterprise-grade multi-step transaction wizard with full localization
 // ================================================================================
 

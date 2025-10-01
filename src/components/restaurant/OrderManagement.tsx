@@ -518,7 +518,7 @@ export function OrderManagement({
       // Load orders (transactions)
       const ordersResponse = await universalApi.getTransactions({
         transaction_type: 'sale',
-        smart_code: smartCodes.ORDER_SALE || 'HERA.RESTAURANT.ORDER.SALE.v1'
+        smart_code: smartCodes.ORDER_SALE || 'HERA.RESTAURANT.ORDER.SALE.V1'
       })
       const ordersData = extractData(ordersResponse) as Order[]
 

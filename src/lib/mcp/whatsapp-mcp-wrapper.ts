@@ -121,9 +121,9 @@ export const whatsappMessage = {
     cost?: number
   }) {
     // Determine smart code based on message type
-    let smartCode = 'HERA.WHATSAPP.MESSAGE.TEXT.v1'
-    if (params.media) smartCode = 'HERA.WHATSAPP.MESSAGE.MEDIA.v1'
-    if (params.interactive) smartCode = 'HERA.WHATSAPP.MESSAGE.INTERACTIVE.v1'
+    let smartCode = 'HERA.WHATSAPP.MESSAGE.TEXT.V1'
+    if (params.media) smartCode = 'HERA.WHATSAPP.MESSAGE.MEDIA.V1'
+    if (params.interactive) smartCode = 'HERA.WHATSAPP.MESSAGE.INTERACTIVE.V1'
 
     return executeMCP('message.send', {
       organizationId: params.organizationId,
@@ -177,7 +177,7 @@ export const whatsappTemplate = {
       entity_type: 'msg_template',
       entity_name: params.name,
       entity_code: params.name,
-      smart_code: 'HERA.WHATSAPP.TEMPLATE.REGISTER.v1',
+      smart_code: 'HERA.WHATSAPP.TEMPLATE.REGISTER.V1',
       business_rules: {
         language: params.language,
         category: params.category || 'marketing'
@@ -194,7 +194,7 @@ export const whatsappTemplate = {
       entity_id: entityResult.entity_id,
       field_name: 'body',
       field_value: params.body,
-      smart_code: 'HERA.WHATSAPP.TEMPLATE.BODY.v1'
+      smart_code: 'HERA.WHATSAPP.TEMPLATE.BODY.V1'
     })
 
     // Store variables if present
@@ -204,7 +204,7 @@ export const whatsappTemplate = {
         entity_id: entityResult.entity_id,
         field_name: 'variables',
         field_value: JSON.stringify(params.variables),
-        smart_code: 'HERA.WHATSAPP.TEMPLATE.VARS.v1'
+        smart_code: 'HERA.WHATSAPP.TEMPLATE.VARS.V1'
       })
     }
 
@@ -235,7 +235,7 @@ export const whatsappCampaign = {
     const campaignResult = await executeMCP('create-transaction', {
       organization_id: params.organizationId,
       transaction_type: 'CAMPAIGN',
-      smart_code: 'HERA.WHATSAPP.CAMPAIGN.OUTBOUND.v1',
+      smart_code: 'HERA.WHATSAPP.CAMPAIGN.OUTBOUND.V1',
       source_entity_id: params.templateEntityId,
       metadata: {
         name: params.name,
@@ -254,7 +254,7 @@ export const whatsappCampaign = {
       transaction_id: campaignResult.transaction_id,
       field_name: 'audience_query',
       field_value: params.audienceQuery,
-      smart_code: 'HERA.WHATSAPP.CAMPAIGN.AUDIENCE.v1'
+      smart_code: 'HERA.WHATSAPP.CAMPAIGN.AUDIENCE.V1'
     })
 
     return {
@@ -278,7 +278,7 @@ export const whatsappCampaign = {
       transaction_id: params.campaignId,
       line_type: 'CAMPAIGN_DELIVERY',
       description: 'Outbound campaign message',
-      smart_code: 'HERA.WHATSAPP.CAMPAIGN.DELIVERY.v1',
+      smart_code: 'HERA.WHATSAPP.CAMPAIGN.DELIVERY.V1',
       entity_id: params.recipientEntityId,
       line_data: {
         recipient_entity_id: params.recipientEntityId,
@@ -310,7 +310,7 @@ export const whatsappPayment = {
       transaction_id: params.threadId,
       line_type: 'PAYMENT_LINK',
       description: 'Share payment link',
-      smart_code: 'HERA.AR.PAYMENT.LINK.SHARE.v1',
+      smart_code: 'HERA.AR.PAYMENT.LINK.SHARE.V1',
       line_amount: params.amount,
       line_data: {
         ar_invoice_entity_id: params.invoiceEntityId,
@@ -342,7 +342,7 @@ export const whatsappPayment = {
       currency: params.currency,
       provider_ref: params.providerRef,
       invoice_entity_id: params.invoiceEntityId,
-      smart_code: 'HERA.AR.PAYMENT.COLLECTION.WHATSAPP.v1',
+      smart_code: 'HERA.AR.PAYMENT.COLLECTION.WHATSAPP.V1',
       metadata: {
         channel: 'whatsapp',
         collected_at: new Date().toISOString()
@@ -369,7 +369,7 @@ export const whatsappCustomer = {
       entity_type: 'customer',
       entity_name: params.displayName,
       entity_code: params.phoneNumber,
-      smart_code: 'HERA.CRM.CUSTOMER.WHATSAPP.v1',
+      smart_code: 'HERA.CRM.CUSTOMER.WHATSAPP.V1',
       business_rules: {
         msisdn: params.phoneNumber,
         channel: 'whatsapp'

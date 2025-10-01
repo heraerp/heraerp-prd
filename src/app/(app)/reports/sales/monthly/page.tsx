@@ -227,7 +227,7 @@ export default function MonthlySalesReportPage() {
             quantity: 1,
             unit_amount: 180.0,
             line_amount: 180.0,
-            smart_code: 'HERA.SALON.SERVICE.PREMIUM.v1'
+            smart_code: 'HERA.SALON.SERVICE.PREMIUM.V1'
           },
           {
             line_number: 2,
@@ -238,7 +238,7 @@ export default function MonthlySalesReportPage() {
             quantity: 1,
             unit_amount: 80.0,
             line_amount: 80.0,
-            smart_code: 'HERA.SALON.SERVICE.TREATMENT.v1'
+            smart_code: 'HERA.SALON.SERVICE.TREATMENT.V1'
           },
           {
             line_number: 3,
@@ -249,7 +249,7 @@ export default function MonthlySalesReportPage() {
             quantity: 1,
             unit_amount: 45.0,
             line_amount: 45.0,
-            smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.v1'
+            smart_code: 'HERA.SALON.PRODUCT.SHAMPOO.V1'
           },
           {
             line_number: 4,
@@ -260,7 +260,7 @@ export default function MonthlySalesReportPage() {
             quantity: 1,
             unit_amount: 15.25,
             line_amount: 15.25,
-            smart_code: 'HERA.SALON.TAX.VAT.v1'
+            smart_code: 'HERA.SALON.TAX.VAT.V1'
           }
         ],
         related_entities: [

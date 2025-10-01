@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENTS CALENDAR PAGE
-// Smart Code: HERA.PAGES.APPOINTMENTS.CALENDAR.v1
+// Smart Code: HERA.PAGES.APPOINTMENTS.CALENDAR.V1
 // Calendar view of all appointments
 // ================================================================================
 

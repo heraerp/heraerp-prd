@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         entity_id: id,
         field_name: 'is_active',
         field_value_boolean: body.is_active,
-        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.TEMPLATE.ACTIVE.v1'
+        smart_code: 'HERA.PUBLICSECTOR.CRM.COMM.TEMPLATE.ACTIVE.V1'
       })
 
       return NextResponse.json({ success: true })

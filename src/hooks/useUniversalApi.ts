@@ -1,6 +1,6 @@
 // ================================================================================
 // UNIVERSAL API CLIENT HOOK
-// Smart Code: HERA.HOOK.UNIVERSAL.API.v1
+// Smart Code: HERA.HOOK.UNIVERSAL.API.V1
 // React hook for Sacred Six table operations with org filtering
 // ================================================================================
 

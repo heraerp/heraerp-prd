@@ -100,7 +100,7 @@ export async function openShift(organizationId: string, data: ShiftOpenData): Pr
     entity_type: 'shift',
     entity_name: `Shift ${now.toISOString().split('T')[0]} ${data.shiftType || 'daily'}`,
     entity_code: shiftCode,
-    smart_code: 'HERA.POS.SHIFT.DAILY.v1',
+    smart_code: 'HERA.POS.SHIFT.DAILY.V1',
     organization_id: organizationId
   })
 
@@ -108,7 +108,7 @@ export async function openShift(organizationId: string, data: ShiftOpenData): Pr
   const shiftTransaction = await universalApi.createTransaction({
     transaction_type: 'SHIFT_OPEN',
     transaction_code: shiftCode,
-    smart_code: 'HERA.POS.SHIFT.OPEN.v1',
+    smart_code: 'HERA.POS.SHIFT.OPEN.V1',
     organization_id: organizationId,
     from_entity_id: data.registerId,
     to_entity_id: data.operatorId,
@@ -180,7 +180,7 @@ export async function processSale(
   const saleTransaction = await universalApi.createTransaction({
     transaction_type: 'POS_SALE',
     transaction_code: receiptNumber,
-    smart_code: 'HERA.POS.SALE.RECEIPT.v1',
+    smart_code: 'HERA.POS.SALE.RECEIPT.V1',
     organization_id: organizationId,
     from_entity_id: data.customerId || 'WALK-IN-CUSTOMER',
     to_entity_id: data.registerId,
@@ -417,7 +417,7 @@ export async function closeShift(
   const closeTransaction = await universalApi.createTransaction({
     transaction_type: 'SHIFT_CLOSE',
     transaction_code: closeCode,
-    smart_code: 'HERA.POS.SHIFT.CLOSE.v1',
+    smart_code: 'HERA.POS.SHIFT.CLOSE.V1',
     organization_id: organizationId,
     from_entity_id: data.registerId,
     to_entity_id: data.operatorId,
@@ -536,7 +536,7 @@ export async function createCardBatch(
   const batchTransaction = await universalApi.createTransaction({
     transaction_type: 'CARD_BATCH',
     transaction_code: batchId,
-    smart_code: 'HERA.POS.CARD.BATCH.v1',
+    smart_code: 'HERA.POS.CARD.BATCH.V1',
     organization_id: organizationId,
     from_entity_id: data.acquirer,
     to_entity_id: data.registerId,
@@ -641,7 +641,7 @@ export async function runEndOfDay(
     // 5. Create EOD settlement transaction
     const eodTransaction = await universalApi.createTransaction({
       transaction_type: 'EOD_SETTLEMENT',
-      smart_code: 'HERA.POS.EOD.SETTLEMENT.v1',
+      smart_code: 'HERA.POS.EOD.SETTLEMENT.V1',
       organization_id: organizationId,
       from_entity_id: registerId,
       to_entity_id: registerId,
@@ -703,7 +703,7 @@ export async function runEndOfDay(
     // Log error
     await universalApi.createTransaction({
       transaction_type: 'EOD_ERROR',
-      smart_code: 'HERA.POS.EOD.ERROR.v1',
+      smart_code: 'HERA.POS.EOD.ERROR.V1',
       organization_id: organizationId,
       from_entity_id: registerId,
       to_entity_id: registerId,
@@ -964,7 +964,7 @@ async function generateZReport(
     entity_type: 'report',
     entity_name: `Z Report ${businessDate.toISOString().split('T')[0]}`,
     entity_code: `Z-${registerId}-${businessDate.toISOString().split('T')[0]}`,
-    smart_code: 'HERA.POS.REPORT.Z.v1',
+    smart_code: 'HERA.POS.REPORT.Z.V1',
     organization_id: organizationId,
     metadata: report
   })

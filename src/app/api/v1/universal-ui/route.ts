@@ -162,7 +162,7 @@ async function handleWorkflowAction(actionConfig: any, entityId: string, organiz
         from_entity_id: entityId,
         to_entity_id: statusEntity.id,
         relationship_type: 'has_status',
-        smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.v1',
+        smart_code: 'HERA.WORKFLOW.STATUS.ASSIGN.V1',
         metadata: {
           assigned_at: new Date().toISOString(),
           assigned_by: 'system' // In real app, get from auth

@@ -37,7 +37,7 @@ function App() {
   return (
     <HeraOnboardingProvider
       organizationId="org_123"
-      enabledTours={['HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1']}
+      enabledTours={['HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1']}
       theme="light"
       onEmit={(txn, lines) => console.log('Event:', { txn, lines })}
     >
@@ -51,7 +51,7 @@ function Dashboard() {
   const { startTour } = useOnboarding()
 
   return (
-    <button onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1')}>Start Tour</button>
+    <button onClick={() => startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1')}>Start Tour</button>
   )
 }
 ```
@@ -64,12 +64,12 @@ Tours are defined using HERA Smart Codes and registered centrally:
 import { registerTour } from '@/lib/onboarding'
 
 const myTour = {
-  tourSmartCode: 'HERA.UI.ONBOARD.MYMODULE.OVERVIEW.v1',
+  tourSmartCode: 'HERA.UI.ONBOARD.MYMODULE.OVERVIEW.V1',
   autoStart: false,
   allowSkip: true,
   steps: [
     {
-      smartCode: 'HERA.UI.ONBOARD.MYMODULE.STEP1.v1',
+      smartCode: 'HERA.UI.ONBOARD.MYMODULE.STEP1.V1',
       selector: '[data-testid="feature-button"]',
       titleKey: 'ui.onboard.mymodule.step1.title',
       bodyKey: 'ui.onboard.mymodule.step1.body',
@@ -79,7 +79,7 @@ const myTour = {
       timeoutMs: 5000
     },
     {
-      smartCode: 'HERA.UI.ONBOARD.MYMODULE.STEP2.v1',
+      smartCode: 'HERA.UI.ONBOARD.MYMODULE.STEP2.V1',
       selector: '.data-table',
       titleKey: 'ui.onboard.mymodule.step2.title',
       bodyKey: 'ui.onboard.mymodule.step2.body',
@@ -212,7 +212,7 @@ Every interaction emits universal transactions:
 {
   id: 'txn_abc123',
   organization_id: 'org_123',
-  smart_code: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1',
+  smart_code: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1',
   occurred_at: '2024-01-01T12:00:00Z',
   ai_confidence: null,
   ai_insights: null,
@@ -229,7 +229,7 @@ Every interaction emits universal transactions:
   id: 'line_def456',
   transaction_id: 'txn_abc123',
   line_index: 0,
-  smart_code: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.WELCOME.v1',
+  smart_code: 'HERA.UI.ONBOARD.CONSOLE.DASHBOARD.WELCOME.V1',
   status: 'completed',
   duration_ms: 3500,
   metadata: {
@@ -330,7 +330,7 @@ const { startTour, stopTour, next, back, getState, isActive, currentStep, totalS
   useOnboarding()
 
 // Start with options
-startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1', {
+startTour('HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1', {
   auto: true, // Auto-start
   startAt: 2, // Start at step 3
   overrides: {
@@ -405,9 +405,9 @@ Every tour and step has a Smart Code providing business context:
 HERA.UI.ONBOARD.{MODULE}.{FEATURE}.{STEP}.v{VERSION}
 
 Examples:
-HERA.UI.ONBOARD.CONSOLE.DASHBOARD.v1
-HERA.UI.ONBOARD.CRM.CUSTOMERS.LIST.v1
-HERA.UI.ONBOARD.FINANCIAL.GL.ACCOUNTS.v1
+HERA.UI.ONBOARD.CONSOLE.DASHBOARD.V1
+HERA.UI.ONBOARD.CRM.CUSTOMERS.LIST.V1
+HERA.UI.ONBOARD.FINANCIAL.GL.ACCOUNTS.V1
 ```
 
 ### Universal Transactions

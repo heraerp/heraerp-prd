@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * HERA Discover Page - Explore Live Demos
- * Smart Code: HERA.UI.JOURNEY.DISCOVER.PAGE.v1
+ * Smart Code: HERA.UI.JOURNEY.DISCOVER.PAGE.V1
  *
  * First step in the HERA journey - showcase live business demos
  */

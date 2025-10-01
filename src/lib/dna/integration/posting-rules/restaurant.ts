@@ -129,7 +129,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Daily Cash Reconciliation
   {
-    smart_code: 'HERA.RESTAURANT.CASH.RECONCILIATION.v1',
+    smart_code: 'HERA.RESTAURANT.CASH.RECONCILIATION.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'dr|cr'],
@@ -155,7 +155,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Staff Payroll
   {
-    smart_code: 'HERA.RESTAURANT.HR.PAYROLL.v1',
+    smart_code: 'HERA.RESTAURANT.HR.PAYROLL.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['employee_id', 'amount'],
@@ -191,7 +191,7 @@ export const POSTING_RULES: PostingRule[] = [
 
   // Wastage/Spoilage
   {
-    smart_code: 'HERA.RESTAURANT.INV.WASTAGE.v1',
+    smart_code: 'HERA.RESTAURANT.INV.WASTAGE.V1',
     validations: {
       required_header: ['organization_id', 'currency', 'origin_txn_id'],
       required_lines: ['entity_id', 'quantity', 'reason'],

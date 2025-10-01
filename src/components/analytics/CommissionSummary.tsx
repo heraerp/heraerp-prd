@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA COMMISSION SUMMARY
-// Smart Code: HERA.UI.ANALYTICS.COMMISSION.v1
+// Smart Code: HERA.UI.ANALYTICS.COMMISSION.V1
 // Commission calculation display (preview only)
 // ================================================================================
 

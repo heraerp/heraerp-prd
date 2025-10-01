@@ -4,7 +4,7 @@
  * Natural language interface for accounting queries and operations
  * Integrates with analytics-chat for conversational accounting
  *
- * Smart Code: HERA.FIN.ACCT.ANALYTICS.v1
+ * Smart Code: HERA.FIN.ACCT.ANALYTICS.V1
  */
 
 import { AnalyticsChatStorage, ChatMessage, CHAT_SMART_CODES } from '@/lib/analytics-chat-storage'

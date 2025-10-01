@@ -1,6 +1,6 @@
 // ================================================================================
 // WHATSAPP CONFIG PAGE - HERA MSP INTEGRATION
-// Smart Code: HERA.UI.WHATSAPP.CONFIG.v1
+// Smart Code: HERA.UI.WHATSAPP.CONFIG.V1
 // Production-ready WhatsApp configuration for HERA MSP customers
 // ================================================================================
 

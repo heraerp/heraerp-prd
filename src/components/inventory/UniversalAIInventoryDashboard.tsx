@@ -31,7 +31,7 @@ import {
 } from '@/lib/inventory/universal-ai-inventory'
 
 // HERA Universal AI Inventory Dashboard
-// Smart Code: HERA.INV.AI.DASHBOARD.v1
+// Smart Code: HERA.INV.AI.DASHBOARD.V1
 
 interface AIMetrics {
   totalItems: number
@@ -184,7 +184,7 @@ export function UniversalAIInventoryDashboard({ organizationId }: { organization
             Universal AI Inventory System
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Powered by HERA's 6-Table Universal Architecture • Smart Code: HERA.INV.AI.SYSTEM.v1
+            Powered by HERA's 6-Table Universal Architecture • Smart Code: HERA.INV.AI.SYSTEM.V1
           </p>
         </div>
 

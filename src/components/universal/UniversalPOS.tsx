@@ -2,7 +2,7 @@
 
 // ================================================================================
 // HERA UNIVERSAL POS DNA COMPONENT
-// Smart Code: HERA.UI.POS.UNIVERSAL.ENGINE.v1
+// Smart Code: HERA.UI.POS.UNIVERSAL.ENGINE.V1
 // Reusable across all industries with configuration-based customization
 // ================================================================================
 

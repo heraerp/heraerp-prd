@@ -1,6 +1,6 @@
 /**
  * Salon API Client for Playbook Server Integration
- * Smart Code: HERA.API.CLIENT.SALON.v1
+ * Smart Code: HERA.API.CLIENT.SALON.V1
  */
 
 import { z } from 'zod'

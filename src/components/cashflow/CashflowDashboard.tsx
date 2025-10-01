@@ -3,7 +3,7 @@
 // ================================================================================
 // HERA UNIVERSAL CASHFLOW DASHBOARD
 // Complete cashflow analysis and reporting interface
-// Smart Code: HERA.UI.CF.DASHBOARD.v1
+// Smart Code: HERA.UI.CF.DASHBOARD.V1
 // ================================================================================
 
 import React, { useState, useEffect } from 'react'

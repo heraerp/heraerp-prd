@@ -1,119 +1,202 @@
-# 🧬 HERA Universal API v2 - Enterprise Grade Documentation
+# 🧬 HERA Universal API v2 - RPC-First Architecture
 
 ## Overview
 
-The HERA Universal API v2 is a complete rewrite that provides:
-- **Consistent response format** across all operations
-- **Complete CRUD** for all 6 sacred tables
-- **Enterprise features** (pagination, batch operations, advanced filtering)
-- **Perfect multi-tenancy** with organization isolation
-- **Comprehensive error handling**
-- **Performance monitoring** with execution time tracking
-- **Backwards compatibility** with existing code
+The HERA Universal API v2 is a comprehensive RPC-first implementation that directly calls HERA database functions through Supabase. It provides:
+- **Direct RPC mapping** to all HERA database functions (hera_entity_*, hera_dynamic_data_*, etc.)
+- **Server-side execution** with Supabase service role key for bypassing RLS
+- **Type-safe validation** with Zod schemas matching exact RPC parameters
+- **Smart Code validation** ensuring business context integrity
+- **Multi-tenant isolation** with organization_id enforcement
+- **RESTful endpoints** wrapping RPC functions for easy consumption
+- **React hooks** for seamless client-side integration
 
-## 🎯 Key Improvements
+## 🏗️ RPC-First Architecture
 
-### 1. Standardized Response Format
+### Key Files
+- `/src/lib/universal/guardrails.ts` - Core validation utilities (UUID, SmartCode)
+- `/src/lib/universal/supabase.ts` - Server-side Supabase client with service role
+- `/src/lib/universal/schemas.ts` - Zod schemas for all RPC function parameters
+- `/src/lib/universal/hooks.ts` - React hooks for client-side usage
+- `/src/app/api/universal/*` - RESTful endpoints wrapping RPC functions
 
-All API methods now return a consistent structure:
+### RPC Function Mapping
 
-```typescript
-interface UniversalResponse<T> {
-  success: boolean      // Clear success/failure indication
-  data: T | null       // The actual data or null on error
-  error: string | null // Human-readable error message
-  metadata?: {         // Optional performance and pagination info
-    count?: number
-    page?: number
-    pageSize?: number
-    totalPages?: number
-    executionTime?: number
-  }
-}
-```
+| Operation | RPC Function | Endpoint |
+|-----------|--------------|----------|
+| Entity Create/Update | `hera_entity_upsert_v1` | `POST /api/universal/entities` |
+| Entity Read | `hera_entity_read_v1` | `GET /api/universal/entities` |
+| Entity Delete | `hera_entity_delete_v1` | `DELETE /api/universal/entities/{id}` |
+| Entity Recover | `hera_entity_recover_v1` | `POST /api/universal/entities/{id}/recover` |
+| Dynamic Data Set | `hera_dynamic_data_set_v1` | `POST /api/universal/dynamic-data` |
+| Dynamic Data Batch | `hera_dynamic_data_batch_v1` | `POST /api/universal/dynamic-data` |
+| Dynamic Data Get | `hera_dynamic_data_get_v1` | `GET /api/universal/dynamic-data/get` |
+| Dynamic Data Delete | `hera_dynamic_data_delete_v1` | `POST /api/universal/dynamic-data/delete` |
+| Relationship Upsert | `hera_relationship_upsert_v1` | `POST /api/universal/relationships` |
+| Relationship Query | `hera_relationship_query_v1` | `GET /api/universal/relationships/query` |
+| Transaction Emit | `hera_txn_emit_v1` | `POST /api/universal/transactions` |
+| Transaction Get | `hera_txn_get_v1` | `GET /api/universal/transactions/{id}` |
+| Transaction Search | `hera_txn_search_v1` | `GET /api/universal/transactions/search` |
+| Transaction Void | `hera_txn_void_v1` | `POST /api/universal/transactions/{id}/void` |
+| Transaction Reverse | `hera_txn_reverse_v1` | `POST /api/universal/transactions/{id}/reverse` |
+| Transaction Validate | `hera_txn_validate_v1` | `POST /api/universal/transactions/{id}/validate` |
 
-### 2. Complete CRUD Coverage
+## 📋 API Endpoints
 
-| Table | Create | Read | Update | Delete | Batch |
-|-------|--------|------|--------|--------|-------|
-| `core_entities` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `core_relationships` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `universal_transactions` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `universal_transaction_lines` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `core_dynamic_data` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `core_organizations` | ❌ | ✅ | ✅ | ❌ | ❌ |
+### Entity Operations
 
-### 3. Enterprise Features
+#### Create/Update Entity
+```http
+POST /api/universal/entities
+Content-Type: application/json
 
-#### Pagination
-```typescript
-const result = await universalApi.getEntities({
-  page: 2,
-  pageSize: 50,
-  orderBy: 'created_at',
-  orderDirection: 'desc'
-})
-
-// Response includes metadata
 {
-  success: true,
-  data: [...],
-  error: null,
-  metadata: {
-    count: 245,
-    page: 2,
-    pageSize: 50,
-    totalPages: 5,
-    executionTime: 123
+  "p_organization_id": "uuid",
+  "p_entity_type": "customer",
+  "p_entity_name": "Acme Corp",
+  "p_entity_code": "CUST-001",
+  "p_smart_code": "HERA.CRM.CUSTOMER.ENTITY.v1",
+  "p_business_context": { "industry": "tech" },
+  "p_metadata": { "rating": "A+" }
+}
+
+Response:
+{
+  "entity_id": "created-entity-uuid"
+}
+```
+
+#### Search Entities
+```http
+GET /api/universal/entities?p_organization_id=uuid&p_entity_type=customer&p_limit=50
+
+Response:
+{
+  "data": [
+    {
+      "id": "uuid",
+      "entity_type": "customer",
+      "entity_name": "Acme Corp",
+      ...
+    }
+  ]
+}
+```
+
+#### Get Single Entity
+```http
+GET /api/universal/entities/{id}
+X-Organization-Id: org-uuid
+
+Response:
+{
+  "data": {
+    "id": "uuid",
+    "entity_type": "customer",
+    ...
   }
 }
 ```
 
-#### Advanced Filtering
-```typescript
-const result = await universalApi.getTransactions({
-  filters: {
-    transaction_type: 'sale',
-    total_amount: [100, 500], // Between 100 and 500
-    created_at: { gte: '2024-01-01' } // After Jan 1
-  },
-  search: 'customer name',
-  searchFields: ['metadata.customer_name', 'transaction_code']
-})
+#### Delete Entity
+```http
+DELETE /api/universal/entities/{id}
+X-Organization-Id: org-uuid
+
+Response:
+{
+  "data": { "success": true }
+}
 ```
 
-#### Batch Operations
-```typescript
-// Create multiple entities at once
-const result = await universalApi.batchCreate('core_entities', [
-  { entity_type: 'customer', entity_name: 'Customer 1', ... },
-  { entity_type: 'customer', entity_name: 'Customer 2', ... },
-  { entity_type: 'customer', entity_name: 'Customer 3', ... }
-])
+#### Recover Deleted Entity
+```http
+POST /api/universal/entities/{id}/recover
+X-Organization-Id: org-uuid
 
-// Update multiple records
-const updates = await universalApi.batchUpdate('core_entities', [
-  { id: 'uuid1', data: { entity_name: 'Updated Name 1' } },
-  { id: 'uuid2', data: { entity_name: 'Updated Name 2' } }
-])
+Response:
+{
+  "data": { "success": true }
+}
 ```
 
-### 4. Type Safety
+### Dynamic Data Operations
 
-The API now uses TypeScript generics for type-safe responses:
+#### Set Single Field
+```http
+POST /api/universal/dynamic-data
+Content-Type: application/json
 
-```typescript
-// Type-safe entity creation
-const entityResult: UniversalResponse<Entity> = await universalApi.createEntity({
-  organization_id: 'org-123',
-  entity_type: 'customer',
-  entity_name: 'Acme Corp',
-  smart_code: 'HERA.CRM.CUSTOMER.v1'
-})
+{
+  "p_organization_id": "uuid",
+  "p_entity_id": "uuid",
+  "p_field_name": "credit_limit",
+  "p_field_type": "number",
+  "p_field_value_number": 100000,
+  "p_smart_code": "HERA.CRM.FIELD.CREDIT_LIMIT.v1"
+}
 
-if (entityResult.success) {
-  // TypeScript knows entityResult.data is Entity type
-  console.log(entityResult.data.id)
+Response:
+{
+  "data": { "success": true }
+}
+```
+
+#### Batch Set Fields
+```http
+POST /api/universal/dynamic-data
+Content-Type: application/json
+
+{
+  "p_organization_id": "uuid",
+  "p_items": [
+    {
+      "p_entity_id": "uuid",
+      "p_field_name": "credit_limit",
+      "p_field_type": "number",
+      "p_field_value_number": 100000,
+      "p_smart_code": "HERA.CRM.FIELD.CREDIT_LIMIT.v1"
+    }
+  ]
+}
+
+Response:
+{
+  "data": { "batch_success": true }
+}
+```
+
+#### Get Dynamic Data
+```http
+GET /api/universal/dynamic-data/get?p_organization_id=uuid&p_entity_id=uuid
+
+Response:
+{
+  "data": [
+    {
+      "field_name": "credit_limit",
+      "field_type": "number",
+      "field_value_number": 100000,
+      ...
+    }
+  ]
+}
+```
+
+#### Delete Dynamic Fields
+```http
+POST /api/universal/dynamic-data/delete
+Content-Type: application/json
+
+{
+  "p_organization_id": "uuid",
+  "p_entity_id": "uuid",
+  "p_field_names": ["credit_limit", "payment_terms"]
+}
+
+Response:
+{
+  "data": { "deleted_count": 2 }
 }
 ```
 

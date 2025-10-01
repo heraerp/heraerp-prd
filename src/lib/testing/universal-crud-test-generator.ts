@@ -646,13 +646,13 @@ export function createTestConfig(
           name: 'department',
           type: 'text',
           testValue: 'Sales',
-          smartCode: 'HERA.HR.EMPLOYEE.FIELD.DEPT.v1'
+          smartCode: 'HERA.HR.EMPLOYEE.FIELD.DEPT.V1'
         },
         {
           name: 'salary',
           type: 'number',
           testValue: 50000,
-          smartCode: 'HERA.HR.EMPLOYEE.FIELD.SALARY.v1'
+          smartCode: 'HERA.HR.EMPLOYEE.FIELD.SALARY.V1'
         }
       ]
     }

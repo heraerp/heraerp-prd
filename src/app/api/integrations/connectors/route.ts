@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
           }
         })
 
-        // Extract vendor from smart_code (e.g., HERA.INTEGRATION.CONNECTOR.MAILCHIMP.v1 -> mailchimp)
+        // Extract vendor from smart_code (e.g., HERA.INTEGRATION.CONNECTOR.MAILCHIMP.V1 -> mailchimp)
         const vendor = entity.smart_code?.split('.')[3]?.toLowerCase() || ''
 
         // Determine status based on token expiry
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
         'X-Organization-Id': orgId
       },
       body: JSON.stringify({
-        smart_code: 'HERA.INTEGRATION.CONNECTOR.CREATED.v1',
+        smart_code: 'HERA.INTEGRATION.CONNECTOR.CREATED.V1',
         metadata: {
           connector_id: result.data.id,
           vendor: body.vendor

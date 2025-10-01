@@ -64,7 +64,7 @@ export default function UniversalAPIDNAIntegration() {
       const restaurantQuery = await universalAPI.query({
         entity: 'core_entities',
         organization_id: 'demo-org-uuid',
-        smart_code: 'HERA.REST.ENTITY.LOCATION.v1',
+        smart_code: 'HERA.REST.ENTITY.LOCATION.V1',
         query: {
           filters: { entity_type: 'restaurant_location' },
           joins: [
@@ -181,7 +181,7 @@ export default function UniversalAPIDNAIntegration() {
           {
             entity: 'core_entities',
             operation: 'create',
-            smart_code: 'HERA.REST.ENTITY.MANAGER.v1',
+            smart_code: 'HERA.REST.ENTITY.MANAGER.V1',
             alias: 'location_manager',
             data: {
               entity_type: 'employee',

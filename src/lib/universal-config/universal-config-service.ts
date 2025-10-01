@@ -1,6 +1,6 @@
 /**
  * HERA Universal Configuration Rules Service
- * Smart Code: HERA.UNIV.CONFIG.SERVICE.v1
+ * Smart Code: HERA.UNIV.CONFIG.SERVICE.V1
  *
  * Core service for resolving and applying configuration rules
  */

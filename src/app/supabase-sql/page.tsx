@@ -4,7 +4,7 @@
 export const dynamic = 'force-dynamic'
 /**
  * HERA Supabase SQL Editor
- * Smart Code: HERA.TOOLS.SQL.EDITOR.v1
+ * Smart Code: HERA.TOOLS.SQL.EDITOR.V1
  *
  * Direct SQL interface for Supabase database operations
  */

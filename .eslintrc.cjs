@@ -46,6 +46,12 @@ module.exports = {
     "@typescript-eslint/no-unsafe-return": "error",
     "@typescript-eslint/no-unsafe-argument": "error",
     
+    // Prevent lowercase version suffixes in smart codes
+    'no-restricted-syntax': [
+      'error',
+      { selector: "Literal[value=/\\.v\\d+\\b/]", message: 'Use uppercase version suffix, e.g., .V1' }
+    ],
+    
     // EXPLICIT FUNCTION RETURN TYPES (CRITICAL FOR PROP CONTRACTS)
     "@typescript-eslint/explicit-function-return-type": [
       "error",
@@ -201,6 +207,20 @@ module.exports = {
           {
             "name": "unknown",
             "message": "Type 'unknown' should be avoided. Use specific types from @/contracts"
+          },
+          {
+            "name": "@supabase/supabase-js",
+            "message": "Call the v2 API routes; server-only data access happens in RPC services."
+          }
+        ],
+        "patterns": [
+          {
+            "group": ["**/universal/v1/**"],
+            "message": "V1 universal client is deprecated. Use @/lib/universal/v2/client instead."
+          },
+          {
+            "group": ["**/lib/universal-api.ts", "**/lib/universal-api-v1.ts"],
+            "message": "Legacy universal API imports banned. Use @/lib/universal/v2/client instead."
           }
         ]
       }
@@ -209,6 +229,10 @@ module.exports = {
     // CONTRACT-FIRST DEVELOPMENT ENFORCEMENT
     "no-restricted-syntax": [
       "error",
+      {
+        selector: "Literal[value=/\\/api\\/v1\\//]",
+        message: 'V1 endpoints are disallowed. Use /api/v2/.',
+      },
       {
         "selector": "TSAnyKeyword",
         "message": "Type 'any' is forbidden. All types must be defined in @/contracts with Zod schemas"
@@ -232,6 +256,10 @@ module.exports = {
       {
         "selector": "ArrowFunctionExpression[params.length>0]:not([returnType]):not([parent.type='CallExpression'])",
         "message": "Functions with parameters must have explicit return type annotations"
+      },
+      {
+        "selector": "Literal[value=/^\\/api\\/(?!v2\\/)/]",
+        "message": "Use /api/v2/* endpoints only. Legacy /api/ paths are deprecated. Use apiV2 client or fetchV2() instead."
       }
     ],
     

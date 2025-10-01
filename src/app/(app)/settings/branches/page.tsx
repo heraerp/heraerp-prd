@@ -1,6 +1,6 @@
 // ================================================================================
 // BRANCH MANAGEMENT PAGE - SETTINGS
-// Smart Code: HERA.UI.SETTINGS.BRANCHES.v1
+// Smart Code: HERA.UI.SETTINGS.BRANCHES.V1
 // Production-ready branch management using Sacred Six storage
 // ================================================================================
 

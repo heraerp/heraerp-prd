@@ -134,7 +134,7 @@ export async function PATCH(request: NextRequest) {
             from_entity_id: conversationId,
             to_entity_id: conversationId, // self-referencing for state
             relationship_type: 'pinned_conversation',
-            smart_code: 'HERA.WHATSAPP.CONV.PINNED.v1',
+            smart_code: 'HERA.WHATSAPP.CONV.PINNED.V1',
             metadata: { pinned_at: new Date().toISOString() }
           })
         } else {
@@ -157,7 +157,7 @@ export async function PATCH(request: NextRequest) {
             from_entity_id: conversationId,
             to_entity_id: conversationId,
             relationship_type: 'archived_conversation',
-            smart_code: 'HERA.WHATSAPP.CONV.ARCHIVED.v1',
+            smart_code: 'HERA.WHATSAPP.CONV.ARCHIVED.V1',
             metadata: { archived_at: new Date().toISOString() }
           })
         } else {

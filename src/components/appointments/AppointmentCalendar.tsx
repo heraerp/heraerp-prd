@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA APPOINTMENT CALENDAR
-// Smart Code: HERA.COMPONENTS.APPOINTMENT.CALENDAR.v1
+// Smart Code: HERA.COMPONENTS.APPOINTMENT.CALENDAR.V1
 // Calendar view with month/week/day modes and status colors
 // ================================================================================
 

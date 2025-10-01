@@ -28,7 +28,7 @@ const generateMockRequests = (staffId?: string) => {
       id: 'req-1',
       transaction_type: 'leave_request',
       transaction_code: 'LR-2025-001',
-      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.V1'),
       source_entity_id: staffId || 'staff-1',
       transaction_date: '2025-09-25',
       status: 'approved',
@@ -44,7 +44,7 @@ const generateMockRequests = (staffId?: string) => {
       id: 'req-2',
       transaction_type: 'leave_request',
       transaction_code: 'LR-2025-002',
-      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.V1'),
       source_entity_id: staffId || 'staff-2',
       transaction_date: '2025-09-20',
       status: 'pending',
@@ -114,7 +114,7 @@ export async function listPolicies({ organization_id }: { organization_id: strin
           id: 'policy-1',
           entity_name: 'Standard Annual Leave',
           entity_code: 'STD-ANNUAL',
-          smart_code: heraCode('HERA.HR.LEAVE.POLICY.v1'),
+          smart_code: heraCode('HERA.HR.LEAVE.POLICY.V1'),
           metadata: {
             accrual_method: 'ANNUAL',
             annual_entitlement: 25,
@@ -127,7 +127,7 @@ export async function listPolicies({ organization_id }: { organization_id: strin
           id: 'policy-2',
           entity_name: 'Manager Leave Policy',
           entity_code: 'MGR-ANNUAL',
-          smart_code: heraCode('HERA.HR.LEAVE.POLICY.v1'),
+          smart_code: heraCode('HERA.HR.LEAVE.POLICY.V1'),
           metadata: {
             accrual_method: 'ANNUAL',
             annual_entitlement: 30,
@@ -142,7 +142,7 @@ export async function listPolicies({ organization_id }: { organization_id: strin
   }
 
   const response = await fetch(
-    `${BASE}/entities?type=HERA.HR.LEAVE.POLICY.v1&organization_id=${organization_id}`,
+    `${BASE}/entities?type=HERA.HR.LEAVE.POLICY.V1&organization_id=${organization_id}`,
     {
       headers: { Authorization: `Bearer ${KEY}` }
     }
@@ -181,7 +181,7 @@ export async function upsertPolicy({
       entity_type: 'leave_policy',
       entity_name: name,
       entity_code: code,
-      smart_code: heraCode('HERA.HR.LEAVE.POLICY.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.POLICY.V1'),
       metadata: accrual
     })
   })
@@ -223,7 +223,7 @@ export async function listRequests({
   }
 
   const params = new URLSearchParams({
-    smart_code: heraCode('HERA.HR.LEAVE.REQUEST.v1'),
+    smart_code: heraCode('HERA.HR.LEAVE.REQUEST.V1'),
     organization_id,
     limit: String(limit),
     offset: String(offset)
@@ -276,7 +276,7 @@ export async function createRequest({
       organization_id,
       transaction_type: 'leave_request',
       transaction_code: `LR-${new Date().getFullYear()}-${Date.now()}`,
-      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.REQUEST.V1'),
       source_entity_id: staff_id,
       transaction_date: new Date().toISOString(),
       status: 'pending',
@@ -303,7 +303,7 @@ export async function createRequest({
         organization_id,
         transaction_id: txn.id,
         line_description: `Leave day: ${line.date}`,
-        smart_code: heraCode('HERA.HR.LEAVE.LINE.v1'),
+        smart_code: heraCode('HERA.HR.LEAVE.LINE.V1'),
         metadata: line
       })
     })
@@ -339,7 +339,7 @@ export async function decideRequest({
     body: JSON.stringify({
       organization_id,
       transaction_type: 'leave_approval',
-      smart_code: heraCode('HERA.HR.LEAVE.APPROVAL.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.APPROVAL.V1'),
       source_entity_id: approver_id,
       reference_number: request_id,
       metadata: {
@@ -399,7 +399,7 @@ export async function getBalances({
     },
     body: JSON.stringify({
       organization_id,
-      smart_code: heraCode('HERA.HR.LEAVE.BALANCE.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.BALANCE.V1'),
       entity_ids: staff_ids,
       filters: {
         period_start,
@@ -424,7 +424,7 @@ export async function upsertBalance(entity_id: string, data: any) {
     },
     body: JSON.stringify({
       entity_id,
-      smart_code: heraCode('HERA.HR.LEAVE.BALANCE.v1'),
+      smart_code: heraCode('HERA.HR.LEAVE.BALANCE.V1'),
       data
     })
   })

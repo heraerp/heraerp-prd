@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 /**
  * HERA Validate Page - Test if HERA fits your business
- * Smart Code: HERA.UI.JOURNEY.VALIDATE.PAGE.v1
+ * Smart Code: HERA.UI.JOURNEY.VALIDATE.PAGE.V1
  *
  * Second step in the HERA journey - validate business fit
  */

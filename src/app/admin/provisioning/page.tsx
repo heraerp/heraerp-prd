@@ -78,8 +78,8 @@ const mockTenants: Tenant[] = [
     plan: 'Professional',
     status: 'active',
     modules: [
-      'HERA.SALON.POS.MODULE.v1',
-      'HERA.FIN.ACCOUNTING.MODULE.v1',
+      'HERA.SALON.POS.MODULE.V1',
+      'HERA.FIN.ACCOUNTING.MODULE.V1',
       'HERA.FIN.AUTO.JOURNAL.MODULE.V1'
     ],
     createdAt: '2024-01-15'
@@ -93,9 +93,9 @@ const mockTenants: Tenant[] = [
     plan: 'Enterprise',
     status: 'active',
     modules: [
-      'HERA.REST.POS.MODULE.v1',
-      'HERA.REST.KITCHEN.MODULE.v1',
-      'HERA.FIN.ACCOUNTING.MODULE.v1'
+      'HERA.REST.POS.MODULE.V1',
+      'HERA.REST.KITCHEN.MODULE.V1',
+      'HERA.FIN.ACCOUNTING.MODULE.V1'
     ],
     createdAt: '2024-02-20'
   },
@@ -107,7 +107,7 @@ const mockTenants: Tenant[] = [
     country: 'AE',
     plan: 'Starter',
     status: 'trial',
-    modules: ['HERA.HEALTH.EMR.MODULE.v1', 'HERA.FIN.ACCOUNTING.MODULE.v1'],
+    modules: ['HERA.HEALTH.EMR.MODULE.V1', 'HERA.FIN.ACCOUNTING.MODULE.V1'],
     createdAt: '2024-03-10',
     trialEndsAt: '2024-04-10'
   }

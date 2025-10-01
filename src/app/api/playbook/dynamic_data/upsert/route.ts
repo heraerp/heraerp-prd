@@ -16,22 +16,22 @@ function getFieldNameFromSmartCode(smartCode: string): string {
     'HERA.SALON.SERVICE.CATALOG.DURATION.V1': 'service.duration_min',
     'HERA.SALON.SERVICE.CATALOG.CATEGORY.V1': 'service.category',
     // Support lowercase versions
-    'HERA.SALON.SERVICE.CATALOG.PRICE.v1': 'service.base_price',
-    'HERA.SALON.SERVICE.CATALOG.TAX.v1': 'service.tax',
-    'HERA.SALON.SERVICE.CATALOG.COMMISSION.v1': 'service.commission',
-    'HERA.SALON.SERVICE.CATALOG.DURATION.v1': 'service.duration_min',
-    'HERA.SALON.SERVICE.CATALOG.CATEGORY.v1': 'service.category',
+    'HERA.SALON.SERVICE.CATALOG.PRICE.V1': 'service.base_price',
+    'HERA.SALON.SERVICE.CATALOG.TAX.V1': 'service.tax',
+    'HERA.SALON.SERVICE.CATALOG.COMMISSION.V1': 'service.commission',
+    'HERA.SALON.SERVICE.CATALOG.DURATION.V1': 'service.duration_min',
+    'HERA.SALON.SERVICE.CATALOG.CATEGORY.V1': 'service.category',
     // Also support DYN versions for future compatibility
     'HERA.SALON.SERVICE.DYN.PRICE.V1': 'service.base_price',
     'HERA.SALON.SERVICE.DYN.TAX.V1': 'service.tax',
     'HERA.SALON.SERVICE.DYN.COMMISSION.V1': 'service.commission',
     'HERA.SALON.SERVICE.DYN.DURATION.V1': 'service.duration_min',
     'HERA.SALON.SERVICE.DYN.CATEGORY.V1': 'service.category',
-    'HERA.SALON.SERVICE.DYN.PRICE.v1': 'service.base_price',
-    'HERA.SALON.SERVICE.DYN.TAX.v1': 'service.tax',
-    'HERA.SALON.SERVICE.DYN.COMMISSION.v1': 'service.commission',
-    'HERA.SALON.SERVICE.DYN.DURATION.v1': 'service.duration_min',
-    'HERA.SALON.SERVICE.DYN.CATEGORY.v1': 'service.category'
+    'HERA.SALON.SERVICE.DYN.PRICE.V1': 'service.base_price',
+    'HERA.SALON.SERVICE.DYN.TAX.V1': 'service.tax',
+    'HERA.SALON.SERVICE.DYN.COMMISSION.V1': 'service.commission',
+    'HERA.SALON.SERVICE.DYN.DURATION.V1': 'service.duration_min',
+    'HERA.SALON.SERVICE.DYN.CATEGORY.V1': 'service.category'
   }
 
   // Return mapped field name or extract from smart code

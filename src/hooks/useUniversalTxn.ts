@@ -1,6 +1,6 @@
 // ================================================================================
 // UNIVERSAL TRANSACTION HOOK
-// Smart Code: HERA.HOOK.UNIVERSAL.TXN.v1
+// Smart Code: HERA.HOOK.UNIVERSAL.TXN.V1
 // React hook for creating universal transactions with guardrails
 // ================================================================================
 

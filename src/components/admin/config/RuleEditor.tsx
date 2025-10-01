@@ -540,7 +540,7 @@ export function RuleEditor({ rule, onSave, onCancel, className }: RuleEditorProp
                       id="smart_code"
                       value={formData.smart_code}
                       onChange={e => handleInputChange('smart_code', e.target.value)}
-                      placeholder="HERA.CATEGORY.TYPE.NAME.v1"
+                      placeholder="HERA.CATEGORY.TYPE.NAME.V1"
                       className="font-mono text-sm bg-background/70 dark:bg-muted/70 border-white/30 dark:border-border/30"
                     />
                     <p className="text-xs !text-muted-foreground dark:!text-muted-foreground mt-1">

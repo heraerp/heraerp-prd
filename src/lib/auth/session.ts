@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA SESSION MANAGEMENT - PRODUCTION READY
-// Smart Code: HERA.AUTH.SESSION.CORE.v1
+// Smart Code: HERA.AUTH.SESSION.CORE.V1
 // Session state management with persistent storage and auto-refresh
 // ================================================================================
 

@@ -268,7 +268,7 @@ export default function JewelryFinancialPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return `น${amount.toLocaleString()}`
+    return `ยน${amount.toLocaleString()}`
   }
 
   const formatPercentage = (value: number) => {

@@ -1,6 +1,6 @@
 // ================================================================================
 // CHANNEL CONSENT - WHATSAPP CONSENT MANAGEMENT
-// Smart Code: HERA.UI.WHATSAPP.CONSENT.v1
+// Smart Code: HERA.UI.WHATSAPP.CONSENT.V1
 // Production-ready consent dialog for customer channel preferences
 // ================================================================================
 

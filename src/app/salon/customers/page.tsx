@@ -1,6 +1,6 @@
 // ================================================================================
 // HERA SALON - CUSTOMERS PAGE
-// Smart Code: HERA.PAGES.SALON.CUSTOMERS.v1
+// Smart Code: HERA.PAGES.SALON.CUSTOMERS.V1
 // Enterprise-grade customer management with HERA DNA UI
 // ================================================================================
 

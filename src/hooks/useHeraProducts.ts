@@ -229,7 +229,7 @@ export function useHeraProducts({
       p_entity_type: 'product',
       p_entity_name: name,
       p_entity_code: code,
-      p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.v1',
+      p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
       p_entity_description: productData.description || null,
       p_parent_entity_id: null
     })
@@ -278,7 +278,7 @@ export function useHeraProducts({
         p_entity_type: 'product',
         p_entity_name: name || productData.entity_name,
         p_entity_code: code || productData.entity_code,
-        p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.v1',
+        p_smart_code: 'HERA.SALON.PROD.ENT.RETAIL.V1',
         p_entity_description: productData.description || null
       }
     })

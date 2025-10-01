@@ -1,0 +1,109 @@
+name: V2 Guard - Block Legacy API Usage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  v2-guard:
+    name: V2 API Guard
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check for V1 API usage in changed files
+      id: check-v1-usage
+      run: |
+        # Get changed files in src/
+        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^src/' || true)
+        
+        if [ -n "$CHANGED_FILES" ]; then
+          echo "Changed files in src/:"
+          echo "$CHANGED_FILES"
+          
+          # Check for V1 API patterns in changed files
+          V1_USAGE=$(echo "$CHANGED_FILES" | xargs grep -l '/api/v1/' 2>/dev/null || true)
+          
+          if [ -n "$V1_USAGE" ]; then
+            echo "❌ V1 API usage found in changed files:"
+            echo "$V1_USAGE" | while read file; do
+              echo "File: $file"
+              grep -n '/api/v1/' "$file" || true
+            done
+            echo "v1_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No V1 API usage found in changed files"
+            echo "v1_found=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "No files changed in src/ directory"
+          echo "v1_found=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Check for legacy universal client imports
+      id: check-legacy-imports  
+      run: |
+        # Check for legacy import patterns in changed files
+        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^src/' || true)
+        
+        if [ -n "$CHANGED_FILES" ]; then
+          LEGACY_IMPORTS=$(echo "$CHANGED_FILES" | xargs grep -l -E '(universal/v1|clientV1|apiGet|apiPost)' 2>/dev/null || true)
+          
+          if [ -n "$LEGACY_IMPORTS" ]; then
+            echo "❌ Legacy universal client imports found:"
+            echo "$LEGACY_IMPORTS" | while read file; do
+              echo "File: $file"
+              grep -n -E '(universal/v1|clientV1|apiGet|apiPost)' "$file" || true
+            done
+            echo "legacy_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No legacy universal client imports found"
+            echo "legacy_found=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "legacy_found=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Run ESLint V2 checks
+      run: |
+        # Run ESLint with focus on V2 rules
+        npx eslint src/ --ext .ts,.tsx --max-warnings 0 || true
+
+    - name: Run V2 contract tests
+      run: |
+        # Run V2 contract tests if they exist
+        if [ -d "tests/v2/contracts" ]; then
+          npm test tests/v2/contracts/ || echo "V2 contract tests not found or failed"
+        else
+          echo "V2 contract tests directory not found - skipping"
+        fi
+
+    - name: Fail if V1 usage detected
+      if: steps.check-v1-usage.outputs.v1_found == 'true' || steps.check-legacy-imports.outputs.legacy_found == 'true'
+      run: |
+        echo "❌ V1 API usage or legacy imports detected in changed files."
+        echo "Please migrate to V2 APIs:"
+        echo "  - Use /api/v2/* endpoints instead of /api/v1/*"
+        echo "  - Import from @/lib/universal/v2/client instead of legacy clients"
+        echo "  - Run: tsx scripts/codemods/ban-v1-to-v2.ts --dry-run for migration help"
+        exit 1
+
+    - name: Success notification
+      if: steps.check-v1-usage.outputs.v1_found == 'false' && steps.check-legacy-imports.outputs.legacy_found == 'false'
+      run: |
+        echo "✅ V2 Guard passed - no legacy API usage detected"

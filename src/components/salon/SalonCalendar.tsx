@@ -1,7 +1,7 @@
 'use client'
 /**
  * HERA Salon Calendar Implementation
- * Smart Code: HERA.SALON.CALENDAR.MAIN.v1
+ * Smart Code: HERA.SALON.CALENDAR.MAIN.V1
  *
  * Complete salon calendar using Universal HERA Calendar DNA
  */
@@ -279,7 +279,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         allergies: ['ammonia'],
         preferredStylist: 'stylist-rocky-001',
         notes: 'Prefers organic formulas, sensitive scalp',
-        smartCode: 'HERA.SALON.CUSTOMER.VIP.v1'
+        smartCode: 'HERA.SALON.CUSTOMER.VIP.V1'
       },
       {
         id: 'client-emma-001',
@@ -289,7 +289,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         vipLevel: 'gold',
         hairType: 'fine_straight',
         preferredStylist: 'stylist-vinay-001',
-        smartCode: 'HERA.SALON.CUSTOMER.REGULAR.v1'
+        smartCode: 'HERA.SALON.CUSTOMER.REGULAR.V1'
       },
       {
         id: 'client-fatima-001',
@@ -299,7 +299,7 @@ export function SalonCalendar({ className }: SalonCalendarProps) {
         vipLevel: 'regular',
         hairType: 'medium_wavy',
         notes: 'Requires modest treatment approach',
-        smartCode: 'HERA.SALON.CUSTOMER.REGULAR.v1'
+        smartCode: 'HERA.SALON.CUSTOMER.REGULAR.V1'
       }
     ]
 

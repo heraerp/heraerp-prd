@@ -49,72 +49,69 @@ Please check back shortly or contact support if this issue persists.
       {/* Quick Access Card */}
       <Card className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
         <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-2 rounded-lg bg-purple-500/10">
-              <CreditCard className="w-6 h-6 text-purple-600" />
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <CreditCard className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg mb-2">Professional POS System</h3>
-              <p className="text-muted-foreground mb-4">
-                Learn how to process sales transactions, handle payments, manage layaway programs, 
-                and provide exceptional customer service with our jewelry-specific point-of-sale system.
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Point of Sale System
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Professional POS solution for jewelry retailers
               </p>
-              <div className="flex gap-3">
-                <Link href="/jewelry/pos" target="_blank">
-                  <Button variant="outline" size="sm">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Open POS Module
-                  </Button>
-                </Link>
-                <Link href="/docs/jewelry/customers">
-                  <Button variant="outline" size="sm">
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    Customer Management
-                  </Button>
-                </Link>
-              </div>
             </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-3">
+            <Link href="/jewelry/pos">
+              <Button className="bg-purple-600 hover:bg-purple-700">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Open POS System
+              </Button>
+            </Link>
+            <Link href="/jewelry/dashboard">
+              <Button variant="outline">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Go to Dashboard
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
 
       {/* Markdown Content */}
-      <div className="prose prose-lg max-w-none dark:prose-invert">
-        <ReactMarkdown 
+      <div className="prose prose-lg dark:prose-invert max-w-none">
+        <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
-              <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-gray-100 border-b pb-4">
                 {children}
               </h1>
             ),
             h2: ({ children }) => (
-              <h2 className="text-2xl font-semibold mt-8 mb-4 text-foreground border-b pb-2">
+              <h2 className="text-3xl font-semibold mt-8 mb-4 text-gray-900 dark:text-gray-100">
                 {children}
               </h2>
             ),
             h3: ({ children }) => (
-              <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">
+              <h3 className="text-2xl font-semibold mt-6 mb-3 text-gray-900 dark:text-gray-100">
                 {children}
               </h3>
             ),
-            h4: ({ children }) => (
-              <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">
-                {children}
-              </h4>
-            ),
             p: ({ children }) => (
-              <p className="mb-4 text-muted-foreground leading-relaxed">
+              <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">
                 {children}
               </p>
             ),
             ul: ({ children }) => (
-              <ul className="list-disc list-inside mb-4 space-y-2 text-muted-foreground">
+              <ul className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal list-inside mb-4 space-y-2 text-muted-foreground">
+              <ol className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">
                 {children}
               </ol>
             ),
@@ -123,21 +120,30 @@ Please check back shortly or contact support if this issue persists.
                 {children}
               </li>
             ),
-            code: ({ children, className }) => {
-              const isInline = !className
-              if (isInline) {
+            strong: ({ children }) => (
+              <strong className="font-semibold text-gray-900 dark:text-gray-100">
+                {children}
+              </strong>
+            ),
+            em: ({ children }) => (
+              <em className="italic text-gray-700 dark:text-gray-300">
+                {children}
+              </em>
+            ),
+            code: ({ className, children }) => {
+              if (className?.includes('language-')) {
                 return (
-                  <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground">
+                  <code className={className}>
                     {children}
                   </code>
                 )
               }
               return (
-                <code className={className}>
+                <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground">
                   {children}
                 </code>
               )
-            ),
+            },
             pre: ({ children }) => (
               <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4 border">
                 {children}

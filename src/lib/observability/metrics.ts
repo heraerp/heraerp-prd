@@ -354,7 +354,7 @@ export class HeraMetrics {
       transaction_type: 'metrics_snapshot',
       transaction_date: new Date().toISOString(),
       total_amount: 0,
-      smart_code: 'HERA.OBSERVABILITY.METRICS.SNAPSHOT.v1',
+      smart_code: 'HERA.OBSERVABILITY.METRICS.SNAPSHOT.V1',
       organization_id: organizationId,
       metadata: {
         metrics: metrics,

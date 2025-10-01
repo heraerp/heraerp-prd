@@ -1,7 +1,7 @@
 /**
  * MCP Execution Endpoint
  * Routes DNA SDK operations to MCP for enforcement of HERA principles
- * Smart Code: HERA.MCP.API.EXECUTE.v1
+ * Smart Code: HERA.MCP.API.EXECUTE.V1
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: execError.message || 'MCP execution failed',
-          smartCode: 'HERA.MCP.ERROR.EXECUTION.v1'
+          smartCode: 'HERA.MCP.ERROR.EXECUTION.V1'
         },
         { status: 500 }
       )
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Internal server error',
-        smartCode: 'HERA.MCP.ERROR.INTERNAL.v1'
+        smartCode: 'HERA.MCP.ERROR.INTERNAL.V1'
       },
       { status: 500 }
     )

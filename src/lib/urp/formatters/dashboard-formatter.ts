@@ -4,7 +4,7 @@
  * Specialized presentation formatters for finance dashboard UCRs
  * Provides interactive, real-time dashboard components
  *
- * @module HERA.URP.FORMATTERS.DASHBOARD.v1
+ * @module HERA.URP.FORMATTERS.DASHBOARD.V1
  */
 
 import { FormatterOptions, FormattedResult } from '../types/report-types'

@@ -100,7 +100,7 @@ async function createRequisition(data: P2PRequestData, organizationId: string) {
       organization_id: organizationId,
       transaction_type: 'purchase_requisition',
       transaction_code: `PR-${Date.now()}`,
-      smart_code: 'HERA.P2P.PR.CREATE.v1',
+      smart_code: 'HERA.P2P.PR.CREATE.V1',
       transaction_date: new Date().toISOString(),
       from_entity_id: requester_id,
       total_amount,
@@ -124,7 +124,7 @@ async function createRequisition(data: P2PRequestData, organizationId: string) {
       quantity: item.quantity,
       unit_price: item.unit_price,
       line_amount: item.quantity * item.unit_price,
-      smart_code: 'HERA.P2P.PR.LINE.v1',
+      smart_code: 'HERA.P2P.PR.LINE.V1',
       metadata: {
         description: item.description,
         category: item.category
@@ -168,7 +168,7 @@ async function approveRequisition(data: P2PRequestData, organizationId: string) 
     from_entity_id: pr_id,
     to_entity_id: approver_id,
     relationship_type: 'approved_by',
-    smart_code: 'HERA.P2P.PR.APPROVAL.v1',
+    smart_code: 'HERA.P2P.PR.APPROVAL.V1',
     metadata: {
       approved_at: new Date().toISOString(),
       comments
@@ -204,7 +204,7 @@ async function createPurchaseOrder(data: P2PRequestData, organizationId: string)
       organization_id: organizationId,
       transaction_type: 'purchase_order',
       transaction_code: `PO-${Date.now()}`,
-      smart_code: 'HERA.P2P.PO.CREATE.v1',
+      smart_code: 'HERA.P2P.PO.CREATE.V1',
       transaction_date: new Date().toISOString(),
       from_entity_id: organizationId, // Buying organization
       to_entity_id: supplier_id,
@@ -232,7 +232,7 @@ async function createPurchaseOrder(data: P2PRequestData, organizationId: string)
       quantity: line.quantity,
       unit_price: line.unit_price,
       line_amount: line.line_amount,
-      smart_code: 'HERA.P2P.PO.LINE.v1',
+      smart_code: 'HERA.P2P.PO.LINE.V1',
       metadata: line.metadata
     }))
 
@@ -265,7 +265,7 @@ async function receiveGoods(data: P2PRequestData, organizationId: string) {
       organization_id: organizationId,
       transaction_type: 'goods_receipt',
       transaction_code: `GR-${Date.now()}`,
-      smart_code: 'HERA.P2P.GR.CREATE.v1',
+      smart_code: 'HERA.P2P.GR.CREATE.V1',
       transaction_date: new Date().toISOString(),
       reference_entity_id: po_id,
       from_entity_id: location_id,
@@ -287,7 +287,7 @@ async function receiveGoods(data: P2PRequestData, organizationId: string) {
       line_number: index + 1,
       line_entity_id: item.product_id,
       quantity: item.quantity_received,
-      smart_code: 'HERA.P2P.GR.LINE.v1',
+      smart_code: 'HERA.P2P.GR.LINE.V1',
       metadata: {
         po_line_id: item.po_line_id,
         quality_check: item.quality_check || 'passed'
@@ -326,7 +326,7 @@ async function processInvoice(data: P2PRequestData, organizationId: string) {
       organization_id: organizationId,
       transaction_type: 'supplier_invoice',
       transaction_code: invoice_number,
-      smart_code: 'HERA.P2P.INV.CREATE.v1',
+      smart_code: 'HERA.P2P.INV.CREATE.V1',
       transaction_date: invoice_date,
       from_entity_id: supplier_id,
       to_entity_id: organizationId,
@@ -363,7 +363,7 @@ async function processPayment(data: P2PRequestData, organizationId: string) {
       organization_id: organizationId,
       transaction_type: 'payment',
       transaction_code: `PAY-${Date.now()}`,
-      smart_code: 'HERA.P2P.PAY.CREATE.v1',
+      smart_code: 'HERA.P2P.PAY.CREATE.V1',
       transaction_date: payment_date,
       reference_entity_id: invoice_id,
       total_amount: amount,

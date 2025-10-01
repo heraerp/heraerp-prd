@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 
-// Smart Code: HERA.UI.LOADING.STATES.ENHANCED.v1
+// Smart Code: HERA.UI.LOADING.STATES.ENHANCED.V1
 // Comprehensive loading states for restaurant platform
 
 interface LoadingSpinnerProps {
