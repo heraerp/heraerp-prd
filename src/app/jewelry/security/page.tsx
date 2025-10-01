@@ -71,7 +71,8 @@ import {
   MessageSquare,
   Phone,
   Mail,
-  User
+  User,
+  Users
 } from 'lucide-react'
 import '@/styles/jewelry-glassmorphism.css'
 
