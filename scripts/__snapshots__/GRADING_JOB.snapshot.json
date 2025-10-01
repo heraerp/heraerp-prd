@@ -1,0 +1,92 @@
+{
+  "dynamicFields": [
+    {
+      "name": "carat",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.CARAT.v1",
+      "type": "number"
+    },
+    {
+      "name": "certificate_number",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.CERT_NO.v1",
+      "type": "text"
+    },
+    {
+      "name": "clarity",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.CLARITY.v1",
+      "type": "text",
+      "ui": {
+        "optionsQueryKey": "CLARITY_BANDS",
+        "widget": "select"
+      }
+    },
+    {
+      "name": "color",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.COLOR.v1",
+      "type": "text",
+      "ui": {
+        "optionsQueryKey": "COLOR_BANDS",
+        "widget": "select"
+      }
+    },
+    {
+      "name": "cut",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.CUT.v1",
+      "type": "text",
+      "ui": {
+        "optionsQueryKey": "CUT_BANDS",
+        "widget": "select"
+      }
+    },
+    {
+      "name": "measurements",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.v1",
+      "type": "text"
+    },
+    {
+      "name": "pass",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.PASS.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "priority",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.PRIORITY.v1",
+      "type": "text",
+      "ui": {
+        "optionsQueryKey": "PRIORITY_SIMPLE",
+        "widget": "select"
+      }
+    },
+    {
+      "name": "status",
+      "smart_code": "HERA.JEWELRY.GRADING.DYN.STATUS.v1",
+      "type": "text",
+      "ui": {
+        "label": "Status",
+        "optionsQueryKey": "GRADING_STATUS",
+        "widget": "select"
+      }
+    }
+  ],
+  "entity_type": "GRADING_JOB",
+  "labels": {
+    "plural": "Grading Jobs",
+    "singular": "Grading Job"
+  },
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.GRADING.REL.ASSIGNED_TO.v1",
+      "type": "ASSIGNED_TO"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.GRADING.REL.ISSUES_CERT.v1",
+      "type": "ISSUES_CERT"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.GRADING.REL.OF_ITEM.v1",
+      "type": "OF_ITEM"
+    }
+  ]
+}

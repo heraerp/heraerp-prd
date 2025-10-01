@@ -1,0 +1,43 @@
+name: Preset Contract
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  preset-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Validate presets
+        run: npm run presets:validate
+
+      # Regenerate docs + diagrams and fail if diffs are uncommitted
+      - name: Generate docs
+        run: npm run docs:generate
+
+      - name: Generate diagrams
+        run: npm run docs:diagrams
+
+      - name: Check doc/diagram diffs
+        run: |
+          git add -N docs/ scripts/ || true
+          git diff --exit-code || (echo "Docs/diagrams changed. Run scripts locally and commit updates." && exit 1)
+
+      # Snapshots: ensure stable output from presets
+      - name: Build snapshots
+        run: npm run presets:snapshot
+
+      - name: Verify snapshots
+        run: npm run presets:test

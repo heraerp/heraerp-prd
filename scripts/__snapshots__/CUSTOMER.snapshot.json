@@ -1,0 +1,66 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0,
+      "name": "lifetime_value",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.LIFETIME.VALUE.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": 0,
+      "name": "loyalty_points",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.LOYALTY.POINTS.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": false,
+      "name": "vip",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.VIP.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "birthday",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.BIRTHDAY.v1",
+      "type": "date"
+    },
+    {
+      "name": "email",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.EMAIL.v1",
+      "type": "text"
+    },
+    {
+      "name": "notes",
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.NOTES.v1",
+      "type": "text"
+    },
+    {
+      "name": "phone",
+      "required": true,
+      "smart_code": "HERA.SALON.CUSTOMER.DYN.PHONE.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "CUSTOMER",
+  "labels": {
+    "plural": "Customers",
+    "singular": "Customer"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.CUSTOMER.REL.PREFERRED_STYLIST.v1",
+      "type": "PREFERRED_STYLIST"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.CUSTOMER.REL.REFERRED_BY.v1",
+      "type": "REFERRED_BY"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": "NET30",
+      "name": "payment_terms",
+      "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.PAYMENT_TERMS.v1",
+      "type": "text",
+      "ui": {
+        "label": "Payment Terms",
+        "placeholder": "NET30"
+      }
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.ACTIVE.v1",
+      "type": "boolean",
+      "ui": {
+        "label": "Active",
+        "widget": "checkbox"
+      }
+    },
+    {
+      "name": "email",
+      "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.EMAIL.v1",
+      "type": "text",
+      "ui": {
+        "label": "Email",
+        "placeholder": "supplier@example.com"
+      }
+    },
+    {
+      "name": "phone",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.SUPPLIER.DYN.PHONE.v1",
+      "type": "text",
+      "ui": {
+        "helpText": "Primary contact number",
+        "label": "Phone",
+        "placeholder": "+1-555-0123"
+      }
+    }
+  ],
+  "entity_type": "JEWELRY_SUPPLIER",
+  "labels": {
+    "plural": "Suppliers",
+    "singular": "Supplier"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": []
+}

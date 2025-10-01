@@ -1,0 +1,37 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0,
+      "name": "display_order",
+      "smart_code": "HERA.JEWELRY.CATEGORY.DYN.ORDER.v1",
+      "type": "number",
+      "ui": {
+        "helpText": "Sort order for display",
+        "label": "Display Order",
+        "placeholder": "1"
+      }
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.JEWELRY.CATEGORY.DYN.ACTIVE.v1",
+      "type": "boolean",
+      "ui": {
+        "label": "Active",
+        "widget": "checkbox"
+      }
+    }
+  ],
+  "entity_type": "JEWELRY_CATEGORY",
+  "labels": {
+    "plural": "Categories",
+    "singular": "Category"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": []
+}
