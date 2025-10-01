@@ -36,9 +36,7 @@ export default function NewsletterSignup({ className = '' }: NewsletterSignupPro
     <div
       className={`rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 ${className}`}
     >
-      <h3 className="mb-2 text-lg font-semibold ink dark:text-gray-100">
-        Weekly Growth Tips
-      </h3>
+      <h3 className="mb-2 text-lg font-semibold ink dark:text-gray-100">Weekly Growth Tips</h3>
       <p className="mb-4 text-sm ink-muted dark:text-gray-300">
         Join 3,000+ UK business owners getting actionable insights.
       </p>

@@ -7,7 +7,13 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 interface ExchangePanelProps {
   value: any
@@ -28,11 +34,11 @@ export function ExchangePanel({ value, onChange }: ExchangePanelProps) {
           <Switch
             id="exchangeEnabled"
             checked={value.exchangeEnabled || false}
-            onCheckedChange={(checked) => updateField('exchangeEnabled', checked)}
+            onCheckedChange={checked => updateField('exchangeEnabled', checked)}
           />
         </div>
       </div>
-      
+
       {value.exchangeEnabled && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -43,16 +49,16 @@ export function ExchangePanel({ value, onChange }: ExchangePanelProps) {
                 type="number"
                 step="0.001"
                 value={value.exchangeWeight || ''}
-                onChange={(e) => updateField('exchangeWeight', parseFloat(e.target.value) || 0)}
+                onChange={e => updateField('exchangeWeight', parseFloat(e.target.value) || 0)}
                 placeholder="0.000"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="exchangePurity">Exchange Purity (K)</Label>
-              <Select 
-                value={value.exchangePurity?.toString() || ''} 
-                onValueChange={(val) => updateField('exchangePurity', parseInt(val))}
+              <Select
+                value={value.exchangePurity?.toString() || ''}
+                onValueChange={val => updateField('exchangePurity', parseInt(val))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select purity" />
@@ -67,7 +73,7 @@ export function ExchangePanel({ value, onChange }: ExchangePanelProps) {
               </Select>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="exchangeValue">Exchange Value (₹)</Label>
             <Input
@@ -75,17 +81,14 @@ export function ExchangePanel({ value, onChange }: ExchangePanelProps) {
               type="number"
               step="0.01"
               value={value.exchangeValue || ''}
-              onChange={(e) => updateField('exchangeValue', parseFloat(e.target.value) || 0)}
+              onChange={e => updateField('exchangeValue', parseFloat(e.target.value) || 0)}
               placeholder="0.00"
             />
             {value.exchangeWeight > 0 && value.goldRate > 0 && value.exchangePurity > 0 && (
               <div className="text-xs text-gray-500">
-                Calculated: ₹{(
-                  value.exchangeWeight * 
-                  (value.exchangePurity / 24) * 
-                  value.goldRate * 
-                  0.95 // 5% deduction typical
-                ).toFixed(2)}
+                Calculated: ₹
+                {(value.exchangeWeight * (value.exchangePurity / 24) * value.goldRate * 0.95) // 5% deduction typical
+                  .toFixed(2)}
               </div>
             )}
           </div>

@@ -17,7 +17,7 @@ export const ISPInput = forwardRef<HTMLInputElement, ISPInputProps>(
           {icon && <div className="absolute left-3 top-1/2 transform -translate-y-1/2">{icon}</div>}
           <input
             ref={ref}
-            className={`w-full ${icon ?'pl-10' : 'pl-4'} pr-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#0099CC] focus:bg-slate-800 transition-all duration-200 ${className}`}
+            className={`w-full ${icon ? 'pl-10' : 'pl-4'} pr-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-[#0099CC] focus:bg-slate-800 transition-all duration-200 ${className}`}
             {...props}
           />
         </div>
@@ -89,7 +89,8 @@ export const ISPButton = forwardRef<HTMLButtonElement, ISPButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`font-medium rounded-lg transition-all duration-300 ${variants[variant]} ${sizes[size]} ${ disabled || loading ?'opacity-50 cursor-not-allowed' : ''
+        className={`font-medium rounded-lg transition-all duration-300 ${variants[variant]} ${sizes[size]} ${
+          disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
         } ${className}`}
         {...props}
       >

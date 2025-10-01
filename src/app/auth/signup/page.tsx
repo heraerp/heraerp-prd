@@ -152,10 +152,12 @@ export default function SignUpPage() {
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
               <div
-                className={`flex items-center ${step >= 1 ?'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 1 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${ step >= 1 ?'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    step >= 1
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -164,13 +166,15 @@ export default function SignUpPage() {
                 <span className="ml-2 hidden sm:inline font-medium">Account</span>
               </div>
               <div
-                className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ?'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+                className={`w-16 h-1 rounded-full transition-all duration-300 ${step >= 2 ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}
               />
               <div
-                className={`flex items-center ${step >= 2 ?'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
+                className={`flex items-center ${step >= 2 ? 'text-foreground dark:text-foreground' : 'text-muted-foreground dark:text-slate-500'}`}
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${ step >= 2 ?'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+                    step >= 2
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-foreground transform scale-110'
                       : 'bg-slate-200 dark:bg-slate-700'
                   }`}
                 >
@@ -213,10 +217,7 @@ export default function SignUpPage() {
                   )}
 
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="email"
-                      className="text-sm font-medium ink dark:text-slate-300"
-                    >
+                    <Label htmlFor="email" className="text-sm font-medium ink dark:text-slate-300">
                       Email Address
                     </Label>
                     <Input
@@ -344,10 +345,7 @@ export default function SignUpPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="phone"
-                      className="text-sm font-medium ink dark:text-slate-300"
-                    >
+                    <Label htmlFor="phone" className="text-sm font-medium ink dark:text-slate-300">
                       Phone Number
                     </Label>
                     <Input

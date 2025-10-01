@@ -1,4 +1,4 @@
-import { MILESTONES } from '@/data/about';
+import { MILESTONES } from '@/data/about'
 
 export default function Timeline() {
   return (
@@ -19,5 +19,5 @@ export default function Timeline() {
         </div>
       ))}
     </div>
-  );
+  )
 }

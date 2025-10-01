@@ -14,7 +14,7 @@ const coreOperations = [
   { label: 'POS System', href: '/jewelry/pos' },
   { label: 'Inventory', href: '/jewelry/inventory' },
   { label: 'Mobile App', href: '/jewelry/mobile' },
-  { label: 'Search Items', href: '/jewelry/search' },
+  { label: 'Search Items', href: '/jewelry/search' }
 ]
 
 const qualityCertification = [
@@ -22,14 +22,14 @@ const qualityCertification = [
   { label: 'Certificates', href: '/jewelry/certificates' },
   { label: 'Quality Control', href: '/jewelry/quality' },
   { label: 'Authentication', href: '/jewelry/auth' },
-  { label: 'Grading', href: '/jewelry/grading' },
+  { label: 'Grading', href: '/jewelry/grading' }
 ]
 
 const customerManagement = [
   { label: 'Customers', href: '/jewelry/customers' },
   { label: 'VIP Services', href: '/jewelry/vip' },
   { label: 'Wishlist', href: '/jewelry/wishlist' },
-  { label: 'Loyalty Program', href: '/jewelry/loyalty' },
+  { label: 'Loyalty Program', href: '/jewelry/loyalty' }
 ]
 
 const businessIntelligence = [
@@ -38,7 +38,7 @@ const businessIntelligence = [
   { label: 'Reports', href: '/jewelry/reports' },
   { label: 'Financial', href: '/jewelry/financial' },
   { label: 'Profit Analysis', href: '/jewelry/profit' },
-  { label: 'Market Trends', href: '/jewelry/trends' },
+  { label: 'Market Trends', href: '/jewelry/trends' }
 ]
 
 const operations = [
@@ -47,7 +47,7 @@ const operations = [
   { label: 'E-commerce', href: '/jewelry/ecommerce' },
   { label: 'Custom Orders', href: '/jewelry/custom' },
   { label: 'Appointments', href: '/jewelry/appointments' },
-  { label: 'Scheduling', href: '/jewelry/schedule' },
+  { label: 'Scheduling', href: '/jewelry/schedule' }
 ]
 
 const administration = [
@@ -59,7 +59,7 @@ const administration = [
   { label: 'Security', href: '/jewelry/security' },
   { label: 'Branch Management', href: '/jewelry/branches' },
   { label: 'Staff Portal', href: '/jewelry/staff' },
-  { label: 'Smart AI', href: '/jewelry/ai' },
+  { label: 'Smart AI', href: '/jewelry/ai' }
 ]
 
 const documentation = [
@@ -69,7 +69,7 @@ const documentation = [
   { label: 'POS Guide', href: '/docs/jewelry/pos' },
   { label: 'Customer Guide', href: '/docs/jewelry/customers' },
   { label: 'Repair Services', href: '/docs/jewelry/repairs' },
-  { label: 'Analytics Guide', href: '/docs/jewelry/analytics' },
+  { label: 'Analytics Guide', href: '/docs/jewelry/analytics' }
 ]
 
 export function JewelryNavbar() {
@@ -83,8 +83,8 @@ export function JewelryNavbar() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo Section */}
             <div className="flex items-center gap-8">
-              <a 
-                href="/jewelry/dashboard" 
+              <a
+                href="/jewelry/dashboard"
                 className="flex items-center gap-2 jewelry-text-luxury hover:jewelry-text-gold transition-colors"
               >
                 <div className="jewelry-crown-glow p-2 rounded-xl">
@@ -92,42 +92,24 @@ export function JewelryNavbar() {
                 </div>
                 <span className="text-xl font-bold">HERA Jewelry</span>
               </a>
-              
+
               {/* Navigation Dropdowns - Horizontal Scrollable */}
               <div className="hidden lg:block flex-1 max-w-4xl overflow-hidden">
                 <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide jewelry-navbar-scroll pb-1">
-                  <JewelryNavDropdown 
-                    label="Core Operations" 
-                    items={coreOperations}
-                  />
-                  <JewelryNavDropdown 
-                    label="Quality & Certification" 
+                  <JewelryNavDropdown label="Core Operations" items={coreOperations} />
+                  <JewelryNavDropdown
+                    label="Quality & Certification"
                     items={qualityCertification}
                   />
-                  <JewelryNavDropdown 
-                    label="Customer Management" 
-                    items={customerManagement}
-                  />
-                  <JewelryNavDropdown 
-                    label="Business Intelligence" 
-                    items={businessIntelligence}
-                  />
-                  <JewelryNavDropdown 
-                    label="Operations" 
-                    items={operations}
-                  />
-                  <JewelryNavDropdown 
-                    label="Administration" 
-                    items={administration}
-                  />
-                  <JewelryNavDropdown 
-                    label="Documentation" 
-                    items={documentation}
-                  />
+                  <JewelryNavDropdown label="Customer Management" items={customerManagement} />
+                  <JewelryNavDropdown label="Business Intelligence" items={businessIntelligence} />
+                  <JewelryNavDropdown label="Operations" items={operations} />
+                  <JewelryNavDropdown label="Administration" items={administration} />
+                  <JewelryNavDropdown label="Documentation" items={documentation} />
                 </div>
               </div>
             </div>
-            
+
             {/* Right Section */}
             <div className="flex items-center gap-4">
               {/* Mobile Menu Button - Only on smaller screens */}
@@ -149,7 +131,7 @@ export function JewelryNavbar() {
                 <Search className="h-5 w-5" />
                 <span className="sr-only">Search Apps</span>
               </button>
-              
+
               <JewelryNotifications />
               <JewelryUserMenu />
             </div>
@@ -165,7 +147,7 @@ export function JewelryNavbar() {
             <div>
               <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Core Operations</h3>
               <div className="space-y-1">
-                {coreOperations.map((item) => (
+                {coreOperations.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -180,9 +162,11 @@ export function JewelryNavbar() {
 
             {/* Quality & Certification */}
             <div>
-              <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Quality & Certification</h3>
+              <h3 className="text-sm font-semibold jewelry-text-gold mb-2">
+                Quality & Certification
+              </h3>
               <div className="space-y-1">
-                {qualityCertification.map((item) => (
+                {qualityCertification.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -199,7 +183,7 @@ export function JewelryNavbar() {
             <div>
               <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Customer Management</h3>
               <div className="space-y-1">
-                {customerManagement.map((item) => (
+                {customerManagement.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -214,9 +198,11 @@ export function JewelryNavbar() {
 
             {/* Business Intelligence */}
             <div>
-              <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Business Intelligence</h3>
+              <h3 className="text-sm font-semibold jewelry-text-gold mb-2">
+                Business Intelligence
+              </h3>
               <div className="space-y-1">
-                {businessIntelligence.map((item) => (
+                {businessIntelligence.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -233,7 +219,7 @@ export function JewelryNavbar() {
             <div>
               <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Operations</h3>
               <div className="space-y-1">
-                {operations.map((item) => (
+                {operations.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -250,7 +236,7 @@ export function JewelryNavbar() {
             <div>
               <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Administration</h3>
               <div className="space-y-1">
-                {administration.map((item) => (
+                {administration.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -267,7 +253,7 @@ export function JewelryNavbar() {
             <div>
               <h3 className="text-sm font-semibold jewelry-text-gold mb-2">Documentation</h3>
               <div className="space-y-1">
-                {documentation.map((item) => (
+                {documentation.map(item => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -282,12 +268,9 @@ export function JewelryNavbar() {
           </div>
         </div>
       )}
-      
+
       {/* Apps Search Modal */}
-      <JewelryAppsSearch 
-        isOpen={showAppsSearch}
-        onClose={() => setShowAppsSearch(false)}
-      />
+      <JewelryAppsSearch isOpen={showAppsSearch} onClose={() => setShowAppsSearch(false)} />
     </header>
   )
 }

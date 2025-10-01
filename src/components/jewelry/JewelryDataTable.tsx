@@ -8,7 +8,14 @@
 import { useState } from 'react'
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Diamond } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import type { TableColumn } from '@/lib/ui-binder/types'
 import '@/styles/jewelry-glassmorphism.css'
 
@@ -47,10 +54,10 @@ export function JewelryDataTable<T extends Record<string, any>>({
 
   const handleSort = (column: TableColumn) => {
     if (!column.sortable || !sorting) return
-    
+
     const currentDirection = sorting.column === column.key ? sorting.direction : undefined
     const newDirection = currentDirection === 'asc' ? 'desc' : 'asc'
-    
+
     sorting.onSort(column.key, newDirection)
   }
 
@@ -58,7 +65,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
     if (!column.sortable || !sorting || sorting.column !== column.key) {
       return <span className="w-4 h-4" />
     }
-    
+
     return sorting.direction === 'asc' ? (
       <ChevronUp className="w-4 h-4 jewelry-icon-gold" />
     ) : (
@@ -70,17 +77,19 @@ export function JewelryDataTable<T extends Record<string, any>>({
     if (column.formatter) {
       return column.formatter(value, row)
     }
-    
+
     if (value == null) return '—'
     if (typeof value === 'boolean') return value ? 'Yes' : 'No'
     if (typeof value === 'number') return value.toLocaleString()
-    
+
     return String(value)
   }
 
   const totalPages = pagination ? Math.ceil(pagination.total / pagination.pageSize) : 1
   const startItem = pagination ? (pagination.page - 1) * pagination.pageSize + 1 : 1
-  const endItem = pagination ? Math.min(pagination.page * pagination.pageSize, pagination.total) : data.length
+  const endItem = pagination
+    ? Math.min(pagination.page * pagination.pageSize, pagination.total)
+    : data.length
 
   if (loading) {
     return (
@@ -99,7 +108,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
         <Table>
           <TableHeader>
             <TableRow>
-              {columns.map((column) => (
+              {columns.map(column => (
                 <TableHead
                   key={column.key}
                   className={`${column.sortable ? 'cursor-pointer hover:bg-opacity-20' : ''}`}
@@ -121,9 +130,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
                   <div className="flex flex-col items-center space-y-4">
                     <Diamond className="h-16 w-16 jewelry-icon-gold opacity-50" />
                     <div>
-                      <p className="jewelry-empty-state text-lg font-medium mb-2">
-                        {emptyMessage}
-                      </p>
+                      <p className="jewelry-empty-state text-lg font-medium mb-2">{emptyMessage}</p>
                       <p className="jewelry-champagne-text text-sm">
                         Add your first luxury piece to get started
                       </p>
@@ -142,7 +149,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
                   onMouseEnter={() => setHoveredRow(index)}
                   onMouseLeave={() => setHoveredRow(null)}
                 >
-                  {columns.map((column) => (
+                  {columns.map(column => (
                     <TableCell key={column.key} className="py-4">
                       <span className="jewelry-text-high-contrast">
                         {formatCellValue(column, row[column.key], row)}
@@ -155,13 +162,13 @@ export function JewelryDataTable<T extends Record<string, any>>({
           </TableBody>
         </Table>
       </div>
-      
+
       {pagination && (
         <div className="flex items-center justify-between px-6 py-4 border-t border-jewelry-gold-300">
           <div className="jewelry-champagne-text text-sm">
             Showing {startItem} to {endItem} of {pagination.total} luxury pieces
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -173,7 +180,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
               <ChevronLeft className="w-4 h-4" />
               Previous
             </Button>
-            
+
             <div className="flex items-center space-x-1">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum: number
@@ -186,11 +193,11 @@ export function JewelryDataTable<T extends Record<string, any>>({
                 } else {
                   pageNum = pagination.page - 2 + i
                 }
-                
+
                 return (
                   <Button
                     key={pageNum}
-                    variant={pageNum === pagination.page ? "default" : "outline"}
+                    variant={pageNum === pagination.page ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => pagination.onPageChange(pageNum)}
                     className={`w-8 h-8 p-0 ${
@@ -202,7 +209,7 @@ export function JewelryDataTable<T extends Record<string, any>>({
                 )
               })}
             </div>
-            
+
             <Button
               variant="outline"
               size="sm"

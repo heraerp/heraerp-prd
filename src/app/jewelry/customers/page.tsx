@@ -226,27 +226,44 @@ export default function JewelryCustomersPage() {
   // Enhanced filtering
   const filteredCustomers = customers
     .filter(customer => {
-      const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           customer.phone.includes(searchTerm)
-      const matchesVipStatus = selectedVipStatus === 'all' || customer.vipStatus === selectedVipStatus
+      const matchesSearch =
+        customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.phone.includes(searchTerm)
+      const matchesVipStatus =
+        selectedVipStatus === 'all' || customer.vipStatus === selectedVipStatus
       const matchesStatus = selectedStatus === 'all' || customer.status === selectedStatus
-      
-      // Advanced filters
-      const matchesMinSpent = !filterValues.minSpent || customer.totalSpent >= parseFloat(filterValues.minSpent)
-      const matchesMaxSpent = !filterValues.maxSpent || customer.totalSpent <= parseFloat(filterValues.maxSpent)
-      const matchesMinOrders = !filterValues.minOrders || customer.totalOrders >= parseInt(filterValues.minOrders)
-      const matchesMaxOrders = !filterValues.maxOrders || customer.totalOrders <= parseInt(filterValues.maxOrders)
-      const matchesCity = filterValues.city === 'all' || customer.city === filterValues.city
-      const matchesCountry = filterValues.country === 'all' || customer.country === filterValues.country
-      
-      // Upcoming events filter
-      const hasUpcomingEvents = filterValues.hasUpcomingEvents ? 
-        (customer.birthday || customer.anniversary) : true
 
-      return matchesSearch && matchesVipStatus && matchesStatus && 
-             matchesMinSpent && matchesMaxSpent && matchesMinOrders && 
-             matchesMaxOrders && matchesCity && matchesCountry && hasUpcomingEvents
+      // Advanced filters
+      const matchesMinSpent =
+        !filterValues.minSpent || customer.totalSpent >= parseFloat(filterValues.minSpent)
+      const matchesMaxSpent =
+        !filterValues.maxSpent || customer.totalSpent <= parseFloat(filterValues.maxSpent)
+      const matchesMinOrders =
+        !filterValues.minOrders || customer.totalOrders >= parseInt(filterValues.minOrders)
+      const matchesMaxOrders =
+        !filterValues.maxOrders || customer.totalOrders <= parseInt(filterValues.maxOrders)
+      const matchesCity = filterValues.city === 'all' || customer.city === filterValues.city
+      const matchesCountry =
+        filterValues.country === 'all' || customer.country === filterValues.country
+
+      // Upcoming events filter
+      const hasUpcomingEvents = filterValues.hasUpcomingEvents
+        ? customer.birthday || customer.anniversary
+        : true
+
+      return (
+        matchesSearch &&
+        matchesVipStatus &&
+        matchesStatus &&
+        matchesMinSpent &&
+        matchesMaxSpent &&
+        matchesMinOrders &&
+        matchesMaxOrders &&
+        matchesCity &&
+        matchesCountry &&
+        hasUpcomingEvents
+      )
     })
     .sort((a, b) => {
       const direction = sortOrder === 'asc' ? 1 : -1
@@ -260,7 +277,9 @@ export default function JewelryCustomersPage() {
         case 'joinDate':
           return (new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime()) * direction
         case 'lastOrder':
-          return (new Date(a.lastOrderDate).getTime() - new Date(b.lastOrderDate).getTime()) * direction
+          return (
+            (new Date(a.lastOrderDate).getTime() - new Date(b.lastOrderDate).getTime()) * direction
+          )
         default:
           return 0
       }
@@ -268,39 +287,51 @@ export default function JewelryCustomersPage() {
 
   const getVipIcon = (vipStatus: string) => {
     switch (vipStatus) {
-      case 'diamond': return <Crown className="jewelry-icon-gold" size={16} />
-      case 'platinum': return <Star className="jewelry-icon-gold" size={16} />
-      case 'gold': return <Award className="jewelry-icon-gold" size={16} />
-      case 'silver': return <Sparkles className="jewelry-icon-gold" size={16} />
-      default: return null
+      case 'diamond':
+        return <Crown className="jewelry-icon-gold" size={16} />
+      case 'platinum':
+        return <Star className="jewelry-icon-gold" size={16} />
+      case 'gold':
+        return <Award className="jewelry-icon-gold" size={16} />
+      case 'silver':
+        return <Sparkles className="jewelry-icon-gold" size={16} />
+      default:
+        return null
     }
   }
 
   const getVipColor = (vipStatus: string) => {
     switch (vipStatus) {
-      case 'diamond': return 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30'
-      case 'platinum': return 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-900/30'
-      case 'gold': return 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30'
-      case 'silver': return 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30'
-      default: return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800/30'
+      case 'diamond':
+        return 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30'
+      case 'platinum':
+        return 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-900/30'
+      case 'gold':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30'
+      case 'silver':
+        return 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30'
+      default:
+        return 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800/30'
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'jewelry-status-active'
-      case 'inactive': return 'jewelry-status-pending'
-      case 'blacklisted': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'active':
+        return 'jewelry-status-active'
+      case 'inactive':
+        return 'jewelry-status-pending'
+      case 'blacklisted':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   // Bulk operations functions
   const toggleCustomerSelection = (customerId: string) => {
-    setSelectedCustomers(prev => 
-      prev.includes(customerId) 
-        ? prev.filter(id => id !== customerId)
-        : [...prev, customerId]
+    setSelectedCustomers(prev =>
+      prev.includes(customerId) ? prev.filter(id => id !== customerId) : [...prev, customerId]
     )
   }
 
@@ -359,9 +390,8 @@ export default function JewelryCustomersPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Page Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -377,7 +407,7 @@ export default function JewelryCustomersPage() {
           </motion.div>
 
           {/* Summary Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -388,35 +418,51 @@ export default function JewelryCustomersPage() {
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{totalCustomers}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Customers</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <CheckCircle className="mx-auto mb-3 jewelry-icon-gold" size={32} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{activeCustomers}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Active Customers</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <Crown className="mx-auto mb-3 jewelry-icon-gold" size={32} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{vipCustomers}</h3>
               <p className="jewelry-text-muted text-sm font-medium">VIP Members</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${totalRevenue.toLocaleString()}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${totalRevenue.toLocaleString()}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Revenue</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.4s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.4s' }}
+            >
               <TrendingUp className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${averageOrderValue.toLocaleString()}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${averageOrderValue.toLocaleString()}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Avg Order Value</p>
             </div>
           </motion.div>
 
           {/* Bulk Actions Bar */}
           {showBulkActions && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -425,37 +471,40 @@ export default function JewelryCustomersPage() {
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div className="flex items-center gap-4">
                   <span className="jewelry-text-high-contrast font-semibold">
-                    {selectedCustomers.length} customer{selectedCustomers.length !== 1 ? 's' : ''} selected
+                    {selectedCustomers.length} customer{selectedCustomers.length !== 1 ? 's' : ''}{' '}
+                    selected
                   </span>
-                  <button 
+                  <button
                     onClick={clearSelection}
                     className="jewelry-btn-secondary text-sm px-3 py-1"
                   >
                     Clear Selection
                   </button>
                 </div>
-                
+
                 <div className="flex gap-2">
-                  <button 
+                  <button
                     onClick={handleBulkExport}
                     className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-2 text-sm"
                   >
                     <Download className="jewelry-icon-gold" size={16} />
                     <span>Export Selected</span>
                   </button>
-                  
+
                   <select
-                    onChange={(e) => handleBulkStatusUpdate(e.target.value)}
+                    onChange={e => handleBulkStatusUpdate(e.target.value)}
                     className="jewelry-input text-sm"
                     defaultValue=""
                   >
-                    <option value="" disabled>Update Status</option>
+                    <option value="" disabled>
+                      Update Status
+                    </option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                     <option value="blacklisted">Blacklisted</option>
                   </select>
-                  
-                  <button 
+
+                  <button
                     onClick={handleBulkDelete}
                     className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-2 text-sm text-red-400 hover:text-red-300"
                   >
@@ -468,7 +517,7 @@ export default function JewelryCustomersPage() {
           )}
 
           {/* Action Bar */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -478,36 +527,43 @@ export default function JewelryCustomersPage() {
               {/* Search and Filters */}
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search customers..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="jewelry-input pl-10 w-64"
                   />
                 </div>
-                
+
                 <select
                   value={selectedVipStatus}
-                  onChange={(e) => setSelectedVipStatus(e.target.value)}
+                  onChange={e => setSelectedVipStatus(e.target.value)}
                   className="jewelry-input"
                 >
                   {vipStatuses.map(status => (
                     <option key={status} value={status}>
-                      {status === 'all' ? 'All VIP Levels' : status.charAt(0).toUpperCase() + status.slice(1)}
+                      {status === 'all'
+                        ? 'All VIP Levels'
+                        : status.charAt(0).toUpperCase() + status.slice(1)}
                     </option>
                   ))}
                 </select>
-                
+
                 <select
                   value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  onChange={e => setSelectedStatus(e.target.value)}
                   className="jewelry-input"
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>
-                      {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
+                      {status === 'all'
+                        ? 'All Status'
+                        : status.charAt(0).toUpperCase() + status.slice(1)}
                     </option>
                   ))}
                 </select>
@@ -523,12 +579,16 @@ export default function JewelryCustomersPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={toggleSelectAll}
                   className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2"
                 >
                   <CheckCircle className="jewelry-icon-gold" size={18} />
-                  <span>{selectedCustomers.length === filteredCustomers.length ? 'Deselect All' : 'Select All'}</span>
+                  <span>
+                    {selectedCustomers.length === filteredCustomers.length
+                      ? 'Deselect All'
+                      : 'Select All'}
+                  </span>
                 </button>
                 <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                   <Download className="jewelry-icon-gold" size={18} />
@@ -551,7 +611,7 @@ export default function JewelryCustomersPage() {
                 <span className="jewelry-text-luxury text-sm font-medium">Sort by:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={e => setSortBy(e.target.value)}
                   className="jewelry-input text-sm"
                 >
                   <option value="name">Name</option>
@@ -564,7 +624,11 @@ export default function JewelryCustomersPage() {
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                   className="jewelry-btn-secondary p-2"
                 >
-                  {sortOrder === 'asc' ? <TrendingUp className="jewelry-icon-gold" size={16} /> : <TrendingUp className="jewelry-icon-gold rotate-180" size={16} />}
+                  {sortOrder === 'asc' ? (
+                    <TrendingUp className="jewelry-icon-gold" size={16} />
+                  ) : (
+                    <TrendingUp className="jewelry-icon-gold rotate-180" size={16} />
+                  )}
                 </button>
               </div>
 
@@ -597,20 +661,26 @@ export default function JewelryCustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Spending Range */}
                   <div className="space-y-2">
-                    <label className="jewelry-text-luxury text-sm font-medium">Total Spent ($)</label>
+                    <label className="jewelry-text-luxury text-sm font-medium">
+                      Total Spent ($)
+                    </label>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         placeholder="Min"
                         value={filterValues.minSpent}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, minSpent: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, minSpent: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                       <input
                         type="number"
                         placeholder="Max"
                         value={filterValues.maxSpent}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, maxSpent: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, maxSpent: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                     </div>
@@ -624,14 +694,18 @@ export default function JewelryCustomersPage() {
                         type="number"
                         placeholder="Min"
                         value={filterValues.minOrders}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, minOrders: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, minOrders: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                       <input
                         type="number"
                         placeholder="Max"
                         value={filterValues.maxOrders}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, maxOrders: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, maxOrders: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                     </div>
@@ -642,7 +716,7 @@ export default function JewelryCustomersPage() {
                     <label className="jewelry-text-luxury text-sm font-medium">City</label>
                     <select
                       value={filterValues.city}
-                      onChange={(e) => setFilterValues(prev => ({ ...prev, city: e.target.value }))}
+                      onChange={e => setFilterValues(prev => ({ ...prev, city: e.target.value }))}
                       className="jewelry-input text-sm w-full"
                     >
                       {cities.map(city => (
@@ -658,7 +732,9 @@ export default function JewelryCustomersPage() {
                     <label className="jewelry-text-luxury text-sm font-medium">Country</label>
                     <select
                       value={filterValues.country}
-                      onChange={(e) => setFilterValues(prev => ({ ...prev, country: e.target.value }))}
+                      onChange={e =>
+                        setFilterValues(prev => ({ ...prev, country: e.target.value }))
+                      }
                       className="jewelry-input text-sm w-full"
                     >
                       {countries.map(country => (
@@ -671,15 +747,24 @@ export default function JewelryCustomersPage() {
 
                   {/* Special Filters */}
                   <div className="space-y-2">
-                    <label className="jewelry-text-luxury text-sm font-medium">Special Filters</label>
+                    <label className="jewelry-text-luxury text-sm font-medium">
+                      Special Filters
+                    </label>
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
                         checked={filterValues.hasUpcomingEvents}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, hasUpcomingEvents: e.target.checked }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({
+                            ...prev,
+                            hasUpcomingEvents: e.target.checked
+                          }))
+                        }
                         className="jewelry-checkbox"
                       />
-                      <span className="jewelry-text-high-contrast text-sm">Has upcoming events</span>
+                      <span className="jewelry-text-high-contrast text-sm">
+                        Has upcoming events
+                      </span>
                     </div>
                   </div>
 
@@ -708,7 +793,7 @@ export default function JewelryCustomersPage() {
           </motion.div>
 
           {/* Customer Grid/List */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -737,7 +822,9 @@ export default function JewelryCustomersPage() {
                     {/* VIP Badge */}
                     {customer.vipStatus !== 'none' && (
                       <div className="absolute top-4 right-4">
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getVipColor(customer.vipStatus)}`}>
+                        <div
+                          className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getVipColor(customer.vipStatus)}`}
+                        >
                           {getVipIcon(customer.vipStatus)}
                           {customer.vipStatus.charAt(0).toUpperCase() + customer.vipStatus.slice(1)}
                         </div>
@@ -746,7 +833,9 @@ export default function JewelryCustomersPage() {
 
                     {/* Customer Header */}
                     <div className="mb-4 ml-8">
-                      <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">{customer.name}</h3>
+                      <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">
+                        {customer.name}
+                      </h3>
                       <p className="jewelry-text-muted text-sm">{customer.email}</p>
                       <p className="jewelry-text-muted text-sm">{customer.phone}</p>
                     </div>
@@ -755,34 +844,46 @@ export default function JewelryCustomersPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Total Spent:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-bold">${customer.totalSpent.toLocaleString()}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-bold">
+                          ${customer.totalSpent.toLocaleString()}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Orders:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{customer.totalOrders}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {customer.totalOrders}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Loyalty Points:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{customer.loyaltyPoints}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {customer.loyaltyPoints}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Preferred:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{customer.preferredCategory}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {customer.preferredCategory}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Status:</span>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(customer.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(customer.status)}`}
+                        >
                           {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between pt-2 border-t border-jewelry-blue-200">
                         <span className="jewelry-text-muted text-sm">Last Order:</span>
-                        <span className="jewelry-text-high-contrast text-sm">{new Date(customer.lastOrderDate).toLocaleDateString()}</span>
+                        <span className="jewelry-text-high-contrast text-sm">
+                          {new Date(customer.lastOrderDate).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
 
@@ -790,8 +891,8 @@ export default function JewelryCustomersPage() {
                     {customer.tags && customer.tags.length > 0 && (
                       <div className="mt-4">
                         <div className="flex flex-wrap gap-1">
-                          {customer.tags.slice(0, 2).map((tag) => (
-                            <span 
+                          {customer.tags.slice(0, 2).map(tag => (
+                            <span
                               key={tag}
                               className="text-xs jewelry-text-muted bg-white/5 px-2 py-1 rounded-md"
                             >
@@ -811,7 +912,9 @@ export default function JewelryCustomersPage() {
                     <div className="flex items-center justify-between mt-6 pt-4 border-t border-jewelry-blue-200">
                       <div className="flex items-center space-x-1">
                         <MapPin className="jewelry-icon-gold" size={14} />
-                        <span className="jewelry-text-muted text-xs">{customer.city}, {customer.country}</span>
+                        <span className="jewelry-text-muted text-xs">
+                          {customer.city}, {customer.country}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">
@@ -836,18 +939,31 @@ export default function JewelryCustomersPage() {
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
                     <input
                       type="checkbox"
-                      checked={selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0}
+                      checked={
+                        selectedCustomers.length === filteredCustomers.length &&
+                        filteredCustomers.length > 0
+                      }
                       onChange={toggleSelectAll}
                       className="jewelry-checkbox"
                     />
                   </div>
-                  <div className="col-span-3 jewelry-text-luxury text-sm font-semibold">Customer</div>
-                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Contact</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">VIP Level</div>
-                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Total Spent</div>
+                  <div className="col-span-3 jewelry-text-luxury text-sm font-semibold">
+                    Customer
+                  </div>
+                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">
+                    Contact
+                  </div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    VIP Level
+                  </div>
+                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">
+                    Total Spent
+                  </div>
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Orders</div>
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Status</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Actions</div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    Actions
+                  </div>
                 </div>
 
                 {/* List Items */}
@@ -869,7 +985,9 @@ export default function JewelryCustomersPage() {
                     </div>
                     <div className="col-span-3">
                       <h3 className="jewelry-text-high-contrast font-medium">{customer.name}</h3>
-                      <p className="jewelry-text-muted text-sm">{customer.city}, {customer.country}</p>
+                      <p className="jewelry-text-muted text-sm">
+                        {customer.city}, {customer.country}
+                      </p>
                     </div>
                     <div className="col-span-2">
                       <p className="jewelry-text-high-contrast text-sm">{customer.email}</p>
@@ -877,7 +995,9 @@ export default function JewelryCustomersPage() {
                     </div>
                     <div className="col-span-1">
                       {customer.vipStatus !== 'none' ? (
-                        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border w-fit ${getVipColor(customer.vipStatus)}`}>
+                        <div
+                          className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border w-fit ${getVipColor(customer.vipStatus)}`}
+                        >
                           {getVipIcon(customer.vipStatus)}
                           {customer.vipStatus.charAt(0).toUpperCase() + customer.vipStatus.slice(1)}
                         </div>
@@ -885,10 +1005,16 @@ export default function JewelryCustomersPage() {
                         <span className="text-xs jewelry-text-muted">Regular</span>
                       )}
                     </div>
-                    <div className="col-span-2 jewelry-text-high-contrast font-bold">${customer.totalSpent.toLocaleString()}</div>
-                    <div className="col-span-1 jewelry-text-high-contrast font-medium">{customer.totalOrders}</div>
+                    <div className="col-span-2 jewelry-text-high-contrast font-bold">
+                      ${customer.totalSpent.toLocaleString()}
+                    </div>
+                    <div className="col-span-1 jewelry-text-high-contrast font-medium">
+                      {customer.totalOrders}
+                    </div>
                     <div className="col-span-1">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(customer.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(customer.status)}`}
+                      >
                         {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
                       </span>
                     </div>
@@ -911,21 +1037,26 @@ export default function JewelryCustomersPage() {
             {filteredCustomers.length === 0 && (
               <div className="text-center py-12">
                 <Users className="mx-auto mb-4 jewelry-icon-gold opacity-50" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No Customers Found</h3>
-                <p className="jewelry-text-muted">Try adjusting your search criteria or add new customers.</p>
+                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                  No Customers Found
+                </h3>
+                <p className="jewelry-text-muted">
+                  Try adjusting your search criteria or add new customers.
+                </p>
               </div>
             )}
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Professional customer relationship management powered by <span className="jewelry-text-luxury font-semibold">HERA Jewelry System</span>
+              Professional customer relationship management powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Jewelry System</span>
             </p>
           </motion.div>
         </div>

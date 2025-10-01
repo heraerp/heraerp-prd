@@ -2,21 +2,74 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Crown, Diamond, Gem, Scale, TrendingUp, Users, Package, 
-  ShoppingBag, Star, Award, Calculator, DollarSign, Search 
+import {
+  Crown,
+  Diamond,
+  Gem,
+  Scale,
+  TrendingUp,
+  Users,
+  Package,
+  ShoppingBag,
+  Star,
+  Award,
+  Calculator,
+  DollarSign,
+  Search
 } from 'lucide-react'
 import { JewelryAppTile } from '@/components/jewelry/JewelryAppTile'
 import '@/styles/jewelry-glassmorphism.css'
 
 // Featured apps for the dashboard
 const featuredApps = [
-  { id: 'pos', title: 'POS System', description: 'Complete point of sale', icon: ShoppingBag, href: '/jewelry/pos', featured: true },
-  { id: 'inventory', title: 'Inventory', description: 'Stock management', icon: Package, href: '/jewelry/inventory', featured: true },
-  { id: 'appraisals', title: 'Appraisals', description: 'Item valuations', icon: Scale, href: '/jewelry/appraisals', featured: true },
-  { id: 'customers', title: 'Customers', description: 'Customer management', icon: Users, href: '/jewelry/customers', featured: true },
-  { id: 'reports', title: 'Reports', description: 'Business analytics', icon: Calculator, href: '/jewelry/reports', featured: true },
-  { id: 'vip', title: 'VIP Services', description: 'Premium customer care', icon: Crown, href: '/jewelry/vip', featured: true }
+  {
+    id: 'pos',
+    title: 'POS System',
+    description: 'Complete point of sale',
+    icon: ShoppingBag,
+    href: '/jewelry/pos',
+    featured: true
+  },
+  {
+    id: 'inventory',
+    title: 'Inventory',
+    description: 'Stock management',
+    icon: Package,
+    href: '/jewelry/inventory',
+    featured: true
+  },
+  {
+    id: 'appraisals',
+    title: 'Appraisals',
+    description: 'Item valuations',
+    icon: Scale,
+    href: '/jewelry/appraisals',
+    featured: true
+  },
+  {
+    id: 'customers',
+    title: 'Customers',
+    description: 'Customer management',
+    icon: Users,
+    href: '/jewelry/customers',
+    featured: true
+  },
+  {
+    id: 'reports',
+    title: 'Reports',
+    description: 'Business analytics',
+    icon: Calculator,
+    href: '/jewelry/reports',
+    featured: true
+  },
+  {
+    id: 'vip',
+    title: 'VIP Services',
+    description: 'Premium customer care',
+    icon: Crown,
+    href: '/jewelry/vip',
+    featured: true
+  }
 ]
 
 export default function JewelryDashboard() {
@@ -60,10 +113,11 @@ export default function JewelryDashboard() {
     { action: 'Platinum Watch Certified', amount: '$15,700', time: '8 hours ago', icon: Star }
   ]
 
-  const filteredApps = featuredApps.filter(app => 
-    searchQuery === '' || 
-    app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    app.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredApps = featuredApps.filter(
+    app =>
+      searchQuery === '' ||
+      app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.description.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -89,7 +143,7 @@ export default function JewelryDashboard() {
             Complete luxury jewelry management platform
           </p>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="jewelry-glass-card p-4">
             <div className="text-center">
@@ -121,18 +175,18 @@ export default function JewelryDashboard() {
                 <div className="jewelry-crown-glow p-3 rounded-xl">
                   <Icon className="h-6 w-6 jewelry-text-gold" />
                 </div>
-                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                  stat.change.startsWith('+') 
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                    : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                }`}>
+                <span
+                  className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                    stat.change.startsWith('+')
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                  }`}
+                >
                   {stat.change}
                 </span>
               </div>
               <div>
-                <h3 className="jewelry-text-high-contrast text-2xl font-bold mb-1">
-                  {stat.value}
-                </h3>
+                <h3 className="jewelry-text-high-contrast text-2xl font-bold mb-1">{stat.value}</h3>
                 <p className="jewelry-text-muted text-sm">{stat.title}</p>
               </div>
             </motion.div>
@@ -152,7 +206,7 @@ export default function JewelryDashboard() {
             <Diamond className="h-6 w-6 jewelry-text-gold" />
             Featured Applications
           </h2>
-          
+
           {/* Quick Search */}
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 jewelry-text-muted" />
@@ -160,7 +214,7 @@ export default function JewelryDashboard() {
               type="text"
               placeholder="Search apps..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 jewelry-glass-input rounded-lg text-sm focus:ring-2 focus:ring-yellow-500/50 focus:outline-none"
             />
           </div>
@@ -169,11 +223,7 @@ export default function JewelryDashboard() {
         {/* Apps Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredApps.map((app, index) => (
-            <JewelryAppTile 
-              key={app.id} 
-              app={app} 
-              index={index}
-            />
+            <JewelryAppTile key={app.id} app={app} index={index} />
           ))}
         </div>
 
@@ -202,11 +252,9 @@ export default function JewelryDashboard() {
               <TrendingUp className="h-5 w-5 jewelry-icon-gold" />
               Recent Activity
             </h2>
-            <button className="jewelry-btn-secondary px-4 py-2 text-sm">
-              View All
-            </button>
+            <button className="jewelry-btn-secondary px-4 py-2 text-sm">View All</button>
           </div>
-          
+
           <div className="space-y-4">
             {recentActivity.map((activity, index) => {
               const Icon = activity.icon
@@ -222,9 +270,7 @@ export default function JewelryDashboard() {
                     <Icon className="h-5 w-5 jewelry-icon-gold" />
                   </div>
                   <div className="flex-1">
-                    <p className="jewelry-text-high-contrast font-medium">
-                      {activity.action}
-                    </p>
+                    <p className="jewelry-text-high-contrast font-medium">{activity.action}</p>
                     <p className="jewelry-text-muted text-sm">{activity.time}</p>
                   </div>
                   <div className="text-right">
@@ -249,7 +295,7 @@ export default function JewelryDashboard() {
               Business Metrics
             </h2>
           </div>
-          
+
           <div className="space-y-6">
             <div className="text-center p-4 jewelry-glass-card">
               <Diamond className="h-10 w-10 mx-auto mb-3 jewelry-icon-gold" />

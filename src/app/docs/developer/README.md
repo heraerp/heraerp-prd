@@ -74,17 +74,20 @@ DOCS_ALLOWED_IPS="123.456.789.0,987.654.321.0"
 ## 🔒 Security Features
 
 ### Authentication
+
 - **Bcrypt Hashing**: Industry-standard password hashing (12 salt rounds)
 - **JWT Sessions**: Secure token-based authentication
 - **HTTP-Only Cookies**: Prevents XSS attacks
 - **8-Hour Sessions**: Automatic expiry for security
 
 ### Access Control
+
 - **IP Whitelisting**: Optional IP-based access restriction
 - **Secure Middleware**: All `/docs/developer/*` routes protected
 - **Public Docs**: CivicFlow and other public docs remain accessible
 
 ### Best Practices
+
 - Use strong passwords (minimum 12 characters, mixed case, numbers, symbols)
 - Rotate JWT secret regularly in production
 - Enable IP whitelisting for sensitive environments
@@ -113,18 +116,21 @@ http://localhost:3000/docs/developer
 ## 📊 Portal Features
 
 ### Work Summary
+
 - Complete list of all implementations
 - File locations and descriptions
 - Component relationships
 - Quick reference guide
 
 ### Interactive Examples
+
 - Live code snippets
 - API testing interfaces
 - Component playgrounds
 - Theme customization demos
 
 ### Search Functionality
+
 - Full-text search across documentation
 - Smart Code pattern search
 - Component name search
@@ -133,17 +139,20 @@ http://localhost:3000/docs/developer
 ## 🚨 Troubleshooting
 
 ### Cannot Access Portal
+
 1. Check if authenticated: `/docs/login`
 2. Verify password hash in `.env.local`
 3. Clear cookies and retry
 4. Check middleware logs
 
 ### Session Expired
+
 - Sessions last 8 hours
 - Re-authenticate at `/docs/login`
 - Consider extending `SESSION_DURATION` if needed
 
 ### IP Blocked
+
 - Verify your IP is in `DOCS_ALLOWED_IPS`
 - Remove IP restriction for development
 - Check `x-forwarded-for` header configuration

@@ -1,4 +1,4 @@
-import { VALUES } from '@/data/about';
+import { VALUES } from '@/data/about'
 
 export default function ValuesGrid() {
   return (
@@ -10,5 +10,5 @@ export default function ValuesGrid() {
         </div>
       ))}
     </div>
-  );
+  )
 }

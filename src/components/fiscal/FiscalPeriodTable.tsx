@@ -222,9 +222,7 @@ export function FiscalPeriodTable({
         <CardContent className="py-12">
           <div className="text-center">
             <CalendarDays className="h-12 w-12 mx-auto mb-4 ink-muted" />
-            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">
-              No Fiscal Periods
-            </h3>
+            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">No Fiscal Periods</h3>
             <p className="dark:ink-muted">
               Click "Generate Periods" above to create fiscal periods for the year.
             </p>
@@ -311,7 +309,8 @@ export function FiscalPeriodTable({
                   return (
                     <tr
                       key={period.code}
-                      className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${ isEven ?'bg-gray-50/30 dark:bg-gray-800/20' : ''
+                      className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
+                        isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
                       }`}
                     >
                       <td className="px-4 py-4">

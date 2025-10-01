@@ -6,11 +6,11 @@ import { z } from 'zod'
 const getSupabaseClient = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_KEY
-  
+
   if (!url || !key) {
     throw new Error('Supabase configuration missing')
   }
-  
+
   return createClient(url, key)
 }
 
@@ -21,8 +21,16 @@ const querySchema = z.object({
   dateRange: z.string().optional(),
   priority: z.string().optional(),
   tags: z.string().optional(), // comma-separated
-  limit: z.string().transform(val => parseInt(val)).optional().default('50'),
-  offset: z.string().transform(val => parseInt(val)).optional().default('0')
+  limit: z
+    .string()
+    .transform(val => parseInt(val))
+    .optional()
+    .default('50'),
+  offset: z
+    .string()
+    .transform(val => parseInt(val))
+    .optional()
+    .default('0')
 })
 
 export async function GET(req: NextRequest) {
@@ -35,7 +43,8 @@ export async function GET(req: NextRequest) {
     // Build query
     let query = supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         universal_transaction_lines (
           line_type,
@@ -46,7 +55,8 @@ export async function GET(req: NextRequest) {
           field_name,
           field_value_text
         )
-      `)
+      `
+      )
       .eq('organization_id', params.organizationId)
       .eq('smart_code', 'HERA.COMMS.EMAIL.SEND.V1')
       .order('transaction_date', { ascending: false })
@@ -75,7 +85,9 @@ export async function GET(req: NextRequest) {
 
     // Apply search filter
     if (params.search) {
-      query = query.or(`metadata->>subject.ilike.%${params.search}%,metadata->>from.ilike.%${params.search}%`)
+      query = query.or(
+        `metadata->>subject.ilike.%${params.search}%,metadata->>from.ilike.%${params.search}%`
+      )
     }
 
     // Execute query with proper error handling
@@ -100,55 +112,59 @@ export async function GET(req: NextRequest) {
     }
 
     // Transform data to email format
-    const emails = data?.map(tx => {
-      // Parse recipients from transaction lines
-      const recipients = {
-        to: tx.universal_transaction_lines
-          ?.filter((line: any) => line.line_type === 'TO')
-          .map((line: any) => line.metadata?.email || line.description) || [],
-        cc: tx.universal_transaction_lines
-          ?.filter((line: any) => line.line_type === 'CC')
-          .map((line: any) => line.metadata?.email || line.description) || [],
-        bcc: tx.universal_transaction_lines
-          ?.filter((line: any) => line.line_type === 'BCC')
-          .map((line: any) => line.metadata?.email || line.description) || []
-      }
-
-      // Get email content with safe parsing
-      const content = contentData?.find(c => c.entity_id === tx.id)
-      let emailContent: any = {}
-      if (content?.field_value_text) {
-        try {
-          emailContent = JSON.parse(content.field_value_text)
-        } catch (parseError) {
-          console.error('Failed to parse email content:', parseError)
-          emailContent = {}
+    const emails =
+      data?.map(tx => {
+        // Parse recipients from transaction lines
+        const recipients = {
+          to:
+            tx.universal_transaction_lines
+              ?.filter((line: any) => line.line_type === 'TO')
+              .map((line: any) => line.metadata?.email || line.description) || [],
+          cc:
+            tx.universal_transaction_lines
+              ?.filter((line: any) => line.line_type === 'CC')
+              .map((line: any) => line.metadata?.email || line.description) || [],
+          bcc:
+            tx.universal_transaction_lines
+              ?.filter((line: any) => line.line_type === 'BCC')
+              .map((line: any) => line.metadata?.email || line.description) || []
         }
-      }
 
-      return {
-        id: tx.id,
-        from: tx.metadata?.from || '',
-        to: recipients.to,
-        cc: recipients.cc,
-        bcc: recipients.bcc,
-        subject: emailContent.subject || tx.metadata?.subject || '',
-        body_html: emailContent.html || '',
-        body_text: emailContent.text || '',
-        status: tx.status,
-        priority: emailContent.priority || 'normal',
-        tags: emailContent.tags || [],
-        sent_at: tx.metadata?.sent_at || tx.transaction_date,
-        delivered_at: tx.metadata?.delivered_at,
-        opened_at: tx.metadata?.opened_at,
-        clicked_at: tx.metadata?.clicked_at,
-        message_id: tx.metadata?.message_id,
-        has_attachments: tx.universal_transaction_lines?.some(
-          (line: any) => line.line_type === 'ATTACHMENT'
-        ) || false,
-        folder: params.folder
-      }
-    }) || []
+        // Get email content with safe parsing
+        const content = contentData?.find(c => c.entity_id === tx.id)
+        let emailContent: any = {}
+        if (content?.field_value_text) {
+          try {
+            emailContent = JSON.parse(content.field_value_text)
+          } catch (parseError) {
+            console.error('Failed to parse email content:', parseError)
+            emailContent = {}
+          }
+        }
+
+        return {
+          id: tx.id,
+          from: tx.metadata?.from || '',
+          to: recipients.to,
+          cc: recipients.cc,
+          bcc: recipients.bcc,
+          subject: emailContent.subject || tx.metadata?.subject || '',
+          body_html: emailContent.html || '',
+          body_text: emailContent.text || '',
+          status: tx.status,
+          priority: emailContent.priority || 'normal',
+          tags: emailContent.tags || [],
+          sent_at: tx.metadata?.sent_at || tx.transaction_date,
+          delivered_at: tx.metadata?.delivered_at,
+          opened_at: tx.metadata?.opened_at,
+          clicked_at: tx.metadata?.clicked_at,
+          message_id: tx.metadata?.message_id,
+          has_attachments:
+            tx.universal_transaction_lines?.some((line: any) => line.line_type === 'ATTACHMENT') ||
+            false,
+          folder: params.folder
+        }
+      }) || []
 
     return NextResponse.json({
       emails,
@@ -156,13 +172,9 @@ export async function GET(req: NextRequest) {
       limit: params.limit,
       offset: params.offset
     })
-
   } catch (error: any) {
     console.error('Email list error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch emails' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Failed to fetch emails' }, { status: 500 })
   }
 }
 
@@ -172,10 +184,7 @@ export async function POST(req: NextRequest) {
     const { emailId } = await req.json()
 
     if (!emailId) {
-      return NextResponse.json(
-        { error: 'Email ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Email ID is required' }, { status: 400 })
     }
 
     const supabase = getSupabaseClient()
@@ -183,14 +192,16 @@ export async function POST(req: NextRequest) {
     // Fetch email transaction with all related data
     const { data: tx, error } = await supabase
       .from('universal_transactions')
-      .select(`
+      .select(
+        `
         *,
         universal_transaction_lines (
           line_type,
           description,
           metadata
         )
-      `)
+      `
+      )
       .eq('id', emailId)
       .single()
 
@@ -208,25 +219,29 @@ export async function POST(req: NextRequest) {
 
     // Parse recipients
     const recipients = {
-      to: tx.universal_transaction_lines
-        ?.filter((line: any) => line.line_type === 'TO')
-        .map((line: any) => line.metadata?.email || line.description) || [],
-      cc: tx.universal_transaction_lines
-        ?.filter((line: any) => line.line_type === 'CC')
-        .map((line: any) => line.metadata?.email || line.description) || [],
-      bcc: tx.universal_transaction_lines
-        ?.filter((line: any) => line.line_type === 'BCC')
-        .map((line: any) => line.metadata?.email || line.description) || []
+      to:
+        tx.universal_transaction_lines
+          ?.filter((line: any) => line.line_type === 'TO')
+          .map((line: any) => line.metadata?.email || line.description) || [],
+      cc:
+        tx.universal_transaction_lines
+          ?.filter((line: any) => line.line_type === 'CC')
+          .map((line: any) => line.metadata?.email || line.description) || [],
+      bcc:
+        tx.universal_transaction_lines
+          ?.filter((line: any) => line.line_type === 'BCC')
+          .map((line: any) => line.metadata?.email || line.description) || []
     }
 
     // Parse attachments
-    const attachments = tx.universal_transaction_lines
-      ?.filter((line: any) => line.line_type === 'ATTACHMENT')
-      .map((line: any) => ({
-        filename: line.description,
-        type: line.metadata?.type,
-        size: line.metadata?.size
-      })) || []
+    const attachments =
+      tx.universal_transaction_lines
+        ?.filter((line: any) => line.line_type === 'ATTACHMENT')
+        .map((line: any) => ({
+          filename: line.description,
+          type: line.metadata?.type,
+          size: line.metadata?.size
+        })) || []
 
     let emailContent: any = {}
     if (contentData?.field_value_text) {
@@ -260,12 +275,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(email)
-
   } catch (error: any) {
     console.error('Get email error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch email' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Failed to fetch email' }, { status: 500 })
   }
 }

@@ -2148,9 +2148,7 @@ export function SalonPOSTerminalGlass({
                         )}
                         <div className="flex-1">
                           <h4 className="font-medium text-white">{selectedStylist.entity_name}</h4>
-                          <p className="text-sm ink-faint mt-1">
-                            {selectedStylist.metadata?.role}
-                          </p>
+                          <p className="text-sm ink-faint mt-1">{selectedStylist.metadata?.role}</p>
                           {selectedStylist.metadata?.experience_years && (
                             <p className="text-xs text-white/50 mt-1">
                               {selectedStylist.metadata.experience_years}+ years experience

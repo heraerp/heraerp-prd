@@ -8,7 +8,7 @@ interface DemoShowcaseProps {
 export default function DemoShowcase({ demos }: DemoShowcaseProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      {demos.map((demo) => (
+      {demos.map(demo => (
         <article key={demo.slug} className="h-card card h-full" tabIndex={0}>
           <div className="g-shell g-animated h-full">
             <div className="g-inner card-glass p-6 rounded-2xl h-full flex flex-col">

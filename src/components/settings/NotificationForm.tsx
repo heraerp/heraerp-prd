@@ -220,9 +220,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               {getEnabledChannelCount()} enabled
             </Badge>
           </CardTitle>
-          <p className="text-sm dark:ink-muted">
-            Choose how you want to receive notifications
-          </p>
+          <p className="text-sm dark:ink-muted">Choose how you want to receive notifications</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -230,7 +228,9 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.emailEnabled ?'bg-blue-100 dark:bg-blue-950/30 text-blue-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.emailEnabled
+                      ? 'bg-blue-100 dark:bg-blue-950/30 text-blue-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -251,7 +251,9 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.smsEnabled ?'bg-green-100 dark:bg-green-950/30 text-green-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.smsEnabled
+                      ? 'bg-green-100 dark:bg-green-950/30 text-green-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -272,7 +274,9 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.whatsappEnabled ?'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.whatsappEnabled
+                      ? 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -293,7 +297,9 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${ watchedValues.pushEnabled ?'bg-purple-100 dark:bg-purple-950/30 text-purple-600'
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    watchedValues.pushEnabled
+                      ? 'bg-purple-100 dark:bg-purple-950/30 text-purple-600'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
                   }`}
                 >
@@ -332,9 +338,7 @@ export function NotificationForm({ policy, onSubmit, isSubmitting }: Notificatio
               {getEnabledEventCount()} enabled
             </Badge>
           </CardTitle>
-          <p className="text-sm dark:ink-muted">
-            Choose which events trigger notifications
-          </p>
+          <p className="text-sm dark:ink-muted">Choose which events trigger notifications</p>
         </CardHeader>
         <CardContent className="space-y-6">
           {Object.entries(eventsByCategory).map(([category, events]) => (

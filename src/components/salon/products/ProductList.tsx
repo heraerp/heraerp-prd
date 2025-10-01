@@ -137,10 +137,7 @@ export function ProductList({
                     <div>
                       <p style={{ color: COLORS.champagne }}>{product.entity_name}</p>
                       {product.entity_code && (
-                        <p
-                          className="text-sm mt-0.5"
-                          style={{ color: COLORS.lightText }}
-                        >
+                        <p className="text-sm mt-0.5" style={{ color: COLORS.lightText }}>
                           {product.entity_code}
                         </p>
                       )}

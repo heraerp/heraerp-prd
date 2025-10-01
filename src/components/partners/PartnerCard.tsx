@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import type { Partner } from '@/data/partners';
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import type { Partner } from '@/data/partners'
 
 interface PartnerCardProps {
-  partner: Partner;
+  partner: Partner
 }
 
 export default function PartnerCard({ partner }: PartnerCardProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleWebsiteClick = () => {
     if (typeof window !== 'undefined' && (window as any).track) {
-      (window as any).track('partners_website_click', { slug: partner.slug });
+      ;(window as any).track('partners_website_click', { slug: partner.slug })
     }
-  };
+  }
 
   const handleProfileClick = () => {
     if (typeof window !== 'undefined' && (window as any).track) {
-      (window as any).track('partners_card_click', { slug: partner.slug });
+      ;(window as any).track('partners_card_click', { slug: partner.slug })
     }
-  };
+  }
 
   return (
     <article
@@ -29,16 +29,16 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
       tabIndex={0}
       role="link"
       aria-labelledby={`${partner.slug}-title`}
-      onClick={(e) => {
-        const t = e.target as HTMLElement;
-        if (t.closest('a,button,[role="button"]')) return; // let real buttons/links work
-        router.push(`/partners/${partner.slug}`);
-        handleProfileClick();
+      onClick={e => {
+        const t = e.target as HTMLElement
+        if (t.closest('a,button,[role="button"]')) return // let real buttons/links work
+        router.push(`/partners/${partner.slug}`)
+        handleProfileClick()
       }}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter') {
-          router.push(`/partners/${partner.slug}`);
-          handleProfileClick();
+          router.push(`/partners/${partner.slug}`)
+          handleProfileClick()
         }
       }}
     >
@@ -57,9 +57,7 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
               />
             ) : (
               <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                <span className="text-xl font-bold text-white">
-                  {partner.name.charAt(0)}
-                </span>
+                <span className="text-xl font-bold text-white">{partner.name.charAt(0)}</span>
               </div>
             )}
           </div>
@@ -69,17 +67,21 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
         </div>
 
         {/* Content */}
-        <h3 id={`${partner.slug}-title`} className="ink text-xl font-bold mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <h3
+          id={`${partner.slug}-title`}
+          className="ink text-xl font-bold mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
+        >
           {partner.name}
         </h3>
-        <p className="ink-muted text-sm leading-relaxed mb-4 flex-grow">
-          {partner.summary}
-        </p>
+        <p className="ink-muted text-sm leading-relaxed mb-4 flex-grow">{partner.summary}</p>
 
         {/* Specialization Tags */}
         <div className="flex flex-wrap gap-2 mb-5">
           {partner.tags.map(tag => (
-            <span key={tag} className="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <span
+              key={tag}
+              className="px-2.5 py-1 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+            >
               {tag}
             </span>
           ))}
@@ -132,5 +134,5 @@ export default function PartnerCard({ partner }: PartnerCardProps) {
         </div>
       </div>
     </article>
-  );
+  )
 }

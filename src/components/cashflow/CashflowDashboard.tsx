@@ -286,7 +286,7 @@ export default function CashflowDashboard({
           </Button>
 
           <Button onClick={loadCashflowData} variant="outline" disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ?'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
@@ -386,7 +386,9 @@ export default function CashflowDashboard({
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <p className="text-sm text-primary dark:text-blue-400">Net Change</p>
                       <p
-                        className={`text-2xl font-bold ${ currentStatement.net_change_in_cash >= 0 ?'text-green-600 dark:text-green-400'
+                        className={`text-2xl font-bold ${
+                          currentStatement.net_change_in_cash >= 0
+                            ? 'text-green-600 dark:text-green-400'
                             : 'text-red-600 dark:text-red-400'
                         }`}
                       >
@@ -546,7 +548,9 @@ function CashflowMetricCard({
                 {title}
               </p>
               <p
-                className={`text-2xl font-bold ${ value >= 0 ?'text-gray-100 dark:text-foreground'
+                className={`text-2xl font-bold ${
+                  value >= 0
+                    ? 'text-gray-100 dark:text-foreground'
                     : 'text-red-600 dark:text-red-400'
                 }`}
               >
@@ -619,7 +623,9 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
         <CardTitle className="flex items-center justify-between">
           <span>{title}</span>
           <span
-            className={`text-lg font-bold ${ totalAmount >= 0 ?'text-gray-100 dark:text-foreground'
+            className={`text-lg font-bold ${
+              totalAmount >= 0
+                ? 'text-gray-100 dark:text-foreground'
                 : 'text-red-600 dark:text-red-400'
             }`}
           >
@@ -637,7 +643,7 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
             >
               <div>
                 <p
-                  className={`font-medium ${activity.is_subtotal ?'text-gray-100 dark:text-foreground' : 'text-gray-700 dark:text-gray-300'}`}
+                  className={`font-medium ${activity.is_subtotal ? 'text-gray-100 dark:text-foreground' : 'text-gray-700 dark:text-gray-300'}`}
                 >
                   {activity.description}
                 </p>
@@ -648,7 +654,9 @@ function CashflowCategoryCard({ title, activities, currency, color }: CashflowCa
                 )}
               </div>
               <p
-                className={`font-semibold ${ activity.amount >= 0 ?'text-gray-100 dark:text-foreground'
+                className={`font-semibold ${
+                  activity.amount >= 0
+                    ? 'text-gray-100 dark:text-foreground'
                     : 'text-red-600 dark:text-red-400'
                 } ${activity.is_subtotal ? 'text-lg' : ''}`}
               >

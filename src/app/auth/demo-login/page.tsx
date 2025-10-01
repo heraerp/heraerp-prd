@@ -154,9 +154,7 @@ function DemoLoginContent() {
               <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
             </div>
             <h2 className="text-xl font-semibold mb-2">Setting up demo environment</h2>
-            <p className="dark:ink-muted">
-              Please wait while we prepare your demo experience...
-            </p>
+            <p className="dark:ink-muted">Please wait while we prepare your demo experience...</p>
           </div>
         )}
 
@@ -178,9 +176,7 @@ function DemoLoginContent() {
               </svg>
             </div>
             <h2 className="text-xl font-semibold mb-2">Demo ready!</h2>
-            <p className="dark:ink-muted">
-              Redirecting you to the demo dashboard...
-            </p>
+            <p className="dark:ink-muted">Redirecting you to the demo dashboard...</p>
           </div>
         )}
 

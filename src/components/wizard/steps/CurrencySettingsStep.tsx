@@ -105,7 +105,9 @@ export const CurrencySettingsStep: React.FC<CurrencySettingsStepProps> = ({
           {CURRENCIES.filter(c => c !== baseCurrency).map(currency => (
             <div
               key={currency}
-              className={`p-2 border rounded cursor-pointer text-center ${ currencyData.allowed_currencies.includes(currency) ?'border-primary bg-primary/10'
+              className={`p-2 border rounded cursor-pointer text-center ${
+                currencyData.allowed_currencies.includes(currency)
+                  ? 'border-primary bg-primary/10'
                   : 'border-muted'
               }`}
               onClick={() => toggleCurrency(currency)}

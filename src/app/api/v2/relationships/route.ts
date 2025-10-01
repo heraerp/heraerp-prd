@@ -19,7 +19,10 @@ export async function POST(request: NextRequest) {
     // Organization isolation enforcement
     const reqOrgId = body.organization_id
     if (!reqOrgId || reqOrgId !== authResult.organizationId) {
-      return NextResponse.json({ error: 'forbidden', details: 'organization_id mismatch' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'forbidden', details: 'organization_id mismatch' },
+        { status: 403 }
+      )
     }
 
     // Delegate to universal relationship-upsert handler
@@ -34,7 +37,6 @@ export async function POST(request: NextRequest) {
 
     const { POST: universalHandler } = await import('../universal/relationship-upsert/route')
     return await universalHandler(universalRequest)
-
   } catch (error) {
     console.error('V2 relationships POST error:', error)
     return NextResponse.json({ error: 'internal_server_error' }, { status: 500 })
@@ -55,7 +57,10 @@ export async function GET(request: NextRequest) {
 
     // Organization isolation enforcement
     if (!organizationId || organizationId !== authResult.organizationId) {
-      return NextResponse.json({ error: 'forbidden', details: 'organization_id mismatch' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'forbidden', details: 'organization_id mismatch' },
+        { status: 403 }
+      )
     }
 
     // Delegate based on whether we're reading specific relationship or querying
@@ -81,7 +86,6 @@ export async function GET(request: NextRequest) {
       const { GET: universalHandler } = await import('../universal/relationship-query/route')
       return await universalHandler(universalRequest)
     }
-
   } catch (error) {
     console.error('V2 relationships GET error:', error)
     return NextResponse.json({ error: 'internal_server_error' }, { status: 500 })
@@ -102,11 +106,17 @@ export async function DELETE(request: NextRequest) {
 
     // Organization isolation enforcement
     if (!organizationId || organizationId !== authResult.organizationId) {
-      return NextResponse.json({ error: 'forbidden', details: 'organization_id mismatch' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'forbidden', details: 'organization_id mismatch' },
+        { status: 403 }
+      )
     }
 
     if (!relationshipId) {
-      return NextResponse.json({ error: 'bad_request', details: 'relationship_id required' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'bad_request', details: 'relationship_id required' },
+        { status: 400 }
+      )
     }
 
     // Delegate to universal relationship-delete handler
@@ -120,7 +130,6 @@ export async function DELETE(request: NextRequest) {
 
     const { DELETE: universalHandler } = await import('../universal/relationship-delete/route')
     return await universalHandler(universalRequest)
-
   } catch (error) {
     console.error('V2 relationships DELETE error:', error)
     return NextResponse.json({ error: 'internal_server_error' }, { status: 500 })

@@ -80,9 +80,9 @@ const jewelrySidebarItems: JewelrySidebarItem[] = [
   { title: 'POS', href: '/jewelry/pos', icon: CreditCard },
   { title: 'Inventory', href: '/jewelry/inventory', icon: Package },
   { title: 'Appraisals', href: '/jewelry/appraisals', icon: Scale },
-  { 
-    title: 'Certificates', 
-    href: '/jewelry/certificates', 
+  {
+    title: 'Certificates',
+    href: '/jewelry/certificates',
     icon: Shield,
     badge: '2',
     badgeColor: JEWELRY_COLORS.gold
@@ -242,8 +242,8 @@ function JewelryAppsModal({
                       'hover:shadow-lg'
                     )}
                     style={{
-                      backgroundColor: active 
-                        ? `${JEWELRY_COLORS.gold}20` 
+                      backgroundColor: active
+                        ? `${JEWELRY_COLORS.gold}20`
                         : `${JEWELRY_COLORS.blue50}80`,
                       border: `2px solid ${active ? JEWELRY_COLORS.gold : JEWELRY_COLORS.blue200}`
                     }}
@@ -265,7 +265,7 @@ function JewelryAppsModal({
                           color: active ? JEWELRY_COLORS.midnight : JEWELRY_COLORS.gold
                         }}
                       />
-                      
+
                       {/* Badge */}
                       {app.badge && (
                         <span
@@ -280,7 +280,7 @@ function JewelryAppsModal({
                         </span>
                       )}
                     </div>
-                    
+
                     <span
                       className="text-xs font-semibold text-center leading-tight"
                       style={{
@@ -336,7 +336,7 @@ export default function JewelryDarkSidebar({
           background: `linear-gradient(to bottom, ${JEWELRY_COLORS.gold}60, ${JEWELRY_COLORS.gold}20, transparent)`
         }}
       />
-      
+
       {/* Logo Section */}
       <div
         className="h-20 flex flex-col items-center justify-center border-b"
@@ -386,7 +386,9 @@ export default function JewelryDarkSidebar({
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center"
                     style={{
-                      backgroundColor: active ? `${JEWELRY_COLORS.gold}40` : `${JEWELRY_COLORS.blue300}20`
+                      backgroundColor: active
+                        ? `${JEWELRY_COLORS.gold}40`
+                        : `${JEWELRY_COLORS.blue300}20`
                     }}
                   >
                     <Icon
@@ -423,7 +425,7 @@ export default function JewelryDarkSidebar({
                 </span>
 
                 {/* Tooltip */}
-                <div 
+                <div
                   className="absolute left-full ml-3 px-3 py-2 text-sm rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 jewelry-glass-card"
                   style={{
                     backgroundColor: JEWELRY_COLORS.cream,
@@ -503,7 +505,9 @@ export default function JewelryDarkSidebar({
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
                   style={{
-                    backgroundColor: active ? `${JEWELRY_COLORS.gold}40` : `${JEWELRY_COLORS.blue300}20`
+                    backgroundColor: active
+                      ? `${JEWELRY_COLORS.gold}40`
+                      : `${JEWELRY_COLORS.blue300}20`
                   }}
                 >
                   <Icon
@@ -540,7 +544,6 @@ export default function JewelryDarkSidebar({
           })}
         </div>
       </nav>
-
 
       {/* Apps Modal Portal */}
       <JewelryAppsModal

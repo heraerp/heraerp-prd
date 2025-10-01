@@ -13,7 +13,7 @@ export default function ProductTestPage() {
   const { organization } = useHERAAuth()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  
+
   const [productData, setProductData] = useState({
     name: 'Professional Shampoo 250ml',
     code: 'SHMP-001',
@@ -26,9 +26,9 @@ export default function ProductTestPage() {
     brand: 'HERA Professional',
     barcode: '123456789012'
   })
-  
+
   const [products, setProducts] = useState<any[]>([])
-  
+
   const handleCreateProduct = async () => {
     if (!organization?.id) {
       toast({
@@ -38,9 +38,9 @@ export default function ProductTestPage() {
       })
       return
     }
-    
+
     setLoading(true)
-    
+
     try {
       const response = await fetch('/api/salon/products-v2', {
         method: 'POST',
@@ -49,18 +49,18 @@ export default function ProductTestPage() {
         },
         body: JSON.stringify(productData)
       })
-      
+
       const result = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(result.error || 'Failed to create product')
       }
-      
+
       toast({
         title: 'Product created!',
-        description: `${result.data.entity_name} has been added successfully`,
+        description: `${result.data.entity_name} has been added successfully`
       })
-      
+
       // Clear form
       setProductData({
         ...productData,
@@ -68,10 +68,9 @@ export default function ProductTestPage() {
         code: `SKU-${Date.now()}`,
         description: ''
       })
-      
+
       // Refresh products list
       await fetchProducts()
-      
     } catch (error: any) {
       console.error('Error creating product:', error)
       toast({
@@ -83,14 +82,14 @@ export default function ProductTestPage() {
       setLoading(false)
     }
   }
-  
+
   const fetchProducts = async () => {
     if (!organization?.id) return
-    
+
     try {
       const response = await fetch('/api/salon/products-v2?limit=10')
       const result = await response.json()
-      
+
       if (response.ok && result.success) {
         setProducts(result.data)
       }
@@ -98,13 +97,13 @@ export default function ProductTestPage() {
       console.error('Error fetching products:', error)
     }
   }
-  
+
   const handleDeleteProduct = async (productId: string) => {
     try {
       const response = await fetch(`/api/salon/products-v2/${productId}`, {
         method: 'DELETE'
       })
-      
+
       if (response.ok) {
         toast({
           title: 'Product archived',
@@ -120,11 +119,11 @@ export default function ProductTestPage() {
       })
     }
   }
-  
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6">Product Creation Test (HERA RPCs)</h1>
-      
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Create New Product</CardTitle>
@@ -139,41 +138,41 @@ export default function ProductTestPage() {
               <Input
                 id="name"
                 value={productData.name}
-                onChange={(e) => setProductData({ ...productData, name: e.target.value })}
+                onChange={e => setProductData({ ...productData, name: e.target.value })}
                 placeholder="e.g., Professional Shampoo"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="code">SKU Code</Label>
               <Input
                 id="code"
                 value={productData.code}
-                onChange={(e) => setProductData({ ...productData, code: e.target.value })}
+                onChange={e => setProductData({ ...productData, code: e.target.value })}
                 placeholder="e.g., SHMP-001"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
               <Input
                 id="category"
                 value={productData.category}
-                onChange={(e) => setProductData({ ...productData, category: e.target.value })}
+                onChange={e => setProductData({ ...productData, category: e.target.value })}
                 placeholder="e.g., Hair Care"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="brand">Brand</Label>
               <Input
                 id="brand"
                 value={productData.brand}
-                onChange={(e) => setProductData({ ...productData, brand: e.target.value })}
+                onChange={e => setProductData({ ...productData, brand: e.target.value })}
                 placeholder="e.g., HERA Professional"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="price">Price (AED)</Label>
               <Input
@@ -181,35 +180,39 @@ export default function ProductTestPage() {
                 type="number"
                 step="0.01"
                 value={productData.price}
-                onChange={(e) => setProductData({ ...productData, price: parseFloat(e.target.value) || 0 })}
+                onChange={e =>
+                  setProductData({ ...productData, price: parseFloat(e.target.value) || 0 })
+                }
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="barcode">Barcode</Label>
               <Input
                 id="barcode"
                 value={productData.barcode}
-                onChange={(e) => setProductData({ ...productData, barcode: e.target.value })}
+                onChange={e => setProductData({ ...productData, barcode: e.target.value })}
                 placeholder="e.g., 123456789012"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="reorder">Reorder Point</Label>
               <Input
                 id="reorder"
                 type="number"
                 value={productData.reorder_point}
-                onChange={(e) => setProductData({ ...productData, reorder_point: parseInt(e.target.value) || 0 })}
+                onChange={e =>
+                  setProductData({ ...productData, reorder_point: parseInt(e.target.value) || 0 })
+                }
               />
             </div>
-            
+
             <div className="flex items-center space-x-2 pt-6">
               <Checkbox
                 id="inventory"
                 checked={productData.requires_inventory}
-                onCheckedChange={(checked) => 
+                onCheckedChange={checked =>
                   setProductData({ ...productData, requires_inventory: checked as boolean })
                 }
               />
@@ -218,19 +221,19 @@ export default function ProductTestPage() {
               </Label>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Input
               id="description"
               value={productData.description}
-              onChange={(e) => setProductData({ ...productData, description: e.target.value })}
+              onChange={e => setProductData({ ...productData, description: e.target.value })}
               placeholder="Product description..."
             />
           </div>
-          
-          <Button 
-            onClick={handleCreateProduct} 
+
+          <Button
+            onClick={handleCreateProduct}
             disabled={loading || !productData.name}
             className="w-full"
           >
@@ -238,25 +241,29 @@ export default function ProductTestPage() {
           </Button>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Recent Products</CardTitle>
-          <CardDescription>
-            Products created using HERA entity system
-          </CardDescription>
+          <CardDescription>Products created using HERA entity system</CardDescription>
         </CardHeader>
         <CardContent>
           {products.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">No products yet. Create one above!</p>
+            <p className="text-muted-foreground text-center py-4">
+              No products yet. Create one above!
+            </p>
           ) : (
             <div className="space-y-2">
-              {products.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {products.map(product => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div>
                     <h4 className="font-medium">{product.entity_name}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {product.entity_code} • {product.currency} {product.price || 0} • {product.category || 'General'}
+                      {product.entity_code} • {product.currency} {product.price || 0} •{' '}
+                      {product.category || 'General'}
                     </p>
                     {product.brand && (
                       <p className="text-xs text-muted-foreground">Brand: {product.brand}</p>
@@ -275,7 +282,7 @@ export default function ProductTestPage() {
           )}
         </CardContent>
       </Card>
-      
+
       <div className="mt-6 p-4 bg-muted rounded-lg">
         <h3 className="font-medium mb-2">Smart Codes Used:</h3>
         <ul className="text-sm space-y-1 font-mono">

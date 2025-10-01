@@ -37,22 +37,32 @@ export function DocsLayout({ content, sidebar, breadcrumbs = [] }: DocsLayoutPro
           className={cn(
             'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200',
             'hover:bg-slate-100 dark:hover:bg-slate-800',
-            isActive && 'bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700',
-            !isActive && 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+            isActive &&
+              'bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700',
+            !isActive &&
+              'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
           )}
           style={{ paddingLeft: `${level * 16 + 16}px` }}
         >
           {level === 0 ? (
-            <Book className={cn('h-4 w-4', isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400')} />
+            <Book
+              className={cn(
+                'h-4 w-4',
+                isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'
+              )}
+            />
           ) : (
-            <FileText className={cn('h-4 w-4', isActive ? 'text-white' : 'text-slate-400 dark:text-slate-500')} />
+            <FileText
+              className={cn(
+                'h-4 w-4',
+                isActive ? 'text-white' : 'text-slate-400 dark:text-slate-500'
+              )}
+            />
           )}
           {item.title}
         </Link>
         {hasChildren && (
-          <ul className="mt-1">
-            {item.items!.map((child) => renderSidebarItem(child, level + 1))}
-          </ul>
+          <ul className="mt-1">{item.items!.map(child => renderSidebarItem(child, level + 1))}</ul>
         )}
       </li>
     )
@@ -79,11 +89,11 @@ export function DocsLayout({ content, sidebar, breadcrumbs = [] }: DocsLayoutPro
       >
         <div className="flex h-full flex-col">
           <div className="flex-1 overflow-y-auto px-6 py-8">
-            <h3 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-100">Documentation</h3>
+            <h3 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-100">
+              Documentation
+            </h3>
             <nav>
-              <ul className="space-y-1">
-                {sidebar.map((item) => renderSidebarItem(item))}
-              </ul>
+              <ul className="space-y-1">{sidebar.map(item => renderSidebarItem(item))}</ul>
             </nav>
           </div>
         </div>
@@ -94,18 +104,24 @@ export function DocsLayout({ content, sidebar, breadcrumbs = [] }: DocsLayoutPro
         {/* Header with search */}
         <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-slate-700">
           <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <Link href="/docs/civicflow" className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+            <Link
+              href="/docs/civicflow"
+              className="text-xl font-semibold text-slate-900 dark:text-slate-100"
+            >
               Civicflow Docs
             </Link>
             <DocsSearch className="w-96" />
           </div>
         </header>
-        
+
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
           {breadcrumbs.length > 0 && (
             <nav className="mb-8 flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
-              <Link href="/docs" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+              <Link
+                href="/docs"
+                className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+              >
                 <Home className="h-4 w-4" />
               </Link>
               {breadcrumbs.map((crumb, index) => (
@@ -115,7 +131,8 @@ export function DocsLayout({ content, sidebar, breadcrumbs = [] }: DocsLayoutPro
                     href={crumb.href}
                     className={cn(
                       'hover:text-slate-700 dark:hover:text-slate-300 transition-colors',
-                      index === breadcrumbs.length - 1 && 'text-slate-900 dark:text-slate-100 font-semibold'
+                      index === breadcrumbs.length - 1 &&
+                        'text-slate-900 dark:text-slate-100 font-semibold'
                     )}
                   >
                     {crumb.label}
@@ -130,11 +147,14 @@ export function DocsLayout({ content, sidebar, breadcrumbs = [] }: DocsLayoutPro
             <div className="min-w-0">
               <MarkdownRenderer content={content} />
             </div>
-            
+
             {/* Table of contents - desktop only */}
             <div className="hidden lg:block">
               <div className="sticky top-24">
-                <TableOfContents content={content} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm p-5" />
+                <TableOfContents
+                  content={content}
+                  className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm p-5"
+                />
               </div>
             </div>
           </div>

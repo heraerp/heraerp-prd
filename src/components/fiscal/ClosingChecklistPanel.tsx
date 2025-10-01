@@ -190,9 +190,7 @@ export function ClosingChecklistPanel({
           {checklist.length === 0 ? (
             <div className="text-center py-8">
               <Info className="h-8 w-8 ink-muted mx-auto mb-2" />
-              <p className="text-sm dark:ink-muted">
-                No checklist items configured
-              </p>
+              <p className="text-sm dark:ink-muted">No checklist items configured</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -246,9 +244,7 @@ export function ClosingChecklistPanel({
                           </label>
 
                           {item.description && (
-                            <p className="text-xs dark:ink-muted">
-                              {item.description}
-                            </p>
+                            <p className="text-xs dark:ink-muted">{item.description}</p>
                           )}
 
                           {item.completed && item.completed_at && (

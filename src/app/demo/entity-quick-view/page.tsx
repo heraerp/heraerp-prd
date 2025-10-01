@@ -260,9 +260,7 @@ export default function EntityQuickViewDemo() {
                   )}
 
                   <div className="flex-1">
-                    <h4 className="font-medium ink dark:text-gray-100">
-                      {entity.entity_name}
-                    </h4>
+                    <h4 className="font-medium ink dark:text-gray-100">{entity.entity_name}</h4>
                     <p className="text-sm dark:ink-muted">
                       {entity.entity_code} • {entity.entity_type}
                     </p>
@@ -337,12 +335,8 @@ export default function EntityQuickViewDemo() {
           >
             <div className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800 cursor-pointer hover:shadow-lg transition-shadow">
               <Package className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-              <h4 className="font-semibold ink dark:text-gray-100 mb-1">
-                Custom Product Preview
-              </h4>
-              <p className="text-sm dark:ink-muted">
-                Hover to see custom rendered content
-              </p>
+              <h4 className="font-semibold ink dark:text-gray-100 mb-1">Custom Product Preview</h4>
+              <p className="text-sm dark:ink-muted">Hover to see custom rendered content</p>
             </div>
           </EntityQuickView>
 
@@ -396,9 +390,7 @@ export default function EntityQuickViewDemo() {
                           </span>
                         </EntityQuickView>
                       </td>
-                      <td className="px-4 py-3 text-sm dark:ink-muted">
-                        {entity.entity_type}
-                      </td>
+                      <td className="px-4 py-3 text-sm dark:ink-muted">{entity.entity_type}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -216,9 +216,7 @@ export function DependencyGraph({ modules, relationships }: DependencyGraphProps
 
             {selectedNode.type === 'module' && (
               <div className="mt-3 space-y-2">
-                <p className="text-xs font-medium ink dark:text-gray-300">
-                  Dependencies:
-                </p>
+                <p className="text-xs font-medium ink dark:text-gray-300">Dependencies:</p>
                 {edges
                   .filter(e => e.from === selectedNode.id)
                   .map((edge, idx) => {

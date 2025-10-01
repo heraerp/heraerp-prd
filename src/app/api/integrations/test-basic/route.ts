@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Just echo back what we received
     return NextResponse.json({
       success: true,
@@ -29,9 +29,12 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error: any) {
-    return NextResponse.json({
-      success: false,
-      error: error.message
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message
+      },
+      { status: 500 }
+    )
   }
 }

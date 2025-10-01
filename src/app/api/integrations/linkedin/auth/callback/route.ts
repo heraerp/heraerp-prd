@@ -6,19 +6,18 @@ const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Get organization ID from header, body, or use CivicFlow default
-    const orgId = request.headers.get('X-Organization-Id') 
-      || body.organizationId 
-      || CIVICFLOW_ORG_ID
-      
+    const orgId =
+      request.headers.get('X-Organization-Id') || body.organizationId || CIVICFLOW_ORG_ID
+
     console.log('LinkedIn auth callback - orgId:', orgId)
     const isDemo = isDemoMode(orgId)
 
     // In demo mode, create simulated connector
     if (isDemo || body.demo) {
       console.log('Creating LinkedIn connector with orgId:', orgId, 'type:', typeof orgId)
-      
+
       const connectorData = {
         entity_type: 'connector',
         entity_name: 'LinkedIn Integration',
@@ -26,7 +25,7 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.CONNECTOR.V1',
         organization_id: orgId
       }
-      
+
       console.log('Connector data:', connectorData)
 
       // Create connector entity
@@ -82,24 +81,27 @@ export async function POST(request: NextRequest) {
 
       // Store dynamic data via direct Supabase calls for simplicity
       console.log('Storing dynamic fields for connector:', connectorId)
-      
+
       for (const field of dynamicFields) {
         try {
           const fieldData = {
             ...field,
             organization_id: orgId
           }
-          
-          const fieldResponse = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/core_dynamic_data`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-              Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-            },
-            body: JSON.stringify(fieldData)
-          })
-          
+
+          const fieldResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/core_dynamic_data`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+                Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+              },
+              body: JSON.stringify(fieldData)
+            }
+          )
+
           if (!fieldResponse.ok) {
             const fieldError = await fieldResponse.text()
             console.error(`Failed to create dynamic field ${field.field_name}:`, fieldError)
@@ -126,16 +128,18 @@ export async function POST(request: NextRequest) {
             vendor: 'linkedin',
             demo_mode: true
           },
-          lines: [{
-            line_number: 1,
-            line_type: 'auth',
-            description: 'LinkedIn OAuth authentication completed',
-            metadata: {
-              connector_id: connectorId,
-              vendor: 'linkedin',
-              demo_mode: true
+          lines: [
+            {
+              line_number: 1,
+              line_type: 'auth',
+              description: 'LinkedIn OAuth authentication completed',
+              metadata: {
+                connector_id: connectorId,
+                vendor: 'linkedin',
+                demo_mode: true
+              }
             }
-          }]
+          ]
         })
       })
 
@@ -156,9 +160,12 @@ export async function POST(request: NextRequest) {
       orgId,
       body
     })
-    return NextResponse.json({ 
-      error: 'Failed to authenticate with LinkedIn',
-      details: error.message 
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Failed to authenticate with LinkedIn',
+        details: error.message
+      },
+      { status: 500 }
+    )
   }
 }

@@ -197,7 +197,14 @@ interface EcommerceOrder {
     transactionId: string
     status: 'pending' | 'paid' | 'failed' | 'refunded'
   }
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'
+  status:
+    | 'pending'
+    | 'confirmed'
+    | 'processing'
+    | 'shipped'
+    | 'delivered'
+    | 'cancelled'
+    | 'returned'
   timeline: {
     event: string
     timestamp: string
@@ -320,9 +327,30 @@ export default function JewelryEcommercePage() {
       { source: 'Paid Ads', visitors: 1780, percentage: 3.9, conversionRate: 2.9 }
     ],
     topProducts: [
-      { productId: 'EP001', name: 'Diamond Engagement Ring', sales: 89, revenue: 12750000, views: 2340, conversionRate: 8.5 },
-      { productId: 'EP002', name: 'Gold Chain Necklace', sales: 156, revenue: 3900000, views: 1890, conversionRate: 6.2 },
-      { productId: 'EP003', name: 'Pearl Earrings Set', sales: 234, revenue: 2450000, views: 3450, conversionRate: 4.8 }
+      {
+        productId: 'EP001',
+        name: 'Diamond Engagement Ring',
+        sales: 89,
+        revenue: 12750000,
+        views: 2340,
+        conversionRate: 8.5
+      },
+      {
+        productId: 'EP002',
+        name: 'Gold Chain Necklace',
+        sales: 156,
+        revenue: 3900000,
+        views: 1890,
+        conversionRate: 6.2
+      },
+      {
+        productId: 'EP003',
+        name: 'Pearl Earrings Set',
+        sales: 234,
+        revenue: 2450000,
+        views: 3450,
+        conversionRate: 4.8
+      }
     ],
     salesTrends: [
       { period: 'Week 1', revenue: 4200000, orders: 289, visitors: 11200 },
@@ -340,7 +368,8 @@ export default function JewelryEcommercePage() {
       subcategory: 'engagement',
       brand: 'Royal Collection',
       sku: 'RC-DR-001',
-      description: 'Exquisite platinum engagement ring featuring a brilliant 2-carat center diamond with pavé band.',
+      description:
+        'Exquisite platinum engagement ring featuring a brilliant 2-carat center diamond with pavé band.',
       shortDescription: 'Platinum engagement ring with 2ct diamond',
       price: 450000,
       comparePrice: 525000,
@@ -363,7 +392,8 @@ export default function JewelryEcommercePage() {
       },
       seo: {
         title: 'Royal Diamond Engagement Ring - 2 Carat Platinum Setting',
-        description: 'Shop our exquisite Royal Diamond Engagement Ring featuring a brilliant 2-carat center diamond in platinum setting with pavé band.',
+        description:
+          'Shop our exquisite Royal Diamond Engagement Ring featuring a brilliant 2-carat center diamond in platinum setting with pavé band.',
         keywords: ['diamond engagement ring', 'platinum ring', '2 carat diamond', 'bridal jewelry'],
         slug: 'royal-diamond-engagement-ring-2ct-platinum'
       },
@@ -403,7 +433,8 @@ export default function JewelryEcommercePage() {
       subcategory: 'statement',
       brand: 'Goddess Collection',
       sku: 'GC-EN-002',
-      description: 'Stunning statement necklace featuring a 5-carat emerald centerpiece surrounded by diamonds in 18K gold.',
+      description:
+        'Stunning statement necklace featuring a 5-carat emerald centerpiece surrounded by diamonds in 18K gold.',
       shortDescription: '18K gold necklace with 5ct emerald',
       price: 325000,
       cost: 195000,
@@ -423,7 +454,8 @@ export default function JewelryEcommercePage() {
       },
       seo: {
         title: 'Emerald Goddess Statement Necklace - 5 Carat Colombian Emerald',
-        description: 'Luxury emerald necklace featuring a stunning 5-carat Colombian emerald with diamond accents in 18K gold.',
+        description:
+          'Luxury emerald necklace featuring a stunning 5-carat Colombian emerald with diamond accents in 18K gold.',
         keywords: ['emerald necklace', 'statement jewelry', 'colombian emerald', 'luxury necklace'],
         slug: 'emerald-goddess-statement-necklace-5ct'
       },
@@ -463,7 +495,8 @@ export default function JewelryEcommercePage() {
       subcategory: 'studs',
       brand: 'Classic Collection',
       sku: 'CC-PE-003',
-      description: 'Timeless Akoya pearl stud earrings in 14K gold setting, perfect for everyday elegance.',
+      description:
+        'Timeless Akoya pearl stud earrings in 14K gold setting, perfect for everyday elegance.',
       shortDescription: '14K gold Akoya pearl stud earrings',
       price: 85000,
       cost: 45000,
@@ -484,7 +517,8 @@ export default function JewelryEcommercePage() {
       },
       seo: {
         title: 'Classic Akoya Pearl Stud Earrings - 14K Gold Setting',
-        description: 'Elegant Akoya pearl stud earrings in 14K gold, featuring lustrous 8-9mm pearls perfect for any occasion.',
+        description:
+          'Elegant Akoya pearl stud earrings in 14K gold, featuring lustrous 8-9mm pearls perfect for any occasion.',
         keywords: ['pearl earrings', 'akoya pearls', 'stud earrings', 'classic jewelry'],
         slug: 'classic-akoya-pearl-stud-earrings-14k-gold'
       },
@@ -635,9 +669,8 @@ export default function JewelryEcommercePage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -653,21 +686,19 @@ export default function JewelryEcommercePage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="jewelry-glass-panel"
           >
             <div className="flex flex-wrap gap-2 p-4">
-              {tabs.map((tab) => (
+              {tabs.map(tab => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === tab.key
-                      ? 'jewelry-btn-primary'
-                      : 'jewelry-btn-secondary'
+                    activeTab === tab.key ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                   }`}
                 >
                   <tab.icon size={16} />
@@ -680,9 +711,8 @@ export default function JewelryEcommercePage() {
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              
               {/* Key Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -690,37 +720,54 @@ export default function JewelryEcommercePage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{formatCurrency(ecommerceAnalytics.overview.totalRevenue)}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {formatCurrency(ecommerceAnalytics.overview.totalRevenue)}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Online Revenue</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+24.5%</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.1s' }}
+                >
                   <ShoppingBag className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{ecommerceAnalytics.overview.totalOrders.toLocaleString()}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {ecommerceAnalytics.overview.totalOrders.toLocaleString()}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Online Orders</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+18.2%</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.2s' }}
+                >
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{formatCurrency(ecommerceAnalytics.overview.averageOrderValue)}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {formatCurrency(ecommerceAnalytics.overview.averageOrderValue)}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Avg Order Value</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+12.8%</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.3s' }}
+                >
                   <Percent className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{ecommerceAnalytics.overview.conversionRate}%</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {ecommerceAnalytics.overview.conversionRate}%
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Conversion Rate</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
@@ -730,9 +777,8 @@ export default function JewelryEcommercePage() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 {/* Traffic Sources */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -747,23 +793,29 @@ export default function JewelryEcommercePage() {
                       <Eye className="jewelry-icon-gold" size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {ecommerceAnalytics.traffic.map((source, index) => (
                       <div key={source.source} className="jewelry-glass-card p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div>
-                            <h4 className="jewelry-text-high-contrast font-semibold">{source.source}</h4>
-                            <p className="jewelry-text-muted text-sm">{source.visitors.toLocaleString()} visitors ({source.percentage}%)</p>
+                            <h4 className="jewelry-text-high-contrast font-semibold">
+                              {source.source}
+                            </h4>
+                            <p className="jewelry-text-muted text-sm">
+                              {source.visitors.toLocaleString()} visitors ({source.percentage}%)
+                            </p>
                           </div>
                           <div className="text-right">
-                            <p className="jewelry-text-high-contrast font-bold">{source.conversionRate}%</p>
+                            <p className="jewelry-text-high-contrast font-bold">
+                              {source.conversionRate}%
+                            </p>
                             <p className="jewelry-text-muted text-xs">conversion</p>
                           </div>
                         </div>
-                        
+
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="h-2 rounded-full bg-gradient-to-r from-jewelry-blue-400 to-jewelry-blue-600"
                             style={{ width: `${source.percentage}%` }}
                           ></div>
@@ -774,7 +826,7 @@ export default function JewelryEcommercePage() {
                 </motion.div>
 
                 {/* Top Products */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -790,7 +842,7 @@ export default function JewelryEcommercePage() {
                       <span className="text-sm">Details</span>
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {ecommerceAnalytics.topProducts.map((product, index) => (
                       <div key={product.productId} className="jewelry-glass-card p-4">
@@ -799,15 +851,21 @@ export default function JewelryEcommercePage() {
                             <Gem className="jewelry-icon-gold" size={20} />
                           </div>
                           <div className="flex-1">
-                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">{product.name}</h4>
+                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                              {product.name}
+                            </h4>
                             <div className="flex items-center justify-between mt-2">
                               <div className="flex space-x-4 text-xs">
                                 <span className="jewelry-text-muted">{product.sales} sales</span>
                                 <span className="jewelry-text-muted">{product.views} views</span>
                               </div>
                               <div className="text-right">
-                                <p className="jewelry-text-luxury font-bold text-sm">{formatCurrency(product.revenue)}</p>
-                                <p className="jewelry-text-muted text-xs">{product.conversionRate}% conv.</p>
+                                <p className="jewelry-text-luxury font-bold text-sm">
+                                  {formatCurrency(product.revenue)}
+                                </p>
+                                <p className="jewelry-text-muted text-xs">
+                                  {product.conversionRate}% conv.
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -823,9 +881,8 @@ export default function JewelryEcommercePage() {
           {/* Products Tab */}
           {activeTab === 'products' && (
             <div className="space-y-6">
-              
               {/* Product Controls */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -834,23 +891,26 @@ export default function JewelryEcommercePage() {
                 <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-4 items-center">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted" size={16} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted"
+                        size={16}
+                      />
                       <input
                         type="text"
                         placeholder="Search products..."
                         className="pl-10 pr-4 py-2 border border-jewelry-blue-200 rounded-lg jewelry-text-high-contrast text-sm w-64"
                       />
                     </div>
-                    
-                    <button 
+
+                    <button
                       onClick={() => setShowFilters(!showFilters)}
                       className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2"
                     >
                       <Filter className="jewelry-icon-gold" size={18} />
                       <span>Filters</span>
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
                       className="jewelry-btn-secondary p-2"
                     >
@@ -863,12 +923,12 @@ export default function JewelryEcommercePage() {
                       <Upload className="jewelry-icon-gold" size={18} />
                       <span>Import</span>
                     </button>
-                    
+
                     <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                       <Download className="jewelry-icon-gold" size={18} />
                       <span>Export</span>
                     </button>
-                    
+
                     <button className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2">
                       <Plus className="jewelry-icon-gold" size={18} />
                       <span>Add Product</span>
@@ -878,7 +938,7 @@ export default function JewelryEcommercePage() {
               </motion.div>
 
               {/* Products Grid/List */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -887,7 +947,7 @@ export default function JewelryEcommercePage() {
                 <div className="p-6">
                   {viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {ecommerceProducts.map((product) => (
+                      {ecommerceProducts.map(product => (
                         <motion.div
                           key={product.id}
                           initial={{ opacity: 0, scale: 0.95 }}
@@ -905,17 +965,25 @@ export default function JewelryEcommercePage() {
                             </div>
                             <div className="absolute top-3 left-3 flex flex-col gap-2">
                               {product.visibility.isNewArrival && (
-                                <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">New</span>
+                                <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+                                  New
+                                </span>
                               )}
                               {product.visibility.isBestseller && (
-                                <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">Bestseller</span>
+                                <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                                  Bestseller
+                                </span>
                               )}
                               {product.visibility.isSaleItem && (
-                                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">Sale</span>
+                                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
+                                  Sale
+                                </span>
                               )}
                             </div>
                             <div className="absolute top-3 right-3">
-                              <span className={`text-xs px-2 py-1 rounded ${getStatusColor(product.status)}`}>
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${getStatusColor(product.status)}`}
+                              >
                                 {product.status}
                               </span>
                             </div>
@@ -923,27 +991,37 @@ export default function JewelryEcommercePage() {
                           <div className="p-4">
                             <div className="flex items-start justify-between mb-2">
                               <div>
-                                <h4 className="jewelry-text-high-contrast font-semibold text-sm line-clamp-2">{product.name}</h4>
+                                <h4 className="jewelry-text-high-contrast font-semibold text-sm line-clamp-2">
+                                  {product.name}
+                                </h4>
                                 <p className="jewelry-text-muted text-xs">{product.sku}</p>
                               </div>
                               <button className="text-gray-400 hover:text-gray-600">
                                 <MoreVertical size={16} />
                               </button>
                             </div>
-                            
+
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
-                                <span className="jewelry-text-luxury font-bold">{formatCurrency(product.price)}</span>
+                                <span className="jewelry-text-luxury font-bold">
+                                  {formatCurrency(product.price)}
+                                </span>
                                 {product.comparePrice && (
-                                  <span className="jewelry-text-muted text-xs line-through">{formatCurrency(product.comparePrice)}</span>
+                                  <span className="jewelry-text-muted text-xs line-through">
+                                    {formatCurrency(product.comparePrice)}
+                                  </span>
                                 )}
                               </div>
-                              
+
                               <div className="flex items-center justify-between text-xs">
-                                <span className="jewelry-text-muted">Stock: {product.inventory.quantity}</span>
-                                <span className="jewelry-text-luxury font-medium">Margin: {product.margin}%</span>
+                                <span className="jewelry-text-muted">
+                                  Stock: {product.inventory.quantity}
+                                </span>
+                                <span className="jewelry-text-luxury font-medium">
+                                  Margin: {product.margin}%
+                                </span>
                               </div>
-                              
+
                               <div className="flex space-x-2">
                                 <button className="flex-1 jewelry-btn-secondary py-1 text-xs">
                                   <Edit size={12} className="mr-1" />
@@ -961,7 +1039,7 @@ export default function JewelryEcommercePage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {ecommerceProducts.map((product) => (
+                      {ecommerceProducts.map(product => (
                         <motion.div
                           key={product.id}
                           initial={{ opacity: 0, x: -20 }}
@@ -976,15 +1054,21 @@ export default function JewelryEcommercePage() {
                           <div className="w-20 h-20 bg-gradient-to-br from-jewelry-blue-100 to-jewelry-blue-200 rounded-lg flex items-center justify-center">
                             <Gem className="jewelry-icon-gold" size={32} />
                           </div>
-                          
+
                           <div className="flex-1">
                             <div className="flex items-start justify-between mb-2">
                               <div>
-                                <h4 className="jewelry-text-high-contrast font-semibold">{product.name}</h4>
-                                <p className="jewelry-text-muted text-sm">{product.sku} " {product.category}</p>
+                                <h4 className="jewelry-text-high-contrast font-semibold">
+                                  {product.name}
+                                </h4>
+                                <p className="jewelry-text-muted text-sm">
+                                  {product.sku} " {product.category}
+                                </p>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <span className={`text-xs px-2 py-1 rounded ${getStatusColor(product.status)}`}>
+                                <span
+                                  className={`text-xs px-2 py-1 rounded ${getStatusColor(product.status)}`}
+                                >
                                   {product.status}
                                 </span>
                                 <button className="text-gray-400 hover:text-gray-600">
@@ -992,19 +1076,25 @@ export default function JewelryEcommercePage() {
                                 </button>
                               </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-4 gap-4 text-sm">
                               <div>
                                 <span className="jewelry-text-muted block">Price</span>
-                                <span className="jewelry-text-luxury font-bold">{formatCurrency(product.price)}</span>
+                                <span className="jewelry-text-luxury font-bold">
+                                  {formatCurrency(product.price)}
+                                </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Stock</span>
-                                <span className="jewelry-text-high-contrast">{product.inventory.quantity}</span>
+                                <span className="jewelry-text-high-contrast">
+                                  {product.inventory.quantity}
+                                </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Margin</span>
-                                <span className="jewelry-text-high-contrast">{product.margin}%</span>
+                                <span className="jewelry-text-high-contrast">
+                                  {product.margin}%
+                                </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Status</span>
@@ -1027,9 +1117,8 @@ export default function JewelryEcommercePage() {
           {/* Orders Tab */}
           {activeTab === 'orders' && (
             <div className="space-y-6">
-              
               {/* Order Controls */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -1038,14 +1127,17 @@ export default function JewelryEcommercePage() {
                 <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-4 items-center">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted" size={16} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted"
+                        size={16}
+                      />
                       <input
                         type="text"
                         placeholder="Search orders..."
                         className="pl-10 pr-4 py-2 border border-jewelry-blue-200 rounded-lg jewelry-text-high-contrast text-sm w-64"
                       />
                     </div>
-                    
+
                     <select className="px-4 py-2 border border-jewelry-blue-200 rounded-lg jewelry-text-high-contrast text-sm">
                       <option value="">All Status</option>
                       <option value="pending">Pending</option>
@@ -1068,7 +1160,7 @@ export default function JewelryEcommercePage() {
                       <RefreshCw className="jewelry-icon-gold" size={18} />
                       <span>Refresh</span>
                     </button>
-                    
+
                     <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                       <Download className="jewelry-icon-gold" size={18} />
                       <span>Export</span>
@@ -1078,7 +1170,7 @@ export default function JewelryEcommercePage() {
               </motion.div>
 
               {/* Orders List */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -1086,7 +1178,7 @@ export default function JewelryEcommercePage() {
               >
                 <div className="p-6">
                   <div className="space-y-4">
-                    {recentOrders.map((order) => (
+                    {recentOrders.map(order => (
                       <motion.div
                         key={order.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -1104,23 +1196,33 @@ export default function JewelryEcommercePage() {
                               <ShoppingBag className="jewelry-icon-gold" size={20} />
                             </div>
                             <div>
-                              <h4 className="jewelry-text-high-contrast font-semibold">{order.orderNumber}</h4>
-                              <p className="jewelry-text-muted text-sm">{order.customer.name} " {order.customer.email}</p>
+                              <h4 className="jewelry-text-high-contrast font-semibold">
+                                {order.orderNumber}
+                              </h4>
+                              <p className="jewelry-text-muted text-sm">
+                                {order.customer.name} " {order.customer.email}
+                              </p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center space-x-3">
-                            <span className={`text-xs px-3 py-1 rounded-full ${getStatusColor(order.status)}`}>
+                            <span
+                              className={`text-xs px-3 py-1 rounded-full ${getStatusColor(order.status)}`}
+                            >
                               {order.status.toUpperCase()}
                             </span>
-                            <span className="jewelry-text-luxury font-bold">{formatCurrency(order.pricing.total)}</span>
+                            <span className="jewelry-text-luxury font-bold">
+                              {formatCurrency(order.pricing.total)}
+                            </span>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                           <div>
                             <span className="jewelry-text-muted block">Items</span>
-                            <span className="jewelry-text-high-contrast">{order.items.length} product(s)</span>
+                            <span className="jewelry-text-high-contrast">
+                              {order.items.length} product(s)
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Payment</span>
@@ -1131,18 +1233,25 @@ export default function JewelryEcommercePage() {
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Shipping</span>
-                            <span className="jewelry-text-high-contrast">{order.shipping.method}</span>
+                            <span className="jewelry-text-high-contrast">
+                              {order.shipping.method}
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Date</span>
-                            <span className="jewelry-text-high-contrast">{new Date(order.createdAt).toLocaleDateString()}</span>
+                            <span className="jewelry-text-high-contrast">
+                              {new Date(order.createdAt).toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
 
                         {order.tags.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-3">
                             {order.tags.map((tag, index) => (
-                              <span key={index} className="bg-jewelry-blue-100 text-jewelry-blue-900 text-xs px-2 py-1 rounded">
+                              <span
+                                key={index}
+                                className="bg-jewelry-blue-100 text-jewelry-blue-900 text-xs px-2 py-1 rounded"
+                              >
                                 {tag}
                               </span>
                             ))}
@@ -1158,7 +1267,7 @@ export default function JewelryEcommercePage() {
 
           {/* Analytics Tab */}
           {activeTab === 'analytics' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -1166,9 +1275,12 @@ export default function JewelryEcommercePage() {
             >
               <div className="p-6 text-center">
                 <BarChart3 className="mx-auto mb-4 jewelry-icon-gold" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">Advanced Analytics</h3>
+                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                  Advanced Analytics
+                </h3>
                 <p className="jewelry-text-muted">
-                  Comprehensive e-commerce analytics, customer behavior insights, and performance tracking coming soon.
+                  Comprehensive e-commerce analytics, customer behavior insights, and performance
+                  tracking coming soon.
                 </p>
               </div>
             </motion.div>
@@ -1176,7 +1288,7 @@ export default function JewelryEcommercePage() {
 
           {/* Website Tab */}
           {activeTab === 'website' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -1184,9 +1296,12 @@ export default function JewelryEcommercePage() {
             >
               <div className="p-6 text-center">
                 <Globe className="mx-auto mb-4 jewelry-icon-gold" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">Website Management</h3>
+                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                  Website Management
+                </h3>
                 <p className="jewelry-text-muted">
-                  Website customization, theme settings, SEO optimization, and content management tools.
+                  Website customization, theme settings, SEO optimization, and content management
+                  tools.
                 </p>
               </div>
             </motion.div>
@@ -1194,7 +1309,7 @@ export default function JewelryEcommercePage() {
 
           {/* Settings Tab */}
           {activeTab === 'settings' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -1202,23 +1317,27 @@ export default function JewelryEcommercePage() {
             >
               <div className="p-6 text-center">
                 <Settings className="mx-auto mb-4 jewelry-icon-gold" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">E-commerce Settings</h3>
+                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                  E-commerce Settings
+                </h3>
                 <p className="jewelry-text-muted">
-                  Payment gateways, shipping methods, tax settings, inventory management, and store configuration.
+                  Payment gateways, shipping methods, tax settings, inventory management, and store
+                  configuration.
                 </p>
               </div>
             </motion.div>
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              E-commerce platform powered by <span className="jewelry-text-luxury font-semibold">HERA Business Intelligence</span>
+              E-commerce platform powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Business Intelligence</span>
             </p>
           </motion.div>
         </div>

@@ -82,9 +82,7 @@ export default function BottomSheetDemo() {
         {/* Basic Example */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
           <h3 className="text-lg font-semibold mb-2">Basic Example</h3>
-          <p className="text-sm dark:ink-muted mb-4">
-            Simple bottom sheet with title and content
-          </p>
+          <p className="text-sm dark:ink-muted mb-4">Simple bottom sheet with title and content</p>
           <HeraButtonDNA onClick={basicSheet.open} fullWidth>
             Open Basic Sheet
           </HeraButtonDNA>
@@ -96,9 +94,7 @@ export default function BottomSheetDemo() {
             <Share2 className="h-5 w-5" />
             Share Sheet
           </h3>
-          <p className="text-sm dark:ink-muted mb-4">
-            iOS-style share action sheet
-          </p>
+          <p className="text-sm dark:ink-muted mb-4">iOS-style share action sheet</p>
           <HeraButtonDNA onClick={shareSheet.open} fullWidth variant="secondary">
             Share Content
           </HeraButtonDNA>
@@ -110,9 +106,7 @@ export default function BottomSheetDemo() {
             <User className="h-5 w-5" />
             Form Input
           </h3>
-          <p className="text-sm dark:ink-muted mb-4">
-            Bottom sheet with form inputs
-          </p>
+          <p className="text-sm dark:ink-muted mb-4">Bottom sheet with form inputs</p>
           <HeraButtonDNA onClick={formSheet.open} fullWidth variant="outline">
             Edit Profile
           </HeraButtonDNA>
@@ -124,9 +118,7 @@ export default function BottomSheetDemo() {
             <Filter className="h-5 w-5" />
             Filters
           </h3>
-          <p className="text-sm dark:ink-muted mb-4">
-            Advanced filtering options
-          </p>
+          <p className="text-sm dark:ink-muted mb-4">Advanced filtering options</p>
           <HeraButtonDNA onClick={filterSheet.open} fullWidth>
             <Filter className="h-4 w-4" />
             Apply Filters
@@ -148,9 +140,7 @@ export default function BottomSheetDemo() {
             <Settings className="h-5 w-5" />
             Custom Snaps
           </h3>
-          <p className="text-sm dark:ink-muted mb-4">
-            Multiple height snap points
-          </p>
+          <p className="text-sm dark:ink-muted mb-4">Multiple height snap points</p>
           <HeraButtonDNA onClick={customSnapSheet.open} fullWidth variant="outline">
             Multi-Height Sheet
           </HeraButtonDNA>
@@ -259,9 +249,7 @@ export default function BottomSheetDemo() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
-              Name
-            </label>
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">Name</label>
             <input
               type="text"
               value={profileData.name}
@@ -270,9 +258,7 @@ export default function BottomSheetDemo() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">Email</label>
             <input
               type="email"
               value={profileData.email}
@@ -281,9 +267,7 @@ export default function BottomSheetDemo() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">
-              Phone
-            </label>
+            <label className="block text-sm font-medium ink dark:text-gray-300 mb-1">Phone</label>
             <input
               type="tel"
               value={profileData.phone}
@@ -373,15 +357,15 @@ export default function BottomSheetDemo() {
         }
       >
         <div className="space-y-4 py-4">
-          <p className="dark:ink-muted">
-            Select your preferred payment method for this purchase
-          </p>
+          <p className="dark:ink-muted">Select your preferred payment method for this purchase</p>
 
           {paymentMethods.map(method => (
             <button
               key={method.id}
               onClick={() => setSelectedPayment(method.id)}
-              className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${ selectedPayment === method.id ?'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+              className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                selectedPayment === method.id
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
               }`}
             >

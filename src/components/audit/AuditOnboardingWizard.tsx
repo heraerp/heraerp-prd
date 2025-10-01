@@ -331,9 +331,7 @@ export function AuditOnboardingWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium ink mb-2">
-                Email Address *
-              </label>
+              <label className="block text-sm font-medium ink mb-2">Email Address *</label>
               <Input
                 type="email"
                 value={formData.email}
@@ -414,9 +412,7 @@ export function AuditOnboardingWizard() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ink mb-2">
-                  License Number *
-                </label>
+                <label className="block text-sm font-medium ink mb-2">License Number *</label>
                 <Input
                   value={formData.license_number}
                   onChange={e => updateFormData('license_number', e.target.value)}
@@ -429,9 +425,7 @@ export function AuditOnboardingWizard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium ink mb-2">
-                  Established Year *
-                </label>
+                <label className="block text-sm font-medium ink mb-2">Established Year *</label>
                 <Input
                   type="number"
                   value={formData.established_year}
@@ -457,9 +451,7 @@ export function AuditOnboardingWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium ink mb-2">
-                Registration Country
-              </label>
+              <label className="block text-sm font-medium ink mb-2">Registration Country</label>
               <select
                 value={formData.registration_country}
                 onChange={e => updateFormData('registration_country', e.target.value)}
@@ -487,7 +479,9 @@ export function AuditOnboardingWizard() {
                     key={type.value}
                     type="button"
                     onClick={() => updateFormData('firm_type', type.value)}
-                    className={`p-4 border rounded-lg text-left transition-all ${ formData.firm_type === type.value ?'border-blue-500 bg-blue-50 text-blue-700'
+                    className={`p-4 border rounded-lg text-left transition-all ${
+                      formData.firm_type === type.value
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
                         : 'border-border hover:border-border'
                     }`}
                   >
@@ -500,9 +494,7 @@ export function AuditOnboardingWizard() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium ink mb-2">
-                  Number of Partners *
-                </label>
+                <label className="block text-sm font-medium ink mb-2">Number of Partners *</label>
                 <Input
                   type="number"
                   value={formData.partner_count}
@@ -516,9 +508,7 @@ export function AuditOnboardingWizard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium ink mb-2">
-                  Total Staff Count *
-                </label>
+                <label className="block text-sm font-medium ink mb-2">Total Staff Count *</label>
                 <Input
                   type="number"
                   value={formData.staff_count}
@@ -542,7 +532,9 @@ export function AuditOnboardingWizard() {
                     key={spec}
                     type="button"
                     onClick={() => handleSpecializationToggle(spec)}
-                    className={`p-2 text-xs border rounded-md transition-all ${ formData.specializations.includes(spec) ?'border-blue-500 bg-blue-50 text-blue-700'
+                    className={`p-2 text-xs border rounded-md transition-all ${
+                      formData.specializations.includes(spec)
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
                         : 'border-border hover:border-border'
                     }`}
                   >
@@ -556,9 +548,7 @@ export function AuditOnboardingWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium ink mb-2">
-                Main Office Location
-              </label>
+              <label className="block text-sm font-medium ink mb-2">Main Office Location</label>
               <Input
                 value={formData.office_locations[0]}
                 onChange={e => updateFormData('office_locations', [e.target.value])}
@@ -631,7 +621,9 @@ export function AuditOnboardingWizard() {
                 {ONBOARDING_STEPS.map((step, index) => (
                   <React.Fragment key={step.id}>
                     <div
-                      className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${ currentStep >= step.id ?'border-blue-500 bg-blue-500 text-foreground'
+                      className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                        currentStep >= step.id
+                          ? 'border-blue-500 bg-blue-500 text-foreground'
                           : 'border-border text-muted-foreground'
                       }`}
                     >
@@ -643,7 +635,8 @@ export function AuditOnboardingWizard() {
                     </div>
                     {index < ONBOARDING_STEPS.length - 1 && (
                       <div
-                        className={`w-8 h-0.5 ${ currentStep > step.id ?'bg-blue-500' : 'bg-gray-300'
+                        className={`w-8 h-0.5 ${
+                          currentStep > step.id ? 'bg-blue-500' : 'bg-gray-300'
                         }`}
                       />
                     )}

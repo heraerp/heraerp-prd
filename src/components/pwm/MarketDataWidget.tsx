@@ -126,7 +126,7 @@ export function MarketDataWidget({ className }: MarketDataWidgetProps) {
               disabled={loading}
             >
               <RefreshCcw
-                className={`h-3 w-3 text-muted-foreground ${loading ?'animate-spin' : ''}`}
+                className={`h-3 w-3 text-muted-foreground ${loading ? 'animate-spin' : ''}`}
               />
             </button>
           </div>

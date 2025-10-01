@@ -643,10 +643,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="category"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="category" className="block text-sm font-medium ink mb-1">
                     Category *
                   </label>
                   <select
@@ -697,10 +694,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="manufacturer"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="manufacturer" className="block text-sm font-medium ink mb-1">
                     Manufacturer
                   </label>
                   <input
@@ -717,10 +711,7 @@ export function ProductManager() {
               {/* Inventory & Pricing */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label
-                    htmlFor="unit_of_measure"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="unit_of_measure" className="block text-sm font-medium ink mb-1">
                     Unit of Measure *
                   </label>
                   <select
@@ -740,10 +731,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="standard_cost"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="standard_cost" className="block text-sm font-medium ink mb-1">
                     Standard Cost
                   </label>
                   <input
@@ -759,10 +747,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="list_price"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="list_price" className="block text-sm font-medium ink mb-1">
                     List Price
                   </label>
                   <input
@@ -778,10 +763,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="lead_time_days"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="lead_time_days" className="block text-sm font-medium ink mb-1">
                     Lead Time (Days)
                   </label>
                   <input
@@ -815,10 +797,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="dimensions"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="dimensions" className="block text-sm font-medium ink mb-1">
                     Dimensions
                   </label>
                   <input
@@ -847,10 +826,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="material"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="material" className="block text-sm font-medium ink mb-1">
                     Material
                   </label>
                   <input
@@ -910,10 +886,7 @@ export function ProductManager() {
 
               {/* Description */}
               <div>
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium ink mb-1"
-                >
+                <label htmlFor="description" className="block text-sm font-medium ink mb-1">
                   Description
                 </label>
                 <textarea
@@ -976,10 +949,7 @@ export function ProductManager() {
               {/* Same form fields as create modal - abbreviated for brevity */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="edit_name"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="edit_name" className="block text-sm font-medium ink mb-1">
                     Product Name *
                   </label>
                   <input
@@ -994,10 +964,7 @@ export function ProductManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="edit_category"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="edit_category" className="block text-sm font-medium ink mb-1">
                     Category *
                   </label>
                   <select

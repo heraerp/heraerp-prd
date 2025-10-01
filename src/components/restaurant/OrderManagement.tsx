@@ -723,7 +723,7 @@ export function OrderManagement({
         </div>
         <div className="flex gap-2">
           <Button onClick={() => refreshData()} variant="outline" size="sm" disabled={refreshing}>
-            <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ?'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>

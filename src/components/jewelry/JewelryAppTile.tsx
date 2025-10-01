@@ -29,11 +29,11 @@ interface JewelryAppTileProps {
   compact?: boolean
 }
 
-export function JewelryAppTile({ 
-  app, 
-  index, 
+export function JewelryAppTile({
+  app,
+  index,
   viewMode = 'grid',
-  compact = false 
+  compact = false
 }: JewelryAppTileProps) {
   const router = useRouter()
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -67,7 +67,7 @@ export function JewelryAppTile({
           <div className="jewelry-crown-glow p-4 rounded-xl bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 group-hover:scale-110 transition-transform duration-300">
             <Icon className="h-8 w-8 jewelry-icon-gold" />
           </div>
-          
+
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
@@ -86,15 +86,13 @@ export function JewelryAppTile({
                 </span>
               )}
             </div>
-            
-            <p className="jewelry-text-muted mb-3 line-clamp-2">
-              {app.description}
-            </p>
-            
+
+            <p className="jewelry-text-muted mb-3 line-clamp-2">{app.description}</p>
+
             {app.tags && (
               <div className="flex flex-wrap gap-1">
-                {app.tags.slice(0, 3).map((tag) => (
-                  <span 
+                {app.tags.slice(0, 3).map(tag => (
+                  <span
                     key={tag}
                     className="text-xs jewelry-text-muted bg-white/5 px-2 py-1 rounded-md"
                   >
@@ -102,14 +100,12 @@ export function JewelryAppTile({
                   </span>
                 ))}
                 {app.tags.length > 3 && (
-                  <span className="text-xs jewelry-text-muted">
-                    +{app.tags.length - 3} more
-                  </span>
+                  <span className="text-xs jewelry-text-muted">+{app.tags.length - 3} more</span>
                 )}
               </div>
             )}
           </div>
-          
+
           {/* Action */}
           <div className="flex items-center gap-2">
             <div className="jewelry-glass-btn p-2 rounded-lg group-hover:bg-yellow-500/10 transition-colors">
@@ -140,7 +136,7 @@ export function JewelryAppTile({
         <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600"></div>
         <div className="absolute bottom-2 left-2 w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600"></div>
       </div>
-      
+
       {/* Featured Badge */}
       {app.featured && (
         <div className="absolute top-3 right-3 z-10">
@@ -149,44 +145,50 @@ export function JewelryAppTile({
           </div>
         </div>
       )}
-      
+
       {/* Main Content */}
       <div className={`relative z-10 ${compact ? 'space-y-3' : 'space-y-4'}`}>
         {/* Icon */}
-        <div className={`jewelry-crown-glow mx-auto rounded-xl bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 group-hover:from-yellow-500/20 group-hover:to-yellow-600/30 group-hover:scale-110 transition-all duration-300 ${
-          compact ? 'p-3 w-fit' : 'p-4 w-fit'
-        }`}>
-          <Icon className={`jewelry-icon-gold transition-transform duration-300 ${
-            compact ? 'h-6 w-6' : 'h-8 w-8'
-          }`} />
+        <div
+          className={`jewelry-crown-glow mx-auto rounded-xl bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 group-hover:from-yellow-500/20 group-hover:to-yellow-600/30 group-hover:scale-110 transition-all duration-300 ${
+            compact ? 'p-3 w-fit' : 'p-4 w-fit'
+          }`}
+        >
+          <Icon
+            className={`jewelry-icon-gold transition-transform duration-300 ${
+              compact ? 'h-6 w-6' : 'h-8 w-8'
+            }`}
+          />
         </div>
-        
+
         {/* Content */}
         <div className={compact ? 'space-y-2' : 'space-y-3'}>
           <div className="text-center">
-            <h3 className={`jewelry-text-high-contrast font-bold group-hover:jewelry-text-gold transition-colors duration-300 ${
-              compact ? 'text-sm' : 'text-lg'
-            }`}>
+            <h3
+              className={`jewelry-text-high-contrast font-bold group-hover:jewelry-text-gold transition-colors duration-300 ${
+                compact ? 'text-sm' : 'text-lg'
+              }`}
+            >
               {app.title}
             </h3>
-            
+
             {app.category && !compact && (
               <span className="text-xs jewelry-text-muted bg-white/10 px-2 py-1 rounded-full mt-1 inline-block">
                 {app.category}
               </span>
             )}
           </div>
-          
+
           {!compact && (
             <p className="jewelry-text-muted text-sm text-center line-clamp-2 min-h-[2.5rem]">
               {app.description}
             </p>
           )}
-          
+
           {!compact && app.tags && (
             <div className="flex flex-wrap gap-1 justify-center">
-              {app.tags.slice(0, 2).map((tag) => (
-                <span 
+              {app.tags.slice(0, 2).map(tag => (
+                <span
                   key={tag}
                   className="text-xs jewelry-text-muted bg-white/5 px-2 py-1 rounded-md"
                 >
@@ -205,11 +207,11 @@ export function JewelryAppTile({
             </div>
           )}
         </div>
-        
+
         {/* Hover Effect */}
         <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-yellow-500 to-yellow-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
       </div>
-      
+
       {/* External Link Indicator */}
       <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
         <ExternalLink className="h-3 w-3 jewelry-text-muted" />

@@ -30,11 +30,9 @@ const createWrapper = () => {
       mutations: { retry: false }
     }
   })
-  
+
   return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }
 
@@ -86,10 +84,9 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
         json: async () => mockProducts
       })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       // Initially loading
       expect(result.current.isLoading).toBe(true)
@@ -117,10 +114,9 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
         json: async () => ({ error: 'Failed to fetch' })
       })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -173,17 +169,16 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
         // Mock refetch after create
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({ 
-            success: true, 
-            data: [mockResponse.data], 
-            pagination: { total: 1 } 
+          json: async () => ({
+            success: true,
+            data: [mockResponse.data],
+            pagination: { total: 1 }
           })
         })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -230,19 +225,16 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
           json: async () => ({ error: 'Invalid smart code format' })
         })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
       })
 
       // Attempt to create with bad data
-      await expect(result.current.create(newProduct)).rejects.toThrow(
-        'Invalid smart code format'
-      )
+      await expect(result.current.create(newProduct)).rejects.toThrow('Invalid smart code format')
     })
   })
 
@@ -274,10 +266,9 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
           json: async () => ({ success: true, data: [], pagination: {} })
         })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -311,10 +302,9 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
           json: async () => ({ success: true, data: [], pagination: {} })
         })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -345,10 +335,9 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
           json: async () => ({ success: true, data: [], pagination: {} })
         })
 
-      const { result } = renderHook(
-        () => useUniversalEntity({ entity_type: 'product' }),
-        { wrapper: createWrapper() }
-      )
+      const { result } = renderHook(() => useUniversalEntity({ entity_type: 'product' }), {
+        wrapper: createWrapper()
+      })
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
@@ -373,15 +362,16 @@ describe('useUniversalEntity Hook - Product CRUD', () => {
       })
 
       renderHook(
-        () => useUniversalEntity({ 
-          entity_type: 'product',
-          filters: {
-            status: 'archived',
-            limit: 50,
-            offset: 10,
-            include_dynamic: false
-          }
-        }),
+        () =>
+          useUniversalEntity({
+            entity_type: 'product',
+            filters: {
+              status: 'archived',
+              limit: 50,
+              offset: 10,
+              include_dynamic: false
+            }
+          }),
         { wrapper: createWrapper() }
       )
 

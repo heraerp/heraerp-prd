@@ -219,12 +219,12 @@ export function ComposeModal({
 
     try {
       // Convert File objects to base64
-      const attachmentPromises = draft.attachments.map(async (file) => ({
+      const attachmentPromises = draft.attachments.map(async file => ({
         filename: file.name,
         content: await fileToBase64(file),
         type: file.type
       }))
-      
+
       const attachments = await Promise.all(attachmentPromises)
 
       await sendEmail({

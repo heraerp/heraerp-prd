@@ -195,34 +195,67 @@ export default function JewelryInventoryPage() {
 
   const categories = ['all', 'Rings', 'Necklaces', 'Bracelets', 'Earrings']
   const statuses = ['all', 'in_stock', 'low_stock', 'out_of_stock', 'reserved']
-  const locations = ['all', 'Vault A-1', 'Vault A-2', 'Vault B-1', 'Display Case A', 'Display Case B', 'Display Case C']
-  const suppliers = ['all', 'Diamond Elite Co.', 'Golden Chains Ltd.', 'Pearl Paradise Inc.', 'Sapphire Source Co.', 'Wedding Rings Co.', 'Emerald Experts Ltd.']
+  const locations = [
+    'all',
+    'Vault A-1',
+    'Vault A-2',
+    'Vault B-1',
+    'Display Case A',
+    'Display Case B',
+    'Display Case C'
+  ]
+  const suppliers = [
+    'all',
+    'Diamond Elite Co.',
+    'Golden Chains Ltd.',
+    'Pearl Paradise Inc.',
+    'Sapphire Source Co.',
+    'Wedding Rings Co.',
+    'Emerald Experts Ltd.'
+  ]
 
   // Calculate summary metrics
   const totalItems = inventoryItems.reduce((sum, item) => sum + item.quantity, 0)
   const totalValue = inventoryItems.reduce((sum, item) => sum + item.totalValue, 0)
-  const lowStockItems = inventoryItems.filter(item => item.status === 'low_stock' || item.status === 'out_of_stock').length
+  const lowStockItems = inventoryItems.filter(
+    item => item.status === 'low_stock' || item.status === 'out_of_stock'
+  ).length
   const uniqueItems = inventoryItems.length
 
   // Enhanced filtering with advanced filters
   const filteredItems = inventoryItems
     .filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           item.sku.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.sku.toLowerCase().includes(searchTerm.toLowerCase())
       const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
       const matchesStatus = selectedStatus === 'all' || item.status === selectedStatus
-      
+
       // Advanced filters
-      const matchesMinValue = !filterValues.minValue || item.totalValue >= parseFloat(filterValues.minValue)
-      const matchesMaxValue = !filterValues.maxValue || item.totalValue <= parseFloat(filterValues.maxValue)
-      const matchesMinWeight = !filterValues.minWeight || item.netWeight >= parseFloat(filterValues.minWeight)
-      const matchesMaxWeight = !filterValues.maxWeight || item.netWeight <= parseFloat(filterValues.maxWeight)
-      const matchesLocation = filterValues.location === 'all' || item.location === filterValues.location
-      const matchesSupplier = filterValues.supplier === 'all' || item.supplier === filterValues.supplier
-      
-      return matchesSearch && matchesCategory && matchesStatus && 
-             matchesMinValue && matchesMaxValue && matchesMinWeight && 
-             matchesMaxWeight && matchesLocation && matchesSupplier
+      const matchesMinValue =
+        !filterValues.minValue || item.totalValue >= parseFloat(filterValues.minValue)
+      const matchesMaxValue =
+        !filterValues.maxValue || item.totalValue <= parseFloat(filterValues.maxValue)
+      const matchesMinWeight =
+        !filterValues.minWeight || item.netWeight >= parseFloat(filterValues.minWeight)
+      const matchesMaxWeight =
+        !filterValues.maxWeight || item.netWeight <= parseFloat(filterValues.maxWeight)
+      const matchesLocation =
+        filterValues.location === 'all' || item.location === filterValues.location
+      const matchesSupplier =
+        filterValues.supplier === 'all' || item.supplier === filterValues.supplier
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesStatus &&
+        matchesMinValue &&
+        matchesMaxValue &&
+        matchesMinWeight &&
+        matchesMaxWeight &&
+        matchesLocation &&
+        matchesSupplier
+      )
     })
     .sort((a, b) => {
       const direction = sortOrder === 'asc' ? 1 : -1
@@ -242,30 +275,38 @@ export default function JewelryInventoryPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'in_stock': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'low_stock': return <AlertTriangle className="jewelry-icon-warning" size={16} />
-      case 'out_of_stock': return <XCircle className="jewelry-icon-error" size={16} />
-      case 'reserved': return <Clock className="jewelry-icon-info" size={16} />
-      default: return null
+      case 'in_stock':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'low_stock':
+        return <AlertTriangle className="jewelry-icon-warning" size={16} />
+      case 'out_of_stock':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      case 'reserved':
+        return <Clock className="jewelry-icon-info" size={16} />
+      default:
+        return null
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'in_stock': return 'jewelry-status-active'
-      case 'low_stock': return 'jewelry-status-pending'
-      case 'out_of_stock': return 'jewelry-status-inactive'
-      case 'reserved': return 'jewelry-status-luxury'
-      default: return 'jewelry-status-inactive'
+      case 'in_stock':
+        return 'jewelry-status-active'
+      case 'low_stock':
+        return 'jewelry-status-pending'
+      case 'out_of_stock':
+        return 'jewelry-status-inactive'
+      case 'reserved':
+        return 'jewelry-status-luxury'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   // Bulk operations functions
   const toggleItemSelection = (itemId: string) => {
-    setSelectedItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
+    setSelectedItems(prev =>
+      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
     )
   }
 
@@ -292,7 +333,7 @@ export default function JewelryInventoryPage() {
 
   const handleBulkExport = () => {
     if (selectedItems.length === 0) return
-    // Implementation would go here  
+    // Implementation would go here
     console.log('Bulk export:', selectedItems)
   }
 
@@ -327,7 +368,7 @@ export default function JewelryInventoryPage() {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
           {/* Page Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -343,7 +384,7 @@ export default function JewelryInventoryPage() {
           </motion.div>
 
           {/* Summary Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -354,20 +395,31 @@ export default function JewelryInventoryPage() {
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{totalItems}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Items</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${totalValue.toLocaleString()}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${totalValue.toLocaleString()}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Value</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <AlertTriangle className="mx-auto mb-3 jewelry-icon-gold" size={32} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{lowStockItems}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Low Stock Items</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <Gem className="mx-auto mb-3 jewelry-icon-gold" size={32} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{uniqueItems}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Unique Items</p>
@@ -376,7 +428,7 @@ export default function JewelryInventoryPage() {
 
           {/* Bulk Actions Bar */}
           {showBulkActions && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -387,35 +439,37 @@ export default function JewelryInventoryPage() {
                   <span className="jewelry-text-high-contrast font-semibold">
                     {selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''} selected
                   </span>
-                  <button 
+                  <button
                     onClick={clearSelection}
                     className="jewelry-btn-secondary text-sm px-3 py-1"
                   >
                     Clear Selection
                   </button>
                 </div>
-                
+
                 <div className="flex gap-2">
-                  <button 
+                  <button
                     onClick={handleBulkExport}
                     className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-2 text-sm"
                   >
                     <Download className="jewelry-icon-gold" size={16} />
                     <span>Export Selected</span>
                   </button>
-                  
+
                   <select
-                    onChange={(e) => handleBulkStatusUpdate(e.target.value)}
+                    onChange={e => handleBulkStatusUpdate(e.target.value)}
                     className="jewelry-input text-sm"
                     defaultValue=""
                   >
-                    <option value="" disabled>Update Status</option>
+                    <option value="" disabled>
+                      Update Status
+                    </option>
                     <option value="in_stock">In Stock</option>
                     <option value="low_stock">Low Stock</option>
                     <option value="reserved">Reserved</option>
                   </select>
-                  
-                  <button 
+
+                  <button
                     onClick={handleBulkDelete}
                     className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-2 text-sm text-red-400 hover:text-red-300"
                   >
@@ -428,7 +482,7 @@ export default function JewelryInventoryPage() {
           )}
 
           {/* Action Bar */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -438,19 +492,22 @@ export default function JewelryInventoryPage() {
               {/* Search and Filters */}
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search inventory..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="jewelry-input pl-10 w-64"
                   />
                 </div>
-                
+
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  onChange={e => setSelectedCategory(e.target.value)}
                   className="jewelry-input"
                 >
                   {categories.map(category => (
@@ -459,10 +516,10 @@ export default function JewelryInventoryPage() {
                     </option>
                   ))}
                 </select>
-                
+
                 <select
                   value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  onChange={e => setSelectedStatus(e.target.value)}
                   className="jewelry-input"
                 >
                   {statuses.map(status => (
@@ -483,12 +540,14 @@ export default function JewelryInventoryPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={toggleSelectAll}
                   className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2"
                 >
                   <CheckCircle className="jewelry-icon-gold" size={18} />
-                  <span>{selectedItems.length === filteredItems.length ? 'Deselect All' : 'Select All'}</span>
+                  <span>
+                    {selectedItems.length === filteredItems.length ? 'Deselect All' : 'Select All'}
+                  </span>
                 </button>
                 <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                   <Download className="jewelry-icon-gold" size={18} />
@@ -511,7 +570,7 @@ export default function JewelryInventoryPage() {
                 <span className="jewelry-text-luxury text-sm font-medium">Sort by:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={e => setSortBy(e.target.value)}
                   className="jewelry-input text-sm"
                 >
                   <option value="name">Name</option>
@@ -523,7 +582,11 @@ export default function JewelryInventoryPage() {
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                   className="jewelry-btn-secondary p-2"
                 >
-                  {sortOrder === 'asc' ? <TrendingUp className="jewelry-icon-gold" size={16} /> : <TrendingDown className="jewelry-icon-gold" size={16} />}
+                  {sortOrder === 'asc' ? (
+                    <TrendingUp className="jewelry-icon-gold" size={16} />
+                  ) : (
+                    <TrendingDown className="jewelry-icon-gold" size={16} />
+                  )}
                 </button>
               </div>
 
@@ -556,20 +619,26 @@ export default function JewelryInventoryPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Value Range */}
                   <div className="space-y-2">
-                    <label className="jewelry-text-luxury text-sm font-medium">Value Range ($)</label>
+                    <label className="jewelry-text-luxury text-sm font-medium">
+                      Value Range ($)
+                    </label>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         placeholder="Min"
                         value={filterValues.minValue}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, minValue: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, minValue: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                       <input
                         type="number"
                         placeholder="Max"
                         value={filterValues.maxValue}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, maxValue: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, maxValue: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                     </div>
@@ -577,20 +646,26 @@ export default function JewelryInventoryPage() {
 
                   {/* Weight Range */}
                   <div className="space-y-2">
-                    <label className="jewelry-text-luxury text-sm font-medium">Weight Range (g)</label>
+                    <label className="jewelry-text-luxury text-sm font-medium">
+                      Weight Range (g)
+                    </label>
                     <div className="flex gap-2">
                       <input
                         type="number"
                         placeholder="Min"
                         value={filterValues.minWeight}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, minWeight: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, minWeight: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                       <input
                         type="number"
                         placeholder="Max"
                         value={filterValues.maxWeight}
-                        onChange={(e) => setFilterValues(prev => ({ ...prev, maxWeight: e.target.value }))}
+                        onChange={e =>
+                          setFilterValues(prev => ({ ...prev, maxWeight: e.target.value }))
+                        }
                         className="jewelry-input text-sm flex-1"
                       />
                     </div>
@@ -601,7 +676,9 @@ export default function JewelryInventoryPage() {
                     <label className="jewelry-text-luxury text-sm font-medium">Location</label>
                     <select
                       value={filterValues.location}
-                      onChange={(e) => setFilterValues(prev => ({ ...prev, location: e.target.value }))}
+                      onChange={e =>
+                        setFilterValues(prev => ({ ...prev, location: e.target.value }))
+                      }
                       className="jewelry-input text-sm w-full"
                     >
                       {locations.map(location => (
@@ -617,7 +694,9 @@ export default function JewelryInventoryPage() {
                     <label className="jewelry-text-luxury text-sm font-medium">Supplier</label>
                     <select
                       value={filterValues.supplier}
-                      onChange={(e) => setFilterValues(prev => ({ ...prev, supplier: e.target.value }))}
+                      onChange={e =>
+                        setFilterValues(prev => ({ ...prev, supplier: e.target.value }))
+                      }
                       className="jewelry-input text-sm w-full"
                     >
                       {suppliers.map(supplier => (
@@ -653,7 +732,7 @@ export default function JewelryInventoryPage() {
           </motion.div>
 
           {/* Inventory Grid/List */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -682,12 +761,16 @@ export default function JewelryInventoryPage() {
                     {/* Item Header */}
                     <div className="flex items-start justify-between mb-4 ml-8">
                       <div className="flex-1">
-                        <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">{item.name}</h3>
+                        <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">
+                          {item.name}
+                        </h3>
                         <p className="jewelry-text-muted text-sm font-mono">{item.sku}</p>
                       </div>
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(item.status)}
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(item.status)}`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(item.status)}`}
+                        >
                           {item.status.replace('_', ' ').toUpperCase()}
                         </span>
                       </div>
@@ -697,32 +780,46 @@ export default function JewelryInventoryPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Category:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{item.category}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {item.category}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Purity:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{item.purity}K</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {item.purity}K
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Net Weight:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-medium">{item.netWeight}g</span>
+                        <span className="jewelry-text-high-contrast text-sm font-medium">
+                          {item.netWeight}g
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Quantity:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-bold">{item.quantity}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-bold">
+                          {item.quantity}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-muted text-sm">Unit Price:</span>
-                        <span className="jewelry-text-high-contrast text-sm font-bold">${item.unitPrice.toLocaleString()}</span>
+                        <span className="jewelry-text-high-contrast text-sm font-bold">
+                          ${item.unitPrice.toLocaleString()}
+                        </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between pt-2 border-t border-jewelry-blue-200">
-                        <span className="jewelry-text-luxury text-sm font-medium">Total Value:</span>
-                        <span className="jewelry-text-high-contrast text-lg font-bold">${item.totalValue.toLocaleString()}</span>
+                        <span className="jewelry-text-luxury text-sm font-medium">
+                          Total Value:
+                        </span>
+                        <span className="jewelry-text-high-contrast text-lg font-bold">
+                          ${item.totalValue.toLocaleString()}
+                        </span>
                       </div>
                     </div>
 
@@ -752,18 +849,28 @@ export default function JewelryInventoryPage() {
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
                     <input
                       type="checkbox"
-                      checked={selectedItems.length === filteredItems.length && filteredItems.length > 0}
+                      checked={
+                        selectedItems.length === filteredItems.length && filteredItems.length > 0
+                      }
                       onChange={toggleSelectAll}
                       className="jewelry-checkbox"
                     />
                   </div>
                   <div className="col-span-3 jewelry-text-luxury text-sm font-semibold">Item</div>
-                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Category</div>
+                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">
+                    Category
+                  </div>
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Qty</div>
-                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Unit Price</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Total Value</div>
+                  <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">
+                    Unit Price
+                  </div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    Total Value
+                  </div>
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Status</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Actions</div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    Actions
+                  </div>
                 </div>
 
                 {/* List Items */}
@@ -788,11 +895,19 @@ export default function JewelryInventoryPage() {
                       <p className="jewelry-text-muted text-sm font-mono">{item.sku}</p>
                     </div>
                     <div className="col-span-2 jewelry-text-high-contrast">{item.category}</div>
-                    <div className="col-span-1 jewelry-text-high-contrast font-bold">{item.quantity}</div>
-                    <div className="col-span-2 jewelry-text-high-contrast font-medium">${item.unitPrice.toLocaleString()}</div>
-                    <div className="col-span-1 jewelry-text-high-contrast font-bold">${item.totalValue.toLocaleString()}</div>
+                    <div className="col-span-1 jewelry-text-high-contrast font-bold">
+                      {item.quantity}
+                    </div>
+                    <div className="col-span-2 jewelry-text-high-contrast font-medium">
+                      ${item.unitPrice.toLocaleString()}
+                    </div>
+                    <div className="col-span-1 jewelry-text-high-contrast font-bold">
+                      ${item.totalValue.toLocaleString()}
+                    </div>
                     <div className="col-span-1">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(item.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(item.status)}`}
+                      >
                         {item.status.replace('_', ' ').toUpperCase()}
                       </span>
                     </div>
@@ -813,20 +928,23 @@ export default function JewelryInventoryPage() {
               <div className="text-center py-12">
                 <Package className="mx-auto mb-4 jewelry-icon-gold opacity-50" size={64} />
                 <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No Items Found</h3>
-                <p className="jewelry-text-muted">Try adjusting your search criteria or add new inventory items.</p>
+                <p className="jewelry-text-muted">
+                  Try adjusting your search criteria or add new inventory items.
+                </p>
               </div>
             )}
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Real-time inventory management powered by <span className="jewelry-text-luxury font-semibold">HERA Jewelry System</span>
+              Real-time inventory management powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Jewelry System</span>
             </p>
           </motion.div>
         </div>

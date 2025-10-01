@@ -574,7 +574,8 @@ export function AuditDashboard({ user }: AuditDashboardProps = {}) {
                 clients.map(client => (
                   <Card
                     key={client.id}
-                    className={`cursor-pointer hover:shadow-lg transition-all ${ client.status ==='review'
+                    className={`cursor-pointer hover:shadow-lg transition-all ${
+                      client.status === 'review'
                         ? 'border-l-4 border-l-orange-500'
                         : client.deadline < '2025-02-15'
                           ? 'border-l-4 border-l-red-500'

@@ -26,15 +26,9 @@ export default function TermsPage() {
       {/* Hero Section */}
       <section className="relative border-b border-border bg-gradient-to-br from-indigo-600/5 via-fuchsia-600/5 to-cyan-600/5">
         <div className="mx-auto max-w-7xl px-6 py-12 lg:py-16">
-          <h1 className="text-3xl font-bold ink md:text-4xl lg:text-5xl">
-            Terms of Service
-          </h1>
-          <p className="mt-4 text-lg ink-muted">
-            Effective Date: January 1, 2025
-          </p>
-          <p className="mt-2 text-sm ink-muted">
-            Last Updated: January 27, 2025
-          </p>
+          <h1 className="text-3xl font-bold ink md:text-4xl lg:text-5xl">Terms of Service</h1>
+          <p className="mt-4 text-lg ink-muted">Effective Date: January 1, 2025</p>
+          <p className="mt-2 text-sm ink-muted">Last Updated: January 27, 2025</p>
         </div>
       </section>
 
@@ -43,29 +37,32 @@ export default function TermsPage() {
         <div className="flex gap-12">
           {/* Main Content */}
           <article className="prose prose-lg max-w-none flex-1 ink">
-            <HeadingAnchor id="introduction">
-              1. Introduction
-            </HeadingAnchor>
+            <HeadingAnchor id="introduction">1. Introduction</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              Welcome to HERA Universal ERP ("HERA", "we", "our", or "us"). These Terms of Service ("Terms") govern your use of our enterprise resource planning software, services, and related applications (collectively, the "Services"). By accessing or using our Services, you agree to be bound by these Terms and our Privacy Policy.
+              Welcome to HERA Universal ERP ("HERA", "we", "our", or "us"). These Terms of Service
+              ("Terms") govern your use of our enterprise resource planning software, services, and
+              related applications (collectively, the "Services"). By accessing or using our
+              Services, you agree to be bound by these Terms and our Privacy Policy.
             </p>
             <p className="ink-muted leading-relaxed">
-              HERA provides a revolutionary universal ERP platform built on a 6-table architecture designed to handle infinite business complexity with zero schema changes. Our Services include multi-tenant SaaS authentication, universal API access, AI-powered automation, and comprehensive business management tools.
+              HERA provides a revolutionary universal ERP platform built on a 6-table architecture
+              designed to handle infinite business complexity with zero schema changes. Our Services
+              include multi-tenant SaaS authentication, universal API access, AI-powered automation,
+              and comprehensive business management tools.
             </p>
 
-            <HeadingAnchor id="acceptance">
-              2. Acceptance of Terms
-            </HeadingAnchor>
+            <HeadingAnchor id="acceptance">2. Acceptance of Terms</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              By creating an account, accessing, or using the Services, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you are using the Services on behalf of an organization, you represent and warrant that you have the authority to bind that organization to these Terms.
+              By creating an account, accessing, or using the Services, you acknowledge that you
+              have read, understood, and agree to be bound by these Terms. If you are using the
+              Services on behalf of an organization, you represent and warrant that you have the
+              authority to bind that organization to these Terms.
             </p>
             <p className="ink-muted leading-relaxed">
               If you do not agree to these Terms, you must not access or use the Services.
             </p>
 
-            <HeadingAnchor id="services">
-              3. Description of Services
-            </HeadingAnchor>
+            <HeadingAnchor id="services">3. Description of Services</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
               HERA provides cloud-based enterprise resource planning software that includes:
             </p>
@@ -80,14 +77,14 @@ export default function TermsPage() {
               <li>Enterprise-grade security with SSO/SAML support</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              We reserve the right to modify, suspend, or discontinue any part of the Services at any time with reasonable notice.
+              We reserve the right to modify, suspend, or discontinue any part of the Services at
+              any time with reasonable notice.
             </p>
 
-            <HeadingAnchor id="account-registration">
-              4. Account Registration
-            </HeadingAnchor>
+            <HeadingAnchor id="account-registration">4. Account Registration</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              To use our Services, you must create an account and provide accurate, complete, and current information. You are responsible for:
+              To use our Services, you must create an account and provide accurate, complete, and
+              current information. You are responsible for:
             </p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>Maintaining the confidentiality of your account credentials</li>
@@ -96,15 +93,12 @@ export default function TermsPage() {
               <li>Ensuring your account information remains accurate and up-to-date</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              You must be at least 18 years old to create an account. We reserve the right to refuse service, terminate accounts, or cancel orders at our discretion.
+              You must be at least 18 years old to create an account. We reserve the right to refuse
+              service, terminate accounts, or cancel orders at our discretion.
             </p>
 
-            <HeadingAnchor id="user-responsibilities">
-              5. User Responsibilities
-            </HeadingAnchor>
-            <p className="ink-muted leading-relaxed">
-              As a user of our Services, you agree to:
-            </p>
+            <HeadingAnchor id="user-responsibilities">5. User Responsibilities</HeadingAnchor>
+            <p className="ink-muted leading-relaxed">As a user of our Services, you agree to:</p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>Use the Services in compliance with all applicable laws and regulations</li>
               <li>Not use the Services for any illegal or unauthorized purpose</li>
@@ -115,12 +109,8 @@ export default function TermsPage() {
               <li>Not reverse engineer or attempt to extract source code</li>
             </ul>
 
-            <HeadingAnchor id="acceptable-use">
-              6. Acceptable Use Policy
-            </HeadingAnchor>
-            <p className="ink-muted leading-relaxed">
-              You may not use the Services to:
-            </p>
+            <HeadingAnchor id="acceptable-use">6. Acceptable Use Policy</HeadingAnchor>
+            <p className="ink-muted leading-relaxed">You may not use the Services to:</p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>Violate any laws, regulations, or third-party rights</li>
               <li>Transmit viruses, malware, or other harmful code</li>
@@ -132,9 +122,7 @@ export default function TermsPage() {
               <li>Store or process prohibited content as defined in our policies</li>
             </ul>
 
-            <HeadingAnchor id="data-security">
-              7. Data Security & Privacy
-            </HeadingAnchor>
+            <HeadingAnchor id="data-security">7. Data Security & Privacy</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
               We implement enterprise-grade security measures to protect your data, including:
             </p>
@@ -146,14 +134,15 @@ export default function TermsPage() {
               <li>Complete audit trails for all data modifications</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              Your use of the Services is also governed by our Privacy Policy, which describes how we collect, use, and protect your information. You retain all rights to your data and may export it at any time through our universal API.
+              Your use of the Services is also governed by our Privacy Policy, which describes how
+              we collect, use, and protect your information. You retain all rights to your data and
+              may export it at any time through our universal API.
             </p>
 
-            <HeadingAnchor id="intellectual-property">
-              8. Intellectual Property
-            </HeadingAnchor>
+            <HeadingAnchor id="intellectual-property">8. Intellectual Property</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              The Services and all associated intellectual property rights are owned by HERA Corporation. This includes but is not limited to:
+              The Services and all associated intellectual property rights are owned by HERA
+              Corporation. This includes but is not limited to:
             </p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>The HERA Universal ERP platform and software</li>
@@ -163,12 +152,12 @@ export default function TermsPage() {
               <li>Trademarks, logos, and brand elements</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              You retain ownership of all data you input into the Services. By using the Services, you grant us a limited license to process your data solely for the purpose of providing the Services to you.
+              You retain ownership of all data you input into the Services. By using the Services,
+              you grant us a limited license to process your data solely for the purpose of
+              providing the Services to you.
             </p>
 
-            <HeadingAnchor id="subscription-billing">
-              9. Subscription & Billing
-            </HeadingAnchor>
+            <HeadingAnchor id="subscription-billing">9. Subscription & Billing</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
               Our Services are offered on a subscription basis with various pricing tiers:
             </p>
@@ -180,15 +169,12 @@ export default function TermsPage() {
               <li>Late payments may result in service suspension</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              Free trials, if offered, automatically convert to paid subscriptions unless cancelled before the trial period ends.
+              Free trials, if offered, automatically convert to paid subscriptions unless cancelled
+              before the trial period ends.
             </p>
 
-            <HeadingAnchor id="termination">
-              10. Termination
-            </HeadingAnchor>
-            <p className="ink-muted leading-relaxed">
-              Either party may terminate these Terms:
-            </p>
+            <HeadingAnchor id="termination">10. Termination</HeadingAnchor>
+            <p className="ink-muted leading-relaxed">Either party may terminate these Terms:</p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>You may cancel your subscription at any time through your account settings</li>
               <li>We may suspend or terminate your access for violations of these Terms</li>
@@ -197,11 +183,10 @@ export default function TermsPage() {
               <li>We will provide data export capabilities for 30 days after termination</li>
             </ul>
 
-            <HeadingAnchor id="warranties">
-              11. Warranties & Disclaimers
-            </HeadingAnchor>
+            <HeadingAnchor id="warranties">11. Warranties & Disclaimers</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. WE DISCLAIM ALL WARRANTIES INCLUDING:
+              THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND,
+              EXPRESS OR IMPLIED. WE DISCLAIM ALL WARRANTIES INCLUDING:
             </p>
             <ul className="list-disc pl-6 space-y-2 ink-muted uppercase">
               <li>MERCHANTABILITY</li>
@@ -211,14 +196,14 @@ export default function TermsPage() {
               <li>UNINTERRUPTED OR ERROR-FREE OPERATION</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              We do not warrant that the Services will meet all your requirements or that defects will be corrected. You use the Services at your own risk.
+              We do not warrant that the Services will meet all your requirements or that defects
+              will be corrected. You use the Services at your own risk.
             </p>
 
-            <HeadingAnchor id="limitation-liability">
-              12. Limitation of Liability
-            </HeadingAnchor>
+            <HeadingAnchor id="limitation-liability">12. Limitation of Liability</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, HERA AND ITS AFFILIATES SHALL NOT BE LIABLE FOR:
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, HERA AND ITS AFFILIATES SHALL NOT BE LIABLE
+              FOR:
             </p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>Any indirect, incidental, special, or consequential damages</li>
@@ -227,14 +212,15 @@ export default function TermsPage() {
               <li>Third-party actions or content</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              Our total liability shall not exceed the fees paid by you in the twelve months preceding the event giving rise to liability.
+              Our total liability shall not exceed the fees paid by you in the twelve months
+              preceding the event giving rise to liability.
             </p>
 
-            <HeadingAnchor id="indemnification">
-              13. Indemnification
-            </HeadingAnchor>
+            <HeadingAnchor id="indemnification">13. Indemnification</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              You agree to indemnify, defend, and hold harmless HERA, its affiliates, and their respective officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from:
+              You agree to indemnify, defend, and hold harmless HERA, its affiliates, and their
+              respective officers, directors, employees, and agents from any claims, damages,
+              losses, liabilities, and expenses (including legal fees) arising from:
             </p>
             <ul className="list-disc pl-6 space-y-2 ink-muted">
               <li>Your use or misuse of the Services</li>
@@ -243,19 +229,18 @@ export default function TermsPage() {
               <li>Your content or data processed through the Services</li>
             </ul>
 
-            <HeadingAnchor id="governing-law">
-              14. Governing Law
-            </HeadingAnchor>
+            <HeadingAnchor id="governing-law">14. Governing Law</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
-              These Terms are governed by the laws of the United Arab Emirates, without regard to conflict of law principles. Any disputes shall be resolved through binding arbitration in accordance with the rules of the Dubai International Arbitration Centre (DIAC).
+              These Terms are governed by the laws of the United Arab Emirates, without regard to
+              conflict of law principles. Any disputes shall be resolved through binding arbitration
+              in accordance with the rules of the Dubai International Arbitration Centre (DIAC).
             </p>
             <p className="ink-muted leading-relaxed">
-              You waive any right to a jury trial and agree that any disputes will be resolved individually, not as part of a class action.
+              You waive any right to a jury trial and agree that any disputes will be resolved
+              individually, not as part of a class action.
             </p>
 
-            <HeadingAnchor id="changes">
-              15. Changes to Terms
-            </HeadingAnchor>
+            <HeadingAnchor id="changes">15. Changes to Terms</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
               We may modify these Terms at any time. We will notify you of material changes through:
             </p>
@@ -265,24 +250,26 @@ export default function TermsPage() {
               <li>Posting the updated Terms with a new effective date</li>
             </ul>
             <p className="ink-muted leading-relaxed">
-              Continued use of the Services after changes become effective constitutes acceptance of the modified Terms.
+              Continued use of the Services after changes become effective constitutes acceptance of
+              the modified Terms.
             </p>
 
-            <HeadingAnchor id="contact">
-              16. Contact Information
-            </HeadingAnchor>
+            <HeadingAnchor id="contact">16. Contact Information</HeadingAnchor>
             <p className="ink-muted leading-relaxed">
               For questions about these Terms or our Services, please contact us:
             </p>
             <div className="mt-4 space-y-2 ink-muted">
-              <p><strong className="ink">HERA Corporation</strong></p>
+              <p>
+                <strong className="ink">HERA Corporation</strong>
+              </p>
               <p>Email: legal@heraerp.com</p>
               <p>Support: support@heraerp.com</p>
               <p>Website: https://heraerp.com</p>
               <p>Address: Dubai, United Arab Emirates</p>
             </div>
             <p className="mt-6 ink-muted leading-relaxed">
-              For technical support, visit our documentation at https://docs.heraerp.com or contact our support team.
+              For technical support, visit our documentation at https://docs.heraerp.com or contact
+              our support team.
             </p>
 
             {/* Additional Sections */}
@@ -293,28 +280,33 @@ export default function TermsPage() {
                 <div>
                   <h4 className="font-medium ink mb-2">Severability</h4>
                   <p className="ink-muted">
-                    If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.
+                    If any provision of these Terms is found to be unenforceable, the remaining
+                    provisions will continue in full force and effect.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-medium ink mb-2">Entire Agreement</h4>
                   <p className="ink-muted">
-                    These Terms, together with our Privacy Policy and any other agreements referenced herein, constitute the entire agreement between you and HERA regarding the Services.
+                    These Terms, together with our Privacy Policy and any other agreements
+                    referenced herein, constitute the entire agreement between you and HERA
+                    regarding the Services.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-medium ink mb-2">Assignment</h4>
                   <p className="ink-muted">
-                    You may not assign or transfer these Terms without our prior written consent. We may assign these Terms without restriction.
+                    You may not assign or transfer these Terms without our prior written consent. We
+                    may assign these Terms without restriction.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-medium ink mb-2">Force Majeure</h4>
                   <p className="ink-muted">
-                    Neither party shall be liable for delays or failures in performance resulting from circumstances beyond their reasonable control.
+                    Neither party shall be liable for delays or failures in performance resulting
+                    from circumstances beyond their reasonable control.
                   </p>
                 </div>
               </div>
@@ -324,7 +316,8 @@ export default function TermsPage() {
             <div className="mt-12 border-t border-border pt-12">
               <h3 className="text-lg font-semibold ink mb-4">Enterprise Addendum</h3>
               <p className="ink-muted mb-4">
-                For Enterprise customers with custom agreements, the following additional terms may apply:
+                For Enterprise customers with custom agreements, the following additional terms may
+                apply:
               </p>
               <ul className="list-disc pl-6 space-y-2 ink-muted">
                 <li>Service Level Agreements (SLAs) with guaranteed uptime</li>
@@ -335,7 +328,8 @@ export default function TermsPage() {
                 <li>On-premises deployment options where available</li>
               </ul>
               <p className="mt-4 ink-muted">
-                Enterprise agreements supersede these standard Terms where explicitly stated in writing.
+                Enterprise agreements supersede these standard Terms where explicitly stated in
+                writing.
               </p>
             </div>
           </article>

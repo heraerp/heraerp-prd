@@ -173,7 +173,9 @@ export function SaaSConversionWizard({
         return (
           <div key={step.id} className="flex items-center">
             <div
-              className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${ isActive ?'border-blue-500 bg-blue-500 text-foreground'
+              className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${
+                isActive
+                  ? 'border-blue-500 bg-blue-500 text-foreground'
                   : isCompleted
                     ? 'border-green-500 bg-green-500 text-foreground'
                     : 'border-border bg-background text-muted-foreground'
@@ -186,19 +188,19 @@ export function SaaSConversionWizard({
 
             <div className="ml-3 mr-8">
               <div
-                className={`text-sm font-medium ${isActive ?'text-primary' : isCompleted ? 'text-green-600' : 'text-muted-foreground'}`}
+                className={`text-sm font-medium ${isActive ? 'text-primary' : isCompleted ? 'text-green-600' : 'text-muted-foreground'}`}
               >
                 Step {step.id}
               </div>
               <div
-                className={`text-xs ${isActive ?'text-blue-500' : isCompleted ? 'text-green-500' : 'text-muted-foreground'}`}
+                className={`text-xs ${isActive ? 'text-blue-500' : isCompleted ? 'text-green-500' : 'text-muted-foreground'}`}
               >
                 {step.name}
               </div>
             </div>
 
             {index < steps.length - 1 && (
-              <div className={`w-16 h-0.5 ${isCompleted ?'bg-green-500' : 'bg-gray-300'} mr-8`} />
+              <div className={`w-16 h-0.5 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'} mr-8`} />
             )}
           </div>
         )
@@ -374,7 +376,9 @@ export function SaaSConversionWizard({
         {subscriptionPlans.map(plan => (
           <Card
             key={plan.id}
-            className={`relative cursor-pointer transition-all duration-200 hover:shadow-xl ${ conversionData.plan?.type === plan.id ?'border-2 border-blue-500 shadow-lg'
+            className={`relative cursor-pointer transition-all duration-200 hover:shadow-xl ${
+              conversionData.plan?.type === plan.id
+                ? 'border-2 border-blue-500 shadow-lg'
                 : 'border border-border dark:border-border'
             }`}
             onClick={() =>

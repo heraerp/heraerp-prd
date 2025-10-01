@@ -11,15 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  Loader2,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  ChevronRight
-} from 'lucide-react'
+import { Loader2, AlertCircle, Eye, EyeOff, Mail, Lock, ChevronRight } from 'lucide-react'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
 import { DemoModuleSelector } from '@/components/demo/DemoModuleSelector'
 import Navbar from '@/app/components/Navbar'
@@ -117,7 +109,6 @@ function LoginForm() {
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="w-full max-w-md mx-auto px-4 py-6 sm:py-8">
-
             {/* Welcome Badge */}
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 mb-4">
@@ -160,126 +151,118 @@ function LoginForm() {
                   </CardDescription>
                 </CardHeader>
 
-              <CardContent className="px-6 pb-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {error && (
-                    <Alert
-                      variant="destructive"
-                      className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800"
-                    >
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription className="text-sm">{error}</AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="email"
-                      className="text-sm font-medium ink"
-                    >
-                      Email Address
-                    </Label>
-                    <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="your@company.com"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        autoComplete="email"
-                        className="pl-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label
-                        htmlFor="password"
-                        className="text-sm font-medium ink"
+                <CardContent className="px-6 pb-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                      <Alert
+                        variant="destructive"
+                        className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800"
                       >
-                        Password
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-sm">{error}</AlertDescription>
+                      </Alert>
+                    )}
+
+                    <div className="space-y-3">
+                      <Label htmlFor="email" className="text-sm font-medium ink">
+                        Email Address
                       </Label>
-                      <Link
-                        href="/auth/forgot-password"
-                        className="text-sm font-medium text-indigo-400 hover:text-purple-400 transition-colors"
-                      >
-                        Forgot?
-                      </Link>
+                      <div className="relative group">
+                        <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="your@company.com"
+                          value={email}
+                          onChange={e => setEmail(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          autoComplete="email"
+                          className="pl-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
+                        />
+                      </div>
                     </div>
-                    <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        autoComplete="current-password"
-                        className="pl-12 pr-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-muted-foreground dark:hover:text-slate-300 transition-colors p-1"
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password" className="text-sm font-medium ink">
+                          Password
+                        </Label>
+                        <Link
+                          href="/auth/forgot-password"
+                          className="text-sm font-medium text-indigo-400 hover:text-purple-400 transition-colors"
+                        >
+                          Forgot?
+                        </Link>
+                      </div>
+                      <div className="relative group">
+                        <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 transition-colors group-focus-within:text-primary dark:group-focus-within:text-blue-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Enter your password"
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          autoComplete="current-password"
+                          className="pl-12 pr-12 h-14 text-base bg-background dark:bg-muted border-input dark:border-input text-foreground dark:text-foreground placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-muted-foreground dark:hover:text-slate-300 transition-colors p-1"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <Button
+                        type="submit"
+                        className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium text-sm shadow-lg hover:shadow-xl transition-all rounded-xl border border-indigo-500/20"
+                        disabled={isLoading || !email || !password}
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Authenticating...
+                          </>
                         ) : (
-                          <Eye className="h-5 w-5" />
+                          <>
+                            Sign In
+                            <ChevronRight className="ml-2 h-5 w-5" />
+                          </>
                         )}
-                      </button>
+                      </Button>
                     </div>
-                  </div>
 
-                  <div className="pt-2">
-                    <Button
-                      type="submit"
-                      className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium text-sm shadow-lg hover:shadow-xl transition-all rounded-xl border border-indigo-500/20"
-                      disabled={isLoading || !email || !password}
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Authenticating...
-                        </>
-                      ) : (
-                        <>
-                          Sign In
-                          <ChevronRight className="ml-2 h-5 w-5" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  <div className="text-center">
-                    <span className="text-sm ink-muted">
-                      Don't have an account?{' '}
-                      <Link
-                        href="/auth/signup"
-                        className="font-semibold text-indigo-400 hover:text-purple-400 transition-colors"
-                      >
-                        Sign up
-                      </Link>
-                    </span>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
+                    <div className="text-center">
+                      <span className="text-sm ink-muted">
+                        Don't have an account?{' '}
+                        <Link
+                          href="/auth/signup"
+                          className="font-semibold text-indigo-400 hover:text-purple-400 transition-colors"
+                        >
+                          Sign up
+                        </Link>
+                      </span>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Enhanced Demo Section */}
             <div id="demo-section" className="mt-16 mb-8">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 mb-4">
-                  <span className="text-emerald-400 text-sm font-medium">
-                    🎮 Interactive Demos
-                  </span>
+                  <span className="text-emerald-400 text-sm font-medium">🎮 Interactive Demos</span>
                 </div>
                 <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-3">
                   Experience HERA
@@ -303,7 +286,9 @@ function LoginForm() {
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-2xl blur-xl group-hover:from-blue-500/20 group-hover:to-cyan-500/20 transition-all" />
                   <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
-                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">99.9%</div>
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                      99.9%
+                    </div>
                     <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
                       Uptime SLA
                     </div>
@@ -312,24 +297,23 @@ function LoginForm() {
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur-xl group-hover:from-purple-500/20 group-hover:to-pink-500/20 transition-all" />
                   <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
-                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">SOC 2</div>
-                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
-                      Certified
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                      SOC 2
                     </div>
+                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">Certified</div>
                   </div>
                 </div>
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-2xl blur-xl group-hover:from-emerald-500/20 group-hover:to-teal-500/20 transition-all" />
                   <div className="relative card-glass rounded-2xl p-6 border border-border text-center">
-                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">24/7</div>
-                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">
-                      Support
+                    <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+                      24/7
                     </div>
+                    <div className="text-xs ink-muted mt-1 uppercase tracking-wider">Support</div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -349,7 +333,8 @@ export default function CentralLoginPage() {
     const originalMargin = document.body.style.margin
     const originalPadding = document.body.style.padding
 
-    document.body.style.background = 'linear-gradient(to bottom right, rgb(2 6 23), rgb(15 23 42), rgb(30 58 138 / 0.2))'
+    document.body.style.background =
+      'linear-gradient(to bottom right, rgb(2 6 23), rgb(15 23 42), rgb(30 58 138 / 0.2))'
     document.body.style.margin = '0'
     document.body.style.padding = '0'
 

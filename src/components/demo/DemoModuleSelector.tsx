@@ -126,7 +126,9 @@ export function DemoModuleSelector() {
 
           return (
             <div key={module.id} className="relative group">
-              <div className={`absolute inset-0 bg-gradient-to-r ${module.gradient} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-all`} />
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${module.gradient} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-all`}
+              />
               <Card
                 className={`relative card-glass border border-border hover:border-indigo-500/30 cursor-pointer transition-all ${isLoading ? 'opacity-75' : ''}`}
                 onClick={() => !loadingModule && handleDemoLogin(module)}
@@ -135,14 +137,14 @@ export function DemoModuleSelector() {
                   {/* Content */}
                   <div className="relative z-10">
                     <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${module.gradient} text-white shadow-lg flex-shrink-0`}>
+                      <div
+                        className={`p-3 rounded-xl bg-gradient-to-br ${module.gradient} text-white shadow-lg flex-shrink-0`}
+                      >
                         <Icon className="h-6 w-6" />
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold ink text-base">
-                          {module.name}
-                        </h4>
+                        <h4 className="font-semibold ink text-base">{module.name}</h4>
                         <p className="text-sm ink-muted mt-0.5 line-clamp-2">
                           {module.description}
                         </p>
@@ -162,9 +164,7 @@ export function DemoModuleSelector() {
                 {/* Loading Overlay */}
                 {isLoading && (
                   <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                    <div className="text-sm font-medium text-indigo-400">
-                      Logging in...
-                    </div>
+                    <div className="text-sm font-medium text-indigo-400">Logging in...</div>
                   </div>
                 )}
               </Card>
@@ -174,12 +174,8 @@ export function DemoModuleSelector() {
       </div>
 
       <div className="mt-6 text-center">
-        <p className="text-xs ink-muted">
-          Demo accounts are pre-configured with sample data
-        </p>
-        <p className="text-xs ink-muted mt-1">
-          No credit card required
-        </p>
+        <p className="text-xs ink-muted">Demo accounts are pre-configured with sample data</p>
+        <p className="text-xs ink-muted mt-1">No credit card required</p>
       </div>
     </div>
   )

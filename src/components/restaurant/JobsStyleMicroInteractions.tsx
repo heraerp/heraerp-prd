@@ -62,7 +62,8 @@ export function StatusIndicator({
   return (
     <div className="flex items-center space-x-2">
       <div
-        className={`rounded-full ${sizeClasses[size]} ${colors[status]} ${ animated && status ==='success' ? 'animate-pulse' : ''
+        className={`rounded-full ${sizeClasses[size]} ${colors[status]} ${
+          animated && status === 'success' ? 'animate-pulse' : ''
         } ${animated && status === 'loading' ? 'animate-spin' : ''}`}
       />
       {showText && text && <span className="text-sm text-muted-foreground">{text}</span>}
@@ -94,7 +95,8 @@ export function PulseIndicator({ active, color = 'green', size = 'md' }: PulseIn
   return (
     <div className="relative">
       <div
-        className={`rounded-full ${sizeClasses[size]} ${colors[color]} ${ active ?'animate-pulse' : 'opacity-50'
+        className={`rounded-full ${sizeClasses[size]} ${colors[color]} ${
+          active ? 'animate-pulse' : 'opacity-50'
         }`}
       />
       {active && (
@@ -242,7 +244,13 @@ export function ProgressRing({
 
   return (
     <div className={`relative ${className}`}>
-      <svg fill="none" stroke="currentColor" width={size} height={size} className="transform -rotate-90">
+      <svg
+        fill="none"
+        stroke="currentColor"
+        width={size}
+        height={size}
+        className="transform -rotate-90"
+      >
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -368,7 +376,8 @@ export function MetricCard({
           )}
           {change !== undefined && (
             <span
-              className={`text-sm font-medium ${ trend ==='up'
+              className={`text-sm font-medium ${
+                trend === 'up'
                   ? 'text-green-600'
                   : trend === 'down'
                     ? 'text-red-600'
@@ -470,7 +479,8 @@ export function GlowButton({
 
   return (
     <motion.button
-      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-foreground font-semibold rounded-xl transition-all duration-200 ${className} ${ disabled ?'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'
+      className={`relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-foreground font-semibold rounded-xl transition-all duration-200 ${className} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-lg'
       }`}
       onClick={disabled ? undefined : onClick}
       onHoverStart={() => setIsHovered(true)}

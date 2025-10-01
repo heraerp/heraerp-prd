@@ -16,11 +16,11 @@ const getResendClient = () => {
 const getSupabaseClient = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_KEY
-  
+
   if (!url || !key) {
     throw new Error('Supabase configuration missing')
   }
-  
+
   return createClient(url, key)
 }
 
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         currency: 'USD',
         status: 'queued',
         smart_code: 'HERA.COMMS.EMAIL.SEND.V1',
-        metadata: { 
+        metadata: {
           provider: 'resend',
           from: input.from,
           subject: input.subject
@@ -132,31 +132,27 @@ export async function POST(req: NextRequest) {
     ]
 
     if (lines.length > 0) {
-      const { error: linesError } = await supabase
-        .from('universal_transaction_lines')
-        .insert(lines)
+      const { error: linesError } = await supabase.from('universal_transaction_lines').insert(lines)
 
       if (linesError) throw new Error(`Failed to create transaction lines: ${linesError.message}`)
     }
 
     // 3) Persist dynamic data (subject/body/tags/template/context)
-    const { error: dynamicError } = await supabase
-      .from('core_dynamic_data')
-      .insert({
-        organization_id: input.organizationId,
-        entity_id: tx.id, // link by tx id
-        field_name: 'email_content',
-        field_type: 'json',
-        field_value_text: JSON.stringify({
-          subject: input.subject,
-          html: input.html,
-          text: input.text,
-          tags: input.tags,
-          template_id: input.templateId,
-          context: input.context
-        }),
-        smart_code: 'HERA.COMMS.EMAIL.CONTENT.V1'
-      })
+    const { error: dynamicError } = await supabase.from('core_dynamic_data').insert({
+      organization_id: input.organizationId,
+      entity_id: tx.id, // link by tx id
+      field_name: 'email_content',
+      field_type: 'json',
+      field_value_text: JSON.stringify({
+        subject: input.subject,
+        html: input.html,
+        text: input.text,
+        tags: input.tags,
+        template_id: input.templateId,
+        context: input.context
+      }),
+      smart_code: 'HERA.COMMS.EMAIL.CONTENT.V1'
+    })
 
     if (dynamicError) throw new Error(`Failed to store email content: ${dynamicError.message}`)
 
@@ -215,9 +211,6 @@ export async function POST(req: NextRequest) {
     }
   } catch (error: any) {
     console.error('Email send error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to send email' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 })
   }
 }

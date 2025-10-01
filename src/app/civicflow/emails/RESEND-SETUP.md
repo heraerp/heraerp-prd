@@ -26,32 +26,38 @@ This guide documents how the HERA-native Resend integration works with the unive
    - Stores: subject, html, text, tags, template_id, context
 
 4. **Delivery Events → `core_dynamic_data`**
-   - `field_name`: 'email_event_{type}'
+   - `field_name`: 'email*event*{type}'
    - `smart_code`: 'HERA.COMMS.EMAIL.EVENT.V1'
    - Complete audit trail of all Resend webhook events
 
 ## API Endpoints
 
 ### 1. Send Email
+
 ```
 POST /api/v1/communications/emails/send
 ```
+
 - Creates universal_transaction with status='queued'
 - Sends via Resend API
 - Updates status to 'sent' or 'failed'
 
 ### 2. Webhook Handler
+
 ```
 POST /api/v1/communications/webhooks/resend
 ```
+
 - Verifies Resend signature (HMAC)
 - Maps provider events to HERA statuses
 - Updates transaction by message_id
 
 ### 3. Email List
+
 ```
 GET /api/v1/communications/emails
 ```
+
 - Fetches emails from universal_transactions
 - Supports folder filtering (inbox, sent, drafts, etc.)
 - Returns formatted email objects
@@ -112,6 +118,7 @@ await sendEmail({
 ## Testing the Integration
 
 1. **Send Test Email**:
+
 ```bash
 curl -X POST http://localhost:3000/api/v1/communications/emails/send \
   -H "Content-Type: application/json" \
@@ -125,19 +132,22 @@ curl -X POST http://localhost:3000/api/v1/communications/emails/send \
 ```
 
 2. **Check Transaction**:
+
 ```sql
-SELECT * FROM universal_transactions 
+SELECT * FROM universal_transactions
 WHERE smart_code = 'HERA.COMMS.EMAIL.SEND.V1'
 ORDER BY transaction_date DESC;
 ```
 
 3. **View Recipients**:
+
 ```sql
 SELECT * FROM universal_transaction_lines
 WHERE transaction_id = 'your-tx-id';
 ```
 
 4. **View Content**:
+
 ```sql
 SELECT * FROM core_dynamic_data
 WHERE entity_id = 'your-tx-id'

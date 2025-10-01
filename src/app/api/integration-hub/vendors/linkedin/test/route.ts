@@ -1,8 +1,8 @@
 /**
  * LinkedIn Test Connection API
- * 
+ *
  * POST /api/integration-hub/vendors/linkedin/test
- * 
+ *
  * Tests LinkedIn API connectivity and authentication
  */
 
@@ -18,10 +18,7 @@ export async function POST(request: NextRequest) {
     const { connectorId } = body
 
     if (!connectorId) {
-      return NextResponse.json(
-        { error: 'Connector ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Connector ID is required' }, { status: 400 })
     }
 
     // Initialize Supabase client
@@ -39,18 +36,12 @@ export async function POST(request: NextRequest) {
 
     if (connectorError || !connector) {
       logger.error('Failed to fetch connector:', connectorError)
-      return NextResponse.json(
-        { error: 'Connector not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Connector not found' }, { status: 404 })
     }
 
     // Verify connector is for LinkedIn
     if (connector.vendor_name !== 'linkedin') {
-      return NextResponse.json(
-        { error: 'Invalid connector vendor' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid connector vendor' }, { status: 400 })
     }
 
     // Create LinkedIn adapter instance
@@ -76,18 +67,17 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: testResult.success,
-      message: testResult.success 
-        ? 'LinkedIn connection successful' 
+      message: testResult.success
+        ? 'LinkedIn connection successful'
         : `LinkedIn connection failed: ${testResult.error}`,
       error: testResult.error
     })
-
   } catch (error) {
     logger.error('LinkedIn test connection error:', error)
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error instanceof Error ? error.message : 'Test connection failed' 
+        error: error instanceof Error ? error.message : 'Test connection failed'
       },
       { status: 500 }
     )

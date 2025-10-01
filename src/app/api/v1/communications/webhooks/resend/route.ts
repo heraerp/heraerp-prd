@@ -7,11 +7,11 @@ import { z } from 'zod'
 const getSupabaseClient = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_KEY
-  
+
   if (!url || !key) {
     throw new Error('Supabase configuration missing')
   }
-  
+
   return createClient(url, key)
 }
 
@@ -75,9 +75,7 @@ function verifyWebhookSignature(
 ): boolean {
   if (!signature) return false
 
-  const expectedSignature = createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex')
+  const expectedSignature = createHmac('sha256', secret).update(payload).digest('hex')
 
   return signature === `sha256=${expectedSignature}`
 }
@@ -86,31 +84,25 @@ export async function POST(req: NextRequest) {
   try {
     // Get raw body for signature verification
     const rawBody = await req.text()
-    
+
     // Verify webhook signature
     const signature = req.headers.get('svix-signature') || req.headers.get('webhook-signature')
     const webhookSecret = process.env.RESEND_WEBHOOK_SECRET
-    
+
     if (!webhookSecret) {
       console.error('RESEND_WEBHOOK_SECRET not configured')
-      return NextResponse.json(
-        { error: 'Webhook secret not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 })
     }
 
     if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
       console.error('Invalid webhook signature')
-      return NextResponse.json(
-        { error: 'Invalid webhook signature' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 401 })
     }
 
     // Parse and validate event
     const event = webhookEventSchema.parse(JSON.parse(rawBody))
     const status = eventStatusMap[event.type]
-    
+
     if (!status) {
       console.warn(`Unknown event type: ${event.type}`)
       return NextResponse.json({ received: true })
@@ -128,10 +120,7 @@ export async function POST(req: NextRequest) {
 
     if (searchError) {
       console.error('Error searching for transaction:', searchError)
-      return NextResponse.json(
-        { error: 'Failed to find transaction' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to find transaction' }, { status: 500 })
     }
 
     if (!transactions || transactions.length === 0) {
@@ -178,53 +167,44 @@ export async function POST(req: NextRequest) {
 
     if (updateError) {
       console.error('Error updating transaction:', updateError)
-      return NextResponse.json(
-        { error: 'Failed to update transaction' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to update transaction' }, { status: 500 })
     }
 
     // Create an event record in core_dynamic_data for audit trail
-    const { error: eventError } = await supabase
-      .from('core_dynamic_data')
-      .insert({
-        organization_id: transaction.organization_id,
-        entity_id: transaction.id,
-        field_name: `email_event_${event.type}`,
-        field_type: 'json',
-        field_value_text: JSON.stringify({
-          type: event.type,
-          timestamp: event.created_at,
-          data: event.data
-        }),
-        smart_code: 'HERA.COMMS.EMAIL.EVENT.V1'
-      })
+    const { error: eventError } = await supabase.from('core_dynamic_data').insert({
+      organization_id: transaction.organization_id,
+      entity_id: transaction.id,
+      field_name: `email_event_${event.type}`,
+      field_type: 'json',
+      field_value_text: JSON.stringify({
+        type: event.type,
+        timestamp: event.created_at,
+        data: event.data
+      }),
+      smart_code: 'HERA.COMMS.EMAIL.EVENT.V1'
+    })
 
     if (eventError) {
       console.error('Error creating event record:', eventError)
       // Don't fail the webhook for audit trail errors
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       received: true,
       transactionId: transaction.id,
       status: status
     })
-
   } catch (error: any) {
     console.error('Webhook processing error:', error)
-    
+
     // Return success to prevent retries for non-retryable errors
     if (error.name === 'ZodError') {
-      return NextResponse.json({ 
+      return NextResponse.json({
         received: true,
-        error: 'Invalid event format' 
+        error: 'Invalid event format'
       })
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

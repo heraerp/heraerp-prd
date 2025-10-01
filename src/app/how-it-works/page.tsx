@@ -286,10 +286,7 @@ export default function HowItWorksPage() {
                     {/* Features */}
                     <div className="space-y-2">
                       {demo.features.map((feature, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center gap-2 text-sm ink-muted"
-                        >
+                        <div key={idx} className="flex items-center gap-2 text-sm ink-muted">
                           <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                           {feature}
                         </div>

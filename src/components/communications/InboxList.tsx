@@ -159,7 +159,8 @@ export function InboxList() {
             {messages.map(message => (
               <div
                 key={message.id}
-                className={`p-4 hover:bg-muted/50 transition-colors ${ message.status ==='new' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''
+                className={`p-4 hover:bg-muted/50 transition-colors ${
+                  message.status === 'new' ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">

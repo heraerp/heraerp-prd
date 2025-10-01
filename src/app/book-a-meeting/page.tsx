@@ -27,8 +27,8 @@ export default function BookMeetingPage() {
           </div>
           <h1 className="mb-4 text-5xl font-bold ink">Book Your Personalized Demo</h1>
           <p className="text-xl ink-muted max-w-2xl mx-auto">
-            See how HERA can transform your specific business in just 30 minutes.
-            No obligations, just insights tailored to your needs.
+            See how HERA can transform your specific business in just 30 minutes. No obligations,
+            just insights tailored to your needs.
           </p>
         </div>
 
@@ -97,9 +97,7 @@ export default function BookMeetingPage() {
 
           {/* Calendar Embed */}
           <div className="card-glass rounded-2xl p-8">
-            <h2 className="mb-4 text-xl font-semibold ink">
-              Choose a Time That Works for You
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold ink">Choose a Time That Works for You</h2>
 
             {/* Placeholder for calendar embed */}
             <div className="rounded-lg border-2 border-dashed border-blue-800/30 bg-slate-900/30 p-8 text-center">
@@ -113,16 +111,10 @@ export default function BookMeetingPage() {
 
               {/* Temporary booking links */}
               <div className="mt-6 space-y-3">
-                <a
-                  href="#"
-                  className="btn-gradient block py-3"
-                >
+                <a href="#" className="btn-gradient block py-3">
                   <span className="relative z-10">Schedule for This Week</span>
                 </a>
-                <a
-                  href="#"
-                  className="btn-quiet block py-3"
-                >
+                <a href="#" className="btn-quiet block py-3">
                   <span className="relative z-10">Schedule for Next Week</span>
                 </a>
               </div>

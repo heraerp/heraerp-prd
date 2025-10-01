@@ -8,7 +8,7 @@ import {
   setDynamicDataBatch,
   upsertEntity,
   deleteEntity,
-  DynamicFieldInput,
+  DynamicFieldInput
 } from '@/lib/universal-api-v2-client'
 import { Product } from '@/types/salon-product'
 
@@ -45,29 +45,34 @@ export function useHeraProducts({
   organizationId?: string
 } = {}) {
   const queryClient = useQueryClient()
-  
+
   // Fetch all product entities using Universal API v2
-  const { data: entities, isLoading: entitiesLoading, error: fetchError, refetch } = useQuery({
+  const {
+    data: entities,
+    isLoading: entitiesLoading,
+    error: fetchError,
+    refetch
+  } = useQuery({
     queryKey: ['products', organizationId, { includeArchived }],
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
-      
+
       const result = await universalApi.getEntities({
         orgId: organizationId,
         entityType: 'product',
         status: includeArchived ? undefined : 'active' // Only get active products unless including archived
       })
-      
+
       console.log('[useHeraProducts] Fetched products:', {
         count: result.length,
         organizationId
       })
-      
+
       return result
     },
     enabled: !!organizationId
   })
-  
+
   const error = fetchError?.message
 
   // Create mutations using Universal API v2
@@ -111,7 +116,7 @@ export function useHeraProducts({
   // Transform entities to Product format with dynamic data
   const products = useMemo(() => {
     if (!entities) return []
-    
+
     return entities
       .filter(entity => {
         // Filter by status
@@ -140,8 +145,9 @@ export function useHeraProducts({
 
         // Only include entities with valid currency data if price is set
         const hasPrice = entity.metadata?.price !== undefined && entity.metadata?.price !== null
-        const hasCurrency = entity.metadata?.currency !== undefined && entity.metadata?.currency !== null
-        
+        const hasCurrency =
+          entity.metadata?.currency !== undefined && entity.metadata?.currency !== null
+
         if (hasPrice && !hasCurrency) {
           console.warn('Product has price but no currency, skipping:', entity.id)
           return null
@@ -191,10 +197,8 @@ export function useHeraProducts({
   // Filter by category if needed
   const filteredProducts = useMemo(() => {
     if (!categoryFilter) return products
-    
-    return products.filter(product => 
-      product.category === categoryFilter
-    )
+
+    return products.filter(product => product.category === categoryFilter)
   }, [products, categoryFilter])
 
   // Create product function
@@ -202,7 +206,7 @@ export function useHeraProducts({
     // Map the form data to our expected format
     const name = productData.name || productData.entity_name
     const code = productData.code || productData.entity_code || ''
-    
+
     // Store all product data in metadata for now
     // In production, you'd use dynamic fields
     const metadata = {
@@ -248,18 +252,30 @@ export function useHeraProducts({
     // Map the form data
     const name = productData.name || productData.entity_name
     const code = productData.code || productData.entity_code
-    
+
     // Build metadata with all fields
     const metadata: any = {}
-    
+
     // Add all product fields to metadata
     const fields = [
-      'description', 'category', 'brand', 'price', 'cost', 'qty_on_hand',
-      'barcode', 'sku', 'size', 'supplier_name', 'selling_price',
-      'is_retail', 'is_professional', 'low_stock_alert', 
-      'commission_amount', 'commission_type'
+      'description',
+      'category',
+      'brand',
+      'price',
+      'cost',
+      'qty_on_hand',
+      'barcode',
+      'sku',
+      'size',
+      'supplier_name',
+      'selling_price',
+      'is_retail',
+      'is_professional',
+      'low_stock_alert',
+      'commission_amount',
+      'commission_type'
     ]
-    
+
     fields.forEach(field => {
       if (productData[field] !== undefined) {
         // Convert numbers to strings for storage
@@ -290,7 +306,7 @@ export function useHeraProducts({
     // In the future, this should update status via relationships
     const product = entities?.find(e => e.id === productId)
     if (!product) return
-    
+
     await updateEntity.mutateAsync({
       id: productId,
       updates: {
@@ -313,13 +329,13 @@ export function useHeraProducts({
     isLoading: entitiesLoading,
     error: error,
     refetch,
-    
+
     // Mutations
     createProduct,
     updateProduct,
     deleteProduct,
     archiveProduct,
-    
+
     // Loading states
     isCreating: createEntity.isPending,
     isUpdating: updateEntity.isPending,

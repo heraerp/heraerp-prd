@@ -1183,7 +1183,7 @@ export function POSTerminal({ organizationId, smartCodes, isDemoMode = false }: 
                     <div className="flex justify-between items-center">
                       <span>Change:</span>
                       <span
-                        className={`text-lg font-bold ${change >= 0 ?'text-emerald-600' : 'text-rose-600'}`}
+                        className={`text-lg font-bold ${change >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
                       >
                         {formatCurrency(Math.abs(change))}
                       </span>

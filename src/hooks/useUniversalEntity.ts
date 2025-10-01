@@ -10,11 +10,14 @@ export interface UniversalEntity {
   entity_code?: string
   smart_code: string
   metadata?: Record<string, any>
-  dynamic_fields?: Record<string, {
-    value: any
-    type: 'text' | 'number' | 'boolean' | 'date' | 'json'
-    smart_code: string
-  }>
+  dynamic_fields?: Record<
+    string,
+    {
+      value: any
+      type: 'text' | 'number' | 'boolean' | 'date' | 'json'
+      smart_code: string
+    }
+  >
 }
 
 // Hook configuration
@@ -94,7 +97,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
   // Update entity mutation
   const updateMutation = useMutation({
-    mutationFn: async ({ entity_id, ...updates }: Partial<UniversalEntity> & { entity_id: string }) => {
+    mutationFn: async ({
+      entity_id,
+      ...updates
+    }: Partial<UniversalEntity> & { entity_id: string }) => {
       const response = await fetch('/api/v2/entities', {
         method: 'PUT',
         headers: {
@@ -117,7 +123,13 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
 
   // Delete entity mutation
   const deleteMutation = useMutation({
-    mutationFn: async ({ entity_id, hard_delete = false }: { entity_id: string; hard_delete?: boolean }) => {
+    mutationFn: async ({
+      entity_id,
+      hard_delete = false
+    }: {
+      entity_id: string
+      hard_delete?: boolean
+    }) => {
       const params = new URLSearchParams({
         hard_delete: hard_delete.toString()
       })

@@ -84,9 +84,7 @@ export function RuleMappingsTable({ mappings, onChange, errors = {} }: RuleMappi
       {mappings.length === 0 ? (
         <div className="text-center py-8 border rounded-lg bg-gray-50 dark:bg-gray-800/30">
           <AlertCircle className="h-8 w-8 ink-muted mx-auto mb-2" />
-          <p className="text-sm dark:ink-muted">
-            No mappings defined. Add at least one mapping.
-          </p>
+          <p className="text-sm dark:ink-muted">No mappings defined. Add at least one mapping.</p>
         </div>
       ) : (
         <div className="border rounded-lg overflow-hidden">

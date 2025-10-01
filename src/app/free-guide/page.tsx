@@ -20,9 +20,7 @@ export default function FreeGuidePage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left Column - Benefits */}
           <div>
-            <h1 className="mb-6 text-4xl font-bold ink sm:text-5xl">
-              Your Free SMB Growth Guide
-            </h1>
+            <h1 className="mb-6 text-4xl font-bold ink sm:text-5xl">Your Free SMB Growth Guide</h1>
             <p className="mb-8 text-xl ink-muted">
               Join 3,000+ UK business owners who've downloaded our practical guide to streamline
               operations and boost profitability.

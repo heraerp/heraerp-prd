@@ -23,14 +23,17 @@ export async function POST(request: NextRequest) {
     // Organization isolation enforcement
     const reqOrgId = body.organization_id
     if (!reqOrgId || reqOrgId !== authResult.organizationId) {
-      return NextResponse.json({ error: 'forbidden', details: 'organization_id mismatch' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'forbidden', details: 'organization_id mismatch' },
+        { status: 403 }
+      )
     }
 
     // Validate and normalize smart code
     if (body.smart_code) {
       body.smart_code = assertSmartCode(body.smart_code)
     }
-    
+
     // Validate line smart codes if present
     if (body.lines && Array.isArray(body.lines)) {
       body.lines = body.lines.map((line: any) => {
@@ -49,14 +52,11 @@ export async function POST(request: NextRequest) {
       universalPath = '/api/v2/universal/txn-emit'
     }
 
-    const universalRequest = new NextRequest(
-      new URL(universalPath, request.url),
-      {
-        method: 'POST',
-        headers: request.headers,
-        body: JSON.stringify(body)
-      }
-    )
+    const universalRequest = new NextRequest(new URL(universalPath, request.url), {
+      method: 'POST',
+      headers: request.headers,
+      body: JSON.stringify(body)
+    })
 
     if (action === 'reverse') {
       const { POST: universalHandler } = await import('../universal/txn-reverse/route')
@@ -65,7 +65,6 @@ export async function POST(request: NextRequest) {
       const { POST: universalHandler } = await import('../universal/txn-emit/route')
       return await universalHandler(universalRequest)
     }
-
   } catch (error) {
     console.error('V2 transactions POST error:', error)
     return NextResponse.json({ error: 'internal_server_error' }, { status: 500 })
@@ -86,7 +85,10 @@ export async function GET(request: NextRequest) {
 
     // Organization isolation enforcement
     if (!organizationId || organizationId !== authResult.organizationId) {
-      return NextResponse.json({ error: 'forbidden', details: 'organization_id mismatch' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'forbidden', details: 'organization_id mismatch' },
+        { status: 403 }
+      )
     }
 
     // Delegate based on whether we're reading specific transaction or querying
@@ -112,7 +114,6 @@ export async function GET(request: NextRequest) {
       const { GET: universalHandler } = await import('../universal/txn-query/route')
       return await universalHandler(universalRequest)
     }
-
   } catch (error) {
     console.error('V2 transactions GET error:', error)
     return NextResponse.json({ error: 'internal_server_error' }, { status: 500 })

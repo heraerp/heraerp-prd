@@ -306,7 +306,9 @@ export function OrderManager() {
               <button
                 key={tab.key}
                 onClick={() => setSelectedStatus(tab.key)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${ selectedStatus === tab.key ?'bg-background text-gray-100 shadow-sm'
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  selectedStatus === tab.key
+                    ? 'bg-background text-gray-100 shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -349,7 +351,8 @@ export function OrderManager() {
                     Ordered: {formatTimeAgo(order.order_time)}
                   </span>
                   <span
-                    className={`font-medium ${ order.status ==='approved' ? 'text-green-600' : 'text-orange-600'
+                    className={`font-medium ${
+                      order.status === 'approved' ? 'text-green-600' : 'text-orange-600'
                     }`}
                   >
                     {order.status === 'approved'

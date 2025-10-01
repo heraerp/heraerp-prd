@@ -100,16 +100,18 @@ export async function POST(request: NextRequest) {
             vendor: 'mailchimp',
             demo_mode: true
           },
-          lines: [{
-            line_number: 1,
-            line_type: 'auth',
-            description: 'Mailchimp OAuth authentication completed',
-            metadata: {
-              connector_id: connectorId,
-              vendor: 'mailchimp',
-              demo_mode: true
+          lines: [
+            {
+              line_number: 1,
+              line_type: 'auth',
+              description: 'Mailchimp OAuth authentication completed',
+              metadata: {
+                connector_id: connectorId,
+                vendor: 'mailchimp',
+                demo_mode: true
+              }
             }
-          }]
+          ]
         })
       })
 
@@ -143,7 +145,9 @@ export async function POST(request: NextRequest) {
         grant_type: 'authorization_code',
         client_id: process.env.MAILCHIMP_CLIENT_ID || '',
         client_secret: process.env.MAILCHIMP_CLIENT_SECRET || '',
-        redirect_uri: process.env.MAILCHIMP_REDIRECT_URI || `${request.nextUrl.origin}/api/integrations/mailchimp/auth/callback`,
+        redirect_uri:
+          process.env.MAILCHIMP_REDIRECT_URI ||
+          `${request.nextUrl.origin}/api/integrations/mailchimp/auth/callback`,
         code
       })
     })
@@ -273,17 +277,19 @@ export async function POST(request: NextRequest) {
           account_id: metadata.user_id,
           account_name: metadata.accountname
         },
-        lines: [{
-          line_number: 1,
-          line_type: 'auth',
-          description: `Mailchimp OAuth authentication completed for ${metadata.accountname}`,
-          metadata: {
-            connector_id: connectorId,
-            vendor: 'mailchimp',
-            account_id: metadata.user_id,
-            account_name: metadata.accountname
+        lines: [
+          {
+            line_number: 1,
+            line_type: 'auth',
+            description: `Mailchimp OAuth authentication completed for ${metadata.accountname}`,
+            metadata: {
+              connector_id: connectorId,
+              vendor: 'mailchimp',
+              account_id: metadata.user_id,
+              account_name: metadata.accountname
+            }
           }
-        }]
+        ]
       })
     })
 

@@ -16,7 +16,7 @@ export function PriceBreakdown({ ctx }: PriceBreakdownProps) {
   const purityFactor = (ctx.purityK || 22) / 24
   const pureWeight = (ctx.netWeight || 0) * purityFactor
   const metalValue = pureWeight * (ctx.goldRate || 0)
-  
+
   let makingCharges = 0
   if (ctx.makingType === 'per_gram') {
     makingCharges = (ctx.makingRate || 0) * (ctx.netWeight || 0)
@@ -25,11 +25,11 @@ export function PriceBreakdown({ ctx }: PriceBreakdownProps) {
   } else if (ctx.makingType === 'percent') {
     makingCharges = metalValue * ((ctx.makingRate || 0) / 100)
   }
-  
+
   const stoneValue = ctx.stoneValue || 0
   const subtotal = metalValue + makingCharges + stoneValue
   const gstAmount = subtotal * ((ctx.gstSlab || 3) / 100)
-  const exchangeValue = ctx.exchangeEnabled ? (ctx.exchangeValue || 0) : 0
+  const exchangeValue = ctx.exchangeEnabled ? ctx.exchangeValue || 0 : 0
   const total = subtotal + gstAmount - exchangeValue
 
   const formatCurrency = (amount: number) => `₹${amount.toFixed(2)}`
@@ -56,10 +56,12 @@ export function PriceBreakdown({ ctx }: PriceBreakdownProps) {
           <div className="ml-auto text-white font-medium">{ctx.purityK || 22}K</div>
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-white/80">
-          <span>Metal Value ({pureWeight.toFixed(3)}g × ₹{ctx.goldRate || 0}/g)</span>
+          <span>
+            Metal Value ({pureWeight.toFixed(3)}g × ₹{ctx.goldRate || 0}/g)
+          </span>
           <span>{formatCurrency(metalValue)}</span>
         </div>
 
@@ -74,9 +76,9 @@ export function PriceBreakdown({ ctx }: PriceBreakdownProps) {
             <span>{formatCurrency(stoneValue)}</span>
           </div>
         )}
-        
+
         <Separator />
-        
+
         <div className="flex justify-between text-sm font-medium text-white">
           <span>Subtotal</span>
           <span>{formatCurrency(subtotal)}</span>
@@ -93,20 +95,21 @@ export function PriceBreakdown({ ctx }: PriceBreakdownProps) {
             <span>-{formatCurrency(exchangeValue)}</span>
           </div>
         )}
-        
+
         <Separator />
-        
+
         <div className="flex justify-between text-lg font-bold text-white">
           <span>Total</span>
           <span>{formatCurrency(total)}</span>
         </div>
       </div>
-      
+
       {ctx.netWeight > 0 && ctx.goldRate > 0 && (
         <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded text-sm">
           <div className="text-white/80">
             <span className="font-semibold text-white">Calculation Details:</span>
-            <br />• Pure Weight: {ctx.netWeight}g × {((ctx.purityK || 22) / 24 * 100).toFixed(1)}% = {pureWeight.toFixed(3)}g
+            <br />• Pure Weight: {ctx.netWeight}g × {(((ctx.purityK || 22) / 24) * 100).toFixed(1)}%
+            = {pureWeight.toFixed(3)}g
             <br />• Rate: ₹{ctx.goldRate || 0}/gram for {ctx.purityK || 22}K gold
             <br />• GST Mode: {ctx.gstMode || 'CGST_SGST'}
           </div>

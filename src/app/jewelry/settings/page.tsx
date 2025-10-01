@@ -15,10 +15,22 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { 
-  Settings, Download, Save, RefreshCw, AlertTriangle, 
-  Crown, Diamond, Scale, Shield, Gem, Palette, 
-  Calculator, Users, FileText, Lock
+import {
+  Settings,
+  Download,
+  Save,
+  RefreshCw,
+  AlertTriangle,
+  Crown,
+  Diamond,
+  Scale,
+  Shield,
+  Gem,
+  Palette,
+  Calculator,
+  Users,
+  FileText,
+  Lock
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import '@/styles/jewelry-glassmorphism.css'
@@ -123,14 +135,14 @@ export default function JewelrySettingsPage() {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="container max-w-6xl mx-auto py-6 space-y-6">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-between"
           >
             <div>
               <h1 className="jewelry-heading text-3xl font-bold flex items-center gap-3">
-                <motion.div 
+                <motion.div
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                   className="jewelry-glass-card p-3"
@@ -139,11 +151,13 @@ export default function JewelrySettingsPage() {
                 </motion.div>
                 Jewelry Settings
               </h1>
-              <p className="jewelry-text-luxury mt-1">Manage your luxury jewelry business settings and preferences</p>
+              <p className="jewelry-text-luxury mt-1">
+                Manage your luxury jewelry business settings and preferences
+              </p>
             </div>
             <div className="flex items-center gap-3">
               {hasChanges && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex items-center gap-2 jewelry-text-accent text-sm jewelry-glass-card px-3 py-2"
@@ -152,19 +166,11 @@ export default function JewelrySettingsPage() {
                   Unsaved changes
                 </motion.div>
               )}
-              <Button 
-                variant="outline" 
-                onClick={handleExport} 
-                className="jewelry-btn-secondary"
-              >
+              <Button variant="outline" onClick={handleExport} className="jewelry-btn-secondary">
                 <Download className="h-4 w-4 mr-2" />
                 Export
               </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isLoading}
-                className="jewelry-btn-primary"
-              >
+              <Button onClick={handleSave} disabled={isLoading} className="jewelry-btn-primary">
                 {isLoading ? (
                   <>
                     <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -207,10 +213,7 @@ export default function JewelrySettingsPage() {
 
               {/* Business Tab */}
               <TabsContent value="business" className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                   <Card className="jewelry-glass-panel-strong">
                     <CardHeader>
                       <CardTitle className="jewelry-text-luxury flex items-center gap-2">
@@ -224,27 +227,37 @@ export default function JewelrySettingsPage() {
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="businessName" className="jewelry-text-luxury">Business Name</Label>
+                          <Label htmlFor="businessName" className="jewelry-text-luxury">
+                            Business Name
+                          </Label>
                           <Input
                             id="businessName"
                             value={business.businessName}
-                            onChange={e => handleInputChange('business', 'businessName', e.target.value)}
+                            onChange={e =>
+                              handleInputChange('business', 'businessName', e.target.value)
+                            }
                             className="jewelry-input"
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="ownerName" className="jewelry-text-luxury">Owner Name</Label>
+                          <Label htmlFor="ownerName" className="jewelry-text-luxury">
+                            Owner Name
+                          </Label>
                           <Input
                             id="ownerName"
                             value={business.ownerName}
-                            onChange={e => handleInputChange('business', 'ownerName', e.target.value)}
+                            onChange={e =>
+                              handleInputChange('business', 'ownerName', e.target.value)
+                            }
                             className="jewelry-input"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="jewelry-text-luxury">Email Address</Label>
+                        <Label htmlFor="email" className="jewelry-text-luxury">
+                          Email Address
+                        </Label>
                         <Input
                           id="email"
                           type="email"
@@ -256,7 +269,9 @@ export default function JewelrySettingsPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="phone" className="jewelry-text-luxury">Phone Number</Label>
+                          <Label htmlFor="phone" className="jewelry-text-luxury">
+                            Phone Number
+                          </Label>
                           <Input
                             id="phone"
                             value={business.phone}
@@ -265,7 +280,9 @@ export default function JewelrySettingsPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="website" className="jewelry-text-luxury">Website</Label>
+                          <Label htmlFor="website" className="jewelry-text-luxury">
+                            Website
+                          </Label>
                           <Input
                             id="website"
                             value={business.website}
@@ -276,7 +293,9 @@ export default function JewelrySettingsPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="address" className="jewelry-text-luxury">Business Address</Label>
+                        <Label htmlFor="address" className="jewelry-text-luxury">
+                          Business Address
+                        </Label>
                         <Input
                           id="address"
                           value={business.address}
@@ -286,7 +305,9 @@ export default function JewelrySettingsPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="taxId" className="jewelry-text-luxury">Tax ID / EIN</Label>
+                        <Label htmlFor="taxId" className="jewelry-text-luxury">
+                          Tax ID / EIN
+                        </Label>
                         <Input
                           id="taxId"
                           value={business.taxId}
@@ -296,11 +317,15 @@ export default function JewelrySettingsPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="description" className="jewelry-text-luxury">Business Description</Label>
+                        <Label htmlFor="description" className="jewelry-text-luxury">
+                          Business Description
+                        </Label>
                         <Textarea
                           id="description"
                           value={business.description}
-                          onChange={e => handleInputChange('business', 'description', e.target.value)}
+                          onChange={e =>
+                            handleInputChange('business', 'description', e.target.value)
+                          }
                           className="jewelry-input min-h-[100px]"
                           placeholder="Describe your jewelry business..."
                         />
@@ -312,10 +337,7 @@ export default function JewelrySettingsPage() {
 
               {/* Operations Tab */}
               <TabsContent value="operations" className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                   <Card className="jewelry-glass-panel-strong">
                     <CardHeader>
                       <CardTitle className="jewelry-text-luxury flex items-center gap-2">
@@ -332,7 +354,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Default Currency</Label>
                           <Select
                             value={operations.defaultCurrency}
-                            onValueChange={value => handleInputChange('operations', 'defaultCurrency', value)}
+                            onValueChange={value =>
+                              handleInputChange('operations', 'defaultCurrency', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -350,7 +374,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Weight Unit</Label>
                           <Select
                             value={operations.weightUnit}
-                            onValueChange={value => handleInputChange('operations', 'weightUnit', value)}
+                            onValueChange={value =>
+                              handleInputChange('operations', 'weightUnit', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -367,7 +393,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Purity Standard</Label>
                           <Select
                             value={operations.purityStandard}
-                            onValueChange={value => handleInputChange('operations', 'purityStandard', value)}
+                            onValueChange={value =>
+                              handleInputChange('operations', 'purityStandard', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -386,7 +414,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Gold Pricing Source</Label>
                           <Select
                             value={operations.goldPricingSource}
-                            onValueChange={value => handleInputChange('operations', 'goldPricingSource', value)}
+                            onValueChange={value =>
+                              handleInputChange('operations', 'goldPricingSource', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -404,7 +434,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Default Markup (%)</Label>
                           <Input
                             value={operations.markupPercentage}
-                            onChange={e => handleInputChange('operations', 'markupPercentage', e.target.value)}
+                            onChange={e =>
+                              handleInputChange('operations', 'markupPercentage', e.target.value)
+                            }
                             className="jewelry-input"
                             placeholder="45"
                           />
@@ -415,19 +447,45 @@ export default function JewelrySettingsPage() {
                         <h4 className="jewelry-text-luxury font-medium">Business Features</h4>
                         <div className="grid grid-cols-2 gap-4">
                           {[
-                            { key: 'inventoryTracking', label: 'Inventory Tracking', desc: 'Track stock levels and movements' },
-                            { key: 'certificateTracking', label: 'Certificate Management', desc: 'Manage GIA and other certificates' },
-                            { key: 'appraisalReminders', label: 'Appraisal Reminders', desc: 'Automatic appraisal renewal alerts' }
-                          ].map((feature) => (
+                            {
+                              key: 'inventoryTracking',
+                              label: 'Inventory Tracking',
+                              desc: 'Track stock levels and movements'
+                            },
+                            {
+                              key: 'certificateTracking',
+                              label: 'Certificate Management',
+                              desc: 'Manage GIA and other certificates'
+                            },
+                            {
+                              key: 'appraisalReminders',
+                              label: 'Appraisal Reminders',
+                              desc: 'Automatic appraisal renewal alerts'
+                            }
+                          ].map(feature => (
                             <div key={feature.key} className="jewelry-glass-card p-4">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <Label className="jewelry-text-luxury font-medium">{feature.label}</Label>
-                                  <p className="text-sm jewelry-text-luxury opacity-75">{feature.desc}</p>
+                                  <Label className="jewelry-text-luxury font-medium">
+                                    {feature.label}
+                                  </Label>
+                                  <p className="text-sm jewelry-text-luxury opacity-75">
+                                    {feature.desc}
+                                  </p>
                                 </div>
                                 <Select
-                                  value={operations[feature.key as keyof typeof operations] ? 'enabled' : 'disabled'}
-                                  onValueChange={value => handleInputChange('operations', feature.key, value === 'enabled')}
+                                  value={
+                                    operations[feature.key as keyof typeof operations]
+                                      ? 'enabled'
+                                      : 'disabled'
+                                  }
+                                  onValueChange={value =>
+                                    handleInputChange(
+                                      'operations',
+                                      feature.key,
+                                      value === 'enabled'
+                                    )
+                                  }
                                 >
                                   <SelectTrigger className="w-32 jewelry-input">
                                     <SelectValue />
@@ -449,10 +507,7 @@ export default function JewelrySettingsPage() {
 
               {/* Appearance Tab */}
               <TabsContent value="appearance" className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                   <Card className="jewelry-glass-panel-strong">
                     <CardHeader>
                       <CardTitle className="jewelry-text-luxury flex items-center gap-2">
@@ -487,7 +542,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Display Density</Label>
                           <Select
                             value={appearance.displayDensity}
-                            onValueChange={value => handleInputChange('appearance', 'displayDensity', value)}
+                            onValueChange={value =>
+                              handleInputChange('appearance', 'displayDensity', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -504,7 +561,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Default View</Label>
                           <Select
                             value={appearance.defaultView}
-                            onValueChange={value => handleInputChange('appearance', 'defaultView', value)}
+                            onValueChange={value =>
+                              handleInputChange('appearance', 'defaultView', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -523,7 +582,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Price Display</Label>
                           <Select
                             value={appearance.showPrices}
-                            onValueChange={value => handleInputChange('appearance', 'showPrices', value)}
+                            onValueChange={value =>
+                              handleInputChange('appearance', 'showPrices', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -541,7 +602,9 @@ export default function JewelrySettingsPage() {
                           <Label className="jewelry-text-luxury">Image Quality</Label>
                           <Select
                             value={appearance.imageQuality}
-                            onValueChange={value => handleInputChange('appearance', 'imageQuality', value)}
+                            onValueChange={value =>
+                              handleInputChange('appearance', 'imageQuality', value)
+                            }
                           >
                             <SelectTrigger className="jewelry-input">
                               <SelectValue />
@@ -561,10 +624,7 @@ export default function JewelrySettingsPage() {
 
               {/* Security Tab */}
               <TabsContent value="security" className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                   <Card className="jewelry-glass-panel-strong">
                     <CardHeader>
                       <CardTitle className="jewelry-text-luxury flex items-center gap-2">
@@ -580,9 +640,12 @@ export default function JewelrySettingsPage() {
                         <div className="flex items-center gap-4">
                           <AlertTriangle className="h-5 w-5 jewelry-text-accent" />
                           <div>
-                            <p className="jewelry-text-luxury font-medium">High-Value Asset Protection</p>
+                            <p className="jewelry-text-luxury font-medium">
+                              High-Value Asset Protection
+                            </p>
                             <p className="text-sm jewelry-text-luxury opacity-75">
-                              Enhanced security features for jewelry businesses handling valuable assets.
+                              Enhanced security features for jewelry businesses handling valuable
+                              assets.
                             </p>
                           </div>
                         </div>
@@ -591,19 +654,41 @@ export default function JewelrySettingsPage() {
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-4">
                           {[
-                            { key: 'twoFactorAuth', label: 'Two-Factor Authentication', desc: 'Required for admin access' },
-                            { key: 'auditLogging', label: 'Comprehensive Audit Log', desc: 'Track all system activities' },
-                            { key: 'dataEncryption', label: 'Data Encryption', desc: 'Encrypt sensitive customer data' }
-                          ].map((feature) => (
+                            {
+                              key: 'twoFactorAuth',
+                              label: 'Two-Factor Authentication',
+                              desc: 'Required for admin access'
+                            },
+                            {
+                              key: 'auditLogging',
+                              label: 'Comprehensive Audit Log',
+                              desc: 'Track all system activities'
+                            },
+                            {
+                              key: 'dataEncryption',
+                              label: 'Data Encryption',
+                              desc: 'Encrypt sensitive customer data'
+                            }
+                          ].map(feature => (
                             <div key={feature.key} className="jewelry-glass-card p-4">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <Label className="jewelry-text-luxury font-medium">{feature.label}</Label>
-                                  <p className="text-sm jewelry-text-luxury opacity-75">{feature.desc}</p>
+                                  <Label className="jewelry-text-luxury font-medium">
+                                    {feature.label}
+                                  </Label>
+                                  <p className="text-sm jewelry-text-luxury opacity-75">
+                                    {feature.desc}
+                                  </p>
                                 </div>
                                 <Select
-                                  value={security[feature.key as keyof typeof security] ? 'enabled' : 'disabled'}
-                                  onValueChange={value => handleInputChange('security', feature.key, value === 'enabled')}
+                                  value={
+                                    security[feature.key as keyof typeof security]
+                                      ? 'enabled'
+                                      : 'disabled'
+                                  }
+                                  onValueChange={value =>
+                                    handleInputChange('security', feature.key, value === 'enabled')
+                                  }
                                 >
                                   <SelectTrigger className="w-32 jewelry-input">
                                     <SelectValue />
@@ -623,7 +708,9 @@ export default function JewelrySettingsPage() {
                             <Label className="jewelry-text-luxury">Session Timeout (minutes)</Label>
                             <Select
                               value={security.sessionTimeout}
-                              onValueChange={value => handleInputChange('security', 'sessionTimeout', value)}
+                              onValueChange={value =>
+                                handleInputChange('security', 'sessionTimeout', value)
+                              }
                             >
                               <SelectTrigger className="jewelry-input">
                                 <SelectValue />
@@ -641,7 +728,9 @@ export default function JewelrySettingsPage() {
                             <Label className="jewelry-text-luxury">Backup Frequency</Label>
                             <Select
                               value={security.backupFrequency}
-                              onValueChange={value => handleInputChange('security', 'backupFrequency', value)}
+                              onValueChange={value =>
+                                handleInputChange('security', 'backupFrequency', value)
+                              }
                             >
                               <SelectTrigger className="jewelry-input">
                                 <SelectValue />
@@ -658,7 +747,9 @@ export default function JewelrySettingsPage() {
                             <Label className="jewelry-text-luxury">Access Level</Label>
                             <Select
                               value={security.accessLevel}
-                              onValueChange={value => handleInputChange('security', 'accessLevel', value)}
+                              onValueChange={value =>
+                                handleInputChange('security', 'accessLevel', value)
+                              }
                             >
                               <SelectTrigger className="jewelry-input">
                                 <SelectValue />

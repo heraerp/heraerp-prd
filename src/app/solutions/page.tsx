@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -9,17 +9,19 @@ import { SOLUTIONS } from '@/data/solutions'
 // Statistics component
 function SolutionStatistics() {
   const stats = [
-    { value: "6", label: "Industry Solutions", color: "from-indigo-500 to-indigo-600" },
-    { value: "500+", label: "Active Organizations", color: "from-purple-500 to-purple-600" },
-    { value: "99.9%", label: "Uptime SLA", color: "from-cyan-500 to-cyan-600" },
-    { value: "30 days", label: "Avg Implementation", color: "from-emerald-500 to-emerald-600" }
-  ];
+    { value: '6', label: 'Industry Solutions', color: 'from-indigo-500 to-indigo-600' },
+    { value: '500+', label: 'Active Organizations', color: 'from-purple-500 to-purple-600' },
+    { value: '99.9%', label: 'Uptime SLA', color: 'from-cyan-500 to-cyan-600' },
+    { value: '30 days', label: 'Avg Implementation', color: 'from-emerald-500 to-emerald-600' }
+  ]
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
       {stats.map((stat, idx) => (
         <div key={idx} className="relative group">
-          <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-opacity`} />
+          <div
+            className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-opacity`}
+          />
           <div className="relative card-glass p-6 rounded-2xl border border-border text-center hover:border-indigo-500/30 transition-all duration-300">
             <div className="ink text-3xl font-bold mb-1">{stat.value}</div>
             <div className="ink-muted text-sm uppercase tracking-wide">{stat.label}</div>
@@ -27,7 +29,7 @@ function SolutionStatistics() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // Value propositions section
@@ -35,25 +37,27 @@ function ValuePropositions() {
   const propositions = [
     {
       icon: Target,
-      title: "Industry-Specific",
-      description: "Built for your industry with deep understanding of your workflows and challenges"
+      title: 'Industry-Specific',
+      description:
+        'Built for your industry with deep understanding of your workflows and challenges'
     },
     {
       icon: Users,
-      title: "Unified Platform",
-      description: "All departments work from the same data, eliminating silos and improving collaboration"
+      title: 'Unified Platform',
+      description:
+        'All departments work from the same data, eliminating silos and improving collaboration'
     },
     {
       icon: Globe,
-      title: "Universal Architecture",
-      description: "One platform that adapts to any business without custom development"
+      title: 'Universal Architecture',
+      description: 'One platform that adapts to any business without custom development'
     },
     {
       icon: Award,
-      title: "Proven Results",
-      description: "500+ organizations trust HERA for their critical business operations"
+      title: 'Proven Results',
+      description: '500+ organizations trust HERA for their critical business operations'
     }
-  ];
+  ]
 
   return (
     <section className="py-20 px-6">
@@ -70,7 +74,8 @@ function ValuePropositions() {
             </span>
           </h2>
           <p className="ink-muted text-lg max-w-3xl mx-auto">
-            Traditional ERP systems force you to adapt to their limitations. HERA adapts to your business.
+            Traditional ERP systems force you to adapt to their limitations. HERA adapts to your
+            business.
           </p>
         </div>
 
@@ -90,17 +95,17 @@ function ValuePropositions() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // Implementation process section
 function ImplementationProcess() {
   const steps = [
-    { icon: "🎯", title: "Discovery", desc: "Understand your workflow", time: "Day 1-3" },
-    { icon: "⚙️", title: "Configuration", desc: "Setup & customize", time: "Week 1-2" },
-    { icon: "🧪", title: "Testing", desc: "Validate with your team", time: "Week 2-3" },
-    { icon: "🚀", title: "Go Live", desc: "Deploy to production", time: "Week 3-4" }
-  ];
+    { icon: '🎯', title: 'Discovery', desc: 'Understand your workflow', time: 'Day 1-3' },
+    { icon: '⚙️', title: 'Configuration', desc: 'Setup & customize', time: 'Week 1-2' },
+    { icon: '🧪', title: 'Testing', desc: 'Validate with your team', time: 'Week 2-3' },
+    { icon: '🚀', title: 'Go Live', desc: 'Deploy to production', time: 'Week 3-4' }
+  ]
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-slate-50/50 to-white dark:from-slate-900/50 dark:to-slate-950">
@@ -117,7 +122,8 @@ function ImplementationProcess() {
             </span>
           </h2>
           <p className="ink-muted text-lg max-w-3xl mx-auto">
-            Our proven methodology gets you operational fast with minimal disruption to your business.
+            Our proven methodology gets you operational fast with minimal disruption to your
+            business.
           </p>
         </div>
 
@@ -134,7 +140,9 @@ function ImplementationProcess() {
                     {step.icon}
                   </div>
                   <h3 className="ink text-lg font-bold mb-3 text-center">{step.title}</h3>
-                  <p className="ink-muted text-sm text-center mb-4 min-h-[2.5rem] flex items-center justify-center">{step.desc}</p>
+                  <p className="ink-muted text-sm text-center mb-4 min-h-[2.5rem] flex items-center justify-center">
+                    {step.desc}
+                  </p>
                   <p className="text-center">
                     <span className="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       {step.time}
@@ -147,17 +155,17 @@ function ImplementationProcess() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // Trust indicators section
 function TrustIndicators() {
   const indicators = [
-    { metric: "500+", label: "Organizations Trust HERA" },
-    { metric: "99.9%", label: "Uptime Guarantee" },
-    { metric: "30 days", label: "Average Implementation" },
-    { metric: "24/7", label: "Enterprise Support" }
-  ];
+    { metric: '500+', label: 'Organizations Trust HERA' },
+    { metric: '99.9%', label: 'Uptime Guarantee' },
+    { metric: '30 days', label: 'Average Implementation' },
+    { metric: '24/7', label: 'Enterprise Support' }
+  ]
 
   return (
     <section className="py-16 px-6">
@@ -177,15 +185,20 @@ function TrustIndicators() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {indicators.map((indicator, idx) => (
-            <div key={idx} className="group card-glass p-6 rounded-2xl border border-border hover:border-blue-500/30 transition-all duration-300 text-center">
-              <div className="ink text-4xl font-bold mb-2 group-hover:text-blue-600 transition-colors">{indicator.metric}</div>
+            <div
+              key={idx}
+              className="group card-glass p-6 rounded-2xl border border-border hover:border-blue-500/30 transition-all duration-300 text-center"
+            >
+              <div className="ink text-4xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
+                {indicator.metric}
+              </div>
               <div className="ink-muted text-sm uppercase tracking-wide">{indicator.label}</div>
             </div>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 export default function SolutionsPage() {
@@ -216,7 +229,8 @@ export default function SolutionsPage() {
             </h1>
 
             <p className="ink-muted text-xl md:text-2xl max-w-4xl mx-auto mb-12 leading-relaxed">
-              From salons to manufacturing, ISPs to government—HERA's universal architecture adapts to your business.
+              From salons to manufacturing, ISPs to government—HERA's universal architecture adapts
+              to your business.
               <span className="ink font-semibold"> One platform, infinite possibilities.</span>
             </p>
 
@@ -262,12 +276,13 @@ export default function SolutionsPage() {
               </span>
             </h2>
             <p className="ink-muted text-lg max-w-3xl mx-auto">
-              Each solution is tailored to your industry's specific needs while leveraging HERA's universal foundation.
+              Each solution is tailored to your industry's specific needs while leveraging HERA's
+              universal foundation.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {SOLUTIONS.map((solution) => (
+            {SOLUTIONS.map(solution => (
               <SolutionCard key={solution.slug} {...solution} />
             ))}
           </div>
@@ -288,15 +303,21 @@ export default function SolutionsPage() {
         {/* Animated gradient overlays */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-indigo-600/30 via-purple-600/20 to-cyan-600/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-tl from-cyan-600/30 via-emerald-600/20 to-blue-600/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}} />
+          <div
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-tl from-cyan-600/30 via-emerald-600/20 to-blue-600/30 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '1s' }}
+          />
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-purple-500/15 to-indigo-500/15 rounded-full blur-2xl" />
         </div>
 
         {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(255,255,255) 1px, transparent 0)`,
-          backgroundSize: '20px 20px'
-        }} />
+        <div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgb(255,255,255) 1px, transparent 0)`,
+            backgroundSize: '20px 20px'
+          }}
+        />
 
         <div className="relative max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-gray-800/80 to-gray-700/80 backdrop-blur-xl border border-gray-600/50 mb-8">
@@ -304,7 +325,10 @@ export default function SolutionsPage() {
             <span className="text-gray-200 text-sm font-medium tracking-wide">
               Ready to Transform Your Business?
             </span>
-            <div className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}} />
+            <div
+              className="w-2 h-2 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full animate-pulse"
+              style={{ animationDelay: '0.5s' }}
+            />
           </div>
 
           <h2 className="text-4xl md:text-5xl font-black mb-8">
@@ -317,8 +341,12 @@ export default function SolutionsPage() {
           </h2>
 
           <p className="text-lg md:text-xl mb-12 text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">
-            Not sure which solution fits your business? Our experts will help you identify the perfect match
-            <span className="text-white font-medium"> and show you how HERA transforms operations.</span>
+            Not sure which solution fits your business? Our experts will help you identify the
+            perfect match
+            <span className="text-white font-medium">
+              {' '}
+              and show you how HERA transforms operations.
+            </span>
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -347,11 +375,17 @@ export default function SolutionsPage() {
               <span>No commitment required</span>
             </div>
             <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gray-800/30 backdrop-blur-sm border border-gray-700/50">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" style={{animationDelay: '0.3s'}} />
+              <span
+                className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"
+                style={{ animationDelay: '0.3s' }}
+              />
               <span>15-minute consultation</span>
             </div>
             <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gray-800/30 backdrop-blur-sm border border-gray-700/50">
-              <span className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse" style={{animationDelay: '0.6s'}} />
+              <span
+                className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"
+                style={{ animationDelay: '0.6s' }}
+              />
               <span>Expert guidance</span>
             </div>
           </div>

@@ -362,7 +362,7 @@ export function EmailComposer({
           {/* Send Result */}
           {sendResult && (
             <Card
-              className={`border ${sendResult.success ?'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
+              className={`border ${sendResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">

@@ -123,15 +123,11 @@ export function PrintHeader({
           </h2>
         </div>
 
-        {reportSubtitle && (
-          <p className="text-sm dark:ink-muted">{reportSubtitle}</p>
-        )}
+        {reportSubtitle && <p className="text-sm dark:ink-muted">{reportSubtitle}</p>}
 
         <div className="flex items-center justify-center gap-2">
           <Calendar className="h-4 w-4 ink-muted" />
-          <span className="text-lg font-medium ink dark:text-gray-100">
-            {reportPeriod}
-          </span>
+          <span className="text-lg font-medium ink dark:text-gray-100">{reportPeriod}</span>
         </div>
 
         <div className="flex items-center justify-center gap-4 text-sm">
@@ -153,16 +149,12 @@ export function PrintHeader({
       {filters.length > 0 && (
         <>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
-            <h3 className="text-sm font-medium ink dark:text-gray-300 mb-2">
-              Applied Filters:
-            </h3>
+            <h3 className="text-sm font-medium ink dark:text-gray-300 mb-2">Applied Filters:</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {filters.map((filter, index) => (
                 <div key={index} className="text-sm">
                   <span className="dark:ink-muted">{filter.label}:</span>{' '}
-                  <span className="font-medium ink dark:text-gray-100">
-                    {filter.value}
-                  </span>
+                  <span className="font-medium ink dark:text-gray-100">{filter.value}</span>
                 </div>
               ))}
             </div>

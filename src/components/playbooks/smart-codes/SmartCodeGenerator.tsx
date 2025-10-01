@@ -347,9 +347,7 @@ function SmartCodeTemplatesTab({
           >
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-sm ink capitalize">
-                  {name.replace('-', ' ')}
-                </h4>
+                <h4 className="font-medium text-sm ink capitalize">{name.replace('-', ' ')}</h4>
                 <code className="text-xs ink-muted font-mono">{template}</code>
               </div>
               <Button size="sm" variant="ghost">

@@ -233,7 +233,7 @@ export function AppointmentDetailsModal({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Customer Segment</span>
             <Badge
-              className={`${props.aiInsights.customer_segment ==='premium' ? 'bg-yellow-100 text-yellow-800' : ''}
+              className={`${props.aiInsights.customer_segment === 'premium' ? 'bg-yellow-100 text-yellow-800' : ''}
               ${props.aiInsights.customer_segment === 'standard' ? 'bg-blue-100 text-blue-800' : ''}
               ${props.aiInsights.customer_segment === 'new' ? 'bg-green-100 text-green-800' : ''}
             `}
@@ -248,7 +248,9 @@ export function AppointmentDetailsModal({
               <span className="text-sm font-medium">No-show Risk</span>
               <div className="flex items-center gap-2">
                 <AlertTriangle
-                  className={`w-4 h-4 ${ props.aiInsights.no_show_risk > 25 ?'text-red-500'
+                  className={`w-4 h-4 ${
+                    props.aiInsights.no_show_risk > 25
+                      ? 'text-red-500'
                       : props.aiInsights.no_show_risk > 15
                         ? 'text-yellow-500'
                         : 'text-green-500'

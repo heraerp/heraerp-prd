@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import React, { useEffect, useState } from 'react'
 
@@ -17,8 +17,8 @@ export default function Toc({ sections }: TocProps) {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
           }
@@ -53,22 +53,15 @@ export default function Toc({ sections }: TocProps) {
         On This Page
       </h4>
       <ul className="space-y-2">
-        {sections.map((section) => (
-          <li
-            key={section.id}
-            className={section.level === 'h3' ? 'ml-4' : ''}
-          >
+        {sections.map(section => (
+          <li key={section.id} className={section.level === 'h3' ? 'ml-4' : ''}>
             <a
               href={`#${section.id}`}
               className={`
                 block py-1 text-sm transition-colors duration-200
-                ${
-                  activeId === section.id
-                    ? 'ink font-medium'
-                    : 'ink-muted hover:ink'
-                }
+                ${activeId === section.id ? 'ink font-medium' : 'ink-muted hover:ink'}
               `}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault()
                 const element = document.getElementById(section.id)
                 if (element) {

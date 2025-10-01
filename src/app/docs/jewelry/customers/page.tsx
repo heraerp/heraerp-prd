@@ -10,7 +10,8 @@ import { ArrowLeft, ArrowRight, Users, ExternalLink, Crown } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Customer Management - HERA Jewelry ERP Documentation',
-  description: 'Comprehensive customer relationship management for jewelry retailers with VIP programs, purchase tracking, loyalty systems, and personalized service capabilities.',
+  description:
+    'Comprehensive customer relationship management for jewelry retailers with VIP programs, purchase tracking, loyalty systems, and personalized service capabilities.',
   openGraph: {
     title: 'Customer Management - HERA Jewelry ERP',
     description: 'VIP programs, loyalty systems, and personalized customer relationship management',
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default function CustomersPage() {
   const markdownPath = join(process.cwd(), 'docs', 'jewelry', 'customers.md')
   let markdownContent = ''
-  
+
   try {
     markdownContent = readFileSync(markdownPath, 'utf8')
   } catch (error) {
@@ -39,9 +40,13 @@ Please check back shortly or contact support if this issue persists.
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-        <Link href="/docs" className="hover:text-primary">Docs</Link>
+        <Link href="/docs" className="hover:text-primary">
+          Docs
+        </Link>
         <span>/</span>
-        <Link href="/docs/jewelry" className="hover:text-primary">Jewelry ERP</Link>
+        <Link href="/docs/jewelry" className="hover:text-primary">
+          Jewelry ERP
+        </Link>
         <span>/</span>
         <span className="text-foreground">Customer Management</span>
       </nav>
@@ -56,8 +61,9 @@ Please check back shortly or contact support if this issue persists.
             <div className="flex-1">
               <h3 className="font-semibold text-lg mb-2">VIP Customer Management</h3>
               <p className="text-muted-foreground mb-4">
-                Learn how to manage customer relationships with VIP tier programs, loyalty rewards, 
-                purchase history tracking, and personalized communication systems designed for jewelry retail.
+                Learn how to manage customer relationships with VIP tier programs, loyalty rewards,
+                purchase history tracking, and personalized communication systems designed for
+                jewelry retail.
               </p>
               <div className="flex gap-3">
                 <Link href="/jewelry/customers" target="_blank">
@@ -80,7 +86,7 @@ Please check back shortly or contact support if this issue persists.
 
       {/* Markdown Content */}
       <div className="prose prose-lg max-w-none dark:prose-invert">
-        <ReactMarkdown 
+        <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
@@ -94,19 +100,13 @@ Please check back shortly or contact support if this issue persists.
               </h2>
             ),
             h3: ({ children }) => (
-              <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">
-                {children}
-              </h3>
+              <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>
             ),
             h4: ({ children }) => (
-              <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">
-                {children}
-              </h4>
+              <h4 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h4>
             ),
             p: ({ children }) => (
-              <p className="mb-4 text-muted-foreground leading-relaxed">
-                {children}
-              </p>
+              <p className="mb-4 text-muted-foreground leading-relaxed">{children}</p>
             ),
             ul: ({ children }) => (
               <ul className="list-disc list-inside mb-4 space-y-2 text-muted-foreground">
@@ -118,11 +118,7 @@ Please check back shortly or contact support if this issue persists.
                 {children}
               </ol>
             ),
-            li: ({ children }) => (
-              <li className="ml-4">
-                {children}
-              </li>
-            ),
+            li: ({ children }) => <li className="ml-4">{children}</li>,
             code: ({ children, className }) => {
               const isInline = !className
               if (isInline) {
@@ -132,16 +128,10 @@ Please check back shortly or contact support if this issue persists.
                   </code>
                 )
               }
-              return (
-                <code className={className}>
-                  {children}
-                </code>
-              )
+              return <code className={className}>{children}</code>
             },
             pre: ({ children }) => (
-              <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4 border">
-                {children}
-              </pre>
+              <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4 border">{children}</pre>
             ),
             blockquote: ({ children }) => (
               <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-muted-foreground">
@@ -150,9 +140,7 @@ Please check back shortly or contact support if this issue persists.
             ),
             table: ({ children }) => (
               <div className="overflow-x-auto mb-4">
-                <table className="w-full border-collapse border border-border">
-                  {children}
-                </table>
+                <table className="w-full border-collapse border border-border">{children}</table>
               </div>
             ),
             th: ({ children }) => (
@@ -160,14 +148,10 @@ Please check back shortly or contact support if this issue persists.
                 {children}
               </th>
             ),
-            td: ({ children }) => (
-              <td className="border border-border p-2">
-                {children}
-              </td>
-            ),
+            td: ({ children }) => <td className="border border-border p-2">{children}</td>,
             a: ({ href, children }) => (
-              <Link 
-                href={href || '#'} 
+              <Link
+                href={href || '#'}
                 className="text-primary hover:underline font-medium"
                 target={href?.startsWith('http') ? '_blank' : undefined}
                 rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}

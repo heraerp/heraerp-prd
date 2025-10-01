@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, Code, Package, Zap } from 'lucide-react';
+import Link from 'next/link'
+import { ArrowLeft, CheckCircle2, Code, Package, Zap } from 'lucide-react'
 
 export default function WorkSummaryPage() {
   return (
@@ -10,8 +10,8 @@ export default function WorkSummaryPage() {
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center gap-4">
-            <Link 
-              href="/docs/developer" 
+            <Link
+              href="/docs/developer"
               className="flex items-center gap-2 text-blue-200 hover:text-white transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -42,18 +42,28 @@ export default function WorkSummaryPage() {
               <Code className="h-8 w-8 text-blue-400" />
               <h2 className="text-2xl font-bold text-white">1. Universal API v2 Core</h2>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-blue-300 mb-2">Guardrails System</h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-blue-900/50 px-1 rounded">/src/lib/universal/guardrails.ts</code> - Core validation utilities</span>
+                    <span>
+                      <code className="bg-blue-900/50 px-1 rounded">
+                        /src/lib/universal/guardrails.ts
+                      </code>{' '}
+                      - Core validation utilities
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span>Smart Code pattern validation: <code>HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}</code></span>
+                    <span>
+                      Smart Code pattern validation:{' '}
+                      <code>
+                        HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}
+                      </code>
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -71,7 +81,12 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-blue-900/50 px-1 rounded">/src/lib/universal/smart-code-engine.ts</code> - DNA decoder</span>
+                    <span>
+                      <code className="bg-blue-900/50 px-1 rounded">
+                        /src/lib/universal/smart-code-engine.ts
+                      </code>{' '}
+                      - DNA decoder
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -93,7 +108,12 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-blue-900/50 px-1 rounded">/src/lib/universal/entity-builder.ts</code> - Self-assembling entities</span>
+                    <span>
+                      <code className="bg-blue-900/50 px-1 rounded">
+                        /src/lib/universal/entity-builder.ts
+                      </code>{' '}
+                      - Self-assembling entities
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -115,7 +135,10 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-blue-900/50 px-1 rounded">/src/lib/supabase/rpc.ts</code> - Type-safe RPC client</span>
+                    <span>
+                      <code className="bg-blue-900/50 px-1 rounded">/src/lib/supabase/rpc.ts</code>{' '}
+                      - Type-safe RPC client
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -138,20 +161,32 @@ export default function WorkSummaryPage() {
           <section className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-8">
             <div className="flex items-center gap-3 mb-6">
               <Zap className="h-8 w-8 text-purple-400" />
-              <h2 className="text-2xl font-bold text-white">2. Universal Configuration Registry (UCR)</h2>
+              <h2 className="text-2xl font-bold text-white">
+                2. Universal Configuration Registry (UCR)
+              </h2>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-purple-300 mb-2">Core UCR Components</h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/ucr-types.ts</code> - Complete TypeScript definitions</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/ucr-types.ts
+                      </code>{' '}
+                      - Complete TypeScript definitions
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/ucr-loader.ts</code> - Dynamic bundle loading</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/ucr-loader.ts
+                      </code>{' '}
+                      - Dynamic bundle loading
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -165,11 +200,18 @@ export default function WorkSummaryPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-purple-300 mb-2">SALON Industry Implementation</h3>
+                <h3 className="text-lg font-semibold text-purple-300 mb-2">
+                  SALON Industry Implementation
+                </h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/ucr/salon/</code> - Complete SALON UCR templates</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/ucr/salon/
+                      </code>{' '}
+                      - Complete SALON UCR templates
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -191,11 +233,21 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/signature-static.ts</code> - Static fallback signatures</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/signature-static.ts
+                      </code>{' '}
+                      - Static fallback signatures
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/signature-registry.ts</code> - Dynamic signature loading</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/signature-registry.ts
+                      </code>{' '}
+                      - Dynamic signature loading
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -213,7 +265,12 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-purple-900/50 px-1 rounded">/src/lib/universal/playbook-executor.ts</code> - Workflow engine</span>
+                    <span>
+                      <code className="bg-purple-900/50 px-1 rounded">
+                        /src/lib/universal/playbook-executor.ts
+                      </code>{' '}
+                      - Workflow engine
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -221,7 +278,10 @@ export default function WorkSummaryPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span>Expression evaluation with <code className="bg-purple-900/50 px-1 rounded">expr.ts</code></span>
+                    <span>
+                      Expression evaluation with{' '}
+                      <code className="bg-purple-900/50 px-1 rounded">expr.ts</code>
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -238,14 +298,18 @@ export default function WorkSummaryPage() {
               <Package className="h-8 w-8 text-green-400" />
               <h2 className="text-2xl font-bold text-white">3. API Routes</h2>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-green-300 mb-2">Transaction Endpoints</h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-green-900/50 px-1 rounded">/src/app/api/v1/transactions/route.ts</code></span>
+                    <span>
+                      <code className="bg-green-900/50 px-1 rounded">
+                        /src/app/api/v1/transactions/route.ts
+                      </code>
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -253,7 +317,9 @@ export default function WorkSummaryPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span>POST: Create transactions via <code>hera_txn_emit_v1</code> RPC</span>
+                    <span>
+                      POST: Create transactions via <code>hera_txn_emit_v1</code> RPC
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -267,7 +333,11 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-green-900/50 px-1 rounded">/src/app/api/v1/entities/route.ts</code></span>
+                    <span>
+                      <code className="bg-green-900/50 px-1 rounded">
+                        /src/app/api/v1/entities/route.ts
+                      </code>
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -296,14 +366,19 @@ export default function WorkSummaryPage() {
               <Package className="h-8 w-8 text-orange-400" />
               <h2 className="text-2xl font-bold text-white">4. UI Component Library</h2>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-orange-300 mb-2">Core Providers</h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">/src/ui/HeraProvider.tsx</code> - Main context provider</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">
+                        /src/ui/HeraProvider.tsx
+                      </code>{' '}
+                      - Main context provider
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -321,19 +396,30 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">/src/ui/hooks/useHera.ts</code> - Complete data hooks</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">
+                        /src/ui/hooks/useHera.ts
+                      </code>{' '}
+                      - Complete data hooks
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code>useEntities</code>, <code>useTransactions</code> - Query hooks</span>
+                    <span>
+                      <code>useEntities</code>, <code>useTransactions</code> - Query hooks
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code>useCreateTransaction</code> - Mutation hook</span>
+                    <span>
+                      <code>useCreateTransaction</code> - Mutation hook
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code>useDynamicFields</code>, <code>useSetDynamicField</code> - Dynamic data</span>
+                    <span>
+                      <code>useDynamicFields</code>, <code>useSetDynamicField</code> - Dynamic data
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -343,23 +429,37 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">DataTable</code> - Enterprise data grid</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">DataTable</code> - Enterprise
+                      data grid
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">FilterBar</code> - Dynamic filtering UI</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">FilterBar</code> - Dynamic
+                      filtering UI
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">ObjectHeader</code> - Page headers</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">ObjectHeader</code> - Page
+                      headers
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">CardKpi</code> - KPI cards</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">CardKpi</code> - KPI cards
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">LinesTable</code>, <code>RelatedPanel</code> - Related data</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">LinesTable</code>,{' '}
+                      <code>RelatedPanel</code> - Related data
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -369,15 +469,24 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">WizardForm</code> - Multi-step form generation</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">WizardForm</code> - Multi-step
+                      form generation
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">LinesEditor</code> - Transaction line items</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">LinesEditor</code> -
+                      Transaction line items
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">useFormSpec</code> - UCR form loading</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">useFormSpec</code> - UCR form
+                      loading
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -391,11 +500,17 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">HeraThemeProvider</code> - Theme context</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">HeraThemeProvider</code> -
+                      Theme context
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-orange-900/50 px-1 rounded">ThemePicker</code> - Theme customization UI</span>
+                    <span>
+                      <code className="bg-orange-900/50 px-1 rounded">ThemePicker</code> - Theme
+                      customization UI
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -420,14 +535,21 @@ export default function WorkSummaryPage() {
               <Zap className="h-8 w-8 text-red-400" />
               <h2 className="text-2xl font-bold text-white">5. Security & Infrastructure</h2>
             </div>
-            
+
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-red-300 mb-2">Developer Portal Security</h3>
+                <h3 className="text-lg font-semibold text-red-300 mb-2">
+                  Developer Portal Security
+                </h3>
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><code className="bg-red-900/50 px-1 rounded">/src/middleware/docs-auth.ts</code> - Authentication middleware</span>
+                    <span>
+                      <code className="bg-red-900/50 px-1 rounded">
+                        /src/middleware/docs-auth.ts
+                      </code>{' '}
+                      - Authentication middleware
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -453,7 +575,10 @@ export default function WorkSummaryPage() {
                 <ul className="space-y-2 text-blue-200">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span>Sacred <code className="bg-red-900/50 px-1 rounded">organization_id</code> filtering</span>
+                    <span>
+                      Sacred <code className="bg-red-900/50 px-1 rounded">organization_id</code>{' '}
+                      filtering
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />

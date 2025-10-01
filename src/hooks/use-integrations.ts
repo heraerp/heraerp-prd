@@ -88,16 +88,16 @@ export function useConnectIntegration() {
       if (!authCode) {
         // Use service endpoint for all vendors to bypass RLS
         const endpoint = `/api/integrations/${vendor}/auth/callback-service`
-          
+
         return apiClient(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-Organization-Id': orgId!
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             demo: true,
-            organizationId: orgId 
+            organizationId: orgId
           })
         })
       }
@@ -109,9 +109,9 @@ export function useConnectIntegration() {
           'Content-Type': 'application/json',
           'X-Organization-Id': orgId!
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           code: authCode,
-          organizationId: orgId 
+          organizationId: orgId
         })
       })
     },

@@ -663,7 +663,8 @@ export function AppointmentModal({
                 return (
                   <Card
                     key={resource.entity_id}
-                    className={`cursor-pointer transition-all ${ isSelected ?'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
+                    className={`cursor-pointer transition-all ${
+                      isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'
                     }`}
                     onClick={() => handleResourceToggle(resource)}
                   >

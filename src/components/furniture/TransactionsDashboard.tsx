@@ -89,7 +89,8 @@ export function TransactionsDashboard() {
                     <p className="text-sm font-medium text-muted-foreground">{metric.title}</p>
                     <p className="text-2xl font-bold text-foreground">{metric.value}</p>
                     <p
-                      className={`text-sm ${ metric.changeType ==='positive' ? 'text-green-600' : 'text-red-600'
+                      className={`text-sm ${
+                        metric.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
                       }`}
                     >
                       {metric.change} from last month

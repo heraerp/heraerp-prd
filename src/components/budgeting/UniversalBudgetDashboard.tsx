@@ -325,7 +325,9 @@ export default function UniversalBudgetDashboard({
                 <button
                   key={period}
                   onClick={() => setSelectedPeriod(period)}
-                  className={`px-3 py-1 text-sm font-medium border ${ selectedPeriod === period ?'bg-blue-600 text-foreground border-blue-600'
+                  className={`px-3 py-1 text-sm font-medium border ${
+                    selectedPeriod === period
+                      ? 'bg-blue-600 text-foreground border-blue-600'
                       : 'bg-background text-gray-700 border-border hover:bg-muted'
                   } ${period === 'MTD' ? 'rounded-l-md' : period === 'YTD' ? 'rounded-r-md' : ''}`}
                 >

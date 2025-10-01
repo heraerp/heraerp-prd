@@ -2,7 +2,28 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Store, Scissors, Heart, Factory, Briefcase, Building2, LogOut, User, ArrowRight, Lock, Clock, Users, TrendingUp, Award, CheckCircle, PlayCircle, Globe, LineChart, Wifi, DollarSign } from 'lucide-react'
+import {
+  Store,
+  Scissors,
+  Heart,
+  Factory,
+  Briefcase,
+  Building2,
+  LogOut,
+  User,
+  ArrowRight,
+  Lock,
+  Clock,
+  Users,
+  TrendingUp,
+  Award,
+  CheckCircle,
+  PlayCircle,
+  Globe,
+  LineChart,
+  Wifi,
+  DollarSign
+} from 'lucide-react'
 import { supabase } from '@/lib/supabase/client'
 
 const demos = [
@@ -14,7 +35,12 @@ const demos = [
     href: '/demo/salon',
     gradient: 'from-purple-500 to-pink-600',
     stats: { users: '12+', rating: '4.9', uptime: '99.9%' },
-    features: ['Online Booking', 'Chair & Room Scheduling', 'POS & Packages', 'Commission Tracking'],
+    features: [
+      'Online Booking',
+      'Chair & Room Scheduling',
+      'POS & Packages',
+      'Commission Tracking'
+    ],
     available: true,
     popular: true
   },
@@ -85,11 +111,11 @@ interface CurrentSession {
 // Stats Component
 function DemoStats() {
   const stats = [
-    { value: "6", label: "Industry Solutions", icon: "🏢" },
-    { value: "50+", label: "Early Access Users", icon: "👥" },
-    { value: "4.8/5", label: "Average Rating", icon: "⭐" },
-    { value: "Free", label: "Demo Access", icon: "🎁" }
-  ];
+    { value: '6', label: 'Industry Solutions', icon: '🏢' },
+    { value: '50+', label: 'Early Access Users', icon: '👥' },
+    { value: '4.8/5', label: 'Average Rating', icon: '⭐' },
+    { value: 'Free', label: 'Demo Access', icon: '🎁' }
+  ]
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
@@ -104,7 +130,7 @@ function DemoStats() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 export default function DemoPage() {
@@ -118,7 +144,10 @@ export default function DemoPage() {
 
   const checkCurrentSession = async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession()
+      const {
+        data: { session },
+        error
+      } = await supabase.auth.getSession()
 
       if (error) {
         console.log('Session error:', error)
@@ -157,7 +186,13 @@ export default function DemoPage() {
       // Clear localStorage
       const keys = Object.keys(localStorage)
       keys.forEach(key => {
-        if (key.includes('auth') || key.includes('org') || key.includes('demo') || key.includes('supabase') || key.includes('Role')) {
+        if (
+          key.includes('auth') ||
+          key.includes('org') ||
+          key.includes('demo') ||
+          key.includes('supabase') ||
+          key.includes('Role')
+        ) {
           localStorage.removeItem(key)
         }
       })
@@ -212,8 +247,8 @@ export default function DemoPage() {
             </h1>
 
             <p className="ink-muted text-xl md:text-2xl max-w-3xl mx-auto mb-12">
-              Explore fully-functional demos across different industries.
-              See how HERA adapts to your specific business needs.
+              Explore fully-functional demos across different industries. See how HERA adapts to
+              your specific business needs.
             </p>
 
             {/* Demo Stats */}
@@ -251,7 +286,8 @@ export default function DemoPage() {
               </div>
               <div className="mt-4 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
                 <p className="text-sm text-blue-600 dark:text-blue-400">
-                  💡 <strong>Tip:</strong> To explore a different demo, end your current session first for the best experience.
+                  💡 <strong>Tip:</strong> To explore a different demo, end your current session
+                  first for the best experience.
                 </p>
               </div>
             </div>
@@ -275,7 +311,7 @@ export default function DemoPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {demos.map((demo) => {
+            {demos.map(demo => {
               const Icon = demo.icon
               const isActive = currentSession?.demoType === demo.id
 
@@ -292,11 +328,17 @@ export default function DemoPage() {
                   )}
 
                   <div className={`relative h-full ${!demo.available ? 'opacity-75' : ''}`}>
-                    <div className={`absolute inset-0 bg-gradient-to-r ${demo.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-all duration-500`} />
-                    <div className={`relative card-glass p-8 rounded-2xl border ${isActive ? 'border-blue-500' : 'border-border'} hover:border-indigo-500/30 transition-all duration-300 h-full flex flex-col`}>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-r ${demo.gradient} rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-all duration-500`}
+                    />
+                    <div
+                      className={`relative card-glass p-8 rounded-2xl border ${isActive ? 'border-blue-500' : 'border-border'} hover:border-indigo-500/30 transition-all duration-300 h-full flex flex-col`}
+                    >
                       {/* Header */}
                       <div className="flex items-start justify-between mb-6">
-                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${demo.gradient} flex items-center justify-center text-white`}>
+                        <div
+                          className={`w-14 h-14 rounded-xl bg-gradient-to-br ${demo.gradient} flex items-center justify-center text-white`}
+                        >
                           <Icon className="w-7 h-7" />
                         </div>
                         {isActive && (
@@ -314,7 +356,10 @@ export default function DemoPage() {
                       {/* Features */}
                       <div className="flex flex-wrap gap-2 mb-4">
                         {demo.features.slice(0, 3).map((feature, idx) => (
-                          <span key={idx} className="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          <span
+                            key={idx}
+                            className="text-xs px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                          >
                             {feature}
                           </span>
                         ))}
@@ -375,7 +420,9 @@ export default function DemoPage() {
                 Demo Features
               </span>
             </div>
-            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">What's Included in Every Demo</h2>
+            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">
+              What's Included in Every Demo
+            </h2>
             <p className="ink-muted text-lg md:text-xl max-w-3xl mx-auto">
               Each demo environment comes with everything you need to evaluate HERA.
             </p>
@@ -384,34 +431,37 @@ export default function DemoPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Real Sample Data",
-                description: "Populated with realistic business data so you can see actual workflows in action.",
-                icon: "📊"
+                title: 'Real Sample Data',
+                description:
+                  'Populated with realistic business data so you can see actual workflows in action.',
+                icon: '📊'
               },
               {
-                title: "Full Functionality",
-                description: "Complete access to all features and modules. Nothing is restricted or limited.",
-                icon: "🚀"
+                title: 'Full Functionality',
+                description:
+                  'Complete access to all features and modules. Nothing is restricted or limited.',
+                icon: '🚀'
               },
               {
-                title: "Multiple User Roles",
-                description: "Switch between different roles to see various permission levels and workflows.",
-                icon: "👥"
+                title: 'Multiple User Roles',
+                description:
+                  'Switch between different roles to see various permission levels and workflows.',
+                icon: '👥'
               },
               {
-                title: "Reset Anytime",
-                description: "Made a mistake? Reset your demo data to start fresh at any time.",
-                icon: "🔄"
+                title: 'Reset Anytime',
+                description: 'Made a mistake? Reset your demo data to start fresh at any time.',
+                icon: '🔄'
               },
               {
-                title: "No Time Limits",
-                description: "Take as long as you need. Demos never expire and are always free.",
-                icon: "⏰"
+                title: 'No Time Limits',
+                description: 'Take as long as you need. Demos never expire and are always free.',
+                icon: '⏰'
               },
               {
-                title: "Export Your Work",
+                title: 'Export Your Work',
                 description: "Export configurations and data to use when you're ready to go live.",
-                icon: "💾"
+                icon: '💾'
               }
             ].map((feature, idx) => (
               <div key={idx} className="relative group">
@@ -441,9 +491,9 @@ export default function DemoPage() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                onClick={e => {
+                  e.preventDefault()
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
                 className="px-8 py-3 rounded-xl text-base font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all"
               >
@@ -466,8 +516,9 @@ export default function DemoPage() {
           <div className="card-glass rounded-2xl p-8 max-w-md w-full">
             <h3 className="ink text-xl font-semibold mb-4">End Demo Session?</h3>
             <p className="ink-muted mb-6">
-              You're about to end your session with <strong className="ink">{getDemoDisplayName(currentSession?.demoType)}</strong>.
-              You can always come back and continue where you left off.
+              You're about to end your session with{' '}
+              <strong className="ink">{getDemoDisplayName(currentSession?.demoType)}</strong>. You
+              can always come back and continue where you left off.
             </p>
             <div className="flex gap-4">
               <button

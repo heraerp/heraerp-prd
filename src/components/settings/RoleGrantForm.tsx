@@ -290,13 +290,16 @@ export function RoleGrantForm({
                   return (
                     <div
                       key={role.value}
-                      className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-colors ${ isSelected ?`${role.color} border-2`
+                      className={`flex items-start gap-4 p-4 border rounded-lg cursor-pointer transition-colors ${
+                        isSelected
+                          ? `${role.color} border-2`
                           : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                       }`}
                       onClick={() => handleRoleToggle(role.value)}
                     >
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${ isSelected ? role.color :'bg-gray-100 dark:bg-gray-800'
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          isSelected ? role.color : 'bg-gray-100 dark:bg-gray-800'
                         }`}
                       >
                         <role.icon className="h-4 w-4" />
@@ -304,11 +307,11 @@ export function RoleGrantForm({
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <div className="font-medium ink dark:text-gray-100">
-                            {role.label}
-                          </div>
+                          <div className="font-medium ink dark:text-gray-100">{role.label}</div>
                           <div
-                            className={`w-5 h-5 rounded border-2 ${ isSelected ?'bg-current border-current'
+                            className={`w-5 h-5 rounded border-2 ${
+                              isSelected
+                                ? 'bg-current border-current'
                                 : 'border-gray-300 dark:border-gray-600'
                             }`}
                           >
@@ -319,9 +322,7 @@ export function RoleGrantForm({
                             )}
                           </div>
                         </div>
-                        <p className="text-sm dark:ink-muted mt-1">
-                          {role.description}
-                        </p>
+                        <p className="text-sm dark:ink-muted mt-1">{role.description}</p>
                       </div>
                     </div>
                   )
@@ -344,9 +345,7 @@ export function RoleGrantForm({
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Permission Summary</CardTitle>
-                <p className="text-sm dark:ink-muted">
-                  Combined permissions from selected roles
-                </p>
+                <p className="text-sm dark:ink-muted">Combined permissions from selected roles</p>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">

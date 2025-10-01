@@ -152,7 +152,8 @@ export function VibeContextIndicator({
   return (
     <div className={`${getPositionClasses()} ${className}`}>
       <div
-        className={`bg-background border border-border rounded-lg shadow-lg transition-all duration-300 ${ isExpanded ?'w-80' : 'w-48'
+        className={`bg-background border border-border rounded-lg shadow-lg transition-all duration-300 ${
+          isExpanded ? 'w-80' : 'w-48'
         }`}
       >
         {/* Header */}

@@ -88,7 +88,9 @@ export function TestingSummaryCard({ recentTests = [] }: TestingSummaryCardProps
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-2 h-2 rounded-full ${ test.passRate === 100 ?'bg-green-500'
+                    className={`w-2 h-2 rounded-full ${
+                      test.passRate === 100
+                        ? 'bg-green-500'
                         : test.passRate >= 80
                           ? 'bg-yellow-500'
                           : 'bg-red-500'

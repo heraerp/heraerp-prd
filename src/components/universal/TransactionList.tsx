@@ -123,7 +123,8 @@ export function TransactionList({
             {displayTransactions.map(transaction => (
               <div
                 key={transaction.id}
-                className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${ onItemClick ?'hover:bg-muted dark:hover:bg-muted cursor-pointer' : ''
+                className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
+                  onItemClick ? 'hover:bg-muted dark:hover:bg-muted cursor-pointer' : ''
                 }`}
                 onClick={() => onItemClick?.(transaction)}
               >

@@ -444,7 +444,7 @@ export function EnhancedDocumentList({
           return (
             <Card
               key={document.id}
-              className={`border-0 shadow-lg ${overdue ?'border-l-4 border-red-500' : ''}`}
+              className={`border-0 shadow-lg ${overdue ? 'border-l-4 border-red-500' : ''}`}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
@@ -565,9 +565,7 @@ export function EnhancedDocumentList({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-3">
                           <div>
-                            <label className="text-sm font-medium ink">
-                              Document Code
-                            </label>
+                            <label className="text-sm font-medium ink">Document Code</label>
                             <p className="text-sm text-gray-100 font-mono">
                               {document.document_code}
                             </p>
@@ -602,9 +600,7 @@ export function EnhancedDocumentList({
                           </div>
                           {document.received_date && (
                             <div>
-                              <label className="text-sm font-medium ink">
-                                Received Date
-                              </label>
+                              <label className="text-sm font-medium ink">Received Date</label>
                               <p className="text-sm text-gray-100">
                                 {new Date(document.received_date).toLocaleDateString()}
                               </p>

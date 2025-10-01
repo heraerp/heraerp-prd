@@ -142,9 +142,7 @@ export function DayView({ currentDate, items, onItemClick }: DayViewProps) {
                     )}
                   </div>
                   <div className="text-sm font-medium mt-1">{item.title}</div>
-                  {item.location && (
-                    <div className="text-xs truncate">{item.location}</div>
-                  )}
+                  {item.location && <div className="text-xs truncate">{item.location}</div>}
                   {item.participants && item.participants.length > 0 && (
                     <div className="text-xs truncate mt-1">
                       {item.participants

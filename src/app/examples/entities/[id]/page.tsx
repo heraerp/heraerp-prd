@@ -1,15 +1,15 @@
 // app/examples/entities/[id]/page.tsx - Entity detail with dynamic data
-'use client';
-import React from 'react';
-import { ObjectHeader, DataTable, useEntity, useDynamicData } from '@/ui';
-import { useRouter } from 'next/navigation';
+'use client'
+import React from 'react'
+import { ObjectHeader, DataTable, useEntity, useDynamicData } from '@/ui'
+import { useRouter } from 'next/navigation'
 
 export default function EntityDetail({ params }: { params: { id: string } }) {
-  const router = useRouter();
-  const { data: entity, isLoading: entityLoading } = useEntity(params.id);
-  const { data: dynamicData, isLoading: dynamicLoading } = useDynamicData(params.id);
-  
-  const isLoading = entityLoading || dynamicLoading;
+  const router = useRouter()
+  const { data: entity, isLoading: entityLoading } = useEntity(params.id)
+  const { data: dynamicData, isLoading: dynamicLoading } = useDynamicData(params.id)
+
+  const isLoading = entityLoading || dynamicLoading
 
   if (isLoading) {
     return (
@@ -23,7 +23,7 @@ export default function EntityDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!entity) {
@@ -31,34 +31,33 @@ export default function EntityDetail({ params }: { params: { id: string } }) {
       <div className="p-6">
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Entity not found</h3>
-          <button
-            onClick={() => router.back()}
-            className="text-blue-600 hover:text-blue-800"
-          >
+          <button onClick={() => router.back()} className="text-blue-600 hover:text-blue-800">
             Go back
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   // Transform dynamic data for display
-  const dynamicFields = dynamicData?.map((field: any) => {
-    let value = field.field_value_text || 
-                field.field_value_number || 
-                field.field_value_boolean || 
-                field.field_value_date ||
-                field.field_value_json;
-    
-    if (field.field_value_json) {
-      value = JSON.stringify(field.field_value_json, null, 2);
-    }
-    
-    return {
-      ...field,
-      display_value: value,
-    };
-  }) || [];
+  const dynamicFields =
+    dynamicData?.map((field: any) => {
+      let value =
+        field.field_value_text ||
+        field.field_value_number ||
+        field.field_value_boolean ||
+        field.field_value_date ||
+        field.field_value_json
+
+      if (field.field_value_json) {
+        value = JSON.stringify(field.field_value_json, null, 2)
+      }
+
+      return {
+        ...field,
+        display_value: value
+      }
+    }) || []
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -86,10 +85,7 @@ export default function EntityDetail({ params }: { params: { id: string } }) {
             )}
           </div>
         }
-        tags={[
-          entity.status,
-          entity.parent_entity_id && 'Has Parent'
-        ].filter(Boolean)}
+        tags={[entity.status, entity.parent_entity_id && 'Has Parent'].filter(Boolean)}
         right={
           <div className="text-sm text-gray-600">
             Created {new Date(entity.created_at).toLocaleDateString()}
@@ -134,54 +130,57 @@ export default function EntityDetail({ params }: { params: { id: string } }) {
             <DataTable
               rows={dynamicFields}
               columns={[
-                { 
-                  header: 'Field Name', 
+                {
+                  header: 'Field Name',
                   key: 'field_name',
-                  render: (row) => (
+                  render: row => (
                     <div>
                       <div className="font-medium">{row.field_name}</div>
                       <div className="text-xs text-gray-500">{row.field_type}</div>
                     </div>
                   )
                 },
-                { 
-                  header: 'Value', 
+                {
+                  header: 'Value',
                   key: 'display_value',
-                  render: (row) => {
+                  render: row => {
                     if (row.field_type === 'json') {
                       return (
                         <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-w-md">
                           {row.display_value}
                         </pre>
-                      );
+                      )
                     }
                     if (row.field_type === 'boolean') {
-                      return row.display_value ? '✓ Yes' : '✗ No';
+                      return row.display_value ? '✓ Yes' : '✗ No'
                     }
-                    return row.display_value || '-';
+                    return row.display_value || '-'
                   }
                 },
-                { 
-                  header: 'Smart Code', 
+                {
+                  header: 'Smart Code',
                   key: 'smart_code',
                   width: '200px',
-                  render: (row) => row.smart_code ? (
-                    <code className="text-xs bg-gray-100 px-2 py-0.5 rounded">
-                      {row.smart_code}
-                    </code>
-                  ) : '-'
+                  render: row =>
+                    row.smart_code ? (
+                      <code className="text-xs bg-gray-100 px-2 py-0.5 rounded">
+                        {row.smart_code}
+                      </code>
+                    ) : (
+                      '-'
+                    )
                 },
-                { 
-                  header: 'Updated', 
+                {
+                  header: 'Updated',
                   key: 'updated_at',
                   width: '150px',
-                  render: (row) => new Date(row.updated_at).toLocaleDateString()
-                },
+                  render: row => new Date(row.updated_at).toLocaleDateString()
+                }
               ]}
             />
           </div>
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -145,7 +145,7 @@ export function PortfolioHoldings({ organizationId, className }: PortfolioHoldin
               disabled={loading}
             >
               <RefreshCcw
-                className={`h-3 w-3 text-muted-foreground ${loading ?'animate-spin' : ''}`}
+                className={`h-3 w-3 text-muted-foreground ${loading ? 'animate-spin' : ''}`}
               />
             </button>
           </div>

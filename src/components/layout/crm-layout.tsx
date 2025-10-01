@@ -102,7 +102,8 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
       {/* Sidebar - Desktop */}
       <div
-        className={`hidden lg:flex fixed inset-y-0 left-0 z-50 flex-col transition-all duration-300 ${ isExpanded ?'w-64' : 'w-20'
+        className={`hidden lg:flex fixed inset-y-0 left-0 z-50 flex-col transition-all duration-300 ${
+          isExpanded ? 'w-64' : 'w-20'
         }`}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
@@ -136,12 +137,15 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${ isActive ?'bg-gradient-to-r from-[#FF5A09]/20 to-[#ec7f37]/20 text-foreground border border-[#FF5A09]/30'
+                  className={`group flex items-center px-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#FF5A09]/20 to-[#ec7f37]/20 text-foreground border border-[#FF5A09]/30'
                       : 'text-foreground/70 hover:text-foreground hover:bg-background/5'
                   }`}
                 >
                   <item.icon
-                    className={`${ isExpanded ?'mr-3' : 'mx-auto'
+                    className={`${
+                      isExpanded ? 'mr-3' : 'mx-auto'
                     } h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                       isActive ? 'text-[#FF5A09]' : 'text-foreground/70 group-hover:text-foreground'
                     }`}
@@ -179,7 +183,7 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                         <div className="flex items-center space-x-1">
                           <span className="text-xs font-medium text-foreground">{stat.value}</span>
                           <span
-                            className={`text-xs ${stat.positive ?'text-emerald-400' : 'text-red-400'}`}
+                            className={`text-xs ${stat.positive ? 'text-emerald-400' : 'text-red-400'}`}
                           >
                             {stat.change}
                           </span>
@@ -195,7 +199,7 @@ export function CRMLayout({ children }: CRMLayoutProps) {
       </div>
 
       {/* Sidebar - Mobile */}
-      <div className={`lg:hidden fixed inset-0 z-40 ${isMobileMenuOpen ?'block' : 'hidden'}`}>
+      <div className={`lg:hidden fixed inset-0 z-40 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
         <div
           className="fixed inset-0 bg-background/50"
           onClick={() => setIsMobileMenuOpen(false)}
@@ -226,12 +230,16 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`group flex items-center px-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${ isActive ?'bg-gradient-to-r from-[#FF5A09]/20 to-[#ec7f37]/20 text-foreground border border-[#FF5A09]/30'
+                    className={`group flex items-center px-2 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-[#FF5A09]/20 to-[#ec7f37]/20 text-foreground border border-[#FF5A09]/30'
                         : 'text-foreground/70 hover:text-foreground hover:bg-background/5'
                     }`}
                   >
                     <item.icon
-                      className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-200 ${ isActive ?'text-[#FF5A09]'
+                      className={`mr-3 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                        isActive
+                          ? 'text-[#FF5A09]'
                           : 'text-foreground/70 group-hover:text-foreground'
                       }`}
                     />
@@ -253,7 +261,8 @@ export function CRMLayout({ children }: CRMLayoutProps) {
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 ${ isExpanded ?'lg:pl-64' : 'lg:pl-20'
+        className={`transition-all duration-300 ${
+          isExpanded ? 'lg:pl-64' : 'lg:pl-20'
         } pt-14 lg:pt-0`}
       >
         <main className="p-6">{children}</main>

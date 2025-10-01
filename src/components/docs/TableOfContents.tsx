@@ -27,8 +27,11 @@ export function TableOfContents({ content, className }: TableOfContentsProps) {
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length
       const text = match[2]
-      const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-      
+      const id = text
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+
       extractedHeadings.push({ id, text, level })
     }
 
@@ -59,18 +62,20 @@ export function TableOfContents({ content, className }: TableOfContentsProps) {
 
   return (
     <nav className={cn('space-y-1', className)}>
-      <h4 className="font-semibold text-sm mb-4 text-slate-900 dark:text-slate-100">On this page</h4>
+      <h4 className="font-semibold text-sm mb-4 text-slate-900 dark:text-slate-100">
+        On this page
+      </h4>
       <ul className="space-y-1 text-sm">
-        {headings.map((heading) => (
+        {headings.map(heading => (
           <li
             key={heading.id}
             style={{
-              paddingLeft: `${(heading.level - 1) * 12}px`,
+              paddingLeft: `${(heading.level - 1) * 12}px`
             }}
           >
             <a
               href={`#${heading.id}`}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault()
                 const element = document.getElementById(heading.id)
                 if (element) {
@@ -79,7 +84,8 @@ export function TableOfContents({ content, className }: TableOfContentsProps) {
               }}
               className={cn(
                 'block py-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors duration-200',
-                activeId === heading.id && 'text-blue-600 dark:text-blue-400 font-semibold border-l-2 border-blue-600 pl-2 -ml-2'
+                activeId === heading.id &&
+                  'text-blue-600 dark:text-blue-400 font-semibold border-l-2 border-blue-600 pl-2 -ml-2'
               )}
             >
               {heading.text}

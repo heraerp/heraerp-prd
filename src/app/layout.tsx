@@ -137,8 +137,8 @@ export default function RootLayout({
               };
             })();
           `
-        }}
-      />
+          }}
+        />
         {/* PWA functionality has been removed from HERA for multi-tenant safety */}
         {/* Setting cache control headers for multi-tenant security */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />

@@ -83,9 +83,7 @@ export function AppointmentManagementDashboard({
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold ink dark:text-gray-100">
-            Appointment Management
-          </h1>
+          <h1 className="text-3xl font-bold ink dark:text-gray-100">Appointment Management</h1>
           <p className="text-muted-foreground mt-1">Manage salon appointments and bookings</p>
         </div>
         <Link href="/salon-data/appointments/new">
@@ -181,9 +179,7 @@ export function AppointmentManagementDashboard({
           ) : filteredAppointments.length === 0 ? (
             <div className="text-center py-12">
               <Calendar className="h-12 w-12 ink-muted mx-auto mb-4" />
-              <p className="dark:ink-muted">
-                No appointments found for the selected filters
-              </p>
+              <p className="dark:ink-muted">No appointments found for the selected filters</p>
             </div>
           ) : (
             <div className="space-y-4">

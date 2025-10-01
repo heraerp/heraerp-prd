@@ -246,7 +246,9 @@ export function AIFinanceDashboard({ organizationId }: AIFinanceDashboardProps) 
                     <div className="flex items-center justify-between">
                       <p className="font-medium text-foreground">{code.smart_code}</p>
                       <Badge
-                        className={`ml-2 ${ code.auto_posting_rate >= 85 ?'bg-emerald-100 text-emerald-800'
+                        className={`ml-2 ${
+                          code.auto_posting_rate >= 85
+                            ? 'bg-emerald-100 text-emerald-800'
                             : code.auto_posting_rate >= 70
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-red-100 text-red-800'

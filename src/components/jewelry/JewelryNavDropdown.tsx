@@ -17,16 +17,16 @@ export function JewelryNavDropdown({ label, items }: JewelryNavDropdownProps) {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger 
-        ref={triggerRef} 
+      <DropdownMenu.Trigger
+        ref={triggerRef}
         className="flex items-center gap-1 px-3 py-2 text-sm font-medium jewelry-text-luxury hover:jewelry-text-gold transition-colors rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       >
         {label}
         <ChevronDown className="h-4 w-4" />
       </DropdownMenu.Trigger>
-      
+
       <DropdownMenu.Portal>
-        <DropdownMenu.Content 
+        <DropdownMenu.Content
           className="jewelry-glass-dropdown rounded-xl p-2 min-w-[220px] shadow-2xl will-change-[opacity,transform] border border-yellow-500/20"
           sideOffset={5}
           onCloseAutoFocus={() => triggerRef.current?.focus()}
@@ -37,9 +37,9 @@ export function JewelryNavDropdown({ label, items }: JewelryNavDropdownProps) {
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="space-y-1"
           >
-            {items.map((item) => (
+            {items.map(item => (
               <DropdownMenu.Item key={item.href} asChild>
-                <a 
+                <a
                   href={item.href}
                   className="flex items-center px-3 py-2 text-sm rounded-lg jewelry-text-luxury hover:jewelry-text-gold hover:bg-yellow-500/10 transition-all cursor-pointer focus-visible:outline-none focus-visible:bg-yellow-500/10 focus-visible:jewelry-text-gold group"
                 >

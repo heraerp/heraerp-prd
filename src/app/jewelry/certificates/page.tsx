@@ -202,7 +202,7 @@ export default function JewelryCertificatesPage() {
           height: 8.3
         },
         craftsmanship: 'Exceptional Victorian craftsmanship with intricate milgrain detailing',
-        historicalSignificance: 'Commissioned for Queen Victoria\'s Diamond Jubilee, 1897',
+        historicalSignificance: "Commissioned for Queen Victoria's Diamond Jubilee, 1897",
         provenance: 'Royal Collection, documented provenance since 1897',
         estimatedValue: 2500000,
         insuranceValue: 3000000,
@@ -215,7 +215,11 @@ export default function JewelryCertificatesPage() {
         confidenceLevel: 99.8,
         verifiedBy: 'Dr. Jonathan Sterling',
         verificationDate: '2024-01-15',
-        notes: ['All diamonds confirmed natural', 'No treatments detected', 'Exceptional clarity throughout']
+        notes: [
+          'All diamonds confirmed natural',
+          'No treatments detected',
+          'Exceptional clarity throughout'
+        ]
       },
       compliance: {
         standards: ['ISO 21067', 'CIBJO Guidelines', 'Responsible Jewellery Council'],
@@ -254,7 +258,11 @@ export default function JewelryCertificatesPage() {
       createdAt: '2024-01-10',
       updatedAt: '2024-01-15',
       location: 'High Security Vault',
-      notes: ['Exceptional historical piece', 'Requires specialized handling', 'Insurance documentation updated']
+      notes: [
+        'Exceptional historical piece',
+        'Requires specialized handling',
+        'Insurance documentation updated'
+      ]
     },
     {
       id: '2',
@@ -310,7 +318,11 @@ export default function JewelryCertificatesPage() {
         confidenceLevel: 99.5,
         verifiedBy: 'Dr. Sarah Mitchell',
         verificationDate: '2024-01-12',
-        notes: ['No heat treatment detected', 'Burmese origin confirmed', 'Exceptional color saturation']
+        notes: [
+          'No heat treatment detected',
+          'Burmese origin confirmed',
+          'Exceptional color saturation'
+        ]
       },
       compliance: {
         standards: ['CIBJO Guidelines', 'LMHC Standards'],
@@ -397,7 +409,11 @@ export default function JewelryCertificatesPage() {
         confidenceLevel: 98.2,
         verifiedBy: 'Prof. David Richardson',
         verificationDate: '2024-01-18',
-        notes: ['Natural pearls confirmed', 'Period-appropriate construction', 'Minor restoration evidence']
+        notes: [
+          'Natural pearls confirmed',
+          'Period-appropriate construction',
+          'Minor restoration evidence'
+        ]
       },
       compliance: {
         standards: ['USPAP Standards', 'ISA Guidelines'],
@@ -426,22 +442,36 @@ export default function JewelryCertificatesPage() {
     }
   ]
 
-  const certificateTypes = ['all', 'authenticity', 'appraisal', 'grading', 'origin', 'insurance', 'warranty']
+  const certificateTypes = [
+    'all',
+    'authenticity',
+    'appraisal',
+    'grading',
+    'origin',
+    'insurance',
+    'warranty'
+  ]
   const statuses = ['all', 'draft', 'pending', 'issued', 'verified', 'expired', 'revoked']
   const priorities = ['all', 'low', 'medium', 'high', 'urgent']
 
   // Calculate summary metrics
   const totalCertificates = certificates.length
-  const totalValue = certificates.reduce((sum, cert) => sum + cert.certificateDetails.estimatedValue, 0)
-  const pendingCertificates = certificates.filter(cert => ['draft', 'pending'].includes(cert.status)).length
+  const totalValue = certificates.reduce(
+    (sum, cert) => sum + cert.certificateDetails.estimatedValue,
+    0
+  )
+  const pendingCertificates = certificates.filter(cert =>
+    ['draft', 'pending'].includes(cert.status)
+  ).length
   const verifiedCertificates = certificates.filter(cert => cert.blockchainVerified).length
 
   // Filter and sort certificates
   const filteredCertificates = certificates
     .filter(cert => {
-      const matchesSearch = cert.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           cert.certificateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           cert.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch =
+        cert.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cert.certificateNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cert.clientName.toLowerCase().includes(searchTerm.toLowerCase())
       const matchesType = selectedType === 'all' || cert.certificateType === selectedType
       const matchesStatus = selectedStatus === 'all' || cert.status === selectedStatus
       const matchesPriority = selectedPriority === 'all' || cert.priority === selectedPriority
@@ -451,9 +481,14 @@ export default function JewelryCertificatesPage() {
       const direction = sortOrder === 'asc' ? 1 : -1
       switch (sortBy) {
         case 'certificateDate':
-          return (new Date(a.certificateDate).getTime() - new Date(b.certificateDate).getTime()) * direction
+          return (
+            (new Date(a.certificateDate).getTime() - new Date(b.certificateDate).getTime()) *
+            direction
+          )
         case 'value':
-          return (a.certificateDetails.estimatedValue - b.certificateDetails.estimatedValue) * direction
+          return (
+            (a.certificateDetails.estimatedValue - b.certificateDetails.estimatedValue) * direction
+          )
         case 'client':
           return a.clientName.localeCompare(b.clientName) * direction
         case 'priority':
@@ -466,57 +501,88 @@ export default function JewelryCertificatesPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'issued': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'verified': return <Shield className="jewelry-icon-success" size={16} />
-      case 'pending': return <Clock className="jewelry-icon-warning" size={16} />
-      case 'expired': return <AlertTriangle className="jewelry-icon-error" size={16} />
-      case 'revoked': return <XCircle className="jewelry-icon-error" size={16} />
-      case 'draft': return <FileText className="jewelry-icon-gold" size={16} />
-      default: return null
+      case 'issued':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'verified':
+        return <Shield className="jewelry-icon-success" size={16} />
+      case 'pending':
+        return <Clock className="jewelry-icon-warning" size={16} />
+      case 'expired':
+        return <AlertTriangle className="jewelry-icon-error" size={16} />
+      case 'revoked':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      case 'draft':
+        return <FileText className="jewelry-icon-gold" size={16} />
+      default:
+        return null
     }
   }
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'urgent': return <Zap className="jewelry-icon-error" size={16} />
-      case 'high': return <TrendingUp className="jewelry-icon-warning" size={16} />
-      case 'medium': return <Target className="jewelry-icon-info" size={16} />
-      case 'low': return <Activity className="jewelry-icon-success" size={16} />
-      default: return null
+      case 'urgent':
+        return <Zap className="jewelry-icon-error" size={16} />
+      case 'high':
+        return <TrendingUp className="jewelry-icon-warning" size={16} />
+      case 'medium':
+        return <Target className="jewelry-icon-info" size={16} />
+      case 'low':
+        return <Activity className="jewelry-icon-success" size={16} />
+      default:
+        return null
     }
   }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'authenticity': return <Shield className="jewelry-icon-gold" size={16} />
-      case 'grading': return <Diamond className="jewelry-icon-gold" size={16} />
-      case 'appraisal': return <DollarSign className="jewelry-icon-gold" size={16} />
-      case 'origin': return <MapPin className="jewelry-icon-gold" size={16} />
-      case 'insurance': return <Lock className="jewelry-icon-gold" size={16} />
-      case 'warranty': return <Award className="jewelry-icon-gold" size={16} />
-      default: return <FileText className="jewelry-icon-gold" size={16} />
+      case 'authenticity':
+        return <Shield className="jewelry-icon-gold" size={16} />
+      case 'grading':
+        return <Diamond className="jewelry-icon-gold" size={16} />
+      case 'appraisal':
+        return <DollarSign className="jewelry-icon-gold" size={16} />
+      case 'origin':
+        return <MapPin className="jewelry-icon-gold" size={16} />
+      case 'insurance':
+        return <Lock className="jewelry-icon-gold" size={16} />
+      case 'warranty':
+        return <Award className="jewelry-icon-gold" size={16} />
+      default:
+        return <FileText className="jewelry-icon-gold" size={16} />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'issued': return 'jewelry-status-active'
-      case 'verified': return 'jewelry-status-premium'
-      case 'pending': return 'jewelry-status-pending'
-      case 'expired': return 'jewelry-status-inactive'
-      case 'revoked': return 'jewelry-status-inactive'
-      case 'draft': return 'jewelry-status-pending'
-      default: return 'jewelry-status-inactive'
+      case 'issued':
+        return 'jewelry-status-active'
+      case 'verified':
+        return 'jewelry-status-premium'
+      case 'pending':
+        return 'jewelry-status-pending'
+      case 'expired':
+        return 'jewelry-status-inactive'
+      case 'revoked':
+        return 'jewelry-status-inactive'
+      case 'draft':
+        return 'jewelry-status-pending'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700'
-      case 'high': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-700'
-      case 'medium': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700'
-      case 'low': return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700'
-      default: return 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-700'
+      case 'urgent':
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700'
+      case 'high':
+        return 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-700'
+      case 'medium':
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700'
+      case 'low':
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700'
+      default:
+        return 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300 border-gray-300 dark:border-gray-700'
     }
   }
 
@@ -525,7 +591,7 @@ export default function JewelryCertificatesPage() {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
           {/* Page Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -541,7 +607,7 @@ export default function JewelryCertificatesPage() {
           </motion.div>
 
           {/* Summary Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -552,28 +618,43 @@ export default function JewelryCertificatesPage() {
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{totalCertificates}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Certificates</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${(totalValue / 1000000).toFixed(1)}M</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${(totalValue / 1000000).toFixed(1)}M
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Certified Value</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <Clock className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{pendingCertificates}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {pendingCertificates}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Pending</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <Shield className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{verifiedCertificates}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {verifiedCertificates}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Blockchain Verified</p>
             </div>
           </motion.div>
 
           {/* Action Bar */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -583,19 +664,22 @@ export default function JewelryCertificatesPage() {
               {/* Search and Filters */}
               <div className="flex flex-col sm:flex-row gap-4 items-center flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                    size={20}
+                  />
                   <input
                     type="text"
                     placeholder="Search certificates..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="jewelry-input pl-10 w-64"
                   />
                 </div>
-                
+
                 <select
                   value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
+                  onChange={e => setSelectedType(e.target.value)}
                   className="jewelry-input"
                 >
                   {certificateTypes.map(type => (
@@ -604,27 +688,31 @@ export default function JewelryCertificatesPage() {
                     </option>
                   ))}
                 </select>
-                
+
                 <select
                   value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  onChange={e => setSelectedStatus(e.target.value)}
                   className="jewelry-input"
                 >
                   {statuses.map(status => (
                     <option key={status} value={status}>
-                      {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
+                      {status === 'all'
+                        ? 'All Status'
+                        : status.charAt(0).toUpperCase() + status.slice(1)}
                     </option>
                   ))}
                 </select>
 
                 <select
                   value={selectedPriority}
-                  onChange={(e) => setSelectedPriority(e.target.value)}
+                  onChange={e => setSelectedPriority(e.target.value)}
                   className="jewelry-input"
                 >
                   {priorities.map(priority => (
                     <option key={priority} value={priority}>
-                      {priority === 'all' ? 'All Priorities' : priority.charAt(0).toUpperCase() + priority.slice(1)}
+                      {priority === 'all'
+                        ? 'All Priorities'
+                        : priority.charAt(0).toUpperCase() + priority.slice(1)}
                     </option>
                   ))}
                 </select>
@@ -657,7 +745,7 @@ export default function JewelryCertificatesPage() {
                 <span className="jewelry-text-luxury text-sm font-medium">Sort by:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={e => setSortBy(e.target.value)}
                   className="jewelry-input text-sm"
                 >
                   <option value="certificateDate">Date</option>
@@ -669,7 +757,11 @@ export default function JewelryCertificatesPage() {
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                   className="jewelry-btn-secondary p-2"
                 >
-                  {sortOrder === 'asc' ? <TrendingUp className="jewelry-icon-gold" size={16} /> : <TrendingUp className="jewelry-icon-gold rotate-180" size={16} />}
+                  {sortOrder === 'asc' ? (
+                    <TrendingUp className="jewelry-icon-gold" size={16} />
+                  ) : (
+                    <TrendingUp className="jewelry-icon-gold rotate-180" size={16} />
+                  )}
                 </button>
               </div>
 
@@ -698,7 +790,7 @@ export default function JewelryCertificatesPage() {
           </motion.div>
 
           {/* Certificates Display */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -719,20 +811,28 @@ export default function JewelryCertificatesPage() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           {getTypeIcon(certificate.certificateType)}
-                          <h3 className="jewelry-text-high-contrast font-semibold text-lg">{certificate.itemName}</h3>
+                          <h3 className="jewelry-text-high-contrast font-semibold text-lg">
+                            {certificate.itemName}
+                          </h3>
                           {getPriorityIcon(certificate.priority)}
                         </div>
-                        <p className="jewelry-text-muted text-sm font-mono">{certificate.certificateNumber}</p>
+                        <p className="jewelry-text-muted text-sm font-mono">
+                          {certificate.certificateNumber}
+                        </p>
                         <p className="jewelry-text-muted text-sm">{certificate.clientName}</p>
                       </div>
                       <div className="flex flex-col items-end space-y-2">
                         <div className="flex items-center space-x-2">
                           {getStatusIcon(certificate.status)}
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(certificate.status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(certificate.status)}`}
+                          >
                             {certificate.status.toUpperCase()}
                           </span>
                         </div>
-                        <span className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(certificate.priority)}`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(certificate.priority)}`}
+                        >
                           {certificate.priority.toUpperCase()}
                         </span>
                         {certificate.blockchainVerified && (
@@ -749,19 +849,27 @@ export default function JewelryCertificatesPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="jewelry-text-muted text-xs">Type:</span>
-                          <p className="jewelry-text-high-contrast text-sm font-medium">{certificate.certificateType.toUpperCase()}</p>
+                          <p className="jewelry-text-high-contrast text-sm font-medium">
+                            {certificate.certificateType.toUpperCase()}
+                          </p>
                         </div>
                         <div>
                           <span className="jewelry-text-muted text-xs">Issuer:</span>
-                          <p className="jewelry-text-high-contrast text-sm font-medium">{certificate.issuerName}</p>
+                          <p className="jewelry-text-high-contrast text-sm font-medium">
+                            {certificate.issuerName}
+                          </p>
                         </div>
                         <div>
                           <span className="jewelry-text-muted text-xs">Issue Date:</span>
-                          <p className="jewelry-text-high-contrast text-sm font-medium">{new Date(certificate.certificateDate).toLocaleDateString()}</p>
+                          <p className="jewelry-text-high-contrast text-sm font-medium">
+                            {new Date(certificate.certificateDate).toLocaleDateString()}
+                          </p>
                         </div>
                         <div>
                           <span className="jewelry-text-muted text-xs">Expires:</span>
-                          <p className="jewelry-text-high-contrast text-sm font-medium">{new Date(certificate.expiryDate).toLocaleDateString()}</p>
+                          <p className="jewelry-text-high-contrast text-sm font-medium">
+                            {new Date(certificate.expiryDate).toLocaleDateString()}
+                          </p>
                         </div>
                       </div>
 
@@ -769,7 +877,8 @@ export default function JewelryCertificatesPage() {
                       <div>
                         <span className="jewelry-text-muted text-xs">Item Details:</span>
                         <p className="jewelry-text-high-contrast text-sm font-medium">
-                          {certificate.certificateDetails.metal} - {certificate.certificateDetails.netWeight}g
+                          {certificate.certificateDetails.metal} -{' '}
+                          {certificate.certificateDetails.netWeight}g
                         </p>
                       </div>
 
@@ -778,9 +887,12 @@ export default function JewelryCertificatesPage() {
                         <div>
                           <span className="jewelry-text-muted text-xs">Primary Stone:</span>
                           <p className="jewelry-text-high-contrast text-sm font-medium">
-                            {certificate.certificateDetails.stoneDetails[0].carat > 0 ? 
-                              `${certificate.certificateDetails.stoneDetails[0].carat}ct ` : ''}
-                            {certificate.certificateDetails.stoneDetails[0].type} - {certificate.certificateDetails.stoneDetails[0].color} {certificate.certificateDetails.stoneDetails[0].clarity}
+                            {certificate.certificateDetails.stoneDetails[0].carat > 0
+                              ? `${certificate.certificateDetails.stoneDetails[0].carat}ct `
+                              : ''}
+                            {certificate.certificateDetails.stoneDetails[0].type} -{' '}
+                            {certificate.certificateDetails.stoneDetails[0].color}{' '}
+                            {certificate.certificateDetails.stoneDetails[0].clarity}
                           </p>
                         </div>
                       )}
@@ -789,11 +901,15 @@ export default function JewelryCertificatesPage() {
                       <div className="grid grid-cols-2 gap-4 pt-2 border-t border-jewelry-blue-200">
                         <div>
                           <span className="jewelry-text-muted text-xs">Estimated Value:</span>
-                          <p className="jewelry-text-high-contrast text-lg font-bold">${certificate.certificateDetails.estimatedValue.toLocaleString()}</p>
+                          <p className="jewelry-text-high-contrast text-lg font-bold">
+                            ${certificate.certificateDetails.estimatedValue.toLocaleString()}
+                          </p>
                         </div>
                         <div>
                           <span className="jewelry-text-muted text-xs">Insurance Value:</span>
-                          <p className="jewelry-text-high-contrast text-lg font-bold">${certificate.certificateDetails.insuranceValue.toLocaleString()}</p>
+                          <p className="jewelry-text-high-contrast text-lg font-bold">
+                            ${certificate.certificateDetails.insuranceValue.toLocaleString()}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -802,11 +918,15 @@ export default function JewelryCertificatesPage() {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center justify-between text-sm">
                         <span className="jewelry-text-muted">Confidence:</span>
-                        <span className="jewelry-text-high-contrast font-medium">{certificate.verification.confidenceLevel}%</span>
+                        <span className="jewelry-text-high-contrast font-medium">
+                          {certificate.verification.confidenceLevel}%
+                        </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="jewelry-text-muted">Method:</span>
-                        <span className="jewelry-text-high-contrast">{certificate.verification.verificationMethod.toUpperCase()}</span>
+                        <span className="jewelry-text-high-contrast">
+                          {certificate.verification.verificationMethod.toUpperCase()}
+                        </span>
                       </div>
                     </div>
 
@@ -817,7 +937,7 @@ export default function JewelryCertificatesPage() {
                         <span className="jewelry-text-muted text-xs">{certificate.location}</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <button 
+                        <button
                           onClick={() => setSelectedCertificate(certificate)}
                           className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform"
                         >
@@ -844,13 +964,19 @@ export default function JewelryCertificatesPage() {
               <div className="space-y-2">
                 {/* List Header */}
                 <div className="grid grid-cols-12 gap-4 p-4 jewelry-glass-card-subtle">
-                  <div className="col-span-3 jewelry-text-luxury text-sm font-semibold">Certificate</div>
+                  <div className="col-span-3 jewelry-text-luxury text-sm font-semibold">
+                    Certificate
+                  </div>
                   <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Type</div>
                   <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Client</div>
                   <div className="col-span-2 jewelry-text-luxury text-sm font-semibold">Value</div>
                   <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Status</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Priority</div>
-                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">Actions</div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    Priority
+                  </div>
+                  <div className="col-span-1 jewelry-text-luxury text-sm font-semibold">
+                    Actions
+                  </div>
                 </div>
 
                 {/* List Items */}
@@ -863,24 +989,38 @@ export default function JewelryCertificatesPage() {
                     className="grid grid-cols-12 gap-4 p-4 jewelry-glass-card hover:scale-[1.01] transition-transform"
                   >
                     <div className="col-span-3">
-                      <h3 className="jewelry-text-high-contrast font-medium">{certificate.itemName}</h3>
-                      <p className="jewelry-text-muted text-sm font-mono">{certificate.certificateNumber}</p>
+                      <h3 className="jewelry-text-high-contrast font-medium">
+                        {certificate.itemName}
+                      </h3>
+                      <p className="jewelry-text-muted text-sm font-mono">
+                        {certificate.certificateNumber}
+                      </p>
                     </div>
                     <div className="col-span-2">
                       <div className="flex items-center space-x-2">
                         {getTypeIcon(certificate.certificateType)}
-                        <span className="jewelry-text-high-contrast">{certificate.certificateType.toUpperCase()}</span>
+                        <span className="jewelry-text-high-contrast">
+                          {certificate.certificateType.toUpperCase()}
+                        </span>
                       </div>
                     </div>
-                    <div className="col-span-2 jewelry-text-high-contrast">{certificate.clientName}</div>
-                    <div className="col-span-2 jewelry-text-high-contrast font-bold">${certificate.certificateDetails.estimatedValue.toLocaleString()}</div>
+                    <div className="col-span-2 jewelry-text-high-contrast">
+                      {certificate.clientName}
+                    </div>
+                    <div className="col-span-2 jewelry-text-high-contrast font-bold">
+                      ${certificate.certificateDetails.estimatedValue.toLocaleString()}
+                    </div>
                     <div className="col-span-1">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(certificate.status)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(certificate.status)}`}
+                      >
                         {certificate.status.toUpperCase()}
                       </span>
                     </div>
                     <div className="col-span-1">
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(certificate.priority)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(certificate.priority)}`}
+                      >
                         {certificate.priority.toUpperCase()}
                       </span>
                     </div>
@@ -903,25 +1043,35 @@ export default function JewelryCertificatesPage() {
                 {['draft', 'pending', 'issued', 'verified', 'expired', 'revoked'].map(status => (
                   <div key={status} className="jewelry-glass-card-subtle p-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="jewelry-text-luxury font-semibold text-sm">{status.toUpperCase()}</h3>
+                      <h3 className="jewelry-text-luxury font-semibold text-sm">
+                        {status.toUpperCase()}
+                      </h3>
                       <span className="jewelry-text-muted text-xs">
                         {filteredCertificates.filter(c => c.status === status).length}
                       </span>
                     </div>
                     <div className="space-y-3">
-                      {filteredCertificates.filter(c => c.status === status).map(certificate => (
-                        <div key={certificate.id} className="jewelry-glass-card p-3">
-                          <h4 className="jewelry-text-high-contrast font-medium text-sm mb-1">{certificate.itemName}</h4>
-                          <p className="jewelry-text-muted text-xs mb-2">{certificate.clientName}</p>
-                          <p className="jewelry-text-high-contrast text-sm font-bold">${certificate.certificateDetails.estimatedValue.toLocaleString()}</p>
-                          {certificate.blockchainVerified && (
-                            <div className="flex items-center space-x-1 mt-2">
-                              <Shield className="jewelry-icon-success" size={10} />
-                              <span className="text-xs jewelry-text-high-contrast">Verified</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                      {filteredCertificates
+                        .filter(c => c.status === status)
+                        .map(certificate => (
+                          <div key={certificate.id} className="jewelry-glass-card p-3">
+                            <h4 className="jewelry-text-high-contrast font-medium text-sm mb-1">
+                              {certificate.itemName}
+                            </h4>
+                            <p className="jewelry-text-muted text-xs mb-2">
+                              {certificate.clientName}
+                            </p>
+                            <p className="jewelry-text-high-contrast text-sm font-bold">
+                              ${certificate.certificateDetails.estimatedValue.toLocaleString()}
+                            </p>
+                            {certificate.blockchainVerified && (
+                              <div className="flex items-center space-x-1 mt-2">
+                                <Shield className="jewelry-icon-success" size={10} />
+                                <span className="text-xs jewelry-text-high-contrast">Verified</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -931,21 +1081,26 @@ export default function JewelryCertificatesPage() {
             {filteredCertificates.length === 0 && (
               <div className="text-center py-12">
                 <Award className="mx-auto mb-4 jewelry-icon-gold opacity-50" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No Certificates Found</h3>
-                <p className="jewelry-text-muted">Try adjusting your filters or create a new certificate.</p>
+                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
+                  No Certificates Found
+                </h3>
+                <p className="jewelry-text-muted">
+                  Try adjusting your filters or create a new certificate.
+                </p>
               </div>
             )}
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Blockchain-secured certification powered by <span className="jewelry-text-luxury font-semibold">HERA Verification System</span>
+              Blockchain-secured certification powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Verification System</span>
             </p>
           </motion.div>
         </div>

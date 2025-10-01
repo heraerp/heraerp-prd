@@ -67,7 +67,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
       {/* Sparkle Animation */}
       <div className="absolute top-4 right-4 opacity-60">
         <Sparkles
-          className={`w-6 h-6 text-emerald-500 transition-transform duration-500 ${isHovered ?'rotate-180 scale-110' : ''}`}
+          className={`w-6 h-6 text-emerald-500 transition-transform duration-500 ${isHovered ? 'rotate-180 scale-110' : ''}`}
         />
       </div>
 
@@ -187,7 +187,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
           <Button
             onClick={onConvert}
             size="lg"
-            className={`bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-foreground font-semibold px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 ${isHovered ?'scale-105' : ''}
+            className={`bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-foreground font-semibold px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 ${isHovered ? 'scale-105' : ''}
             `}
           >
             Convert to Production
@@ -199,7 +199,7 @@ export function ConversionBanner({ demoModule, metrics, onConvert }: ConversionB
       {/* Animated Border Glow */}
       <div className="absolute inset-0 rounded-lg opacity-60">
         <div
-          className={`absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 transition-opacity duration-300 ${isHovered ?'animate-pulse' : ''}`}
+          className={`absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 transition-opacity duration-300 ${isHovered ? 'animate-pulse' : ''}`}
           style={{
             background: 'linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6)',
             WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',

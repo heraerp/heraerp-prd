@@ -205,7 +205,8 @@ export function DocumentUploadModal({
         <div className="space-y-6 py-4">
           {/* Drop Zone */}
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${ dragActive ?'border-blue-500 bg-blue-50' : 'border-border hover:border-gray-400'
+            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+              dragActive ? 'border-blue-500 bg-blue-50' : 'border-border hover:border-gray-400'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}

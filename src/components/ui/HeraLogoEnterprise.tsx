@@ -35,7 +35,8 @@ export function HeraLogoEnterprise({
   const stops = gradientStops[variant]
 
   return (
-    <svg stroke="currentColor"
+    <svg
+      stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}

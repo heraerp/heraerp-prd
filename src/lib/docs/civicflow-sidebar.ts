@@ -20,7 +20,7 @@ export const civicflowSidebar = [
     items: [
       { title: 'Constituents', href: '/docs/civicflow/crm-constituents' },
       { title: 'Organizations', href: '/docs/civicflow/crm-organizations' },
-      { title: 'Cases', href: '/docs/civicflow/case-management' },
+      { title: 'Cases', href: '/docs/civicflow/case-management' }
     ]
   },
   {
@@ -38,7 +38,7 @@ export const civicflowSidebar = [
     href: '/docs/civicflow/automation',
     items: [
       { title: 'Playbooks', href: '/docs/civicflow/automation/playbooks' },
-      { title: 'Workflows', href: '/docs/civicflow/automation/workflows' },
+      { title: 'Workflows', href: '/docs/civicflow/automation/workflows' }
     ]
   },
   {
@@ -52,7 +52,7 @@ export const civicflowSidebar = [
     items: [
       { title: 'User Management', href: '/docs/civicflow/administration/users' },
       { title: 'Security', href: '/docs/civicflow/administration/security' },
-      { title: 'Settings', href: '/docs/civicflow/administration/settings' },
+      { title: 'Settings', href: '/docs/civicflow/administration/settings' }
     ]
   },
   {
@@ -64,5 +64,5 @@ export const civicflowSidebar = [
     title: 'Help & Support',
     href: '/docs/civicflow/support',
     items: []
-  },
+  }
 ]

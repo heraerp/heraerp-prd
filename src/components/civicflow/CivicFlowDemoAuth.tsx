@@ -159,7 +159,7 @@ export function CivicFlowDemoAuth() {
           {DEMO_USERS.map(user => (
             <div
               key={user.email}
-              className={`cursor-pointer transition-all rounded-lg border bg-panel border-border hover:bg-panel-alt ${selectedUser?.email === user.email ?'ring-2 ring-accent' : ''}
+              className={`cursor-pointer transition-all rounded-lg border bg-panel border-border hover:bg-panel-alt ${selectedUser?.email === user.email ? 'ring-2 ring-accent' : ''}
                 ${loading ? 'opacity-75' : ''}
               `}
               onClick={() => !loading && handleDemoLogin(user)}

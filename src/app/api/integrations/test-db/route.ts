@@ -7,13 +7,13 @@ export async function GET(request: NextRequest) {
   try {
     // Test 1: Check if we can connect to the database
     const testQuery = await selectValue<string>('SELECT current_database() as db')
-    
+
     // Test 2: Check if the organization exists
     const orgCheck = await selectValue<boolean>(
       'SELECT EXISTS(SELECT 1 FROM core_organizations WHERE id = $1) as exists',
       [CIVICFLOW_ORG_ID]
     )
-    
+
     // Test 3: Check if the function exists
     const functionCheck = await selectValue<boolean>(`
       SELECT EXISTS(
@@ -21,13 +21,14 @@ export async function GET(request: NextRequest) {
         WHERE proname = 'hera_entity_upsert_v1'
       ) as exists
     `)
-    
+
     // Test 4: Try to create a test entity
     let testEntity = null
     let testError = null
-    
+
     try {
-      testEntity = await selectValue<string>(`
+      testEntity = await selectValue<string>(
+        `
         SELECT hera_entity_upsert_v1(
           $1::uuid, $2::text, $3::text, $4::text,
           null::uuid, null::text, null::text, null::uuid, 
@@ -35,16 +36,13 @@ export async function GET(request: NextRequest) {
           '{}'::jsonb, '{}'::jsonb, 0::numeric, 
           null::text, '{}'::jsonb, '{}'::jsonb, null::uuid
         ) as entity_id
-      `, [
-        CIVICFLOW_ORG_ID,
-        'test_entity',
-        'Test Entity',
-        'HERA.TEST.ENTITY.TYPE.NAME.V1'
-      ])
+      `,
+        [CIVICFLOW_ORG_ID, 'test_entity', 'Test Entity', 'HERA.TEST.ENTITY.TYPE.NAME.V1']
+      )
     } catch (e: any) {
       testError = e.message
     }
-    
+
     return NextResponse.json({
       database: {
         connected: !!testQuery,
@@ -70,10 +68,13 @@ export async function GET(request: NextRequest) {
       }
     })
   } catch (error: any) {
-    return NextResponse.json({
-      error: 'Database test failed',
-      message: error.message,
-      stack: error.stack
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Database test failed',
+        message: error.message,
+        stack: error.stack
+      },
+      { status: 500 }
+    )
   }
 }

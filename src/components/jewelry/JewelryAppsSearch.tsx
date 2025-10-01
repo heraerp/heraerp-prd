@@ -3,226 +3,416 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Crown, Diamond, Gem, Scale, Sparkles, Shield, Home, BarChart3, 
-  TrendingUp, Calculator, FileText, Settings, Users, Package, 
-  ShoppingBag, CreditCard, Receipt, Award, Star, Gift, Zap, Bell, 
-  Clock, Calendar, Building2, Brain, Camera, Palette, Search, 
-  Archive, Tag, Briefcase, BookOpen, Heart, Coins, Target, Activity, 
-  Layers, Fingerprint, X
+import {
+  Crown,
+  Diamond,
+  Gem,
+  Scale,
+  Sparkles,
+  Shield,
+  Home,
+  BarChart3,
+  TrendingUp,
+  Calculator,
+  FileText,
+  Settings,
+  Users,
+  Package,
+  ShoppingBag,
+  CreditCard,
+  Receipt,
+  Award,
+  Star,
+  Gift,
+  Zap,
+  Bell,
+  Clock,
+  Calendar,
+  Building2,
+  Brain,
+  Camera,
+  Palette,
+  Search,
+  Archive,
+  Tag,
+  Briefcase,
+  BookOpen,
+  Heart,
+  Coins,
+  Target,
+  Activity,
+  Layers,
+  Fingerprint,
+  X
 } from 'lucide-react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 // All jewelry apps with search metadata
 const allJewelryApps = [
   // Core Operations
-  { 
-    id: 'dashboard', title: 'Dashboard', href: '/jewelry/dashboard', icon: Home,
-    category: 'Core Operations', description: 'Overview and key metrics',
+  {
+    id: 'dashboard',
+    title: 'Dashboard',
+    href: '/jewelry/dashboard',
+    icon: Home,
+    category: 'Core Operations',
+    description: 'Overview and key metrics',
     tags: ['overview', 'metrics', 'kpi', 'summary']
   },
-  { 
-    id: 'worklist', title: 'Worklist', href: '/jewelry/worklist', icon: Gem,
-    category: 'Core Operations', description: 'Tasks and workflow management',
+  {
+    id: 'worklist',
+    title: 'Worklist',
+    href: '/jewelry/worklist',
+    icon: Gem,
+    category: 'Core Operations',
+    description: 'Tasks and workflow management',
     tags: ['tasks', 'workflow', 'todo', 'assignments']
   },
-  { 
-    id: 'pos', title: 'POS System', href: '/jewelry/pos', icon: CreditCard,
-    category: 'Core Operations', description: 'Point of sale and transactions',
+  {
+    id: 'pos',
+    title: 'POS System',
+    href: '/jewelry/pos',
+    icon: CreditCard,
+    category: 'Core Operations',
+    description: 'Point of sale and transactions',
     tags: ['sales', 'transactions', 'payment', 'checkout']
   },
-  { 
-    id: 'inventory', title: 'Inventory', href: '/jewelry/inventory', icon: Package,
-    category: 'Core Operations', description: 'Stock management and tracking',
+  {
+    id: 'inventory',
+    title: 'Inventory',
+    href: '/jewelry/inventory',
+    icon: Package,
+    category: 'Core Operations',
+    description: 'Stock management and tracking',
     tags: ['stock', 'items', 'products', 'warehouse']
   },
-  { 
-    id: 'search', title: 'Search', href: '/jewelry/search', icon: Search,
-    category: 'Core Operations', description: 'Find items and information',
+  {
+    id: 'search',
+    title: 'Search',
+    href: '/jewelry/search',
+    icon: Search,
+    category: 'Core Operations',
+    description: 'Find items and information',
     tags: ['find', 'lookup', 'query', 'locate']
   },
 
   // Quality & Certification
-  { 
-    id: 'appraisals', title: 'Appraisals', href: '/jewelry/appraisals', icon: Scale,
-    category: 'Quality & Certification', description: 'Item valuation and assessment',
+  {
+    id: 'appraisals',
+    title: 'Appraisals',
+    href: '/jewelry/appraisals',
+    icon: Scale,
+    category: 'Quality & Certification',
+    description: 'Item valuation and assessment',
     tags: ['value', 'assessment', 'evaluation', 'worth']
   },
-  { 
-    id: 'certificates', title: 'Certificates', href: '/jewelry/certificates', icon: Shield,
-    category: 'Quality & Certification', description: 'Certification management',
+  {
+    id: 'certificates',
+    title: 'Certificates',
+    href: '/jewelry/certificates',
+    icon: Shield,
+    category: 'Quality & Certification',
+    description: 'Certification management',
     tags: ['certificates', 'documentation', 'authenticity', 'proof']
   },
-  { 
-    id: 'quality', title: 'Quality Control', href: '/jewelry/quality', icon: Award,
-    category: 'Quality & Certification', description: 'Quality assurance processes',
+  {
+    id: 'quality',
+    title: 'Quality Control',
+    href: '/jewelry/quality',
+    icon: Award,
+    category: 'Quality & Certification',
+    description: 'Quality assurance processes',
     tags: ['quality', 'control', 'standards', 'inspection']
   },
-  { 
-    id: 'auth', title: 'Authentication', href: '/jewelry/auth', icon: Fingerprint,
-    category: 'Quality & Certification', description: 'Item authentication',
+  {
+    id: 'auth',
+    title: 'Authentication',
+    href: '/jewelry/auth',
+    icon: Fingerprint,
+    category: 'Quality & Certification',
+    description: 'Item authentication',
     tags: ['authentication', 'verification', 'genuine', 'real']
   },
-  { 
-    id: 'grading', title: 'Grading', href: '/jewelry/grading', icon: Star,
-    category: 'Quality & Certification', description: 'Item grading and classification',
+  {
+    id: 'grading',
+    title: 'Grading',
+    href: '/jewelry/grading',
+    icon: Star,
+    category: 'Quality & Certification',
+    description: 'Item grading and classification',
     tags: ['grading', 'classification', 'rating', 'grade']
   },
 
   // Customer Management
-  { 
-    id: 'customers', title: 'Customers', href: '/jewelry/customers', icon: Users,
-    category: 'Customer Management', description: 'Customer relationship management',
+  {
+    id: 'customers',
+    title: 'Customers',
+    href: '/jewelry/customers',
+    icon: Users,
+    category: 'Customer Management',
+    description: 'Customer relationship management',
     tags: ['clients', 'customers', 'contacts', 'crm']
   },
-  { 
-    id: 'vip', title: 'VIP Services', href: '/jewelry/vip', icon: Crown,
-    category: 'Customer Management', description: 'Premium customer services',
+  {
+    id: 'vip',
+    title: 'VIP Services',
+    href: '/jewelry/vip',
+    icon: Crown,
+    category: 'Customer Management',
+    description: 'Premium customer services',
     tags: ['vip', 'premium', 'luxury', 'exclusive']
   },
-  { 
-    id: 'wishlist', title: 'Wishlist', href: '/jewelry/wishlist', icon: Heart,
-    category: 'Customer Management', description: 'Customer wish lists',
+  {
+    id: 'wishlist',
+    title: 'Wishlist',
+    href: '/jewelry/wishlist',
+    icon: Heart,
+    category: 'Customer Management',
+    description: 'Customer wish lists',
     tags: ['wishlist', 'desires', 'wants', 'favorites']
   },
-  { 
-    id: 'loyalty', title: 'Loyalty Program', href: '/jewelry/loyalty', icon: Gift,
-    category: 'Customer Management', description: 'Customer loyalty and rewards',
+  {
+    id: 'loyalty',
+    title: 'Loyalty Program',
+    href: '/jewelry/loyalty',
+    icon: Gift,
+    category: 'Customer Management',
+    description: 'Customer loyalty and rewards',
     tags: ['loyalty', 'rewards', 'points', 'program']
   },
 
   // Business Intelligence
-  { 
-    id: 'analytics', title: 'Analytics', href: '/jewelry/analytics', icon: TrendingUp,
-    category: 'Business Intelligence', description: 'Business analytics and insights',
+  {
+    id: 'analytics',
+    title: 'Analytics',
+    href: '/jewelry/analytics',
+    icon: TrendingUp,
+    category: 'Business Intelligence',
+    description: 'Business analytics and insights',
     tags: ['analytics', 'insights', 'data', 'trends']
   },
-  { 
-    id: 'reports', title: 'Reports', href: '/jewelry/reports', icon: BarChart3,
-    category: 'Business Intelligence', description: 'Business reports and metrics',
+  {
+    id: 'reports',
+    title: 'Reports',
+    href: '/jewelry/reports',
+    icon: BarChart3,
+    category: 'Business Intelligence',
+    description: 'Business reports and metrics',
     tags: ['reports', 'metrics', 'kpi', 'performance']
   },
-  { 
-    id: 'finance', title: 'Financial', href: '/jewelry/finance', icon: Calculator,
-    category: 'Business Intelligence', description: 'Financial management',
+  {
+    id: 'finance',
+    title: 'Financial',
+    href: '/jewelry/finance',
+    icon: Calculator,
+    category: 'Business Intelligence',
+    description: 'Financial management',
     tags: ['finance', 'accounting', 'money', 'budget']
   },
-  { 
-    id: 'profit', title: 'Profit Analysis', href: '/jewelry/profit', icon: Target,
-    category: 'Business Intelligence', description: 'Profitability analysis',
+  {
+    id: 'profit',
+    title: 'Profit Analysis',
+    href: '/jewelry/profit',
+    icon: Target,
+    category: 'Business Intelligence',
+    description: 'Profitability analysis',
     tags: ['profit', 'margin', 'profitability', 'earnings']
   },
-  { 
-    id: 'trends', title: 'Market Trends', href: '/jewelry/trends', icon: Activity,
-    category: 'Business Intelligence', description: 'Market and trend analysis',
+  {
+    id: 'trends',
+    title: 'Market Trends',
+    href: '/jewelry/trends',
+    icon: Activity,
+    category: 'Business Intelligence',
+    description: 'Market and trend analysis',
     tags: ['trends', 'market', 'forecasting', 'patterns']
   },
 
   // Catalog & Products
-  { 
-    id: 'catalog', title: 'Catalog', href: '/jewelry/catalog', icon: BookOpen,
-    category: 'Catalog & Products', description: 'Product catalog management',
+  {
+    id: 'catalog',
+    title: 'Catalog',
+    href: '/jewelry/catalog',
+    icon: BookOpen,
+    category: 'Catalog & Products',
+    description: 'Product catalog management',
     tags: ['catalog', 'products', 'items', 'collection']
   },
-  { 
-    id: 'collections', title: 'Collections', href: '/jewelry/collections', icon: Layers,
-    category: 'Catalog & Products', description: 'Product collections',
+  {
+    id: 'collections',
+    title: 'Collections',
+    href: '/jewelry/collections',
+    icon: Layers,
+    category: 'Catalog & Products',
+    description: 'Product collections',
     tags: ['collections', 'sets', 'groups', 'series']
   },
-  { 
-    id: 'pricing', title: 'Pricing', href: '/jewelry/pricing', icon: Coins,
-    category: 'Catalog & Products', description: 'Price management',
+  {
+    id: 'pricing',
+    title: 'Pricing',
+    href: '/jewelry/pricing',
+    icon: Coins,
+    category: 'Catalog & Products',
+    description: 'Price management',
     tags: ['pricing', 'cost', 'price', 'rates']
   },
-  { 
-    id: 'tags', title: 'Tags & Labels', href: '/jewelry/tags', icon: Tag,
-    category: 'Catalog & Products', description: 'Item tagging and labeling',
+  {
+    id: 'tags',
+    title: 'Tags & Labels',
+    href: '/jewelry/tags',
+    icon: Tag,
+    category: 'Catalog & Products',
+    description: 'Item tagging and labeling',
     tags: ['tags', 'labels', 'categories', 'classification']
   },
 
   // Operations
-  { 
-    id: 'repairs', title: 'Repairs', href: '/jewelry/repairs', icon: Zap,
-    category: 'Operations', description: 'Repair and maintenance services',
+  {
+    id: 'repairs',
+    title: 'Repairs',
+    href: '/jewelry/repairs',
+    icon: Zap,
+    category: 'Operations',
+    description: 'Repair and maintenance services',
     tags: ['repairs', 'maintenance', 'fix', 'service']
   },
-  { 
-    id: 'custom', title: 'Custom Orders', href: '/jewelry/custom', icon: Sparkles,
-    category: 'Operations', description: 'Custom jewelry orders',
+  {
+    id: 'custom',
+    title: 'Custom Orders',
+    href: '/jewelry/custom',
+    icon: Sparkles,
+    category: 'Operations',
+    description: 'Custom jewelry orders',
     tags: ['custom', 'bespoke', 'personalized', 'orders']
   },
-  { 
-    id: 'appointments', title: 'Appointments', href: '/jewelry/appointments', icon: Calendar,
-    category: 'Operations', description: 'Appointment scheduling',
+  {
+    id: 'appointments',
+    title: 'Appointments',
+    href: '/jewelry/appointments',
+    icon: Calendar,
+    category: 'Operations',
+    description: 'Appointment scheduling',
     tags: ['appointments', 'schedule', 'booking', 'calendar']
   },
-  { 
-    id: 'schedule', title: 'Scheduling', href: '/jewelry/schedule', icon: Clock,
-    category: 'Operations', description: 'Resource and staff scheduling',
+  {
+    id: 'schedule',
+    title: 'Scheduling',
+    href: '/jewelry/schedule',
+    icon: Clock,
+    category: 'Operations',
+    description: 'Resource and staff scheduling',
     tags: ['scheduling', 'time', 'resources', 'staff']
   },
 
   // Sales & Marketing
-  { 
-    id: 'sales', title: 'Sales', href: '/jewelry/sales', icon: ShoppingBag,
-    category: 'Sales & Marketing', description: 'Sales management',
+  {
+    id: 'sales',
+    title: 'Sales',
+    href: '/jewelry/sales',
+    icon: ShoppingBag,
+    category: 'Sales & Marketing',
+    description: 'Sales management',
     tags: ['sales', 'selling', 'revenue', 'orders']
   },
-  { 
-    id: 'invoices', title: 'Invoices', href: '/jewelry/invoices', icon: Receipt,
-    category: 'Sales & Marketing', description: 'Invoice management',
+  {
+    id: 'invoices',
+    title: 'Invoices',
+    href: '/jewelry/invoices',
+    icon: Receipt,
+    category: 'Sales & Marketing',
+    description: 'Invoice management',
     tags: ['invoices', 'billing', 'payments', 'receipts']
   },
-  { 
-    id: 'promotions', title: 'Promotions', href: '/jewelry/promotions', icon: Gift,
-    category: 'Sales & Marketing', description: 'Marketing and promotions',
+  {
+    id: 'promotions',
+    title: 'Promotions',
+    href: '/jewelry/promotions',
+    icon: Gift,
+    category: 'Sales & Marketing',
+    description: 'Marketing and promotions',
     tags: ['promotions', 'marketing', 'discounts', 'offers']
   },
-  { 
-    id: 'gallery', title: 'Photography', href: '/jewelry/gallery', icon: Camera,
-    category: 'Sales & Marketing', description: 'Product photography',
+  {
+    id: 'gallery',
+    title: 'Photography',
+    href: '/jewelry/gallery',
+    icon: Camera,
+    category: 'Sales & Marketing',
+    description: 'Product photography',
     tags: ['photography', 'images', 'gallery', 'photos']
   },
 
   // Administration
-  { 
-    id: 'settings', title: 'Settings', href: '/jewelry/settings', icon: Settings,
-    category: 'Administration', description: 'System configuration',
+  {
+    id: 'settings',
+    title: 'Settings',
+    href: '/jewelry/settings',
+    icon: Settings,
+    category: 'Administration',
+    description: 'System configuration',
     tags: ['settings', 'configuration', 'preferences', 'system']
   },
-  { 
-    id: 'security', title: 'Security', href: '/jewelry/security', icon: Shield,
-    category: 'Administration', description: 'Security management',
+  {
+    id: 'security',
+    title: 'Security',
+    href: '/jewelry/security',
+    icon: Shield,
+    category: 'Administration',
+    description: 'Security management',
     tags: ['security', 'protection', 'access', 'permissions']
   },
-  { 
-    id: 'branches', title: 'Branch Management', href: '/jewelry/branches', icon: Building2,
-    category: 'Administration', description: 'Multi-location management',
+  {
+    id: 'branches',
+    title: 'Branch Management',
+    href: '/jewelry/branches',
+    icon: Building2,
+    category: 'Administration',
+    description: 'Multi-location management',
     tags: ['branches', 'locations', 'stores', 'outlets']
   },
-  { 
-    id: 'staff', title: 'Staff Portal', href: '/jewelry/staff', icon: Briefcase,
-    category: 'Administration', description: 'Staff management',
+  {
+    id: 'staff',
+    title: 'Staff Portal',
+    href: '/jewelry/staff',
+    icon: Briefcase,
+    category: 'Administration',
+    description: 'Staff management',
     tags: ['staff', 'employees', 'team', 'personnel']
   },
-  { 
-    id: 'archive', title: 'Archive', href: '/jewelry/archive', icon: Archive,
-    category: 'Administration', description: 'Data archival',
+  {
+    id: 'archive',
+    title: 'Archive',
+    href: '/jewelry/archive',
+    icon: Archive,
+    category: 'Administration',
+    description: 'Data archival',
     tags: ['archive', 'backup', 'storage', 'history']
   },
-  { 
-    id: 'notifications', title: 'Notifications', href: '/jewelry/notifications', icon: Bell,
-    category: 'Administration', description: 'Notification management',
+  {
+    id: 'notifications',
+    title: 'Notifications',
+    href: '/jewelry/notifications',
+    icon: Bell,
+    category: 'Administration',
+    description: 'Notification management',
     tags: ['notifications', 'alerts', 'messages', 'updates']
   },
-  { 
-    id: 'themes', title: 'Themes', href: '/jewelry/themes', icon: Palette,
-    category: 'Administration', description: 'Theme customization',
+  {
+    id: 'themes',
+    title: 'Themes',
+    href: '/jewelry/themes',
+    icon: Palette,
+    category: 'Administration',
+    description: 'Theme customization',
     tags: ['themes', 'appearance', 'design', 'customization']
   },
-  { 
-    id: 'ai', title: 'Smart AI', href: '/jewelry/ai', icon: Brain,
-    category: 'Administration', description: 'AI-powered features',
+  {
+    id: 'ai',
+    title: 'Smart AI',
+    href: '/jewelry/ai',
+    icon: Brain,
+    category: 'Administration',
+    description: 'AI-powered features',
     tags: ['ai', 'artificial intelligence', 'smart', 'automation']
   }
 ]
@@ -257,24 +447,28 @@ export function JewelryAppsSearch({ isOpen, onClose }: JewelryAppsSearchProps) {
     }
 
     const query = searchQuery.toLowerCase()
-    const filtered = allJewelryApps.filter(app => 
-      app.title.toLowerCase().includes(query) ||
-      app.description.toLowerCase().includes(query) ||
-      app.category.toLowerCase().includes(query) ||
-      app.tags.some(tag => tag.toLowerCase().includes(query))
+    const filtered = allJewelryApps.filter(
+      app =>
+        app.title.toLowerCase().includes(query) ||
+        app.description.toLowerCase().includes(query) ||
+        app.category.toLowerCase().includes(query) ||
+        app.tags.some(tag => tag.toLowerCase().includes(query))
     )
-    
+
     setFilteredApps(filtered)
   }, [searchQuery])
 
   // Group apps by category
-  const groupedApps = filteredApps.reduce((acc, app) => {
-    if (!acc[app.category]) {
-      acc[app.category] = []
-    }
-    acc[app.category].push(app)
-    return acc
-  }, {} as Record<string, typeof allJewelryApps>)
+  const groupedApps = filteredApps.reduce(
+    (acc, app) => {
+      if (!acc[app.category]) {
+        acc[app.category] = []
+      }
+      acc[app.category].push(app)
+      return acc
+    },
+    {} as Record<string, typeof allJewelryApps>
+  )
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -332,7 +526,7 @@ export function JewelryAppsSearch({ isOpen, onClose }: JewelryAppsSearchProps) {
                   type="text"
                   placeholder="Search apps, features, or categories..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 jewelry-glass-input rounded-xl text-lg focus:ring-2 focus:ring-yellow-500/50 focus:outline-none"
                 />
               </div>
@@ -378,7 +572,7 @@ export function JewelryAppsSearch({ isOpen, onClose }: JewelryAppsSearchProps) {
                   </div>
                 </div>
               ))}
-              
+
               {filteredApps.length === 0 && (
                 <div className="text-center py-12">
                   <Search className="h-12 w-12 jewelry-text-muted mx-auto mb-4" />

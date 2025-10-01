@@ -7,37 +7,34 @@
  * - Adds required x-hera-api-version header
  * - Ensures apiVersion: 'v2' is in the body
  */
-export async function fetchV2(
-  input: string,
-  init: RequestInit = {}
-): Promise<Response> {
+export async function fetchV2(input: string, init: RequestInit = {}): Promise<Response> {
   // Ensure URL uses v2 prefix
-  let url = input;
+  let url = input
   if (input.startsWith('/api/') && !input.startsWith('/api/v2/')) {
     // Transform /api/foo to /api/v2/foo
-    url = `/api/v2${input.substring(4)}`;
-    console.warn(`[fetchV2] Transformed legacy URL: ${input} → ${url}`);
+    url = `/api/v2${input.substring(4)}`
+    console.warn(`[fetchV2] Transformed legacy URL: ${input} → ${url}`)
   } else if (!input.startsWith('/api/v2/') && !input.startsWith('http')) {
     // Add /api/v2 prefix if missing
-    url = `/api/v2/${input.replace(/^\//, '')}`;
+    url = `/api/v2/${input.replace(/^\//, '')}`
   }
 
   // Setup headers
-  const headers = new Headers(init.headers ?? {});
-  headers.set('x-hera-api-version', 'v2');
-  
+  const headers = new Headers(init.headers ?? {})
+  headers.set('x-hera-api-version', 'v2')
+
   // Set content-type if body exists
   if (init.body && !headers.has('content-type')) {
-    headers.set('content-type', 'application/json');
+    headers.set('content-type', 'application/json')
   }
 
   // Ensure apiVersion in body for POST/PUT/PATCH
-  let body = init.body;
+  let body = init.body
   if (body && ['POST', 'PUT', 'PATCH'].includes(init.method?.toUpperCase() || '')) {
     try {
-      const parsed = typeof body === 'string' ? JSON.parse(body) : body;
+      const parsed = typeof body === 'string' ? JSON.parse(body) : body
       if (parsed && typeof parsed === 'object' && !parsed.apiVersion) {
-        body = JSON.stringify({ ...parsed, apiVersion: 'v2' });
+        body = JSON.stringify({ ...parsed, apiVersion: 'v2' })
       }
     } catch (e) {
       // If parsing fails, leave body as-is (might be FormData, etc)
@@ -45,21 +42,23 @@ export async function fetchV2(
   }
 
   // Make the request
-  const fullUrl = url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}`;
-  console.log(`[fetchV2] Making request to: ${fullUrl}`);
-  
+  const fullUrl = url.startsWith('http')
+    ? url
+    : `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}${url}`
+  console.log(`[fetchV2] Making request to: ${fullUrl}`)
+
   const response = await fetch(fullUrl, {
     ...init,
     headers,
     body
-  });
+  })
 
   // Log non-2xx responses
   if (!response.ok) {
-    console.error(`[fetchV2] Request failed: ${init.method || 'GET'} ${url} → ${response.status}`);
+    console.error(`[fetchV2] Request failed: ${init.method || 'GET'} ${url} → ${response.status}`)
   }
 
-  return response;
+  return response
 }
 
 /**
@@ -70,17 +69,17 @@ export async function fetchV2Json<T = any>(
   init: RequestInit = {}
 ): Promise<{ data?: T; error?: any; response: Response }> {
   try {
-    const response = await fetchV2(input, init);
-    
+    const response = await fetchV2(input, init)
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({
         message: `HTTP ${response.status}: ${response.statusText}`
-      }));
-      return { error, response };
+      }))
+      return { error, response }
     }
 
-    const data = await response.json() as T;
-    return { data, response };
+    const data = (await response.json()) as T
+    return { data, response }
   } catch (error) {
     return {
       error: {
@@ -88,7 +87,7 @@ export async function fetchV2Json<T = any>(
         details: error
       },
       response: new Response(null, { status: 500 })
-    };
+    }
   }
 }
 
@@ -100,8 +99,8 @@ export const apiV2 = {
    * GET request
    */
   async get<T = any>(path: string, params?: Record<string, any>) {
-    const url = params ? `${path}?${new URLSearchParams(params)}` : path;
-    return fetchV2Json<T>(url, { method: 'GET' });
+    const url = params ? `${path}?${new URLSearchParams(params)}` : path
+    return fetchV2Json<T>(url, { method: 'GET' })
   },
 
   /**
@@ -111,7 +110,7 @@ export const apiV2 = {
     return fetchV2Json<T>(path, {
       method: 'POST',
       body: JSON.stringify({ apiVersion: 'v2', ...body })
-    });
+    })
   },
 
   /**
@@ -121,14 +120,14 @@ export const apiV2 = {
     return fetchV2Json<T>(path, {
       method: 'PUT',
       body: JSON.stringify({ apiVersion: 'v2', ...body })
-    });
+    })
   },
 
   /**
    * DELETE request
    */
   async delete<T = any>(path: string) {
-    return fetchV2Json<T>(path, { method: 'DELETE' });
+    return fetchV2Json<T>(path, { method: 'DELETE' })
   },
 
   /**
@@ -138,14 +137,14 @@ export const apiV2 = {
     return fetchV2Json<T>(path, {
       method: 'PATCH',
       body: JSON.stringify({ apiVersion: 'v2', ...body })
-    });
+    })
   }
-};
+}
 
 /**
  * React hook for v2 API calls
  * (Can be expanded with SWR/React Query integration)
  */
 export function useApiV2() {
-  return apiV2;
+  return apiV2
 }

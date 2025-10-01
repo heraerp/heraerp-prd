@@ -74,9 +74,7 @@ export function PerformanceVisualization({
             {formatCurrency(payload[0].value)}
           </p>
           {payload[1] && (
-            <p className="text-sm ink-muted mt-1">
-              Benchmark: {formatCurrency(payload[1].value)}
-            </p>
+            <p className="text-sm ink-muted mt-1">Benchmark: {formatCurrency(payload[1].value)}</p>
           )}
         </div>
       )

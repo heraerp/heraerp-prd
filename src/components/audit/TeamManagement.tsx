@@ -434,7 +434,8 @@ export function TeamManagement() {
               {teams.map(team => (
                 <div
                   key={team.id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-all ${ selectedTeam?.id === team.id ?'border-blue-500 bg-blue-50' : 'hover:bg-muted'
+                  className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                    selectedTeam?.id === team.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-muted'
                   }`}
                   onClick={() => {
                     setSelectedTeam(team)
@@ -727,7 +728,7 @@ function TeamDetails({
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Utilization:</span>
                     <span
-                      className={`text-sm font-medium ${team.current_workload >= 90 ?'text-red-600' : 'text-green-600'}`}
+                      className={`text-sm font-medium ${team.current_workload >= 90 ? 'text-red-600' : 'text-green-600'}`}
                     >
                       {team.current_workload}%
                     </span>

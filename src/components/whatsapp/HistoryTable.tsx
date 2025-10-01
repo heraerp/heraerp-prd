@@ -167,9 +167,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
         <CardContent className="py-12">
           <div className="text-center">
             <MessageSquare className="h-12 w-12 mx-auto mb-4 ink-muted" />
-            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">
-              No messages found
-            </h3>
+            <h3 className="text-lg font-medium ink dark:text-gray-100 mb-2">No messages found</h3>
             <p className="dark:ink-muted">
               {filteredMessages.length === 0 && messages.length > 0
                 ? 'No messages match your current filters. Try adjusting your search criteria.'
@@ -252,9 +250,7 @@ export function HistoryTable({ messages, isLoading, filters, onFiltersChange }: 
                     <div className="space-y-1">
                       <div className="font-mono text-sm">{message.template_name}</div>
                       {message.hera_template_id && (
-                        <div className="text-xs ink-muted">
-                          MSP ID: {message.hera_template_id}
-                        </div>
+                        <div className="text-xs ink-muted">MSP ID: {message.hera_template_id}</div>
                       )}
                     </div>
                   </TableCell>

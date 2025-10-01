@@ -235,7 +235,9 @@ export default function JewelryAIPage() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [selectedPeriod, setSelectedPeriod] = useState('this_month')
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const [selectedRecommendation, setSelectedRecommendation] = useState<AIRecommendation | null>(null)
+  const [selectedRecommendation, setSelectedRecommendation] = useState<AIRecommendation | null>(
+    null
+  )
   const [selectedInsight, setSelectedInsight] = useState<AIInsight | null>(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
 
@@ -245,7 +247,8 @@ export default function JewelryAIPage() {
       id: 'REC001',
       type: 'pricing',
       title: 'Optimize Diamond Ring Pricing',
-      description: 'Increase price by 8% for Royal Diamond Engagement Ring based on market demand and low inventory.',
+      description:
+        'Increase price by 8% for Royal Diamond Engagement Ring based on market demand and low inventory.',
       confidence: 94.5,
       priority: 'high',
       impact: {
@@ -272,7 +275,8 @@ export default function JewelryAIPage() {
       id: 'REC002',
       type: 'customer',
       title: 'Target High-Value Customers',
-      description: 'Focus marketing on Diamond tier customers who haven\'t purchased in 6+ months with personalized offers.',
+      description:
+        "Focus marketing on Diamond tier customers who haven't purchased in 6+ months with personalized offers.",
       confidence: 87.2,
       priority: 'medium',
       impact: {
@@ -303,7 +307,8 @@ export default function JewelryAIPage() {
       category: 'sales',
       title: 'Evening Sales Peak Detected',
       summary: 'Sales consistently peak between 6-8 PM with 45% higher conversion rates',
-      details: 'Analysis of transaction data shows significant sales spike during evening hours, particularly for engagement rings and luxury items. Customers during this time have 2.3x higher average order value.',
+      details:
+        'Analysis of transaction data shows significant sales spike during evening hours, particularly for engagement rings and luxury items. Customers during this time have 2.3x higher average order value.',
       metrics: [
         { label: 'Peak Hours', value: '6-8 PM', trend: 'stable' },
         { label: 'Conversion Rate', value: '8.9%', trend: 'up', change: 2.1 },
@@ -350,7 +355,8 @@ export default function JewelryAIPage() {
     {
       id: 'PERSONA001',
       name: 'Luxury Collector',
-      description: 'High-net-worth individuals who collect fine jewelry as investments and status symbols',
+      description:
+        'High-net-worth individuals who collect fine jewelry as investments and status symbols',
       characteristics: [
         'Quality-focused decision making',
         'Brand conscious and prestige-driven',
@@ -392,7 +398,8 @@ export default function JewelryAIPage() {
       id: 'TREND001',
       category: 'Design',
       trend: 'Minimalist Jewelry',
-      description: 'Growing preference for clean, simple designs with focus on quality craftsmanship over ornate details',
+      description:
+        'Growing preference for clean, simple designs with focus on quality craftsmanship over ornate details',
       strength: 87,
       direction: 'rising',
       timeframe: '6-12 months',
@@ -424,7 +431,8 @@ export default function JewelryAIPage() {
       id: 'MODEL001',
       name: 'Customer Recommendation Engine',
       type: 'recommendation',
-      description: 'Personalized product recommendations based on customer behavior, preferences, and purchase history',
+      description:
+        'Personalized product recommendations based on customer behavior, preferences, and purchase history',
       accuracy: 94.2,
       lastTrained: '2024-01-10T08:00:00Z',
       trainingData: {
@@ -462,11 +470,16 @@ export default function JewelryAIPage() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'from-red-400 to-red-600'
-      case 'high': return 'from-orange-400 to-orange-600'
-      case 'medium': return 'from-yellow-400 to-yellow-600'
-      case 'low': return 'from-green-400 to-green-600'
-      default: return 'from-gray-400 to-gray-600'
+      case 'critical':
+        return 'from-red-400 to-red-600'
+      case 'high':
+        return 'from-orange-400 to-orange-600'
+      case 'medium':
+        return 'from-yellow-400 to-yellow-600'
+      case 'low':
+        return 'from-green-400 to-green-600'
+      default:
+        return 'from-gray-400 to-gray-600'
     }
   }
 
@@ -479,11 +492,16 @@ export default function JewelryAIPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <CheckCircle size={16} className="text-green-500" />
-      case 'training': return <RefreshCw size={16} className="text-blue-500 animate-spin" />
-      case 'inactive': return <XCircle size={16} className="text-gray-500" />
-      case 'error': return <AlertTriangle size={16} className="text-red-500" />
-      default: return <Info size={16} className="text-gray-500" />
+      case 'active':
+        return <CheckCircle size={16} className="text-green-500" />
+      case 'training':
+        return <RefreshCw size={16} className="text-blue-500 animate-spin" />
+      case 'inactive':
+        return <XCircle size={16} className="text-gray-500" />
+      case 'error':
+        return <AlertTriangle size={16} className="text-red-500" />
+      default:
+        return <Info size={16} className="text-gray-500" />
     }
   }
 
@@ -491,9 +509,8 @@ export default function JewelryAIPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -504,26 +521,25 @@ export default function JewelryAIPage() {
               AI-Powered Intelligence
             </h1>
             <p className="jewelry-text-luxury text-lg md:text-xl">
-              Advanced artificial intelligence for smart business decisions and automated optimization
+              Advanced artificial intelligence for smart business decisions and automated
+              optimization
             </p>
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="jewelry-glass-panel"
           >
             <div className="flex flex-wrap gap-2 p-4">
-              {tabs.map((tab) => (
+              {tabs.map(tab => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === tab.key
-                      ? 'jewelry-btn-primary'
-                      : 'jewelry-btn-secondary'
+                    activeTab === tab.key ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                   }`}
                 >
                   <tab.icon size={16} />
@@ -536,9 +552,8 @@ export default function JewelryAIPage() {
           {/* AI Dashboard Tab */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              
               {/* AI Performance Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -553,8 +568,11 @@ export default function JewelryAIPage() {
                     <span className="text-xs ml-1">+3.1%</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.1s' }}
+                >
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">67</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Active Recommendations</p>
@@ -563,8 +581,11 @@ export default function JewelryAIPage() {
                     <span className="text-xs ml-1">+12</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.2s' }}
+                >
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">$28.5L</h3>
                   <p className="jewelry-text-muted text-sm font-medium">AI-Generated Revenue</p>
@@ -573,8 +594,11 @@ export default function JewelryAIPage() {
                     <span className="text-xs ml-1">+24.8%</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.3s' }}
+                >
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">89.7%</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Automation Rate</p>
@@ -586,9 +610,8 @@ export default function JewelryAIPage() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 {/* Recent AI Recommendations */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -599,7 +622,7 @@ export default function JewelryAIPage() {
                       <Lightbulb className="jewelry-icon-gold" size={24} />
                       Recent Recommendations
                     </h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('recommendations')}
                       className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1"
                     >
@@ -607,29 +630,39 @@ export default function JewelryAIPage() {
                       <span className="text-sm">View All</span>
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    {aiRecommendations.slice(0, 3).map((rec) => (
+                    {aiRecommendations.slice(0, 3).map(rec => (
                       <div key={rec.id} className="jewelry-glass-card p-4">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getPriorityColor(rec.priority)} text-white`}>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getPriorityColor(rec.priority)} text-white`}
+                              >
                                 {rec.priority.toUpperCase()}
                               </span>
-                              <span className={`text-sm font-medium ${getConfidenceColor(rec.confidence)}`}>
+                              <span
+                                className={`text-sm font-medium ${getConfidenceColor(rec.confidence)}`}
+                              >
                                 {rec.confidence}% confidence
                               </span>
                             </div>
-                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">{rec.title}</h4>
-                            <p className="jewelry-text-muted text-xs mt-1 line-clamp-2">{rec.description}</p>
+                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                              {rec.title}
+                            </h4>
+                            <p className="jewelry-text-muted text-xs mt-1 line-clamp-2">
+                              {rec.description}
+                            </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-xs">
                           <span className="jewelry-text-muted">{rec.category}</span>
                           <div className="flex items-center space-x-2">
-                            <span className="jewelry-text-luxury font-medium">{formatCurrency(rec.impact.revenue)} impact</span>
+                            <span className="jewelry-text-luxury font-medium">
+                              {formatCurrency(rec.impact.revenue)} impact
+                            </span>
                             <button className="jewelry-btn-primary px-2 py-1 text-xs">
                               Review
                             </button>
@@ -641,7 +674,7 @@ export default function JewelryAIPage() {
                 </motion.div>
 
                 {/* AI Model Status */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -652,7 +685,7 @@ export default function JewelryAIPage() {
                       <Cpu className="jewelry-icon-gold" size={24} />
                       AI Model Status
                     </h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('models')}
                       className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1"
                     >
@@ -660,38 +693,50 @@ export default function JewelryAIPage() {
                       <span className="text-sm">Manage</span>
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    {aiModels.map((model) => (
+                    {aiModels.map(model => (
                       <div key={model.id} className="jewelry-glass-card p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center space-x-3">
                             {getStatusIcon(model.status)}
                             <div>
-                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">{model.name}</h4>
-                              <p className="jewelry-text-muted text-xs">{model.type} - v{model.version}</p>
+                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                                {model.name}
+                              </h4>
+                              <p className="jewelry-text-muted text-xs">
+                                {model.type} - v{model.version}
+                              </p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className={`text-sm font-bold ${getConfidenceColor(model.accuracy)}`}>
+                            <p
+                              className={`text-sm font-bold ${getConfidenceColor(model.accuracy)}`}
+                            >
                               {model.accuracy}%
                             </p>
                             <p className="jewelry-text-muted text-xs">accuracy</p>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-3 gap-4 text-xs">
                           <div>
                             <span className="jewelry-text-muted block">Precision</span>
-                            <span className="jewelry-text-high-contrast">{(model.performance.precision * 100).toFixed(1)}%</span>
+                            <span className="jewelry-text-high-contrast">
+                              {(model.performance.precision * 100).toFixed(1)}%
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Recall</span>
-                            <span className="jewelry-text-high-contrast">{(model.performance.recall * 100).toFixed(1)}%</span>
+                            <span className="jewelry-text-high-contrast">
+                              {(model.performance.recall * 100).toFixed(1)}%
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">F1 Score</span>
-                            <span className="jewelry-text-high-contrast">{(model.performance.f1Score * 100).toFixed(1)}%</span>
+                            <span className="jewelry-text-high-contrast">
+                              {(model.performance.f1Score * 100).toFixed(1)}%
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -704,7 +749,7 @@ export default function JewelryAIPage() {
 
           {/* Other tabs rendered as placeholders */}
           {activeTab !== 'dashboard' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -723,14 +768,17 @@ export default function JewelryAIPage() {
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              AI-powered intelligence by <span className="jewelry-text-luxury font-semibold">HERA Advanced Analytics Engine</span>
+              AI-powered intelligence by{' '}
+              <span className="jewelry-text-luxury font-semibold">
+                HERA Advanced Analytics Engine
+              </span>
             </p>
           </motion.div>
         </div>

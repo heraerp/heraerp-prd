@@ -76,7 +76,9 @@ export function HeraLogoPrintReady({
   if (format === 'icon-only') {
     const iconSize = Math.min(width, height)
     return (
-      <svg fill="none" stroke="currentColor"
+      <svg
+        fill="none"
+        stroke="currentColor"
         width={iconSize}
         height={iconSize}
         viewBox={`0 0 ${iconSize} ${iconSize}`}
@@ -103,7 +105,9 @@ export function HeraLogoPrintReady({
 
   if (format === 'vertical') {
     return (
-      <svg fill="none" stroke="currentColor"
+      <svg
+        fill="none"
+        stroke="currentColor"
         width={width * 0.8}
         height={height * 1.5}
         viewBox={`0 0 ${width * 0.8} ${height * 1.5}`}
@@ -175,7 +179,9 @@ export function HeraLogoPrintReady({
 
   // Default horizontal format - PERFECTLY ALIGNED
   return (
-    <svg fill="none" stroke="currentColor"
+    <svg
+      fill="none"
+      stroke="currentColor"
       width={width + clearSpace * 2}
       height={height + clearSpace * 2}
       viewBox={`0 0 ${width + clearSpace * 2} ${height + clearSpace * 2}`}

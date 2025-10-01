@@ -159,7 +159,8 @@ export function ClosingWorkflowSteps({
             return (
               <div key={step.id}>
                 <div
-                  className={`relative p-4 border rounded-lg transition-all ${getStepColor(step.status)} ${ isClickable ?'cursor-pointer hover:shadow-md' : ''
+                  className={`relative p-4 border rounded-lg transition-all ${getStepColor(step.status)} ${
+                    isClickable ? 'cursor-pointer hover:shadow-md' : ''
                   }`}
                   onClick={() => isClickable && onStepClick(step)}
                   role={isClickable ? 'button' : undefined}
@@ -176,7 +177,8 @@ export function ClosingWorkflowSteps({
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${ step.status ==='done'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-lg ${
+                            step.status === 'done'
                               ? 'bg-green-600 text-white'
                               : step.status === 'in_progress'
                                 ? 'bg-blue-600 text-white'
@@ -199,13 +201,9 @@ export function ClosingWorkflowSteps({
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <Icon className="h-4 w-4 ink-muted" />
-                            <h3 className="font-semibold ink dark:text-gray-100">
-                              {step.name}
-                            </h3>
+                            <h3 className="font-semibold ink dark:text-gray-100">{step.name}</h3>
                           </div>
-                          <p className="text-sm dark:ink-muted">
-                            {step.description}
-                          </p>
+                          <p className="text-sm dark:ink-muted">{step.description}</p>
 
                           {/* Timestamps */}
                           <div className="flex items-center gap-4 text-xs ink-muted">

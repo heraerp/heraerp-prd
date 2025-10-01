@@ -1,48 +1,48 @@
-"use client";
-import { useTheme } from "./ThemeProvider";
-import { Sun, Moon, Monitor } from "lucide-react";
+'use client'
+import { useTheme } from './ThemeProvider'
+import { Sun, Moon, Monitor } from 'lucide-react'
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme()
 
   // Cycle through themes: dark → light → system → dark
   const cycleTheme = () => {
-    switch(theme) {
-      case "dark":
-        setTheme("light");
-        break;
-      case "light":
-        setTheme("system");
-        break;
-      case "system":
-        setTheme("dark");
-        break;
+    switch (theme) {
+      case 'dark':
+        setTheme('light')
+        break
+      case 'light':
+        setTheme('system')
+        break
+      case 'system':
+        setTheme('dark')
+        break
     }
-  };
+  }
 
   // Get current theme icon
   const getIcon = () => {
-    switch(theme) {
-      case "light":
-        return <Sun className="h-4 w-4" />;
-      case "dark":
-        return <Moon className="h-4 w-4" />;
-      case "system":
-        return <Monitor className="h-4 w-4" />;
+    switch (theme) {
+      case 'light':
+        return <Sun className="h-4 w-4" />
+      case 'dark':
+        return <Moon className="h-4 w-4" />
+      case 'system':
+        return <Monitor className="h-4 w-4" />
     }
-  };
+  }
 
   // Get theme label for tooltip
   const getThemeLabel = () => {
-    switch(theme) {
-      case "light":
-        return "Light mode";
-      case "dark":
-        return "Dark mode";
-      case "system":
-        return "System mode";
+    switch (theme) {
+      case 'light':
+        return 'Light mode'
+      case 'dark':
+        return 'Dark mode'
+      case 'system':
+        return 'System mode'
     }
-  };
+  }
 
   return (
     <button
@@ -53,5 +53,5 @@ export default function ThemeToggle() {
     >
       {getIcon()}
     </button>
-  );
+  )
 }

@@ -94,9 +94,7 @@ export default function PrivacyPolicyPage() {
             <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <CardContent className="p-6">
                 <Database className="w-8 h-8 text-cyan-600 dark:text-cyan-400 mb-3" />
-                <h3 className="font-semibold mb-2 ink dark:text-gray-100">
-                  Complete Audit Trail
-                </h3>
+                <h3 className="font-semibold mb-2 ink dark:text-gray-100">Complete Audit Trail</h3>
                 <p className="text-sm ink-muted dark:text-gray-300">
                   Every action tracked with Smart Code intelligence
                 </p>
@@ -105,9 +103,7 @@ export default function PrivacyPolicyPage() {
             <Card className="border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
               <CardContent className="p-6">
                 <Shield className="w-8 h-8 text-green-600 dark:text-green-400 mb-3" />
-                <h3 className="font-semibold mb-2 ink dark:text-gray-100">
-                  GDPR Compliant
-                </h3>
+                <h3 className="font-semibold mb-2 ink dark:text-gray-100">GDPR Compliant</h3>
                 <p className="text-sm ink-muted dark:text-gray-300">
                   Full compliance with EU data protection regulations
                 </p>
@@ -654,27 +650,21 @@ export default function PrivacyPolicyPage() {
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
-                      Marketing Data
-                    </h4>
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">Marketing Data</h4>
                     <p className="text-sm ink-muted dark:text-gray-300">
                       Until you unsubscribe or withdraw consent, reviewed annually
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
-                      Security Logs
-                    </h4>
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">Security Logs</h4>
                     <p className="text-sm ink-muted dark:text-gray-300">
                       90 days for security monitoring and incident response
                     </p>
                   </div>
 
                   <div className="border rounded-lg p-4 border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">
-                      Backup Data
-                    </h4>
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-2">Backup Data</h4>
                     <p className="text-sm ink-muted dark:text-gray-300">
                       30 days in encrypted backups for disaster recovery
                     </p>
@@ -802,9 +792,7 @@ export default function PrivacyPolicyPage() {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold ink dark:text-gray-100 mb-3">
-                      Data Controller
-                    </h4>
+                    <h4 className="font-semibold ink dark:text-gray-100 mb-3">Data Controller</h4>
                     <div className="space-y-2 text-sm ink dark:text-gray-300">
                       <p>
                         <strong>HERA ERP Ltd.</strong>

@@ -8,11 +8,11 @@
 import { ArrowLeft, Edit, Trash2, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 
 interface RecordPageProps {
@@ -101,20 +101,14 @@ export function RecordPage({
               </Button>
             )}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="text-gray-500 dark:text-gray-400 mt-1">
-                  {subtitle}
-                </p>
-              )}
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h1>
+              {subtitle && <p className="text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
             </div>
           </div>
-          
+
           {actions.length > 0 && (
             <div className="flex items-center space-x-2">
-              {primaryActions.map((action) => (
+              {primaryActions.map(action => (
                 <Button
                   key={action.key}
                   variant={action.variant || 'default'}
@@ -126,7 +120,7 @@ export function RecordPage({
                   <span>{action.label}</span>
                 </Button>
               ))}
-              
+
               {moreActions.length > 0 && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -135,7 +129,7 @@ export function RecordPage({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    {moreActions.map((action) => (
+                    {moreActions.map(action => (
                       <DropdownMenuItem
                         key={action.key}
                         onClick={action.onClick}
@@ -162,11 +156,13 @@ export function RecordPage({
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                     {item.label}
                   </p>
-                  <p className={`text-sm ${
-                    item.highlight 
-                      ? 'font-medium text-blue-600 dark:text-blue-400' 
-                      : 'text-gray-900 dark:text-gray-100'
-                  }`}>
+                  <p
+                    className={`text-sm ${
+                      item.highlight
+                        ? 'font-medium text-blue-600 dark:text-blue-400'
+                        : 'text-gray-900 dark:text-gray-100'
+                    }`}
+                  >
                     {item.value}
                   </p>
                 </div>
@@ -177,9 +173,7 @@ export function RecordPage({
       </div>
 
       {/* Content */}
-      <div className="p-6">
-        {children}
-      </div>
+      <div className="p-6">{children}</div>
     </div>
   )
 }
@@ -193,7 +187,7 @@ export const RecordPageActions = {
     variant: 'outline' as const,
     onClick
   }),
-  
+
   delete: (onClick: () => void) => ({
     key: 'delete',
     label: 'Delete',

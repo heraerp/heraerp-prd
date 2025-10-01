@@ -596,10 +596,7 @@ export function PurchaseOrderManager() {
               {/* Header Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="supplier_id"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="supplier_id" className="block text-sm font-medium ink mb-1">
                     Supplier *
                   </label>
                   <select
@@ -620,10 +617,7 @@ export function PurchaseOrderManager() {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="expected_delivery"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="expected_delivery" className="block text-sm font-medium ink mb-1">
                     Expected Delivery
                   </label>
                   <input

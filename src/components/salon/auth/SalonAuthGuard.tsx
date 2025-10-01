@@ -255,7 +255,7 @@ export function SalonRoleDisplay() {
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-lg">
         <div
-          className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] ||'from-gray-500 to-gray-600'} flex items-center justify-center`}
+          className={`h-8 w-8 rounded-lg bg-gradient-to-br ${roleColors[role] || 'from-gray-500 to-gray-600'} flex items-center justify-center`}
         >
           <Shield className="h-4 w-4 text-primary-foreground" />
         </div>

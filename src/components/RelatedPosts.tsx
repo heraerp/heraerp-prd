@@ -31,9 +31,7 @@ export default function RelatedPosts({ posts, className = '' }: RelatedPostsProp
                 <Link href={`/blog/${post.slug}`}>{post.meta.title}</Link>
               </h3>
 
-              <p className="mb-4 ink-muted dark:text-gray-300 line-clamp-3">
-                {post.meta.excerpt}
-              </p>
+              <p className="mb-4 ink-muted dark:text-gray-300 line-clamp-3">{post.meta.excerpt}</p>
 
               <Link
                 href={`/blog/${post.slug}`}

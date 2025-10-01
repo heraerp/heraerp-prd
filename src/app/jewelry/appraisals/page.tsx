@@ -107,7 +107,7 @@ export default function JewelryAppraisalsPage() {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
           {/* Page Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -123,7 +123,7 @@ export default function JewelryAppraisalsPage() {
           </motion.div>
 
           {/* Summary Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -131,31 +131,48 @@ export default function JewelryAppraisalsPage() {
           >
             <div className="jewelry-glass-card jewelry-float p-6 text-center">
               <FileText className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{metrics.totalAppraisals}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {metrics.totalAppraisals}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Appraisals</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${(metrics.totalValue / 1000000).toFixed(1)}M</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${(metrics.totalValue / 1000000).toFixed(1)}M
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Value</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <Clock className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{metrics.pendingAppraisals}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {metrics.pendingAppraisals}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Pending Reviews</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <TrendingUp className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{metrics.avgCompletionTime}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {metrics.avgCompletionTime}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Avg Days</p>
             </div>
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -189,13 +206,21 @@ export default function JewelryAppraisalsPage() {
                 >
                   <Link href={item.href}>
                     <div className="jewelry-glass-card jewelry-scale-hover p-6 text-center group cursor-pointer">
-                      <item.icon className={`mx-auto mb-3 ${item.color} group-hover:scale-110 transition-transform`} size={32} />
-                      <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">{item.title}</h3>
+                      <item.icon
+                        className={`mx-auto mb-3 ${item.color} group-hover:scale-110 transition-transform`}
+                        size={32}
+                      />
+                      <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">
+                        {item.title}
+                      </h3>
                       <p className="jewelry-text-muted text-sm mb-2">{item.description}</p>
                       {item.count && (
                         <div className="jewelry-text-luxury text-2xl font-bold">{item.count}</div>
                       )}
-                      <ArrowRight className="mx-auto mt-2 jewelry-icon-gold opacity-0 group-hover:opacity-100 transition-opacity" size={16} />
+                      <ArrowRight
+                        className="mx-auto mt-2 jewelry-icon-gold opacity-0 group-hover:opacity-100 transition-opacity"
+                        size={16}
+                      />
                     </div>
                   </Link>
                 </motion.div>
@@ -204,14 +229,14 @@ export default function JewelryAppraisalsPage() {
           </motion.div>
 
           {/* Navigation Menu */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="jewelry-glass-panel"
           >
             <h2 className="jewelry-text-luxury text-xl font-semibold mb-6">Appraisal Management</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {navigationItems.slice(4).map((item, index) => (
                 <motion.div
@@ -223,7 +248,10 @@ export default function JewelryAppraisalsPage() {
                   <Link href={item.href}>
                     <div className="jewelry-glass-card jewelry-scale-hover p-4 group cursor-pointer">
                       <div className="flex items-center space-x-3">
-                        <item.icon className={`${item.color} group-hover:scale-110 transition-transform`} size={24} />
+                        <item.icon
+                          className={`${item.color} group-hover:scale-110 transition-transform`}
+                          size={24}
+                        />
                         <div className="flex-1">
                           <h3 className="jewelry-text-high-contrast font-medium">{item.title}</h3>
                           <p className="jewelry-text-muted text-sm">{item.description}</p>
@@ -234,7 +262,10 @@ export default function JewelryAppraisalsPage() {
                               {item.count}
                             </span>
                           )}
-                          <ArrowRight className="jewelry-icon-gold opacity-0 group-hover:opacity-100 transition-opacity" size={16} />
+                          <ArrowRight
+                            className="jewelry-icon-gold opacity-0 group-hover:opacity-100 transition-opacity"
+                            size={16}
+                          />
                         </div>
                       </div>
                     </div>
@@ -245,7 +276,7 @@ export default function JewelryAppraisalsPage() {
           </motion.div>
 
           {/* Recent Activity */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2 }}
@@ -267,8 +298,12 @@ export default function JewelryAppraisalsPage() {
                   <div className="flex items-center space-x-3">
                     <Diamond className="jewelry-icon-gold" size={20} />
                     <div>
-                      <h4 className="jewelry-text-high-contrast font-medium">Diamond Engagement Ring - APR-2024-156</h4>
-                      <p className="jewelry-text-muted text-sm">Completed appraisal for Sarah Johnson • $18,500</p>
+                      <h4 className="jewelry-text-high-contrast font-medium">
+                        Diamond Engagement Ring - APR-2024-156
+                      </h4>
+                      <p className="jewelry-text-muted text-sm">
+                        Completed appraisal for Sarah Johnson • $18,500
+                      </p>
                     </div>
                   </div>
                   <span className="jewelry-status-active px-2 py-1 rounded text-xs">COMPLETED</span>
@@ -280,11 +315,17 @@ export default function JewelryAppraisalsPage() {
                   <div className="flex items-center space-x-3">
                     <Sparkles className="jewelry-icon-gold" size={20} />
                     <div>
-                      <h4 className="jewelry-text-high-contrast font-medium">Vintage Pearl Necklace - APR-2024-155</h4>
-                      <p className="jewelry-text-muted text-sm">In progress by Dr. Michael Sterling • $12,000</p>
+                      <h4 className="jewelry-text-high-contrast font-medium">
+                        Vintage Pearl Necklace - APR-2024-155
+                      </h4>
+                      <p className="jewelry-text-muted text-sm">
+                        In progress by Dr. Michael Sterling • $12,000
+                      </p>
                     </div>
                   </div>
-                  <span className="jewelry-status-pending px-2 py-1 rounded text-xs">IN PROGRESS</span>
+                  <span className="jewelry-status-pending px-2 py-1 rounded text-xs">
+                    IN PROGRESS
+                  </span>
                 </div>
               </div>
 
@@ -293,7 +334,9 @@ export default function JewelryAppraisalsPage() {
                   <div className="flex items-center space-x-3">
                     <Award className="jewelry-icon-gold" size={20} />
                     <div>
-                      <h4 className="jewelry-text-high-contrast font-medium">Emerald Tennis Bracelet - APR-2024-154</h4>
+                      <h4 className="jewelry-text-high-contrast font-medium">
+                        Emerald Tennis Bracelet - APR-2024-154
+                      </h4>
                       <p className="jewelry-text-muted text-sm">Awaiting client review • $45,000</p>
                     </div>
                   </div>
@@ -304,14 +347,15 @@ export default function JewelryAppraisalsPage() {
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.4 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Professional appraisal services powered by <span className="jewelry-text-luxury font-semibold">HERA Certification System</span>
+              Professional appraisal services powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Certification System</span>
             </p>
           </motion.div>
         </div>

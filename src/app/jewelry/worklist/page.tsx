@@ -11,7 +11,13 @@ import '@/styles/jewelry-glassmorphism.css'
 
 export default function JewelryWorklistPage() {
   const orgId = useOrgId()
-  const [query, setQuery] = React.useState({ search:'', filter:'', order:'entity_name asc', pageSize:20, page:0 })
+  const [query, setQuery] = React.useState({
+    search: '',
+    filter: '',
+    order: 'entity_name asc',
+    pageSize: 20,
+    page: 0
+  })
   const { data, isLoading } = useList(orgId, {
     entityType: 'item',
     smartCodePrefix: 'HERA.JEWELRY.ENTITY.ITEM',
@@ -22,13 +28,15 @@ export default function JewelryWorklistPage() {
   })
 
   const [goldRate, setGoldRate] = React.useState<number | null>(null)
-  React.useEffect(() => { (async()=>{
-    const r = await getEffectiveGoldRate(orgId, new Date().toISOString(), 22)
-    setGoldRate(r?.rate_per_gram || null)
-  })() }, [orgId])
+  React.useEffect(() => {
+    ;(async () => {
+      const r = await getEffectiveGoldRate(orgId, new Date().toISOString(), 22)
+      setGoldRate(r?.rate_per_gram || null)
+    })()
+  }, [orgId])
 
   const rows = (data ?? []).map((e: any) => {
-    const dd:any = e.dynamic_data ?? {}
+    const dd: any = e.dynamic_data ?? {}
     const priceEstimate = goldRate ? (dd.net_weight ?? 0) * goldRate : null
     return {
       id: e.id,
@@ -41,11 +49,11 @@ export default function JewelryWorklistPage() {
   })
 
   const columns = [
-    { key:'name', label:'Item', sortable: true },
-    { key:'sku', label:'SKU' },
-    { key:'purity', label:'Purity (K)' },
-    { key:'net_weight', label:'Net (g)' },
-    { key:'price_estimate', label:'Est. Price' },
+    { key: 'name', label: 'Item', sortable: true },
+    { key: 'sku', label: 'SKU' },
+    { key: 'purity', label: 'Purity (K)' },
+    { key: 'net_weight', label: 'Net (g)' },
+    { key: 'price_estimate', label: 'Est. Price' }
   ]
 
   // Calculate summary statistics
@@ -55,9 +63,10 @@ export default function JewelryWorklistPage() {
     const estimate = parseFloat(row.price_estimate.replace(/[^0-9.]/g, '')) || 0
     return sum + estimate
   }, 0)
-  const avgPurity = rows.length > 0 
-    ? rows.reduce((sum, row) => sum + (parseFloat(row.purity) || 0), 0) / rows.length 
-    : 0
+  const avgPurity =
+    rows.length > 0
+      ? rows.reduce((sum, row) => sum + (parseFloat(row.purity) || 0), 0) / rows.length
+      : 0
 
   return (
     <div className="min-h-screen jewelry-gradient-premium">
@@ -65,7 +74,7 @@ export default function JewelryWorklistPage() {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
           {/* Page Header with Animation */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -81,7 +90,7 @@ export default function JewelryWorklistPage() {
           </motion.div>
 
           {/* Summary Cards with Glassmorphism */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -92,29 +101,44 @@ export default function JewelryWorklistPage() {
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{totalItems}</h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Items</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <TrendingUp className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{totalWeight.toFixed(1)}g</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {totalWeight.toFixed(1)}g
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Weight</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <Sparkles className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${totalValue.toLocaleString()}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${totalValue.toLocaleString()}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Est. Value</p>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <Gem className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">{avgPurity.toFixed(1)}K</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                {avgPurity.toFixed(1)}K
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Avg. Purity</p>
             </div>
           </motion.div>
 
           {/* Gold Rate Display */}
           {goldRate && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.4 }}
@@ -131,13 +155,13 @@ export default function JewelryWorklistPage() {
           )}
 
           {/* Filter Bar with Glassmorphism */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
             className="jewelry-glass-panel"
           >
-            <FilterBar 
+            <FilterBar
               onFilterChange={setQuery}
               searchPlaceholder="Search luxury jewelry items..."
               className="bg-transparent border-none shadow-none"
@@ -145,7 +169,7 @@ export default function JewelryWorklistPage() {
           </motion.div>
 
           {/* Data Table with Glassmorphism */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -159,28 +183,32 @@ export default function JewelryWorklistPage() {
                 page: query.page + 1,
                 pageSize: query.pageSize,
                 total: data?.length || 0,
-                onPageChange: (page) => setQuery(q => ({ ...q, page: page - 1 }))
+                onPageChange: page => setQuery(q => ({ ...q, page: page - 1 }))
               }}
               sorting={{
                 column: query.order.split(' ')[0],
                 direction: query.order.includes('desc') ? 'desc' : 'asc',
-                onSort: (column, direction) => setQuery(q => ({ ...q, order: `${column} ${direction}` }))
+                onSort: (column, direction) =>
+                  setQuery(q => ({ ...q, order: `${column} ${direction}` }))
               }}
-              onRowClick={(r) => window.location.assign(`/jewelry/record/${r.id}`)}
+              onRowClick={r => window.location.assign(`/jewelry/record/${r.id}`)}
               emptyMessage="No luxury jewelry items found"
               className="jewelry-table"
             />
           </motion.div>
 
           {/* Footer with Branding */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.8 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Powered by <span className="jewelry-text-luxury font-semibold">HERA Luxury Management System</span>
+              Powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">
+                HERA Luxury Management System
+              </span>
             </p>
           </motion.div>
         </div>

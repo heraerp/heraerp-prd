@@ -442,9 +442,7 @@ export function BalanceSheetTable({
         <CardContent>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
-            <span className="ml-2 dark:ink-muted">
-              Loading balance sheet data...
-            </span>
+            <span className="ml-2 dark:ink-muted">Loading balance sheet data...</span>
           </div>
         </CardContent>
       </Card>

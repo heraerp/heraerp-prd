@@ -1,31 +1,31 @@
-"use client";
+'use client'
 
-import { useState, useRef } from 'react';
+import { useState, useRef } from 'react'
 
 interface FormData {
-  firmName: string;
-  contactName: string;
-  jobTitle: string;
-  email: string;
-  phone: string;
-  website: string;
-  region: string;
-  city: string;
-  firmSize: string;
-  specializations: string;
-  clientBase: string;
-  erpExperience: string;
-  message: string;
-  consent: boolean;
-  honeypot: string;
+  firmName: string
+  contactName: string
+  jobTitle: string
+  email: string
+  phone: string
+  website: string
+  region: string
+  city: string
+  firmSize: string
+  specializations: string
+  clientBase: string
+  erpExperience: string
+  message: string
+  consent: boolean
+  honeypot: string
 }
 
 interface FormErrors {
-  [key: string]: string;
+  [key: string]: string
 }
 
 interface ValidationModalProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 // Modal Component (matching pricing-request style)
@@ -37,19 +37,16 @@ function ValidationModal({ onClose }: ValidationModalProps) {
         <div className="p-6">
           <h3 className="ink text-lg font-semibold mb-2">Complete Required Fields</h3>
           <p className="ink-muted text-sm mb-4">
-            Please fill in all required fields marked with an asterisk (*) to submit your application.
+            Please fill in all required fields marked with an asterisk (*) to submit your
+            application.
           </p>
-          <button
-            onClick={onClose}
-            className="btn-gradient w-full border border-border"
-            autoFocus
-          >
+          <button onClick={onClose} className="btn-gradient w-full border border-border" autoFocus>
             Got it
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function PartnerApplyPage() {
@@ -69,76 +66,76 @@ export default function PartnerApplyPage() {
     message: '',
     consent: false,
     honeypot: ''
-  });
+  })
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const firstErrorFieldRef = useRef<HTMLElement | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const firstErrorFieldRef = useRef<HTMLElement | null>(null)
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: FormErrors = {}
 
     if (!formData.firmName.trim() || formData.firmName.length < 2) {
-      newErrors.firmName = 'Accounting firm name must be at least 2 characters';
+      newErrors.firmName = 'Accounting firm name must be at least 2 characters'
     }
     if (!formData.contactName.trim() || formData.contactName.length < 2) {
-      newErrors.contactName = 'Contact name must be at least 2 characters';
+      newErrors.contactName = 'Contact name must be at least 2 characters'
     }
     if (!formData.jobTitle.trim()) {
-      newErrors.jobTitle = 'Job title is required';
+      newErrors.jobTitle = 'Job title is required'
     }
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Please enter a valid email address'
     }
     if (!formData.region) {
-      newErrors.region = 'Please select your region';
+      newErrors.region = 'Please select your region'
     }
     if (!formData.firmSize) {
-      newErrors.firmSize = 'Please select your firm size';
+      newErrors.firmSize = 'Please select your firm size'
     }
     if (!formData.specializations) {
-      newErrors.specializations = 'Please select at least one specialization';
+      newErrors.specializations = 'Please select at least one specialization'
     }
     if (!formData.erpExperience) {
-      newErrors.erpExperience = 'Please select your ERP experience level';
+      newErrors.erpExperience = 'Please select your ERP experience level'
     }
     if (!formData.message.trim() || formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = 'Message must be at least 10 characters'
     }
     if (!formData.consent) {
-      newErrors.consent = 'You must accept the privacy policy to continue';
+      newErrors.consent = 'You must accept the privacy policy to continue'
     }
     if (formData.website && !/^https?:\/\/.+\..+/.test(formData.website)) {
-      newErrors.website = 'Please enter a valid website URL';
+      newErrors.website = 'Please enter a valid website URL'
     }
 
-    setErrors(newErrors);
+    setErrors(newErrors)
 
     // Show modal if there are errors
     if (Object.keys(newErrors).length > 0) {
-      setShowModal(true);
-      return false;
+      setShowModal(true)
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (!validateForm()) return;
+    if (!validateForm()) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
       const response = await fetch('/api/partners/apply', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           firmName: formData.firmName,
@@ -156,46 +153,48 @@ export default function PartnerApplyPage() {
           message: formData.message,
           honeypot: formData.honeypot
         })
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
       if (response.ok && result.ok) {
-        setIsSuccess(true);
+        setIsSuccess(true)
         if (typeof window !== 'undefined' && (window as any).track) {
-          (window as any).track('partners_apply_submit', {
+          ;(window as any).track('partners_apply_submit', {
             region: formData.region,
             firmSize: formData.firmSize,
             erpExperience: formData.erpExperience
-          });
+          })
         }
       } else if (response.status === 429) {
-        setErrors({ submit: 'Too many requests. Please try again in a few minutes.' });
+        setErrors({ submit: 'Too many requests. Please try again in a few minutes.' })
       } else {
-        throw new Error(result.error || 'Failed to submit');
+        throw new Error(result.error || 'Failed to submit')
       }
     } catch (error) {
-      setErrors({ submit: 'Failed to submit application. Please try again.' });
+      setErrors({ submit: 'Failed to submit application. Please try again.' })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target
+    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
 
-    setFormData(prev => ({ ...prev, [name]: newValue }));
+    setFormData(prev => ({ ...prev, [name]: newValue }))
 
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
     }
-  };
+  }
 
   if (isSuccess) {
     return (
@@ -203,12 +202,10 @@ export default function PartnerApplyPage() {
         <div className="mx-auto mb-6 h-20 w-full max-w-3xl bg-gradient-to-r from-indigo-500/20 via-fuchsia-400/15 to-cyan-400/20 blur-2xl rounded-3xl" />
         <div className="rounded-3xl bg-card border border-border shadow-xl p-8 text-center">
           <div className="text-4xl mb-4">✅</div>
-          <h1 className="ink text-2xl font-semibold mb-3">
-            Application Received
-          </h1>
+          <h1 className="ink text-2xl font-semibold mb-3">Application Received</h1>
           <p className="ink-muted mb-6 max-w-lg mx-auto">
-            Thank you for your interest in the HERA Accounting Partner Program.
-            Our partnership team will review your application and contact you within 1-2 business days.
+            Thank you for your interest in the HERA Accounting Partner Program. Our partnership team
+            will review your application and contact you within 1-2 business days.
           </p>
           <div className="flex justify-center gap-3">
             <a href="/partners" className="btn-quiet border border-border">
@@ -220,7 +217,7 @@ export default function PartnerApplyPage() {
           </div>
         </div>
       </main>
-    );
+    )
   }
 
   return (
@@ -236,21 +233,22 @@ export default function PartnerApplyPage() {
           <header className="text-center mb-8">
             <h1 className="ink text-3xl font-semibold mb-3">Accounting Partner Application</h1>
             <p className="ink-muted">
-              Join our exclusive network of certified accounting firms implementing HERA ERP solutions
+              Join our exclusive network of certified accounting firms implementing HERA ERP
+              solutions
             </p>
           </header>
 
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-        {/* Honeypot field - hidden from users */}
-        <input
-          type="text"
-          name="company_website"
-          value={formData.honeypot}
-          onChange={(e) => setFormData(prev => ({ ...prev, honeypot: e.target.value }))}
-          style={{ display: 'none' }}
-          tabIndex={-1}
-          autoComplete="off"
-        />
+            {/* Honeypot field - hidden from users */}
+            <input
+              type="text"
+              name="company_website"
+              value={formData.honeypot}
+              onChange={e => setFormData(prev => ({ ...prev, honeypot: e.target.value }))}
+              style={{ display: 'none' }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
 
             {/* Firm Name */}
             <div>
@@ -265,11 +263,13 @@ export default function PartnerApplyPage() {
                 onChange={handleChange}
                 placeholder="e.g., Smith & Associates CPAs"
                 aria-invalid={!!errors.firmName}
-                aria-describedby={errors.firmName ? "firmName-err" : undefined}
+                aria-describedby={errors.firmName ? 'firmName-err' : undefined}
                 className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring"
               />
               {errors.firmName && (
-                <p id="firmName-err" className="text-red-500 text-sm mt-1">{errors.firmName}</p>
+                <p id="firmName-err" className="text-red-500 text-sm mt-1">
+                  {errors.firmName}
+                </p>
               )}
             </div>
 
@@ -287,11 +287,13 @@ export default function PartnerApplyPage() {
                   onChange={handleChange}
                   placeholder="Full name"
                   aria-invalid={!!errors.contactName}
-                  aria-describedby={errors.contactName ? "contactName-err" : undefined}
+                  aria-describedby={errors.contactName ? 'contactName-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 {errors.contactName && (
-                  <p id="contactName-err" className="text-red-500 text-sm mt-1">{errors.contactName}</p>
+                  <p id="contactName-err" className="text-red-500 text-sm mt-1">
+                    {errors.contactName}
+                  </p>
                 )}
               </div>
 
@@ -307,11 +309,13 @@ export default function PartnerApplyPage() {
                   onChange={handleChange}
                   placeholder="e.g., Partner, Managing Director"
                   aria-invalid={!!errors.jobTitle}
-                  aria-describedby={errors.jobTitle ? "jobTitle-err" : undefined}
+                  aria-describedby={errors.jobTitle ? 'jobTitle-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 {errors.jobTitle && (
-                  <p id="jobTitle-err" className="text-red-500 text-sm mt-1">{errors.jobTitle}</p>
+                  <p id="jobTitle-err" className="text-red-500 text-sm mt-1">
+                    {errors.jobTitle}
+                  </p>
                 )}
               </div>
             </div>
@@ -330,11 +334,13 @@ export default function PartnerApplyPage() {
                   onChange={handleChange}
                   placeholder="work@example.com"
                   aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "email-err" : undefined}
+                  aria-describedby={errors.email ? 'email-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 {errors.email && (
-                  <p id="email-err" className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p id="email-err" className="text-red-500 text-sm mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </div>
 
@@ -367,11 +373,13 @@ export default function PartnerApplyPage() {
                 onChange={handleChange}
                 placeholder="https://www.yourfirm.com"
                 aria-invalid={!!errors.website}
-                aria-describedby={errors.website ? "website-err" : undefined}
+                aria-describedby={errors.website ? 'website-err' : undefined}
                 className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring"
               />
               {errors.website && (
-                <p id="website-err" className="text-red-500 text-sm mt-1">{errors.website}</p>
+                <p id="website-err" className="text-red-500 text-sm mt-1">
+                  {errors.website}
+                </p>
               )}
             </div>
 
@@ -387,7 +395,7 @@ export default function PartnerApplyPage() {
                   value={formData.region}
                   onChange={handleChange}
                   aria-invalid={!!errors.region}
-                  aria-describedby={errors.region ? "region-err" : undefined}
+                  aria-describedby={errors.region ? 'region-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">Select a region</option>
@@ -397,7 +405,9 @@ export default function PartnerApplyPage() {
                   <option value="Global">Global</option>
                 </select>
                 {errors.region && (
-                  <p id="region-err" className="text-red-500 text-sm mt-1">{errors.region}</p>
+                  <p id="region-err" className="text-red-500 text-sm mt-1">
+                    {errors.region}
+                  </p>
                 )}
               </div>
 
@@ -429,7 +439,7 @@ export default function PartnerApplyPage() {
                   value={formData.firmSize}
                   onChange={handleChange}
                   aria-invalid={!!errors.firmSize}
-                  aria-describedby={errors.firmSize ? "firmSize-err" : undefined}
+                  aria-describedby={errors.firmSize ? 'firmSize-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">Select firm size</option>
@@ -439,7 +449,9 @@ export default function PartnerApplyPage() {
                   <option value="200+">200+ Accountants</option>
                 </select>
                 {errors.firmSize && (
-                  <p id="firmSize-err" className="text-red-500 text-sm mt-1">{errors.firmSize}</p>
+                  <p id="firmSize-err" className="text-red-500 text-sm mt-1">
+                    {errors.firmSize}
+                  </p>
                 )}
               </div>
 
@@ -453,7 +465,7 @@ export default function PartnerApplyPage() {
                   value={formData.erpExperience}
                   onChange={handleChange}
                   aria-invalid={!!errors.erpExperience}
-                  aria-describedby={errors.erpExperience ? "erpExperience-err" : undefined}
+                  aria-describedby={errors.erpExperience ? 'erpExperience-err' : undefined}
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">Select experience level</option>
@@ -463,7 +475,9 @@ export default function PartnerApplyPage() {
                   <option value="expert">20+ ERP implementations</option>
                 </select>
                 {errors.erpExperience && (
-                  <p id="erpExperience-err" className="text-red-500 text-sm mt-1">{errors.erpExperience}</p>
+                  <p id="erpExperience-err" className="text-red-500 text-sm mt-1">
+                    {errors.erpExperience}
+                  </p>
                 )}
               </div>
             </div>
@@ -479,7 +493,7 @@ export default function PartnerApplyPage() {
                 value={formData.specializations}
                 onChange={handleChange}
                 aria-invalid={!!errors.specializations}
-                aria-describedby={errors.specializations ? "specializations-err" : undefined}
+                aria-describedby={errors.specializations ? 'specializations-err' : undefined}
                 className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="">Select your primary specialization</option>
@@ -492,7 +506,9 @@ export default function PartnerApplyPage() {
                 <option value="international">International Tax & Compliance</option>
               </select>
               {errors.specializations && (
-                <p id="specializations-err" className="text-red-500 text-sm mt-1">{errors.specializations}</p>
+                <p id="specializations-err" className="text-red-500 text-sm mt-1">
+                  {errors.specializations}
+                </p>
               )}
             </div>
 
@@ -524,12 +540,14 @@ export default function PartnerApplyPage() {
                 onChange={handleChange}
                 rows={4}
                 aria-invalid={!!errors.message}
-                aria-describedby={errors.message ? "message-err" : undefined}
+                aria-describedby={errors.message ? 'message-err' : undefined}
                 className="w-full px-4 py-2.5 rounded-xl bg-background border border-border ink placeholder:ink-muted focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                 placeholder="Tell us about your firm's experience with ERP implementations, your client base, and how HERA aligns with your business goals..."
               />
               {errors.message && (
-                <p id="message-err" className="text-red-500 text-sm mt-1">{errors.message}</p>
+                <p id="message-err" className="text-red-500 text-sm mt-1">
+                  {errors.message}
+                </p>
               )}
             </div>
 
@@ -542,7 +560,7 @@ export default function PartnerApplyPage() {
                   checked={formData.consent}
                   onChange={handleChange}
                   aria-invalid={!!errors.consent}
-                  aria-describedby={errors.consent ? "consent-err" : undefined}
+                  aria-describedby={errors.consent ? 'consent-err' : undefined}
                   className="mt-1 h-4 w-4 rounded border-border bg-background text-indigo-600 focus:ring-2 focus:ring-ring"
                 />
                 <span className="ink text-sm">
@@ -550,12 +568,15 @@ export default function PartnerApplyPage() {
                   <a href="/policy" className="text-indigo-600 hover:text-indigo-700 underline">
                     Privacy Policy
                   </a>
-                  . I understand that partnership approval is subject to HERA's qualification criteria.
+                  . I understand that partnership approval is subject to HERA's qualification
+                  criteria.
                   <span className="text-red-500"> *</span>
                 </span>
               </label>
               {errors.consent && (
-                <p id="consent-err" className="text-red-500 text-sm mt-2 ml-7">{errors.consent}</p>
+                <p id="consent-err" className="text-red-500 text-sm mt-2 ml-7">
+                  {errors.consent}
+                </p>
               )}
             </div>
 
@@ -582,12 +603,13 @@ export default function PartnerApplyPage() {
 
             {/* Privacy Note */}
             <p className="ink-muted text-xs text-center pt-4">
-              Your information will be handled in accordance with our privacy policy.
-              Applications are reviewed within 1-2 business days. Qualified firms will be contacted for an initial consultation.
+              Your information will be handled in accordance with our privacy policy. Applications
+              are reviewed within 1-2 business days. Qualified firms will be contacted for an
+              initial consultation.
             </p>
           </form>
         </div>
       </main>
     </>
-  );
+  )
 }

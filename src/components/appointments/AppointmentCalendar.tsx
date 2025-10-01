@@ -170,9 +170,7 @@ export function AppointmentCalendar({
         )}
       </div>
 
-      <div className="mt-2 text-xs font-mono group-hover:ink-muted">
-        {appointment.code}
-      </div>
+      <div className="mt-2 text-xs font-mono group-hover:ink-muted">{appointment.code}</div>
     </button>
   )
 

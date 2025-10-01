@@ -117,10 +117,7 @@ export function CategoryList({
                     <div>
                       <p style={{ color: COLORS.champagne }}>{category.entity_name}</p>
                       {category.description && (
-                        <p
-                          className="text-sm mt-0.5"
-                          style={{ color: COLORS.lightText }}
-                        >
+                        <p className="text-sm mt-0.5" style={{ color: COLORS.lightText }}>
                           {category.description}
                         </p>
                       )}

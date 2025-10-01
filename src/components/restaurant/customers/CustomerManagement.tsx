@@ -489,7 +489,9 @@ export function CustomerManagement() {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-3 h-3 ${ i < Math.floor(customer.satisfaction) ?'text-yellow-400 fill-current'
+                          className={`w-3 h-3 ${
+                            i < Math.floor(customer.satisfaction)
+                              ? 'text-yellow-400 fill-current'
                               : 'text-gray-300'
                           }`}
                         />
@@ -615,7 +617,9 @@ export function CustomerManagement() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-3 h-3 ${ i < Math.floor(customer.satisfaction) ?'text-yellow-400 fill-current'
+                              className={`w-3 h-3 ${
+                                i < Math.floor(customer.satisfaction)
+                                  ? 'text-yellow-400 fill-current'
                                   : 'text-gray-300'
                               }`}
                             />

@@ -365,7 +365,9 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
               return (
                 <div
                   key={method.value}
-                  className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${ isSelected ?'border-violet-300 bg-violet-50 dark:bg-violet-950/30'
+                  className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
+                    isSelected
+                      ? 'border-violet-300 bg-violet-50 dark:bg-violet-950/30'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => {
@@ -382,7 +384,7 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                 >
                   <div className="flex items-center gap-3">
                     <method.icon
-                      className={`h-4 w-4 ${isSelected ?'text-violet-600' : 'text-gray-400'}`}
+                      className={`h-4 w-4 ${isSelected ? 'text-violet-600' : 'text-gray-400'}`}
                     />
                     <span
                       className={
@@ -393,7 +395,8 @@ export function SalesPolicyForm({ policy, onSubmit, isSubmitting }: SalesPolicyF
                     </span>
                   </div>
                   <div
-                    className={`w-4 h-4 rounded border-2 ${ isSelected ?'bg-violet-600 border-violet-600' : 'border-gray-300'
+                    className={`w-4 h-4 rounded border-2 ${
+                      isSelected ? 'bg-violet-600 border-violet-600' : 'border-gray-300'
                     }`}
                   >
                     {isSelected && (

@@ -30,28 +30,18 @@ export default function WaveSection({
     <div className={`relative ${className}`}>
       {/* Top wave */}
       {(wavePosition === 'top' || wavePosition === 'both') && (
-        <WaveBackground
-          height={waveHeight}
-          position="top"
-          className={waveOpacity}
-        />
+        <WaveBackground height={waveHeight} position="top" className={waveOpacity} />
       )}
 
       {/* Bottom wave (flipped) */}
       {(wavePosition === 'bottom' || wavePosition === 'both') && (
         <div className="absolute inset-x-0 bottom-0 rotate-180">
-          <WaveBackground
-            height={waveHeight}
-            position="bottom"
-            className={waveOpacity}
-          />
+          <WaveBackground height={waveHeight} position="bottom" className={waveOpacity} />
         </div>
       )}
 
       {/* Content */}
-      <div className={`relative ${contentClassName}`}>
-        {children}
-      </div>
+      <div className={`relative ${contentClassName}`}>{children}</div>
     </div>
   )
 }

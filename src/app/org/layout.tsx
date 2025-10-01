@@ -137,12 +137,8 @@ export default function OrganizationLayout({ children }: { children: React.React
                   <span className="text-sm font-bold text-foreground">H</span>
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold ink">
-                    {currentOrganization.name}
-                  </h1>
-                  <p className="text-xs ink-muted">
-                    {currentOrganization.subdomain}.heraerp.com
-                  </p>
+                  <h1 className="text-lg font-semibold ink">{currentOrganization.name}</h1>
+                  <p className="text-xs ink-muted">{currentOrganization.subdomain}.heraerp.com</p>
                 </div>
               </div>
             </div>

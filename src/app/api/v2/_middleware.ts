@@ -33,11 +33,11 @@ interface AuthContext {
 function extractAuthContext(request: NextRequest): AuthContext {
   const authHeader = request.headers.get('authorization')
   const orgHeader = request.headers.get('x-organization-id')
-  
+
   // Try to get organization ID from header or URL params
   const { searchParams } = new URL(request.url)
   const organizationId = orgHeader || searchParams.get('organization_id') || undefined
-  
+
   // For now, we'll extract basic info from headers
   // In production, this would decode JWT token
   return {
@@ -53,7 +53,7 @@ async function extractSmartCode(request: NextRequest): Promise<string | undefine
   try {
     // Clone request to read body without consuming it
     const clonedRequest = request.clone()
-    
+
     // Only try to read body for POST/PUT/PATCH requests
     if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
       const body = await clonedRequest.json()
@@ -62,7 +62,7 @@ async function extractSmartCode(request: NextRequest): Promise<string | undefine
   } catch (error) {
     // Ignore JSON parsing errors - body might not be JSON
   }
-  
+
   return undefined
 }
 
@@ -87,15 +87,15 @@ function logEntry(entry: LogEntry): void {
   // In development/testing, log to console
   if (process.env.NODE_ENV === 'development') {
     console.log(`[V2-API] ${entry.method} ${entry.route} - ${entry.status} (${entry.latency_ms}ms)`)
-    
+
     if (entry.error_message) {
       console.error(`[V2-API] Error: ${entry.error_message}`)
     }
   }
-  
+
   // In production, send to structured logging service
   // Example: sendToDatadog(entry) or sendToCloudWatch(entry)
-  
+
   // For now, write structured JSON to stdout for log aggregation
   process.stdout.write(JSON.stringify(entry) + '\n')
 }
@@ -107,32 +107,32 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   // Development auth bypass
   if (process.env.HERA_DEV_BYPASS_AUTH === '1') {
     const url = new URL(request.url)
-    const isLocal = ['localhost','127.0.0.1'].includes(url.hostname)
+    const isLocal = ['localhost', '127.0.0.1'].includes(url.hostname)
     if (isLocal) {
       console.log(`[DEV-BYPASS] ${request.method} ${url.pathname}`)
-      return NextResponse.next({ request: { headers: new Headers(request.headers) }})
+      return NextResponse.next({ request: { headers: new Headers(request.headers) } })
     }
   }
-  
+
   const startTime = Date.now()
   const requestId = uuidv4()
   const route = new URL(request.url).pathname
   const method = request.method
-  
+
   // Add request ID to headers for tracing
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-request-id', requestId)
-  
+
   // Extract context
   const authContext = extractAuthContext(request)
   const smartCode = await extractSmartCode(request)
   const ipAddress = extractIpAddress(request)
   const userAgent = request.headers.get('user-agent') || undefined
-  
+
   let response: NextResponse
   let status = 200
   let errorMessage: string | undefined
-  
+
   try {
     // Continue to the actual API handler
     response = NextResponse.next({
@@ -140,27 +140,26 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
         headers: requestHeaders
       }
     })
-    
+
     status = response.status
-    
   } catch (error) {
     // Handle middleware errors
     status = 500
     errorMessage = error instanceof Error ? error.message : 'Unknown middleware error'
-    
+
     response = NextResponse.json(
-      { 
-        error: 'middleware_error', 
+      {
+        error: 'middleware_error',
         message: errorMessage,
-        requestId 
+        requestId
       },
       { status: 500 }
     )
   }
-  
+
   // Calculate latency
   const latencyMs = Date.now() - startTime
-  
+
   // Create log entry
   const logEntry: LogEntry = {
     requestId,
@@ -177,15 +176,15 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     ip_address: ipAddress,
     error_message: errorMessage
   }
-  
+
   // Log the entry
   logEntry(logEntry)
-  
+
   // Add observability headers to response
   response.headers.set('x-request-id', requestId)
   response.headers.set('x-api-version', 'v2')
   response.headers.set('x-response-time', `${latencyMs}ms`)
-  
+
   return response
 }
 
@@ -193,9 +192,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
  * Configuration for Next.js middleware
  */
 export const config = {
-  matcher: [
-    '/api/v2/:path*'
-  ]
+  matcher: ['/api/v2/:path*']
 }
 
 /**
@@ -209,23 +206,22 @@ export function withV2Observability<T extends any[], R>(
   return async (...args: T): Promise<R> => {
     const startTime = Date.now()
     const requestId = uuidv4()
-    
+
     try {
       const result = await handler(...args)
-      
+
       const latencyMs = Date.now() - startTime
-      
+
       // Log successful handler execution
       if (process.env.NODE_ENV === 'development') {
         console.log(`[V2-Handler] ${routeName || 'unknown'} completed in ${latencyMs}ms`)
       }
-      
+
       return result
-      
     } catch (error) {
       const latencyMs = Date.now() - startTime
       const errorMessage = error instanceof Error ? error.message : 'Unknown handler error'
-      
+
       // Log handler error
       const logEntry: Partial<LogEntry> = {
         requestId,
@@ -237,9 +233,9 @@ export function withV2Observability<T extends any[], R>(
         api_version: 'v2',
         error_message: errorMessage
       }
-      
+
       process.stdout.write(JSON.stringify(logEntry) + '\n')
-      
+
       throw error
     }
   }

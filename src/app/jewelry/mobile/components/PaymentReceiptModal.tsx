@@ -89,7 +89,7 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         className="bg-white rounded-3xl overflow-hidden max-w-sm w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* Receipt Header */}
         <div className="bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 text-white p-6 text-center">
@@ -111,10 +111,10 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
           <div className="text-center border-b border-gray-200 pb-4">
             <h3 className="text-lg font-semibold jewelry-text-royal">Order #{order.id}</h3>
             <p className="text-sm text-gray-600">
-              {new Date(order.timestamp).toLocaleDateString()} at {' '}
-              {new Date(order.timestamp).toLocaleTimeString(undefined, { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+              {new Date(order.timestamp).toLocaleDateString()} at{' '}
+              {new Date(order.timestamp).toLocaleTimeString(undefined, {
+                hour: '2-digit',
+                minute: '2-digit'
               })}
             </p>
           </div>
@@ -130,12 +130,17 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
                 <span className="font-medium jewelry-text-royal block">{order.customer.name}</span>
                 <span className="text-sm text-gray-600">{order.customer.phone}</span>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    order.customer.vipTier === 'Platinum' ? 'bg-gray-800 text-white' :
-                    order.customer.vipTier === 'Gold' ? 'bg-yellow-100 text-yellow-800' :
-                    order.customer.vipTier === 'Silver' ? 'bg-gray-100 text-gray-800' :
-                    'bg-orange-100 text-orange-800'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      order.customer.vipTier === 'Platinum'
+                        ? 'bg-gray-800 text-white'
+                        : order.customer.vipTier === 'Gold'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : order.customer.vipTier === 'Silver'
+                            ? 'bg-gray-100 text-gray-800'
+                            : 'bg-orange-100 text-orange-800'
+                    }`}
+                  >
                     {order.customer.vipTier} Member
                   </span>
                 </div>
@@ -146,8 +151,11 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
           {/* Items */}
           <div className="space-y-3">
             <h4 className="font-semibold jewelry-text-royal">Items Purchased</h4>
-            {order.items.map((item) => (
-              <div key={item.product.id} className="flex items-center gap-3 jewelry-glass-card p-3 rounded-xl">
+            {order.items.map(item => (
+              <div
+                key={item.product.id}
+                className="flex items-center gap-3 jewelry-glass-card p-3 rounded-xl"
+              >
                 <div className="relative w-12 h-12 rounded-lg overflow-hidden">
                   <Image
                     src={item.product.image}
@@ -160,11 +168,15 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
                   />
                 </div>
                 <div className="flex-1">
-                  <span className="font-medium jewelry-text-royal block text-sm">{item.product.name}</span>
+                  <span className="font-medium jewelry-text-royal block text-sm">
+                    {item.product.name}
+                  </span>
                   <span className="text-xs text-gray-600">{item.product.specifications.metal}</span>
                 </div>
                 <div className="text-right">
-                  <span className="font-medium jewelry-text-royal block">${item.product.price.toLocaleString()}</span>
+                  <span className="font-medium jewelry-text-royal block">
+                    ${item.product.price.toLocaleString()}
+                  </span>
                   <span className="text-xs text-gray-600">Qty: {item.quantity}</span>
                 </div>
               </div>
@@ -177,7 +189,9 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="jewelry-text-royal font-medium">${order.subtotal.toLocaleString()}</span>
+                <span className="jewelry-text-royal font-medium">
+                  ${order.subtotal.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tax (8%)</span>
@@ -185,7 +199,9 @@ export default function PaymentReceiptModal({ order, onClose }: PaymentReceiptMo
               </div>
               <div className="border-t border-gray-200 pt-2 flex justify-between">
                 <span className="font-semibold jewelry-text-royal">Total</span>
-                <span className="font-bold jewelry-text-gold text-lg">${order.total.toFixed(2)}</span>
+                <span className="font-bold jewelry-text-gold text-lg">
+                  ${order.total.toFixed(2)}
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-2 pt-2 border-t border-gray-200">

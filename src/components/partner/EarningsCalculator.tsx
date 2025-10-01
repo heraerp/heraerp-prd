@@ -130,7 +130,9 @@ export default function EarningsCalculator() {
                 <button
                   key={scenario.label}
                   onClick={() => setCustomers(scenario.customers)}
-                  className={`p-3 rounded-lg border-2 transition-all text-sm ${ customers === scenario.customers ?'border-emerald-500 bg-emerald-50'
+                  className={`p-3 rounded-lg border-2 transition-all text-sm ${
+                    customers === scenario.customers
+                      ? 'border-emerald-500 bg-emerald-50'
                       : 'border-border hover:border-emerald-300'
                   }`}
                 >
@@ -171,7 +173,9 @@ export default function EarningsCalculator() {
                 <button
                   key={scenario.label}
                   onClick={() => setAvgMonthlyValue(scenario.price)}
-                  className={`p-3 rounded-lg border-2 transition-all text-sm ${ avgMonthlyValue === scenario.price ?'border-blue-500 bg-blue-50'
+                  className={`p-3 rounded-lg border-2 transition-all text-sm ${
+                    avgMonthlyValue === scenario.price
+                      ? 'border-blue-500 bg-blue-50'
                       : 'border-border hover:border-blue-300'
                   }`}
                 >
@@ -191,7 +195,7 @@ export default function EarningsCalculator() {
           {/* Main Results Cards */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <Card
-              className={`relative overflow-hidden transition-all duration-1000 ${animateNumbers ?'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+              className={`relative overflow-hidden transition-all duration-1000 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
             >
               <CardContent className="p-6 text-center bg-gradient-to-br from-emerald-50 to-emerald-100">
                 <DollarSign className="h-8 w-8 text-emerald-600 mx-auto mb-3" />
@@ -204,7 +208,7 @@ export default function EarningsCalculator() {
             </Card>
 
             <Card
-              className={`relative overflow-hidden transition-all duration-1000 delay-200 ${animateNumbers ?'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+              className={`relative overflow-hidden transition-all duration-1000 delay-200 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
             >
               <CardContent className="p-6 text-center bg-gradient-to-br from-blue-50 to-blue-100">
                 <Calendar className="h-8 w-8 text-primary mx-auto mb-3" />
@@ -217,7 +221,7 @@ export default function EarningsCalculator() {
             </Card>
 
             <Card
-              className={`relative overflow-hidden transition-all duration-1000 delay-400 ${animateNumbers ?'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
+              className={`relative overflow-hidden transition-all duration-1000 delay-400 ${animateNumbers ? 'scale-100 opacity-100' : 'scale-95 opacity-90'}`}
             >
               <CardContent className="p-6 text-center bg-gradient-to-br from-purple-50 to-purple-100">
                 <Award className="h-8 w-8 text-purple-600 mx-auto mb-3" />

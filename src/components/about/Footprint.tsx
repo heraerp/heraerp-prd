@@ -1,4 +1,4 @@
-import { FOOTPRINT } from '@/data/about';
+import { FOOTPRINT } from '@/data/about'
 
 export default function Footprint() {
   return (
@@ -20,5 +20,5 @@ export default function Footprint() {
         </div>
       ))}
     </div>
-  );
+  )
 }

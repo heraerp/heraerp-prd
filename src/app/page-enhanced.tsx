@@ -159,9 +159,7 @@ export default function EnhancedLandingPage() {
                 <div className="w-8 h-8 bg-background dark:bg-background rounded-lg flex items-center justify-center">
                   <span className="text-sm font-bold text-foreground dark:text-black">H</span>
                 </div>
-                <span className="text-xl font-semibold ink dark:text-foreground">
-                  HERA
-                </span>
+                <span className="text-xl font-semibold ink dark:text-foreground">HERA</span>
               </Link>
             </div>
             <nav className="hidden md:flex items-center gap-8">
@@ -304,7 +302,8 @@ export default function EnhancedLandingPage() {
             {industries.map(industry => (
               <Card
                 key={industry.id}
-                className={`group cursor-pointer transition-all duration-300 hover:shadow-xl ${ selectedIndustry === industry.id ?'ring-2 ring-blue-500' : ''
+                className={`group cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                  selectedIndustry === industry.id ? 'ring-2 ring-blue-500' : ''
                 }`}
                 onClick={() => setSelectedIndustry(industry.id)}
               >
@@ -450,9 +449,7 @@ export default function EnhancedLandingPage() {
                 <div className="inline-flex p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl mb-4">
                   <prop.icon className="w-6 h-6 text-primary dark:text-blue-400" />
                 </div>
-                <h3 className="font-semibold ink dark:text-foreground mb-2">
-                  {prop.title}
-                </h3>
+                <h3 className="font-semibold ink dark:text-foreground mb-2">{prop.title}</h3>
                 <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                   {prop.description}
                 </p>

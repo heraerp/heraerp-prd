@@ -76,9 +76,7 @@ function SalonProductsPageContent() {
     organizationId,
     includeArchived: false
   })
-  const categories = categoryList
-    .filter(cat => cat && cat.entity_name)
-    .map(cat => cat.entity_name)
+  const categories = categoryList.filter(cat => cat && cat.entity_name).map(cat => cat.entity_name)
 
   // Filter products
   const filteredProducts = products.filter(product => {
@@ -493,7 +491,7 @@ function SalonProductsPageContent() {
 
 export default function SalonProductsPage() {
   const { organizationId } = useSalonContext()
-  
+
   // Wait for organizationId to be available
   if (!organizationId) {
     return (
@@ -502,7 +500,7 @@ export default function SalonProductsPage() {
       </div>
     )
   }
-  
+
   return (
     <StatusToastProvider>
       <SalonProductsPageContent />

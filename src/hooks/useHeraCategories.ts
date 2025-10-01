@@ -13,35 +13,40 @@ export function useHeraCategories({
   organizationId?: string
 } = {}) {
   const queryClient = useQueryClient()
-  
+
   // Fetch all category entities using Universal API v2
-  const { data: entities, isLoading, error: fetchError, refetch } = useQuery({
+  const {
+    data: entities,
+    isLoading,
+    error: fetchError,
+    refetch
+  } = useQuery({
     queryKey: ['categories', organizationId, { includeArchived }],
     queryFn: async () => {
       if (!organizationId) throw new Error('Organization ID required')
-      
+
       const result = await universalApi.getEntities({
         orgId: organizationId,
         entityType: 'service_category',
         status: includeArchived ? undefined : 'active'
       })
-      
+
       console.log('[useHeraCategories] Fetched categories:', {
         count: result.length,
         organizationId
       })
-      
+
       return result
     },
     enabled: !!organizationId
   })
-  
+
   const error = fetchError?.message
 
   // Transform entities to Category format
   const categories = useMemo(() => {
     if (!entities) return []
-    
+
     return entities
       .filter(entity => {
         // Filter by status

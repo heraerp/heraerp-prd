@@ -87,10 +87,7 @@ export default function SignupPage() {
 
             {/* Organization Name Field */}
             <div>
-              <label
-                htmlFor="organizationName"
-                className="block text-sm font-medium ink mb-2"
-              >
+              <label htmlFor="organizationName" className="block text-sm font-medium ink mb-2">
                 Business Name
               </label>
               <input
@@ -160,10 +157,7 @@ export default function SignupPage() {
 
             {/* Confirm Password Field */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium ink mb-2"
-              >
+              <label htmlFor="confirmPassword" className="block text-sm font-medium ink mb-2">
                 Confirm Password
               </label>
               <input

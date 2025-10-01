@@ -251,19 +251,27 @@ export default function JewelryFinancialPage() {
 
   const getExpenseStatusColor = (status: string) => {
     switch (status) {
-      case 'under': return 'jewelry-status-active'
-      case 'on_track': return 'jewelry-status-pending'
-      case 'over': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'under':
+        return 'jewelry-status-active'
+      case 'on_track':
+        return 'jewelry-status-pending'
+      case 'over':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getExpenseStatusIcon = (status: string) => {
     switch (status) {
-      case 'under': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'on_track': return <Clock className="jewelry-icon-warning" size={16} />
-      case 'over': return <AlertTriangle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'under':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'on_track':
+        return <Clock className="jewelry-icon-warning" size={16} />
+      case 'over':
+        return <AlertTriangle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
@@ -279,9 +287,8 @@ export default function JewelryFinancialPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -297,7 +304,7 @@ export default function JewelryFinancialPage() {
           </motion.div>
 
           {/* Controls */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -307,7 +314,7 @@ export default function JewelryFinancialPage() {
               {/* Period and View Selection */}
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex flex-wrap gap-2">
-                  {periods.map((period) => (
+                  {periods.map(period => (
                     <button
                       key={period.value}
                       onClick={() => setSelectedPeriod(period.value)}
@@ -323,7 +330,7 @@ export default function JewelryFinancialPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  {views.map((view) => (
+                  {views.map(view => (
                     <button
                       key={view.value}
                       onClick={() => setSelectedView(view.value)}
@@ -342,19 +349,19 @@ export default function JewelryFinancialPage() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => setShowAdvancedMetrics(!showAdvancedMetrics)}
                   className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2"
                 >
                   <Filter className="jewelry-icon-gold" size={18} />
                   <span>Advanced</span>
                 </button>
-                
+
                 <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                   <RefreshCw className="jewelry-icon-gold" size={18} />
                   <span>Refresh</span>
                 </button>
-                
+
                 <button className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2">
                   <Download className="jewelry-icon-gold" size={18} />
                   <span>Export Report</span>
@@ -364,7 +371,7 @@ export default function JewelryFinancialPage() {
           </motion.div>
 
           {/* Key Financial Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -372,37 +379,56 @@ export default function JewelryFinancialPage() {
           >
             <div className="jewelry-glass-card jewelry-float p-6 text-center">
               <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{formatCurrency(financialMetrics.totalRevenue)}</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {formatCurrency(financialMetrics.totalRevenue)}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Total Revenue</p>
               <div className="flex items-center justify-center mt-2 text-green-500">
                 <ArrowUpRight size={16} />
-                <span className="text-xs ml-1">{formatPercentage(financialMetrics.monthlyGrowth)}</span>
+                <span className="text-xs ml-1">
+                  {formatPercentage(financialMetrics.monthlyGrowth)}
+                </span>
               </div>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.1s' }}
+            >
               <Calculator className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{formatCurrency(financialMetrics.netProfit)}</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {formatCurrency(financialMetrics.netProfit)}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Net Profit</p>
               <div className="flex items-center justify-center mt-2 text-green-500">
                 <ArrowUpRight size={16} />
                 <span className="text-xs ml-1">+15.2%</span>
               </div>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.2s' }}
+            >
               <Percent className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{financialMetrics.profitMargin}%</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {financialMetrics.profitMargin}%
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Profit Margin</p>
               <div className="flex items-center justify-center mt-2 text-green-500">
                 <ArrowUpRight size={16} />
                 <span className="text-xs ml-1">+2.1%</span>
               </div>
             </div>
-            
-            <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+            <div
+              className="jewelry-glass-card jewelry-float p-6 text-center"
+              style={{ animationDelay: '0.3s' }}
+            >
               <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-              <h3 className="jewelry-text-high-contrast text-3xl font-bold">{formatCurrency(financialMetrics.cashFlow)}</h3>
+              <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                {formatCurrency(financialMetrics.cashFlow)}
+              </h3>
               <p className="jewelry-text-muted text-sm font-medium">Cash Flow</p>
               <div className="flex items-center justify-center mt-2 text-green-500">
                 <ArrowUpRight size={16} />
@@ -414,9 +440,8 @@ export default function JewelryFinancialPage() {
           {/* Main Content Based on Selected View */}
           {selectedView === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
               {/* Revenue Breakdown */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -431,29 +456,43 @@ export default function JewelryFinancialPage() {
                     <Eye className="jewelry-icon-gold" size={16} />
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   {revenueBreakdown.map((item, index) => (
                     <div key={item.category} className="jewelry-glass-card p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${item.color}`}></div>
+                          <div
+                            className={`w-4 h-4 rounded-full bg-gradient-to-r ${item.color}`}
+                          ></div>
                           <div>
-                            <h4 className="jewelry-text-high-contrast font-semibold">{item.category}</h4>
-                            <p className="jewelry-text-muted text-sm">{item.percentage}% of total</p>
+                            <h4 className="jewelry-text-high-contrast font-semibold">
+                              {item.category}
+                            </h4>
+                            <p className="jewelry-text-muted text-sm">
+                              {item.percentage}% of total
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="jewelry-text-high-contrast font-bold">{formatCurrency(item.amount)}</p>
-                          <div className={`flex items-center justify-end mt-1 ${item.growth >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {item.growth >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                          <p className="jewelry-text-high-contrast font-bold">
+                            {formatCurrency(item.amount)}
+                          </p>
+                          <div
+                            className={`flex items-center justify-end mt-1 ${item.growth >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                          >
+                            {item.growth >= 0 ? (
+                              <ArrowUpRight size={14} />
+                            ) : (
+                              <ArrowDownRight size={14} />
+                            )}
                             <span className="text-xs ml-1">{Math.abs(item.growth)}%</span>
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
+                        <div
                           className={`h-2 rounded-full bg-gradient-to-r ${item.color}`}
                           style={{ width: `${item.percentage}%` }}
                         ></div>
@@ -464,7 +503,7 @@ export default function JewelryFinancialPage() {
               </motion.div>
 
               {/* Expense Analysis */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
@@ -480,7 +519,7 @@ export default function JewelryFinancialPage() {
                     <span className="text-sm">Budget</span>
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   {expenseCategories.map((expense, index) => (
                     <div key={expense.category} className="jewelry-glass-card p-4">
@@ -488,33 +527,50 @@ export default function JewelryFinancialPage() {
                         <div className="flex items-center gap-3">
                           {getExpenseStatusIcon(expense.status)}
                           <div>
-                            <h4 className="jewelry-text-high-contrast font-semibold">{expense.category}</h4>
-                            <span className={`text-xs px-2 py-1 rounded ${getExpenseStatusColor(expense.status)}`}>
+                            <h4 className="jewelry-text-high-contrast font-semibold">
+                              {expense.category}
+                            </h4>
+                            <span
+                              className={`text-xs px-2 py-1 rounded ${getExpenseStatusColor(expense.status)}`}
+                            >
                               {expense.status.replace('_', ' ').toUpperCase()}
                             </span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="jewelry-text-high-contrast font-bold">{formatCurrency(expense.amount)}</p>
-                          <p className="jewelry-text-muted text-sm">{expense.percentage}% of total</p>
+                          <p className="jewelry-text-high-contrast font-bold">
+                            {formatCurrency(expense.amount)}
+                          </p>
+                          <p className="jewelry-text-muted text-sm">
+                            {expense.percentage}% of total
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="jewelry-text-muted">Budget: {formatCurrency(expense.budget)}</span>
-                          <span className={`font-medium ${expense.variance < 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          <span className="jewelry-text-muted">
+                            Budget: {formatCurrency(expense.budget)}
+                          </span>
+                          <span
+                            className={`font-medium ${expense.variance < 0 ? 'text-green-500' : 'text-red-500'}`}
+                          >
                             {formatPercentage(expense.variance)}
                           </span>
                         </div>
-                        
+
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className={`h-2 rounded-full transition-all duration-300 ${
-                              expense.status === 'under' ? 'bg-green-500' :
-                              expense.status === 'on_track' ? 'bg-yellow-500' : 'bg-red-500'
+                              expense.status === 'under'
+                                ? 'bg-green-500'
+                                : expense.status === 'on_track'
+                                  ? 'bg-yellow-500'
+                                  : 'bg-red-500'
                             }`}
-                            style={{ width: `${Math.min((expense.amount / expense.budget) * 100, 100)}%` }}
+                            style={{
+                              width: `${Math.min((expense.amount / expense.budget) * 100, 100)}%`
+                            }}
                           ></div>
                         </div>
                       </div>
@@ -527,7 +583,7 @@ export default function JewelryFinancialPage() {
 
           {/* Advanced Metrics Panel */}
           {showAdvancedMetrics && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.0 }}
@@ -538,36 +594,44 @@ export default function JewelryFinancialPage() {
                   <BarChart3 className="jewelry-icon-gold" size={24} />
                   Advanced Financial Metrics
                 </h3>
-                <button 
+                <button
                   onClick={() => setShowAdvancedMetrics(false)}
                   className="jewelry-btn-secondary p-2"
                 >
                   <ChevronRight className="jewelry-icon-gold" size={16} />
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="jewelry-glass-card p-6 text-center">
                   <CreditCard className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{formatCurrency(financialMetrics.accountsReceivable)}</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {formatCurrency(financialMetrics.accountsReceivable)}
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Accounts Receivable</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Receipt className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{formatCurrency(financialMetrics.accountsPayable)}</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {formatCurrency(financialMetrics.accountsPayable)}
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Accounts Payable</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Gem className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{formatCurrency(financialMetrics.inventory)}</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {formatCurrency(financialMetrics.inventory)}
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Inventory Value</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{formatCurrency(financialMetrics.avgOrderValue)}</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {formatCurrency(financialMetrics.avgOrderValue)}
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Avg Order Value</p>
                 </div>
               </div>
@@ -575,7 +639,7 @@ export default function JewelryFinancialPage() {
           )}
 
           {/* Profitability Trends */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.2 }}
@@ -591,7 +655,7 @@ export default function JewelryFinancialPage() {
                 <span className="text-sm">Details</span>
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {profitabilityAnalysis.map((period, index) => (
                 <motion.div
@@ -605,31 +669,43 @@ export default function JewelryFinancialPage() {
                     <h4 className="jewelry-text-luxury font-semibold">{period.period}</h4>
                     <Award className="jewelry-icon-gold" size={20} />
                   </div>
-                  
+
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="jewelry-text-muted">Revenue:</span>
-                      <span className="jewelry-text-high-contrast font-bold">{formatCurrency(period.revenue)}</span>
+                      <span className="jewelry-text-high-contrast font-bold">
+                        {formatCurrency(period.revenue)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="jewelry-text-muted">Costs:</span>
-                      <span className="jewelry-text-high-contrast font-medium">{formatCurrency(period.costs)}</span>
+                      <span className="jewelry-text-high-contrast font-medium">
+                        {formatCurrency(period.costs)}
+                      </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-jewelry-blue-200">
                       <span className="jewelry-text-muted">Gross Profit:</span>
-                      <span className="jewelry-text-high-contrast font-bold">{formatCurrency(period.grossProfit)}</span>
+                      <span className="jewelry-text-high-contrast font-bold">
+                        {formatCurrency(period.grossProfit)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="jewelry-text-muted">Gross Margin:</span>
-                      <span className="jewelry-text-high-contrast font-bold">{period.grossMargin}%</span>
+                      <span className="jewelry-text-high-contrast font-bold">
+                        {period.grossMargin}%
+                      </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-jewelry-blue-200">
                       <span className="jewelry-text-luxury font-medium">Net Profit:</span>
-                      <span className="jewelry-text-high-contrast font-bold text-lg">{formatCurrency(period.netProfit)}</span>
+                      <span className="jewelry-text-high-contrast font-bold text-lg">
+                        {formatCurrency(period.netProfit)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="jewelry-text-luxury font-medium">Net Margin:</span>
-                      <span className="jewelry-text-high-contrast font-bold text-lg">{period.netMargin}%</span>
+                      <span className="jewelry-text-high-contrast font-bold text-lg">
+                        {period.netMargin}%
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -638,14 +714,15 @@ export default function JewelryFinancialPage() {
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.4 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              Financial analytics powered by <span className="jewelry-text-luxury font-semibold">HERA Business Intelligence</span>
+              Financial analytics powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Business Intelligence</span>
             </p>
           </motion.div>
         </div>

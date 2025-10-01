@@ -48,9 +48,7 @@ export function TestimonialCard({
             {rating}/5
           </span>
         </div>
-        <p className="ink dark:text-slate-300 text-sm leading-relaxed mb-4">
-          "{testimonial}"
-        </p>
+        <p className="ink dark:text-slate-300 text-sm leading-relaxed mb-4">"{testimonial}"</p>
         <div className="flex items-center">
           <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
             <span className="text-foreground text-xs font-semibold">{name.charAt(0)}</span>

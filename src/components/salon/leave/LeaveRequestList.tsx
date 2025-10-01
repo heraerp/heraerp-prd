@@ -267,9 +267,7 @@ export function LeaveRequestList({
                         </Badge>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="text-sm truncate">
-                          {request.metadata?.notes || '-'}
-                        </p>
+                        <p className="text-sm truncate">{request.metadata?.notes || '-'}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">

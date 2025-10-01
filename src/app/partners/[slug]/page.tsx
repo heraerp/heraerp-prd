@@ -1,39 +1,43 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { PARTNERS } from '@/data/partners';
-import type { Metadata } from 'next';
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { PARTNERS } from '@/data/partners'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
   return PARTNERS.map(partner => ({
     slug: partner.slug
-  }));
+  }))
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const partner = PARTNERS.find(p => p.slug === params.slug);
-  if (!partner) return { title: 'Partner Not Found' };
+export async function generateMetadata({
+  params
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const partner = PARTNERS.find(p => p.slug === params.slug)
+  if (!partner) return { title: 'Partner Not Found' }
 
   return {
     title: `${partner.name} — HERA Partner`,
     description: partner.summary
-  };
+  }
 }
 
 function PartnerProfileClient({ slug }: { slug: string }) {
-  "use client";
+  'use client'
 
   if (typeof window !== 'undefined' && (window as any).track) {
-    (window as any).track('partners_profile_view', { slug });
+    ;(window as any).track('partners_profile_view', { slug })
   }
 
-  return null;
+  return null
 }
 
 export default function PartnerProfilePage({ params }: { params: { slug: string } }) {
-  const partner = PARTNERS.find(p => p.slug === params.slug);
+  const partner = PARTNERS.find(p => p.slug === params.slug)
 
   if (!partner) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -57,9 +61,7 @@ export default function PartnerProfilePage({ params }: { params: { slug: string 
               />
             ) : (
               <div className="h-20 w-20 rounded-xl bg-gradient-to-br from-indigo-600/20 to-cyan-600/20 flex items-center justify-center">
-                <span className="text-2xl font-semibold ink">
-                  {partner.name.charAt(0)}
-                </span>
+                <span className="text-2xl font-semibold ink">{partner.name.charAt(0)}</span>
               </div>
             )}
 
@@ -69,9 +71,7 @@ export default function PartnerProfilePage({ params }: { params: { slug: string 
             </div>
           </div>
 
-          <p className="ink-muted text-lg leading-relaxed">
-            {partner.summary}
-          </p>
+          <p className="ink-muted text-lg leading-relaxed">{partner.summary}</p>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
@@ -130,20 +130,12 @@ export default function PartnerProfilePage({ params }: { params: { slug: string 
         {/* CTAs */}
         <section className="flex flex-wrap gap-3">
           {partner.website && (
-            <a
-              href={partner.website}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-gradient"
-            >
+            <a href={partner.website} target="_blank" rel="noreferrer" className="btn-gradient">
               Visit website
             </a>
           )}
           {partner.contactEmail && (
-            <a
-              href={`mailto:${partner.contactEmail}`}
-              className="btn-quiet"
-            >
+            <a href={`mailto:${partner.contactEmail}`} className="btn-quiet">
               Contact partner
             </a>
           )}
@@ -189,5 +181,5 @@ export default function PartnerProfilePage({ params }: { params: { slug: string 
         )}
       </main>
     </>
-  );
+  )
 }

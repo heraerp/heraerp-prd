@@ -214,9 +214,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
             <div className="flex flex-wrap items-center gap-4">
               {/* Stylist Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium ink dark:text-gray-300">
-                  Stylist:
-                </span>
+                <span className="text-sm font-medium ink dark:text-gray-300">Stylist:</span>
                 <Select value={selectedStylist} onValueChange={setSelectedStylist}>
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />
@@ -255,9 +253,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* Service Type Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium ink dark:text-gray-300">
-                  Service:
-                </span>
+                <span className="text-sm font-medium ink dark:text-gray-300">Service:</span>
                 <Select defaultValue="all">
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />
@@ -294,9 +290,7 @@ export function ModernSalonCalendar({ className, onNewBooking }: ModernSalonCale
 
               {/* VIP Filter */}
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium ink dark:text-gray-300">
-                  Client Type:
-                </span>
+                <span className="text-sm font-medium ink dark:text-gray-300">Client Type:</span>
                 <Select defaultValue="all">
                   <SelectTrigger className="w-48 rounded-lg">
                     <SelectValue />

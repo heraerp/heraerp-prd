@@ -28,8 +28,12 @@ interface SearchFilters {
 export default function SearchPage() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
-  const [popularSearches, setPopularSearches] = useState<Array<{ query: string; count: number }>>([])
-  const [recentSearches, setRecentSearches] = useState<Array<{ query: string; timestamp: Date }>>([])
+  const [popularSearches, setPopularSearches] = useState<Array<{ query: string; count: number }>>(
+    []
+  )
+  const [recentSearches, setRecentSearches] = useState<Array<{ query: string; timestamp: Date }>>(
+    []
+  )
   const [isSearching, setIsSearching] = useState(false)
   const [filters, setFilters] = useState<SearchFilters>({ categories: [] })
   const [availableCategories, setAvailableCategories] = useState<string[]>([])
@@ -39,7 +43,7 @@ export default function SearchPage() {
   useEffect(() => {
     Promise.all([
       fetch('/api/docs/search?action=popular&limit=10').then(res => res.json()),
-      fetch('/api/docs/search?action=recent&limit=10').then(res => res.json()),
+      fetch('/api/docs/search?action=recent&limit=10').then(res => res.json())
     ]).then(([popularData, recentData]) => {
       setPopularSearches(popularData.popular || [])
       setRecentSearches(recentData.recent || [])
@@ -106,7 +110,7 @@ Search across all Civicflow documentation to find exactly what you need.
 
   const breadcrumbs = [
     { label: 'Documentation', href: '/docs/civicflow' },
-    { label: 'Search', href: '/docs/civicflow/search' },
+    { label: 'Search', href: '/docs/civicflow/search' }
   ]
 
   return (
@@ -119,8 +123,8 @@ Search across all Civicflow documentation to find exactly what you need.
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch(query)}
               placeholder="Search documentation..."
               className={cn(
                 'w-full pl-12 pr-4 py-3 text-base',
@@ -158,7 +162,7 @@ Search across all Civicflow documentation to find exactly what you need.
                 Popular Searches
               </h3>
               <ul className="space-y-2">
-                {popularSearches.slice(0, 5).map((popular) => (
+                {popularSearches.slice(0, 5).map(popular => (
                   <li key={popular.query}>
                     <button
                       onClick={() => {
@@ -264,7 +268,7 @@ Search across all Civicflow documentation to find exactly what you need.
 
             {/* Results List */}
             <div className="space-y-4">
-              {filteredResults.map((result) => (
+              {filteredResults.map(result => (
                 <Link
                   key={result.id}
                   href={result.path}
@@ -274,9 +278,11 @@ Search across all Civicflow documentation to find exactly what you need.
                     <FileText className="h-5 w-5 text-slate-400 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 
+                        <h3
                           className="text-lg font-semibold text-slate-900 dark:text-slate-100"
-                          dangerouslySetInnerHTML={{ __html: result.highlight?.title || result.title }}
+                          dangerouslySetInnerHTML={{
+                            __html: result.highlight?.title || result.title
+                          }}
                         />
                         <span className="px-2 py-0.5 text-xs rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                           {result.category}
@@ -285,12 +291,15 @@ Search across all Civicflow documentation to find exactly what you need.
                           Score: {result.score.toFixed(2)}
                         </span>
                       </div>
-                      <p 
+                      <p
                         className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3"
-                        dangerouslySetInnerHTML={{ __html: result.highlight?.content || result.content }}
+                        dangerouslySetInnerHTML={{
+                          __html: result.highlight?.content || result.content
+                        }}
                       />
                       <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                        {result.section !== 'Full Document' && `${result.section} → `}{result.path}
+                        {result.section !== 'Full Document' && `${result.section} → `}
+                        {result.path}
                       </p>
                     </div>
                   </div>

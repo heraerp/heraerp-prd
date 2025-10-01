@@ -19,31 +19,31 @@ const createProductSchema = z.object({
   requires_inventory: z.boolean().default(true),
   reorder_point: z.number().min(0).optional(),
   brand: z.string().trim().max(100).optional(),
-  barcode: z.string().trim().max(50).optional(),
+  barcode: z.string().trim().max(50).optional()
 })
 
 export async function POST(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId || !authResult.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const organizationId = authResult.organizationId
     const userId = authResult.userId
     const body = await request.json()
-    
+
     // Validate the request body
     const productData = createProductSchema.parse(body)
-    
+
     // Get Supabase service client
     const supabase = getSupabaseService()
-    
+
     // Generate product code if not provided
     const productCode = productData.code || `SKU-${Date.now()}`
-    
+
     // Step 1: Create/Update product entity using RPC
     const { data: entityResult, error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
       p_org_id: organizationId,
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         uom: 'EA'
       }
     })
-    
+
     if (entityError || !entityResult) {
       console.error('Failed to create product entity:', entityError)
       return NextResponse.json(
@@ -69,21 +69,18 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     // Check if the result is successful and get the entity_id
     if (!entityResult || !entityResult.success) {
       console.error('Entity creation failed:', entityResult)
-      return NextResponse.json(
-        { error: 'Failed to create product entity' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to create product entity' }, { status: 500 })
     }
-    
+
     const productId = entityResult.data.id
-    
+
     // Step 2: Add dynamic fields using hera_dynamic_data_upsert_v1
     const dynamicFieldsToCreate = []
-    
+
     // Price
     if (productData.price !== undefined) {
       dynamicFieldsToCreate.push({
@@ -93,7 +90,7 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.PRICE.V1'
       })
     }
-    
+
     // Currency
     dynamicFieldsToCreate.push({
       field_name: 'currency',
@@ -101,7 +98,7 @@ export async function POST(request: NextRequest) {
       field_value: productData.currency,
       smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.CURRENCY.V1'
     })
-    
+
     // Brand
     if (productData.brand) {
       dynamicFieldsToCreate.push({
@@ -111,7 +108,7 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.BRAND.V1'
       })
     }
-    
+
     // Barcode
     if (productData.barcode) {
       dynamicFieldsToCreate.push({
@@ -121,7 +118,7 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.BARCODE.V1'
       })
     }
-    
+
     // Reorder Point
     if (productData.reorder_point !== undefined) {
       dynamicFieldsToCreate.push({
@@ -131,7 +128,7 @@ export async function POST(request: NextRequest) {
         smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.REORDER.V1'
       })
     }
-    
+
     // Requires Inventory
     dynamicFieldsToCreate.push({
       field_name: 'requires_inventory',
@@ -139,7 +136,7 @@ export async function POST(request: NextRequest) {
       field_value: productData.requires_inventory,
       smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.INVENTORY.V1'
     })
-    
+
     // Insert all dynamic fields using RPC
     for (const field of dynamicFieldsToCreate) {
       const params: any = {
@@ -149,7 +146,7 @@ export async function POST(request: NextRequest) {
         p_field_type: field.field_type,
         p_smart_code: field.smart_code
       }
-      
+
       // Set the appropriate value field based on type
       if (field.field_type === 'number') {
         params.p_field_value_number = field.field_value
@@ -158,14 +155,14 @@ export async function POST(request: NextRequest) {
       } else if (field.field_type === 'text') {
         params.p_field_value_text = field.field_value
       }
-      
+
       const { error: dynamicError } = await supabase.rpc('hera_dynamic_data_set_v1', params)
-      
+
       if (dynamicError) {
         console.error(`Warning: Failed to create field ${field.field_name}:`, dynamicError)
       }
     }
-    
+
     // Step 3: Add initial inventory tracking as dynamic data
     if (productData.requires_inventory) {
       // Add stock quantity as dynamic fields
@@ -177,36 +174,38 @@ export async function POST(request: NextRequest) {
         p_field_value_number: 0,
         p_smart_code: 'HERA.SALON.INVENTORY.QTY.ONHAND.V1'
       }
-      
+
       const { error: invError } = await supabase.rpc('hera_dynamic_data_set_v1', inventoryParams)
-      
+
       if (invError) {
         console.warn('Failed to create inventory tracking:', invError)
       }
     }
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        id: productId,
-        entity_name: productData.name,
-        entity_code: productCode,
-        status: 'active',
-        smart_code: 'HERA.SALON.CATALOG.PRODUCT.RETAIL.V1',
-        ...productData
-      }
-    }, { status: 201 })
-    
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          id: productId,
+          entity_name: productData.name,
+          entity_code: productCode,
+          status: 'active',
+          smart_code: 'HERA.SALON.CATALOG.PRODUCT.RETAIL.V1',
+          ...productData
+        }
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Create product error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid product data', details: error.errors },
         { status: 400 }
       )
     }
-    
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -216,22 +215,22 @@ export async function GET(request: NextRequest) {
   try {
     // Authenticate and get organization ID from token
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const organizationId = authResult.organizationId
-    
+
     // Get query parameters
     const searchParams = Object.fromEntries(request.nextUrl.searchParams.entries())
     const status = searchParams.status || 'active'
     const limit = parseInt(searchParams.limit || '50')
     const offset = parseInt(searchParams.offset || '0')
-    
+
     // Get Supabase service client
     const supabase = getSupabaseService()
-    
+
     // Use hera_entity_read_v1 to fetch products
     const { data: result, error } = await supabase.rpc('hera_entity_read_v1', {
       p_organization_id: organizationId,
@@ -245,7 +244,7 @@ export async function GET(request: NextRequest) {
       p_limit: limit,
       p_offset: offset
     })
-    
+
     if (error) {
       console.error('Failed to fetch products:', error)
       return NextResponse.json(
@@ -253,11 +252,11 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     // Transform the result for UI consumption
     const products = (result?.entities || []).map((entity: any) => {
       const dynamicData = entity.dynamic_data || {}
-      
+
       return {
         id: entity.id,
         entity_name: entity.entity_name,
@@ -278,7 +277,7 @@ export async function GET(request: NextRequest) {
         qty_on_hand: 0 // TODO: Join with inventory
       }
     })
-    
+
     return NextResponse.json({
       success: true,
       data: products,
@@ -288,7 +287,6 @@ export async function GET(request: NextRequest) {
         offset: offset
       }
     })
-    
   } catch (error) {
     console.error('Fetch products error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -302,23 +300,23 @@ export async function DELETE(request: NextRequest) {
     const url = new URL(request.url)
     const pathParts = url.pathname.split('/')
     const productId = pathParts[pathParts.length - 1]
-    
+
     if (!productId || productId === 'route.ts') {
       return NextResponse.json({ error: 'Product ID required' }, { status: 400 })
     }
-    
+
     // Authenticate
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const organizationId = authResult.organizationId
-    
+
     // Get Supabase service client
     const supabase = getSupabaseService()
-    
+
     // Soft delete the product
     const { data: result, error } = await supabase.rpc('hera_entity_delete_v1', {
       p_organization_id: organizationId,
@@ -326,7 +324,7 @@ export async function DELETE(request: NextRequest) {
       p_cascade_dynamic_data: true,
       p_cascade_relationships: true
     })
-    
+
     if (error) {
       console.error('Failed to delete product:', error)
       return NextResponse.json(
@@ -334,12 +332,11 @@ export async function DELETE(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Product archived successfully'
     })
-    
   } catch (error) {
     console.error('Delete product error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

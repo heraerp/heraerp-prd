@@ -11,7 +11,7 @@ interface DocPageProps {
 export function DocPage({ docPath, breadcrumbs }: DocPageProps) {
   // Read the markdown content from the docs folder
   const filePath = path.join(process.cwd(), 'docs', 'civicflow', `${docPath}.md`)
-  
+
   let content = ''
   try {
     content = fs.readFileSync(filePath, 'utf8')
@@ -19,11 +19,5 @@ export function DocPage({ docPath, breadcrumbs }: DocPageProps) {
     content = '# Page Not Found\n\nThe documentation page you are looking for does not exist yet.'
   }
 
-  return (
-    <DocsLayout
-      content={content}
-      sidebar={civicflowSidebar}
-      breadcrumbs={breadcrumbs}
-    />
-  )
+  return <DocsLayout content={content} sidebar={civicflowSidebar} breadcrumbs={breadcrumbs} />
 }

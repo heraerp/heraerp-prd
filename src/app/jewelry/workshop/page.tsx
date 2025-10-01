@@ -344,75 +344,116 @@ export default function JewelryWorkshopPage() {
     { id: 'quality', label: 'Quality', icon: Award }
   ]
 
-  const statusOptions = ['all', 'pending', 'in_progress', 'quality_check', 'completed', 'on_hold', 'cancelled']
+  const statusOptions = [
+    'all',
+    'pending',
+    'in_progress',
+    'quality_check',
+    'completed',
+    'on_hold',
+    'cancelled'
+  ]
   const priorityOptions = ['all', 'low', 'normal', 'high', 'urgent']
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pending': return <Clock className="jewelry-icon-warning" size={16} />
-      case 'in_progress': return <Play className="jewelry-icon-info" size={16} />
-      case 'quality_check': return <Eye className="jewelry-icon-warning" size={16} />
-      case 'completed': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'on_hold': return <Pause className="jewelry-icon-error" size={16} />
-      case 'cancelled': return <XCircle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'pending':
+        return <Clock className="jewelry-icon-warning" size={16} />
+      case 'in_progress':
+        return <Play className="jewelry-icon-info" size={16} />
+      case 'quality_check':
+        return <Eye className="jewelry-icon-warning" size={16} />
+      case 'completed':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'on_hold':
+        return <Pause className="jewelry-icon-error" size={16} />
+      case 'cancelled':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'jewelry-status-pending'
-      case 'in_progress': return 'jewelry-status-active'
-      case 'quality_check': return 'jewelry-status-pending'
-      case 'completed': return 'jewelry-status-active'
-      case 'on_hold': return 'jewelry-status-inactive'
-      case 'cancelled': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'pending':
+        return 'jewelry-status-pending'
+      case 'in_progress':
+        return 'jewelry-status-active'
+      case 'quality_check':
+        return 'jewelry-status-pending'
+      case 'completed':
+        return 'jewelry-status-active'
+      case 'on_hold':
+        return 'jewelry-status-inactive'
+      case 'cancelled':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'low': return <ArrowDownRight className="text-blue-500" size={16} />
-      case 'normal': return <Activity className="text-gray-500" size={16} />
-      case 'high': return <ArrowUpRight className="text-orange-500" size={16} />
-      case 'urgent': return <AlertTriangle className="text-red-500" size={16} />
-      default: return null
+      case 'low':
+        return <ArrowDownRight className="text-blue-500" size={16} />
+      case 'normal':
+        return <Activity className="text-gray-500" size={16} />
+      case 'high':
+        return <ArrowUpRight className="text-orange-500" size={16} />
+      case 'urgent':
+        return <AlertTriangle className="text-red-500" size={16} />
+      default:
+        return null
     }
   }
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'low': return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'normal': return 'bg-gray-100 text-gray-800 border-gray-200'
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200'
-      case 'urgent': return 'bg-red-100 text-red-800 border-red-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'low':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'normal':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'high':
+        return 'bg-orange-100 text-orange-800 border-orange-200'
+      case 'urgent':
+        return 'bg-red-100 text-red-800 border-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
     }
   }
 
   const getAvailabilityIcon = (availability: string) => {
     switch (availability) {
-      case 'available': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'busy': return <Clock className="jewelry-icon-warning" size={16} />
-      case 'offline': return <XCircle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'available':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'busy':
+        return <Clock className="jewelry-icon-warning" size={16} />
+      case 'offline':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
-      case 'available': return 'jewelry-status-active'
-      case 'busy': return 'jewelry-status-pending'
-      case 'offline': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'available':
+        return 'jewelry-status-active'
+      case 'busy':
+        return 'jewelry-status-pending'
+      case 'offline':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const filteredJobs = workshopJobs.filter(job => {
-    const matchesSearch = job.jobNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.itemType.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      job.jobNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.itemType.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = selectedStatus === 'all' || job.status === selectedStatus
     const matchesPriority = selectedPriority === 'all' || job.priority === selectedPriority
     const matchesCraftsman = selectedCraftsman === 'all' || job.assignedTo === selectedCraftsman
@@ -424,9 +465,8 @@ export default function JewelryWorkshopPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -442,7 +482,7 @@ export default function JewelryWorkshopPage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -450,14 +490,12 @@ export default function JewelryWorkshopPage() {
           >
             <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex flex-wrap gap-2">
-                {tabs.map((tab) => (
+                {tabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      selectedTab === tab.id
-                        ? 'jewelry-btn-primary'
-                        : 'jewelry-btn-secondary'
+                      selectedTab === tab.id ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                     }`}
                   >
                     <tab.icon size={16} />
@@ -465,7 +503,7 @@ export default function JewelryWorkshopPage() {
                   </button>
                 ))}
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                   <RefreshCw className="jewelry-icon-gold" size={18} />
@@ -483,7 +521,7 @@ export default function JewelryWorkshopPage() {
           {selectedTab === 'overview' && (
             <>
               {/* Key Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -491,37 +529,54 @@ export default function JewelryWorkshopPage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <Wrench className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{workshopMetrics.activeJobs}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {workshopMetrics.activeJobs}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Active Jobs</p>
                   <div className="flex items-center justify-center mt-2 text-blue-500">
                     <Activity size={16} />
                     <span className="text-xs ml-1">{workshopMetrics.totalJobs} total</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.1s' }}
+                >
                   <CheckCircle className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{workshopMetrics.completedToday}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {workshopMetrics.completedToday}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Completed Today</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <ArrowUpRight size={16} />
                     <span className="text-xs ml-1">+12% vs yesterday</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.2s' }}
+                >
                   <Timer className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{workshopMetrics.avgCompletionTime}h</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {workshopMetrics.avgCompletionTime}h
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Avg Completion</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <ArrowDownRight size={16} />
                     <span className="text-xs ml-1">-8% improvement</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.3s' }}
+                >
                   <Award className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{workshopMetrics.qualityScore}%</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {workshopMetrics.qualityScore}%
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Quality Score</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <Star size={16} />
@@ -531,7 +586,7 @@ export default function JewelryWorkshopPage() {
               </motion.div>
 
               {/* Performance Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -539,25 +594,33 @@ export default function JewelryWorkshopPage() {
               >
                 <div className="jewelry-glass-card p-6 text-center">
                   <Gauge className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{workshopMetrics.workshopEfficiency}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {workshopMetrics.workshopEfficiency}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Workshop Efficiency</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{workshopMetrics.onTimeDelivery}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {workshopMetrics.onTimeDelivery}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">On-Time Delivery</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{workshopMetrics.resourceUtilization}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {workshopMetrics.resourceUtilization}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Resource Utilization</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <TrendingUp className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{workshopMetrics.profitMargin}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {workshopMetrics.profitMargin}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Profit Margin</p>
                 </div>
               </motion.div>
@@ -568,7 +631,7 @@ export default function JewelryWorkshopPage() {
           {selectedTab === 'jobs' && (
             <>
               {/* Filters */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -577,19 +640,22 @@ export default function JewelryWorkshopPage() {
                 <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-4 items-center">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                        size={20}
+                      />
                       <input
                         type="text"
                         placeholder="Search jobs..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                         className="jewelry-input pl-10 w-64"
                       />
                     </div>
-                    
+
                     <select
                       value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
+                      onChange={e => setSelectedStatus(e.target.value)}
                       className="jewelry-input"
                     >
                       {statusOptions.map(status => (
@@ -598,10 +664,10 @@ export default function JewelryWorkshopPage() {
                         </option>
                       ))}
                     </select>
-                    
+
                     <select
                       value={selectedPriority}
-                      onChange={(e) => setSelectedPriority(e.target.value)}
+                      onChange={e => setSelectedPriority(e.target.value)}
                       className="jewelry-input"
                     >
                       {priorityOptions.map(priority => (
@@ -627,7 +693,7 @@ export default function JewelryWorkshopPage() {
                         <Activity size={16} />
                       </button>
                     </div>
-                    
+
                     <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                       <Download className="jewelry-icon-gold" size={18} />
                       <span>Export</span>
@@ -637,7 +703,7 @@ export default function JewelryWorkshopPage() {
               </motion.div>
 
               {/* Jobs Grid */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -655,12 +721,16 @@ export default function JewelryWorkshopPage() {
                       {/* Job Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">{job.jobNumber}</h3>
+                          <h3 className="jewelry-text-high-contrast font-semibold text-lg mb-1">
+                            {job.jobNumber}
+                          </h3>
                           <p className="jewelry-text-muted text-sm">{job.customerName}</p>
                         </div>
                         <div className="flex items-center space-x-2">
                           {getStatusIcon(job.status)}
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(job.status)}`}>
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(job.status)}`}
+                          >
                             {job.status.replace('_', ' ').toUpperCase()}
                           </span>
                         </div>
@@ -670,21 +740,29 @@ export default function JewelryWorkshopPage() {
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                           {getPriorityIcon(job.priority)}
-                          <span className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(job.priority)}`}>
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(job.priority)}`}
+                          >
                             {job.priority.toUpperCase()}
                           </span>
                         </div>
-                        <span className="jewelry-text-muted text-sm font-medium">{job.itemType}</span>
+                        <span className="jewelry-text-muted text-sm font-medium">
+                          {job.itemType}
+                        </span>
                       </div>
 
                       {/* Description */}
-                      <p className="jewelry-text-high-contrast text-sm mb-4 line-clamp-2">{job.description}</p>
+                      <p className="jewelry-text-high-contrast text-sm mb-4 line-clamp-2">
+                        {job.description}
+                      </p>
 
                       {/* Details */}
                       <div className="space-y-2 mb-4 text-sm">
                         <div className="flex justify-between">
                           <span className="jewelry-text-muted">Assigned to:</span>
-                          <span className="jewelry-text-high-contrast font-medium">{job.assignedTo}</span>
+                          <span className="jewelry-text-high-contrast font-medium">
+                            {job.assignedTo}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="jewelry-text-muted">Due date:</span>
@@ -692,16 +770,20 @@ export default function JewelryWorkshopPage() {
                         </div>
                         <div className="flex justify-between">
                           <span className="jewelry-text-muted">Progress:</span>
-                          <span className="jewelry-text-high-contrast">{job.actualHours}h / {job.estimatedHours}h</span>
+                          <span className="jewelry-text-high-contrast">
+                            {job.actualHours}h / {job.estimatedHours}h
+                          </span>
                         </div>
                       </div>
 
                       {/* Progress Bar */}
                       <div className="mb-4">
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="h-2 rounded-full bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 transition-all duration-300"
-                            style={{ width: `${Math.min((job.actualHours / job.estimatedHours) * 100, 100)}%` }}
+                            style={{
+                              width: `${Math.min((job.actualHours / job.estimatedHours) * 100, 100)}%`
+                            }}
                           ></div>
                         </div>
                       </div>
@@ -710,7 +792,9 @@ export default function JewelryWorkshopPage() {
                       <div className="flex justify-between items-center pt-4 border-t border-jewelry-blue-200">
                         <div className="text-sm">
                           <span className="jewelry-text-muted">Profit: </span>
-                          <span className="jewelry-text-high-contrast font-bold">¹{job.profit.toLocaleString()}</span>
+                          <span className="jewelry-text-high-contrast font-bold">
+                            ¹{job.profit.toLocaleString()}
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">
@@ -730,7 +814,7 @@ export default function JewelryWorkshopPage() {
 
           {/* Craftsmen Tab */}
           {selectedTab === 'craftsmen' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -746,7 +830,7 @@ export default function JewelryWorkshopPage() {
                   <span>Add Craftsman</span>
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 {craftsmen.map((craftsman, index) => (
                   <motion.div
@@ -763,10 +847,14 @@ export default function JewelryWorkshopPage() {
                           <User className="text-white" size={24} />
                         </div>
                         <div>
-                          <h4 className="jewelry-text-high-contrast font-semibold">{craftsman.name}</h4>
+                          <h4 className="jewelry-text-high-contrast font-semibold">
+                            {craftsman.name}
+                          </h4>
                           <div className="flex items-center gap-2 mt-1">
                             {getAvailabilityIcon(craftsman.availability)}
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${getAvailabilityColor(craftsman.availability)}`}>
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium ${getAvailabilityColor(craftsman.availability)}`}
+                            >
                               {craftsman.availability.toUpperCase()}
                             </span>
                           </div>
@@ -775,9 +863,13 @@ export default function JewelryWorkshopPage() {
                       <div className="text-right">
                         <div className="flex items-center gap-1">
                           <Star className="jewelry-icon-gold" size={16} />
-                          <span className="jewelry-text-high-contrast font-bold">{craftsman.rating}</span>
+                          <span className="jewelry-text-high-contrast font-bold">
+                            {craftsman.rating}
+                          </span>
                         </div>
-                        <p className="jewelry-text-muted text-sm">{craftsman.experienceYears} years</p>
+                        <p className="jewelry-text-muted text-sm">
+                          {craftsman.experienceYears} years
+                        </p>
                       </div>
                     </div>
 
@@ -786,7 +878,10 @@ export default function JewelryWorkshopPage() {
                       <p className="jewelry-text-muted text-sm mb-2">Specializations:</p>
                       <div className="flex flex-wrap gap-2">
                         {craftsman.specialization.map((spec, i) => (
-                          <span key={i} className="px-2 py-1 bg-jewelry-blue-100 dark:bg-jewelry-blue-800 text-jewelry-blue-800 dark:text-jewelry-blue-200 rounded text-xs">
+                          <span
+                            key={i}
+                            className="px-2 py-1 bg-jewelry-blue-100 dark:bg-jewelry-blue-800 text-jewelry-blue-800 dark:text-jewelry-blue-200 rounded text-xs"
+                          >
                             {spec}
                           </span>
                         ))}
@@ -802,7 +897,7 @@ export default function JewelryWorkshopPage() {
                             <span className="jewelry-text-high-contrast text-sm">{skill.name}</span>
                             <div className="flex items-center gap-2">
                               <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                                <div 
+                                <div
                                   className="h-1.5 rounded-full bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600"
                                   style={{ width: `${skill.level}%` }}
                                 ></div>
@@ -817,8 +912,18 @@ export default function JewelryWorkshopPage() {
                     {/* Stats & Actions */}
                     <div className="flex justify-between items-center pt-4 border-t border-jewelry-blue-200">
                       <div className="text-sm">
-                        <p className="jewelry-text-muted">Current: <span className="jewelry-text-high-contrast font-medium">{craftsman.currentJobs} jobs</span></p>
-                        <p className="jewelry-text-muted">Rate: <span className="jewelry-text-high-contrast font-medium">¹{craftsman.hourlyRate}/hr</span></p>
+                        <p className="jewelry-text-muted">
+                          Current:{' '}
+                          <span className="jewelry-text-high-contrast font-medium">
+                            {craftsman.currentJobs} jobs
+                          </span>
+                        </p>
+                        <p className="jewelry-text-muted">
+                          Rate:{' '}
+                          <span className="jewelry-text-high-contrast font-medium">
+                            ¹{craftsman.hourlyRate}/hr
+                          </span>
+                        </p>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button className="p-2 rounded jewelry-btn-secondary hover:scale-105 transition-transform">
@@ -836,14 +941,15 @@ export default function JewelryWorkshopPage() {
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              Workshop management powered by <span className="jewelry-text-luxury font-semibold">HERA Production System</span>
+              Workshop management powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Production System</span>
             </p>
           </motion.div>
         </div>

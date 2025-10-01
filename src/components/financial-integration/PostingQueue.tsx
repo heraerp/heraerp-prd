@@ -295,7 +295,7 @@ export function PostingQueue({ organizationId, onTransactionSelect }: PostingQue
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={loadTransactions} disabled={isLoading}>
-                <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ?'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
               <Button

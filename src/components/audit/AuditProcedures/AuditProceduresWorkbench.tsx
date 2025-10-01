@@ -242,7 +242,8 @@ export function AuditProceduresWorkbench() {
           return (
             <Card
               key={area.value}
-              className={`cursor-pointer transition-all hover:shadow-lg ${ selectedArea === area.value ?'ring-2 ring-blue-500 shadow-lg' : ''
+              className={`cursor-pointer transition-all hover:shadow-lg ${
+                selectedArea === area.value ? 'ring-2 ring-blue-500 shadow-lg' : ''
               }`}
               onClick={() => setSelectedArea(area.value)}
             >

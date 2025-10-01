@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { PRICING_MODULES, computeRecommendation, toQuery, type PricingModule } from '@/data/pricing';
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import { PRICING_MODULES, computeRecommendation, toQuery, type PricingModule } from '@/data/pricing'
 
 export default function PricingConfigurator() {
-  const router = useRouter();
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const router = useRouter()
+  const debounceRef = useRef<NodeJS.Timeout>()
 
   const [config, setConfig] = useState({
     modules: [] as PricingModule[],
     users: 10,
-    locations: "1" as "1" | "2-5" | "6+",
-    integrations: "0" as "0" | "1-2" | "3-5" | "6+",
-    migration: "none" as "none" | "basic" | "complex",
-    support: "standard" as "standard" | "premium"
-  });
+    locations: '1' as '1' | '2-5' | '6+',
+    integrations: '0' as '0' | '1-2' | '3-5' | '6+',
+    migration: 'none' as 'none' | 'basic' | 'complex',
+    support: 'standard' as 'standard' | 'premium'
+  })
 
-  const recommendation = computeRecommendation(config);
+  const recommendation = computeRecommendation(config)
 
   // Track config changes with debounce
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current)
 
     debounceRef.current = setTimeout(() => {
       if (typeof window !== 'undefined' && (window as any).track) {
-        (window as any).track('pricing_config_change', {
+        ;(window as any).track('pricing_config_change', {
           ...config,
           recommendation: recommendation.pkg,
           timeline: recommendation.timeline
-        });
+        })
       }
-    }, 300);
+    }, 300)
 
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [config, recommendation]);
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [config, recommendation])
 
   const handleModuleToggle = (module: PricingModule) => {
     setConfig(prev => ({
@@ -44,8 +44,8 @@ export default function PricingConfigurator() {
       modules: prev.modules.includes(module)
         ? prev.modules.filter(m => m !== module)
         : [...prev.modules, module]
-    }));
-  };
+    }))
+  }
 
   const handleRequestPricing = () => {
     const payload = {
@@ -53,24 +53,24 @@ export default function PricingConfigurator() {
       modules: config.modules.join(','),
       pkg: recommendation.pkg,
       timeline: recommendation.timeline
-    };
-
-    if (typeof window !== 'undefined' && (window as any).track) {
-      (window as any).track('pricing_request_click', payload);
     }
 
-    router.push(`/pricing-request${toQuery(payload)}`);
-  };
+    if (typeof window !== 'undefined' && (window as any).track) {
+      ;(window as any).track('pricing_request_click', payload)
+    }
+
+    router.push(`/pricing-request${toQuery(payload)}`)
+  }
 
   const handleBookDemo = () => {
-    const payload = { modules: config.modules.join(',') };
+    const payload = { modules: config.modules.join(',') }
 
     if (typeof window !== 'undefined' && (window as any).track) {
-      (window as any).track('pricing_demo_click', payload);
+      ;(window as any).track('pricing_demo_click', payload)
     }
 
-    router.push(`/book-a-meeting${toQuery(payload)}`);
-  };
+    router.push(`/book-a-meeting${toQuery(payload)}`)
+  }
 
   return (
     <div className="relative overflow-hidden">
@@ -136,7 +136,12 @@ export default function PricingConfigurator() {
               min="1"
               max="1000"
               value={config.users}
-              onChange={(e) => setConfig(prev => ({ ...prev, users: Math.max(1, Math.min(1000, parseInt(e.target.value) || 1)) }))}
+              onChange={e =>
+                setConfig(prev => ({
+                  ...prev,
+                  users: Math.max(1, Math.min(1000, parseInt(e.target.value) || 1))
+                }))
+              }
               className="w-full px-4 py-3 rounded-xl bg-background border border-border ink focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
@@ -149,7 +154,12 @@ export default function PricingConfigurator() {
             <select
               id="locations"
               value={config.locations}
-              onChange={(e) => setConfig(prev => ({ ...prev, locations: e.target.value as typeof config.locations }))}
+              onChange={e =>
+                setConfig(prev => ({
+                  ...prev,
+                  locations: e.target.value as typeof config.locations
+                }))
+              }
               className="w-full px-4 py-3 rounded-xl bg-background border border-border ink hover:border-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all cursor-pointer"
             >
               <option value="1">1 location</option>
@@ -166,7 +176,12 @@ export default function PricingConfigurator() {
             <select
               id="integrations"
               value={config.integrations}
-              onChange={(e) => setConfig(prev => ({ ...prev, integrations: e.target.value as typeof config.integrations }))}
+              onChange={e =>
+                setConfig(prev => ({
+                  ...prev,
+                  integrations: e.target.value as typeof config.integrations
+                }))
+              }
               className="w-full px-4 py-3 rounded-xl bg-background border border-border ink hover:border-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all cursor-pointer"
             >
               <option value="0">None</option>
@@ -184,7 +199,12 @@ export default function PricingConfigurator() {
             <select
               id="migration"
               value={config.migration}
-              onChange={(e) => setConfig(prev => ({ ...prev, migration: e.target.value as typeof config.migration }))}
+              onChange={e =>
+                setConfig(prev => ({
+                  ...prev,
+                  migration: e.target.value as typeof config.migration
+                }))
+              }
               className="w-full px-4 py-3 rounded-xl bg-background border border-border ink hover:border-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all cursor-pointer"
             >
               <option value="none">No migration needed</option>
@@ -198,17 +218,21 @@ export default function PricingConfigurator() {
         <div className="mb-10">
           <h3 className="ink text-lg font-semibold mb-4">Support Level</h3>
           <div className="grid sm:grid-cols-2 gap-4">
-            <label className={`p-4 rounded-xl border cursor-pointer transition-all ${
-              config.support === 'standard'
-                ? 'border-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/30'
-                : 'border-border bg-background hover:bg-surface-veil hover:border-indigo-500/30'
-            }`}>
+            <label
+              className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                config.support === 'standard'
+                  ? 'border-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/30'
+                  : 'border-border bg-background hover:bg-surface-veil hover:border-indigo-500/30'
+              }`}
+            >
               <input
                 type="radio"
                 name="support"
                 value="standard"
-                checked={config.support === "standard"}
-                onChange={(e) => setConfig(prev => ({ ...prev, support: e.target.value as typeof config.support }))}
+                checked={config.support === 'standard'}
+                onChange={e =>
+                  setConfig(prev => ({ ...prev, support: e.target.value as typeof config.support }))
+                }
                 className="h-4 w-4 border-border text-indigo-600 focus:ring-2 focus:ring-ring mb-2"
               />
               <div className="ml-6">
@@ -216,22 +240,28 @@ export default function PricingConfigurator() {
                 <div className="ink-muted text-sm">Email support during business hours</div>
               </div>
             </label>
-            <label className={`p-4 rounded-xl border cursor-pointer transition-all ${
-              config.support === 'premium'
-                ? 'border-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/30'
-                : 'border-border bg-background hover:bg-surface-veil hover:border-indigo-500/30'
-            }`}>
+            <label
+              className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                config.support === 'premium'
+                  ? 'border-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/30'
+                  : 'border-border bg-background hover:bg-surface-veil hover:border-indigo-500/30'
+              }`}
+            >
               <input
                 type="radio"
                 name="support"
                 value="premium"
-                checked={config.support === "premium"}
-                onChange={(e) => setConfig(prev => ({ ...prev, support: e.target.value as typeof config.support }))}
+                checked={config.support === 'premium'}
+                onChange={e =>
+                  setConfig(prev => ({ ...prev, support: e.target.value as typeof config.support }))
+                }
                 className="h-4 w-4 border-border text-indigo-600 focus:ring-2 focus:ring-ring mb-2"
               />
               <div className="ml-6">
                 <div className="ink font-semibold">Premium Support</div>
-                <div className="ink-muted text-sm">24/7 phone & email + dedicated success manager</div>
+                <div className="ink-muted text-sm">
+                  24/7 phone & email + dedicated success manager
+                </div>
               </div>
             </label>
           </div>
@@ -268,8 +298,8 @@ export default function PricingConfigurator() {
 
             <div className="p-4 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-white/20">
               <p className="ink text-sm text-center">
-                💡 Your exact pricing depends on modules, usage and onboarding complexity.
-                Send this configuration to our team for a detailed, personalized quote.
+                💡 Your exact pricing depends on modules, usage and onboarding complexity. Send this
+                configuration to our team for a detailed, personalized quote.
               </p>
             </div>
           </div>
@@ -292,5 +322,5 @@ export default function PricingConfigurator() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -133,14 +133,15 @@ export function RoleTable({
             return (
               <tr
                 key={grant.user_email}
-                className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${ isEven ?'bg-gray-50/30 dark:bg-gray-800/20' : ''
+                className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors ${
+                  isEven ? 'bg-gray-50/30 dark:bg-gray-800/20' : ''
                 }`}
               >
                 {/* User Column */}
                 <td className="py-4 px-4">
                   <div className="flex items-start gap-3">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color ||'bg-gray-100'}`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${roleConfig?.color || 'bg-gray-100'}`}
                     >
                       {roleConfig ? (
                         <roleConfig.icon className="h-4 w-4" />
@@ -202,9 +203,7 @@ export function RoleTable({
                       {formatDate(grant.granted_at)}
                     </div>
                     {grant.granted_by && (
-                      <div className="text-xs dark:ink-muted mt-1">
-                        by {grant.granted_by}
-                      </div>
+                      <div className="text-xs dark:ink-muted mt-1">by {grant.granted_by}</div>
                     )}
                   </div>
                 </td>

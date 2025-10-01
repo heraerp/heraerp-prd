@@ -38,7 +38,11 @@ interface ProductDetailModalProps {
   onAddToCart: (product: MobileProduct) => void
 }
 
-export default function ProductDetailModal({ product, onClose, onAddToCart }: ProductDetailModalProps) {
+export default function ProductDetailModal({
+  product,
+  onClose,
+  onAddToCart
+}: ProductDetailModalProps) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -52,7 +56,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         className="bg-white rounded-3xl overflow-hidden max-w-sm w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* Product Image */}
         <div className="relative h-80 bg-gradient-to-br from-jewelry-cream to-jewelry-blue-50">
@@ -85,9 +89,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
         <div className="p-6 space-y-6">
           {/* Header */}
           <div>
-            <h2 className="text-2xl font-bold jewelry-text-royal mb-2">
-              {product.name}
-            </h2>
+            <h2 className="text-2xl font-bold jewelry-text-royal mb-2">{product.name}</h2>
             <div className="flex items-center justify-between">
               <span className="text-3xl font-bold jewelry-text-gold">
                 ${product.price.toLocaleString()}
@@ -95,9 +97,9 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
               <div className="flex items-center gap-1">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
-                    <Star 
-                      key={i} 
-                      className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
                     />
                   ))}
                 </div>
@@ -112,26 +114,36 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <span className="text-sm text-gray-600 block">Metal</span>
-                <span className="font-medium jewelry-text-royal">{product.specifications.metal}</span>
+                <span className="font-medium jewelry-text-royal">
+                  {product.specifications.metal}
+                </span>
               </div>
               <div>
                 <span className="text-sm text-gray-600 block">Purity</span>
-                <span className="font-medium jewelry-text-royal">{product.specifications.purity}</span>
+                <span className="font-medium jewelry-text-royal">
+                  {product.specifications.purity}
+                </span>
               </div>
               <div>
                 <span className="text-sm text-gray-600 block">Weight</span>
-                <span className="font-medium jewelry-text-royal">{product.specifications.weight}</span>
+                <span className="font-medium jewelry-text-royal">
+                  {product.specifications.weight}
+                </span>
               </div>
               {product.specifications.stones && (
                 <div>
                   <span className="text-sm text-gray-600 block">Stones</span>
-                  <span className="font-medium jewelry-text-royal">{product.specifications.stones}</span>
+                  <span className="font-medium jewelry-text-royal">
+                    {product.specifications.stones}
+                  </span>
                 </div>
               )}
               {product.specifications.size && (
                 <div>
                   <span className="text-sm text-gray-600 block">Size</span>
-                  <span className="font-medium jewelry-text-royal">{product.specifications.size}</span>
+                  <span className="font-medium jewelry-text-royal">
+                    {product.specifications.size}
+                  </span>
                 </div>
               )}
             </div>
@@ -145,10 +157,14 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
                 <div className="flex items-center gap-3">
                   <Award className="h-6 w-6 jewelry-text-gold" />
                   <div>
-                    <span className="font-semibold jewelry-text-royal block">{product.certification.lab}</span>
+                    <span className="font-semibold jewelry-text-royal block">
+                      {product.certification.lab}
+                    </span>
                     <span className="text-sm text-gray-600">{product.certification.number}</span>
                     {product.certification.grade && (
-                      <span className="text-sm text-gray-600 block">Grade: {product.certification.grade}</span>
+                      <span className="text-sm text-gray-600 block">
+                        Grade: {product.certification.grade}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -173,7 +189,9 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }: Pr
                   </span>
                 )}
               </div>
-              <div className={`w-3 h-3 rounded-full ${product.inventory.inStock ? 'bg-green-500' : 'bg-red-500'}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${product.inventory.inStock ? 'bg-green-500' : 'bg-red-500'}`}
+              />
             </div>
           </div>
 

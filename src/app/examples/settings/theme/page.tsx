@@ -1,10 +1,10 @@
 // app/examples/settings/theme/page.tsx
-'use client';
-import { ThemePicker } from '@/ui';
-import { useRouter } from 'next/navigation';
+'use client'
+import { ThemePicker } from '@/ui'
+import { useRouter } from 'next/navigation'
 
 export default function ThemeSettingsPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <main className="min-h-screen bg-[color:rgb(var(--hera-bg)/1)] text-[color:rgb(var(--hera-text)/1)]">
@@ -28,7 +28,7 @@ export default function ThemeSettingsPage() {
 
         <div className="mt-8 space-y-4">
           <h2 className="text-lg font-semibold">Live Preview</h2>
-          
+
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="p-4 rounded-[var(--hera-radius)] bg-[color:rgb(var(--hera-surface)/1)] border border-white/10">
               <h3 className="font-medium mb-2">Surface Card</h3>
@@ -39,9 +39,7 @@ export default function ThemeSettingsPage() {
 
             <div className="p-4 rounded-[var(--hera-radius)] bg-[color:rgb(var(--hera-primary)/1)] text-black">
               <h3 className="font-medium mb-2">Primary Card</h3>
-              <p className="text-sm opacity-80">
-                This uses the primary color
-              </p>
+              <p className="text-sm opacity-80">This uses the primary color</p>
             </div>
 
             <div className="p-4 rounded-[var(--hera-radius)] border-2 border-[color:rgb(var(--hera-primary)/1)]">
@@ -78,5 +76,5 @@ export default function ThemeSettingsPage() {
         </div>
       </div>
     </main>
-  );
+  )
 }

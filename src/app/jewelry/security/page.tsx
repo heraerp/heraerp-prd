@@ -411,52 +411,78 @@ export default function JewelrySecurityPage() {
 
   const getAlertIcon = (type: string) => {
     switch (type) {
-      case 'intrusion': return <ShieldAlert className="jewelry-icon-error" size={16} />
-      case 'access_violation': return <UserX className="jewelry-icon-warning" size={16} />
-      case 'sensor_trigger': return <Radio className="jewelry-icon-warning" size={16} />
-      case 'system': return <Settings className="jewelry-icon-info" size={16} />
-      case 'environmental': return <Thermometer className="jewelry-icon-info" size={16} />
-      default: return <AlertCircle className="jewelry-icon-warning" size={16} />
+      case 'intrusion':
+        return <ShieldAlert className="jewelry-icon-error" size={16} />
+      case 'access_violation':
+        return <UserX className="jewelry-icon-warning" size={16} />
+      case 'sensor_trigger':
+        return <Radio className="jewelry-icon-warning" size={16} />
+      case 'system':
+        return <Settings className="jewelry-icon-info" size={16} />
+      case 'environmental':
+        return <Thermometer className="jewelry-icon-info" size={16} />
+      default:
+        return <AlertCircle className="jewelry-icon-warning" size={16} />
     }
   }
 
   const getAlertSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'jewelry-status-active'
-      case 'medium': return 'jewelry-status-pending'
-      case 'high': return 'jewelry-status-inactive'
-      case 'critical': return 'bg-red-600 text-white'
-      default: return 'jewelry-status-inactive'
+      case 'low':
+        return 'jewelry-status-active'
+      case 'medium':
+        return 'jewelry-status-pending'
+      case 'high':
+        return 'jewelry-status-inactive'
+      case 'critical':
+        return 'bg-red-600 text-white'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getZoneStatusIcon = (status: string) => {
     switch (status) {
-      case 'secured': return <Lock className="jewelry-icon-success" size={16} />
-      case 'accessed': return <Unlock className="jewelry-icon-warning" size={16} />
-      case 'maintenance': return <Settings className="jewelry-icon-info" size={16} />
-      case 'alert': return <AlertTriangle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'secured':
+        return <Lock className="jewelry-icon-success" size={16} />
+      case 'accessed':
+        return <Unlock className="jewelry-icon-warning" size={16} />
+      case 'maintenance':
+        return <Settings className="jewelry-icon-info" size={16} />
+      case 'alert':
+        return <AlertTriangle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
   const getZoneStatusColor = (status: string) => {
     switch (status) {
-      case 'secured': return 'jewelry-status-active'
-      case 'accessed': return 'jewelry-status-pending'
-      case 'maintenance': return 'jewelry-status-luxury'
-      case 'alert': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'secured':
+        return 'jewelry-status-active'
+      case 'accessed':
+        return 'jewelry-status-pending'
+      case 'maintenance':
+        return 'jewelry-status-luxury'
+      case 'alert':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getDeviceStatusIcon = (status: string) => {
     switch (status) {
-      case 'online': return <Wifi className="jewelry-icon-success" size={16} />
-      case 'offline': return <WifiOff className="jewelry-icon-error" size={16} />
-      case 'maintenance': return <Settings className="jewelry-icon-warning" size={16} />
-      case 'alert': return <AlertTriangle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'online':
+        return <Wifi className="jewelry-icon-success" size={16} />
+      case 'offline':
+        return <WifiOff className="jewelry-icon-error" size={16} />
+      case 'maintenance':
+        return <Settings className="jewelry-icon-warning" size={16} />
+      case 'alert':
+        return <AlertTriangle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
@@ -464,9 +490,8 @@ export default function JewelrySecurityPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -482,7 +507,7 @@ export default function JewelrySecurityPage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -490,14 +515,12 @@ export default function JewelrySecurityPage() {
           >
             <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex flex-wrap gap-2">
-                {tabs.map((tab) => (
+                {tabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      selectedTab === tab.id
-                        ? 'jewelry-btn-primary'
-                        : 'jewelry-btn-secondary'
+                      selectedTab === tab.id ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                     }`}
                   >
                     <tab.icon size={16} />
@@ -505,9 +528,9 @@ export default function JewelrySecurityPage() {
                   </button>
                 ))}
               </div>
-              
+
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={() => setShowLiveView(!showLiveView)}
                   className={`jewelry-btn-secondary flex items-center space-x-2 px-4 py-2 ${showLiveView ? 'ring-2 ring-jewelry-gold-500' : ''}`}
                 >
@@ -526,7 +549,7 @@ export default function JewelrySecurityPage() {
           {selectedTab === 'overview' && (
             <>
               {/* Key Security Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -534,50 +557,70 @@ export default function JewelrySecurityPage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <ShieldCheck className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{securityMetrics.systemUptime}%</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {securityMetrics.systemUptime}%
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">System Uptime</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <CheckCircle size={16} />
                     <span className="text-xs ml-1">All Systems Operational</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.1s' }}
+                >
                   <AlertTriangle className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{securityMetrics.activeAlerts}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {securityMetrics.activeAlerts}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Active Alerts</p>
                   <div className="flex items-center justify-center mt-2 text-yellow-500">
                     <Activity size={16} />
                     <span className="text-xs ml-1">{securityMetrics.totalAlerts24h} in 24h</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.2s' }}
+                >
                   <Key className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">{securityMetrics.vaultAccessesToday}</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    {securityMetrics.vaultAccessesToday}
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Vault Accesses</p>
                   <div className="flex items-center justify-center mt-2 text-blue-500">
                     <Users size={16} />
-                    <span className="text-xs ml-1">{securityMetrics.currentStaffInVault} staff inside</span>
+                    <span className="text-xs ml-1">
+                      {securityMetrics.currentStaffInVault} staff inside
+                    </span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.3s' }}
+                >
                   <Gem className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">¹{(securityMetrics.totalValueSecured / 1000000).toFixed(1)}M</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">
+                    ¹{(securityMetrics.totalValueSecured / 1000000).toFixed(1)}M
+                  </h3>
                   <p className="jewelry-text-muted text-sm font-medium">Value Secured</p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <Shield size={16} />
-                    <span className="text-xs ml-1">{securityMetrics.highValueItemsSecured} items</span>
+                    <span className="text-xs ml-1">
+                      {securityMetrics.highValueItemsSecured} items
+                    </span>
                   </div>
                 </div>
               </motion.div>
 
               {/* Security Status Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 {/* Recent Alerts */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -592,7 +635,7 @@ export default function JewelrySecurityPage() {
                       <Eye className="jewelry-icon-gold" size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {securityAlerts.slice(0, 3).map((alert, index) => (
                       <div key={alert.id} className="jewelry-glass-card p-4">
@@ -600,15 +643,19 @@ export default function JewelrySecurityPage() {
                           <div className="flex items-start gap-3">
                             {getAlertIcon(alert.type)}
                             <div className="flex-1">
-                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">{alert.title}</h4>
+                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                                {alert.title}
+                              </h4>
                               <p className="jewelry-text-muted text-xs mt-1">{alert.description}</p>
                             </div>
                           </div>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${getAlertSeverityColor(alert.severity)}`}>
+                          <span
+                            className={`px-2 py-1 rounded text-xs font-medium ${getAlertSeverityColor(alert.severity)}`}
+                          >
                             {alert.severity.toUpperCase()}
                           </span>
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-xs">
                           <span className="jewelry-text-muted flex items-center gap-1">
                             <MapPin size={12} />
@@ -625,7 +672,7 @@ export default function JewelrySecurityPage() {
                 </motion.div>
 
                 {/* Vault Zone Status */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -636,31 +683,44 @@ export default function JewelrySecurityPage() {
                       <Lock className="jewelry-icon-gold" size={24} />
                       Vault Zone Status
                     </h3>
-                    <span className={`px-3 py-1 rounded text-sm font-medium ${showLiveView ? 'bg-red-500 text-white animate-pulse' : 'jewelry-status-inactive'}`}>
+                    <span
+                      className={`px-3 py-1 rounded text-sm font-medium ${showLiveView ? 'bg-red-500 text-white animate-pulse' : 'jewelry-status-inactive'}`}
+                    >
                       {showLiveView ? 'LIVE' : 'STATIC'}
                     </span>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {vaultZones.map((zone, index) => (
-                      <div key={zone.id} className="jewelry-glass-card p-4 cursor-pointer hover:scale-[1.02] transition-transform"
-                           onClick={() => setSelectedVaultZone(zone)}>
+                      <div
+                        key={zone.id}
+                        className="jewelry-glass-card p-4 cursor-pointer hover:scale-[1.02] transition-transform"
+                        onClick={() => setSelectedVaultZone(zone)}
+                      >
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
                             {getZoneStatusIcon(zone.status)}
                             <div>
-                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">{zone.name}</h4>
-                              <span className={`text-xs px-2 py-1 rounded ${getZoneStatusColor(zone.status)}`}>
+                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                                {zone.name}
+                              </h4>
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${getZoneStatusColor(zone.status)}`}
+                              >
                                 {zone.status.toUpperCase()}
                               </span>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="jewelry-text-high-contrast font-bold">¹{(zone.inventory.totalValue / 100000).toFixed(1)}L</p>
-                            <p className="jewelry-text-muted text-xs">{zone.inventory.totalItems} items</p>
+                            <p className="jewelry-text-high-contrast font-bold">
+                              ¹{(zone.inventory.totalValue / 100000).toFixed(1)}L
+                            </p>
+                            <p className="jewelry-text-muted text-xs">
+                              {zone.inventory.totalItems} items
+                            </p>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-3 gap-3 text-xs">
                           <div className="flex items-center gap-1">
                             <Thermometer className="jewelry-icon-gold" size={12} />
@@ -672,7 +732,9 @@ export default function JewelrySecurityPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Users className="jewelry-icon-gold" size={12} />
-                            <span className="jewelry-text-muted">{zone.currentOccupancy}/{zone.maxOccupancy}</span>
+                            <span className="jewelry-text-muted">
+                              {zone.currentOccupancy}/{zone.maxOccupancy}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -682,7 +744,7 @@ export default function JewelrySecurityPage() {
               </div>
 
               {/* Security Performance Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.0 }}
@@ -690,25 +752,33 @@ export default function JewelrySecurityPage() {
               >
                 <div className="jewelry-glass-card p-6 text-center">
                   <Clock className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{securityMetrics.avgResponseTime} min</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {securityMetrics.avgResponseTime} min
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Avg Response Time</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Shield className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{securityMetrics.complianceScore}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {securityMetrics.complianceScore}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Compliance Score</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <Radio className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{securityMetrics.deviceOnlineRate}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {securityMetrics.deviceOnlineRate}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">Device Online Rate</p>
                 </div>
-                
+
                 <div className="jewelry-glass-card p-6 text-center">
                   <AlertCircle className="mx-auto mb-3 jewelry-icon-gold" size={24} />
-                  <h4 className="jewelry-text-high-contrast text-xl font-bold">{securityMetrics.falseAlarmRate}%</h4>
+                  <h4 className="jewelry-text-high-contrast text-xl font-bold">
+                    {securityMetrics.falseAlarmRate}%
+                  </h4>
                   <p className="jewelry-text-muted text-sm">False Alarm Rate</p>
                 </div>
               </motion.div>
@@ -717,7 +787,7 @@ export default function JewelrySecurityPage() {
 
           {/* Alerts Tab */}
           {selectedTab === 'alerts' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -731,7 +801,7 @@ export default function JewelrySecurityPage() {
                 <div className="flex items-center gap-3">
                   <select
                     value={selectedAlertType}
-                    onChange={(e) => setSelectedAlertType(e.target.value)}
+                    onChange={e => setSelectedAlertType(e.target.value)}
                     className="jewelry-input text-sm"
                   >
                     <option value="all">All Alerts</option>
@@ -746,7 +816,7 @@ export default function JewelrySecurityPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 {securityAlerts.map((alert, index) => (
                   <motion.div
@@ -760,12 +830,16 @@ export default function JewelrySecurityPage() {
                       <div className="flex items-start gap-4">
                         {getAlertIcon(alert.type)}
                         <div className="flex-1">
-                          <h4 className="jewelry-text-high-contrast font-semibold mb-1">{alert.title}</h4>
+                          <h4 className="jewelry-text-high-contrast font-semibold mb-1">
+                            {alert.title}
+                          </h4>
                           <p className="jewelry-text-muted text-sm">{alert.description}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className={`px-3 py-1 rounded text-sm font-medium ${getAlertSeverityColor(alert.severity)}`}>
+                        <span
+                          className={`px-3 py-1 rounded text-sm font-medium ${getAlertSeverityColor(alert.severity)}`}
+                        >
                           {alert.severity.toUpperCase()}
                         </span>
                         <button className="jewelry-btn-secondary p-2">
@@ -773,7 +847,7 @@ export default function JewelrySecurityPage() {
                         </button>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <MapPin className="jewelry-icon-gold" size={16} />
@@ -788,10 +862,12 @@ export default function JewelrySecurityPage() {
                       <div className="flex items-center gap-2">
                         <User className="jewelry-icon-gold" size={16} />
                         <span className="jewelry-text-muted">Assigned:</span>
-                        <span className="jewelry-text-high-contrast">{alert.assignedTo || 'Unassigned'}</span>
+                        <span className="jewelry-text-high-contrast">
+                          {alert.assignedTo || 'Unassigned'}
+                        </span>
                       </div>
                     </div>
-                    
+
                     {alert.status === 'resolved' && (
                       <div className="mt-4 p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
                         <p className="text-sm text-green-800 dark:text-green-200">
@@ -799,7 +875,9 @@ export default function JewelrySecurityPage() {
                           Resolved by {alert.resolvedBy} at {alert.resolvedAt}
                         </p>
                         {alert.notes && (
-                          <p className="text-sm text-green-700 dark:text-green-300 mt-1">Note: {alert.notes}</p>
+                          <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                            Note: {alert.notes}
+                          </p>
                         )}
                       </div>
                     )}
@@ -811,7 +889,7 @@ export default function JewelrySecurityPage() {
 
           {/* Access Logs Tab */}
           {selectedTab === 'access' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -825,7 +903,7 @@ export default function JewelrySecurityPage() {
                 <div className="flex items-center gap-3">
                   <select
                     value={selectedTimeRange}
-                    onChange={(e) => setSelectedTimeRange(e.target.value)}
+                    onChange={e => setSelectedTimeRange(e.target.value)}
                     className="jewelry-input text-sm"
                   >
                     <option value="1h">Last Hour</option>
@@ -839,7 +917,7 @@ export default function JewelrySecurityPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="jewelry-glass-card-subtle">
@@ -855,7 +933,10 @@ export default function JewelrySecurityPage() {
                   </thead>
                   <tbody>
                     {accessLogs.map((log, index) => (
-                      <tr key={log.id} className="jewelry-glass-card border-b border-jewelry-blue-100 hover:bg-jewelry-blue-50 dark:hover:bg-jewelry-blue-900/20 transition-colors">
+                      <tr
+                        key={log.id}
+                        className="jewelry-glass-card border-b border-jewelry-blue-100 hover:bg-jewelry-blue-50 dark:hover:bg-jewelry-blue-900/20 transition-colors"
+                      >
                         <td className="p-4">
                           <div>
                             <p className="jewelry-text-high-contrast font-medium">{log.userName}</p>
@@ -863,7 +944,9 @@ export default function JewelrySecurityPage() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <span className="jewelry-text-high-contrast">{log.action.replace('_', ' ').toUpperCase()}</span>
+                          <span className="jewelry-text-high-contrast">
+                            {log.action.replace('_', ' ').toUpperCase()}
+                          </span>
                         </td>
                         <td className="p-4 jewelry-text-high-contrast">{log.location}</td>
                         <td className="p-4 jewelry-text-muted">{log.timestamp}</td>
@@ -893,14 +976,15 @@ export default function JewelrySecurityPage() {
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              Security management powered by <span className="jewelry-text-luxury font-semibold">HERA Security System</span>
+              Security management powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Security System</span>
             </p>
           </motion.div>
         </div>

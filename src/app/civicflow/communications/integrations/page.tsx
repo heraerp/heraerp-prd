@@ -105,15 +105,15 @@ const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 
 export default function IntegrationsPage() {
   const { currentOrgId, setCurrentOrgId } = useOrgStore()
-  
+
   // Use CivicFlow demo org if no org is set
   const orgId = currentOrgId || CIVICFLOW_ORG_ID
   const isDemo = isDemoMode(orgId)
-  
+
   const [activeTab, setActiveTab] = useState('all')
   const [showMappingModal, setShowMappingModal] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState<Connector | null>(null)
-  
+
   // Set default org if none exists
   React.useEffect(() => {
     if (!currentOrgId) {
@@ -167,191 +167,206 @@ export default function IntegrationsPage() {
       <div className="container mx-auto py-6 space-y-6">
         {isDemo && <DemoBanner />}
 
-      {/* Header */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Integrations</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Connect your favorite tools to sync data and automate workflows
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {process.env.NODE_ENV === 'development' && <TestIntegrationButton />}
-            <Button
-              variant="outline"
-              onClick={() => refetch()}
-              className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Connected</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{connectedCount}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">/ {CONNECTORS.length}</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Auto-Syncing
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{syncingCount}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">active</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Last Sync</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <RefreshCw className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {connectors.length > 0 ? 'Today, 2:30 PM' : 'Never'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">
-            All Integrations
-            <Badge variant="secondary" className="ml-2">
-              {CONNECTORS.length}
-            </Badge>
-          </TabsTrigger>
-          <TabsTrigger value="connected">
-            Connected
-            {connectedCount > 0 && (
-              <Badge variant="default" className="ml-2">
-                {connectedCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="available">
-            Available
-            {CONNECTORS.length - connectedCount > 0 && (
-              <Badge variant="outline" className="ml-2">
-                {CONNECTORS.length - connectedCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value={activeTab} className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredConnectors.map(connectorInfo => {
-              const connector = connectors.find(c => c.vendor === connectorInfo.vendor)
-
-              return (
-                <ConnectorCard
-                  key={connectorInfo.vendor}
-                  vendor={connectorInfo.vendor}
-                  name={connectorInfo.name}
-                  description={connectorInfo.description}
-                  icon={connectorInfo.icon}
-                  features={connectorInfo.features}
-                  color={connectorInfo.color}
-                  accentColor={connectorInfo.accentColor}
-                  darkColor={connectorInfo.darkColor}
-                  connector={connector}
-                  isDemo={isDemo}
-                  onConfigureMapping={() => connector && handleConfigureMapping(connector)}
-                />
-              )
-            })}
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      {/* Info Card */}
-      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border-blue-200 dark:border-blue-800">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-              <AlertCircle className="h-5 w-5 text-blue-700 dark:text-blue-300" />
-            </div>
-            <div className="space-y-1">
-              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">How Integrations Work</CardTitle>
-              <CardDescription className="text-gray-600 dark:text-gray-400">
-                Connected integrations automatically sync data to your CivicFlow workspace:
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong className="text-gray-900 dark:text-gray-100">Messages & Posts</strong> are imported as communication records for unified
-                tracking
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong className="text-gray-900 dark:text-gray-100">Events & Registrations</strong> sync to your programs and constituent
-                records
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong className="text-gray-900 dark:text-gray-100">Analytics & Metrics</strong> provide insights across all channels in one
-                place
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong className="text-gray-900 dark:text-gray-100">Automatic Updates</strong> keep your data fresh with scheduled syncs
-              </span>
-            </li>
-          </ul>
-          {isDemo && (
-            <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-              <p className="text-sm text-amber-900 dark:text-amber-200">
-                <strong className="font-semibold">Demo Mode:</strong> Integrations simulate connections and generate sample data
-                for testing.
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Integrations</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Connect your favorite tools to sync data and automate workflows
               </p>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            <div className="flex items-center gap-2">
+              {process.env.NODE_ENV === 'development' && <TestIntegrationButton />}
+              <Button
+                variant="outline"
+                onClick={() => refetch()}
+                className="border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </div>
 
-      {/* Mapping Modal */}
-      {selectedConnector && (
-        <MappingModal
-          open={showMappingModal}
-          onOpenChange={setShowMappingModal}
-          connector={selectedConnector}
-        />
-      )}
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                  Connected
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {connectedCount}
+                  </span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    / {CONNECTORS.length}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                  Auto-Syncing
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    {syncingCount}
+                  </span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">active</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                  Last Sync
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <RefreshCw className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                  <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                    {connectors.length > 0 ? 'Today, 2:30 PM' : 'Never'}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="all">
+              All Integrations
+              <Badge variant="secondary" className="ml-2">
+                {CONNECTORS.length}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="connected">
+              Connected
+              {connectedCount > 0 && (
+                <Badge variant="default" className="ml-2">
+                  {connectedCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="available">
+              Available
+              {CONNECTORS.length - connectedCount > 0 && (
+                <Badge variant="outline" className="ml-2">
+                  {CONNECTORS.length - connectedCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={activeTab} className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredConnectors.map(connectorInfo => {
+                const connector = connectors.find(c => c.vendor === connectorInfo.vendor)
+
+                return (
+                  <ConnectorCard
+                    key={connectorInfo.vendor}
+                    vendor={connectorInfo.vendor}
+                    name={connectorInfo.name}
+                    description={connectorInfo.description}
+                    icon={connectorInfo.icon}
+                    features={connectorInfo.features}
+                    color={connectorInfo.color}
+                    accentColor={connectorInfo.accentColor}
+                    darkColor={connectorInfo.darkColor}
+                    connector={connector}
+                    isDemo={isDemo}
+                    onConfigureMapping={() => connector && handleConfigureMapping(connector)}
+                  />
+                )
+              })}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Info Card */}
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-blue-700 dark:text-blue-300" />
+              </div>
+              <div className="space-y-1">
+                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  How Integrations Work
+                </CardTitle>
+                <CardDescription className="text-gray-600 dark:text-gray-400">
+                  Connected integrations automatically sync data to your CivicFlow workspace:
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-3">
+                <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong className="text-gray-900 dark:text-gray-100">Messages & Posts</strong> are
+                  imported as communication records for unified tracking
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong className="text-gray-900 dark:text-gray-100">
+                    Events & Registrations
+                  </strong>{' '}
+                  sync to your programs and constituent records
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong className="text-gray-900 dark:text-gray-100">Analytics & Metrics</strong>{' '}
+                  provide insights across all channels in one place
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-blue-600 dark:text-blue-400 font-semibold mt-0.5">→</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong className="text-gray-900 dark:text-gray-100">Automatic Updates</strong>{' '}
+                  keep your data fresh with scheduled syncs
+                </span>
+              </li>
+            </ul>
+            {isDemo && (
+              <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                <p className="text-sm text-amber-900 dark:text-amber-200">
+                  <strong className="font-semibold">Demo Mode:</strong> Integrations simulate
+                  connections and generate sample data for testing.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Mapping Modal */}
+        {selectedConnector && (
+          <MappingModal
+            open={showMappingModal}
+            onOpenChange={setShowMappingModal}
+            connector={selectedConnector}
+          />
+        )}
       </div>
     </div>
   )

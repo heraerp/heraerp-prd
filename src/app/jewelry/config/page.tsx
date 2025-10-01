@@ -213,7 +213,14 @@ export default function JewelryConfigPage() {
       id: '2',
       name: 'Manager',
       description: 'Store management with access to sales, inventory, and reports',
-      permissions: ['sales_read', 'sales_write', 'inventory_read', 'inventory_write', 'reports_read', 'users_read'],
+      permissions: [
+        'sales_read',
+        'sales_write',
+        'inventory_read',
+        'inventory_write',
+        'reports_read',
+        'users_read'
+      ],
       userCount: 2,
       isSystem: true,
       createdAt: '2024-01-01',
@@ -405,21 +412,31 @@ export default function JewelryConfigPage() {
 
   const getUserStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'inactive': return <XCircle className="jewelry-icon-error" size={16} />
-      case 'suspended': return <AlertTriangle className="jewelry-icon-warning" size={16} />
-      case 'pending': return <Clock className="jewelry-icon-info" size={16} />
-      default: return null
+      case 'active':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'inactive':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      case 'suspended':
+        return <AlertTriangle className="jewelry-icon-warning" size={16} />
+      case 'pending':
+        return <Clock className="jewelry-icon-info" size={16} />
+      default:
+        return null
     }
   }
 
   const getUserStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'jewelry-status-active'
-      case 'inactive': return 'jewelry-status-inactive'
-      case 'suspended': return 'jewelry-status-pending'
-      case 'pending': return 'jewelry-status-luxury'
-      default: return 'jewelry-status-inactive'
+      case 'active':
+        return 'jewelry-status-active'
+      case 'inactive':
+        return 'jewelry-status-inactive'
+      case 'suspended':
+        return 'jewelry-status-pending'
+      case 'pending':
+        return 'jewelry-status-luxury'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
@@ -430,19 +447,19 @@ export default function JewelryConfigPage() {
     console.log('Settings saved successfully')
   }
 
-  const filteredUsers = systemUsers.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = systemUsers.filter(
+    user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -458,7 +475,7 @@ export default function JewelryConfigPage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -466,14 +483,12 @@ export default function JewelryConfigPage() {
           >
             <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex flex-wrap gap-2">
-                {tabs.map((tab) => (
+                {tabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      selectedTab === tab.id
-                        ? 'jewelry-btn-primary'
-                        : 'jewelry-btn-secondary'
+                      selectedTab === tab.id ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                     }`}
                   >
                     <tab.icon size={16} />
@@ -481,11 +496,11 @@ export default function JewelryConfigPage() {
                   </button>
                 ))}
               </div>
-              
+
               {settingsChanged && (
                 <div className="flex items-center gap-2">
                   <span className="jewelry-text-warning text-sm">Unsaved changes</span>
-                  <button 
+                  <button
                     onClick={handleSaveSettings}
                     className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2"
                   >
@@ -499,7 +514,7 @@ export default function JewelryConfigPage() {
 
           {/* General Tab */}
           {selectedTab === 'general' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -511,26 +526,26 @@ export default function JewelryConfigPage() {
                   <Monitor className="jewelry-icon-gold" size={24} />
                   System Information
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="jewelry-glass-card p-4 text-center">
                     <Server className="mx-auto mb-2 jewelry-icon-gold" size={24} />
                     <h4 className="jewelry-text-high-contrast font-semibold">System Version</h4>
                     <p className="jewelry-text-muted text-sm">v2.1.0</p>
                   </div>
-                  
+
                   <div className="jewelry-glass-card p-4 text-center">
                     <Database className="mx-auto mb-2 jewelry-icon-gold" size={24} />
                     <h4 className="jewelry-text-high-contrast font-semibold">Database Size</h4>
                     <p className="jewelry-text-muted text-sm">2.4 GB</p>
                   </div>
-                  
+
                   <div className="jewelry-glass-card p-4 text-center">
                     <Users className="mx-auto mb-2 jewelry-icon-gold" size={24} />
                     <h4 className="jewelry-text-high-contrast font-semibold">Active Users</h4>
                     <p className="jewelry-text-muted text-sm">14 online</p>
                   </div>
-                  
+
                   <div className="jewelry-glass-card p-4 text-center">
                     <Activity className="mx-auto mb-2 jewelry-icon-gold" size={24} />
                     <h4 className="jewelry-text-high-contrast font-semibold">System Health</h4>
@@ -545,14 +560,16 @@ export default function JewelryConfigPage() {
                   <Palette className="jewelry-icon-gold" size={24} />
                   User Interface Preferences
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Theme</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Theme
+                      </label>
+                      <select
                         value={systemPreferences.ui.theme}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
                             ui: { ...prev.ui, theme: e.target.value as 'light' | 'dark' | 'auto' }
@@ -566,12 +583,14 @@ export default function JewelryConfigPage() {
                         <option value="auto">Auto (System)</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Language</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Language
+                      </label>
+                      <select
                         value={systemPreferences.ui.language}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
                             ui: { ...prev.ui, language: e.target.value }
@@ -586,12 +605,14 @@ export default function JewelryConfigPage() {
                         <option value="ur">Urdu</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Date Format</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Date Format
+                      </label>
+                      <select
                         value={systemPreferences.ui.dateFormat}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
                             ui: { ...prev.ui, dateFormat: e.target.value }
@@ -606,13 +627,15 @@ export default function JewelryConfigPage() {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Currency</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Currency
+                      </label>
+                      <select
                         value={systemPreferences.ui.currency}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
                             ui: { ...prev.ui, currency: e.target.value }
@@ -628,12 +651,14 @@ export default function JewelryConfigPage() {
                         <option value="INR">INR (Indian Rupee)</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Number Format</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Number Format
+                      </label>
+                      <select
                         value={systemPreferences.ui.numberFormat}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
                             ui: { ...prev.ui, numberFormat: e.target.value }
@@ -648,15 +673,20 @@ export default function JewelryConfigPage() {
                         <option value="en-IN">1,23,456.78 (IN)</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Interface Density</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Interface Density
+                      </label>
+                      <select
                         value={systemPreferences.ui.density}
-                        onChange={(e) => {
+                        onChange={e => {
                           setSystemPreferences(prev => ({
                             ...prev,
-                            ui: { ...prev.ui, density: e.target.value as 'compact' | 'normal' | 'comfortable' }
+                            ui: {
+                              ...prev.ui,
+                              density: e.target.value as 'compact' | 'normal' | 'comfortable'
+                            }
                           }))
                           setSettingsChanged(true)
                         }}
@@ -675,7 +705,7 @@ export default function JewelryConfigPage() {
 
           {/* Business Tab */}
           {selectedTab === 'business' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -687,15 +717,17 @@ export default function JewelryConfigPage() {
                   <Building className="jewelry-icon-gold" size={24} />
                   Company Information
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Company Name</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Company Name
+                      </label>
                       <input
                         type="text"
                         value={businessSettings.company.name}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, name: e.target.value }
@@ -705,12 +737,14 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Address</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Address
+                      </label>
                       <textarea
                         value={businessSettings.company.address}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, address: e.target.value }
@@ -720,13 +754,15 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full h-24 resize-none"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Phone</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Phone
+                      </label>
                       <input
                         type="tel"
                         value={businessSettings.company.phone}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, phone: e.target.value }
@@ -736,13 +772,15 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Email</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Email
+                      </label>
                       <input
                         type="email"
                         value={businessSettings.company.email}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, email: e.target.value }
@@ -753,14 +791,16 @@ export default function JewelryConfigPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Website</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Website
+                      </label>
                       <input
                         type="url"
                         value={businessSettings.company.website}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, website: e.target.value }
@@ -770,13 +810,15 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Tax ID / TRN</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Tax ID / TRN
+                      </label>
                       <input
                         type="text"
                         value={businessSettings.company.taxId}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, taxId: e.target.value }
@@ -786,12 +828,14 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Timezone</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Timezone
+                      </label>
+                      <select
                         value={businessSettings.company.timezone}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, timezone: e.target.value }
@@ -806,12 +850,14 @@ export default function JewelryConfigPage() {
                         <option value="Europe/London">Europe/London (GMT)</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Base Currency</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Base Currency
+                      </label>
+                      <select
                         value={businessSettings.company.currency}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             company: { ...prev.company, currency: e.target.value }
@@ -836,16 +882,18 @@ export default function JewelryConfigPage() {
                   <Gem className="jewelry-icon-gold" size={24} />
                   Jewelry Business Configuration
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-4">
                     <h4 className="jewelry-text-high-contrast font-medium">Defaults & Units</h4>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Default Purity (Karat)</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Default Purity (Karat)
+                      </label>
+                      <select
                         value={businessSettings.jewelry.defaultPurity}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             jewelry: { ...prev.jewelry, defaultPurity: parseInt(e.target.value) }
@@ -860,15 +908,20 @@ export default function JewelryConfigPage() {
                         <option value={24}>24K</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Weight Unit</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Weight Unit
+                      </label>
+                      <select
                         value={businessSettings.jewelry.weightUnit}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
-                            jewelry: { ...prev.jewelry, weightUnit: e.target.value as 'grams' | 'ounces' | 'carats' }
+                            jewelry: {
+                              ...prev.jewelry,
+                              weightUnit: e.target.value as 'grams' | 'ounces' | 'carats'
+                            }
                           }))
                           setSettingsChanged(true)
                         }}
@@ -879,15 +932,20 @@ export default function JewelryConfigPage() {
                         <option value="carats">Carats</option>
                       </select>
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Price Unit</label>
-                      <select 
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Price Unit
+                      </label>
+                      <select
                         value={businessSettings.jewelry.priceUnit}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
-                            jewelry: { ...prev.jewelry, priceUnit: e.target.value as 'per_gram' | 'per_piece' | 'per_carat' }
+                            jewelry: {
+                              ...prev.jewelry,
+                              priceUnit: e.target.value as 'per_gram' | 'per_piece' | 'per_carat'
+                            }
                           }))
                           setSettingsChanged(true)
                         }}
@@ -899,36 +957,45 @@ export default function JewelryConfigPage() {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    <h4 className="jewelry-text-high-contrast font-medium">Pricing Configuration</h4>
-                    
+                    <h4 className="jewelry-text-high-contrast font-medium">
+                      Pricing Configuration
+                    </h4>
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Default Making Charge (%)</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Default Making Charge (%)
+                      </label>
                       <input
                         type="number"
                         min="0"
                         max="100"
                         value={businessSettings.jewelry.makingChargeDefault}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
-                            jewelry: { ...prev.jewelry, makingChargeDefault: parseFloat(e.target.value) }
+                            jewelry: {
+                              ...prev.jewelry,
+                              makingChargeDefault: parseFloat(e.target.value)
+                            }
                           }))
                           setSettingsChanged(true)
                         }}
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">Default Wastage (%)</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        Default Wastage (%)
+                      </label>
                       <input
                         type="number"
                         min="0"
                         max="20"
                         value={businessSettings.jewelry.wastageDefault}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             jewelry: { ...prev.jewelry, wastageDefault: parseFloat(e.target.value) }
@@ -938,15 +1005,17 @@ export default function JewelryConfigPage() {
                         className="jewelry-input w-full"
                       />
                     </div>
-                    
+
                     <div>
-                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">GST Rate (%)</label>
+                      <label className="jewelry-text-luxury text-sm font-medium mb-2 block">
+                        GST Rate (%)
+                      </label>
                       <input
                         type="number"
                         min="0"
                         max="30"
                         value={businessSettings.jewelry.gstRate}
-                        onChange={(e) => {
+                        onChange={e => {
                           setBusinessSettings(prev => ({
                             ...prev,
                             jewelry: { ...prev.jewelry, gstRate: parseFloat(e.target.value) }
@@ -957,48 +1026,58 @@ export default function JewelryConfigPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <h4 className="jewelry-text-high-contrast font-medium">Workflow Settings</h4>
-                    
+
                     <div className="space-y-3">
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={businessSettings.workflow.orderApprovalRequired}
-                          onChange={(e) => {
+                          onChange={e => {
                             setBusinessSettings(prev => ({
                               ...prev,
-                              workflow: { ...prev.workflow, orderApprovalRequired: e.target.checked }
+                              workflow: {
+                                ...prev.workflow,
+                                orderApprovalRequired: e.target.checked
+                              }
                             }))
                             setSettingsChanged(true)
                           }}
                           className="jewelry-checkbox"
                         />
-                        <span className="jewelry-text-high-contrast text-sm">Order Approval Required</span>
+                        <span className="jewelry-text-high-contrast text-sm">
+                          Order Approval Required
+                        </span>
                       </label>
-                      
+
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={businessSettings.workflow.qualityCheckMandatory}
-                          onChange={(e) => {
+                          onChange={e => {
                             setBusinessSettings(prev => ({
                               ...prev,
-                              workflow: { ...prev.workflow, qualityCheckMandatory: e.target.checked }
+                              workflow: {
+                                ...prev.workflow,
+                                qualityCheckMandatory: e.target.checked
+                              }
                             }))
                             setSettingsChanged(true)
                           }}
                           className="jewelry-checkbox"
                         />
-                        <span className="jewelry-text-high-contrast text-sm">Quality Check Mandatory</span>
+                        <span className="jewelry-text-high-contrast text-sm">
+                          Quality Check Mandatory
+                        </span>
                       </label>
-                      
+
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={businessSettings.workflow.autoReorderEnabled}
-                          onChange={(e) => {
+                          onChange={e => {
                             setBusinessSettings(prev => ({
                               ...prev,
                               workflow: { ...prev.workflow, autoReorderEnabled: e.target.checked }
@@ -1007,23 +1086,30 @@ export default function JewelryConfigPage() {
                           }}
                           className="jewelry-checkbox"
                         />
-                        <span className="jewelry-text-high-contrast text-sm">Auto Reorder Enabled</span>
+                        <span className="jewelry-text-high-contrast text-sm">
+                          Auto Reorder Enabled
+                        </span>
                       </label>
-                      
+
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={businessSettings.workflow.customerApprovalRequired}
-                          onChange={(e) => {
+                          onChange={e => {
                             setBusinessSettings(prev => ({
                               ...prev,
-                              workflow: { ...prev.workflow, customerApprovalRequired: e.target.checked }
+                              workflow: {
+                                ...prev.workflow,
+                                customerApprovalRequired: e.target.checked
+                              }
                             }))
                             setSettingsChanged(true)
                           }}
                           className="jewelry-checkbox"
                         />
-                        <span className="jewelry-text-high-contrast text-sm">Customer Approval Required</span>
+                        <span className="jewelry-text-high-contrast text-sm">
+                          Customer Approval Required
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -1034,7 +1120,7 @@ export default function JewelryConfigPage() {
 
           {/* Users & Roles Tab */}
           {selectedTab === 'users' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -1049,16 +1135,19 @@ export default function JewelryConfigPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                        size={20}
+                      />
                       <input
                         type="text"
                         placeholder="Search users..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                         className="jewelry-input pl-10 w-64"
                       />
                     </div>
-                    <button 
+                    <button
                       onClick={() => setShowUserModal(true)}
                       className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2"
                     >
@@ -1067,30 +1156,41 @@ export default function JewelryConfigPage() {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="jewelry-glass-card-subtle">
                       <tr>
                         <th className="p-4 text-left jewelry-text-luxury font-semibold">User</th>
                         <th className="p-4 text-left jewelry-text-luxury font-semibold">Role</th>
-                        <th className="p-4 text-left jewelry-text-luxury font-semibold">Department</th>
-                        <th className="p-4 text-left jewelry-text-luxury font-semibold">Last Login</th>
+                        <th className="p-4 text-left jewelry-text-luxury font-semibold">
+                          Department
+                        </th>
+                        <th className="p-4 text-left jewelry-text-luxury font-semibold">
+                          Last Login
+                        </th>
                         <th className="p-4 text-left jewelry-text-luxury font-semibold">Status</th>
                         <th className="p-4 text-center jewelry-text-luxury font-semibold">2FA</th>
-                        <th className="p-4 text-center jewelry-text-luxury font-semibold">Actions</th>
+                        <th className="p-4 text-center jewelry-text-luxury font-semibold">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredUsers.map((user, index) => (
-                        <tr key={user.id} className="jewelry-glass-card border-b border-jewelry-blue-100 hover:bg-jewelry-blue-50 dark:hover:bg-jewelry-blue-900/20 transition-colors">
+                        <tr
+                          key={user.id}
+                          className="jewelry-glass-card border-b border-jewelry-blue-100 hover:bg-jewelry-blue-50 dark:hover:bg-jewelry-blue-900/20 transition-colors"
+                        >
                           <td className="p-4">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-jewelry-gold-400 to-jewelry-gold-600 flex items-center justify-center">
                                 <User className="text-white" size={20} />
                               </div>
                               <div>
-                                <p className="jewelry-text-high-contrast font-medium">{user.name}</p>
+                                <p className="jewelry-text-high-contrast font-medium">
+                                  {user.name}
+                                </p>
                                 <p className="jewelry-text-muted text-xs">{user.email}</p>
                               </div>
                             </div>
@@ -1101,7 +1201,9 @@ export default function JewelryConfigPage() {
                           <td className="p-4">
                             <div className="flex items-center gap-2">
                               {getUserStatusIcon(user.status)}
-                              <span className={`px-2 py-1 rounded text-xs font-medium ${getUserStatusColor(user.status)}`}>
+                              <span
+                                className={`px-2 py-1 rounded text-xs font-medium ${getUserStatusColor(user.status)}`}
+                              >
                                 {user.status.toUpperCase()}
                               </span>
                             </div>
@@ -1115,7 +1217,7 @@ export default function JewelryConfigPage() {
                           </td>
                           <td className="p-4 text-center">
                             <div className="flex items-center justify-center gap-2">
-                              <button 
+                              <button
                                 onClick={() => setSelectedUser(user)}
                                 className="jewelry-btn-secondary p-1"
                               >
@@ -1140,7 +1242,7 @@ export default function JewelryConfigPage() {
                     <Shield className="jewelry-icon-gold" size={24} />
                     Role Management
                   </h3>
-                  <button 
+                  <button
                     onClick={() => setShowRoleModal(true)}
                     className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2"
                   >
@@ -1148,7 +1250,7 @@ export default function JewelryConfigPage() {
                     <span>Create Role</span>
                   </button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {userRoles.map((role, index) => (
                     <motion.div
@@ -1169,22 +1271,26 @@ export default function JewelryConfigPage() {
                           </span>
                         )}
                       </div>
-                      
+
                       <div className="space-y-2 mb-4">
                         <div className="flex justify-between text-sm">
                           <span className="jewelry-text-muted">Users:</span>
-                          <span className="jewelry-text-high-contrast font-medium">{role.userCount}</span>
+                          <span className="jewelry-text-high-contrast font-medium">
+                            {role.userCount}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="jewelry-text-muted">Permissions:</span>
-                          <span className="jewelry-text-high-contrast font-medium">{role.permissions.length}</span>
+                          <span className="jewelry-text-high-contrast font-medium">
+                            {role.permissions.length}
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="jewelry-text-muted">Last Modified:</span>
                           <span className="jewelry-text-high-contrast">{role.lastModified}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <button className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1.5 text-sm flex-1">
                           <Eye size={14} />
@@ -1204,14 +1310,15 @@ export default function JewelryConfigPage() {
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              System configuration powered by <span className="jewelry-text-luxury font-semibold">HERA Administration</span>
+              System configuration powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Administration</span>
             </p>
           </motion.div>
         </div>

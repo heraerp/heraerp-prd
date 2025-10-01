@@ -17,12 +17,7 @@ interface DetailTabsProps {
   className?: string
 }
 
-export function DetailTabs({
-  tabs,
-  defaultTab,
-  onTabChange,
-  className = ''
-}: DetailTabsProps) {
+export function DetailTabs({ tabs, defaultTab, onTabChange, className = '' }: DetailTabsProps) {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.key || '')
 
   const handleTabChange = (tabKey: string) => {
@@ -31,11 +26,7 @@ export function DetailTabs({
   }
 
   if (tabs.length === 0) {
-    return (
-      <div className={`p-6 text-center text-gray-500 ${className}`}>
-        No tabs configured
-      </div>
-    )
+    return <div className={`p-6 text-center text-gray-500 ${className}`}>No tabs configured</div>
   }
 
   if (tabs.length === 1) {
@@ -53,12 +44,8 @@ export function DetailTabs({
     <div className={className}>
       <Tabs value={activeTab} onValueChange={handleTabChange}>
         <TabsList className="grid w-full grid-cols-auto">
-          {tabs.map((tab) => (
-            <TabsTrigger 
-              key={tab.key} 
-              value={tab.key}
-              className="flex items-center space-x-2"
-            >
+          {tabs.map(tab => (
+            <TabsTrigger key={tab.key} value={tab.key} className="flex items-center space-x-2">
               <span>{tab.label}</span>
               {tab.props?.badge && (
                 <Badge variant="secondary" className="ml-1">
@@ -68,8 +55,8 @@ export function DetailTabs({
             </TabsTrigger>
           ))}
         </TabsList>
-        
-        {tabs.map((tab) => {
+
+        {tabs.map(tab => {
           const Component = tab.component
           return (
             <TabsContent key={tab.key} value={tab.key} className="mt-6">
@@ -87,14 +74,14 @@ export function DetailTabs({
 /**
  * Generic data display tab
  */
-export function DataTab({ 
-  title, 
-  data, 
-  loading = false 
-}: { 
+export function DataTab({
+  title,
+  data,
+  loading = false
+}: {
   title?: string
   data: Array<{ label: string; value: any; formatter?: (value: any) => React.ReactNode }>
-  loading?: boolean 
+  loading?: boolean
 }) {
   if (loading) {
     return (
@@ -111,19 +98,13 @@ export function DataTab({
 
   return (
     <div className="space-y-6">
-      {title && (
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-          {title}
-        </h3>
-      )}
+      {title && <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{title}</h3>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data.map((item, index) => (
           <div key={index} className="space-y-1">
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              {item.label}
-            </p>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{item.label}</p>
             <div className="text-sm text-gray-900 dark:text-gray-100">
-              {item.formatter ? item.formatter(item.value) : (item.value || '-')}
+              {item.formatter ? item.formatter(item.value) : item.value || '-'}
             </div>
           </div>
         ))}
@@ -135,28 +116,20 @@ export function DataTab({
 /**
  * Empty state tab
  */
-export function EmptyTab({ 
-  title = "No Data", 
-  description = "No information available to display.",
-  icon 
-}: { 
+export function EmptyTab({
+  title = 'No Data',
+  description = 'No information available to display.',
+  icon
+}: {
   title?: string
   description?: string
-  icon?: React.ReactNode 
+  icon?: React.ReactNode
 }) {
   return (
     <div className="text-center py-12">
-      {icon && (
-        <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
-          {icon}
-        </div>
-      )}
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-        {title}
-      </h3>
-      <p className="text-gray-500 dark:text-gray-400">
-        {description}
-      </p>
+      {icon && <div className="mx-auto h-12 w-12 text-gray-400 mb-4">{icon}</div>}
+      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{title}</h3>
+      <p className="text-gray-500 dark:text-gray-400">{description}</p>
     </div>
   )
 }
@@ -164,7 +137,7 @@ export function EmptyTab({
 /**
  * Loading state tab
  */
-export function LoadingTab({ message = "Loading..." }: { message?: string }) {
+export function LoadingTab({ message = 'Loading...' }: { message?: string }) {
   return (
     <div className="text-center py-12">
       <div className="animate-spin h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -179,8 +152,8 @@ export const DetailTabPresets = {
    * Create a data display tab
    */
   dataTab: (
-    key: string, 
-    label: string, 
+    key: string,
+    label: string,
     data: Array<{ label: string; value: any; formatter?: (value: any) => React.ReactNode }>,
     options?: { title?: string; badge?: string }
   ): TabConfig => ({
@@ -211,11 +184,7 @@ export const DetailTabPresets = {
   /**
    * Create a loading tab
    */
-  loadingTab: (
-    key: string,
-    label: string,
-    message?: string
-  ): TabConfig => ({
+  loadingTab: (key: string, label: string, message?: string): TabConfig => ({
     key,
     label,
     component: LoadingTab,

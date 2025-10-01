@@ -82,7 +82,8 @@ export default function DocsHub() {
                   <div>
                     <h3 className="text-lg font-medium mb-2">Search All Documentation</h3>
                     <p className="text-sm text-muted-foreground">
-                      Find what you need with full-text search, intelligent suggestions, and search analytics.
+                      Find what you need with full-text search, intelligent suggestions, and search
+                      analytics.
                     </p>
                   </div>
                   <Button variant="outline">

@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { 
-  BookOpen, 
-  Package, 
-  CreditCard, 
-  Users, 
-  Wrench, 
+import {
+  BookOpen,
+  Package,
+  CreditCard,
+  Users,
+  Wrench,
   BarChart3,
   ArrowRight,
   Star,
@@ -55,7 +55,12 @@ export default function JewelryDocsPage() {
       description: 'Business intelligence and predictive analytics',
       icon: BarChart3,
       href: '/docs/jewelry/analytics',
-      topics: ['Real-time Dashboards', 'Predictive Analytics', 'Custom Reports', 'Performance Metrics']
+      topics: [
+        'Real-time Dashboards',
+        'Predictive Analytics',
+        'Custom Reports',
+        'Performance Metrics'
+      ]
     }
   ]
 
@@ -76,8 +81,9 @@ export default function JewelryDocsPage() {
           HERA Jewelry ERP Documentation
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Comprehensive guides and documentation for the world's most advanced jewelry business management platform. 
-          Everything you need to set up, configure, and optimize your jewelry operations.
+          Comprehensive guides and documentation for the world's most advanced jewelry business
+          management platform. Everything you need to set up, configure, and optimize your jewelry
+          operations.
         </p>
       </div>
 
@@ -104,7 +110,10 @@ export default function JewelryDocsPage() {
         {docSections.map((section, index) => {
           const IconComponent = section.icon
           return (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+            <Card
+              key={index}
+              className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+            >
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
@@ -112,21 +121,25 @@ export default function JewelryDocsPage() {
                   </div>
                   <CardTitle className="text-lg">{section.title}</CardTitle>
                 </div>
-                <CardDescription className="text-sm">
-                  {section.description}
-                </CardDescription>
+                <CardDescription className="text-sm">{section.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 mb-4">
                   {section.topics.map((topic, topicIndex) => (
-                    <div key={topicIndex} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div
+                      key={topicIndex}
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
                       <div className="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
                       {topic}
                     </div>
                   ))}
                 </div>
                 <Link href={section.href}>
-                  <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <Button
+                    variant="outline"
+                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                  >
                     Read Documentation
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -142,10 +155,14 @@ export default function JewelryDocsPage() {
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-4">Ready to Get Started?</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Begin with our comprehensive getting started guide to set up your jewelry business management system in minutes.
+            Begin with our comprehensive getting started guide to set up your jewelry business
+            management system in minutes.
           </p>
           <Link href="/docs/jewelry/getting-started">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
               <BookOpen className="w-5 h-5 mr-2" />
               Start with Setup Guide
               <ArrowRight className="w-5 h-5 ml-2" />

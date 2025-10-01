@@ -254,9 +254,11 @@ export function SalonDemoAuth() {
             return (
               <div
                 key={user.email}
-                className={`relative cursor-pointer transition-all duration-300 rounded-2xl border-2 ${ isSelected ?'border-purple-500 shadow-2xl shadow-purple-500/25'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
-                  }
+                className={`relative cursor-pointer transition-all duration-300 rounded-2xl border-2 ${
+                  isSelected
+                    ? 'border-purple-500 shadow-2xl shadow-purple-500/25'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700'
+                }
                   ${loading && !isSelected ? 'opacity-50' : ''}
                   bg-white dark:bg-gray-800 overflow-hidden
                   transform hover:scale-[1.02] hover:shadow-xl
@@ -267,7 +269,7 @@ export function SalonDemoAuth() {
               >
                 {/* Role-specific gradient background */}
                 <div
-                  className={`absolute inset-0 opacity-5 bg-gradient-to-br ${user.role ==='Owner' ? 'from-purple-500 to-pink-500' : ''}
+                  className={`absolute inset-0 opacity-5 bg-gradient-to-br ${user.role === 'Owner' ? 'from-purple-500 to-pink-500' : ''}
                   ${user.role === 'Receptionist' ? 'from-blue-500 to-cyan-500' : ''}
                   ${user.role === 'Accountant' ? 'from-green-500 to-emerald-500' : ''}
                   ${user.role === 'Administrator' ? 'from-orange-500 to-red-500' : ''}
@@ -278,7 +280,7 @@ export function SalonDemoAuth() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div
-                        className={`h-14 w-14 rounded-2xl flex items-center justify-center ${user.role ==='Owner' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : ''}
+                        className={`h-14 w-14 rounded-2xl flex items-center justify-center ${user.role === 'Owner' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : ''}
                         ${user.role === 'Receptionist' ? 'bg-gradient-to-br from-blue-500 to-cyan-500' : ''}
                         ${user.role === 'Accountant' ? 'bg-gradient-to-br from-green-500 to-emerald-500' : ''}
                         ${user.role === 'Administrator' ? 'bg-gradient-to-br from-orange-500 to-red-500' : ''}
@@ -287,15 +289,11 @@ export function SalonDemoAuth() {
                         <user.icon className="h-7 w-7 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-xl font-bold ink dark:text-white">
-                          {user.fullName}
-                        </h3>
+                        <h3 className="text-xl font-bold ink dark:text-white">{user.fullName}</h3>
                         <p className="text-sm font-medium ink-muted dark:text-gray-300">
                           {user.role}
                         </p>
-                        <p className="text-xs dark:ink-muted">
-                          {user.department}
-                        </p>
+                        <p className="text-xs dark:ink-muted">{user.department}</p>
                       </div>
                     </div>
                     {isSelected && loading && (
@@ -303,13 +301,11 @@ export function SalonDemoAuth() {
                     )}
                   </div>
 
-                  <p className="ink dark:text-gray-300 text-sm mb-4">
-                    {user.description}
-                  </p>
+                  <p className="ink dark:text-gray-300 text-sm mb-4">{user.description}</p>
 
                   {/* Capabilities list with smooth expansion */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${isExpanded ?'max-h-48' : 'max-h-0'}`}
+                    className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-48' : 'max-h-0'}`}
                   >
                     <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                       <h4 className="text-xs font-semibold dark:ink-muted uppercase mb-2">
@@ -331,9 +327,7 @@ export function SalonDemoAuth() {
                   {/* Login hint */}
                   {!isExpanded && (
                     <div className="absolute bottom-2 right-2">
-                      <span className="text-xs dark:ink-muted">
-                        Click to login
-                      </span>
+                      <span className="text-xs dark:ink-muted">Click to login</span>
                     </div>
                   )}
                 </div>

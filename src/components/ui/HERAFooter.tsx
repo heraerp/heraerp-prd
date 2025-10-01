@@ -37,7 +37,8 @@ export function HERAFooter({
           >
             {/* HERA Logo */}
             <div className="w-5 h-5 relative">
-              <svg stroke="currentColor"
+              <svg
+                stroke="currentColor"
                 width="20"
                 height="20"
                 viewBox="0 0 200 60"
@@ -126,7 +127,8 @@ export function MinimalHERAFooter({ className }: { className?: string }) {
         className="group inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-muted-foreground transition-colors duration-200"
       >
         <div className="w-4 h-4">
-          <svg stroke="currentColor"
+          <svg
+            stroke="currentColor"
             width="16"
             height="16"
             viewBox="0 0 200 60"

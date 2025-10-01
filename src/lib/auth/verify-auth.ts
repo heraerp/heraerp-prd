@@ -38,7 +38,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthUser | null>
         permissions: ['read:services', 'write:services']
       }
     }
-    
+
     if (token === 'demo-token-jewelry-admin') {
       return {
         id: '00000000-0000-0000-0000-000000000002', // Demo jewelry admin UUID

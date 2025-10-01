@@ -14,9 +14,9 @@ export function TestIntegrationButton() {
       // Test the auth endpoint
       const response = await fetch('/api/integrations/test-auth')
       const data = await response.json()
-      
+
       console.log('Test auth response:', data)
-      
+
       // Test LinkedIn auth callback Simple
       const linkedinResponse = await fetch('/api/integrations/linkedin/auth/callback-simple', {
         method: 'POST',
@@ -29,18 +29,18 @@ export function TestIntegrationButton() {
           organizationId: data.fixes.currentOrgId
         })
       })
-      
+
       if (!linkedinResponse.ok) {
         const error = await linkedinResponse.json()
         throw new Error(error.details || error.error || 'Failed to connect')
       }
-      
+
       const result = await linkedinResponse.json()
       console.log('LinkedIn connection result:', result)
-      
+
       toast({
         title: 'Success!',
-        description: `Connected to LinkedIn (Connector ID: ${result.connector_id})`,
+        description: `Connected to LinkedIn (Connector ID: ${result.connector_id})`
       })
     } catch (error: any) {
       console.error('Test failed:', error)
@@ -55,12 +55,7 @@ export function TestIntegrationButton() {
   }
 
   return (
-    <Button 
-      onClick={testLinkedIn}
-      disabled={isLoading}
-      variant="outline"
-      size="sm"
-    >
+    <Button onClick={testLinkedIn} disabled={isLoading} variant="outline" size="sm">
       {isLoading ? 'Testing...' : 'Test LinkedIn Connection'}
     </Button>
   )

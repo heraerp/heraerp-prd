@@ -142,7 +142,7 @@ export function UniversalInput({
         step={step}
         min={min}
         max={max}
-        className={`${FORM_STYLES.input} ${error ?'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
+        className={`${FORM_STYLES.input} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
         onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur}
       />
@@ -184,7 +184,7 @@ export function UniversalTextarea({
         rows={rows}
         required={required}
         disabled={disabled}
-        className={`${FORM_STYLES.textarea} ${error ?'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
+        className={`${FORM_STYLES.textarea} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
         onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur}
       />
@@ -223,7 +223,7 @@ export function UniversalSelect({
         value={value || ''}
         required={required}
         disabled={disabled}
-        className={`${FORM_STYLES.select} ${error ?'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
+        className={`${FORM_STYLES.select} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
         onChange={e => onChange?.(e.target.value)}
       >
         {placeholder && <option value="">{placeholder}</option>}

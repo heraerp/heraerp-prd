@@ -1,20 +1,35 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Sparkles, Zap, Shield, Globe, Building, Check, PlayCircle, BarChart3, TrendingUp, Users, Clock, Award } from 'lucide-react'
+import {
+  ArrowRight,
+  Sparkles,
+  Zap,
+  Shield,
+  Globe,
+  Building,
+  Check,
+  PlayCircle,
+  BarChart3,
+  TrendingUp,
+  Users,
+  Clock,
+  Award
+} from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'HERA ERP - Enterprise Business Platform That Scales',
-  description: 'Deploy enterprise-grade business applications in 30 seconds. Flexible architecture that adapts to any industry without code changes. Launching October 1st - Be first to transform your business.'
+  description:
+    'Deploy enterprise-grade business applications in 30 seconds. Flexible architecture that adapts to any industry without code changes. Launching October 1st - Be first to transform your business.'
 }
 
 // Stats Component
 function PlatformStats() {
   const stats = [
-    { value: "< 5 min", label: "Setup Time", icon: "⚡" },
-    { value: "99.9%", label: "Platform Uptime", icon: "🛡️" },
-    { value: "6", label: "Industry Solutions", icon: "🏢" },
-    { value: "24/7", label: "Global Support", icon: "🌍" }
-  ];
+    { value: '< 5 min', label: 'Setup Time', icon: '⚡' },
+    { value: '99.9%', label: 'Platform Uptime', icon: '🛡️' },
+    { value: '6', label: 'Industry Solutions', icon: '🏢' },
+    { value: '24/7', label: 'Global Support', icon: '🌍' }
+  ]
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -29,17 +44,17 @@ function PlatformStats() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // Trust Indicators Component
 function TrustIndicators() {
   const indicators = [
-    "SOC2 Type II Certified",
-    "GDPR Compliant",
-    "ISO 27001 Certified",
-    "99.9% Uptime SLA"
-  ];
+    'SOC2 Type II Certified',
+    'GDPR Compliant',
+    'ISO 27001 Certified',
+    '99.9% Uptime SLA'
+  ]
 
   return (
     <div className="flex flex-wrap justify-center gap-6">
@@ -50,23 +65,27 @@ function TrustIndicators() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // Feature Card Component
 function FeatureCard({ icon: Icon, title, description, color }: any) {
   return (
     <div className="relative group">
-      <div className={`absolute inset-0 bg-gradient-to-r ${color} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500`} />
+      <div
+        className={`absolute inset-0 bg-gradient-to-r ${color} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500`}
+      />
       <div className="relative card-glass p-8 rounded-2xl border border-border hover:border-indigo-500/30 transition-all duration-300 h-full">
-        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white text-2xl mb-5`}>
+        <div
+          className={`w-14 h-14 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center text-white text-2xl mb-5`}
+        >
           {typeof Icon === 'string' ? Icon : <Icon className="w-7 h-7" />}
         </div>
         <h3 className="ink text-xl font-bold mb-3">{title}</h3>
         <p className="ink-muted text-sm leading-relaxed">{description}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export default function HomePage() {
@@ -139,7 +158,9 @@ export default function HomePage() {
                 Why HERA
               </span>
             </div>
-            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">The Platform That Transforms Business</h2>
+            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">
+              The Platform That Transforms Business
+            </h2>
             <p className="ink-muted text-lg md:text-xl max-w-3xl mx-auto">
               Stop juggling disconnected tools. Get everything you need in one unified platform.
             </p>
@@ -185,12 +206,48 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "Salon & Beauty", icon: "💇", desc: "Appointments, inventory & POS", href: "/demo/salon", available: true },
-              { name: "ISP Operations", icon: "🌐", desc: "Provisioning, billing & tickets", href: "/demo", available: true },
-              { name: "CRM Platform", icon: "👥", desc: "Pipeline, accounts & activities", href: "/demo", available: true },
-              { name: "CivicFlow", icon: "🏛️", desc: "Grants, reviews & tracking", href: "/civicflow-auth", available: true },
-              { name: "Manufacturing", icon: "🏭", desc: "Production, inventory & delivery", href: "/demo", available: true },
-              { name: "Finance & Accounting", icon: "💰", desc: "AP/AR, journals & reporting", href: "/demo", available: true }
+              {
+                name: 'Salon & Beauty',
+                icon: '💇',
+                desc: 'Appointments, inventory & POS',
+                href: '/demo/salon',
+                available: true
+              },
+              {
+                name: 'ISP Operations',
+                icon: '🌐',
+                desc: 'Provisioning, billing & tickets',
+                href: '/demo',
+                available: true
+              },
+              {
+                name: 'CRM Platform',
+                icon: '👥',
+                desc: 'Pipeline, accounts & activities',
+                href: '/demo',
+                available: true
+              },
+              {
+                name: 'CivicFlow',
+                icon: '🏛️',
+                desc: 'Grants, reviews & tracking',
+                href: '/civicflow-auth',
+                available: true
+              },
+              {
+                name: 'Manufacturing',
+                icon: '🏭',
+                desc: 'Production, inventory & delivery',
+                href: '/demo',
+                available: true
+              },
+              {
+                name: 'Finance & Accounting',
+                icon: '💰',
+                desc: 'AP/AR, journals & reporting',
+                href: '/demo',
+                available: true
+              }
             ].map((industry, idx) => (
               <Link key={idx} href={industry.href} className="group relative block">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 rounded-2xl blur-xl transition-all" />
@@ -210,7 +267,10 @@ export default function HomePage() {
           </div>
 
           <div className="text-center mt-10">
-            <Link href="/solutions" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium hover:gap-3 transition-all">
+            <Link
+              href="/solutions"
+              className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium hover:gap-3 transition-all"
+            >
               Explore all solutions
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -227,7 +287,9 @@ export default function HomePage() {
                 Platform Capabilities
               </span>
             </div>
-            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">Everything You Need, Nothing You Don't</h2>
+            <h2 className="ink text-4xl md:text-5xl font-bold mb-4">
+              Everything You Need, Nothing You Don't
+            </h2>
             <p className="ink-muted text-lg md:text-xl max-w-3xl mx-auto">
               A complete suite of business tools that work together seamlessly.
             </p>
@@ -274,7 +336,6 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* Implementation Process */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
@@ -292,10 +353,30 @@ export default function HomePage() {
 
           <div className="grid lg:grid-cols-4 gap-6">
             {[
-              { step: "1", title: "Sign Up", desc: "Create your account in seconds", time: "30 sec" },
-              { step: "2", title: "Choose Industry", desc: "Select your pre-configured template", time: "10 sec" },
-              { step: "3", title: "Import Data", desc: "Upload or connect existing systems", time: "2 min" },
-              { step: "4", title: "Go Live", desc: "Start using your complete platform", time: "Instant" }
+              {
+                step: '1',
+                title: 'Sign Up',
+                desc: 'Create your account in seconds',
+                time: '30 sec'
+              },
+              {
+                step: '2',
+                title: 'Choose Industry',
+                desc: 'Select your pre-configured template',
+                time: '10 sec'
+              },
+              {
+                step: '3',
+                title: 'Import Data',
+                desc: 'Upload or connect existing systems',
+                time: '2 min'
+              },
+              {
+                step: '4',
+                title: 'Go Live',
+                desc: 'Start using your complete platform',
+                time: 'Instant'
+              }
             ].map((item, idx) => (
               <div key={idx} className="relative">
                 {idx < 3 && (
@@ -310,7 +391,9 @@ export default function HomePage() {
                   <div className="mt-auto">
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
                       <Clock className="w-3 h-3 text-indigo-500" />
-                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{item.time}</span>
+                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                        {item.time}
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -338,12 +421,16 @@ export default function HomePage() {
           </div>
 
           <h2 className="ink text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Transform</span> Your Business?
+            Ready to{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+              Transform
+            </span>{' '}
+            Your Business?
           </h2>
 
           <p className="ink-muted text-xl mb-10 max-w-3xl mx-auto">
-            Join innovative companies launching with HERA's enterprise platform.
-            Get exclusive early access and dedicated onboarding support.
+            Join innovative companies launching with HERA's enterprise platform. Get exclusive early
+            access and dedicated onboarding support.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">

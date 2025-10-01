@@ -308,7 +308,8 @@ export function OperationsDashboard() {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setSelectedView('overview')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${ selectedView ==='overview'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedView === 'overview'
                 ? 'bg-blue-600 text-foreground'
                 : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
@@ -318,7 +319,8 @@ export function OperationsDashboard() {
           </button>
           <button
             onClick={() => setSelectedView('tables')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${ selectedView ==='tables'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedView === 'tables'
                 ? 'bg-blue-600 text-foreground'
                 : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
@@ -328,7 +330,8 @@ export function OperationsDashboard() {
           </button>
           <button
             onClick={() => setSelectedView('delivery')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${ selectedView ==='delivery'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedView === 'delivery'
                 ? 'bg-blue-600 text-foreground'
                 : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
@@ -338,7 +341,8 @@ export function OperationsDashboard() {
           </button>
           <button
             onClick={() => setSelectedView('pickup')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${ selectedView ==='pickup'
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              selectedView === 'pickup'
                 ? 'bg-blue-600 text-foreground'
                 : 'bg-muted text-gray-700 hover:bg-gray-700'
             }`}
@@ -483,7 +487,8 @@ export function OperationsDashboard() {
             {tables.map(table => (
               <div
                 key={table.id}
-                className={`p-4 rounded-lg border-2 transition-all ${ table.status ==='occupied'
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  table.status === 'occupied'
                     ? 'bg-red-50 border-red-200'
                     : table.status === 'reserved'
                       ? 'bg-yellow-50 border-yellow-200'
@@ -548,7 +553,7 @@ export function OperationsDashboard() {
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`w-3 h-3 rounded-full ${driver.is_available ?'bg-green-500' : 'bg-red-500'}`}
+                      className={`w-3 h-3 rounded-full ${driver.is_available ? 'bg-green-500' : 'bg-red-500'}`}
                     ></div>
                     <div>
                       <p className="font-medium text-gray-100">{driver.name}</p>

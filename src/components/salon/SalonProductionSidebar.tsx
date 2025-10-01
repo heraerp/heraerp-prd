@@ -285,7 +285,7 @@ export function SalonProductionSidebar() {
   return (
     <TooltipProvider>
       <div
-        className={`${isExpanded ?'w-64' : 'w-16'}
+        className={`${isExpanded ? 'w-64' : 'w-16'}
           bg-gradient-to-b from-pink-50/90 to-purple-50/90 
           backdrop-blur-md
           h-screen 
@@ -308,7 +308,7 @@ export function SalonProductionSidebar() {
         {/* Header */}
         <div className="p-4 pb-2">
           <div className="flex items-center justify-between">
-            <div className={`flex items-center ${!isExpanded &&'justify-center'}`}>
+            <div className={`flex items-center ${!isExpanded && 'justify-center'}`}>
               <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-600 rounded-lg flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-foreground" />
               </div>
@@ -363,7 +363,7 @@ export function SalonProductionSidebar() {
                 <Button
                   key={item.id}
                   onClick={() => handleNavigation(item.href)}
-                  className={`w-full ${!isExpanded ?'justify-center p-0 h-10' : 'justify-start'}
+                  className={`w-full ${!isExpanded ? 'justify-center p-0 h-10' : 'justify-start'}
                     ${
                       active
                         ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-700 shadow-md border border-purple-200/50'
@@ -380,7 +380,7 @@ export function SalonProductionSidebar() {
                   size={isExpanded ? 'sm' : 'icon'}
                 >
                   <div
-                    className={`${isExpanded ?'mr-3' : ''} ${active ? 'text-purple-600' : 'text-muted-foreground'}`}
+                    className={`${isExpanded ? 'mr-3' : ''} ${active ? 'text-purple-600' : 'text-muted-foreground'}`}
                   >
                     {item.icon}
                   </div>
@@ -433,7 +433,7 @@ export function SalonProductionSidebar() {
                 </div>
                 <span className="font-medium">More Apps</span>
                 <ChevronRight
-                  className={`ml-auto w-4 h-4 transition-transform ${showMoreApps ?'rotate-90' : ''}`}
+                  className={`ml-auto w-4 h-4 transition-transform ${showMoreApps ? 'rotate-90' : ''}`}
                 />
               </Button>
             ) : (
@@ -711,7 +711,7 @@ export function SalonProductionSidebar() {
 
         {/* Footer Actions */}
         <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-purple-50/90 to-transparent backdrop-blur-sm">
-          <div className={`${isExpanded ?'space-y-2' : 'space-y-1'}`}>
+          <div className={`${isExpanded ? 'space-y-2' : 'space-y-1'}`}>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <Button

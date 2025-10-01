@@ -77,7 +77,7 @@ export function EventActions({ organizationId, onSyncComplete }: EventActionsPro
   return (
     <div className="flex items-center gap-4">
       <Button onClick={handleSyncFromEventbrite} disabled={isSyncing} variant="outline" size="sm">
-        <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ?'animate-spin' : ''}`} />
+        <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
         {isSyncing ? 'Syncing...' : 'Sync from Eventbrite'}
       </Button>
     </div>

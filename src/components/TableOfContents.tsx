@@ -66,9 +66,11 @@ export default function TableOfContents({ content, className = '' }: TOCProps) {
           <li key={id} style={{ paddingLeft: `${(level - 2) * 0.75}rem` }}>
             <a
               href={`#${id}`}
-              className={`block py-1 pl-4 text-sm transition-colors hover:text-blue-600 ${ activeId === id ?'border-l-2 -ml-[2px] border-blue-600 text-blue-600 font-medium'
-                    : 'text-gray-600'
-                }
+              className={`block py-1 pl-4 text-sm transition-colors hover:text-blue-600 ${
+                activeId === id
+                  ? 'border-l-2 -ml-[2px] border-blue-600 text-blue-600 font-medium'
+                  : 'text-gray-600'
+              }
               `}
               onClick={e => {
                 e.preventDefault()

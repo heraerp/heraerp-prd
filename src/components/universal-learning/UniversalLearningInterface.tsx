@@ -672,7 +672,8 @@ export function UniversalLearningInterface({ className }: UniversalLearningInter
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center ${ step.status ==='completed'
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            step.status === 'completed'
                               ? 'bg-green-100 text-green-600'
                               : step.status === 'processing'
                                 ? 'bg-blue-100 text-primary'

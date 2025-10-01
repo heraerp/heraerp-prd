@@ -87,7 +87,15 @@ import '@/styles/jewelry-glassmorphism.css'
 interface Integration {
   id: string
   name: string
-  category: 'payment' | 'shipping' | 'accounting' | 'crm' | 'marketing' | 'analytics' | 'communication' | 'security'
+  category:
+    | 'payment'
+    | 'shipping'
+    | 'accounting'
+    | 'crm'
+    | 'marketing'
+    | 'analytics'
+    | 'communication'
+    | 'security'
   provider: string
   description: string
   logo: string
@@ -196,7 +204,13 @@ export default function JewelryIntegrationsPage() {
           enableCardSaving: false
         }
       },
-      features: ['UPI Payments', 'Card Processing', 'Wallet Integration', 'EMI Options', 'International Cards'],
+      features: [
+        'UPI Payments',
+        'Card Processing',
+        'Wallet Integration',
+        'EMI Options',
+        'International Cards'
+      ],
       pricing: {
         plan: 'Business',
         cost: 2.5,
@@ -235,7 +249,13 @@ export default function JewelryIntegrationsPage() {
           smsNotifications: true
         }
       },
-      features: ['Express Delivery', 'Insurance Coverage', 'Real-time Tracking', 'SMS Notifications', 'Signature Confirmation'],
+      features: [
+        'Express Delivery',
+        'Insurance Coverage',
+        'Real-time Tracking',
+        'SMS Notifications',
+        'Signature Confirmation'
+      ],
       pricing: {
         plan: 'Premium',
         cost: 185,
@@ -274,7 +294,13 @@ export default function JewelryIntegrationsPage() {
           appointmentReminders: true
         }
       },
-      features: ['Order Updates', 'Customer Support', 'Appointment Reminders', 'Media Sharing', 'Template Messages'],
+      features: [
+        'Order Updates',
+        'Customer Support',
+        'Appointment Reminders',
+        'Media Sharing',
+        'Template Messages'
+      ],
       pricing: {
         plan: 'Business',
         cost: 0.04,
@@ -312,7 +338,13 @@ export default function JewelryIntegrationsPage() {
           taxCalculation: true
         }
       },
-      features: ['Sales Sync', 'Expense Tracking', 'Customer Sync', 'Tax Calculation', 'Financial Reports'],
+      features: [
+        'Sales Sync',
+        'Expense Tracking',
+        'Customer Sync',
+        'Tax Calculation',
+        'Financial Reports'
+      ],
       pricing: {
         plan: 'Plus',
         cost: 4500,
@@ -350,7 +382,13 @@ export default function JewelryIntegrationsPage() {
           newProductAlerts: false
         }
       },
-      features: ['Email Campaigns', 'Customer Segmentation', 'Automation', 'Analytics', 'A/B Testing'],
+      features: [
+        'Email Campaigns',
+        'Customer Segmentation',
+        'Automation',
+        'Analytics',
+        'A/B Testing'
+      ],
       pricing: {
         plan: 'Standard',
         cost: 2990,
@@ -388,7 +426,13 @@ export default function JewelryIntegrationsPage() {
           audienceSegments: true
         }
       },
-      features: ['E-commerce Tracking', 'Custom Events', 'Audience Insights', 'Conversion Tracking', 'Real-time Data'],
+      features: [
+        'E-commerce Tracking',
+        'Custom Events',
+        'Audience Insights',
+        'Conversion Tracking',
+        'Real-time Data'
+      ],
       pricing: {
         plan: 'Free',
         cost: 0,
@@ -426,7 +470,13 @@ export default function JewelryIntegrationsPage() {
           auditLogging: true
         }
       },
-      features: ['Single Sign-On', 'Multi-Factor Auth', 'User Provisioning', 'Audit Logs', 'API Access Management'],
+      features: [
+        'Single Sign-On',
+        'Multi-Factor Auth',
+        'User Provisioning',
+        'Audit Logs',
+        'API Access Management'
+      ],
       pricing: {
         plan: 'Workforce Identity',
         cost: 580,
@@ -549,45 +599,68 @@ export default function JewelryIntegrationsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'connected': return 'jewelry-status-active'
-      case 'testing': return 'jewelry-status-pending'
+      case 'connected':
+        return 'jewelry-status-active'
+      case 'testing':
+        return 'jewelry-status-pending'
       case 'disconnected':
-      case 'error': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'error':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'connected': return <CheckCircle size={16} className="text-green-500" />
-      case 'testing': return <Clock size={16} className="text-yellow-500" />
-      case 'pending': return <RefreshCw size={16} className="text-blue-500 animate-spin" />
-      case 'disconnected': return <XCircle size={16} className="text-gray-500" />
-      case 'error': return <AlertTriangle size={16} className="text-red-500" />
-      default: return <Info size={16} className="text-gray-500" />
+      case 'connected':
+        return <CheckCircle size={16} className="text-green-500" />
+      case 'testing':
+        return <Clock size={16} className="text-yellow-500" />
+      case 'pending':
+        return <RefreshCw size={16} className="text-blue-500 animate-spin" />
+      case 'disconnected':
+        return <XCircle size={16} className="text-gray-500" />
+      case 'error':
+        return <AlertTriangle size={16} className="text-red-500" />
+      default:
+        return <Info size={16} className="text-gray-500" />
     }
   }
 
   const getHealthColor = (health: string) => {
     switch (health) {
-      case 'excellent': return 'text-green-500'
-      case 'good': return 'text-blue-500'
-      case 'fair': return 'text-yellow-500'
-      case 'poor': return 'text-red-500'
-      default: return 'text-gray-500'
+      case 'excellent':
+        return 'text-green-500'
+      case 'good':
+        return 'text-blue-500'
+      case 'fair':
+        return 'text-yellow-500'
+      case 'poor':
+        return 'text-red-500'
+      default:
+        return 'text-gray-500'
     }
   }
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'payment': return <CreditCard size={20} />
-      case 'shipping': return <Truck size={20} />
-      case 'accounting': return <BarChart3 size={20} />
-      case 'marketing': return <TrendingUp size={20} />
-      case 'communication': return <MessageSquare size={20} />
-      case 'analytics': return <Target size={20} />
-      case 'security': return <Shield size={20} />
-      default: return <Package size={20} />
+      case 'payment':
+        return <CreditCard size={20} />
+      case 'shipping':
+        return <Truck size={20} />
+      case 'accounting':
+        return <BarChart3 size={20} />
+      case 'marketing':
+        return <TrendingUp size={20} />
+      case 'communication':
+        return <MessageSquare size={20} />
+      case 'analytics':
+        return <Target size={20} />
+      case 'security':
+        return <Shield size={20} />
+      default:
+        return <Package size={20} />
     }
   }
 
@@ -599,17 +672,16 @@ export default function JewelryIntegrationsPage() {
     return `${value.toFixed(1)}%`
   }
 
-  const filteredIntegrations = integrations.filter(integration => 
-    selectedCategory === 'all' || integration.category === selectedCategory
+  const filteredIntegrations = integrations.filter(
+    integration => selectedCategory === 'all' || integration.category === selectedCategory
   )
 
   return (
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -625,21 +697,19 @@ export default function JewelryIntegrationsPage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="jewelry-glass-panel"
           >
             <div className="flex flex-wrap gap-2 p-4">
-              {tabs.map((tab) => (
+              {tabs.map(tab => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === tab.key
-                      ? 'jewelry-btn-primary'
-                      : 'jewelry-btn-secondary'
+                    activeTab === tab.key ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                   }`}
                 >
                   <tab.icon size={16} />
@@ -652,9 +722,8 @@ export default function JewelryIntegrationsPage() {
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              
               {/* Integration Statistics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -669,8 +738,11 @@ export default function JewelryIntegrationsPage() {
                     <span className="text-xs ml-1">+2 this month</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.1s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.1s' }}
+                >
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">98.7%</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Uptime</p>
@@ -679,8 +751,11 @@ export default function JewelryIntegrationsPage() {
                     <span className="text-xs ml-1">Excellent</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.2s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.2s' }}
+                >
                   <Zap className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">28,156</h3>
                   <p className="jewelry-text-muted text-sm font-medium">API Calls</p>
@@ -689,8 +764,11 @@ export default function JewelryIntegrationsPage() {
                     <span className="text-xs ml-1">Last 24h</span>
                   </div>
                 </div>
-                
-                <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
+
+                <div
+                  className="jewelry-glass-card jewelry-float p-6 text-center"
+                  style={{ animationDelay: '0.3s' }}
+                >
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
                   <h3 className="jewelry-text-high-contrast text-3xl font-bold">₹18,450</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Monthly Cost</p>
@@ -702,9 +780,8 @@ export default function JewelryIntegrationsPage() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 {/* Integration Health */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -719,9 +796,9 @@ export default function JewelryIntegrationsPage() {
                       <RefreshCw className="jewelry-icon-gold" size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    {integrations.slice(0, 4).map((integration) => (
+                    {integrations.slice(0, 4).map(integration => (
                       <div key={integration.id} className="jewelry-glass-card p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center space-x-3">
@@ -729,31 +806,41 @@ export default function JewelryIntegrationsPage() {
                               {getCategoryIcon(integration.category)}
                             </div>
                             <div>
-                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">{integration.name}</h4>
+                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                                {integration.name}
+                              </h4>
                               <p className="jewelry-text-muted text-xs">{integration.category}</p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
                             {getStatusIcon(integration.status)}
-                            <span className={`text-sm font-medium ${getHealthColor(integration.health.status)}`}>
+                            <span
+                              className={`text-sm font-medium ${getHealthColor(integration.health.status)}`}
+                            >
                               {integration.health.status}
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-3 gap-4 text-xs">
                           <div>
                             <span className="jewelry-text-muted block">Uptime</span>
-                            <span className="jewelry-text-high-contrast">{formatPercentage(integration.health.uptime)}</span>
+                            <span className="jewelry-text-high-contrast">
+                              {formatPercentage(integration.health.uptime)}
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Latency</span>
-                            <span className="jewelry-text-high-contrast">{integration.health.latency}ms</span>
+                            <span className="jewelry-text-high-contrast">
+                              {integration.health.latency}ms
+                            </span>
                           </div>
                           <div>
                             <span className="jewelry-text-muted block">Success Rate</span>
-                            <span className="jewelry-text-high-contrast">{formatPercentage(integration.metrics.successRate || 0)}</span>
+                            <span className="jewelry-text-high-contrast">
+                              {formatPercentage(integration.metrics.successRate || 0)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -762,7 +849,7 @@ export default function JewelryIntegrationsPage() {
                 </motion.div>
 
                 {/* Recent Activity */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -773,7 +860,7 @@ export default function JewelryIntegrationsPage() {
                       <Clock className="jewelry-icon-gold" size={24} />
                       Recent Activity
                     </h3>
-                    <button 
+                    <button
                       onClick={() => setActiveTab('webhooks')}
                       className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1"
                     >
@@ -781,36 +868,49 @@ export default function JewelryIntegrationsPage() {
                       <span className="text-sm">View All</span>
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
-                    {recentWebhooks.map((webhook) => (
+                    {recentWebhooks.map(webhook => (
                       <div key={webhook.id} className="jewelry-glass-card p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">{webhook.eventType}</h4>
+                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                              {webhook.eventType}
+                            </h4>
                             <p className="jewelry-text-muted text-xs">
                               {integrations.find(i => i.id === webhook.integrationId)?.name}
                             </p>
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
-                            {webhook.status === 'success' && <CheckCircle size={14} className="text-green-500" />}
-                            {webhook.status === 'failed' && <XCircle size={14} className="text-red-500" />}
-                            {webhook.status === 'pending' && <Clock size={14} className="text-yellow-500" />}
-                            <span className={`text-xs font-medium ${
-                              webhook.status === 'success' ? 'text-green-500' :
-                              webhook.status === 'failed' ? 'text-red-500' : 'text-yellow-500'
-                            }`}>
+                            {webhook.status === 'success' && (
+                              <CheckCircle size={14} className="text-green-500" />
+                            )}
+                            {webhook.status === 'failed' && (
+                              <XCircle size={14} className="text-red-500" />
+                            )}
+                            {webhook.status === 'pending' && (
+                              <Clock size={14} className="text-yellow-500" />
+                            )}
+                            <span
+                              className={`text-xs font-medium ${
+                                webhook.status === 'success'
+                                  ? 'text-green-500'
+                                  : webhook.status === 'failed'
+                                    ? 'text-red-500'
+                                    : 'text-yellow-500'
+                              }`}
+                            >
                               {webhook.status}
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-xs jewelry-text-muted">
                           <span>{new Date(webhook.timestamp).toLocaleString()}</span>
                           <span>Attempts: {webhook.attempts}</span>
                         </div>
-                        
+
                         {webhook.error && (
                           <div className="mt-2 p-2 bg-red-50 rounded text-xs text-red-600">
                             {webhook.error}
@@ -827,9 +927,8 @@ export default function JewelryIntegrationsPage() {
           {/* Connected Tab */}
           {activeTab === 'connected' && (
             <div className="space-y-6">
-              
               {/* Controls */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -838,7 +937,7 @@ export default function JewelryIntegrationsPage() {
                 <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-4 items-center">
                     <div className="flex space-x-2">
-                      {categories.map((category) => (
+                      {categories.map(category => (
                         <button
                           key={category.value}
                           onClick={() => setSelectedCategory(category.value)}
@@ -854,7 +953,7 @@ export default function JewelryIntegrationsPage() {
                       ))}
                     </div>
 
-                    <button 
+                    <button
                       onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
                       className="jewelry-btn-secondary p-2"
                     >
@@ -867,8 +966,8 @@ export default function JewelryIntegrationsPage() {
                       <RefreshCw className="jewelry-icon-gold" size={18} />
                       <span>Sync All</span>
                     </button>
-                    
-                    <button 
+
+                    <button
                       onClick={() => setActiveTab('available')}
                       className="jewelry-btn-primary flex items-center space-x-2 px-4 py-2"
                     >
@@ -880,7 +979,7 @@ export default function JewelryIntegrationsPage() {
               </motion.div>
 
               {/* Connected Integrations */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -889,7 +988,7 @@ export default function JewelryIntegrationsPage() {
                 <div className="p-6">
                   {viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {filteredIntegrations.map((integration) => (
+                      {filteredIntegrations.map(integration => (
                         <motion.div
                           key={integration.id}
                           initial={{ opacity: 0, scale: 0.95 }}
@@ -906,14 +1005,20 @@ export default function JewelryIntegrationsPage() {
                               <div className="w-12 h-12 bg-gradient-to-br from-jewelry-blue-100 to-jewelry-blue-200 rounded-lg flex items-center justify-center">
                                 {getCategoryIcon(integration.category)}
                               </div>
-                              <span className={`text-xs px-2 py-1 rounded ${getStatusColor(integration.status)}`}>
+                              <span
+                                className={`text-xs px-2 py-1 rounded ${getStatusColor(integration.status)}`}
+                              >
                                 {integration.status}
                               </span>
                             </div>
-                            
-                            <h4 className="jewelry-text-high-contrast font-semibold text-lg mb-2">{integration.name}</h4>
-                            <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">{integration.description}</p>
-                            
+
+                            <h4 className="jewelry-text-high-contrast font-semibold text-lg mb-2">
+                              {integration.name}
+                            </h4>
+                            <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">
+                              {integration.description}
+                            </p>
+
                             <div className="space-y-3">
                               <div className="flex items-center justify-between text-sm">
                                 <span className="jewelry-text-muted">Last Sync:</span>
@@ -921,14 +1026,16 @@ export default function JewelryIntegrationsPage() {
                                   {new Date(integration.lastSync).toLocaleTimeString()}
                                 </span>
                               </div>
-                              
+
                               <div className="flex items-center justify-between text-sm">
                                 <span className="jewelry-text-muted">Health:</span>
-                                <span className={`font-medium ${getHealthColor(integration.health.status)}`}>
+                                <span
+                                  className={`font-medium ${getHealthColor(integration.health.status)}`}
+                                >
                                   {integration.health.status}
                                 </span>
                               </div>
-                              
+
                               <div className="flex items-center justify-between text-sm">
                                 <span className="jewelry-text-muted">Success Rate:</span>
                                 <span className="jewelry-text-high-contrast">
@@ -936,7 +1043,7 @@ export default function JewelryIntegrationsPage() {
                                 </span>
                               </div>
                             </div>
-                            
+
                             <div className="flex space-x-2 mt-4">
                               <button className="flex-1 jewelry-btn-secondary py-2 text-xs">
                                 <Settings size={12} className="mr-1" />
@@ -953,7 +1060,7 @@ export default function JewelryIntegrationsPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {filteredIntegrations.map((integration) => (
+                      {filteredIntegrations.map(integration => (
                         <motion.div
                           key={integration.id}
                           initial={{ opacity: 0, x: -20 }}
@@ -968,15 +1075,21 @@ export default function JewelryIntegrationsPage() {
                           <div className="w-16 h-16 bg-gradient-to-br from-jewelry-blue-100 to-jewelry-blue-200 rounded-lg flex items-center justify-center">
                             {getCategoryIcon(integration.category)}
                           </div>
-                          
+
                           <div className="flex-1">
                             <div className="flex items-start justify-between mb-2">
                               <div>
-                                <h4 className="jewelry-text-high-contrast font-semibold">{integration.name}</h4>
-                                <p className="jewelry-text-muted text-sm">{integration.provider} - {integration.category}</p>
+                                <h4 className="jewelry-text-high-contrast font-semibold">
+                                  {integration.name}
+                                </h4>
+                                <p className="jewelry-text-muted text-sm">
+                                  {integration.provider} - {integration.category}
+                                </p>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <span className={`text-xs px-2 py-1 rounded ${getStatusColor(integration.status)}`}>
+                                <span
+                                  className={`text-xs px-2 py-1 rounded ${getStatusColor(integration.status)}`}
+                                >
                                   {integration.status}
                                 </span>
                                 <button className="text-gray-400 hover:text-gray-600">
@@ -984,21 +1097,27 @@ export default function JewelryIntegrationsPage() {
                                 </button>
                               </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-4 gap-4 text-sm">
                               <div>
                                 <span className="jewelry-text-muted block">Health</span>
-                                <span className={`font-medium ${getHealthColor(integration.health.status)}`}>
+                                <span
+                                  className={`font-medium ${getHealthColor(integration.health.status)}`}
+                                >
                                   {integration.health.status}
                                 </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Uptime</span>
-                                <span className="jewelry-text-high-contrast">{formatPercentage(integration.health.uptime)}</span>
+                                <span className="jewelry-text-high-contrast">
+                                  {formatPercentage(integration.health.uptime)}
+                                </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Success Rate</span>
-                                <span className="jewelry-text-high-contrast">{formatPercentage(integration.metrics.successRate || 0)}</span>
+                                <span className="jewelry-text-high-contrast">
+                                  {formatPercentage(integration.metrics.successRate || 0)}
+                                </span>
                               </div>
                               <div>
                                 <span className="jewelry-text-muted block">Last Sync</span>
@@ -1020,9 +1139,8 @@ export default function JewelryIntegrationsPage() {
           {/* Available Integrations Tab */}
           {activeTab === 'available' && (
             <div className="space-y-6">
-              
               {/* Available Integration Templates */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -1035,7 +1153,10 @@ export default function JewelryIntegrationsPage() {
                   </h3>
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted" size={16} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-muted"
+                        size={16}
+                      />
                       <input
                         type="text"
                         placeholder="Search integrations..."
@@ -1047,9 +1168,9 @@ export default function JewelryIntegrationsPage() {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {integrationTemplates.map((template) => (
+                  {integrationTemplates.map(template => (
                     <motion.div
                       key={template.id}
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -1062,47 +1183,62 @@ export default function JewelryIntegrationsPage() {
                           <div className="w-12 h-12 bg-gradient-to-br from-jewelry-blue-100 to-jewelry-blue-200 rounded-lg flex items-center justify-center">
                             {getCategoryIcon(template.category)}
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            template.complexity === 'simple' ? 'bg-green-100 text-green-800' :
-                            template.complexity === 'moderate' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
+                          <span
+                            className={`text-xs px-2 py-1 rounded ${
+                              template.complexity === 'simple'
+                                ? 'bg-green-100 text-green-800'
+                                : template.complexity === 'moderate'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-red-100 text-red-800'
+                            }`}
+                          >
                             {template.complexity}
                           </span>
                         </div>
-                        
-                        <h4 className="jewelry-text-high-contrast font-semibold text-lg mb-2">{template.name}</h4>
-                        <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">{template.description}</p>
-                        
+
+                        <h4 className="jewelry-text-high-contrast font-semibold text-lg mb-2">
+                          {template.name}
+                        </h4>
+                        <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">
+                          {template.description}
+                        </p>
+
                         <div className="space-y-3 mb-4">
                           <div className="flex items-center justify-between text-sm">
                             <span className="jewelry-text-muted">Setup Time:</span>
                             <span className="jewelry-text-high-contrast">{template.setupTime}</span>
                           </div>
-                          
+
                           <div className="flex items-center justify-between text-sm">
                             <span className="jewelry-text-muted">Support:</span>
-                            <span className="jewelry-text-high-contrast capitalize">{template.supportLevel}</span>
+                            <span className="jewelry-text-high-contrast capitalize">
+                              {template.supportLevel}
+                            </span>
                           </div>
-                          
+
                           <div className="flex items-center justify-between text-sm">
                             <span className="jewelry-text-muted">Pricing:</span>
                             <span className="jewelry-text-high-contrast">{template.pricing}</span>
                           </div>
                         </div>
-                        
+
                         <div className="space-y-2 mb-4">
-                          <h5 className="jewelry-text-luxury font-semibold text-sm">Key Benefits:</h5>
+                          <h5 className="jewelry-text-luxury font-semibold text-sm">
+                            Key Benefits:
+                          </h5>
                           <div className="space-y-1">
                             {template.benefits.slice(0, 2).map((benefit, index) => (
                               <div key={index} className="flex items-start space-x-2">
-                                <CheckCircle size={12} className="text-green-500 mt-0.5 flex-shrink-0" />
+                                <CheckCircle
+                                  size={12}
+                                  className="text-green-500 mt-0.5 flex-shrink-0"
+                                />
                                 <span className="jewelry-text-muted text-xs">{benefit}</span>
                               </div>
                             ))}
                           </div>
                         </div>
-                        
+
                         <div className="flex space-x-2">
                           <button className="flex-1 jewelry-btn-secondary py-2 text-xs">
                             <ExternalLink size={12} className="mr-1" />
@@ -1122,8 +1258,8 @@ export default function JewelryIntegrationsPage() {
           )}
 
           {/* Other tabs rendered as placeholders */}
-          {(['monitoring', 'webhooks', 'settings'].includes(activeTab)) && (
-            <motion.div 
+          {['monitoring', 'webhooks', 'settings'].includes(activeTab) && (
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -1137,23 +1273,27 @@ export default function JewelryIntegrationsPage() {
                   {activeTab === 'settings' && 'Integration Settings & Configuration'}
                 </h3>
                 <p className="jewelry-text-muted">
-                  {activeTab === 'monitoring' && 'Real-time API performance monitoring, error tracking, and health analytics for all integrations.'}
-                  {activeTab === 'webhooks' && 'Webhook event management, retry logic, payload inspection, and delivery tracking systems.'}
-                  {activeTab === 'settings' && 'Global integration settings, security configurations, rate limiting, and access management.'}
+                  {activeTab === 'monitoring' &&
+                    'Real-time API performance monitoring, error tracking, and health analytics for all integrations.'}
+                  {activeTab === 'webhooks' &&
+                    'Webhook event management, retry logic, payload inspection, and delivery tracking systems.'}
+                  {activeTab === 'settings' &&
+                    'Global integration settings, security configurations, rate limiting, and access management.'}
                 </p>
               </div>
             </motion.div>
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              Enterprise integrations powered by <span className="jewelry-text-luxury font-semibold">HERA Integration Platform</span>
+              Enterprise integrations powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Integration Platform</span>
             </p>
           </motion.div>
         </div>

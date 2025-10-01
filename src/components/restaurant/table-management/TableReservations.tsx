@@ -271,7 +271,8 @@ export function TableReservations({ tables, onReservationUpdate }: TableReservat
                   .map(reservation => (
                     <div
                       key={reservation.id}
-                      className={`p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md ${ reservation.status ==='confirmed'
+                      className={`p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md ${
+                        reservation.status === 'confirmed'
                           ? 'bg-blue-50 border-blue-200'
                           : reservation.status === 'seated'
                             ? 'bg-green-50 border-green-200'

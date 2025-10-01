@@ -1,13 +1,13 @@
 // app/examples/transactions/[id]/page.tsx - Transaction detail page
-'use client';
-import React from 'react';
-import { ObjectHeader, LinesTable, RelatedPanel, useTransaction } from '@/ui';
-import { useRouter } from 'next/navigation';
+'use client'
+import React from 'react'
+import { ObjectHeader, LinesTable, RelatedPanel, useTransaction } from '@/ui'
+import { useRouter } from 'next/navigation'
 
 export default function TransactionDetail({ params }: { params: { id: string } }) {
-  const router = useRouter();
-  const { data, isLoading } = useTransaction(params.id, true);
-  
+  const router = useRouter()
+  const { data, isLoading } = useTransaction(params.id, true)
+
   if (isLoading) {
     return (
       <div className="p-6">
@@ -17,7 +17,7 @@ export default function TransactionDetail({ params }: { params: { id: string } }
           <div className="h-64 bg-gray-200 rounded"></div>
         </div>
       </div>
-    );
+    )
   }
 
   if (!data) {
@@ -25,23 +25,20 @@ export default function TransactionDetail({ params }: { params: { id: string } }
       <div className="p-6">
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-gray-900 mb-2">Transaction not found</h3>
-          <button
-            onClick={() => router.back()}
-            className="text-blue-600 hover:text-blue-800"
-          >
+          <button onClick={() => router.back()} className="text-blue-600 hover:text-blue-800">
             Go back
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   const formatAmount = (amount: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency || 'USD'
-    }).format(amount);
-  };
+    }).format(amount)
+  }
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -55,7 +52,7 @@ export default function TransactionDetail({ params }: { params: { id: string } }
       <ObjectHeader
         title={
           <>
-            {data.transaction_type?.charAt(0).toUpperCase() + data.transaction_type?.slice(1)} 
+            {data.transaction_type?.charAt(0).toUpperCase() + data.transaction_type?.slice(1)}
             {' · '}
             {data.reference_number || data.id.slice(0, 8)}
           </>
@@ -80,9 +77,7 @@ export default function TransactionDetail({ params }: { params: { id: string } }
               {formatAmount(data.total_amount, data.transaction_currency_code)}
             </div>
             {data.exchange_rate && (
-              <div className="text-sm text-gray-600">
-                Rate: {data.exchange_rate}
-              </div>
+              <div className="text-sm text-gray-600">Rate: {data.exchange_rate}</div>
             )}
           </div>
         }
@@ -135,5 +130,5 @@ export default function TransactionDetail({ params }: { params: { id: string } }
         </div>
       </div>
     </div>
-  );
+  )
 }

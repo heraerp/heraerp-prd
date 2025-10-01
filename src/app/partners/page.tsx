@@ -1,25 +1,27 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from 'react';
-import { PARTNERS, type PartnerRegion } from '@/data/partners';
-import PartnerCard from '@/components/partners/PartnerCard';
-import PartnersFilterBar from '@/components/partners/PartnersFilterBar';
-import PartnerApplyCta from '@/components/partners/PartnerApplyCta';
+import { useState, useMemo } from 'react'
+import { PARTNERS, type PartnerRegion } from '@/data/partners'
+import PartnerCard from '@/components/partners/PartnerCard'
+import PartnersFilterBar from '@/components/partners/PartnersFilterBar'
+import PartnerApplyCta from '@/components/partners/PartnerApplyCta'
 
 // Statistics component
 function PartnerStatistics() {
   const stats = [
-    { value: "2", label: "Founding Partners", color: "from-indigo-500 to-indigo-600" },
-    { value: "3", label: "Countries", color: "from-purple-500 to-purple-600" },
-    { value: "15+", label: "Active Discussions", color: "from-cyan-500 to-cyan-600" },
-    { value: "Q1 2025", label: "Launch Date", color: "from-emerald-500 to-emerald-600" }
-  ];
+    { value: '2', label: 'Founding Partners', color: 'from-indigo-500 to-indigo-600' },
+    { value: '3', label: 'Countries', color: 'from-purple-500 to-purple-600' },
+    { value: '15+', label: 'Active Discussions', color: 'from-cyan-500 to-cyan-600' },
+    { value: 'Q1 2025', label: 'Launch Date', color: 'from-emerald-500 to-emerald-600' }
+  ]
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
       {stats.map((stat, idx) => (
         <div key={idx} className="relative group">
-          <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-opacity`} />
+          <div
+            className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-opacity`}
+          />
           <div className="relative card-glass p-6 rounded-2xl border border-border text-center">
             <div className="ink text-3xl font-bold mb-1">{stat.value}</div>
             <div className="ink-muted text-sm">{stat.label}</div>
@@ -27,43 +29,43 @@ function PartnerStatistics() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // Benefits section
 function PartnerBenefits() {
   const benefits = [
     {
-      icon: "🎯",
-      title: "Lead Generation",
+      icon: '🎯',
+      title: 'Lead Generation',
       description: "Receive qualified leads from HERA's global sales team"
     },
     {
-      icon: "🚀",
-      title: "Training & Support",
-      description: "Comprehensive onboarding and continuous training programs"
+      icon: '🚀',
+      title: 'Training & Support',
+      description: 'Comprehensive onboarding and continuous training programs'
     },
     {
-      icon: "💼",
-      title: "Co-Marketing",
-      description: "Joint marketing initiatives and brand exposure"
+      icon: '💼',
+      title: 'Co-Marketing',
+      description: 'Joint marketing initiatives and brand exposure'
     },
     {
-      icon: "🛠️",
-      title: "Technical Support",
+      icon: '🛠️',
+      title: 'Technical Support',
       description: "Direct access to HERA's engineering and support teams"
     },
     {
-      icon: "💰",
-      title: "Revenue Sharing",
-      description: "Attractive commission structure and incentives"
+      icon: '💰',
+      title: 'Revenue Sharing',
+      description: 'Attractive commission structure and incentives'
     },
     {
-      icon: "🌍",
-      title: "Global Network",
-      description: "Connect with partners worldwide for collaboration"
+      icon: '🌍',
+      title: 'Global Network',
+      description: 'Connect with partners worldwide for collaboration'
     }
-  ];
+  ]
 
   return (
     <div className="mb-12">
@@ -80,43 +82,43 @@ function PartnerBenefits() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 export default function PartnersPage() {
-  const [query, setQuery] = useState('');
-  const [region, setRegion] = useState<PartnerRegion | "All">("All");
+  const [query, setQuery] = useState('')
+  const [region, setRegion] = useState<PartnerRegion | 'All'>('All')
 
   const filtered = useMemo(() => {
     return PARTNERS.filter(partner => {
       // Search filter
       if (query) {
-        const searchLower = query.toLowerCase();
+        const searchLower = query.toLowerCase()
         const matchesSearch =
           partner.name.toLowerCase().includes(searchLower) ||
           partner.summary.toLowerCase().includes(searchLower) ||
-          partner.tags.some(tag => tag.toLowerCase().includes(searchLower));
-        if (!matchesSearch) return false;
+          partner.tags.some(tag => tag.toLowerCase().includes(searchLower))
+        if (!matchesSearch) return false
       }
 
       // Region filter
-      if (region !== "All" && partner.region !== region) return false;
+      if (region !== 'All' && partner.region !== region) return false
 
-      return true;
-    });
-  }, [query, region]);
+      return true
+    })
+  }, [query, region])
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": filtered.map((partner, index) => ({
-      "@type": "ProfessionalService",
-      "position": index + 1,
-      "name": partner.name,
-      "url": `https://heraerp.com/partners/${partner.slug}`,
-      "areaServed": partner.region
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: filtered.map((partner, index) => ({
+      '@type': 'ProfessionalService',
+      position: index + 1,
+      name: partner.name,
+      url: `https://heraerp.com/partners/${partner.slug}`,
+      areaServed: partner.region
     }))
-  };
+  }
 
   return (
     <>
@@ -154,10 +156,16 @@ export default function PartnersPage() {
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
-                <a href="/partners/apply" className="btn-gradient px-8 py-3 text-lg border border-border">
+                <a
+                  href="/partners/apply"
+                  className="btn-gradient px-8 py-3 text-lg border border-border"
+                >
                   Become a Partner
                 </a>
-                <a href="/book-a-meeting" className="btn-quiet px-8 py-3 text-lg border border-border">
+                <a
+                  href="/book-a-meeting"
+                  className="btn-quiet px-8 py-3 text-lg border border-border"
+                >
                   Partner Demo
                 </a>
               </div>
@@ -182,12 +190,10 @@ export default function PartnersPage() {
                   Exclusive Network
                 </span>
               </div>
-              <h2 className="ink text-3xl md:text-4xl font-bold mb-4">
-                Our Founding Partners
-              </h2>
+              <h2 className="ink text-3xl md:text-4xl font-bold mb-4">Our Founding Partners</h2>
               <p className="ink-muted text-lg max-w-2xl mx-auto">
-                Connect with pioneering accounting professionals who are transforming
-                how businesses implement and manage ERP systems globally
+                Connect with pioneering accounting professionals who are transforming how businesses
+                implement and manage ERP systems globally
               </p>
             </div>
 
@@ -203,11 +209,13 @@ export default function PartnersPage() {
                     </div>
                     <div className="grid md:grid-cols-2 gap-8 items-center">
                       <div>
-                        <h3 className="ink text-2xl font-bold mb-3">Strategic Partnership Opportunity</h3>
+                        <h3 className="ink text-2xl font-bold mb-3">
+                          Strategic Partnership Opportunity
+                        </h3>
                         <p className="ink-muted mb-4">
-                          As a founding partner, you'll have exclusive access to HERA's revolutionary platform,
-                          priority support, and the opportunity to shape our product roadmap. Join us in
-                          building the future of accounting technology.
+                          As a founding partner, you'll have exclusive access to HERA's
+                          revolutionary platform, priority support, and the opportunity to shape our
+                          product roadmap. Join us in building the future of accounting technology.
                         </p>
                         <div className="flex flex-wrap gap-2 mb-4">
                           <span className="px-3 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm">
@@ -253,7 +261,10 @@ export default function PartnersPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filtered.map(p => (
-                    <div key={p.slug} className="transform hover:scale-[1.02] transition-transform duration-200">
+                    <div
+                      key={p.slug}
+                      className="transform hover:scale-[1.02] transition-transform duration-200"
+                    >
                       <PartnerCard partner={p} />
                     </div>
                   ))}
@@ -264,14 +275,19 @@ export default function PartnersPage() {
                 <div className="max-w-md mx-auto">
                   <div className="card-glass p-12 rounded-2xl border border-border">
                     <div className="text-5xl mb-4">🤝</div>
-                    <h3 className="ink text-xl font-semibold mb-3">No Partners Match Your Search</h3>
+                    <h3 className="ink text-xl font-semibold mb-3">
+                      No Partners Match Your Search
+                    </h3>
                     <p className="ink-muted text-sm mb-6">
-                      We're actively expanding our partner network. Adjust your filters or
-                      explore becoming a founding partner yourself.
+                      We're actively expanding our partner network. Adjust your filters or explore
+                      becoming a founding partner yourself.
                     </p>
                     <div className="flex flex-col gap-3">
                       <button
-                        onClick={() => { setQuery(''); setRegion('All'); }}
+                        onClick={() => {
+                          setQuery('')
+                          setRegion('All')
+                        }}
                         className="btn-quiet border border-border"
                       >
                         Clear all filters
@@ -296,10 +312,10 @@ export default function PartnersPage() {
             <h3 className="ink text-2xl font-semibold text-center mb-8">Partnership Journey</h3>
             <div className="grid md:grid-cols-4 gap-6">
               {[
-                { step: "1", title: "Apply", desc: "Submit your application", time: "2 mins" },
-                { step: "2", title: "Review", desc: "We evaluate your firm", time: "1-2 days" },
-                { step: "3", title: "Onboard", desc: "Training & setup", time: "1 week" },
-                { step: "4", title: "Launch", desc: "Start implementing", time: "Ready to go" }
+                { step: '1', title: 'Apply', desc: 'Submit your application', time: '2 mins' },
+                { step: '2', title: 'Review', desc: 'We evaluate your firm', time: '1-2 days' },
+                { step: '3', title: 'Onboard', desc: 'Training & setup', time: '1 week' },
+                { step: '4', title: 'Launch', desc: 'Start implementing', time: 'Ready to go' }
               ].map((item, idx) => (
                 <div key={idx} className="relative">
                   {idx < 3 && (
@@ -311,7 +327,9 @@ export default function PartnersPage() {
                     </div>
                     <h4 className="ink font-semibold mb-1">{item.title}</h4>
                     <p className="ink-muted text-sm mb-1">{item.desc}</p>
-                    <p className="text-indigo-600 dark:text-indigo-400 text-xs font-medium">{item.time}</p>
+                    <p className="text-indigo-600 dark:text-indigo-400 text-xs font-medium">
+                      {item.time}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -321,7 +339,9 @@ export default function PartnersPage() {
           {/* Trust Indicators and Final CTA */}
           <div className="mt-16 border-t border-border pt-12">
             <div className="text-center mb-8">
-              <p className="ink-muted text-sm mb-6">Join the accounting firms revolutionizing ERP implementation</p>
+              <p className="ink-muted text-sm mb-6">
+                Join the accounting firms revolutionizing ERP implementation
+              </p>
 
               {/* Partner Benefits Summary */}
               <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
@@ -348,7 +368,9 @@ export default function PartnersPage() {
                   <span className="text-3xl">⏰</span>
                   <div className="text-left">
                     <div className="ink text-lg font-bold">Limited Founding Partner Positions</div>
-                    <div className="ink-muted text-sm">Only accepting select firms for Q1 2025 launch</div>
+                    <div className="ink-muted text-sm">
+                      Only accepting select firms for Q1 2025 launch
+                    </div>
                   </div>
                 </div>
                 <a href="/partners/apply" className="btn-gradient px-8 py-3 border border-border">
@@ -360,5 +382,5 @@ export default function PartnersPage() {
         </section>
       </main>
     </>
-  );
+  )
 }

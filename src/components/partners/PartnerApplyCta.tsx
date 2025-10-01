@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
 export default function PartnerApplyCta() {
   return (
@@ -14,12 +14,11 @@ export default function PartnerApplyCta() {
           </span>
         </div>
 
-        <h2 className="ink text-3xl font-bold mb-4">
-          Become a HERA Founding Partner
-        </h2>
+        <h2 className="ink text-3xl font-bold mb-4">Become a HERA Founding Partner</h2>
         <p className="ink-muted text-lg mb-8 max-w-2xl mx-auto">
-          Join the exclusive network of accounting firms pioneering the future of ERP implementation.
-          Early partners receive territory rights, premium support, and shape our product roadmap.
+          Join the exclusive network of accounting firms pioneering the future of ERP
+          implementation. Early partners receive territory rights, premium support, and shape our
+          product roadmap.
         </p>
 
         {/* Benefits Grid */}
@@ -58,5 +57,5 @@ export default function PartnerApplyCta() {
         </div>
       </div>
     </div>
-  );
+  )
 }

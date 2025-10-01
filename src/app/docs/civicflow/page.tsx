@@ -4,8 +4,10 @@ import { DocsSearch } from '@/components/docs/DocsSearch'
 
 export const metadata = {
   title: 'Civicflow Documentation - User Guides & Help Center',
-  description: 'Complete documentation for Civicflow CRM and grants management platform. Get started guides, user manuals, and best practices for public sector organizations.',
-  keywords: 'Civicflow documentation, CRM help, grants management guide, public sector software docs',
+  description:
+    'Complete documentation for Civicflow CRM and grants management platform. Get started guides, user manuals, and best practices for public sector organizations.',
+  keywords:
+    'Civicflow documentation, CRM help, grants management guide, public sector software docs'
 }
 
 export default function CivicflowDocsHome() {
@@ -20,16 +22,28 @@ export default function CivicflowDocsHome() {
                 Civicflow Docs
               </Link>
               <nav className="hidden md:flex items-center gap-6">
-                <Link href="/docs/civicflow" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <Link
+                  href="/docs/civicflow"
+                  className="text-sm font-medium text-gray-900 dark:text-gray-100"
+                >
                   Home
                 </Link>
-                <Link href="/docs/civicflow/getting-started" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+                <Link
+                  href="/docs/civicflow/getting-started"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                >
                   Getting Started
                 </Link>
-                <Link href="/docs/civicflow/crm-constituents" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+                <Link
+                  href="/docs/civicflow/crm-constituents"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                >
                   User Guides
                 </Link>
-                <Link href="/docs/civicflow/api" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+                <Link
+                  href="/docs/civicflow/api"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                >
                   API Reference
                 </Link>
               </nav>
@@ -219,13 +233,22 @@ export default function CivicflowDocsHome() {
               © 2024 Civicflow. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <Link href="/civicflow/help" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+              <Link
+                href="/civicflow/help"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+              >
                 Contact Support
               </Link>
-              <Link href="/docs/civicflow/api" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+              <Link
+                href="/docs/civicflow/api"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+              >
                 API Docs
               </Link>
-              <a href="https://status.civicflow.com" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+              <a
+                href="https://status.civicflow.com"
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+              >
                 System Status
               </a>
             </div>

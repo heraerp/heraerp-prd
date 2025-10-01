@@ -118,9 +118,7 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm dark:ink-muted">
-            Loading transactions...
-          </span>
+          <span className="ml-2 text-sm dark:ink-muted">Loading transactions...</span>
         </div>
       )
     }
@@ -219,9 +217,7 @@ export function DrilldownDrawer({
       return (
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-          <span className="ml-2 text-sm dark:ink-muted">
-            Loading transaction details...
-          </span>
+          <span className="ml-2 text-sm dark:ink-muted">Loading transaction details...</span>
         </div>
       )
     }

@@ -184,21 +184,30 @@ export function ConnectorCard({
     switch (connector.status) {
       case 'active':
         return (
-          <Badge variant="default" className="gap-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800">
+          <Badge
+            variant="default"
+            className="gap-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+          >
             <CheckCircle className="h-3 w-3" />
             Connected
           </Badge>
         )
       case 'expired':
         return (
-          <Badge variant="secondary" className="gap-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800">
+          <Badge
+            variant="secondary"
+            className="gap-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800"
+          >
             <Clock className="h-3 w-3" />
             Token Expired
           </Badge>
         )
       case 'error':
         return (
-          <Badge variant="destructive" className="gap-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800">
+          <Badge
+            variant="destructive"
+            className="gap-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800"
+          >
             <XCircle className="h-3 w-3" />
             Error
           </Badge>
@@ -210,51 +219,73 @@ export function ConnectorCard({
 
   return (
     <>
-      <Card className={cn(
-        'relative overflow-hidden transition-all duration-200 hover:shadow-lg',
-        'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700',
-        isConnected && 'ring-2 ring-blue-500/20 border-blue-300 dark:border-blue-700'
-      )}>
+      <Card
+        className={cn(
+          'relative overflow-hidden transition-all duration-200 hover:shadow-lg',
+          'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700',
+          isConnected && 'ring-2 ring-blue-500/20 border-blue-300 dark:border-blue-700'
+        )}
+      >
         <div className={cn('absolute top-0 left-0 right-0 h-1', color, darkColor)} />
 
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn(
-                'p-3 rounded-lg',
-                color.replace('600', '100'),
-                darkColor?.replace('700', '900/30')
-              )}>
+              <div
+                className={cn(
+                  'p-3 rounded-lg',
+                  color.replace('600', '100'),
+                  darkColor?.replace('700', '900/30')
+                )}
+              >
                 <Icon className={cn('h-6 w-6', accentColor || color.replace('bg-', 'text-'))} />
               </div>
               <div>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">{name}</CardTitle>
+                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {name}
+                </CardTitle>
                 {getStatusBadge()}
               </div>
             </div>
             {isConnected && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  >
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={handleSync} className="text-gray-700 dark:text-gray-300">
+                  <DropdownMenuItem
+                    onClick={handleSync}
+                    className="text-gray-700 dark:text-gray-300"
+                  >
                     <RefreshCw className="h-4 w-4 mr-2" />
                     Sync Now
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowScheduleDialog(true)} className="text-gray-700 dark:text-gray-300">
+                  <DropdownMenuItem
+                    onClick={() => setShowScheduleDialog(true)}
+                    className="text-gray-700 dark:text-gray-300"
+                  >
                     <Calendar className="h-4 w-4 mr-2" />
                     Schedule
                   </DropdownMenuItem>
                   {onConfigureMapping && (
-                    <DropdownMenuItem onClick={onConfigureMapping} className="text-gray-700 dark:text-gray-300">
+                    <DropdownMenuItem
+                      onClick={onConfigureMapping}
+                      className="text-gray-700 dark:text-gray-300"
+                    >
                       <Settings className="h-4 w-4 mr-2" />
                       Configure Mapping
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={handleDisconnect} className="text-red-600 dark:text-red-400">
+                  <DropdownMenuItem
+                    onClick={handleDisconnect}
+                    className="text-red-600 dark:text-red-400"
+                  >
                     <Unlink className="h-4 w-4 mr-2" />
                     Disconnect
                   </DropdownMenuItem>
@@ -262,7 +293,9 @@ export function ConnectorCard({
               </DropdownMenu>
             )}
           </div>
-          <CardDescription className="text-gray-700 dark:text-gray-300">{description}</CardDescription>
+          <CardDescription className="text-gray-700 dark:text-gray-300">
+            {description}
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -271,7 +304,14 @@ export function ConnectorCard({
             <ul className="text-sm space-y-1">
               {features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
-                  <span className={cn('font-semibold mt-0.5', accentColor || 'text-gray-600 dark:text-gray-400')}>•</span>
+                  <span
+                    className={cn(
+                      'font-semibold mt-0.5',
+                      accentColor || 'text-gray-600 dark:text-gray-400'
+                    )}
+                  >
+                    •
+                  </span>
                   <span>{feature}</span>
                 </li>
               ))}
@@ -283,19 +323,25 @@ export function ConnectorCard({
               {connector.account_name && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-700 dark:text-gray-400">Account:</span>
-                  <span className="font-medium text-gray-800 dark:text-gray-200">{connector.account_name}</span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    {connector.account_name}
+                  </span>
                 </div>
               )}
               {lastSync && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-700 dark:text-gray-400">Last sync:</span>
-                  <span className="text-gray-800 dark:text-gray-200">{format(lastSync, 'MMM d, h:mm a')}</span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    {format(lastSync, 'MMM d, h:mm a')}
+                  </span>
                 </div>
               )}
               {nextSync && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-700 dark:text-gray-400">Next sync:</span>
-                  <span className="text-gray-800 dark:text-gray-200">{format(nextSync, 'MMM d, h:mm a')}</span>
+                  <span className="text-gray-800 dark:text-gray-200">
+                    {format(nextSync, 'MMM d, h:mm a')}
+                  </span>
                 </div>
               )}
             </div>
@@ -307,10 +353,10 @@ export function ConnectorCard({
             <Button
               onClick={() => setShowConnectDialog(true)}
               className={cn(
-                "w-full font-semibold",
+                'w-full font-semibold',
                 color,
                 darkColor,
-                "text-white hover:opacity-90"
+                'text-white hover:opacity-90'
               )}
               disabled={connectMutation.isPending}
             >

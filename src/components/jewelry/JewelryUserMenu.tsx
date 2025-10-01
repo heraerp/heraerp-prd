@@ -16,7 +16,9 @@ export function JewelryUserMenu() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
+        const {
+          data: { user }
+        } = await supabase.auth.getUser()
         setUser(user)
       } catch (error) {
         console.error('Error getting user:', error)
@@ -24,7 +26,9 @@ export function JewelryUserMenu() {
     }
     getUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
 
@@ -45,12 +49,12 @@ export function JewelryUserMenu() {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger 
-        ref={triggerRef} 
+      <DropdownMenu.Trigger
+        ref={triggerRef}
         className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-full"
       >
         <Avatar.Root className="inline-flex h-9 w-9 select-none items-center justify-center overflow-hidden rounded-full jewelry-glass-btn hover:scale-105 transition-transform">
-          <Avatar.Image 
+          <Avatar.Image
             className="h-full w-full object-cover"
             src={user?.user_metadata?.avatar_url}
             alt={displayName}
@@ -62,7 +66,7 @@ export function JewelryUserMenu() {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content 
+        <DropdownMenu.Content
           className="jewelry-glass-dropdown rounded-xl p-2 min-w-[220px] shadow-2xl border border-yellow-500/20"
           sideOffset={8}
           align="end"
@@ -84,22 +88,22 @@ export function JewelryUserMenu() {
               </div>
             </>
           )}
-          
+
           {/* Menu Items */}
           <div className="py-1">
             <DropdownMenu.Item asChild>
-              <a 
-                href="/jewelry/profile" 
+              <a
+                href="/jewelry/profile"
                 className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg jewelry-text-luxury hover:jewelry-text-gold hover:bg-yellow-500/10 transition-all cursor-pointer focus-visible:outline-none focus-visible:bg-yellow-500/10 group"
               >
                 <User className="h-4 w-4" />
                 <span className="group-hover:translate-x-1 transition-transform">Profile</span>
               </a>
             </DropdownMenu.Item>
-            
+
             <DropdownMenu.Item asChild>
-              <a 
-                href="/jewelry/settings" 
+              <a
+                href="/jewelry/settings"
                 className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg jewelry-text-luxury hover:jewelry-text-gold hover:bg-yellow-500/10 transition-all cursor-pointer focus-visible:outline-none focus-visible:bg-yellow-500/10 group"
               >
                 <Settings className="h-4 w-4" />
@@ -108,8 +112,8 @@ export function JewelryUserMenu() {
             </DropdownMenu.Item>
 
             <DropdownMenu.Item asChild>
-              <a 
-                href="/jewelry/security" 
+              <a
+                href="/jewelry/security"
                 className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg jewelry-text-luxury hover:jewelry-text-gold hover:bg-yellow-500/10 transition-all cursor-pointer focus-visible:outline-none focus-visible:bg-yellow-500/10 group"
               >
                 <Shield className="h-4 w-4" />
@@ -117,11 +121,11 @@ export function JewelryUserMenu() {
               </a>
             </DropdownMenu.Item>
           </div>
-          
+
           <DropdownMenu.Separator className="my-2 h-px bg-yellow-500/20" />
-          
+
           <DropdownMenu.Item asChild>
-            <button 
+            <button
               onClick={handleSignOut}
               className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg jewelry-text-luxury hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer focus-visible:outline-none focus-visible:bg-red-500/10 w-full text-left group"
             >

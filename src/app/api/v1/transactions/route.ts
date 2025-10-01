@@ -1,13 +1,13 @@
 // GET /api/v1/transactions?...  (query/list)
 // POST /api/v1/transactions      (create/emit)
-import { NextRequest, NextResponse } from 'next/server';
-import { callRPC } from '@/lib/universal/supabase';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from 'next/server'
+import { callRPC } from '@/lib/universal/supabase'
+import { z } from 'zod'
 
 // ---------- GET: query/list ----------
 const Query = z.object({
   transaction_type: z.string().optional(),
-  status: z.enum(['draft','pending','approved','completed','cancelled']).optional(),
+  status: z.enum(['draft', 'pending', 'approved', 'completed', 'cancelled']).optional(),
   smart_code: z.string().optional(),
   source_entity_id: z.string().uuid().optional(),
   target_entity_id: z.string().uuid().optional(),
@@ -16,30 +16,33 @@ const Query = z.object({
   fiscal_year: z.coerce.number().optional(),
   fiscal_period: z.coerce.number().optional(),
   limit: z.coerce.number().min(1).max(500).default(100),
-  offset: z.coerce.number().min(0).default(0),
-});
+  offset: z.coerce.number().min(0).default(0)
+})
 
 export async function GET(req: NextRequest) {
-  const orgId = req.headers.get('x-hera-org');
+  const orgId = req.headers.get('x-hera-org')
   if (!orgId) {
-    return NextResponse.json({ error: 'Missing x-hera-org header' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing x-hera-org header' }, { status: 400 })
   }
 
-  const raw = Object.fromEntries(new URL(req.url).searchParams.entries());
-  const parsed = Query.safeParse(raw);
+  const raw = Object.fromEntries(new URL(req.url).searchParams.entries())
+  const parsed = Query.safeParse(raw)
   if (!parsed.success) {
-    return NextResponse.json({ error: 'Invalid query', details: parsed.error.format() }, { status: 422 });
+    return NextResponse.json(
+      { error: 'Invalid query', details: parsed.error.format() },
+      { status: 422 }
+    )
   }
 
   const { data, error } = await callRPC<any>('hera_txn_query_v1', {
     p_org_id: orgId,
-    p_filters: parsed.data,
-  });
+    p_filters: parsed.data
+  })
 
   if (error) {
-    return NextResponse.json({ error: error.message, details: error }, { status: 400 });
+    return NextResponse.json({ error: error.message, details: error }, { status: 400 })
   }
-  return NextResponse.json(data ?? []);
+  return NextResponse.json(data ?? [])
 }
 
 // ---------- POST: create/emit ----------
@@ -60,39 +63,46 @@ const Body = z.object({
   exchange_rate_type: z.string().optional(),
 
   reference_number: z.string().optional().nullable(),
-  status: z.enum(['draft','pending','approved','completed','cancelled']).optional(),
+  status: z.enum(['draft', 'pending', 'approved', 'completed', 'cancelled']).optional(),
   fiscal_year: z.number().optional(),
   fiscal_period: z.number().optional(),
   metadata: z.any().optional().nullable(),
 
-  line_items: z.array(z.object({
-    smart_code: z.string(),
-    line_number: z.number().int().min(1),
-    line_type: z.string().min(1),
-    description: z.string().optional(),
-    quantity: z.number().optional(),
-    unit_amount: z.number().optional(),
-    line_amount: z.number(),
-    entity_id: z.string().uuid().optional(),
-    account_id: z.string().uuid().optional(),
-    tax_code: z.string().optional(),
-    tax_amount: z.number().optional(),
-    discount_amount: z.number().optional(),
-  })).optional(),
-});
+  line_items: z
+    .array(
+      z.object({
+        smart_code: z.string(),
+        line_number: z.number().int().min(1),
+        line_type: z.string().min(1),
+        description: z.string().optional(),
+        quantity: z.number().optional(),
+        unit_amount: z.number().optional(),
+        line_amount: z.number(),
+        entity_id: z.string().uuid().optional(),
+        account_id: z.string().uuid().optional(),
+        tax_code: z.string().optional(),
+        tax_amount: z.number().optional(),
+        discount_amount: z.number().optional()
+      })
+    )
+    .optional()
+})
 
 export async function POST(req: NextRequest) {
-  const orgId = req.headers.get('x-hera-org');
+  const orgId = req.headers.get('x-hera-org')
   if (!orgId) {
-    return NextResponse.json({ error: 'Missing x-hera-org header' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing x-hera-org header' }, { status: 400 })
   }
 
-  const json = await req.json();
-  const parsed = Body.safeParse(json);
+  const json = await req.json()
+  const parsed = Body.safeParse(json)
   if (!parsed.success) {
-    return NextResponse.json({ error: 'Invalid payload', details: parsed.error.format() }, { status: 422 });
+    return NextResponse.json(
+      { error: 'Invalid payload', details: parsed.error.format() },
+      { status: 422 }
+    )
   }
-  const b = parsed.data;
+  const b = parsed.data
 
   const params = {
     p_organization_id: orgId,
@@ -124,13 +134,13 @@ export async function POST(req: NextRequest) {
     p_posting_period_code: null,
     // Lines & actor
     p_lines: (b.line_items ?? []) as any,
-    p_actor_user_id: null,
-  };
+    p_actor_user_id: null
+  }
 
-  const { data, error } = await callRPC<string>('hera_txn_emit_v1', params);
+  const { data, error } = await callRPC<string>('hera_txn_emit_v1', params)
   if (error) {
-    return NextResponse.json({ error: error.message, details: error }, { status: 400 });
+    return NextResponse.json({ error: error.message, details: error }, { status: 400 })
   }
   // hera_txn_emit_v1 returns the new transaction UUID
-  return NextResponse.json({ id: data }, { status: 201 });
+  return NextResponse.json({ id: data }, { status: 201 })
 }

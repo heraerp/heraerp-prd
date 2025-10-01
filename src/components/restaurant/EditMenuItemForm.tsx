@@ -138,10 +138,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="entity_name"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="entity_name" className="block text-sm font-medium ink mb-1">
                     Item Name *
                   </label>
                   <input
@@ -157,10 +154,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="entity_code"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="entity_code" className="block text-sm font-medium ink mb-1">
                     Item Code
                   </label>
                   <input
@@ -176,10 +170,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
               </div>
 
               <div>
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium ink mb-1"
-                >
+                <label htmlFor="description" className="block text-sm font-medium ink mb-1">
                   Description
                 </label>
                 <textarea
@@ -220,10 +211,7 @@ export function EditMenuItemForm({ item, onItemUpdated, onClose }: EditMenuItemF
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="prep_time"
-                    className="block text-sm font-medium ink mb-1"
-                  >
+                  <label htmlFor="prep_time" className="block text-sm font-medium ink mb-1">
                     Prep Time (minutes)
                   </label>
                   <div className="relative">

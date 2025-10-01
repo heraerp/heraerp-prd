@@ -5,7 +5,7 @@ import { track } from '@/lib/analytics'
 import type { Solution } from '@/data/solutions'
 
 export default function SolutionCard(props: Solution) {
-  const { slug, name, tagline, bullets, demoHref, bookHref, image, smart_code } = props;
+  const { slug, name, tagline, bullets, demoHref, bookHref, image, smart_code } = props
 
   return (
     <article className="card h-card" tabIndex={0} data-solution={slug}>
@@ -28,7 +28,9 @@ export default function SolutionCard(props: Solution) {
             <h3 className="ink text-xl font-semibold">{name}</h3>
             <p className="ink-muted text-sm mt-2 leading-relaxed">{tagline}</p>
             <ul className="ink-muted text-sm mt-3 space-y-1 list-disc pl-5">
-              {bullets.map(b => <li key={b}>{b}</li>)}
+              {bullets.map(b => (
+                <li key={b}>{b}</li>
+              ))}
             </ul>
             <div className="pop mt-6 flex gap-3">
               <Link

@@ -135,7 +135,8 @@ export default function JewelryReportsPage() {
       id: '1',
       name: 'Monthly Sales Report',
       type: 'sales',
-      description: 'Comprehensive sales analysis including revenue, top products, and customer insights',
+      description:
+        'Comprehensive sales analysis including revenue, top products, and customer insights',
       frequency: 'monthly',
       lastGenerated: '2024-01-15 09:00',
       nextScheduled: '2024-02-01 09:00',
@@ -163,7 +164,8 @@ export default function JewelryReportsPage() {
       id: '3',
       name: 'Financial Performance Dashboard',
       type: 'financial',
-      description: 'Real-time financial metrics including P&L, cash flow, and profitability analysis',
+      description:
+        'Real-time financial metrics including P&L, cash flow, and profitability analysis',
       frequency: 'daily',
       lastGenerated: '2024-01-16 00:00',
       nextScheduled: '2024-01-17 00:00',
@@ -330,48 +332,70 @@ export default function JewelryReportsPage() {
 
   const getReportIcon = (type: string) => {
     switch (type) {
-      case 'sales': return <ShoppingBag className="jewelry-icon-gold" size={20} />
-      case 'inventory': return <Package className="jewelry-icon-gold" size={20} />
-      case 'financial': return <DollarSign className="jewelry-icon-gold" size={20} />
-      case 'customer': return <Users className="jewelry-icon-gold" size={20} />
-      case 'workshop': return <Wrench className="jewelry-icon-gold" size={20} />
-      case 'security': return <Shield className="jewelry-icon-gold" size={20} />
-      case 'custom': return <SlidersHorizontal className="jewelry-icon-gold" size={20} />
-      default: return <FileText className="jewelry-icon-gold" size={20} />
+      case 'sales':
+        return <ShoppingBag className="jewelry-icon-gold" size={20} />
+      case 'inventory':
+        return <Package className="jewelry-icon-gold" size={20} />
+      case 'financial':
+        return <DollarSign className="jewelry-icon-gold" size={20} />
+      case 'customer':
+        return <Users className="jewelry-icon-gold" size={20} />
+      case 'workshop':
+        return <Wrench className="jewelry-icon-gold" size={20} />
+      case 'security':
+        return <Shield className="jewelry-icon-gold" size={20} />
+      case 'custom':
+        return <SlidersHorizontal className="jewelry-icon-gold" size={20} />
+      default:
+        return <FileText className="jewelry-icon-gold" size={20} />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ready': return 'jewelry-status-active'
-      case 'generating': return 'jewelry-status-pending'
-      case 'scheduled': return 'jewelry-status-luxury'
-      case 'failed': return 'jewelry-status-inactive'
-      default: return 'jewelry-status-inactive'
+      case 'ready':
+        return 'jewelry-status-active'
+      case 'generating':
+        return 'jewelry-status-pending'
+      case 'scheduled':
+        return 'jewelry-status-luxury'
+      case 'failed':
+        return 'jewelry-status-inactive'
+      default:
+        return 'jewelry-status-inactive'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ready': return <CheckCircle className="jewelry-icon-success" size={16} />
-      case 'generating': return <Clock className="jewelry-icon-warning animate-spin" size={16} />
-      case 'scheduled': return <Calendar className="jewelry-icon-info" size={16} />
-      case 'failed': return <XCircle className="jewelry-icon-error" size={16} />
-      default: return null
+      case 'ready':
+        return <CheckCircle className="jewelry-icon-success" size={16} />
+      case 'generating':
+        return <Clock className="jewelry-icon-warning animate-spin" size={16} />
+      case 'scheduled':
+        return <Calendar className="jewelry-icon-info" size={16} />
+      case 'failed':
+        return <XCircle className="jewelry-icon-error" size={16} />
+      default:
+        return null
     }
   }
 
   const getTrendIcon = (trend?: string) => {
     switch (trend) {
-      case 'up': return <ArrowUpRight className="text-green-500" size={16} />
-      case 'down': return <ArrowDownRight className="text-red-500" size={16} />
-      default: return <Activity className="text-gray-500" size={16} />
+      case 'up':
+        return <ArrowUpRight className="text-green-500" size={16} />
+      case 'down':
+        return <ArrowDownRight className="text-red-500" size={16} />
+      default:
+        return <Activity className="text-gray-500" size={16} />
     }
   }
 
   const filteredReports = reports.filter(report => {
-    const matchesSearch = report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         report.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.description.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesSearch
   })
 
@@ -379,9 +403,8 @@ export default function JewelryReportsPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -397,7 +420,7 @@ export default function JewelryReportsPage() {
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -405,14 +428,12 @@ export default function JewelryReportsPage() {
           >
             <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex flex-wrap gap-2">
-                {tabs.map((tab) => (
+                {tabs.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedTab(tab.id)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      selectedTab === tab.id
-                        ? 'jewelry-btn-primary'
-                        : 'jewelry-btn-secondary'
+                      selectedTab === tab.id ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
                     }`}
                   >
                     <tab.icon size={16} />
@@ -420,7 +441,7 @@ export default function JewelryReportsPage() {
                   </button>
                 ))}
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <button className="jewelry-btn-secondary flex items-center space-x-2 px-4 py-2">
                   <RefreshCw className="jewelry-icon-gold" size={18} />
@@ -438,7 +459,7 @@ export default function JewelryReportsPage() {
           {selectedTab === 'dashboard' && (
             <>
               {/* Period Selection */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -446,7 +467,7 @@ export default function JewelryReportsPage() {
               >
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-2">
-                    {periods.map((period) => (
+                    {periods.map(period => (
                       <button
                         key={period.value}
                         onClick={() => setSelectedPeriod(period.value)}
@@ -460,7 +481,7 @@ export default function JewelryReportsPage() {
                       </button>
                     ))}
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <button className="jewelry-btn-secondary p-2">
                       <Download className="jewelry-icon-gold" size={16} />
@@ -476,14 +497,18 @@ export default function JewelryReportsPage() {
               </motion.div>
 
               {/* Key Metrics */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
               >
                 {dashboardMetrics.map((metric, index) => (
-                  <div key={metric.label} className="jewelry-glass-card jewelry-float p-4" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div
+                    key={metric.label}
+                    className="jewelry-glass-card jewelry-float p-4"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <metric.icon className="jewelry-icon-gold" size={20} />
                       {getTrendIcon(metric.trend)}
@@ -491,8 +516,13 @@ export default function JewelryReportsPage() {
                     <h3 className="jewelry-text-high-contrast text-xl font-bold">{metric.value}</h3>
                     <p className="jewelry-text-muted text-xs font-medium">{metric.label}</p>
                     {metric.change && (
-                      <div className={`flex items-center mt-1 text-xs ${metric.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-                        <span>{metric.trend === 'up' ? '+' : ''}{metric.change}%</span>
+                      <div
+                        className={`flex items-center mt-1 text-xs ${metric.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}
+                      >
+                        <span>
+                          {metric.trend === 'up' ? '+' : ''}
+                          {metric.change}%
+                        </span>
                         <span className="ml-1 jewelry-text-muted">vs last period</span>
                       </div>
                     )}
@@ -502,9 +532,8 @@ export default function JewelryReportsPage() {
 
               {/* Charts */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
                 {/* Revenue Trend Chart */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
@@ -519,20 +548,21 @@ export default function JewelryReportsPage() {
                       <Eye className="jewelry-icon-gold" size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {/* Simplified chart representation */}
                     <div className="h-48 flex items-end justify-between gap-2">
                       {timeSeriesData.map((data, index) => (
                         <div key={data.date} className="flex-1 flex flex-col items-center gap-2">
-                          <div className="w-full bg-gradient-to-t from-jewelry-gold-400 to-jewelry-gold-600 rounded-t"
-                               style={{ height: `${(data.revenue / 150000) * 100}%` }}>
-                          </div>
+                          <div
+                            className="w-full bg-gradient-to-t from-jewelry-gold-400 to-jewelry-gold-600 rounded-t"
+                            style={{ height: `${(data.revenue / 150000) * 100}%` }}
+                          ></div>
                           <span className="jewelry-text-muted text-xs">{data.date}</span>
                         </div>
                       ))}
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-jewelry-blue-200">
                       <div>
                         <p className="jewelry-text-muted text-sm">Total Revenue</p>
@@ -547,7 +577,7 @@ export default function JewelryReportsPage() {
                 </motion.div>
 
                 {/* Category Performance */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -562,23 +592,31 @@ export default function JewelryReportsPage() {
                       <Eye className="jewelry-icon-gold" size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {categoryPerformance.map((category, index) => (
                       <div key={category.label} className="flex items-center gap-4">
-                        <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${category.color}`}></div>
+                        <div
+                          className={`w-4 h-4 rounded-full bg-gradient-to-r ${category.color}`}
+                        ></div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="jewelry-text-high-contrast font-medium">{category.label}</span>
-                            <span className="jewelry-text-high-contrast font-bold">¹{(category.value / 1000).toFixed(0)}K</span>
+                            <span className="jewelry-text-high-contrast font-medium">
+                              {category.label}
+                            </span>
+                            <span className="jewelry-text-high-contrast font-bold">
+                              ¹{(category.value / 1000).toFixed(0)}K
+                            </span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
+                            <div
                               className={`h-2 rounded-full bg-gradient-to-r ${category.color}`}
                               style={{ width: `${category.percentage}%` }}
                             ></div>
                           </div>
-                          <span className="jewelry-text-muted text-xs">{category.percentage}% of total</span>
+                          <span className="jewelry-text-muted text-xs">
+                            {category.percentage}% of total
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -587,7 +625,7 @@ export default function JewelryReportsPage() {
               </div>
 
               {/* Quick Actions */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.0 }}
@@ -628,7 +666,7 @@ export default function JewelryReportsPage() {
           {selectedTab === 'reports' && (
             <>
               {/* Search and Filters */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -637,17 +675,20 @@ export default function JewelryReportsPage() {
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-wrap gap-4 items-center flex-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold" size={20} />
+                      <Search
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 jewelry-icon-gold"
+                        size={20}
+                      />
                       <input
                         type="text"
                         placeholder="Search reports..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                         className="jewelry-input pl-10 w-64"
                       />
                     </div>
-                    
-                    <button 
+
+                    <button
                       onClick={() => setShowFilters(!showFilters)}
                       className={`jewelry-btn-secondary flex items-center space-x-2 px-4 py-2 ${showFilters ? 'ring-2 ring-jewelry-gold-500' : ''}`}
                     >
@@ -655,7 +696,7 @@ export default function JewelryReportsPage() {
                       <span>Filters</span>
                     </button>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setViewMode('grid')}
@@ -674,7 +715,7 @@ export default function JewelryReportsPage() {
               </motion.div>
 
               {/* Reports Grid/List */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -694,38 +735,57 @@ export default function JewelryReportsPage() {
                           <div className="flex items-center gap-3">
                             {getReportIcon(report.type)}
                             <div className="flex-1">
-                              <h3 className="jewelry-text-high-contrast font-semibold">{report.name}</h3>
+                              <h3 className="jewelry-text-high-contrast font-semibold">
+                                {report.name}
+                              </h3>
                               <div className="flex items-center gap-2 mt-1">
                                 {getStatusIcon(report.status)}
-                                <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(report.status)}`}>
+                                <span
+                                  className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(report.status)}`}
+                                >
                                   {report.status.toUpperCase()}
                                 </span>
                               </div>
                             </div>
                           </div>
-                          <button 
-                            onClick={() => report.favorite = !report.favorite}
+                          <button
+                            onClick={() => (report.favorite = !report.favorite)}
                             className="jewelry-btn-secondary p-1"
                           >
-                            <Star className={report.favorite ? 'fill-current jewelry-icon-gold' : 'jewelry-icon-gold'} size={16} />
+                            <Star
+                              className={
+                                report.favorite
+                                  ? 'fill-current jewelry-icon-gold'
+                                  : 'jewelry-icon-gold'
+                              }
+                              size={16}
+                            />
                           </button>
                         </div>
-                        
-                        <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">{report.description}</p>
-                        
+
+                        <p className="jewelry-text-muted text-sm mb-4 line-clamp-2">
+                          {report.description}
+                        </p>
+
                         <div className="space-y-2 mb-4 text-sm">
                           <div className="flex justify-between">
                             <span className="jewelry-text-muted">Frequency:</span>
-                            <span className="jewelry-text-high-contrast capitalize">{report.frequency.replace('_', ' ')}</span>
+                            <span className="jewelry-text-high-contrast capitalize">
+                              {report.frequency.replace('_', ' ')}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="jewelry-text-muted">Format:</span>
-                            <span className="jewelry-text-high-contrast uppercase">{report.format}</span>
+                            <span className="jewelry-text-high-contrast uppercase">
+                              {report.format}
+                            </span>
                           </div>
                           {report.lastGenerated && (
                             <div className="flex justify-between">
                               <span className="jewelry-text-muted">Last Generated:</span>
-                              <span className="jewelry-text-high-contrast">{report.lastGenerated}</span>
+                              <span className="jewelry-text-high-contrast">
+                                {report.lastGenerated}
+                              </span>
                             </div>
                           )}
                           {report.size && (
@@ -735,7 +795,7 @@ export default function JewelryReportsPage() {
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           {report.status === 'ready' && (
                             <>
@@ -752,7 +812,10 @@ export default function JewelryReportsPage() {
                             </>
                           )}
                           {report.status === 'generating' && (
-                            <button disabled className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1.5 text-sm flex-1">
+                            <button
+                              disabled
+                              className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1.5 text-sm flex-1"
+                            >
                               <Clock className="animate-spin" size={14} />
                               <span>Generating...</span>
                             </button>
@@ -781,28 +844,38 @@ export default function JewelryReportsPage() {
                           <div className="flex items-center gap-4 flex-1">
                             {getReportIcon(report.type)}
                             <div className="flex-1">
-                              <h3 className="jewelry-text-high-contrast font-semibold">{report.name}</h3>
+                              <h3 className="jewelry-text-high-contrast font-semibold">
+                                {report.name}
+                              </h3>
                               <p className="jewelry-text-muted text-sm">{report.description}</p>
                             </div>
                             <div className="flex items-center gap-6 text-sm">
                               <div>
                                 <p className="jewelry-text-muted">Frequency</p>
-                                <p className="jewelry-text-high-contrast capitalize">{report.frequency.replace('_', ' ')}</p>
+                                <p className="jewelry-text-high-contrast capitalize">
+                                  {report.frequency.replace('_', ' ')}
+                                </p>
                               </div>
                               <div>
                                 <p className="jewelry-text-muted">Format</p>
-                                <p className="jewelry-text-high-contrast uppercase">{report.format}</p>
+                                <p className="jewelry-text-high-contrast uppercase">
+                                  {report.format}
+                                </p>
                               </div>
                               {report.lastGenerated && (
                                 <div>
                                   <p className="jewelry-text-muted">Last Generated</p>
-                                  <p className="jewelry-text-high-contrast">{report.lastGenerated}</p>
+                                  <p className="jewelry-text-high-contrast">
+                                    {report.lastGenerated}
+                                  </p>
                                 </div>
                               )}
                             </div>
                             <div className="flex items-center gap-3">
                               {getStatusIcon(report.status)}
-                              <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(report.status)}`}>
+                              <span
+                                className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(report.status)}`}
+                              >
                                 {report.status.toUpperCase()}
                               </span>
                               <button className="jewelry-btn-secondary p-2">
@@ -821,7 +894,7 @@ export default function JewelryReportsPage() {
 
           {/* Templates Tab */}
           {selectedTab === 'templates' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -837,7 +910,7 @@ export default function JewelryReportsPage() {
                   <span>Create Template</span>
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {reportTemplates.map((template, index) => (
                   <motion.div
@@ -849,41 +922,55 @@ export default function JewelryReportsPage() {
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h4 className="jewelry-text-high-contrast font-semibold text-lg">{template.name}</h4>
+                        <h4 className="jewelry-text-high-contrast font-semibold text-lg">
+                          {template.name}
+                        </h4>
                         <span className="jewelry-text-muted text-sm">{template.category}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Star className="jewelry-icon-gold" size={16} />
-                        <span className="jewelry-text-high-contrast font-medium">{template.popularity}%</span>
+                        <span className="jewelry-text-high-contrast font-medium">
+                          {template.popularity}%
+                        </span>
                       </div>
                     </div>
-                    
+
                     <p className="jewelry-text-muted text-sm mb-4">{template.description}</p>
-                    
+
                     <div className="space-y-3 mb-4">
                       <div>
-                        <p className="jewelry-text-luxury text-xs font-medium mb-2">Included Metrics:</p>
+                        <p className="jewelry-text-luxury text-xs font-medium mb-2">
+                          Included Metrics:
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {template.metrics.map((metric, i) => (
-                            <span key={i} className="px-2 py-1 bg-jewelry-blue-100 dark:bg-jewelry-blue-800 text-jewelry-blue-800 dark:text-jewelry-blue-200 rounded text-xs">
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-jewelry-blue-100 dark:bg-jewelry-blue-800 text-jewelry-blue-800 dark:text-jewelry-blue-200 rounded text-xs"
+                            >
                               {metric}
                             </span>
                           ))}
                         </div>
                       </div>
-                      
+
                       <div>
-                        <p className="jewelry-text-luxury text-xs font-medium mb-2">Charts & Visualizations:</p>
+                        <p className="jewelry-text-luxury text-xs font-medium mb-2">
+                          Charts & Visualizations:
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {template.charts.map((chart, i) => (
-                            <span key={i} className="px-2 py-1 bg-jewelry-gold-100 dark:bg-jewelry-gold-900 text-jewelry-gold-800 dark:text-jewelry-gold-200 rounded text-xs">
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-jewelry-gold-100 dark:bg-jewelry-gold-900 text-jewelry-gold-800 dark:text-jewelry-gold-200 rounded text-xs"
+                            >
                               {chart}
                             </span>
                           ))}
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <button className="jewelry-btn-primary flex items-center space-x-2 px-3 py-1.5 text-sm flex-1">
                         <Play size={14} />
@@ -903,14 +990,15 @@ export default function JewelryReportsPage() {
           )}
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="jewelry-text-muted text-sm">
-              Business intelligence powered by <span className="jewelry-text-luxury font-semibold">HERA Analytics Engine</span>
+              Business intelligence powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Analytics Engine</span>
             </p>
           </motion.div>
         </div>

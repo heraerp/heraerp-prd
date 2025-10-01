@@ -156,12 +156,15 @@ export function LeaveCalendar({ requests, staff, branchId, showAppointments }: L
           return (
             <div
               key={index}
-              className={`bg-background dark:bg-background p-2 min-h-[100px] ${ !isCurrentMonth ?'opacity-50' : ''
+              className={`bg-background dark:bg-background p-2 min-h-[100px] ${
+                !isCurrentMonth ? 'opacity-50' : ''
               } ${isCurrentDay ? 'ring-2 ring-inset ring-indigo-500' : ''}`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span
-                  className={`text-sm font-medium ${ isCurrentDay ?'text-indigo-600 dark:text-indigo-400'
+                  className={`text-sm font-medium ${
+                    isCurrentDay
+                      ? 'text-indigo-600 dark:text-indigo-400'
                       : 'text-gray-100 dark:text-foreground'
                   }`}
                 >
@@ -179,7 +182,8 @@ export function LeaveCalendar({ requests, staff, branchId, showAppointments }: L
                 {dayEvents.slice(0, 3).map(event => (
                   <div
                     key={event.id}
-                    className={`px-1.5 py-0.5 text-xs rounded text-white font-medium ${getLeaveTypeColor( event.metadata?.type ||'ANNUAL'
+                    className={`px-1.5 py-0.5 text-xs rounded text-white font-medium ${getLeaveTypeColor(
+                      event.metadata?.type || 'ANNUAL'
                     )} cursor-pointer hover:opacity-90 transition-opacity`}
                     title={`${getStaffName(event.source_entity_id)}`}
                   >

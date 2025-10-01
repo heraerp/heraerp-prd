@@ -53,7 +53,7 @@ export default function JewelryOwnerPage(): JSX.Element {
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
           {/* Page Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -69,7 +69,7 @@ export default function JewelryOwnerPage(): JSX.Element {
           </motion.div>
 
           {/* Owner Profile Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -78,7 +78,7 @@ export default function JewelryOwnerPage(): JSX.Element {
             <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
               {/* Profile Picture */}
               <div className="relative">
-                <div 
+                <div
                   className="w-32 h-32 rounded-full flex items-center justify-center jewelry-crown-glow"
                   style={{
                     background: 'linear-gradient(135deg, #D4AF00 0%, #B8960B 100%)',
@@ -124,7 +124,7 @@ export default function JewelryOwnerPage(): JSX.Element {
           </motion.div>
 
           {/* Business Metrics */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -133,7 +133,7 @@ export default function JewelryOwnerPage(): JSX.Element {
             {businessMetrics.map((metric, index) => {
               const Icon = metric.icon
               return (
-                <div 
+                <div
                   key={index}
                   className="jewelry-glass-card jewelry-float p-6 text-center"
                   style={{ animationDelay: `${index * 0.1}s` }}
@@ -147,7 +147,7 @@ export default function JewelryOwnerPage(): JSX.Element {
           </motion.div>
 
           {/* Achievements & Certifications */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
@@ -159,12 +159,12 @@ export default function JewelryOwnerPage(): JSX.Element {
                 <Award className="jewelry-icon-gold mr-3" size={24} />
                 <h3 className="jewelry-heading text-xl">Professional Achievements</h3>
               </div>
-              
+
               <div className="space-y-4">
                 {achievements.map((achievement, index) => {
                   const Icon = achievement.icon
                   return (
-                    <motion.div 
+                    <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -175,7 +175,9 @@ export default function JewelryOwnerPage(): JSX.Element {
                         <Icon className="jewelry-icon-gold" size={18} />
                       </div>
                       <div className="flex-1">
-                        <h4 className="jewelry-text-high-contrast font-semibold">{achievement.title}</h4>
+                        <h4 className="jewelry-text-high-contrast font-semibold">
+                          {achievement.title}
+                        </h4>
                         <p className="jewelry-text-muted text-sm">{achievement.year}</p>
                       </div>
                     </motion.div>
@@ -190,14 +192,14 @@ export default function JewelryOwnerPage(): JSX.Element {
                 <Sparkles className="jewelry-icon-gold mr-3" size={24} />
                 <h3 className="jewelry-heading text-xl">Expertise & Certifications</h3>
               </div>
-              
+
               <div className="space-y-6">
                 {/* Specialties */}
                 <div>
                   <h4 className="jewelry-text-high-contrast font-semibold mb-3">Specialties</h4>
                   <div className="flex flex-wrap gap-2">
                     {ownerData.specialties.map((specialty, index) => (
-                      <span 
+                      <span
                         key={index}
                         className="px-3 py-1 rounded-full text-sm jewelry-glass-card-subtle jewelry-text-high-contrast"
                       >
@@ -224,7 +226,7 @@ export default function JewelryOwnerPage(): JSX.Element {
           </motion.div>
 
           {/* Action Buttons */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
@@ -234,7 +236,7 @@ export default function JewelryOwnerPage(): JSX.Element {
               <Settings className="jewelry-icon-gold" size={20} />
               <span className="jewelry-text-high-contrast font-semibold">Edit Profile</span>
             </button>
-            
+
             <button className="jewelry-glass-card hover:scale-105 transition-transform px-6 py-3 rounded-xl flex items-center space-x-2">
               <Building2 className="jewelry-icon-gold" size={20} />
               <span className="jewelry-text-high-contrast font-semibold">Business Settings</span>
@@ -242,14 +244,15 @@ export default function JewelryOwnerPage(): JSX.Element {
           </motion.div>
 
           {/* Footer */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
             className="text-center mt-12 mb-6"
           >
             <p className="text-jewelry-platinum-500 text-sm">
-              Excellence in craftsmanship since 2015 • <span className="jewelry-text-luxury font-semibold">Sterling Luxury Jewelers</span>
+              Excellence in craftsmanship since 2015 •{' '}
+              <span className="jewelry-text-luxury font-semibold">Sterling Luxury Jewelers</span>
             </p>
           </motion.div>
         </div>

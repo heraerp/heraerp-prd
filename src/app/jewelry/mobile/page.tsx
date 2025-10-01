@@ -32,25 +32,31 @@ import {
 import '@/styles/jewelry-glassmorphism.css'
 
 // Lazy load heavy components
-const ProductDetailModal = dynamic(() => import('@/app/jewelry/mobile/components/ProductDetailModal'), {
-  loading: () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white rounded-3xl p-8">
-        <Loader2 className="h-8 w-8 animate-spin jewelry-text-gold mx-auto" />
+const ProductDetailModal = dynamic(
+  () => import('@/app/jewelry/mobile/components/ProductDetailModal'),
+  {
+    loading: () => (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="bg-white rounded-3xl p-8">
+          <Loader2 className="h-8 w-8 animate-spin jewelry-text-gold mx-auto" />
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  }
+)
 
-const PaymentReceiptModal = dynamic(() => import('@/app/jewelry/mobile/components/PaymentReceiptModal'), {
-  loading: () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div className="bg-white rounded-3xl p-8">
-        <Loader2 className="h-8 w-8 animate-spin jewelry-text-gold mx-auto" />
+const PaymentReceiptModal = dynamic(
+  () => import('@/app/jewelry/mobile/components/PaymentReceiptModal'),
+  {
+    loading: () => (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="bg-white rounded-3xl p-8">
+          <Loader2 className="h-8 w-8 animate-spin jewelry-text-gold mx-auto" />
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  }
+)
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -144,7 +150,8 @@ export default function JewelryMobilePage() {
       name: 'Diamond Solitaire Ring',
       category: 'rings',
       price: 8500,
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: '18K White Gold',
         purity: '750',
@@ -170,7 +177,8 @@ export default function JewelryMobilePage() {
       name: 'Pearl Drop Earrings',
       category: 'earrings',
       price: 1250,
-      image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: '14K Yellow Gold',
         purity: '585',
@@ -190,7 +198,8 @@ export default function JewelryMobilePage() {
       name: 'Tennis Bracelet',
       category: 'bracelets',
       price: 12500,
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: 'Platinum',
         purity: '950',
@@ -210,7 +219,8 @@ export default function JewelryMobilePage() {
       name: 'Emerald Pendant Necklace',
       category: 'necklaces',
       price: 3750,
-      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: '18K Yellow Gold',
         purity: '750',
@@ -235,7 +245,8 @@ export default function JewelryMobilePage() {
       name: 'Vintage Wedding Band',
       category: 'rings',
       price: 2200,
-      image: 'https://images.unsplash.com/photo-1544376664-80b17f09d399?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1544376664-80b17f09d399?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: '14K Rose Gold',
         purity: '585',
@@ -255,7 +266,8 @@ export default function JewelryMobilePage() {
       name: 'Sapphire Stud Earrings',
       category: 'earrings',
       price: 4250,
-      image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=400&h=400&fit=crop&crop=center',
       specifications: {
         metal: 'Platinum',
         purity: '950',
@@ -321,16 +333,18 @@ export default function JewelryMobilePage() {
     return products.filter(product => {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory
       const searchLower = searchQuery.toLowerCase()
-      const matchesSearch = product.name.toLowerCase().includes(searchLower) ||
-                           product.specifications.metal.toLowerCase().includes(searchLower) ||
-                           (product.specifications.stones && product.specifications.stones.toLowerCase().includes(searchLower))
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchLower) ||
+        product.specifications.metal.toLowerCase().includes(searchLower) ||
+        (product.specifications.stones &&
+          product.specifications.stones.toLowerCase().includes(searchLower))
       return matchesCategory && matchesSearch
     })
   }, [products, selectedCategory, searchQuery])
 
   // Memoized cart calculations
   const { cartTotal, cartCount } = useMemo(() => {
-    const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+    const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
     const count = cart.reduce((sum, item) => sum + item.quantity, 0)
     return { cartTotal: total, cartCount: count }
   }, [cart])
@@ -341,9 +355,7 @@ export default function JewelryMobilePage() {
       const existingItem = prevCart.find(item => item.product.id === product.id)
       if (existingItem) {
         return prevCart.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+          item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         )
       } else {
         return [...prevCart, { product, quantity }]
@@ -355,17 +367,18 @@ export default function JewelryMobilePage() {
     setCart(prevCart => prevCart.filter(item => item.product.id !== productId))
   }, [])
 
-  const updateCartQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId)
-    } else {
-      setCart(prevCart => prevCart.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      ))
-    }
-  }, [removeFromCart])
+  const updateCartQuantity = useCallback(
+    (productId: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeFromCart(productId)
+      } else {
+        setCart(prevCart =>
+          prevCart.map(item => (item.product.id === productId ? { ...item, quantity } : item))
+        )
+      }
+    },
+    [removeFromCart]
+  )
 
   // Fast tab switching with loading state
   const handleTabChange = useCallback((newTab: 'browse' | 'customers' | 'cart' | 'sales') => {
@@ -416,7 +429,7 @@ export default function JewelryMobilePage() {
         <div className="sticky top-0 z-50 jewelry-glass-navbar backdrop-blur-xl border-b border-jewelry-gold-200/30 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <motion.div 
+              <motion.div
                 className="jewelry-crown-glow p-2 rounded-xl bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -429,7 +442,7 @@ export default function JewelryMobilePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <motion.button 
+              <motion.button
                 className="jewelry-glass-btn p-2 rounded-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -437,7 +450,7 @@ export default function JewelryMobilePage() {
                 <Bell className="h-5 w-5 jewelry-text-royal" />
               </motion.button>
               <div className="relative">
-                <motion.button 
+                <motion.button
                   className="jewelry-glass-btn p-2 rounded-lg"
                   onClick={() => setActiveTab('cart')}
                   whileHover={{ scale: 1.05 }}
@@ -446,7 +459,7 @@ export default function JewelryMobilePage() {
                   <ShoppingCart className="h-5 w-5 jewelry-text-royal" />
                   <AnimatePresence>
                     {cartCount > 0 && (
-                      <motion.span 
+                      <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
@@ -478,7 +491,7 @@ export default function JewelryMobilePage() {
           {activeTab === 'browse' && (
             <div className="p-4 space-y-6">
               {/* Search Bar */}
-              <motion.div 
+              <motion.div
                 className="relative"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -489,12 +502,12 @@ export default function JewelryMobilePage() {
                   placeholder="Search diamonds, rings, necklaces..."
                   className="w-full pl-12 pr-4 py-4 jewelry-glass-input rounded-2xl border-0 jewelry-text-royal placeholder:jewelry-text-muted focus:outline-none focus:ring-2 focus:ring-jewelry-gold-400 text-sm"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                 />
               </motion.div>
 
               {/* Category Filters */}
-              <motion.div 
+              <motion.div
                 className="flex gap-3 overflow-x-auto scrollbar-hide pb-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -525,7 +538,7 @@ export default function JewelryMobilePage() {
               </motion.div>
 
               {/* View Mode Toggle & Results */}
-              <motion.div 
+              <motion.div
                 className="flex items-center justify-between"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -572,17 +585,17 @@ export default function JewelryMobilePage() {
                         placeholder="blur"
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                       />
-                      
+
                       {/* Action Buttons */}
                       <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <motion.button 
+                        <motion.button
                           className="jewelry-glass-btn p-2 rounded-full shadow-lg"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                         >
                           <Heart className="h-4 w-4 jewelry-text-royal" />
                         </motion.button>
-                        <motion.button 
+                        <motion.button
                           className="jewelry-glass-btn p-2 rounded-full shadow-lg"
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -591,11 +604,11 @@ export default function JewelryMobilePage() {
                           <Eye className="h-4 w-4 jewelry-text-royal" />
                         </motion.button>
                       </div>
-                      
+
                       {/* Stock Status */}
                       {!product.inventory.inStock && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                          <motion.span 
+                          <motion.span
                             className="text-white font-semibold px-3 py-1 bg-red-500 rounded-full text-xs"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
@@ -604,7 +617,7 @@ export default function JewelryMobilePage() {
                           </motion.span>
                         </div>
                       )}
-                      
+
                       {/* Quick Add Button */}
                       {product.inventory.inStock && (
                         <motion.button
@@ -620,30 +633,28 @@ export default function JewelryMobilePage() {
                         </motion.button>
                       )}
                     </div>
-                    
+
                     <div className="p-4 space-y-3">
                       <div>
                         <h3 className="font-bold jewelry-text-royal text-sm leading-tight mb-1">
                           {product.name}
                         </h3>
-                        <p className="jewelry-text-muted text-xs">
-                          {product.specifications.metal}
-                        </p>
+                        <p className="jewelry-text-muted text-xs">{product.specifications.metal}</p>
                       </div>
-                      
+
                       {/* Rating */}
                       <div className="flex items-center gap-1">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'jewelry-text-muted'}`} 
+                            <Star
+                              key={i}
+                              className={`h-3 w-3 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'jewelry-text-muted'}`}
                             />
                           ))}
                         </div>
                         <span className="text-xs jewelry-text-muted">({product.reviews})</span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="jewelry-text-gold font-bold text-lg">
                           ${product.price.toLocaleString()}
@@ -651,7 +662,9 @@ export default function JewelryMobilePage() {
                         {product.certification && (
                           <div className="flex items-center gap-1">
                             <Award className="h-3 w-3 jewelry-text-gold" />
-                            <span className="text-xs jewelry-text-muted font-medium">{product.certification.lab}</span>
+                            <span className="text-xs jewelry-text-muted font-medium">
+                              {product.certification.lab}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -666,9 +679,9 @@ export default function JewelryMobilePage() {
           {activeTab === 'customers' && (
             <div className="p-4 space-y-4">
               <h2 className="text-lg font-semibold jewelry-text-royal">Customers</h2>
-              
+
               <div className="space-y-3">
-                {customers.map((customer) => (
+                {customers.map(customer => (
                   <div
                     key={customer.id}
                     onClick={() => setSelectedCustomer(customer)}
@@ -687,12 +700,17 @@ export default function JewelryMobilePage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          customer.vipTier === 'Platinum' ? 'bg-gray-800 text-white' :
-                          customer.vipTier === 'Gold' ? 'bg-yellow-100 text-yellow-800' :
-                          customer.vipTier === 'Silver' ? 'bg-gray-100 text-gray-800' :
-                          'bg-orange-100 text-orange-800'
-                        }`}>
+                        <div
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            customer.vipTier === 'Platinum'
+                              ? 'bg-gray-800 text-white'
+                              : customer.vipTier === 'Gold'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : customer.vipTier === 'Silver'
+                                  ? 'bg-gray-100 text-gray-800'
+                                  : 'bg-orange-100 text-orange-800'
+                          }`}
+                        >
                           {customer.vipTier}
                         </div>
                         <p className="jewelry-text-muted text-xs mt-1">
@@ -700,7 +718,7 @@ export default function JewelryMobilePage() {
                         </p>
                       </div>
                     </div>
-                    
+
                     {selectedCustomer?.id === customer.id && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
@@ -710,7 +728,7 @@ export default function JewelryMobilePage() {
                         <div>
                           <p className="text-xs jewelry-text-muted mb-1">Preferred Metals:</p>
                           <div className="flex gap-1 flex-wrap">
-                            {customer.preferences.metals.map((metal) => (
+                            {customer.preferences.metals.map(metal => (
                               <span
                                 key={metal}
                                 className="text-xs jewelry-text-muted bg-white/5 px-2 py-1 rounded-md"
@@ -723,7 +741,8 @@ export default function JewelryMobilePage() {
                         <div>
                           <p className="text-xs jewelry-text-muted mb-1">Price Range:</p>
                           <span className="text-xs jewelry-text-muted">
-                            ${customer.preferences.priceRange.min.toLocaleString()} - ${customer.preferences.priceRange.max.toLocaleString()}
+                            ${customer.preferences.priceRange.min.toLocaleString()} - $
+                            {customer.preferences.priceRange.max.toLocaleString()}
                           </span>
                         </div>
                       </motion.div>
@@ -755,7 +774,7 @@ export default function JewelryMobilePage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {cart.map((item) => (
+                  {cart.map(item => (
                     <div key={item.product.id} className="jewelry-glass-card rounded-xl p-4">
                       <div className="flex gap-3">
                         <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-jewelry-blue-50 to-jewelry-blue-100">
@@ -837,7 +856,9 @@ export default function JewelryMobilePage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="jewelry-text-royal font-medium">{selectedCustomer.name}</p>
-                          <p className="jewelry-text-muted text-sm">{selectedCustomer.vipTier} Member</p>
+                          <p className="jewelry-text-muted text-sm">
+                            {selectedCustomer.vipTier} Member
+                          </p>
                         </div>
                         <button
                           onClick={() => setSelectedCustomer(null)}
@@ -875,7 +896,7 @@ export default function JewelryMobilePage() {
           {activeTab === 'sales' && (
             <div className="p-4 space-y-4">
               <h2 className="text-lg font-semibold jewelry-text-royal">Today's Sales</h2>
-              
+
               {/* Sales Summary */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="jewelry-glass-card rounded-xl p-4 text-center">
@@ -897,7 +918,7 @@ export default function JewelryMobilePage() {
               {/* Recent Transactions */}
               <div className="space-y-3">
                 <h3 className="font-semibold jewelry-text-royal">Recent Transactions</h3>
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3].map(i => (
                   <div key={i} className="jewelry-glass-card rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -937,7 +958,7 @@ export default function JewelryMobilePage() {
               { id: 'customers', icon: Users, label: 'Customers' },
               { id: 'cart', icon: ShoppingCart, label: 'Cart' },
               { id: 'sales', icon: CreditCard, label: 'Sales' }
-            ].map((tab) => {
+            ].map(tab => {
               const IconComponent = tab.icon
               return (
                 <motion.button
@@ -955,7 +976,7 @@ export default function JewelryMobilePage() {
                   <IconComponent className="h-5 w-5" />
                   <span className="text-xs font-medium">{tab.label}</span>
                   {tab.id === 'cart' && cartCount > 0 && (
-                    <motion.span 
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg"
@@ -975,7 +996,7 @@ export default function JewelryMobilePage() {
             <ProductDetailModal
               product={selectedProduct}
               onClose={() => setSelectedProduct(null)}
-              onAddToCart={(product) => {
+              onAddToCart={product => {
                 addToCart(product)
                 setSelectedProduct(null)
               }}
@@ -985,10 +1006,7 @@ export default function JewelryMobilePage() {
 
         <Suspense fallback={null}>
           {showPaymentReceipt && lastOrder && (
-            <PaymentReceiptModal
-              order={lastOrder}
-              onClose={() => setShowPaymentReceipt(false)}
-            />
+            <PaymentReceiptModal order={lastOrder} onClose={() => setShowPaymentReceipt(false)} />
           )}
         </Suspense>
       </div>

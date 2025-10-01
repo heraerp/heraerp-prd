@@ -117,7 +117,7 @@ function OldPartnerExperienceHub() {
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10" />
         <div className="relative max-w-7xl mx-auto px-6 py-20">
           <div
-            className={`text-center transition-all duration-1000 ${isReady ?'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+            className={`text-center transition-all duration-1000 ${isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500/10 rounded-full mb-8 backdrop-blur">
               <Sparkles className="h-5 w-5 text-emerald-600" />
@@ -171,7 +171,7 @@ function OldPartnerExperienceHub() {
       {/* The Journey - Each Step Builds on the Last */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div
-          className={`text-center mb-16 transition-all duration-1000 delay-300 ${isReady ?'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          className={`text-center mb-16 transition-all duration-1000 delay-300 ${isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <h2 className="text-4xl font-bold mb-4">Your Journey to Success</h2>
           <p className="text-xl text-muted-foreground">Five steps. Unlimited potential.</p>
@@ -182,7 +182,8 @@ function OldPartnerExperienceHub() {
           {partnerJourney.map((step, index) => (
             <Card
               key={step.id}
-              className={`group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] ${ currentStep === index ?'ring-4 ring-emerald-500 shadow-2xl' : ''
+              className={`group cursor-pointer transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] ${
+                currentStep === index ? 'ring-4 ring-emerald-500 shadow-2xl' : ''
               } ${isReady ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
               style={{ transitionDelay: `${index * 150}ms` }}
               onClick={() => handleStepClick(step, index)}
@@ -193,7 +194,8 @@ function OldPartnerExperienceHub() {
                     {/* Step Number & Icon */}
                     <div className="relative">
                       <div
-                        className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${ getStepStatus(index) ==='completed'
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                          getStepStatus(index) === 'completed'
                             ? 'bg-emerald-500'
                             : getStepStatus(index) === 'current'
                               ? 'bg-blue-500'
@@ -204,7 +206,8 @@ function OldPartnerExperienceHub() {
                           <CheckCircle className="h-8 w-8 text-foreground" />
                         ) : (
                           <step.icon
-                            className={`h-8 w-8 transition-colors ${ getStepStatus(index) ==='current'
+                            className={`h-8 w-8 transition-colors ${
+                              getStepStatus(index) === 'current'
                                 ? 'text-foreground'
                                 : 'text-muted-foreground group-hover:text-emerald-600'
                             }`}
@@ -237,7 +240,8 @@ function OldPartnerExperienceHub() {
                   <div className="text-right">
                     <Button
                       size="lg"
-                      className={`transition-all duration-300 ${ getStepStatus(index) ==='completed'
+                      className={`transition-all duration-300 ${
+                        getStepStatus(index) === 'completed'
                           ? 'bg-emerald-500 hover:bg-emerald-600'
                           : getStepStatus(index) === 'current'
                             ? 'bg-blue-500 hover:bg-blue-600'
@@ -256,14 +260,12 @@ function OldPartnerExperienceHub() {
 
         {/* The Jobs Touch - Emotional Connection */}
         <div
-          className={`mt-20 text-center transition-all duration-1000 delay-700 ${isReady ?'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          className={`mt-20 text-center transition-all duration-1000 delay-700 ${isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         >
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-6">
               <Heart className="h-6 w-6 text-red-500" />
-              <span className="text-lg font-semibold ink">
-                Made with passion in Cupertino
-              </span>
+              <span className="text-lg font-semibold ink">Made with passion in Cupertino</span>
               <Heart className="h-6 w-6 text-red-500" />
             </div>
 

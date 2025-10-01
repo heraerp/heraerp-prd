@@ -153,7 +153,9 @@ export function FiscalCloseChecklist({
               return (
                 <div
                   key={item.key}
-                  className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${ item.completed ?'bg-green-50/50 dark:bg-green-950/20'
+                  className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${
+                    item.completed
+                      ? 'bg-green-50/50 dark:bg-green-950/20'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
                   } ${index % 2 === 0 ? 'bg-gray-50/30 dark:bg-gray-800/10' : ''}`}
                 >
@@ -169,7 +171,8 @@ export function FiscalCloseChecklist({
 
                   <label
                     htmlFor={`checklist-${item.key}`}
-                    className={`flex-1 cursor-pointer select-none ${ isDisabled ?'opacity-50' : ''
+                    className={`flex-1 cursor-pointer select-none ${
+                      isDisabled ? 'opacity-50' : ''
                     }`}
                   >
                     <div className="flex items-start gap-2">
@@ -178,7 +181,9 @@ export function FiscalCloseChecklist({
                       </span>
                       <div className="flex-1 space-y-1">
                         <div
-                          className={`text-sm font-medium ${ item.completed ?'text-green-700 dark:text-green-300 line-through'
+                          className={`text-sm font-medium ${
+                            item.completed
+                              ? 'text-green-700 dark:text-green-300 line-through'
                               : 'text-gray-900 dark:text-gray-100'
                           }`}
                         >
@@ -186,9 +191,7 @@ export function FiscalCloseChecklist({
                         </div>
 
                         {item.description && (
-                          <p className="text-xs dark:ink-muted">
-                            {item.description}
-                          </p>
+                          <p className="text-xs dark:ink-muted">{item.description}</p>
                         )}
 
                         {item.completed && item.completed_at && (
@@ -202,9 +205,7 @@ export function FiscalCloseChecklist({
                         )}
 
                         {item.notes && (
-                          <p className="text-xs dark:ink-muted italic">
-                            Note: {item.notes}
-                          </p>
+                          <p className="text-xs dark:ink-muted italic">Note: {item.notes}</p>
                         )}
                       </div>
 

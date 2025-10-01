@@ -46,7 +46,10 @@ export default function Journey() {
               <h3 className="ink font-semibold text-lg">{step.title}</h3>
             </div>
             <p className="ink-muted text-sm mb-3">{step.description}</p>
-            <Link href={step.link} className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <Link
+              href={step.link}
+              className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+            >
               {step.linkText} →
             </Link>
           </div>

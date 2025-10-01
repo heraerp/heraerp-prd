@@ -1,11 +1,11 @@
 // app/examples/sales-order/new/page.tsx
-'use client';
-import React from 'react';
-import { WizardForm } from '@/ui';
-import { useRouter } from 'next/navigation';
+'use client'
+import React from 'react'
+import { WizardForm } from '@/ui'
+import { useRouter } from 'next/navigation'
 
 export default function NewSalesOrderPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -19,7 +19,7 @@ export default function NewSalesOrderPage() {
       </div>
 
       <h1 className="mb-4 text-2xl font-bold">New Sales Order</h1>
-      
+
       <div className="bg-white rounded-xl border p-6">
         <WizardForm smartCode="HERA.RETAIL.SALES.TXN.SORDER.V1" />
       </div>
@@ -33,10 +33,10 @@ export default function NewSalesOrderPage() {
           HERA.RETAIL.SALES.TXN.SORDER.V1
         </code>
         <p className="text-sm text-blue-700 mt-2">
-          If no UCR form spec exists, it uses sensible defaults. The form posts to your
-          existing transaction API with full Finance DNA support.
+          If no UCR form spec exists, it uses sensible defaults. The form posts to your existing
+          transaction API with full Finance DNA support.
         </p>
       </div>
     </div>
-  );
+  )
 }

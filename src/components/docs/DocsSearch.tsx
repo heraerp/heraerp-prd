@@ -62,12 +62,16 @@ export function DocsSearch({ className }: DocsSearchProps) {
 
     try {
       // Fetch search results
-      const searchResponse = await fetch(`/api/docs/search?q=${encodeURIComponent(searchQuery)}&limit=10`)
+      const searchResponse = await fetch(
+        `/api/docs/search?q=${encodeURIComponent(searchQuery)}&limit=10`
+      )
       const searchData = await searchResponse.json()
       setResults(searchData.results || [])
 
       // Fetch suggestions
-      const suggestResponse = await fetch(`/api/docs/search?action=suggestions&q=${encodeURIComponent(searchQuery)}&limit=5`)
+      const suggestResponse = await fetch(
+        `/api/docs/search?action=suggestions&q=${encodeURIComponent(searchQuery)}&limit=5`
+      )
       const suggestData = await suggestResponse.json()
       setSuggestions(suggestData.suggestions || [])
       setShowSuggestions(true)
@@ -106,8 +110,8 @@ export function DocsSearch({ className }: DocsSearchProps) {
         body: JSON.stringify({
           action: 'track-selection',
           searchId: new Date().toISOString(),
-          selectedPath: result.path,
-        }),
+          selectedPath: result.path
+        })
       })
     } catch (error) {
       console.error('Failed to track selection:', error)
@@ -183,7 +187,7 @@ export function DocsSearch({ className }: DocsSearchProps) {
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => {
+          onChange={e => {
             setQuery(e.target.value)
             setIsOpen(true)
             setSelectedIndex(0)
@@ -243,17 +247,21 @@ export function DocsSearch({ className }: DocsSearchProps) {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span 
+                          <span
                             className="font-medium text-slate-900 dark:text-slate-100"
-                            dangerouslySetInnerHTML={{ __html: result.highlight?.title || result.title }}
+                            dangerouslySetInnerHTML={{
+                              __html: result.highlight?.title || result.title
+                            }}
                           />
                           <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                             {result.category}
                           </span>
                         </div>
-                        <div 
+                        <div
                           className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mt-0.5"
-                          dangerouslySetInnerHTML={{ __html: result.highlight?.content || result.content }}
+                          dangerouslySetInnerHTML={{
+                            __html: result.highlight?.content || result.content
+                          }}
                         />
                       </div>
                     </button>
@@ -296,7 +304,7 @@ export function DocsSearch({ className }: DocsSearchProps) {
                 Popular Searches
               </div>
               <ul>
-                {popularSearches.map((popular) => (
+                {popularSearches.map(popular => (
                   <li key={popular.query}>
                     <button
                       onClick={() => {
@@ -306,7 +314,9 @@ export function DocsSearch({ className }: DocsSearchProps) {
                       className="w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between"
                     >
                       <span className="text-slate-700 dark:text-slate-300">{popular.query}</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">{popular.count} searches</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {popular.count} searches
+                      </span>
                     </button>
                   </li>
                 ))}

@@ -1,9 +1,9 @@
 // app/examples/theme-demo/page.tsx - Complete theme system demo
-'use client';
-import { useState } from 'react';
-import { 
-  HeraProvider, 
-  HeraThemeProvider, 
+'use client'
+import { useState } from 'react'
+import {
+  HeraProvider,
+  HeraThemeProvider,
   ThemePicker,
   DataTable,
   FilterBar,
@@ -11,21 +11,21 @@ import {
   CardKpi,
   useEntities,
   useTransactions
-} from '@/ui';
-import { HiShoppingBag, HiUsers, HiCurrencyDollar, HiTrendingUp } from 'react-icons/hi';
+} from '@/ui'
+import { HiShoppingBag, HiUsers, HiCurrencyDollar, HiTrendingUp } from 'react-icons/hi'
 
 // Demo component showing all UI elements with theme
 function ThemedDashboard() {
-  const [filters, setFilters] = useState<Record<string, any>>({});
-  const { data: entities } = useEntities({ entity_type: 'customer' });
-  const { data: transactions } = useTransactions({ transaction_type: 'sale' });
+  const [filters, setFilters] = useState<Record<string, any>>({})
+  const { data: entities } = useEntities({ entity_type: 'customer' })
+  const { data: transactions } = useTransactions({ transaction_type: 'sale' })
 
   const stats = [
     { label: 'Total Customers', value: entities?.length || 0, icon: HiUsers, trend: '+12%' },
     { label: 'Total Sales', value: transactions?.length || 0, icon: HiShoppingBag, trend: '+8%' },
     { label: 'Revenue', value: '$45,231', icon: HiCurrencyDollar, trend: '+23%' },
-    { label: 'Growth', value: '15.3%', icon: HiTrendingUp, trend: '+5%' },
-  ];
+    { label: 'Growth', value: '15.3%', icon: HiTrendingUp, trend: '+5%' }
+  ]
 
   return (
     <div className="min-h-screen bg-[color:rgb(var(--hera-bg)/1)] text-[color:rgb(var(--hera-text)/1)]">
@@ -34,7 +34,7 @@ function ThemedDashboard() {
         subtitle="Showcasing all HERA UI components with dynamic theming"
         actions={[
           { label: 'Refresh', onClick: () => window.location.reload() },
-          { label: 'Export', onClick: () => console.log('Export') },
+          { label: 'Export', onClick: () => console.log('Export') }
         ]}
       />
 
@@ -42,7 +42,9 @@ function ThemedDashboard() {
         {/* Theme Picker Section */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Theme Customization</h2>
-          <p className="text-[color:rgb(var(--hera-muted)/1)]">Customize your organization's theme in real-time</p>
+          <p className="text-[color:rgb(var(--hera-muted)/1)]">
+            Customize your organization's theme in real-time
+          </p>
           <ThemePicker />
         </section>
 
@@ -65,7 +67,10 @@ function ThemedDashboard() {
                 key: 'status',
                 label: 'Status',
                 type: 'select',
-                options: [{ label: 'Active', value: 'active' }, { label: 'Inactive', value: 'inactive' }],
+                options: [
+                  { label: 'Active', value: 'active' },
+                  { label: 'Inactive', value: 'inactive' }
+                ]
               },
               {
                 key: 'date_range',
@@ -74,9 +79,9 @@ function ThemedDashboard() {
                 options: [
                   { label: 'Last 7 days', value: '7d' },
                   { label: 'Last 30 days', value: '30d' },
-                  { label: 'Last 90 days', value: '90d' },
-                ],
-              },
+                  { label: 'Last 90 days', value: '90d' }
+                ]
+              }
             ]}
             value={filters}
             onChange={setFilters}
@@ -92,12 +97,12 @@ function ThemedDashboard() {
               { key: 'entity_code', label: 'Code' },
               { key: 'entity_name', label: 'Name' },
               { key: 'entity_type', label: 'Type' },
-              { key: 'classification', label: 'Classification' },
+              { key: 'classification', label: 'Classification' }
             ]}
-            onRowClick={(row) => console.log('Clicked:', row)}
+            onRowClick={row => console.log('Clicked:', row)}
             actions={[
-              { label: 'Edit', onClick: (row) => console.log('Edit:', row) },
-              { label: 'Delete', onClick: (row) => console.log('Delete:', row), variant: 'danger' },
+              { label: 'Edit', onClick: row => console.log('Edit:', row) },
+              { label: 'Delete', onClick: row => console.log('Delete:', row), variant: 'danger' }
             ]}
           />
         </section>
@@ -140,29 +145,25 @@ function ThemedDashboard() {
                 Modern glass effect with backdrop blur.
               </p>
               <div className="space-y-2">
-                <p className="font-[family-name:var(--hera-font-sans)] text-sm">
-                  Sans-serif text
-                </p>
-                <p className="font-[family-name:var(--hera-font-mono)] text-sm">
-                  Monospace text
-                </p>
+                <p className="font-[family-name:var(--hera-font-sans)] text-sm">Sans-serif text</p>
+                <p className="font-[family-name:var(--hera-font-mono)] text-sm">Monospace text</p>
               </div>
             </div>
           </div>
         </section>
       </div>
     </div>
-  );
+  )
 }
 
 export default function ThemeDemoPage() {
-  const orgId = process.env.NEXT_PUBLIC_DEFAULT_ORG_ID || 'demo-org-id';
-  
+  const orgId = process.env.NEXT_PUBLIC_DEFAULT_ORG_ID || 'demo-org-id'
+
   return (
     <HeraProvider orgId={orgId}>
       <HeraThemeProvider orgId={orgId}>
         <ThemedDashboard />
       </HeraThemeProvider>
     </HeraProvider>
-  );
+  )
 }

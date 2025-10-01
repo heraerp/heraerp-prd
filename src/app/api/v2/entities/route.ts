@@ -1,7 +1,7 @@
 /**
  * Universal Entity API v2 - One API to rule them all!
  * Handles CRUD for ANY entity type with dynamic data
- * 
+ *
  * POST   /api/v2/entities - Create any entity (product, service, customer, etc.)
  * GET    /api/v2/entities - Read entities with filters
  * PUT    /api/v2/entities - Update entity
@@ -22,13 +22,17 @@ const entitySchema = z.object({
   entity_code: z.string().optional(),
   smart_code: z.string(),
   metadata: z.record(z.any()).optional(),
-  
+
   // Dynamic fields - can be anything!
-  dynamic_fields: z.record(z.object({
-    value: z.any(),
-    type: z.enum(['text', 'number', 'boolean', 'date', 'json']),
-    smart_code: z.string()
-  })).optional()
+  dynamic_fields: z
+    .record(
+      z.object({
+        value: z.any(),
+        type: z.enum(['text', 'number', 'boolean', 'date', 'json']),
+        smart_code: z.string()
+      })
+    )
+    .optional()
 })
 
 // Update schema
@@ -39,21 +43,21 @@ const updateSchema = entitySchema.partial().extend({
 export async function POST(request: NextRequest) {
   try {
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId || !authResult.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const { organizationId, id: userId } = authResult
     const body = await request.json()
     const data = entitySchema.parse(body)
-    
+
     // Validate and normalize smart code
     const smart_code = assertSmartCode(data.smart_code)
     data.smart_code = smart_code
-    
+
     const supabase = getSupabaseService()
-    
+
     // Step 1: Create entity using direct database insert
     const entityData = {
       organization_id: organizationId,
@@ -65,13 +69,13 @@ export async function POST(request: NextRequest) {
       created_by: userId,
       updated_by: userId
     }
-    
+
     const { data: entityResult, error: entityError } = await supabase
       .from('core_entities')
       .insert(entityData)
       .select()
       .single()
-    
+
     if (entityError || !entityResult) {
       console.error('Entity creation failed:', entityError)
       return NextResponse.json(
@@ -79,9 +83,9 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     const entityId = entityResult.id
-    
+
     // Step 2: Add dynamic fields if provided
     if (data.dynamic_fields) {
       for (const [fieldName, fieldConfig] of Object.entries(data.dynamic_fields)) {
@@ -94,7 +98,7 @@ export async function POST(request: NextRequest) {
           created_by: userId,
           updated_by: userId
         }
-        
+
         // Set the appropriate value field based on type
         switch (fieldConfig.type) {
           case 'text':
@@ -113,36 +117,36 @@ export async function POST(request: NextRequest) {
             dynamicData.field_value_json = fieldConfig.value
             break
         }
-        
-        const { error: dynamicError } = await supabase
-          .from('core_dynamic_data')
-          .insert(dynamicData)
-        
+
+        const { error: dynamicError } = await supabase.from('core_dynamic_data').insert(dynamicData)
+
         if (dynamicError) {
           console.error(`Warning: Failed to set field ${fieldName}:`, dynamicError)
         }
       }
     }
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        entity_id: entityId,
-        ...entityResult.data,
-        dynamic_fields: data.dynamic_fields
-      }
-    }, { status: 201 })
-    
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          entity_id: entityId,
+          ...entityResult.data,
+          dynamic_fields: data.dynamic_fields
+        }
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Universal entity create error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid entity data', details: error.errors },
         { status: 400 }
       )
     }
-    
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -150,14 +154,14 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const { organizationId } = authResult
     const { searchParams } = new URL(request.url)
-    
+
     // Extract query parameters
     const entity_type = searchParams.get('entity_type')
     const entity_id = searchParams.get('entity_id')
@@ -165,9 +169,9 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100')
     const offset = parseInt(searchParams.get('offset') || '0')
     const include_dynamic = searchParams.get('include_dynamic') !== 'false'
-    
+
     const supabase = getSupabaseService()
-    
+
     // Use HERA read function
     const { data: result, error } = await supabase.rpc('hera_entity_read_v1', {
       p_organization_id: organizationId,
@@ -179,7 +183,7 @@ export async function GET(request: NextRequest) {
       p_limit: limit,
       p_offset: offset
     })
-    
+
     if (error) {
       console.error('Failed to fetch entities:', error)
       return NextResponse.json(
@@ -187,10 +191,10 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     // Transform result
     const entities = result.entities || []
-    
+
     return NextResponse.json({
       success: true,
       data: entities,
@@ -200,7 +204,6 @@ export async function GET(request: NextRequest) {
         offset: offset
       }
     })
-    
   } catch (error) {
     console.error('Universal entity read error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -210,17 +213,17 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const authResult = await verifyAuth(request)
-    
+
     if (!authResult || !authResult.organizationId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    
+
     const { organizationId } = authResult
     const body = await request.json()
     const data = updateSchema.parse(body)
-    
+
     const supabase = getSupabaseService()
-    
+
     // Update entity if core fields changed
     if (data.entity_name || data.entity_code || data.metadata) {
       const { error: entityError } = await supabase.rpc('hera_entity_upsert_v1', {
@@ -232,7 +235,7 @@ export async function PUT(request: NextRequest) {
         p_entity_code: data.entity_code,
         p_metadata: data.metadata
       })
-      
+
       if (entityError) {
         console.error('Entity update failed:', entityError)
         return NextResponse.json(
@@ -241,7 +244,7 @@ export async function PUT(request: NextRequest) {
         )
       }
     }
-    
+
     // Update dynamic fields
     if (data.dynamic_fields) {
       for (const [fieldName, fieldConfig] of Object.entries(data.dynamic_fields)) {
@@ -252,7 +255,7 @@ export async function PUT(request: NextRequest) {
           p_field_type: fieldConfig.type,
           p_smart_code: fieldConfig.smart_code
         }
-        
+
         // Set value based on type
         switch (fieldConfig.type) {
           case 'text':
@@ -271,26 +274,25 @@ export async function PUT(request: NextRequest) {
             params.p_field_value_json = fieldConfig.value
             break
         }
-        
+
         await supabase.rpc('hera_dynamic_data_set_v1', params)
       }
     }
-    
+
     return NextResponse.json({
       success: true,
       message: 'Entity updated successfully'
     })
-    
   } catch (error) {
     console.error('Universal entity update error:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid update data', details: error.errors },
         { status: 400 }
       )
     }
-    
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

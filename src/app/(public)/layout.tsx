@@ -1,10 +1,6 @@
 import { ReactNode } from 'react'
 
-export default function PublicLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <>
       {/* Force dark mode for public pages */}
@@ -22,7 +18,7 @@ export default function PublicLayout({
                 });
               }
             })();
-          `,
+          `
         }}
       />
       {children}

@@ -7,17 +7,16 @@ const CIVICFLOW_ORG_ID = '8f1d2b33-5a60-4a4b-9c0c-6a2f35e3df77'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Get organization ID from header, body, or use CivicFlow default
-    const orgId = request.headers.get('X-Organization-Id') 
-      || body.organizationId 
-      || CIVICFLOW_ORG_ID
-      
+    const orgId =
+      request.headers.get('X-Organization-Id') || body.organizationId || CIVICFLOW_ORG_ID
+
     console.log('LinkedIn auth callback V2 - orgId:', orgId)
-    
+
     // Set the organization context for universal API
     universalApi.setOrganizationId(orgId)
-    
+
     const isDemo = isDemoMode(orgId)
 
     // In demo mode, create simulated connector
@@ -30,9 +29,9 @@ export async function POST(request: NextRequest) {
           entity_code: `CONN-LINKEDIN-${Date.now()}`,
           smart_code: 'HERA.PUBLICSECTOR.CRM.SOCIAL.LINKEDIN.CONNECTOR.V1'
         })
-        
+
         console.log('Created connector:', connector)
-        
+
         if (!connector.id) {
           throw new Error('No connector ID returned')
         }
@@ -90,15 +89,17 @@ export async function POST(request: NextRequest) {
               demo_mode: true,
               connector_id: connector.id
             },
-            line_items: [{
-              line_number: 1,
-              line_type: 'auth',
-              description: 'LinkedIn OAuth authentication completed',
-              metadata: {
-                vendor: 'linkedin',
-                demo_mode: true
+            line_items: [
+              {
+                line_number: 1,
+                line_type: 'auth',
+                description: 'LinkedIn OAuth authentication completed',
+                metadata: {
+                  vendor: 'linkedin',
+                  demo_mode: true
+                }
               }
-            }]
+            ]
           })
         } catch (txnError) {
           console.error('Error creating transaction:', txnError)
@@ -109,7 +110,6 @@ export async function POST(request: NextRequest) {
           connector_id: connector.id,
           demo: true
         })
-        
       } catch (error: any) {
         console.error('Error creating connector:', error)
         throw error
@@ -118,13 +118,15 @@ export async function POST(request: NextRequest) {
 
     // Production OAuth would be implemented here
     return NextResponse.json({ error: 'Production OAuth not implemented' }, { status: 501 })
-    
   } catch (error: any) {
     console.error('LinkedIn auth error V2:', error)
-    return NextResponse.json({ 
-      error: 'Failed to authenticate with LinkedIn',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Failed to authenticate with LinkedIn',
+        details: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
+      { status: 500 }
+    )
   }
 }

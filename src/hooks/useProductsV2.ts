@@ -86,11 +86,11 @@ export function useProductsV2() {
     isLoading,
     error: error?.message,
     refetch,
-    
+
     // Mutations
     createProduct: createProductMutation.mutateAsync,
     deleteProduct: deleteProductMutation.mutateAsync,
-    
+
     // Loading states
     isCreating: createProductMutation.isPending,
     isDeleting: deleteProductMutation.isPending

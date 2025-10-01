@@ -1,40 +1,40 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Shield, Lock, AlertCircle } from 'lucide-react';
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Shield, Lock, AlertCircle } from 'lucide-react'
 
 export default function DocsLoginPage() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    e.preventDefault()
+    setError('')
+    setIsLoading(true)
 
     try {
       const res = await fetch('/api/docs/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
+        body: JSON.stringify({ password })
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (data.success) {
-        router.push('/docs');
+        router.push('/docs')
       } else {
-        setError(data.error || 'Authentication failed');
+        setError(data.error || 'Authentication failed')
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Network error. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4">
@@ -61,7 +61,7 @@ export default function DocsLoginPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="Enter secure password"
                   required
@@ -110,5 +110,5 @@ export default function DocsLoginPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

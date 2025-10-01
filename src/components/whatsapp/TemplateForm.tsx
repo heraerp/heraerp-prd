@@ -361,9 +361,7 @@ export function TemplateForm({
                       <MousePointer className="h-5 w-5 text-purple-600" />
                       <div>
                         <Label>Interactive Elements</Label>
-                        <p className="text-sm ink-muted">
-                          Buttons and quick replies (Coming Soon)
-                        </p>
+                        <p className="text-sm ink-muted">Buttons and quick replies (Coming Soon)</p>
                       </div>
                     </div>
                     <Switch checked={false} disabled />

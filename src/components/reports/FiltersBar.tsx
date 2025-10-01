@@ -223,10 +223,7 @@ export function FiltersBar({
 
                 {'to_date' in filters && (
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="to-date"
-                      className="text-sm font-medium ink dark:text-gray-300"
-                    >
+                    <Label htmlFor="to-date" className="text-sm font-medium ink dark:text-gray-300">
                       <Calendar className="inline h-3 w-3 mr-1" />
                       To Date
                     </Label>
@@ -349,9 +346,7 @@ export function FiltersBar({
 
           {/* Quick Date Presets */}
           <div className="flex flex-wrap gap-2 pt-2 border-t border-violet-200 dark:border-violet-800">
-            <span className="text-xs font-medium ink-muted mr-2 self-center">
-              Quick filters:
-            </span>
+            <span className="text-xs font-medium ink-muted mr-2 self-center">Quick filters:</span>
 
             {reportType === 'sales' && 'date' in filters && (
               <>

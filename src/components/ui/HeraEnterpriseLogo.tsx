@@ -29,7 +29,8 @@ export function HeraEnterpriseLogo({
   const actualWidth = variant === 'icon' ? iconSize + 16 : width
 
   return (
-    <svg stroke="currentColor"
+    <svg
+      stroke="currentColor"
       width={actualWidth}
       height={height}
       viewBox={`0 0 ${actualWidth} ${height}`}
@@ -104,7 +105,13 @@ export function HeraEnterpriseLogo({
             <circle cx={iconSize * 0.6} cy="0" r="4" fill="currentColor" />
             <circle cx="0" cy={iconSize * 0.6} r="4" fill="currentColor" />
             <circle cx={iconSize * 0.6} cy={iconSize * 0.6} r="4" fill="currentColor" />
-            <circle cx={iconSize * 0.3} cy={iconSize * 0.3} r="5" fill="currentColor" opacity="0.9" />
+            <circle
+              cx={iconSize * 0.3}
+              cy={iconSize * 0.3}
+              r="5"
+              fill="currentColor"
+              opacity="0.9"
+            />
 
             {/* Connecting lines for network effect */}
             <line

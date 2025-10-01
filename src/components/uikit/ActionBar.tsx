@@ -10,7 +10,7 @@ import { Play, Check, AlertTriangle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAction } from '@/lib/ui-binder'
 import type { ActionConfig } from '@/lib/ui-binder/types'
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -18,7 +18,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from '@/components/ui/alert-dialog'
 import { useToast } from '@/hooks/use-toast'
 
@@ -40,7 +40,7 @@ export function ActionBar({
   const [pendingAction, setPendingAction] = useState<ActionConfig | null>(null)
   const [executingAction, setExecutingAction] = useState<string | null>(null)
   const [lastSuccess, setLastSuccess] = useState<string | null>(null)
-  
+
   const { executeAction, isLoading } = useAction()
   const { toast } = useToast()
 
@@ -66,7 +66,7 @@ export function ActionBar({
 
       // Build payload using action configuration
       const payload = action.buildPayload(context)
-      
+
       // Execute the action
       const result = await executeAction({
         smart_code: payload.smart_code,
@@ -76,26 +76,25 @@ export function ActionBar({
       // Success handling
       setLastSuccess(action.key)
       onActionComplete?.(action.key, result)
-      
+
       toast({
-        title: "Action Completed",
+        title: 'Action Completed',
         description: `${action.label} executed successfully`,
-        variant: "default"
+        variant: 'default'
       })
 
       // Clear success indicator after 3 seconds
       setTimeout(() => {
         setLastSuccess(null)
       }, 3000)
-
     } catch (error) {
       console.error(`Action ${action.key} failed:`, error)
       onActionError?.(action.key, error)
-      
+
       toast({
-        title: "Action Failed",
+        title: 'Action Failed',
         description: `Failed to execute ${action.label}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive"
+        variant: 'destructive'
       })
     } finally {
       setExecutingAction(null)
@@ -109,7 +108,7 @@ export function ActionBar({
   return (
     <>
       <div className={`flex items-center space-x-3 ${className}`}>
-        {actions.map((action) => {
+        {actions.map(action => {
           const isExecuting = executingAction === action.key
           const wasSuccessful = lastSuccess === action.key
           const isDisabled = isLoading || isExecuting
@@ -153,15 +152,13 @@ export function ActionBar({
               <span>Confirm Action</span>
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {pendingAction?.confirmMessage || 
-               `Are you sure you want to execute "${pendingAction?.label}"? This action cannot be undone.`}
+              {pendingAction?.confirmMessage ||
+                `Are you sure you want to execute "${pendingAction?.label}"? This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmAction}>
-              Continue
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmAction}>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -187,7 +184,7 @@ export const ActionBarPresets = {
   ): ActionConfig => ({
     key,
     label,
-    buildPayload: (context) => ({
+    buildPayload: context => ({
       smart_code,
       ...buildPayload(context)
     }),
@@ -201,7 +198,7 @@ export const ActionBarPresets = {
     key: 'sale',
     label: 'Process Sale',
     variant: 'default',
-    buildPayload: (ctx) => ({
+    buildPayload: ctx => ({
       organization_id: ctx.orgId,
       transaction_type: 'sale',
       smart_code,
@@ -217,7 +214,7 @@ export const ActionBarPresets = {
     key: 'purchase',
     label: 'Process Purchase',
     variant: 'secondary',
-    buildPayload: (ctx) => ({
+    buildPayload: ctx => ({
       organization_id: ctx.orgId,
       transaction_type: 'purchase',
       smart_code,
@@ -235,7 +232,7 @@ export const ActionBarPresets = {
     variant: 'destructive',
     confirm: true,
     confirmMessage: 'This will permanently delete the record. Are you sure?',
-    buildPayload: (ctx) => ({
+    buildPayload: ctx => ({
       organization_id: ctx.orgId,
       transaction_type: 'delete',
       smart_code,

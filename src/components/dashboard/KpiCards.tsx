@@ -25,9 +25,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
         {Array.from({ length: 6 }).map((_, index) => (
           <Card key={index} className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium ink-muted">
-                Loading...
-              </CardTitle>
+              <CardTitle className="text-sm font-medium ink-muted">Loading...</CardTitle>
               <Skeleton className="h-8 w-8 rounded-lg" />
             </CardHeader>
             <CardContent>
@@ -165,9 +163,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent dark:from-gray-900/50" />
 
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium ink-muted">
-                  {kpi.title}
-                </CardTitle>
+                <CardTitle className="text-sm font-medium ink-muted">{kpi.title}</CardTitle>
                 <div className={cn('p-2 rounded-lg bg-gradient-to-br', kpi.color, 'bg-opacity-20')}>
                   <Icon className="h-4 w-4 text-white" />
                 </div>
@@ -189,11 +185,7 @@ export function KpiCards({ organizationId }: KpiCardsProps) {
                     >
                       {kpi.value}
                     </div>
-                    {kpi.subtitle && (
-                      <p className="text-xs dark:ink-muted mt-1">
-                        {kpi.subtitle}
-                      </p>
-                    )}
+                    {kpi.subtitle && <p className="text-xs dark:ink-muted mt-1">{kpi.subtitle}</p>}
                   </div>
                 )}
               </CardContent>

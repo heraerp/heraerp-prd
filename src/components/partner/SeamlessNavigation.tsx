@@ -178,7 +178,8 @@ export default function SeamlessNavigation({
     <div className={`${className}`}>
       {/* Floating Navigation Bar */}
       <div
-        className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${ isMinimized ?'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
+        className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ${
+          isMinimized ? 'scale-75 opacity-70 hover:scale-100 hover:opacity-100' : ''
         }`}
       >
         <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-border/20 px-6 py-4 max-w-md">

@@ -117,7 +117,9 @@ export function CalendarFilters({
               <Badge
                 key={source.value}
                 variant={filters.sources.includes(source.value) ? 'default' : 'outline'}
-                className={`cursor-pointer ${ filters.sources.includes(source.value) ? source.color +' text-white hover:opacity-90'
+                className={`cursor-pointer ${
+                  filters.sources.includes(source.value)
+                    ? source.color + ' text-white hover:opacity-90'
                     : 'hover:bg-accent'
                 }`}
                 onClick={() => handleSourceToggle(source.value)}

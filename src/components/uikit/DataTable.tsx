@@ -8,7 +8,14 @@
 import { useState } from 'react'
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import type { TableColumn } from '@/lib/ui-binder/types'
 
 interface DataTableProps<T = any> {
@@ -46,10 +53,10 @@ export function DataTable<T extends Record<string, any>>({
 
   const handleSort = (column: TableColumn) => {
     if (!column.sortable || !sorting) return
-    
+
     const currentDirection = sorting.column === column.key ? sorting.direction : undefined
     const newDirection = currentDirection === 'asc' ? 'desc' : 'asc'
-    
+
     sorting.onSort(column.key, newDirection)
   }
 
@@ -57,7 +64,7 @@ export function DataTable<T extends Record<string, any>>({
     if (!column.sortable || !sorting || sorting.column !== column.key) {
       return <span className="w-4 h-4" />
     }
-    
+
     return sorting.direction === 'asc' ? (
       <ChevronUp className="w-4 h-4" />
     ) : (
@@ -69,17 +76,19 @@ export function DataTable<T extends Record<string, any>>({
     if (column.formatter) {
       return column.formatter(value, row)
     }
-    
+
     if (value == null) return '-'
     if (typeof value === 'boolean') return value ? 'Yes' : 'No'
     if (typeof value === 'number') return value.toLocaleString()
-    
+
     return String(value)
   }
 
   const totalPages = pagination ? Math.ceil(pagination.total / pagination.pageSize) : 1
   const startItem = pagination ? (pagination.page - 1) * pagination.pageSize + 1 : 1
-  const endItem = pagination ? Math.min(pagination.page * pagination.pageSize, pagination.total) : data.length
+  const endItem = pagination
+    ? Math.min(pagination.page * pagination.pageSize, pagination.total)
+    : data.length
 
   if (loading) {
     return (
@@ -98,7 +107,7 @@ export function DataTable<T extends Record<string, any>>({
         <Table>
           <TableHeader>
             <TableRow>
-              {columns.map((column) => (
+              {columns.map(column => (
                 <TableHead
                   key={column.key}
                   className={`${column.sortable ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800' : ''}`}
@@ -131,7 +140,7 @@ export function DataTable<T extends Record<string, any>>({
                   onMouseEnter={() => setHoveredRow(index)}
                   onMouseLeave={() => setHoveredRow(null)}
                 >
-                  {columns.map((column) => (
+                  {columns.map(column => (
                     <TableCell key={column.key} className="py-3">
                       {formatCellValue(column, row[column.key], row)}
                     </TableCell>
@@ -142,13 +151,13 @@ export function DataTable<T extends Record<string, any>>({
           </TableBody>
         </Table>
       </div>
-      
+
       {pagination && (
         <div className="flex items-center justify-between px-6 py-3 border-t">
           <div className="text-sm text-gray-500">
             Showing {startItem} to {endItem} of {pagination.total} results
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -159,7 +168,7 @@ export function DataTable<T extends Record<string, any>>({
               <ChevronLeft className="w-4 h-4" />
               Previous
             </Button>
-            
+
             <div className="flex items-center space-x-1">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum: number
@@ -172,11 +181,11 @@ export function DataTable<T extends Record<string, any>>({
                 } else {
                   pageNum = pagination.page - 2 + i
                 }
-                
+
                 return (
                   <Button
                     key={pageNum}
-                    variant={pageNum === pagination.page ? "default" : "outline"}
+                    variant={pageNum === pagination.page ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => pagination.onPageChange(pageNum)}
                     className="w-8 h-8 p-0"
@@ -186,7 +195,7 @@ export function DataTable<T extends Record<string, any>>({
                 )
               })}
             </div>
-            
+
             <Button
               variant="outline"
               size="sm"

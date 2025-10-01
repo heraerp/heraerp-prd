@@ -17,7 +17,7 @@ export default function EmailTestPage() {
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
-  
+
   const [emailData, setEmailData] = useState({
     to: 'test@example.com',
     subject: 'Test Email from CivicFlow',
@@ -81,9 +81,7 @@ export default function EmailTestPage() {
     <div className="container max-w-2xl mx-auto py-8 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Email Integration Test</h1>
-        <p className="text-muted-foreground mt-2">
-          Test the HERA-native Resend email integration
-        </p>
+        <p className="text-muted-foreground mt-2">Test the HERA-native Resend email integration</p>
       </div>
 
       <Card>
@@ -100,7 +98,7 @@ export default function EmailTestPage() {
               id="to"
               type="email"
               value={emailData.to}
-              onChange={(e) => setEmailData(prev => ({ ...prev, to: e.target.value }))}
+              onChange={e => setEmailData(prev => ({ ...prev, to: e.target.value }))}
               placeholder="recipient@example.com"
             />
           </div>
@@ -110,7 +108,7 @@ export default function EmailTestPage() {
             <Input
               id="subject"
               value={emailData.subject}
-              onChange={(e) => setEmailData(prev => ({ ...prev, subject: e.target.value }))}
+              onChange={e => setEmailData(prev => ({ ...prev, subject: e.target.value }))}
               placeholder="Email subject"
             />
           </div>
@@ -120,7 +118,7 @@ export default function EmailTestPage() {
             <Textarea
               id="text"
               value={emailData.text}
-              onChange={(e) => setEmailData(prev => ({ ...prev, text: e.target.value }))}
+              onChange={e => setEmailData(prev => ({ ...prev, text: e.target.value }))}
               rows={3}
             />
           </div>
@@ -130,7 +128,7 @@ export default function EmailTestPage() {
             <Textarea
               id="html"
               value={emailData.html}
-              onChange={(e) => setEmailData(prev => ({ ...prev, html: e.target.value }))}
+              onChange={e => setEmailData(prev => ({ ...prev, html: e.target.value }))}
               rows={3}
               className="font-mono text-sm"
             />
@@ -164,8 +162,13 @@ export default function EmailTestPage() {
                       <strong>Email sent successfully!</strong>
                     </div>
                     <div className="text-sm space-y-1">
-                      <p>Transaction ID: <code className="text-xs">{result.data.transactionId}</code></p>
-                      <p>Resend Message ID: <code className="text-xs">{result.data.resendMessageId}</code></p>
+                      <p>
+                        Transaction ID: <code className="text-xs">{result.data.transactionId}</code>
+                      </p>
+                      <p>
+                        Resend Message ID:{' '}
+                        <code className="text-xs">{result.data.resendMessageId}</code>
+                      </p>
                       <p>Status: {result.data.status}</p>
                     </div>
                   </>
@@ -190,9 +193,15 @@ export default function EmailTestPage() {
         </CardHeader>
         <CardContent className="prose prose-sm max-w-none">
           <ol className="space-y-2">
-            <li>Email send request creates a <code>universal_transaction</code> with status='queued'</li>
-            <li>Recipients are stored as <code>universal_transaction_lines</code> (TO/CC/BCC)</li>
-            <li>Email content is stored in <code>core_dynamic_data</code></li>
+            <li>
+              Email send request creates a <code>universal_transaction</code> with status='queued'
+            </li>
+            <li>
+              Recipients are stored as <code>universal_transaction_lines</code> (TO/CC/BCC)
+            </li>
+            <li>
+              Email content is stored in <code>core_dynamic_data</code>
+            </li>
             <li>Resend API is called to actually send the email</li>
             <li>Transaction status is updated to 'sent' or 'failed'</li>
             <li>Webhook events update the status as email is delivered/opened/clicked</li>
@@ -201,10 +210,18 @@ export default function EmailTestPage() {
           <div className="mt-4 p-4 bg-muted rounded-lg">
             <p className="font-semibold mb-2">Smart Codes Used:</p>
             <ul className="text-xs space-y-1">
-              <li><code>HERA.COMMS.EMAIL.SEND.V1</code> - Email transaction</li>
-              <li><code>HERA.COMMS.EMAIL.RECIPIENT.TO.V1</code> - TO recipients</li>
-              <li><code>HERA.COMMS.EMAIL.CONTENT.V1</code> - Email content</li>
-              <li><code>HERA.COMMS.EMAIL.EVENT.V1</code> - Delivery events</li>
+              <li>
+                <code>HERA.COMMS.EMAIL.SEND.V1</code> - Email transaction
+              </li>
+              <li>
+                <code>HERA.COMMS.EMAIL.RECIPIENT.TO.V1</code> - TO recipients
+              </li>
+              <li>
+                <code>HERA.COMMS.EMAIL.CONTENT.V1</code> - Email content
+              </li>
+              <li>
+                <code>HERA.COMMS.EMAIL.EVENT.V1</code> - Delivery events
+              </li>
             </ul>
           </div>
         </CardContent>

@@ -212,7 +212,7 @@ export function RulesListMCP({ organizationId, onCreateRule }: RulesListMCPProps
               />
             </div>
             <Button variant="outline" onClick={loadRules} disabled={loading}>
-              <RefreshCw className={`w-4 h-4 ${loading ?'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </CardContent>

@@ -116,9 +116,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <p className="font-medium">{invoice.header.customer.name}</p>
               <p className="text-sm ink-muted">Customer Code: {invoice.header.customer.code}</p>
               {invoice.header.appointment_id && (
-                <p className="text-sm ink-muted">
-                  Appointment: {invoice.header.appointment_id}
-                </p>
+                <p className="text-sm ink-muted">Appointment: {invoice.header.appointment_id}</p>
               )}
             </div>
           )}
@@ -192,9 +190,7 @@ export function InvoiceDisplay({ invoice, onGoHome, onGoToAppointment }: Invoice
               <span>{formatCurrency(invoice.totals.taxable_subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="ink-muted">
-                VAT ({(invoice.totals.tax_rate * 100).toFixed(0)}%)
-              </span>
+              <span className="ink-muted">VAT ({(invoice.totals.tax_rate * 100).toFixed(0)}%)</span>
               <span>{formatCurrency(invoice.totals.tax_total)}</span>
             </div>
             {invoice.totals.tip_total > 0 && (

@@ -95,7 +95,8 @@ describe('Universal API v2 - Product CRUD Operations', () => {
       })
 
       // Verify dynamic fields were created
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('hera_dynamic_data_set_v1', 
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'hera_dynamic_data_set_v1',
         expect.objectContaining({
           p_organization_id: 'test-org-123',
           p_entity_id: 'product-uuid-123',
@@ -106,7 +107,8 @@ describe('Universal API v2 - Product CRUD Operations', () => {
         })
       )
 
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('hera_dynamic_data_set_v1',
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'hera_dynamic_data_set_v1',
         expect.objectContaining({
           p_field_name: 'brand',
           p_field_type: 'text',
@@ -221,9 +223,7 @@ describe('Universal API v2 - Product CRUD Operations', () => {
         }
       })
 
-      const request = new NextRequest(
-        'http://localhost:3000/api/v2/entities?entity_type=product'
-      )
+      const request = new NextRequest('http://localhost:3000/api/v2/entities?entity_type=product')
 
       const response = await GET(request)
       const result = await response.json()
@@ -278,7 +278,8 @@ describe('Universal API v2 - Product CRUD Operations', () => {
       })
 
       // Verify dynamic field update
-      expect(mockSupabase.rpc).toHaveBeenCalledWith('hera_dynamic_data_set_v1',
+      expect(mockSupabase.rpc).toHaveBeenCalledWith(
+        'hera_dynamic_data_set_v1',
         expect.objectContaining({
           p_organization_id: 'test-org-123',
           p_entity_id: 'product-uuid-123',
@@ -301,10 +302,9 @@ describe('Universal API v2 - Product CRUD Operations', () => {
         }
       })
 
-      const request = new NextRequest(
-        'http://localhost:3000/api/v2/entities/product-uuid-123',
-        { method: 'DELETE' }
-      )
+      const request = new NextRequest('http://localhost:3000/api/v2/entities/product-uuid-123', {
+        method: 'DELETE'
+      })
 
       const response = await DELETE(request, { params: { id: 'product-uuid-123' } })
       const result = await response.json()
@@ -348,10 +348,9 @@ describe('Universal API v2 - Product CRUD Operations', () => {
     })
 
     it('should validate UUID format', async () => {
-      const request = new NextRequest(
-        'http://localhost:3000/api/v2/entities/invalid-id',
-        { method: 'DELETE' }
-      )
+      const request = new NextRequest('http://localhost:3000/api/v2/entities/invalid-id', {
+        method: 'DELETE'
+      })
 
       const response = await DELETE(request, { params: { id: 'invalid-id' } })
       const result = await response.json()

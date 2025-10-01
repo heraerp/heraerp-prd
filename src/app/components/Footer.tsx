@@ -1,7 +1,7 @@
 // app/components/Footer.tsx
 'use client'
 
-import Link from "next/link";
+import Link from 'next/link'
 
 type FooterProps = {
   showGradient?: boolean // turn on to add subtle hero-style gradient behind glass
@@ -11,10 +11,7 @@ export default function Footer({ showGradient = true }: FooterProps) {
   return (
     <footer className="relative mt-24">
       {showGradient && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-        >
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
           <div className="mx-auto h-40 w-[90%] max-w-7xl bg-gradient-to-r from-indigo-500/20 via-fuchsia-400/15 to-cyan-400/20 blur-2xl rounded-3xl"></div>
         </div>
       )}
@@ -34,8 +31,8 @@ export default function Footer({ showGradient = true }: FooterProps) {
                 </span>
               </Link>
               <p className="max-w-md text-sm leading-relaxed dark:ink-muted">
-                Enterprise ERP with modern patterns, fast implementation, and
-                AI-driven continuous improvement. Built for the future of business.
+                Enterprise ERP with modern patterns, fast implementation, and AI-driven continuous
+                improvement. Built for the future of business.
               </p>
 
               {/* social icons under brand */}
@@ -109,10 +106,30 @@ export default function Footer({ showGradient = true }: FooterProps) {
                 Product
               </h3>
               <div className="flex flex-col space-y-3">
-                <Link href="/demo" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Book a Demo</Link>
-                <Link href="/pricing-request" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Request Pricing</Link>
-                <Link href="/partners" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Partners</Link>
-                <Link href="/blog" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Blog & Updates</Link>
+                <Link
+                  href="/demo"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Book a Demo
+                </Link>
+                <Link
+                  href="/pricing-request"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Request Pricing
+                </Link>
+                <Link
+                  href="/partners"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Partners
+                </Link>
+                <Link
+                  href="/blog"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Blog & Updates
+                </Link>
               </div>
             </nav>
 
@@ -122,9 +139,24 @@ export default function Footer({ showGradient = true }: FooterProps) {
                 Company
               </h3>
               <div className="flex flex-col space-y-3">
-                <Link href="/contact" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Contact Us</Link>
-                <Link href="/policy" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Privacy & Cookies</Link>
-                <Link href="/terms" className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5">Terms of Service</Link>
+                <Link
+                  href="/contact"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Contact Us
+                </Link>
+                <Link
+                  href="/policy"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Privacy & Cookies
+                </Link>
+                <Link
+                  href="/terms"
+                  className="block text-sm dark:-muted hover:ink dark:hover:text-slate-50 transition-colors py-0.5"
+                >
+                  Terms of Service
+                </Link>
                 <button
                   className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-0.5 text-left"
                   onClick={() => {
@@ -145,7 +177,6 @@ export default function Footer({ showGradient = true }: FooterProps) {
           </div>
         </div>
       </div>
-
     </footer>
   )
 }

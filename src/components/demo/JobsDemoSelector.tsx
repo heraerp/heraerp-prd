@@ -175,7 +175,8 @@ export default function JobsDemoSelector() {
           return (
             <Card
               key={demo.id}
-              className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl border-0 overflow-hidden ${ isSelected ?'ring-4 ring-blue-500/50 scale-105' : ''
+              className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl border-0 overflow-hidden ${
+                isSelected ? 'ring-4 ring-blue-500/50 scale-105' : ''
               }`}
               onClick={() => !isLoading && handleDemoSelect(demo)}
             >
@@ -222,7 +223,8 @@ export default function JobsDemoSelector() {
 
                 {/* Action Button */}
                 <Button
-                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-foreground border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${ isCurrentlyLoading ?'cursor-wait' : ''
+                  className={`w-full group/btn relative overflow-hidden bg-gradient-to-r ${demo.gradient} text-foreground border-0 h-12 text-base font-semibold transition-all duration-300 hover:shadow-lg ${
+                    isCurrentlyLoading ? 'cursor-wait' : ''
                   }`}
                   disabled={isLoading}
                 >

@@ -1,8 +1,8 @@
 /**
  * LinkedIn Sync API
- * 
+ *
  * POST /api/integration-hub/vendors/linkedin/sync
- * 
+ *
  * Triggers manual sync of LinkedIn data
  */
 
@@ -22,10 +22,7 @@ export async function POST(request: NextRequest) {
     const { connectorId, syncOptions } = body
 
     if (!connectorId) {
-      return NextResponse.json(
-        { error: 'Connector ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Connector ID is required' }, { status: 400 })
     }
 
     // Initialize Supabase client
@@ -43,24 +40,18 @@ export async function POST(request: NextRequest) {
 
     if (connectorError || !connector) {
       logger.error('Failed to fetch connector:', connectorError)
-      return NextResponse.json(
-        { error: 'Connector not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Connector not found' }, { status: 404 })
     }
 
     // Verify connector is for LinkedIn
     if (connector.vendor_name !== 'linkedin') {
-      return NextResponse.json(
-        { error: 'Invalid connector vendor' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid connector vendor' }, { status: 400 })
     }
 
     // Update connector status to syncing
     await supabase
       .from('integration_connectors')
-      .update({ 
+      .update({
         status: 'syncing',
         metadata: {
           ...connector.metadata,
@@ -108,7 +99,7 @@ export async function POST(request: NextRequest) {
       try {
         // Check if entity exists
         const existing = await universalApi.getEntityByCode(entity.entity_code)
-        
+
         let entityId: string
         if (existing) {
           // Update existing entity
@@ -167,29 +158,41 @@ export async function POST(request: NextRequest) {
 
     // Create sync transaction for audit trail
     const stats = {
-      events_created: createdEntities.filter(id => 
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'event'
+      events_created: createdEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'event'
       ).length,
-      events_updated: updatedEntities.filter(id =>
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'event'
+      events_updated: updatedEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'event'
       ).length,
-      attendees_created: createdEntities.filter(id =>
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'event_invite'
+      attendees_created: createdEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'event_invite'
       ).length,
-      attendees_updated: updatedEntities.filter(id =>
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'event_invite'
+      attendees_updated: updatedEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'event_invite'
       ).length,
-      posts_created: createdEntities.filter(id =>
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'post'
+      posts_created: createdEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'post'
       ).length,
-      posts_updated: updatedEntities.filter(id =>
-        syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type === 'post'
+      posts_updated: updatedEntities.filter(
+        id =>
+          syncResult.entities.find(e => entityIdMap.get(e.entity_code) === id)?.entity_type ===
+          'post'
       ).length,
       errors: syncResult.errors || []
     }
 
     const { transaction, lines } = mapper.createSyncTransaction(stats)
-    
+
     try {
       await universalApi.createTransaction({
         ...transaction,
@@ -223,13 +226,12 @@ export async function POST(request: NextRequest) {
       },
       message: 'LinkedIn sync completed successfully'
     })
-
   } catch (error) {
     logger.error('LinkedIn sync error:', error)
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error instanceof Error ? error.message : 'Sync failed' 
+        error: error instanceof Error ? error.message : 'Sync failed'
       },
       { status: 500 }
     )

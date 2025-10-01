@@ -10,7 +10,8 @@ import { ArrowLeft, ArrowRight, CreditCard, ExternalLink, ShoppingBag } from 'lu
 
 export const metadata: Metadata = {
   title: 'Point of Sale (POS) - HERA Jewelry ERP Documentation',
-  description: 'Professional point-of-sale system for jewelry retailers with payment processing, customer management, layaway support, and mobile capabilities.',
+  description:
+    'Professional point-of-sale system for jewelry retailers with payment processing, customer management, layaway support, and mobile capabilities.',
   openGraph: {
     title: 'Point of Sale (POS) - HERA Jewelry ERP',
     description: 'Professional point-of-sale system designed specifically for jewelry retailers',
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default function POSPage() {
   const markdownPath = join(process.cwd(), 'docs', 'jewelry', 'pos.md')
   let markdownContent = ''
-  
+
   try {
     markdownContent = readFileSync(markdownPath, 'utf8')
   } catch (error) {
@@ -39,9 +40,13 @@ Please check back shortly or contact support if this issue persists.
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-        <Link href="/docs" className="hover:text-primary">Docs</Link>
+        <Link href="/docs" className="hover:text-primary">
+          Docs
+        </Link>
         <span>/</span>
-        <Link href="/docs/jewelry" className="hover:text-primary">Jewelry ERP</Link>
+        <Link href="/docs/jewelry" className="hover:text-primary">
+          Jewelry ERP
+        </Link>
         <span>/</span>
         <span className="text-foreground">Point of Sale (POS)</span>
       </nav>
@@ -62,7 +67,7 @@ Please check back shortly or contact support if this issue persists.
               </p>
             </div>
           </div>
-          
+
           <div className="flex flex-wrap gap-3">
             <Link href="/jewelry/pos">
               <Button className="bg-purple-600 hover:bg-purple-700">
@@ -101,42 +106,24 @@ Please check back shortly or contact support if this issue persists.
               </h3>
             ),
             p: ({ children }) => (
-              <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">
-                {children}
-              </p>
+              <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">{children}</p>
             ),
             ul: ({ children }) => (
-              <ul className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">
-                {children}
-              </ul>
+              <ul className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">{children}</ul>
             ),
             ol: ({ children }) => (
-              <ol className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">
-                {children}
-              </ol>
+              <ol className="mb-4 space-y-2 text-gray-700 dark:text-gray-300">{children}</ol>
             ),
-            li: ({ children }) => (
-              <li className="ml-4">
-                {children}
-              </li>
-            ),
+            li: ({ children }) => <li className="ml-4">{children}</li>,
             strong: ({ children }) => (
-              <strong className="font-semibold text-gray-900 dark:text-gray-100">
-                {children}
-              </strong>
+              <strong className="font-semibold text-gray-900 dark:text-gray-100">{children}</strong>
             ),
             em: ({ children }) => (
-              <em className="italic text-gray-700 dark:text-gray-300">
-                {children}
-              </em>
+              <em className="italic text-gray-700 dark:text-gray-300">{children}</em>
             ),
             code: ({ className, children }) => {
               if (className?.includes('language-')) {
-                return (
-                  <code className={className}>
-                    {children}
-                  </code>
-                )
+                return <code className={className}>{children}</code>
               }
               return (
                 <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground">
@@ -145,9 +132,7 @@ Please check back shortly or contact support if this issue persists.
               )
             },
             pre: ({ children }) => (
-              <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4 border">
-                {children}
-              </pre>
+              <pre className="bg-muted p-4 rounded-lg overflow-x-auto mb-4 border">{children}</pre>
             ),
             blockquote: ({ children }) => (
               <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-muted-foreground">
@@ -156,9 +141,7 @@ Please check back shortly or contact support if this issue persists.
             ),
             table: ({ children }) => (
               <div className="overflow-x-auto mb-4">
-                <table className="w-full border-collapse border border-border">
-                  {children}
-                </table>
+                <table className="w-full border-collapse border border-border">{children}</table>
               </div>
             ),
             th: ({ children }) => (
@@ -166,14 +149,10 @@ Please check back shortly or contact support if this issue persists.
                 {children}
               </th>
             ),
-            td: ({ children }) => (
-              <td className="border border-border p-2">
-                {children}
-              </td>
-            ),
+            td: ({ children }) => <td className="border border-border p-2">{children}</td>,
             a: ({ href, children }) => (
-              <Link 
-                href={href || '#'} 
+              <Link
+                href={href || '#'}
                 className="text-primary hover:underline font-medium"
                 target={href?.startsWith('http') ? '_blank' : undefined}
                 rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}

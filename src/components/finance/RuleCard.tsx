@@ -103,9 +103,7 @@ export function RuleCard({
           </Badge>
 
           {rule.description && (
-            <p className="text-xs dark:ink-muted line-clamp-1">
-              {rule.description}
-            </p>
+            <p className="text-xs dark:ink-muted line-clamp-1">{rule.description}</p>
           )}
         </div>
 

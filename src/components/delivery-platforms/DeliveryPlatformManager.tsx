@@ -571,10 +571,7 @@ export function DeliveryPlatformManager() {
                   <h4 className="text-md font-semibold text-gray-200">Basic Information</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label
-                        htmlFor="platform_name"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="platform_name" className="block text-sm font-medium ink mb-1">
                         Platform Name *
                       </label>
                       <input
@@ -589,10 +586,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="platform_type"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="platform_type" className="block text-sm font-medium ink mb-1">
                         Platform Type *
                       </label>
                       <select
@@ -617,10 +611,7 @@ export function DeliveryPlatformManager() {
                   <h4 className="text-md font-semibold text-gray-200">API Configuration</h4>
 
                   <div>
-                    <label
-                      htmlFor="api_endpoint"
-                      className="block text-sm font-medium ink mb-1"
-                    >
+                    <label htmlFor="api_endpoint" className="block text-sm font-medium ink mb-1">
                       API Endpoint *
                     </label>
                     <input
@@ -636,10 +627,7 @@ export function DeliveryPlatformManager() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label
-                        htmlFor="api_key"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="api_key" className="block text-sm font-medium ink mb-1">
                         API Key
                       </label>
                       <input
@@ -653,10 +641,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="secret_key"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="secret_key" className="block text-sm font-medium ink mb-1">
                         Secret Key
                       </label>
                       <input
@@ -672,10 +657,7 @@ export function DeliveryPlatformManager() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label
-                        htmlFor="restaurant_id"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="restaurant_id" className="block text-sm font-medium ink mb-1">
                         Restaurant ID
                       </label>
                       <input
@@ -689,10 +671,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="store_id"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="store_id" className="block text-sm font-medium ink mb-1">
                         Store ID
                       </label>
                       <input
@@ -741,10 +720,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="delivery_fee"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="delivery_fee" className="block text-sm font-medium ink mb-1">
                         Delivery Fee ($)
                       </label>
                       <div className="relative">
@@ -768,10 +744,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="minimum_order"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="minimum_order" className="block text-sm font-medium ink mb-1">
                         Minimum Order Value ($)
                       </label>
                       <div className="relative">
@@ -795,10 +768,7 @@ export function DeliveryPlatformManager() {
                     </div>
 
                     <div>
-                      <label
-                        htmlFor="max_distance"
-                        className="block text-sm font-medium ink mb-1"
-                      >
+                      <label htmlFor="max_distance" className="block text-sm font-medium ink mb-1">
                         Max Delivery Distance (km)
                       </label>
                       <div className="relative">
@@ -837,9 +807,7 @@ export function DeliveryPlatformManager() {
                         }
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium ink">
-                        Auto-accept incoming orders
-                      </span>
+                      <span className="text-sm font-medium ink">Auto-accept incoming orders</span>
                     </label>
 
                     <label className="flex items-center space-x-3 cursor-pointer">
@@ -849,9 +817,7 @@ export function DeliveryPlatformManager() {
                         onChange={e => setFormData({ ...formData, sync_menu: e.target.checked })}
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium ink">
-                        Sync menu items with platform
-                      </span>
+                      <span className="text-sm font-medium ink">Sync menu items with platform</span>
                     </label>
 
                     <label className="flex items-center space-x-3 cursor-pointer">
@@ -863,9 +829,7 @@ export function DeliveryPlatformManager() {
                         }
                         className="w-4 h-4 text-primary border-border rounded focus:ring-blue-500 bg-background"
                       />
-                      <span className="text-sm font-medium ink">
-                        Sync inventory levels
-                      </span>
+                      <span className="text-sm font-medium ink">Sync inventory levels</span>
                     </label>
                   </div>
                 </div>

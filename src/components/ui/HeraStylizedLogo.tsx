@@ -19,7 +19,8 @@ export function HeraStylizedLogo({ className = '', size = 'lg' }: HeraStylizedLo
   const maskId = `heraMask-${Math.random().toString(36).substr(2, 9)}`
 
   return (
-    <svg stroke="currentColor"
+    <svg
+      stroke="currentColor"
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}

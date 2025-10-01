@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
       if (!resendClient) {
         throw new Error('Resend client not initialized')
       }
-      
+
       const emailData = await resendClient.emails.send({
         from: 'HERA Feature Requests <onboarding@resend.dev>', // Use your verified domain
         to: ['help@hanaset.com'],

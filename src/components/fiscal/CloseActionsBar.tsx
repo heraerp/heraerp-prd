@@ -137,9 +137,7 @@ export function CloseActionsBar({
               <div className="flex items-center gap-4">
                 <Calendar className="h-8 w-8 text-violet-600" />
                 <div>
-                  <div className="text-sm font-medium dark:ink-muted">
-                    Current Period
-                  </div>
+                  <div className="text-sm font-medium dark:ink-muted">Current Period</div>
                   <div className="text-xl font-bold ink dark:text-gray-100">
                     {currentPeriod ? currentPeriod.code : 'No Period'}
                   </div>
@@ -174,9 +172,7 @@ export function CloseActionsBar({
               <div className="flex items-center gap-4">
                 <FileText className="h-8 w-8 text-blue-600" />
                 <div>
-                  <div className="text-sm font-medium dark:ink-muted">
-                    Checklist Status
-                  </div>
+                  <div className="text-sm font-medium dark:ink-muted">Checklist Status</div>
                   <div className="text-xl font-bold ink dark:text-gray-100">
                     {isChecklistComplete ? 'Complete' : 'Incomplete'}
                   </div>

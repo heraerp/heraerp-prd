@@ -337,7 +337,8 @@ export default function LandingPage() {
               {processSteps.map((step, index) => (
                 <Card
                   key={index}
-                  className={`p-6 cursor-pointer transition-all duration-300 ${ activeStep === index ?'border-2 border-violet-500 shadow-xl' : ''
+                  className={`p-6 cursor-pointer transition-all duration-300 ${
+                    activeStep === index ? 'border-2 border-violet-500 shadow-xl' : ''
                   }`}
                   onClick={() => setActiveStep(index)}
                 >

@@ -438,9 +438,7 @@ function UniversalSidebar({
                   <div key={index} className="flex items-center justify-between px-2 lg:px-2 py-1">
                     <div className="flex items-center gap-2 lg:gap-0">
                       <Icon className={cn('h-4 lg:h-3 w-4 lg:w-3', indicator.color)} />
-                      <span className="lg:hidden text-sm ink font-medium">
-                        {indicator.label}
-                      </span>
+                      <span className="lg:hidden text-sm ink font-medium">{indicator.label}</span>
                     </div>
                     <span className="text-sm lg:text-[9px] text-gray-200 lg:ink font-semibold">
                       {indicator.value}

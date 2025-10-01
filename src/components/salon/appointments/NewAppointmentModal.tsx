@@ -265,10 +265,7 @@ export function NewAppointmentModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Customer Selection */}
           <div className="space-y-2">
-            <Label
-              htmlFor="customer"
-              className="flex items-center gap-2 !ink dark:!text-gray-300"
-            >
+            <Label htmlFor="customer" className="flex items-center gap-2 !ink dark:!text-gray-300">
               <User className="w-4 h-4" />
               Customer *
             </Label>
@@ -294,10 +291,7 @@ export function NewAppointmentModal({
 
           {/* Service Selection */}
           <div className="space-y-2">
-            <Label
-              htmlFor="service"
-              className="flex items-center gap-2 !ink dark:!text-gray-300"
-            >
+            <Label htmlFor="service" className="flex items-center gap-2 !ink dark:!text-gray-300">
               <Scissors className="w-4 h-4" />
               Service *
             </Label>
@@ -325,10 +319,7 @@ export function NewAppointmentModal({
 
           {/* Staff Selection */}
           <div className="space-y-2">
-            <Label
-              htmlFor="staff"
-              className="flex items-center gap-2 !ink dark:!text-gray-300"
-            >
+            <Label htmlFor="staff" className="flex items-center gap-2 !ink dark:!text-gray-300">
               <User className="w-4 h-4" />
               Staff Member *
             </Label>
@@ -352,10 +343,7 @@ export function NewAppointmentModal({
           {/* Date and Time */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label
-                htmlFor="date"
-                className="flex items-center gap-2 !ink dark:!text-gray-300"
-              >
+              <Label htmlFor="date" className="flex items-center gap-2 !ink dark:!text-gray-300">
                 <Calendar className="w-4 h-4" />
                 Date *
               </Label>
@@ -372,10 +360,7 @@ export function NewAppointmentModal({
             </div>
 
             <div className="space-y-2">
-              <Label
-                htmlFor="time"
-                className="flex items-center gap-2 !ink dark:!text-gray-300"
-              >
+              <Label htmlFor="time" className="flex items-center gap-2 !ink dark:!text-gray-300">
                 <Clock className="w-4 h-4" />
                 Time *
               </Label>
@@ -439,10 +424,7 @@ export function NewAppointmentModal({
 
           {/* Notes */}
           <div className="space-y-2">
-            <Label
-              htmlFor="notes"
-              className="flex items-center gap-2 !ink dark:!text-gray-300"
-            >
+            <Label htmlFor="notes" className="flex items-center gap-2 !ink dark:!text-gray-300">
               <FileText className="w-4 h-4" />
               Notes
             </Label>

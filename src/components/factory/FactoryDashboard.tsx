@@ -90,7 +90,7 @@ export default function FactoryDashboard() {
 
               {/* Refresh */}
               <Button variant="outline" size="sm" onClick={actions.refresh} disabled={loading}>
-                <RefreshCw className={`w-4 h-4 ${loading ?'animate-spin' : ''}`} />
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
           </div>

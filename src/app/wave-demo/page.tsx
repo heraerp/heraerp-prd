@@ -10,9 +10,7 @@ export default function WaveDemoPage() {
     <div className="min-h-screen bg-background">
       {/* Hero with Wave */}
       <WaveHero className="bg-gradient-to-b from-background via-background to-muted/20">
-        <h1 className="text-5xl font-bold ink mb-4">
-          Wave Background Demo
-        </h1>
+        <h1 className="text-5xl font-bold ink mb-4">Wave Background Demo</h1>
         <p className="text-xl ink-muted max-w-2xl text-center mb-8">
           Theme-aware SVG wave backgrounds that adapt automatically to light and dark modes.
           GPU-optimized with smooth transitions and no layout thrashing.
@@ -30,9 +28,7 @@ export default function WaveDemoPage() {
       {/* Features Section with Waves */}
       <WaveFeatures className="bg-muted/10">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center ink mb-12">
-            Wave Variations
-          </h2>
+          <h2 className="text-3xl font-bold text-center ink mb-12">Wave Variations</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="card-glass">
               <CardHeader>
@@ -82,15 +78,14 @@ export default function WaveDemoPage() {
       {/* Color Showcase */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center ink mb-12">
-            Theme-Aware Colors
-          </h2>
+          <h2 className="text-3xl font-bold text-center ink mb-12">Theme-Aware Colors</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto rounded-xl bg-wave-1 mb-4" />
               <h3 className="font-semibold ink mb-2">Wave 1</h3>
               <p className="text-sm ink-muted">
-                Light: Warm Blush<br />
+                Light: Warm Blush
+                <br />
                 Dark: Plum Shadow
               </p>
             </div>
@@ -98,7 +93,8 @@ export default function WaveDemoPage() {
               <div className="w-32 h-32 mx-auto rounded-xl bg-wave-2 mb-4" />
               <h3 className="font-semibold ink mb-2">Wave 2</h3>
               <p className="text-sm ink-muted">
-                Light: Cool Mist<br />
+                Light: Cool Mist
+                <br />
                 Dark: Deep Indigo
               </p>
             </div>
@@ -106,7 +102,8 @@ export default function WaveDemoPage() {
               <div className="w-32 h-32 mx-auto rounded-xl bg-wave-3 mb-4" />
               <h3 className="font-semibold ink mb-2">Wave 3</h3>
               <p className="text-sm ink-muted">
-                Light: Peach Veil<br />
+                Light: Peach Veil
+                <br />
                 Dark: Teal Charcoal
               </p>
             </div>
@@ -117,9 +114,7 @@ export default function WaveDemoPage() {
       {/* Usage Examples */}
       <WaveSection wavePosition="top" className="py-24 bg-muted/5">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center ink mb-12">
-            Usage Examples
-          </h2>
+          <h2 className="text-3xl font-bold text-center ink mb-12">Usage Examples</h2>
           <div className="max-w-3xl mx-auto space-y-8">
             <Card>
               <CardHeader>

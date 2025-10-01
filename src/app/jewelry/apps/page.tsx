@@ -2,13 +2,45 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Search, Grid3X3, List, Filter, Crown, Diamond, Gem, Scale, 
-  TrendingUp, Users, Package, ShoppingBag, Star, Award, 
-  Calculator, DollarSign, Settings, BarChart, FileText, 
-  Calendar, Camera, MapPin, Truck, Shield, CreditCard,
-  Palette, Zap, Eye, Archive, BookOpen, Bell, Mail,
-  Phone, MessageCircle, Globe, Lock, Database, Cpu
+import {
+  Search,
+  Grid3X3,
+  List,
+  Filter,
+  Crown,
+  Diamond,
+  Gem,
+  Scale,
+  TrendingUp,
+  Users,
+  Package,
+  ShoppingBag,
+  Star,
+  Award,
+  Calculator,
+  DollarSign,
+  Settings,
+  BarChart,
+  FileText,
+  Calendar,
+  Camera,
+  MapPin,
+  Truck,
+  Shield,
+  CreditCard,
+  Palette,
+  Zap,
+  Eye,
+  Archive,
+  BookOpen,
+  Bell,
+  Mail,
+  Phone,
+  MessageCircle,
+  Globe,
+  Lock,
+  Database,
+  Cpu
 } from 'lucide-react'
 import { JewelryAppTile } from '@/components/jewelry/JewelryAppTile'
 import '@/styles/jewelry-glassmorphism.css'
@@ -284,7 +316,7 @@ const jewelryApps = [
 const categories = [
   'All',
   'Sales',
-  'Operations', 
+  'Operations',
   'Finance',
   'Design',
   'Marketing',
@@ -303,14 +335,15 @@ export default function JewelryAppsPage() {
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
 
   const filteredApps = jewelryApps.filter(app => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch =
+      searchQuery === '' ||
       app.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    
+
     const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory
     const matchesFeatured = !showFeaturedOnly || app.featured
-    
+
     return matchesSearch && matchesCategory && matchesFeatured
   })
 
@@ -320,7 +353,6 @@ export default function JewelryAppsPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
-          
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -343,8 +375,8 @@ export default function JewelryAppsPage() {
               </motion.div>
             </h1>
             <p className="jewelry-text-luxury text-xl max-w-3xl mx-auto">
-              Complete suite of luxury jewelry management applications. 
-              Discover powerful tools to elevate your business operations.
+              Complete suite of luxury jewelry management applications. Discover powerful tools to
+              elevate your business operations.
             </p>
           </motion.div>
 
@@ -359,15 +391,10 @@ export default function JewelryAppsPage() {
               <Crown className="h-6 w-6 jewelry-icon-gold" />
               <h2 className="jewelry-text-luxury text-2xl font-semibold">Featured Applications</h2>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
               {featuredApps.map((app, index) => (
-                <JewelryAppTile 
-                  key={app.id} 
-                  app={app} 
-                  index={index}
-                  compact={true}
-                />
+                <JewelryAppTile key={app.id} app={app} index={index} compact={true} />
               ))}
             </div>
           </motion.div>
@@ -387,19 +414,19 @@ export default function JewelryAppsPage() {
                   type="text"
                   placeholder="Search applications, features, or categories..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 jewelry-glass-input rounded-xl text-sm focus:ring-2 focus:ring-yellow-500/50 focus:outline-none"
                 />
               </div>
-              
+
               <div className="flex items-center gap-3">
                 {/* View Mode Toggle */}
                 <div className="flex items-center bg-white/10 rounded-lg p-1">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-md transition-all ${
-                      viewMode === 'grid' 
-                        ? 'bg-yellow-500/20 jewelry-text-gold' 
+                      viewMode === 'grid'
+                        ? 'bg-yellow-500/20 jewelry-text-gold'
                         : 'jewelry-text-muted hover:jewelry-text-luxury'
                     }`}
                   >
@@ -408,8 +435,8 @@ export default function JewelryAppsPage() {
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-2 rounded-md transition-all ${
-                      viewMode === 'list' 
-                        ? 'bg-yellow-500/20 jewelry-text-gold' 
+                      viewMode === 'list'
+                        ? 'bg-yellow-500/20 jewelry-text-gold'
                         : 'jewelry-text-muted hover:jewelry-text-luxury'
                     }`}
                   >
@@ -421,8 +448,8 @@ export default function JewelryAppsPage() {
                 <button
                   onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                    showFeaturedOnly 
-                      ? 'bg-yellow-500/20 jewelry-text-gold border border-yellow-500/30' 
+                    showFeaturedOnly
+                      ? 'bg-yellow-500/20 jewelry-text-gold border border-yellow-500/30'
                       : 'jewelry-glass-btn jewelry-text-luxury hover:bg-yellow-500/10'
                   }`}
                 >
@@ -434,7 +461,7 @@ export default function JewelryAppsPage() {
 
             {/* Category Filters */}
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -462,7 +489,7 @@ export default function JewelryAppsPage() {
               {selectedCategory !== 'All' && ` in ${selectedCategory}`}
               {showFeaturedOnly && ' (Featured only)'}
             </p>
-            
+
             {filteredApps.length > 0 && (
               <div className="flex items-center gap-2 jewelry-text-muted text-sm">
                 <Filter className="h-4 w-4" />
@@ -485,7 +512,8 @@ export default function JewelryAppsPage() {
                   No applications found
                 </h3>
                 <p className="jewelry-text-muted mb-6 max-w-md mx-auto">
-                  Try adjusting your search terms or browse different categories to find the apps you need.
+                  Try adjusting your search terms or browse different categories to find the apps
+                  you need.
                 </p>
                 <button
                   onClick={() => {
@@ -499,18 +527,15 @@ export default function JewelryAppsPage() {
                 </button>
               </div>
             ) : (
-              <div className={
-                viewMode === 'grid' 
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                  : "space-y-4"
-              }>
+              <div
+                className={
+                  viewMode === 'grid'
+                    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                    : 'space-y-4'
+                }
+              >
                 {filteredApps.map((app, index) => (
-                  <JewelryAppTile 
-                    key={app.id} 
-                    app={app} 
-                    index={index}
-                    viewMode={viewMode}
-                  />
+                  <JewelryAppTile key={app.id} app={app} index={index} viewMode={viewMode} />
                 ))}
               </div>
             )}
@@ -524,7 +549,8 @@ export default function JewelryAppsPage() {
             className="text-center jewelry-glass-panel"
           >
             <p className="jewelry-text-muted">
-              Powered by <span className="jewelry-text-luxury font-semibold">HERA Enterprise Platform</span>
+              Powered by{' '}
+              <span className="jewelry-text-luxury font-semibold">HERA Enterprise Platform</span>
             </p>
             <p className="jewelry-text-muted text-sm mt-1">
               Professional jewelry management solutions for luxury businesses

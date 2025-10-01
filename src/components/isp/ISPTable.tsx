@@ -40,7 +40,7 @@ export function ISPTable({
                 {columns.map((column, index) => (
                   <th
                     key={column.key}
-                    className={`text-left px-6 py-4 text-sm font-semibold text-[#F5E6C8] uppercase tracking-wider ${column.className ||''}`}
+                    className={`text-left px-6 py-4 text-sm font-semibold text-[#F5E6C8] uppercase tracking-wider ${column.className || ''}`}
                   >
                     {column.label}
                   </th>
@@ -70,7 +70,7 @@ export function ISPTable({
                     className="border-b border-border/50 hover:bg-muted/5 transition-colors duration-200"
                   >
                     {columns.map(column => (
-                      <td key={column.key} className={`px-6 py-4 ${column.className ||''}`}>
+                      <td key={column.key} className={`px-6 py-4 ${column.className || ''}`}>
                         {column.render ? column.render(item) : item[column.key]}
                       </td>
                     ))}

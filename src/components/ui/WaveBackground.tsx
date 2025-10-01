@@ -9,21 +9,20 @@
  */
 
 export default function WaveBackground({
-  className = "",
+  className = '',
   height = 520,
-  position = "top",
-  blur = true,
+  position = 'top',
+  blur = true
 }: {
-  className?: string;
-  height?: number;
-  position?: "top" | "bottom";
-  blur?: boolean;
+  className?: string
+  height?: number
+  position?: 'top' | 'bottom'
+  blur?: boolean
 }) {
-  const positionClass = position === "bottom"
-    ? "absolute inset-x-0 bottom-0"
-    : "absolute inset-x-0 -top-10";
+  const positionClass =
+    position === 'bottom' ? 'absolute inset-x-0 bottom-0' : 'absolute inset-x-0 -top-10'
 
-  const blurClass = blur ? "blur-2xl" : "";
+  const blurClass = blur ? 'blur-2xl' : ''
 
   return (
     <div
@@ -31,7 +30,9 @@ export default function WaveBackground({
       className={`pointer-events-none ${positionClass} ${className}`}
       style={{ height }}
     >
-      <svg fill="none" stroke="currentColor"
+      <svg
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 1440 600"
         preserveAspectRatio="none"
         className={`h-full w-full ${blurClass}`}
@@ -94,5 +95,5 @@ export default function WaveBackground({
         />
       </svg>
     </div>
-  );
+  )
 }

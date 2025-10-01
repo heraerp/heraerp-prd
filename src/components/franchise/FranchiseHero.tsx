@@ -74,7 +74,8 @@ export function FranchiseHero({
               </h1>
 
               <p
-                className={`text-xl lg:text-2xl font-semibold mb-6 ${ backgroundVariant ==='default'
+                className={`text-xl lg:text-2xl font-semibold mb-6 ${
+                  backgroundVariant === 'default'
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'
                     : 'text-yellow-300'
                 }`}

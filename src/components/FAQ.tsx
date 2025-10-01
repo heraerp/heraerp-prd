@@ -13,9 +13,7 @@ export default function FAQ({ items, className = '' }: FAQProps) {
 
   return (
     <section className={`mt-12 ${className}`}>
-      <h2 className="mb-6 text-2xl font-bold ink dark:text-gray-100">
-        Frequently Asked Questions
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold ink dark:text-gray-100">Frequently Asked Questions</h2>
       <div className="space-y-6">
         {items.map((item, index) => (
           <div

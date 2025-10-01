@@ -82,7 +82,9 @@ export function GeographicMap({ organizationId }: GeographicMapProps) {
 
       {/* Interactive World Map */}
       <div className="relative h-64 md:h-80 mb-6 bg-muted/50 rounded-xl border border-border/50 overflow-hidden">
-        <svg fill="none" stroke="currentColor"
+        <svg
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 100 60"
           className="w-full h-full"
           style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}

@@ -1,15 +1,15 @@
 // app/examples/entities/page.tsx - Entity list with type filter
-'use client';
-import React, { Suspense } from 'react';
-import { DataTable, useEntities } from '@/ui';
-import { useRouter, useSearchParams } from 'next/navigation';
+'use client'
+import React, { Suspense } from 'react'
+import { DataTable, useEntities } from '@/ui'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 function EntityList() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const type = searchParams.get('type') || 'customer';
-  
-  const { data, isLoading } = useEntities(type);
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const type = searchParams.get('type') || 'customer'
+
+  const { data, isLoading } = useEntities(type)
 
   const entityTypes = [
     { value: 'customer', label: 'Customers' },
@@ -18,12 +18,12 @@ function EntityList() {
     { value: 'employee', label: 'Employees' },
     { value: 'gl_account', label: 'GL Accounts' },
     { value: 'location', label: 'Locations' },
-    { value: 'project', label: 'Projects' },
-  ];
+    { value: 'project', label: 'Projects' }
+  ]
 
   const handleTypeChange = (newType: string) => {
-    router.push(`/examples/entities?type=${newType}`);
-  };
+    router.push(`/examples/entities?type=${newType}`)
+  }
 
   return (
     <div className="p-6">
@@ -35,10 +35,10 @@ function EntityList() {
       <div className="mb-4">
         <select
           value={type}
-          onChange={(e) => handleTypeChange(e.target.value)}
+          onChange={e => handleTypeChange(e.target.value)}
           className="rounded-lg border px-4 py-2"
         >
-          {entityTypes.map((t) => (
+          {entityTypes.map(t => (
             <option key={t.value} value={t.value}>
               {t.label}
             </option>
@@ -51,16 +51,16 @@ function EntityList() {
         loading={isLoading}
         onRowClick={(row: any) => router.push(`/examples/entities/${row.id}`)}
         columns={[
-          { 
-            header: 'Code', 
+          {
+            header: 'Code',
             key: 'entity_code',
             width: '120px',
-            render: (row) => row.entity_code || '-'
+            render: row => row.entity_code || '-'
           },
-          { 
-            header: 'Name', 
+          {
+            header: 'Name',
             key: 'entity_name',
-            render: (row) => (
+            render: row => (
               <div>
                 <div className="font-medium">{row.entity_name}</div>
                 {row.entity_description && (
@@ -71,41 +71,39 @@ function EntityList() {
               </div>
             )
           },
-          { 
-            header: 'Smart Code', 
+          {
+            header: 'Smart Code',
             key: 'smart_code',
-            render: (row) => row.smart_code ? (
-              <code className="text-xs bg-gray-100 px-2 py-0.5 rounded">
-                {row.smart_code}
-              </code>
-            ) : '-'
+            render: row =>
+              row.smart_code ? (
+                <code className="text-xs bg-gray-100 px-2 py-0.5 rounded">{row.smart_code}</code>
+              ) : (
+                '-'
+              )
           },
-          { 
-            header: 'Created', 
+          {
+            header: 'Created',
             key: 'created_at',
             width: '150px',
-            render: (row) => new Date(row.created_at).toLocaleDateString()
-          },
+            render: row => new Date(row.created_at).toLocaleDateString()
+          }
         ]}
       />
     </div>
-  );
+  )
 }
 
 function EntitiesContent() {
-
-  
-return (
+  return (
     <Suspense fallback={<div className="p-6">Loading...</div>}>
       <EntityList />
     </Suspense>
-  );
-
+  )
 }
 
 export default function EntitiesPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
           <div className="text-center">

@@ -9,7 +9,13 @@ import { useState, useCallback } from 'react'
 import { Search, Filter, X, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Label } from '@/components/ui/label'
 import type { FilterConfig } from '@/lib/ui-binder/types'
@@ -32,7 +38,7 @@ interface FilterBarProps {
 export function FilterBar({
   onFilterChange,
   filters = [],
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   defaultPageSize = 50,
   pageSizeOptions = [25, 50, 100, 200],
   className = ''
@@ -44,57 +50,69 @@ export function FilterBar({
   const [pageSize, setPageSize] = useState(defaultPageSize)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearch(value)
-    onFilterChange({
-      search: value || undefined,
-      filter: buildFilterString(activeFilters),
-      order: buildOrderString(sortColumn, sortDirection),
-      pageSize,
-      page: 1 // Reset to first page on search
-    })
-  }, [activeFilters, sortColumn, sortDirection, pageSize, onFilterChange])
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearch(value)
+      onFilterChange({
+        search: value || undefined,
+        filter: buildFilterString(activeFilters),
+        order: buildOrderString(sortColumn, sortDirection),
+        pageSize,
+        page: 1 // Reset to first page on search
+      })
+    },
+    [activeFilters, sortColumn, sortDirection, pageSize, onFilterChange]
+  )
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
-    const newFilters = { ...activeFilters }
-    if (value && value !== '__all__') {
-      newFilters[key] = value
-    } else {
-      delete newFilters[key]
-    }
-    
-    setActiveFilters(newFilters)
-    onFilterChange({
-      search: search || undefined,
-      filter: buildFilterString(newFilters),
-      order: buildOrderString(sortColumn, sortDirection),
-      pageSize,
-      page: 1 // Reset to first page on filter
-    })
-  }, [search, activeFilters, sortColumn, sortDirection, pageSize, onFilterChange])
+  const handleFilterChange = useCallback(
+    (key: string, value: string) => {
+      const newFilters = { ...activeFilters }
+      if (value && value !== '__all__') {
+        newFilters[key] = value
+      } else {
+        delete newFilters[key]
+      }
 
-  const handleSortChange = useCallback((column: string, direction: 'asc' | 'desc') => {
-    setSortColumn(column)
-    setSortDirection(direction)
-    onFilterChange({
-      search: search || undefined,
-      filter: buildFilterString(activeFilters),
-      order: buildOrderString(column, direction),
-      pageSize,
-      page: 1 // Reset to first page on sort
-    })
-  }, [search, activeFilters, pageSize, onFilterChange])
+      setActiveFilters(newFilters)
+      onFilterChange({
+        search: search || undefined,
+        filter: buildFilterString(newFilters),
+        order: buildOrderString(sortColumn, sortDirection),
+        pageSize,
+        page: 1 // Reset to first page on filter
+      })
+    },
+    [search, activeFilters, sortColumn, sortDirection, pageSize, onFilterChange]
+  )
 
-  const handlePageSizeChange = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize)
-    onFilterChange({
-      search: search || undefined,
-      filter: buildFilterString(activeFilters),
-      order: buildOrderString(sortColumn, sortDirection),
-      pageSize: newPageSize,
-      page: 1 // Reset to first page on page size change
-    })
-  }, [search, activeFilters, sortColumn, sortDirection, onFilterChange])
+  const handleSortChange = useCallback(
+    (column: string, direction: 'asc' | 'desc') => {
+      setSortColumn(column)
+      setSortDirection(direction)
+      onFilterChange({
+        search: search || undefined,
+        filter: buildFilterString(activeFilters),
+        order: buildOrderString(column, direction),
+        pageSize,
+        page: 1 // Reset to first page on sort
+      })
+    },
+    [search, activeFilters, pageSize, onFilterChange]
+  )
+
+  const handlePageSizeChange = useCallback(
+    (newPageSize: number) => {
+      setPageSize(newPageSize)
+      onFilterChange({
+        search: search || undefined,
+        filter: buildFilterString(activeFilters),
+        order: buildOrderString(sortColumn, sortDirection),
+        pageSize: newPageSize,
+        page: 1 // Reset to first page on page size change
+      })
+    },
+    [search, activeFilters, sortColumn, sortDirection, onFilterChange]
+  )
 
   const handleReset = useCallback(() => {
     setSearch('')
@@ -111,7 +129,7 @@ export function FilterBar({
     const filterPairs = Object.entries(filters)
       .filter(([_, value]) => value)
       .map(([key, value]) => `${key}:${value}`)
-    
+
     return filterPairs.length > 0 ? filterPairs.join(',') : undefined
   }
 
@@ -123,14 +141,16 @@ export function FilterBar({
   const hasActiveFilters = activeFilterCount > 0 || search || sortColumn
 
   return (
-    <div className={`flex items-center space-x-4 p-4 bg-white dark:bg-gray-900 border-b ${className}`}>
+    <div
+      className={`flex items-center space-x-4 p-4 bg-white dark:bg-gray-900 border-b ${className}`}
+    >
       {/* Search */}
       <div className="relative flex-1 max-w-md">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           placeholder={searchPlaceholder}
           value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
+          onChange={e => handleSearchChange(e.target.value)}
           className="pl-10"
         />
         {search && (
@@ -181,21 +201,21 @@ export function FilterBar({
                   </Button>
                 )}
               </div>
-              
-              {filters.map((filter) => (
+
+              {filters.map(filter => (
                 <div key={filter.key} className="space-y-2">
                   <Label htmlFor={filter.key}>{filter.label}</Label>
                   {filter.type === 'select' ? (
                     <Select
                       value={activeFilters[filter.key] || '__all__'}
-                      onValueChange={(value) => handleFilterChange(filter.key, value)}
+                      onValueChange={value => handleFilterChange(filter.key, value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder={`Select ${filter.label.toLowerCase()}`} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__all__">All</SelectItem>
-                        {filter.options?.map((option) => (
+                        {filter.options?.map(option => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -208,7 +228,7 @@ export function FilterBar({
                       type={filter.type}
                       placeholder={filter.placeholder}
                       value={activeFilters[filter.key] || ''}
-                      onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                      onChange={e => handleFilterChange(filter.key, e.target.value)}
                     />
                   )}
                 </div>
@@ -219,7 +239,12 @@ export function FilterBar({
       )}
 
       {/* Sort */}
-      <Select value={sortColumn || '__none__'} onValueChange={(column) => handleSortChange(column === '__none__' ? '' : column, sortDirection)}>
+      <Select
+        value={sortColumn || '__none__'}
+        onValueChange={column =>
+          handleSortChange(column === '__none__' ? '' : column, sortDirection)
+        }
+      >
         <SelectTrigger className="w-48">
           <SelectValue placeholder="Sort by..." />
         </SelectTrigger>
@@ -233,7 +258,10 @@ export function FilterBar({
       </Select>
 
       {sortColumn && (
-        <Select value={sortDirection} onValueChange={(direction: 'asc' | 'desc') => handleSortChange(sortColumn, direction)}>
+        <Select
+          value={sortDirection}
+          onValueChange={(direction: 'asc' | 'desc') => handleSortChange(sortColumn, direction)}
+        >
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
@@ -246,13 +274,18 @@ export function FilterBar({
 
       {/* Page Size */}
       <div className="flex items-center space-x-2">
-        <Label htmlFor="pageSize" className="text-sm whitespace-nowrap">Show:</Label>
-        <Select value={pageSize.toString()} onValueChange={(value) => handlePageSizeChange(Number(value))}>
+        <Label htmlFor="pageSize" className="text-sm whitespace-nowrap">
+          Show:
+        </Label>
+        <Select
+          value={pageSize.toString()}
+          onValueChange={value => handlePageSizeChange(Number(value))}
+        >
           <SelectTrigger className="w-20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {pageSizeOptions.map((size) => (
+            {pageSizeOptions.map(size => (
               <SelectItem key={size} value={size.toString()}>
                 {size}
               </SelectItem>

@@ -1,19 +1,21 @@
-import Link from 'next/link';
-import { PACKAGES } from '@/data/pricing';
+import Link from 'next/link'
+import { PACKAGES } from '@/data/pricing'
 
 export default function Packages() {
   const packageColors = [
-    "from-blue-500 to-indigo-600", // Essential
-    "from-purple-500 to-pink-600", // Growth
-    "from-orange-500 to-red-600"   // Enterprise
-  ];
+    'from-blue-500 to-indigo-600', // Essential
+    'from-purple-500 to-pink-600', // Growth
+    'from-orange-500 to-red-600' // Enterprise
+  ]
 
   return (
     <div className="grid md:grid-cols-3 gap-8">
       {PACKAGES.map((pkg, index) => (
         <article key={pkg.name} className="group relative">
           {/* Gradient glow effect */}
-          <div className={`absolute inset-0 bg-gradient-to-r ${packageColors[index]} opacity-0 group-hover:opacity-10 rounded-2xl blur-xl transition-all duration-500`} />
+          <div
+            className={`absolute inset-0 bg-gradient-to-r ${packageColors[index]} opacity-0 group-hover:opacity-10 rounded-2xl blur-xl transition-all duration-500`}
+          />
 
           {/* Popular badge for Growth package */}
           {pkg.name === 'Growth' && (
@@ -24,9 +26,13 @@ export default function Packages() {
             </div>
           )}
 
-          <div className={`relative card-glass p-8 rounded-2xl h-full flex flex-col border transition-all duration-300 ${pkg.name === 'Growth' ? 'border-purple-500/30 shadow-xl' : 'border-border group-hover:border-indigo-500/30'}`}>
+          <div
+            className={`relative card-glass p-8 rounded-2xl h-full flex flex-col border transition-all duration-300 ${pkg.name === 'Growth' ? 'border-purple-500/30 shadow-xl' : 'border-border group-hover:border-indigo-500/30'}`}
+          >
             {/* Package icon */}
-            <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${packageColors[index]} flex items-center justify-center text-white text-2xl mb-6 shadow-lg`}>
+            <div
+              className={`w-14 h-14 rounded-xl bg-gradient-to-br ${packageColors[index]} flex items-center justify-center text-white text-2xl mb-6 shadow-lg`}
+            >
               {pkg.name === 'Essential' ? '🎯' : pkg.name === 'Growth' ? '🚀' : '🏢'}
             </div>
 
@@ -63,5 +69,5 @@ export default function Packages() {
         </article>
       ))}
     </div>
-  );
+  )
 }

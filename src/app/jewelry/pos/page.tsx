@@ -3,19 +3,47 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { 
-  ShoppingCart, Package, Search, Plus, Minus, X, 
-  CreditCard, DollarSign, Receipt, User, Star,
-  Calculator, Percent, Tag, Gift, Crown, Diamond,
-  Sparkles, RefreshCw, Trash2, Edit, Eye, Check,
-  Calendar, Clock, MapPin, Phone
+import {
+  ShoppingCart,
+  Package,
+  Search,
+  Plus,
+  Minus,
+  X,
+  CreditCard,
+  DollarSign,
+  Receipt,
+  User,
+  Star,
+  Calculator,
+  Percent,
+  Tag,
+  Gift,
+  Crown,
+  Diamond,
+  Sparkles,
+  RefreshCw,
+  Trash2,
+  Edit,
+  Eye,
+  Check,
+  Calendar,
+  Clock,
+  MapPin,
+  Phone
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { useAction } from '@/lib/ui-binder'
 import { getEffectiveGoldRate } from '@/lib/jewelry/rates'
 import { useOrgId } from '@/lib/runtime/useOrgId'
@@ -53,7 +81,7 @@ interface Customer {
 export default function JewelryPOSPage() {
   const orgId = useOrgId()
   const { executeAction } = useAction()
-  
+
   // Cart and transaction state
   const [cart, setCart] = useState<CartItem[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -62,10 +90,10 @@ export default function JewelryPOSPage() {
   const [taxPercent, setTaxPercent] = useState(5)
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
   const [currentGoldRate, setCurrentGoldRate] = useState(0)
-  
+
   // POS View Mode
   const [viewMode, setViewMode] = useState<'retail' | 'gold'>('retail')
-  
+
   // Receipt Modal State
   const [showReceiptModal, setShowReceiptModal] = useState(false)
   const [lastTransaction, setLastTransaction] = useState<{
@@ -86,23 +114,25 @@ export default function JewelryPOSPage() {
       id: '1',
       name: 'Diamond Solitaire Ring',
       sku: 'DSR-001',
-      price: 12500.00,
+      price: 12500.0,
       quantity: 1,
       category: 'Rings',
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center',
       purity: '18K',
       weight: 3.2,
       makingCharges: 800,
       stoneValue: 5000
     },
     {
-      id: '2', 
+      id: '2',
       name: 'Gold Tennis Bracelet',
       sku: 'GTB-045',
-      price: 8750.00,
+      price: 8750.0,
       quantity: 1,
       category: 'Bracelets',
-      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center',
       purity: '14K',
       weight: 15.5,
       makingCharges: 1200,
@@ -112,10 +142,11 @@ export default function JewelryPOSPage() {
       id: '3',
       name: 'Pearl Necklace Set',
       sku: 'PNS-123',
-      price: 4200.00,
+      price: 4200.0,
       quantity: 1,
       category: 'Necklaces',
-      image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center',
       purity: 'Sterling Silver',
       weight: 25.0,
       makingCharges: 400,
@@ -125,10 +156,11 @@ export default function JewelryPOSPage() {
       id: '4',
       name: 'Emerald Earrings',
       sku: 'EE-078',
-      price: 6800.00,
+      price: 6800.0,
       quantity: 1,
       category: 'Earrings',
-      image: 'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=400&h=400&fit=crop&crop=center',
       purity: '18K',
       weight: 4.8,
       makingCharges: 600,
@@ -138,10 +170,11 @@ export default function JewelryPOSPage() {
       id: '5',
       name: 'Luxury Watch Collection',
       sku: 'LWC-200',
-      price: 25000.00,
+      price: 25000.0,
       quantity: 1,
       category: 'Watches',
-      image: 'https://images.unsplash.com/photo-1523170335258-f5c6c6bd6eaf?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1523170335258-f5c6c6bd6eaf?w=400&h=400&fit=crop&crop=center',
       purity: 'Platinum',
       weight: 120.0,
       makingCharges: 2500,
@@ -151,10 +184,11 @@ export default function JewelryPOSPage() {
       id: '6',
       name: 'Sapphire Pendant',
       sku: 'SP-099',
-      price: 3500.00,
+      price: 3500.0,
       quantity: 1,
       category: 'Pendants',
-      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
+      image:
+        'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center',
       purity: '14K',
       weight: 2.1,
       makingCharges: 300,
@@ -164,9 +198,27 @@ export default function JewelryPOSPage() {
 
   // Sample customers
   const [customers] = useState<Customer[]>([
-    { id: '1', name: 'Sarah Johnson', phone: '+971 50 123 4567', email: 'sarah@email.com', vipStatus: true },
-    { id: '2', name: 'Ahmed Al-Rashid', phone: '+971 55 987 6543', email: 'ahmed@email.com', vipStatus: false },
-    { id: '3', name: 'Maria Rodriguez', phone: '+971 52 456 7890', email: 'maria@email.com', vipStatus: true }
+    {
+      id: '1',
+      name: 'Sarah Johnson',
+      phone: '+971 50 123 4567',
+      email: 'sarah@email.com',
+      vipStatus: true
+    },
+    {
+      id: '2',
+      name: 'Ahmed Al-Rashid',
+      phone: '+971 55 987 6543',
+      email: 'ahmed@email.com',
+      vipStatus: false
+    },
+    {
+      id: '3',
+      name: 'Maria Rodriguez',
+      phone: '+971 52 456 7890',
+      email: 'maria@email.com',
+      vipStatus: true
+    }
   ])
 
   const categories = ['All', 'Rings', 'Necklaces', 'Bracelets', 'Earrings', 'Watches', 'Pendants']
@@ -180,7 +232,7 @@ export default function JewelryPOSPage() {
 
   // Load current gold rate
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         const rate = await getEffectiveGoldRate(orgId, new Date().toISOString(), 22)
         setCurrentGoldRate(rate?.rate_per_gram || 0)
@@ -191,8 +243,9 @@ export default function JewelryPOSPage() {
   }, [orgId])
 
   const filteredItems = retailItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.sku.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.sku.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -200,11 +253,11 @@ export default function JewelryPOSPage() {
   const addToCart = (item: CartItem) => {
     const existingItem = cart.find(cartItem => cartItem.id === item.id)
     if (existingItem) {
-      setCart(cart.map(cartItem => 
-        cartItem.id === item.id 
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      ))
+      setCart(
+        cart.map(cartItem =>
+          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+        )
+      )
     } else {
       setCart([...cart, { ...item, quantity: 1 }])
     }
@@ -218,13 +271,11 @@ export default function JewelryPOSPage() {
     if (newQuantity <= 0) {
       removeFromCart(itemId)
     } else {
-      setCart(cart.map(item => 
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      ))
+      setCart(cart.map(item => (item.id === itemId ? { ...item, quantity: newQuantity } : item)))
     }
   }
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const discountAmount = subtotal * (discountPercent / 100)
   const discountedSubtotal = subtotal - discountAmount
   const taxAmount = discountedSubtotal * (taxPercent / 100)
@@ -263,10 +314,10 @@ export default function JewelryPOSPage() {
 
       // Store transaction
       setLastTransaction(transaction)
-      
+
       // Show receipt modal
       setShowReceiptModal(true)
-      
+
       // Clear cart
       clearCart()
     } catch (error) {
@@ -279,7 +330,6 @@ export default function JewelryPOSPage() {
     <div className="min-h-screen jewelry-gradient-premium">
       <div className="jewelry-glass-backdrop min-h-screen">
         <div className="w-full max-w-7xl mx-auto p-6">
-          
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -302,7 +352,7 @@ export default function JewelryPOSPage() {
                   Professional point of sale for luxury jewelry retail
                 </p>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 {/* View Mode Toggle */}
                 <div className="jewelry-glass-card p-1 flex rounded-lg">
@@ -310,7 +360,9 @@ export default function JewelryPOSPage() {
                     variant={viewMode === 'retail' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('retail')}
-                    className={viewMode === 'retail' ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'}
+                    className={
+                      viewMode === 'retail' ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
+                    }
                   >
                     <Package className="h-4 w-4 mr-1" />
                     Retail
@@ -319,7 +371,9 @@ export default function JewelryPOSPage() {
                     variant={viewMode === 'gold' ? 'default' : 'ghost'}
                     size="sm"
                     onClick={() => setViewMode('gold')}
-                    className={viewMode === 'gold' ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'}
+                    className={
+                      viewMode === 'gold' ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
+                    }
                   >
                     <Sparkles className="h-4 w-4 mr-1" />
                     Gold Trade
@@ -350,19 +404,21 @@ export default function JewelryPOSPage() {
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{cart.length}</h3>
               <p className="jewelry-text-muted text-sm">Items in Cart</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-4 text-center">
               <DollarSign className="mx-auto mb-2 jewelry-icon-gold" size={24} />
-              <h3 className="jewelry-text-high-contrast text-2xl font-bold">${currentGoldRate.toFixed(0)}</h3>
+              <h3 className="jewelry-text-high-contrast text-2xl font-bold">
+                ${currentGoldRate.toFixed(0)}
+              </h3>
               <p className="jewelry-text-muted text-sm">Gold Rate/gram</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-4 text-center">
               <User className="mx-auto mb-2 jewelry-icon-gold" size={24} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">{customers.length}</h3>
               <p className="jewelry-text-muted text-sm">Active Customers</p>
             </div>
-            
+
             <div className="jewelry-glass-card p-4 text-center">
               <Star className="mx-auto mb-2 jewelry-icon-gold" size={24} />
               <h3 className="jewelry-text-high-contrast text-2xl font-bold">4.9</h3>
@@ -371,10 +427,8 @@ export default function JewelryPOSPage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             {/* Product Catalog */}
             <div className="lg:col-span-2 space-y-6">
-              
               {/* Search and Filter Bar */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -389,19 +443,23 @@ export default function JewelryPOSPage() {
                       type="text"
                       placeholder="Search jewelry items by name or SKU..."
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={e => setSearchQuery(e.target.value)}
                       className="pl-12 jewelry-glass-input"
                     />
                   </div>
-                  
+
                   <div className="flex gap-2 flex-wrap">
-                    {categories.map((category) => (
+                    {categories.map(category => (
                       <Button
                         key={category}
-                        variant={selectedCategory === category ? "default" : "outline"}
+                        variant={selectedCategory === category ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setSelectedCategory(category)}
-                        className={selectedCategory === category ? "jewelry-btn-primary" : "jewelry-btn-secondary"}
+                        className={
+                          selectedCategory === category
+                            ? 'jewelry-btn-primary'
+                            : 'jewelry-btn-secondary'
+                        }
                       >
                         {category}
                       </Button>
@@ -447,15 +505,15 @@ export default function JewelryPOSPage() {
                           </Badge>
                         </div>
                       </div>
-                      
+
                       {/* Item Details */}
                       <div className="space-y-2">
                         <h3 className="jewelry-text-high-contrast font-bold text-sm group-hover:jewelry-text-gold transition-colors">
                           {item.name}
                         </h3>
-                        
+
                         <p className="jewelry-text-muted text-xs">SKU: {item.sku}</p>
-                        
+
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="flex items-center gap-1">
                             <Sparkles className="h-3 w-3 jewelry-icon-gold" />
@@ -466,7 +524,7 @@ export default function JewelryPOSPage() {
                             <span className="jewelry-text-muted">{item.weight}g</span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="jewelry-text-gold font-bold text-lg">
@@ -478,8 +536,8 @@ export default function JewelryPOSPage() {
                               </p>
                             )}
                           </div>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             onClick={() => addToCart(item)}
                             className="jewelry-btn-primary"
                           >
@@ -495,9 +553,7 @@ export default function JewelryPOSPage() {
               {filteredItems.length === 0 && (
                 <div className="jewelry-glass-panel text-center py-12">
                   <Package className="h-16 w-16 jewelry-text-muted mx-auto mb-4" />
-                  <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
-                    No items found
-                  </h3>
+                  <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">No items found</h3>
                   <p className="jewelry-text-muted">
                     Try adjusting your search terms or browse different categories.
                   </p>
@@ -507,7 +563,6 @@ export default function JewelryPOSPage() {
 
             {/* Shopping Cart & Checkout */}
             <div className="space-y-6">
-              
               {/* Customer Selection */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -520,28 +575,29 @@ export default function JewelryPOSPage() {
                     <User className="h-5 w-5 jewelry-icon-gold" />
                     Customer Selection
                   </h3>
-                  
-                  <Select value={selectedCustomer?.id || ''} onValueChange={(value) => {
-                    const customer = customers.find(c => c.id === value)
-                    setSelectedCustomer(customer || null)
-                  }}>
+
+                  <Select
+                    value={selectedCustomer?.id || ''}
+                    onValueChange={value => {
+                      const customer = customers.find(c => c.id === value)
+                      setSelectedCustomer(customer || null)
+                    }}
+                  >
                     <SelectTrigger className="jewelry-glass-input">
                       <SelectValue placeholder="Select or add customer" />
                     </SelectTrigger>
                     <SelectContent className="jewelry-glass-dropdown">
-                      {customers.map((customer) => (
+                      {customers.map(customer => (
                         <SelectItem key={customer.id} value={customer.id}>
                           <div className="flex items-center gap-2">
                             <span>{customer.name}</span>
-                            {customer.vipStatus && (
-                              <Crown className="h-3 w-3 jewelry-icon-gold" />
-                            )}
+                            {customer.vipStatus && <Crown className="h-3 w-3 jewelry-icon-gold" />}
                           </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  
+
                   {selectedCustomer && (
                     <div className="mt-3 p-3 jewelry-glass-card">
                       <div className="flex items-center justify-between">
@@ -549,9 +605,7 @@ export default function JewelryPOSPage() {
                           <p className="jewelry-text-high-contrast font-medium">
                             {selectedCustomer.name}
                           </p>
-                          <p className="jewelry-text-muted text-sm">
-                            {selectedCustomer.phone}
-                          </p>
+                          <p className="jewelry-text-muted text-sm">{selectedCustomer.phone}</p>
                         </div>
                         {selectedCustomer.vipStatus && (
                           <Badge className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30">
@@ -564,7 +618,7 @@ export default function JewelryPOSPage() {
                   )}
                 </div>
               </motion.div>
-              
+
               {/* Cart Items */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -599,13 +653,13 @@ export default function JewelryPOSPage() {
                         <p className="jewelry-text-muted text-sm">Add items to start a sale</p>
                       </div>
                     ) : (
-                      cart.map((item) => (
+                      cart.map(item => (
                         <div key={item.id} className="jewelry-glass-card p-4">
                           <div className="flex items-start gap-3">
                             <div className="jewelry-crown-glow p-2 rounded-lg">
                               <Package className="h-6 w-6 jewelry-icon-gold" />
                             </div>
-                            
+
                             <div className="flex-1 min-w-0">
                               <h4 className="jewelry-text-high-contrast font-medium text-sm">
                                 {item.name}
@@ -623,11 +677,11 @@ export default function JewelryPOSPage() {
                                   >
                                     <Minus className="h-3 w-3" />
                                   </Button>
-                                  
+
                                   <span className="jewelry-text-high-contrast font-medium w-8 text-center">
                                     {item.quantity}
                                   </span>
-                                  
+
                                   <Button
                                     size="sm"
                                     variant="outline"
@@ -637,7 +691,7 @@ export default function JewelryPOSPage() {
                                     <Plus className="h-3 w-3" />
                                   </Button>
                                 </div>
-                                
+
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -648,7 +702,7 @@ export default function JewelryPOSPage() {
                                 </Button>
                               </div>
                             </div>
-                            
+
                             <div className="text-right">
                               <span className="jewelry-text-gold font-bold">
                                 ${(item.price * item.quantity).toLocaleString()}
@@ -675,7 +729,7 @@ export default function JewelryPOSPage() {
                       <Calculator className="h-5 w-5 jewelry-icon-gold" />
                       Adjustments
                     </h3>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         <Percent className="h-4 w-4 jewelry-text-muted" />
@@ -683,20 +737,20 @@ export default function JewelryPOSPage() {
                           type="number"
                           placeholder="Discount %"
                           value={discountPercent}
-                          onChange={(e) => setDiscountPercent(Number(e.target.value) || 0)}
+                          onChange={e => setDiscountPercent(Number(e.target.value) || 0)}
                           className="jewelry-glass-input"
                           min="0"
                           max="100"
                         />
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         <Tag className="h-4 w-4 jewelry-text-muted" />
                         <Input
                           type="number"
                           placeholder="Tax %"
                           value={taxPercent}
-                          onChange={(e) => setTaxPercent(Number(e.target.value) || 0)}
+                          onChange={e => setTaxPercent(Number(e.target.value) || 0)}
                           className="jewelry-glass-input"
                           min="0"
                           max="50"
@@ -719,7 +773,7 @@ export default function JewelryPOSPage() {
                     <h3 className="jewelry-text-luxury text-lg font-semibold mb-4">
                       Order Summary
                     </h3>
-                    
+
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="jewelry-text-muted">Subtotal:</span>
@@ -727,7 +781,7 @@ export default function JewelryPOSPage() {
                           ${subtotal.toLocaleString()}
                         </span>
                       </div>
-                      
+
                       {discountPercent > 0 && (
                         <div className="flex justify-between">
                           <span className="jewelry-text-muted">Discount ({discountPercent}%):</span>
@@ -736,16 +790,16 @@ export default function JewelryPOSPage() {
                           </span>
                         </div>
                       )}
-                      
+
                       <div className="flex justify-between">
                         <span className="jewelry-text-muted">Tax ({taxPercent}%):</span>
                         <span className="jewelry-text-high-contrast font-medium">
                           ${taxAmount.toLocaleString()}
                         </span>
                       </div>
-                      
+
                       <Separator />
-                      
+
                       <div className="flex justify-between">
                         <span className="jewelry-text-luxury text-lg font-semibold">Total:</span>
                         <span className="jewelry-text-gold text-xl font-bold">
@@ -770,9 +824,9 @@ export default function JewelryPOSPage() {
                       <CreditCard className="h-5 w-5 jewelry-icon-gold" />
                       Payment Method
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 gap-3 mb-6">
-                      {paymentMethods.map((method) => {
+                      {paymentMethods.map(method => {
                         const Icon = method.icon
                         return (
                           <Button
@@ -787,8 +841,8 @@ export default function JewelryPOSPage() {
                         )
                       })}
                     </div>
-                    
-                    <Button 
+
+                    <Button
                       onClick={completeSale}
                       className="w-full jewelry-btn-primary py-4 text-lg font-semibold"
                       size="lg"
@@ -820,7 +874,7 @@ export default function JewelryPOSPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white rounded-3xl overflow-hidden max-w-md w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               {/* Receipt Header */}
               <div className="bg-gradient-to-r from-jewelry-gold-400 to-jewelry-gold-600 text-white p-6 text-center">
@@ -840,12 +894,14 @@ export default function JewelryPOSPage() {
               <div className="p-6 space-y-6">
                 {/* Transaction Info */}
                 <div className="text-center border-b border-gray-200 pb-4">
-                  <h3 className="text-lg font-semibold jewelry-text-royal">Transaction #{lastTransaction.id}</h3>
+                  <h3 className="text-lg font-semibold jewelry-text-royal">
+                    Transaction #{lastTransaction.id}
+                  </h3>
                   <p className="text-sm text-gray-600">
-                    {new Date(lastTransaction.date).toLocaleDateString()} at {' '}
-                    {new Date(lastTransaction.date).toLocaleTimeString(undefined, { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                    {new Date(lastTransaction.date).toLocaleDateString()} at{' '}
+                    {new Date(lastTransaction.date).toLocaleTimeString(undefined, {
+                      hour: '2-digit',
+                      minute: '2-digit'
                     })}
                   </p>
                 </div>
@@ -858,8 +914,12 @@ export default function JewelryPOSPage() {
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <span className="font-medium jewelry-text-royal block">{lastTransaction.customer.name}</span>
-                      <span className="text-sm text-gray-600">{lastTransaction.customer.phone}</span>
+                      <span className="font-medium jewelry-text-royal block">
+                        {lastTransaction.customer.name}
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        {lastTransaction.customer.phone}
+                      </span>
                       {lastTransaction.customer.vipStatus && (
                         <div className="flex items-center gap-2 mt-1">
                           <Crown className="h-3 w-3 jewelry-icon-gold" />
@@ -875,8 +935,11 @@ export default function JewelryPOSPage() {
                 {/* Items */}
                 <div className="space-y-3">
                   <h4 className="font-semibold jewelry-text-royal">Items Purchased</h4>
-                  {lastTransaction.items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 jewelry-glass-card p-3 rounded-xl">
+                  {lastTransaction.items.map(item => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 jewelry-glass-card p-3 rounded-xl"
+                    >
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden">
                         {item.image ? (
                           <Image
@@ -893,11 +956,17 @@ export default function JewelryPOSPage() {
                         )}
                       </div>
                       <div className="flex-1">
-                        <span className="font-medium jewelry-text-royal block text-sm">{item.name}</span>
-                        <span className="text-xs text-gray-600">{item.purity} • {item.weight}g</span>
+                        <span className="font-medium jewelry-text-royal block text-sm">
+                          {item.name}
+                        </span>
+                        <span className="text-xs text-gray-600">
+                          {item.purity} • {item.weight}g
+                        </span>
                       </div>
                       <div className="text-right">
-                        <span className="font-medium jewelry-text-royal block">${item.price.toLocaleString()}</span>
+                        <span className="font-medium jewelry-text-royal block">
+                          ${item.price.toLocaleString()}
+                        </span>
                         <span className="text-xs text-gray-600">Qty: {item.quantity}</span>
                       </div>
                     </div>
@@ -910,26 +979,36 @@ export default function JewelryPOSPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span className="jewelry-text-royal font-medium">${lastTransaction.subtotal.toLocaleString()}</span>
+                      <span className="jewelry-text-royal font-medium">
+                        ${lastTransaction.subtotal.toLocaleString()}
+                      </span>
                     </div>
                     {lastTransaction.discount > 0 && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Discount</span>
-                        <span className="text-red-500 font-medium">-${lastTransaction.discount.toFixed(2)}</span>
+                        <span className="text-red-500 font-medium">
+                          -${lastTransaction.discount.toFixed(2)}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax ({taxPercent}%)</span>
-                      <span className="jewelry-text-royal font-medium">${lastTransaction.tax.toFixed(2)}</span>
+                      <span className="jewelry-text-royal font-medium">
+                        ${lastTransaction.tax.toFixed(2)}
+                      </span>
                     </div>
                     <div className="border-t border-gray-200 pt-2 flex justify-between">
                       <span className="font-semibold jewelry-text-royal">Total</span>
-                      <span className="font-bold jewelry-text-gold text-lg">${lastTransaction.total.toFixed(2)}</span>
+                      <span className="font-bold jewelry-text-gold text-lg">
+                        ${lastTransaction.total.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
                     <CreditCard className="h-4 w-4 text-gray-600" />
-                    <span className="text-sm text-gray-600">Paid with {lastTransaction.paymentMethod}</span>
+                    <span className="text-sm text-gray-600">
+                      Paid with {lastTransaction.paymentMethod}
+                    </span>
                     <span className="text-sm font-medium text-green-600 ml-auto">✓ Completed</span>
                   </div>
                 </div>

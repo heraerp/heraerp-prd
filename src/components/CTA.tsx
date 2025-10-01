@@ -38,7 +38,7 @@ function CTAContent({ city, variants = [], className = '' }: CTAProps) {
 
   return (
     <aside
-      className={`fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-500 ${isVisible ?'translate-y-0' : 'translate-y-full'}
+      className={`fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-500 ${isVisible ? 'translate-y-0' : 'translate-y-full'}
         ${className}
       `}
     >

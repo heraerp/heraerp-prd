@@ -273,7 +273,7 @@ export function SupplierManager() {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${i < stars ?'text-yellow-400 fill-current' : 'text-gray-300'}`}
+        className={`w-4 h-4 ${i < stars ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
       />
     ))
   }
@@ -649,9 +649,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Supplier Name *
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Supplier Name *</label>
                     <input
                       type="text"
                       required
@@ -684,9 +682,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Contact Person *
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Contact Person *</label>
                     <input
                       type="text"
                       required
@@ -738,9 +734,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Business Terms</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Payment Terms
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Payment Terms</label>
                     <select
                       value={formData.payment_terms}
                       onChange={e => setFormData({ ...formData, payment_terms: e.target.value })}
@@ -756,9 +750,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Credit Limit
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Credit Limit</label>
                     <input
                       type="number"
                       min="0"
@@ -793,9 +785,7 @@ export function SupplierManager() {
                 <h3 className="text-lg font-medium text-gray-100 mb-4">Address</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Address Line 1
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Address Line 1</label>
                     <input
                       type="text"
                       value={formData.address_line1}
@@ -806,9 +796,7 @@ export function SupplierManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium ink mb-2">
-                      Address Line 2
-                    </label>
+                    <label className="block text-sm font-medium ink mb-2">Address Line 2</label>
                     <input
                       type="text"
                       value={formData.address_line2}
@@ -842,9 +830,7 @@ export function SupplierManager() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium ink mb-2">
-                        Postal Code
-                      </label>
+                      <label className="block text-sm font-medium ink mb-2">Postal Code</label>
                       <input
                         type="text"
                         value={formData.postal_code}
@@ -855,9 +841,7 @@ export function SupplierManager() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium ink mb-2">
-                        Country
-                      </label>
+                      <label className="block text-sm font-medium ink mb-2">Country</label>
                       <input
                         type="text"
                         value={formData.country}
@@ -872,9 +856,7 @@ export function SupplierManager() {
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium ink mb-2">
-                  Description/Notes
-                </label>
+                <label className="block text-sm font-medium ink mb-2">Description/Notes</label>
                 <textarea
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}

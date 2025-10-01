@@ -360,7 +360,9 @@ export default function OrganizationAppsPage({ params }: { params: Promise<{ id:
             return (
               <Card
                 key={app.id}
-                className={`bg-background/80 dark:bg-background/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${ isSelected ?'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl'
+                className={`bg-background/80 dark:bg-background/80 backdrop-blur-xl cursor-pointer transition-all transform hover:-translate-y-1 hover:scale-105 duration-200 ${
+                  isSelected
+                    ? 'border-2 border-blue-500/50 dark:border-blue-400/50 shadow-2xl'
                     : 'border border-border/20 dark:border-border/50 hover:border-blue-300/50 dark:hover:border-blue-600/50 hover:shadow-xl'
                 }`}
                 onClick={() => toggleApp(app.id)}

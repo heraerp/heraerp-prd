@@ -1,16 +1,16 @@
 // app/examples/create-transaction/page.tsx
-'use client';
-import React, { Suspense } from 'react';
-import { WizardForm } from '@/ui';
-import { useRouter, useSearchParams } from 'next/navigation';
+'use client'
+import React, { Suspense } from 'react'
+import { WizardForm } from '@/ui'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 function CreateTransactionContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   // Allow smart code to be passed via URL
-  const smartCode = searchParams.get('smart_code') || 'HERA.UNIV.TXN.GENERIC.V1';
-  const type = searchParams.get('type');
+  const smartCode = searchParams.get('smart_code') || 'HERA.UNIV.TXN.GENERIC.V1'
+  const type = searchParams.get('type')
 
   const commonExamples = [
     {
@@ -43,7 +43,7 @@ function CreateTransactionContent() {
       smart_code: 'HERA.INV.RCV.TXN.IN.V1',
       description: 'Receive inventory into warehouse'
     }
-  ];
+  ]
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -74,25 +74,23 @@ function CreateTransactionContent() {
           <div className="bg-white rounded-xl border p-4">
             <h3 className="font-semibold mb-3">Quick Examples</h3>
             <div className="space-y-2">
-              {commonExamples.map((example) => (
+              {commonExamples.map(example => (
                 <button
                   key={example.smart_code}
                   onClick={() => {
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('smart_code', example.smart_code);
-                    router.push(url.pathname + url.search);
+                    const url = new URL(window.location.href)
+                    url.searchParams.set('smart_code', example.smart_code)
+                    router.push(url.pathname + url.search)
                   }}
                   className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                    smartCode === example.smart_code 
-                      ? 'bg-blue-50 border-blue-300' 
+                    smartCode === example.smart_code
+                      ? 'bg-blue-50 border-blue-300'
                       : 'hover:bg-gray-50'
                   }`}
                 >
                   <div className="font-medium text-sm">{example.title}</div>
                   <div className="text-xs text-gray-600 mt-0.5">{example.description}</div>
-                  <code className="text-xs text-gray-500 mt-1 block">
-                    {example.smart_code}
-                  </code>
+                  <code className="text-xs text-gray-500 mt-1 block">{example.smart_code}</code>
                 </button>
               ))}
             </div>
@@ -111,7 +109,7 @@ function CreateTransactionContent() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function CreateTransactionPage() {
@@ -119,5 +117,5 @@ export default function CreateTransactionPage() {
     <Suspense fallback={<div className="p-6">Loading...</div>}>
       <CreateTransactionContent />
     </Suspense>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { APPROACH } from '@/data/about';
+import { APPROACH } from '@/data/about'
 
 export default function ApproachGrid() {
   return (
@@ -10,5 +10,5 @@ export default function ApproachGrid() {
         </div>
       ))}
     </div>
-  );
+  )
 }

@@ -16,26 +16,26 @@ import { Trash2, Plus, Package, Users, Briefcase, Scissors } from 'lucide-react'
  */
 export default function UniversalDemoPage() {
   const { toast } = useToast()
-  
+
   // Different entity configurations - same hook!
   const products = useUniversalEntity({ entity_type: 'product' })
   const services = useUniversalEntity({ entity_type: 'service' })
   const customers = useUniversalEntity({ entity_type: 'customer' })
   const vendors = useUniversalEntity({ entity_type: 'vendor' })
-  
+
   // Form states
   const [productForm, setProductForm] = useState({
     name: '',
     price: '',
     brand: ''
   })
-  
+
   const [serviceForm, setServiceForm] = useState({
     name: '',
     duration: '',
     price: ''
   })
-  
+
   const [customerForm, setCustomerForm] = useState({
     name: '',
     email: '',
@@ -50,11 +50,19 @@ export default function UniversalDemoPage() {
         entity_name: productForm.name,
         smart_code: 'HERA.SALON.CATALOG.PRODUCT.RETAIL.V1',
         dynamic_fields: {
-          price: { value: parseFloat(productForm.price), type: 'number', smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.PRICE.V1' },
-          brand: { value: productForm.brand, type: 'text', smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.BRAND.V1' }
+          price: {
+            value: parseFloat(productForm.price),
+            type: 'number',
+            smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.PRICE.V1'
+          },
+          brand: {
+            value: productForm.brand,
+            type: 'text',
+            smart_code: 'HERA.SALON.CATALOG.PRODUCT.FIELD.BRAND.V1'
+          }
         }
       })
-      
+
       toast({ title: 'Product created!', description: `${productForm.name} added successfully` })
       setProductForm({ name: '', price: '', brand: '' })
     } catch (error: any) {
@@ -70,11 +78,19 @@ export default function UniversalDemoPage() {
         entity_name: serviceForm.name,
         smart_code: 'HERA.SALON.CATALOG.SERVICE.CHAIRTIME.V1',
         dynamic_fields: {
-          duration_minutes: { value: parseInt(serviceForm.duration), type: 'number', smart_code: 'HERA.SALON.CATALOG.SERVICE.FIELD.DURATION.V1' },
-          price: { value: parseFloat(serviceForm.price), type: 'number', smart_code: 'HERA.SALON.CATALOG.SERVICE.FIELD.PRICE.V1' }
+          duration_minutes: {
+            value: parseInt(serviceForm.duration),
+            type: 'number',
+            smart_code: 'HERA.SALON.CATALOG.SERVICE.FIELD.DURATION.V1'
+          },
+          price: {
+            value: parseFloat(serviceForm.price),
+            type: 'number',
+            smart_code: 'HERA.SALON.CATALOG.SERVICE.FIELD.PRICE.V1'
+          }
         }
       })
-      
+
       toast({ title: 'Service created!', description: `${serviceForm.name} added successfully` })
       setServiceForm({ name: '', duration: '', price: '' })
     } catch (error: any) {
@@ -90,11 +106,19 @@ export default function UniversalDemoPage() {
         entity_name: customerForm.name,
         smart_code: 'HERA.SALON.CRM.CUSTOMER.PROFILE.V1',
         dynamic_fields: {
-          email: { value: customerForm.email, type: 'text', smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.EMAIL.V1' },
-          phone: { value: customerForm.phone, type: 'text', smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.PHONE.V1' }
+          email: {
+            value: customerForm.email,
+            type: 'text',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.EMAIL.V1'
+          },
+          phone: {
+            value: customerForm.phone,
+            type: 'text',
+            smart_code: 'HERA.SALON.CRM.CUSTOMER.FIELD.PHONE.V1'
+          }
         }
       })
-      
+
       toast({ title: 'Customer created!', description: `${customerForm.name} added successfully` })
       setCustomerForm({ name: '', email: '', phone: '' })
     } catch (error: any) {
@@ -146,7 +170,7 @@ export default function UniversalDemoPage() {
                     <Input
                       id="product-name"
                       value={productForm.name}
-                      onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                      onChange={e => setProductForm({ ...productForm, name: e.target.value })}
                       placeholder="Professional Shampoo"
                     />
                   </div>
@@ -156,7 +180,7 @@ export default function UniversalDemoPage() {
                       id="product-price"
                       type="number"
                       value={productForm.price}
-                      onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                      onChange={e => setProductForm({ ...productForm, price: e.target.value })}
                       placeholder="89.99"
                     />
                   </div>
@@ -165,14 +189,14 @@ export default function UniversalDemoPage() {
                     <Input
                       id="product-brand"
                       value={productForm.brand}
-                      onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
+                      onChange={e => setProductForm({ ...productForm, brand: e.target.value })}
                       placeholder="HERA Professional"
                     />
                   </div>
                 </div>
-                
-                <Button 
-                  onClick={handleCreateProduct} 
+
+                <Button
+                  onClick={handleCreateProduct}
                   disabled={!productForm.name || products.isCreating}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -186,7 +210,10 @@ export default function UniversalDemoPage() {
                     <p className="text-muted-foreground">No products yet. Create one above!</p>
                   ) : (
                     products.entities.map((product: any) => (
-                      <div key={product.id} className="flex items-center justify-between p-3 border rounded">
+                      <div
+                        key={product.id}
+                        className="flex items-center justify-between p-3 border rounded"
+                      >
                         <div>
                           <h4 className="font-medium">{product.entity_name}</h4>
                           <p className="text-sm text-muted-foreground">
@@ -224,7 +251,7 @@ export default function UniversalDemoPage() {
                     <Input
                       id="service-name"
                       value={serviceForm.name}
-                      onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })}
+                      onChange={e => setServiceForm({ ...serviceForm, name: e.target.value })}
                       placeholder="Hair Cut & Style"
                     />
                   </div>
@@ -234,7 +261,7 @@ export default function UniversalDemoPage() {
                       id="service-duration"
                       type="number"
                       value={serviceForm.duration}
-                      onChange={(e) => setServiceForm({ ...serviceForm, duration: e.target.value })}
+                      onChange={e => setServiceForm({ ...serviceForm, duration: e.target.value })}
                       placeholder="60"
                     />
                   </div>
@@ -244,14 +271,14 @@ export default function UniversalDemoPage() {
                       id="service-price"
                       type="number"
                       value={serviceForm.price}
-                      onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })}
+                      onChange={e => setServiceForm({ ...serviceForm, price: e.target.value })}
                       placeholder="150"
                     />
                   </div>
                 </div>
-                
-                <Button 
-                  onClick={handleCreateService} 
+
+                <Button
+                  onClick={handleCreateService}
                   disabled={!serviceForm.name || services.isCreating}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -265,11 +292,15 @@ export default function UniversalDemoPage() {
                     <p className="text-muted-foreground">No services yet. Create one above!</p>
                   ) : (
                     services.entities.map((service: any) => (
-                      <div key={service.id} className="flex items-center justify-between p-3 border rounded">
+                      <div
+                        key={service.id}
+                        className="flex items-center justify-between p-3 border rounded"
+                      >
                         <div>
                           <h4 className="font-medium">{service.entity_name}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {service.dynamic_data?.duration_minutes || 0} min • AED {service.dynamic_data?.price || 0}
+                            {service.dynamic_data?.duration_minutes || 0} min • AED{' '}
+                            {service.dynamic_data?.price || 0}
                           </p>
                         </div>
                         <Button
@@ -303,7 +334,7 @@ export default function UniversalDemoPage() {
                     <Input
                       id="customer-name"
                       value={customerForm.name}
-                      onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
+                      onChange={e => setCustomerForm({ ...customerForm, name: e.target.value })}
                       placeholder="Jane Smith"
                     />
                   </div>
@@ -313,7 +344,7 @@ export default function UniversalDemoPage() {
                       id="customer-email"
                       type="email"
                       value={customerForm.email}
-                      onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
+                      onChange={e => setCustomerForm({ ...customerForm, email: e.target.value })}
                       placeholder="jane@example.com"
                     />
                   </div>
@@ -322,14 +353,14 @@ export default function UniversalDemoPage() {
                     <Input
                       id="customer-phone"
                       value={customerForm.phone}
-                      onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
+                      onChange={e => setCustomerForm({ ...customerForm, phone: e.target.value })}
                       placeholder="+971 50 123 4567"
                     />
                   </div>
                 </div>
-                
-                <Button 
-                  onClick={handleCreateCustomer} 
+
+                <Button
+                  onClick={handleCreateCustomer}
                   disabled={!customerForm.name || customers.isCreating}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -343,7 +374,10 @@ export default function UniversalDemoPage() {
                     <p className="text-muted-foreground">No customers yet. Create one above!</p>
                   ) : (
                     customers.entities.map((customer: any) => (
-                      <div key={customer.id} className="flex items-center justify-between p-3 border rounded">
+                      <div
+                        key={customer.id}
+                        className="flex items-center justify-between p-3 border rounded"
+                      >
                         <div>
                           <h4 className="font-medium">{customer.entity_name}</h4>
                           <p className="text-sm text-muted-foreground">
@@ -375,7 +409,8 @@ export default function UniversalDemoPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                The beauty of the universal API - adding vendor support is just a matter of defining the entity type and smart codes!
+                The beauty of the universal API - adding vendor support is just a matter of defining
+                the entity type and smart codes!
               </p>
             </CardContent>
           </Card>

@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
-import { type Leader } from '@/data/about';
+import { useState } from 'react'
+import { type Leader } from '@/data/about'
 
 interface LeaderCardProps {
-  leader: Leader;
+  leader: Leader
 }
 
 export default function LeaderCard({ leader }: LeaderCardProps) {
-  const [showActions, setShowActions] = useState(false);
+  const [showActions, setShowActions] = useState(false)
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && leader.linkedin) {
-      window.open(leader.linkedin, '_blank', 'noreferrer');
+      window.open(leader.linkedin, '_blank', 'noreferrer')
     }
-  };
+  }
 
   return (
     <div
@@ -31,15 +31,9 @@ export default function LeaderCard({ leader }: LeaderCardProps) {
         {/* Avatar */}
         <div className="avatar w-16 h-16">
           {leader.photo ? (
-            <img
-              src={leader.photo}
-              alt={leader.name}
-              className="w-full h-full object-cover"
-            />
+            <img src={leader.photo} alt={leader.name} className="w-full h-full object-cover" />
           ) : (
-            <div className="avatar-initial">
-              {leader.name.charAt(0)}
-            </div>
+            <div className="avatar-initial">{leader.name.charAt(0)}</div>
           )}
         </div>
 
@@ -56,13 +50,15 @@ export default function LeaderCard({ leader }: LeaderCardProps) {
 
         {/* Actions bar */}
         {leader.linkedin && (
-          <div className={`pop transition-opacity duration-200 ${showActions ? 'opacity-100' : 'opacity-0'}`}>
+          <div
+            className={`pop transition-opacity duration-200 ${showActions ? 'opacity-100' : 'opacity-0'}`}
+          >
             <a
               href={leader.linkedin}
               target="_blank"
               rel="noreferrer"
               className="btn-quiet text-sm"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               LinkedIn
             </a>
@@ -70,5 +66,5 @@ export default function LeaderCard({ leader }: LeaderCardProps) {
         )}
       </div>
     </div>
-  );
+  )
 }
