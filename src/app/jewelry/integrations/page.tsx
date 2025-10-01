@@ -486,7 +486,7 @@ export default function JewelryIntegrationsPage() {
       setupTime: '4 hours',
       requirements: ['Zoho account', 'Data mapping', 'User training'],
       benefits: ['Complete CRM suite', 'Sales automation', 'Custom workflows'],
-      pricing: '¹1,200/user/month',
+      pricing: '₹1,200/user/month',
       documentation: 'https://help.zoho.com/portal/crm',
       supportLevel: 'enterprise'
     }
@@ -592,7 +592,7 @@ export default function JewelryIntegrationsPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return `¹${amount.toLocaleString()}`
+    return `₹${amount.toLocaleString()}`
   }
 
   const formatPercentage = (value: number) => {
@@ -692,7 +692,7 @@ export default function JewelryIntegrationsPage() {
                 
                 <div className="jewelry-glass-card jewelry-float p-6 text-center" style={{ animationDelay: '0.3s' }}>
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">¹18,450</h3>
+                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">₹18,450</h3>
                   <p className="jewelry-text-muted text-sm font-medium">Monthly Cost</p>
                   <div className="flex items-center justify-center mt-2 text-yellow-500">
                     <TrendingUp size={16} />
@@ -973,7 +973,7 @@ export default function JewelryIntegrationsPage() {
                             <div className="flex items-start justify-between mb-2">
                               <div>
                                 <h4 className="jewelry-text-high-contrast font-semibold">{integration.name}</h4>
-                                <p className="jewelry-text-muted text-sm">{integration.provider} " {integration.category}</p>
+                                <p className="jewelry-text-muted text-sm">{integration.provider} - {integration.category}</p>
                               </div>
                               <div className="flex items-center space-x-2">
                                 <span className={`text-xs px-2 py-1 rounded ${getStatusColor(integration.status)}`}>
