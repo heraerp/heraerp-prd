@@ -1,0 +1,160 @@
+@baseUrl = http://localhost:3000
+@orgId = {{ORG_ID}}
+@contentType = application/json
+
+# Common headers
+###
+GET {{baseUrl}}/api/v2/ping
+X-Hera-Api-Version: v2
+
+### Create/Update Category
+POST {{baseUrl}}/api/v2/entities/upsert
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_type": "PRODUCT_CATEGORY",
+  "p_entity_name": "Rings",
+  "p_entity_code": "CAT-RINGS",
+  "p_smart_code": "HERA.JEWELRY.CATALOG.CATEGORY.RINGS.v1",
+  "p_status": "active"
+}
+
+### Attach category metadata (SEO slug)
+POST {{baseUrl}}/api/v2/dynamic/set
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_id": "<category-id>",
+  "p_field_name": "seo.slug",
+  "p_field_type": "text",
+  "p_field_value_text": "rings",
+  "p_smart_code": "HERA.JEWELRY.CATALOG.METADATA.SEO.v1"
+}
+
+### Create Product (master)
+POST {{baseUrl}}/api/v2/entities/upsert
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_type": "PRODUCT",
+  "p_entity_name": "Noelle Solitaire Ring",
+  "p_entity_code": "PROD-NOELLE",
+  "p_smart_code": "HERA.JEWELRY.PRODUCT.RING.SOLITAIRE.v1",
+  "p_status": "active"
+}
+
+### Link Product → Category
+POST {{baseUrl}}/api/v2/rel/upsert
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_from_entity_id": "<product-id>",
+  "p_to_entity_id": "<category-id>",
+  "p_relationship_type": "BELONGS_TO",
+  "p_smart_code": "HERA.JEWELRY.REL.PRODUCT.BELONGS_TO.CATEGORY.v1"
+}
+
+### Add Product Specs (metal, diamond quality, size options)
+POST {{baseUrl}}/api/v2/dynamic/batch
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_id": "<product-id>",
+  "p_items": [
+    {"field_name":"metal.karat","field_type":"number","field_value_number":18,"smart_code":"HERA.JEWELRY.METAL.METADATA.KARAT.v1"},
+    {"field_name":"metal.color","field_type":"text","field_value_text":"Yellow","smart_code":"HERA.JEWELRY.METAL.METADATA.COLOR.v1"},
+    {"field_name":"diamond.quality","field_type":"text","field_value_text":"SI GH","smart_code":"HERA.JEWELRY.DIAMOND.METADATA.QUALITY.v1"},
+    {"field_name":"size.options","field_type":"json","field_value_json":{"US":[5,5.5,6,6.5,7]},"smart_code":"HERA.JEWELRY.PRODUCT.METADATA.SIZE_OPTIONS.v1"}
+  ]
+}
+
+### Create a Variant/SKU (child of Product)
+POST {{baseUrl}}/api/v2/entities/upsert
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_type": "SKU",
+  "p_entity_name": "Noelle Solitaire 18K Yellow Gold — Size 6 — SI GH",
+  "p_entity_code": "SKU-NOELLE-18Y-6-SIGH",
+  "p_parent_entity_id": "<product-id>",
+  "p_smart_code": "HERA.JEWELRY.SKU.RING.SOLITAIRE.v1",
+  "p_status": "active"
+}
+
+### Link SKU → Certificate
+POST {{baseUrl}}/api/v2/rel/create
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_from_entity_id": "<sku-id>",
+  "p_to_entity_id": "<certificate-id>",
+  "p_relationship_type": "CERTIFIED_BY",
+  "p_smart_code": "HERA.JEWELRY.REL.SKU.CERTIFIED_BY.CERTIFICATE.v1"
+}
+
+### Read by type
+GET {{baseUrl}}/api/v2/entities/read?p_organization_id={{orgId}}&p_entity_type=PRODUCT
+X-Hera-Api-Version: v2
+
+### Read by code
+GET {{baseUrl}}/api/v2/entities/read?p_organization_id={{orgId}}&p_entity_code=PROD-NOELLE
+X-Hera-Api-Version: v2
+
+### Delete Entity
+DELETE {{baseUrl}}/api/v2/entities/delete
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_id": "<entity-id>"
+}
+
+### Recover Entity
+POST {{baseUrl}}/api/v2/entities/recover
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_organization_id": "{{orgId}}",
+  "p_entity_id": "<entity-id>"
+}
+
+### Minimal POS Sale Transaction
+POST {{baseUrl}}/api/v2/txn/create
+Content-Type: {{contentType}}
+X-Hera-Api-Version: v2
+
+{
+  "p_header": {
+    "organization_id": "{{orgId}}",
+    "transaction_type": "POS_SALE",
+    "transaction_code": "POS-INV-100045",
+    "smart_code": "HERA.JEWELRY.POS.SALE.TXN.v1",
+    "transaction_currency_code": "AED",
+    "base_currency_code": "AED"
+  },
+  "p_lines": [
+    { "line_type":"ITEM", "description":"Noelle Solitaire 18K YG Size 6", "quantity":1, "unit_amount":1500, "smart_code":"HERA.JEWELRY.POS.SALE.LINE.v1" },
+    { "line_type":"TAX", "description":"VAT 5%", "line_amount":75, "smart_code":"HERA.TAX.VAT.OUTPUT.LINE.v1" }
+  ]
+}
+
+### Read Transaction (by id)
+GET {{baseUrl}}/api/v2/txn/read?p_organization_id={{orgId}}&p_transaction_id=<txn-id>
+X-Hera-Api-Version: v2
+

@@ -204,7 +204,7 @@ Use in Tailwind like:
 
 ## Examples
 
-See the `/src/app/examples/` directory for complete examples:
+See the `/src/_examples/` directory for complete examples:
 - `theme-demo/` - Full theme system showcase
 - `dashboard/` - Dashboard with all components
 - `wizard-form/` - Dynamic form generation
