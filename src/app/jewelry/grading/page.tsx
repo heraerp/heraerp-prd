@@ -80,7 +80,7 @@ export default function JewelryGradingPage() {
     relationships: GRADING_JOB_PRESET.relationships,
     filters: { 
       include_dynamic: true, 
-      include_relationships: false, // Temporarily disable to prevent infinite loops
+      include_relationships: true, // Re-enabled after fixing stable references
       limit: 100 
     }
   })

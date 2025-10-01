@@ -1,0 +1,24 @@
+%% HERA Six-Table Architecture
+flowchart LR
+  subgraph CORE[Core]
+    CO[core_organizations]
+    CE[core_entities]
+    DD[core_dynamic_data]
+    CR[core_relationships]
+  end
+
+  subgraph TXN[Transactions]
+    UT[universal_transactions]
+    UL[universal_transaction_lines]
+  end
+
+  CO --> CE
+  CE --> DD
+  CE --> CR
+  UT --> UL
+
+  classDef core fill:#ecfeff,stroke:#06b6d4,color:#0e7490;
+  classDef txn  fill:#fff1f2,stroke:#fb7185,color:#9f1239;
+
+  class CO,CE,DD,CR core;
+  class UT,UL txn;

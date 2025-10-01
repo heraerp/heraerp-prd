@@ -19,6 +19,11 @@
     "cc:deploy": "node mcp-server/hera-control-center.js deploy-check",
     "cc:guardrails": "node mcp-server/hera-control-center.js guardrails",
     "cc:setup": "node scripts/setup-control-center-hooks.js",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:presets": "npm run docs:generate && echo 'Preset docs generated in ./docs/presets/'",
+    "docs:diagrams": "npx tsx scripts/generate-mermaid-diagrams.ts",
+    "docs:global-graph": "npx tsx scripts/generate-global-graph.ts",
+    "docs:all-diagrams": "npm run docs:diagrams && npm run docs:global-graph",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
     "postbuild": "node scripts/verify-next-build.js",
     "build:analyze": "ANALYZE=true npm run build",
@@ -166,7 +171,6 @@
     "monitoring:logs": "docker-compose -f monitoring/docker-compose.yml logs -f",
     "monitoring:status": "curl -s http://localhost:3001/api/health | jq .",
     "docs:setup-hooks": "node scripts/setup-doc-hooks.js",
-    "docs:generate": "node scripts/generate-docs.js",
     "docs:sync": "node scripts/sync-docs.js",
     "docs:health": "node scripts/doc-health.js",
     "docs:validate": "node scripts/validate-docs.js",
@@ -319,6 +323,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.9.0",
     "@lhci/cli": "^0.14.0",
+    "@mermaid-js/mermaid-cli": "^11.12.0",
     "@next/bundle-analyzer": "^15.5.2",
     "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
@@ -351,10 +356,12 @@
     "pg": "^8.11.5",
     "postcss": "^8.4.31",
     "prettier": "^3.6.2",
+    "puppeteer": "^24.22.3",
     "tailwindcss": "^3.4.0",
     "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.0",
-    "typescript": "^5.3.0",
+    "typescript": "^5.9.3",
     "vitest": "^1.6.1"
   }
 }
