@@ -84,7 +84,7 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       }
       return response.json()
     },
-    enabled: !!organizationId
+    enabled: true // Always enabled for demo - organization handled by demo token
   })
 
   // Create entity mutation
@@ -105,7 +105,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       return response.json()
     },
     onSuccess: () => {
+      // Invalidate both specific entity type and all entities
       queryClient.invalidateQueries({ queryKey: ['entities', entity_type] })
+      queryClient.invalidateQueries({ queryKey: ['entities'] })
+      console.log('✅ Invalidated queries after entity creation')
     }
   })
 
