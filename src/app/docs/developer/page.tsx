@@ -20,12 +20,6 @@ import {
   Package
 } from 'lucide-react'
 
-export const metadata = {
-  title: 'HERA Developer Portal - Enterprise Documentation',
-  description:
-    'Technical documentation for HERA Universal API v2, Smart Code Engine, and enterprise architecture.'
-}
-
 export default function DeveloperPortal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
