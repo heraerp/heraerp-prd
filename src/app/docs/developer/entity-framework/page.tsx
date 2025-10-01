@@ -404,10 +404,10 @@ export default function EntityFrameworkDocs() {
               <div className="pl-4 text-green-400">plural: <div className="text-orange-400">'Products'</div></div>
               <div className="pl-2 text-white">{'},'}</div>
               <div className="pl-2 text-green-400">permissions: {'{'}</div>
-              <div className="pl-4 text-green-400">create: <div className="text-blue-400">(role: Role) => ['owner', 'manager'].includes(role)</div>,</div>
-              <div className="pl-4 text-green-400">edit: <div className="text-blue-400">(role: Role) => ['owner', 'manager', 'receptionist'].includes(role)</div>,</div>
-              <div className="pl-4 text-green-400">delete: <div className="text-blue-400">(role: Role) => ['owner', 'manager'].includes(role)</div>,</div>
-              <div className="pl-4 text-green-400">view: <div className="text-blue-400">() => true</div></div>
+              <div className="pl-4 text-green-400">create: <div className="text-blue-400">(role: Role) {'=>'} ['owner', 'manager'].includes(role)</div>,</div>
+              <div className="pl-4 text-green-400">edit: <div className="text-blue-400">(role: Role) {'=>'} ['owner', 'manager', 'receptionist'].includes(role)</div>,</div>
+              <div className="pl-4 text-green-400">delete: <div className="text-blue-400">(role: Role) {'=>'} ['owner', 'manager'].includes(role)</div>,</div>
+              <div className="pl-4 text-green-400">view: <div className="text-blue-400">() {'=>'} true</div></div>
               <div className="pl-2 text-white">{'},'}</div>
               <div className="pl-2 text-green-400">dynamicFields: [</div>
               <div className="pl-4 text-white">{'{'}</div>
