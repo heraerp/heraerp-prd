@@ -61,7 +61,7 @@ export default function WorkSummaryPage() {
                     <span>
                       Smart Code pattern validation:{' '}
                       <code>
-                        HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.v{VERSION}
+                        HERA.{'{'}{'{'}INDUSTRY{'}'}.{'{'}{'{'}MODULE{'}'}.{'{'}{'{'}TYPE{'}'}.{'{'}{'{'}SUBTYPE{'}'}.v{'{'}{'{'}VERSION{'}'}
                       </code>
                     </span>
                   </li>
