@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useHERAAuth } from '@/components/auth/HERAAuthProvider'
+import { supabase } from '@/lib/supabase/client'
 
 // Universal entity type definition
 export interface UniversalEntity {
@@ -28,6 +29,24 @@ interface UseUniversalEntityConfig {
     limit?: number
     offset?: number
     include_dynamic?: boolean
+  }
+}
+
+// Helper to get authentication headers
+async function getAuthHeaders(): Promise<Record<string, string>> {
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (session?.access_token) {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`
+    }
+  }
+  
+  // Fallback to demo token for Hair Talkz salon
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer demo-token-salon-receptionist'
   }
 }
 
@@ -62,7 +81,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         include_dynamic: (filters.include_dynamic !== false).toString()
       })
 
-      const response = await fetch(`/api/v2/entities?${params}`)
+      const headers = await getAuthHeaders()
+      const response = await fetch(`/api/v2/entities?${params}`, {
+        headers
+      })
       if (!response.ok) {
         const error = await response.json()
         throw new Error(error.error || 'Failed to fetch entities')
@@ -75,11 +97,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
   // Create entity mutation
   const createMutation = useMutation({
     mutationFn: async (entity: UniversalEntity) => {
+      const headers = await getAuthHeaders()
       const response = await fetch('/api/v2/entities', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(entity)
       })
 
@@ -101,11 +122,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
       entity_id,
       ...updates
     }: Partial<UniversalEntity> & { entity_id: string }) => {
+      const headers = await getAuthHeaders()
       const response = await fetch('/api/v2/entities', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({ entity_id, ...updates })
       })
 
@@ -134,8 +154,10 @@ export function useUniversalEntity(config: UseUniversalEntityConfig) {
         hard_delete: hard_delete.toString()
       })
 
+      const headers = await getAuthHeaders()
       const response = await fetch(`/api/v2/entities/${entity_id}?${params}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers
       })
 
       if (!response.ok) {
