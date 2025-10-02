@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   Brain,
@@ -232,6 +232,7 @@ interface AIModel {
 }
 
 export default function JewelryAIPage() {
+  // ✅ All hooks before conditional returns (Enterprise Pattern)
   const [activeTab, setActiveTab] = useState('dashboard')
   const [selectedPeriod, setSelectedPeriod] = useState('this_month')
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -240,6 +241,29 @@ export default function JewelryAIPage() {
   )
   const [selectedInsight, setSelectedInsight] = useState<AIInsight | null>(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
+  const [organizationId, setOrganizationId] = useState<string | null>(null)
+  const [jewelryRole, setJewelryRole] = useState<string | null>(null)
+  const [orgLoading, setOrgLoading] = useState(true)
+
+  // ✅ Check organization context (Enterprise Auth Pattern)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const orgId = localStorage.getItem('organizationId')
+      const role = localStorage.getItem('jewelryRole')
+
+      if (!orgId || !role) {
+        // Redirect to demo if no organization context
+        window.location.href = '/jewelry/demo'
+        return
+      }
+
+      setOrganizationId(orgId)
+      setJewelryRole(role)
+      setOrgLoading(false)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   // Mock AI data
   const aiRecommendations: AIRecommendation[] = [
@@ -312,7 +336,7 @@ export default function JewelryAIPage() {
       metrics: [
         { label: 'Peak Hours', value: '6-8 PM', trend: 'stable' },
         { label: 'Conversion Rate', value: '8.9%', trend: 'up', change: 2.1 },
-        { label: 'Avg Order Value', value: '$18,750', trend: 'up', change: 12.5 }
+        { label: 'Avg Order Value', value: '18,750', trend: 'up', change: 12.5 }
       ],
       visualization: 'chart',
       confidence: 94.2,
@@ -365,7 +389,7 @@ export default function JewelryAIPage() {
       ],
       demographics: {
         ageRange: '35-55 years',
-        income: '$50L+ annually',
+        income: '50L+ annually',
         location: 'Metro cities',
         lifestyle: 'Affluent professionals'
       },
@@ -505,44 +529,83 @@ export default function JewelryAIPage() {
     }
   }
 
+  // ✅ Loading state (Enterprise Pattern)
+  if (orgLoading) {
+    return (
+      <div className="min-h-screen jewelry-gradient-primary flex items-center justify-center">
+        <div className="jewelry-glass-card p-6">
+          <Brain className="h-12 w-12 jewelry-text-gold animate-pulse mx-auto mb-4" />
+          <p className="!text-gray-100 dark:!text-gray-100 text-center">
+            Loading AI Intelligence...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // ✅ Organization check (Enterprise Pattern)
+  if (!organizationId || !jewelryRole) {
+    return (
+      <div className="min-h-screen jewelry-gradient-primary flex items-center justify-center">
+        <div className="jewelry-glass-card p-8 text-center">
+          <Brain className="h-16 w-16 jewelry-text-gold mx-auto mb-4" />
+          <h2 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold mb-2">
+            Access Required
+          </h2>
+          <p className="!text-gray-400 dark:!text-gray-400 mb-4">
+            Please select an organization to access AI features
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen jewelry-gradient-premium">
-      <div className="jewelry-glass-backdrop min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900">
+      {/* ✅ Enterprise background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-yellow-400/20 to-amber-400/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+      </div>
+
+      <div className="relative z-10">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
-          {/* Header */}
+          {/* ✅ Enterprise Header with proper contrast */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-8"
+            className="text-center mb-8 p-6"
           >
-            <h1 className="jewelry-heading text-4xl md:text-5xl mb-4">
+            <h1 className="!text-gray-100 dark:!text-gray-100 text-4xl md:text-5xl mb-4 font-bold">
               <Brain className="inline-block mr-3 mb-2 jewelry-icon-gold" size={48} />
               AI-Powered Intelligence
             </h1>
-            <p className="jewelry-text-luxury text-lg md:text-xl">
+            <p className="!text-gray-400 dark:!text-gray-400 text-lg md:text-xl max-w-3xl mx-auto">
               Advanced artificial intelligence for smart business decisions and automated
               optimization
             </p>
           </motion.div>
 
-          {/* Navigation Tabs */}
+          {/* ✅ Enterprise Navigation Tabs with proper spacing and contrast */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="jewelry-glass-panel"
+            className="jewelry-glass-panel p-6"
           >
-            <div className="flex flex-wrap gap-2 p-4">
+            <div className="flex flex-wrap gap-3">
               {tabs.map(tab => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === tab.key ? 'jewelry-btn-primary' : 'jewelry-btn-secondary'
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    activeTab === tab.key
+                      ? 'bg-gold-500/20 border border-gold-500/30 !text-gray-100 dark:!text-gray-100 shadow-lg'
+                      : 'bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100'
                   }`}
                 >
-                  <tab.icon size={16} />
+                  <tab.icon size={16} className={activeTab === tab.key ? 'text-gold-400' : ''} />
                   <span>{tab.label}</span>
                 </button>
               ))}
@@ -552,7 +615,7 @@ export default function JewelryAIPage() {
           {/* AI Dashboard Tab */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              {/* AI Performance Metrics */}
+              {/* ✅ Enterprise AI Performance Metrics with proper spacing */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -561,8 +624,10 @@ export default function JewelryAIPage() {
               >
                 <div className="jewelry-glass-card jewelry-float p-6 text-center">
                   <Zap className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">94.2%</h3>
-                  <p className="jewelry-text-muted text-sm font-medium">AI Accuracy</p>
+                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">94.2%</h3>
+                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                    AI Accuracy
+                  </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+3.1%</span>
@@ -574,8 +639,10 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.1s' }}
                 >
                   <Target className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">67</h3>
-                  <p className="jewelry-text-muted text-sm font-medium">Active Recommendations</p>
+                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">67</h3>
+                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                    Active Recommendations
+                  </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+12</span>
@@ -587,8 +654,12 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.2s' }}
                 >
                   <DollarSign className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">$28.5L</h3>
-                  <p className="jewelry-text-muted text-sm font-medium">AI-Generated Revenue</p>
+                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">
+                    {['owner', 'manager'].includes(jewelryRole || '') ? '28.5L' : '***'}
+                  </h3>
+                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                    AI-Generated Revenue
+                  </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+24.8%</span>
@@ -600,8 +671,10 @@ export default function JewelryAIPage() {
                   style={{ animationDelay: '0.3s' }}
                 >
                   <Activity className="mx-auto mb-3 jewelry-icon-gold" size={32} />
-                  <h3 className="jewelry-text-high-contrast text-3xl font-bold">89.7%</h3>
-                  <p className="jewelry-text-muted text-sm font-medium">Automation Rate</p>
+                  <h3 className="!text-gray-100 dark:!text-gray-100 text-3xl font-bold">89.7%</h3>
+                  <p className="!text-gray-400 dark:!text-gray-400 text-sm font-medium">
+                    Automation Rate
+                  </p>
                   <div className="flex items-center justify-center mt-2 text-green-500">
                     <TrendingUp size={16} />
                     <span className="text-xs ml-1">+5.2%</span>
@@ -610,60 +683,64 @@ export default function JewelryAIPage() {
               </motion.div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recent AI Recommendations */}
+                {/* ✅ Enterprise Recent AI Recommendations with proper spacing */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
-                  className="jewelry-glass-panel"
+                  className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="jewelry-text-luxury text-xl font-semibold flex items-center gap-2">
+                    <h3 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold flex items-center gap-2">
                       <Lightbulb className="jewelry-icon-gold" size={24} />
                       Recent Recommendations
                     </h3>
                     <button
                       onClick={() => setActiveTab('recommendations')}
-                      className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1"
+                      className="bg-muted/50 border border-border !text-muted-foreground hover:bg-muted hover:!text-foreground flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
                     >
-                      <Eye className="jewelry-icon-gold" size={14} />
+                      <Eye className="text-gold-400" size={14} />
                       <span className="text-sm">View All</span>
                     </button>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {aiRecommendations.slice(0, 3).map(rec => (
-                      <div key={rec.id} className="jewelry-glass-card p-4">
-                        <div className="flex items-start justify-between mb-3">
+                      <div key={rec.id} className="jewelry-glass-card p-6">
+                        <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex items-center space-x-3 mb-3">
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getPriorityColor(rec.priority)} text-white`}
+                                className={`px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${getPriorityColor(rec.priority)} text-white`}
                               >
                                 {rec.priority.toUpperCase()}
                               </span>
                               <span
-                                className={`text-sm font-medium ${getConfidenceColor(rec.confidence)}`}
+                                className={`text-sm font-semibold ${getConfidenceColor(rec.confidence)}`}
                               >
                                 {rec.confidence}% confidence
                               </span>
                             </div>
-                            <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                            <h4 className="!text-gray-100 dark:!text-gray-100 font-semibold text-base mb-2">
                               {rec.title}
                             </h4>
-                            <p className="jewelry-text-muted text-xs mt-1 line-clamp-2">
+                            <p className="!text-gray-400 dark:!text-gray-400 text-sm leading-relaxed">
                               {rec.description}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="jewelry-text-muted">{rec.category}</span>
-                          <div className="flex items-center space-x-2">
-                            <span className="jewelry-text-luxury font-medium">
-                              {formatCurrency(rec.impact.revenue)} impact
-                            </span>
-                            <button className="jewelry-btn-primary px-2 py-1 text-xs">
+                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                          <span className="!text-gray-400 dark:!text-gray-400 text-sm">
+                            {rec.category}
+                          </span>
+                          <div className="flex items-center space-x-3">
+                            {['owner', 'manager'].includes(jewelryRole || '') && (
+                              <span className="text-gold-400 font-semibold text-sm">
+                                {formatCurrency(rec.impact.revenue)} impact
+                              </span>
+                            )}
+                            <button className="bg-gold-500/20 border border-gold-500/30 !text-gray-100 dark:!text-gray-100 hover:bg-gold-500/30 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200">
                               Review
                             </button>
                           </div>
@@ -673,68 +750,76 @@ export default function JewelryAIPage() {
                   </div>
                 </motion.div>
 
-                {/* AI Model Status */}
+                {/* ✅ Enterprise AI Model Status with proper spacing */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
-                  className="jewelry-glass-panel"
+                  className="jewelry-glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="jewelry-text-luxury text-xl font-semibold flex items-center gap-2">
+                    <h3 className="!text-gray-100 dark:!text-gray-100 text-xl font-semibold flex items-center gap-2">
                       <Cpu className="jewelry-icon-gold" size={24} />
                       AI Model Status
                     </h3>
-                    <button
-                      onClick={() => setActiveTab('models')}
-                      className="jewelry-btn-secondary flex items-center space-x-2 px-3 py-1"
-                    >
-                      <Settings className="jewelry-icon-gold" size={14} />
-                      <span className="text-sm">Manage</span>
-                    </button>
+                    {['owner', 'manager'].includes(jewelryRole || '') && (
+                      <button
+                        onClick={() => setActiveTab('models')}
+                        className="bg-muted/50 border border-border !text-muted-foreground hover:bg-muted hover:!text-foreground flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                      >
+                        <Settings className="text-gold-400" size={14} />
+                        <span className="text-sm">Manage</span>
+                      </button>
+                    )}
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {aiModels.map(model => (
-                      <div key={model.id} className="jewelry-glass-card p-4">
-                        <div className="flex items-center justify-between mb-3">
+                      <div key={model.id} className="jewelry-glass-card p-6">
+                        <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-3">
                             {getStatusIcon(model.status)}
                             <div>
-                              <h4 className="jewelry-text-high-contrast font-semibold text-sm">
+                              <h4 className="!text-gray-100 dark:!text-gray-100 font-semibold text-base">
                                 {model.name}
                               </h4>
-                              <p className="jewelry-text-muted text-xs">
+                              <p className="!text-gray-400 dark:!text-gray-400 text-sm">
                                 {model.type} - v{model.version}
                               </p>
                             </div>
                           </div>
                           <div className="text-right">
                             <p
-                              className={`text-sm font-bold ${getConfidenceColor(model.accuracy)}`}
+                              className={`text-lg font-bold ${getConfidenceColor(model.accuracy)}`}
                             >
                               {model.accuracy}%
                             </p>
-                            <p className="jewelry-text-muted text-xs">accuracy</p>
+                            <p className="!text-gray-400 dark:!text-gray-400 text-sm">accuracy</p>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-xs">
-                          <div>
-                            <span className="jewelry-text-muted block">Precision</span>
-                            <span className="jewelry-text-high-contrast">
+                        <div className="grid grid-cols-3 gap-6 pt-4 border-t border-white/10">
+                          <div className="text-center">
+                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                              Precision
+                            </span>
+                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
                               {(model.performance.precision * 100).toFixed(1)}%
                             </span>
                           </div>
-                          <div>
-                            <span className="jewelry-text-muted block">Recall</span>
-                            <span className="jewelry-text-high-contrast">
+                          <div className="text-center">
+                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                              Recall
+                            </span>
+                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
                               {(model.performance.recall * 100).toFixed(1)}%
                             </span>
                           </div>
-                          <div>
-                            <span className="jewelry-text-muted block">F1 Score</span>
-                            <span className="jewelry-text-high-contrast">
+                          <div className="text-center">
+                            <span className="!text-gray-400 dark:!text-gray-400 block text-sm">
+                              F1 Score
+                            </span>
+                            <span className="!text-gray-100 dark:!text-gray-100 text-lg font-semibold">
                               {(model.performance.f1Score * 100).toFixed(1)}%
                             </span>
                           </div>
@@ -747,36 +832,34 @@ export default function JewelryAIPage() {
             </div>
           )}
 
-          {/* Other tabs rendered as placeholders */}
+          {/* ✅ Enterprise "Coming Soon" section */}
           {activeTab !== 'dashboard' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="jewelry-glass-panel"
+              className="jewelry-glass-panel p-12 text-center"
             >
-              <div className="p-12 text-center">
-                <Brain className="mx-auto mb-4 jewelry-icon-gold" size={64} />
-                <h3 className="jewelry-text-luxury text-xl font-semibold mb-2">
-                  {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Coming Soon
-                </h3>
-                <p className="jewelry-text-muted">
-                  Advanced AI capabilities for jewelry business intelligence and automation.
-                </p>
-              </div>
+              <Brain className="mx-auto mb-6 jewelry-icon-gold" size={64} />
+              <h3 className="!text-gray-100 dark:!text-gray-100 text-2xl font-semibold mb-3">
+                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Coming Soon
+              </h3>
+              <p className="!text-gray-400 dark:!text-gray-400 text-lg max-w-md mx-auto">
+                Advanced AI capabilities for jewelry business intelligence and automation.
+              </p>
             </motion.div>
           )}
 
-          {/* Footer */}
+          {/* ✅ Enterprise Footer */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.0 }}
-            className="text-center mt-12 mb-6"
+            className="text-center mt-12 mb-6 p-6"
           >
-            <p className="jewelry-text-muted text-sm">
+            <p className="!text-gray-400 dark:!text-gray-400 text-sm">
               AI-powered intelligence by{' '}
-              <span className="jewelry-text-luxury font-semibold">
+              <span className="!text-gray-100 dark:!text-gray-100 font-semibold">
                 HERA Advanced Analytics Engine
               </span>
             </p>
