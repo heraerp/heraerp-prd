@@ -1,0 +1,62 @@
+name: Partners CI
+on:
+  pull_request:
+    paths:
+      - "content/partners/**"
+      - "public/images/partners/**"
+      - "contentlayer.config.ts"
+      - "scripts/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "yarn.lock"
+  push:
+    branches: [ main ]
+    paths:
+      - "content/partners/**"
+      - "public/images/partners/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Contentlayer build
+        run: npx contentlayer build
+      - name: Validate partners
+        run: npm run validate:partners
+      - name: Optimize partner images
+        run: npm run optimize:partners
+      - name: Auto-commit optimized images
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(images): optimize partner logos (CI)"
+          file_pattern: "public/images/partners/*"
+      - name: Build (ensures pages compile)
+        run: npm run build
+
+  linkcheck:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - name: Start Next (preview) for link check
+        run: |
+          npm run build
+          nohup npx serve -s out -l 3005 >/dev/null 2>&1 & || true
+      - name: Link check
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3005
+        run: npm run linkcheck

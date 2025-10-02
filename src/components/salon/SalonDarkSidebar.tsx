@@ -358,13 +358,13 @@ export default function SalonDarkSidebar({
 
   return (
     <div
-      className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r"
-      style={{
-        backgroundColor: COLORS.charcoal,
-        borderColor: `${COLORS.gold}15`,
-        boxShadow: `inset -1px 0 0 ${COLORS.black}73, 0 10px 30px ${COLORS.black}80`
-      }}
-    >
+        className="fixed inset-y-0 left-0 h-[100dvh] w-20 z-40 border-r overflow-x-hidden overflow-y-hidden"
+        style={{
+          backgroundColor: COLORS.charcoal,
+          borderColor: `${COLORS.gold}15`,
+          boxShadow: `inset -1px 0 0 ${COLORS.black}73, 0 10px 30px ${COLORS.black}80`
+        }}
+      >
       {/* Right edge highlight */}
       <div
         className="absolute top-0 right-0 h-full w-px pointer-events-none"
@@ -399,7 +399,11 @@ export default function SalonDarkSidebar({
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 overflow-y-auto py-1">
+      <nav className="salon-sidebar-nav flex-1 overflow-y-auto overflow-x-hidden py-1"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: `${COLORS.gold}40 ${COLORS.charcoalLight}`
+        }}>
         <div className="space-y-0">
           {[...navigationItems, ...extraItems].map(item => {
             const Icon = item.icon

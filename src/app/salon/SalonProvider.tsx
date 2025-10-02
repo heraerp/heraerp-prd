@@ -9,6 +9,7 @@ import { useSalonSession } from '@/hooks/useSalonSession'
 interface SalonContextType {
   organizationId: string
   organization: any
+  currency: string
   role: string | null
   permissions: string[]
   user: any
@@ -28,6 +29,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
   const [context, setContext] = useState<SalonContextType>({
     organizationId: orgId,
     organization: { id: orgId, name: 'HairTalkz' },
+    currency: 'AED', // Default until loaded from database
     role: null,
     permissions: [],
     user: null,
@@ -82,6 +84,7 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
         setContext({
           organizationId: orgId,
           organization: { id: orgId, name: 'HairTalkz' },
+          currency: 'AED', // Default currency
           role: null,
           permissions: [],
           user: null,
@@ -193,9 +196,36 @@ export function SalonProvider({ children }: { children: React.ReactNode }) {
       // Use the detected org ID
       const finalOrgId = orgId // Already set by getSalonOrgId
 
+      // Fetch organization data from database to get currency
+      let organizationData = { id: finalOrgId, name: 'HairTalkz' }
+      let currency = 'AED' // Default fallback
+
+      try {
+        const { data: orgData, error: orgError } = await supabase
+          .from('core_organizations')
+          .select('*')
+          .eq('id', finalOrgId)
+          .single()
+
+        if (!orgError && orgData) {
+          organizationData = {
+            id: orgData.id,
+            name: orgData.organization_name,
+            ...orgData
+          }
+          // Get currency from settings
+          currency = orgData.settings?.currency || 'AED'
+          console.log('Loaded organization currency:', currency)
+        }
+      } catch (err) {
+        console.error('Error loading organization data:', err)
+        // Continue with defaults
+      }
+
       setContext({
         organizationId: finalOrgId,
-        organization: { id: finalOrgId, name: 'HairTalkz' },
+        organization: organizationData,
+        currency,
         role: storedRole,
         permissions: storedPermissions,
         user: session.user,

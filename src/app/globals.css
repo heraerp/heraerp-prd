@@ -2,8 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import HERA Jewelry Glassmorphism Theme */
-@import '../styles/jewelry-glassmorphism.css';
+/* Salon Sidebar Custom Scrollbar Styles */
+.salon-sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.salon-sidebar-nav::-webkit-scrollbar-track {
+  background: #232323; /* charcoalLight */
+  border-radius: 3px;
+}
+
+.salon-sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4); /* gold with 40% opacity */
+  border-radius: 3px;
+}
+
+.salon-sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6); /* gold with 60% opacity */
+}
+
+/* Firefox scrollbar support */
+.salon-sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.4) #232323;
+}
 
 /* Animation utilities for ISP module */
 @layer utilities {

@@ -11,10 +11,10 @@ const fetch = require('node-fetch');
 const API_BASE_URL = 'http://localhost:3000';
 const API_ENDPOINT = '/api/v2/universal/entity-read';
 
-// Test parameters
+// Test parameters - Using Hair Talkz Salon (confirmed has services)
 const testParams = {
-  organization_id: 'c1e1f1b1-1e1e-1e1e-1e1e-1e1e1e1e1e1e', // Default demo org
-  entity_type: 'salon_service',
+  organization_id: '0fd09e31-d257-4329-97eb-7d7f522ed6f0', // Hair Talkz Salon - DNA Testing
+  entity_type: 'service',
   limit: 5,
   include_dynamic_data: true,
   status: 'active'
@@ -134,14 +134,14 @@ async function testDirectRPC() {
     console.log('\n🔌 Calling RPC function: hera_entity_read_v1');
     console.log('📋 Parameters:', {
       p_organization_id: testParams.organization_id,
-      p_entity_type: 'salon_service',
+      p_entity_type: 'service',
       p_limit: 5,
       p_include_dynamic_data: true
     });
 
     const { data, error } = await supabase.rpc('hera_entity_read_v1', {
       p_organization_id: testParams.organization_id,
-      p_entity_type: 'salon_service',
+      p_entity_type: 'service',
       p_entity_code: null,
       p_entity_id: null,
       p_smart_code: null,

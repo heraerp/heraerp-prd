@@ -268,6 +268,62 @@ SALON_SMART_CODES.SERVICE_STANDARD    // 'HERA.SALON.SVC.LINE.STANDARD.V1'
 SALON_SMART_CODES.DISCOUNT_CART_PCT   // 'HERA.SALON.POS.ADJUST.DISCOUNT.CART.PCT.V1'
 ```
 
+## 🔌 UNIVERSAL API V2 RPC PATTERNS (MANDATORY - PRODUCTION STANDARD)
+
+**CRITICAL**: All CRUD operations MUST go through Postgres RPC functions. See `/docs/dna/UNIVERSAL-API-V2-RPC-PATTERNS.md` for complete guide.
+
+### Sacred RPC Rules:
+1. **RPC-First**: All operations via `callRPC()` - never direct table access
+2. **Sacred Parameters**: Always `p_organization_id` (UUID) and `p_smart_code` (validated)
+3. **Exact Names**: Parameter names must match function signature exactly
+4. **Two-Step Pattern**: Create entity → Add dynamic fields (via batch)
+
+### Quick RPC Reference:
+```typescript
+// Entity CRUD
+hera_entity_upsert_v1(p_organization_id, p_entity_type, p_entity_name, p_smart_code, ...)
+hera_entity_read_v1(p_organization_id, [filters...])
+hera_entity_delete_v1(p_organization_id, p_entity_id, [cascade...])
+
+// Dynamic Data
+hera_dynamic_data_batch_v1(p_organization_id, p_entity_id, p_smart_code, p_fields)
+hera_dynamic_data_get_v1(p_organization_id, p_entity_id, [p_field_name])
+
+// Relationships
+hera_relationship_create_v1(p_organization_id, p_from_entity_id, p_to_entity_id, p_relationship_type, ...)
+hera_relationship_query_v1(p_organization_id, [filters...])
+
+// Transactions
+hera_txn_create_v1(p_header, p_lines)
+hera_txn_validate_v1(p_org_id, p_transaction_id)
+hera_txn_reverse_v1(p_organization_id, p_transaction_id, ...)
+```
+
+### Production Pattern (Two-Step Entity Creation):
+```typescript
+// Step 1: Create entity
+const result = await callRPC('hera_entity_upsert_v1', {
+  p_organization_id: orgId,
+  p_entity_type: 'product_category',
+  p_entity_name: 'Premium Services',
+  p_smart_code: 'HERA.SALON.PROD.CATEGORY.FIELD.V1',
+  p_entity_id: null,
+  p_entity_code: 'CAT-001',
+  p_metadata: null
+}, { mode: 'service' })
+
+// Step 2: Add dynamic fields (color, icon, etc.)
+await callRPC('hera_dynamic_data_batch_v1', {
+  p_organization_id: orgId,
+  p_entity_id: result.data,
+  p_smart_code: 'HERA.SALON.PROD.CATEGORY.FIELD.V1',
+  p_fields: [
+    { field_name: 'color', field_type: 'text', field_value: '#8B5CF6' },
+    { field_name: 'icon', field_type: 'text', field_value: 'Sparkles' }
+  ]
+})
+```
+
 ## 🎛️ HERA MASTER CONTROL CENTER - ALWAYS USE FIRST
 
 **The Control Center is your automatic co-pilot for HERA development. It ensures system health, enforces guardrails, and maintains quality standards.**

@@ -1,144 +1,284 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Octokit } from '@octokit/rest'
 import { z } from 'zod'
 
-// Zod validation schema
+// Validation schema for partner application
 const PartnerApplicationSchema = z.object({
-  firmName: z.string().min(2),
-  contactName: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  website: z.string().url().optional().or(z.literal('')),
-  region: z.enum(['EMEA', 'APAC', 'Americas', 'Global']),
-  city: z.string().optional(),
-  partnerType: z.enum(['Implementation', 'Channel', 'Technology']),
-  message: z.string().min(10),
-  honeypot: z.string().optional()
+  name: z.string().min(1, 'Company name is required'),
+  website: z.string().url('Valid website URL is required'),
+  contactName: z.string().min(1, 'Contact name is required'),
+  contactEmail: z.string().email('Valid email is required'),
+  contactPhone: z.string().optional(),
+  summary: z.string().min(50, 'Summary must be at least 50 characters'),
+  specialties: z.array(z.string()).min(1, 'At least one specialty is required'),
+  tags: z.array(z.string()).default([]),
+  hq: z.string().min(1, 'Headquarters location is required'),
+  regions: z.array(z.string()).default([]),
+  yearsInBusiness: z.number().min(1, 'Years in business must be at least 1'),
+  employeeCount: z.string().min(1, 'Employee count is required'),
+  certifications: z.array(z.string()).default([]),
+  partnershipReason: z.string().min(100, 'Partnership reason must be at least 100 characters')
 })
 
-// Rate limiting storage (in-memory for simplicity)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT_WINDOW = 5 * 60 * 1000 // 5 minutes
-const RATE_LIMIT_MAX = 3 // 3 requests per window
+// GitHub configuration
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+const GITHUB_OWNER = process.env.GITHUB_OWNER || 'anthropics'
+const GITHUB_REPO = process.env.GITHUB_REPO || 'claude-code'
+const BASE_BRANCH = 'main'
 
-// Clean up old entries periodically
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, value] of rateLimitMap.entries()) {
-    if (value.resetTime < now) {
-      rateLimitMap.delete(key)
-    }
-  }
-}, 60 * 1000) // Clean every minute
-
-function getClientIP(request: NextRequest): string {
-  // Try to get real IP from headers (for proxied requests)
-  const forwarded = request.headers.get('x-forwarded-for')
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-
-  const realIp = request.headers.get('x-real-ip')
-  if (realIp) {
-    return realIp
-  }
-
-  // Fallback to a default
-  return 'unknown'
+if (!GITHUB_TOKEN) {
+  console.warn('GITHUB_TOKEN not found - PR creation will fail')
 }
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip)
+/**
+ * Generate a slug from company name
+ */
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
 
-  if (!entry || entry.resetTime < now) {
-    // Create new entry or reset expired one
-    rateLimitMap.set(ip, {
-      count: 1,
-      resetTime: now + RATE_LIMIT_WINDOW
+/**
+ * Generate markdown content for the partner
+ */
+function generatePartnerMarkdown(data: z.infer<typeof PartnerApplicationSchema>): string {
+  const slug = generateSlug(data.name)
+
+  return `---
+name: "${data.name}"
+slug: "${slug}"
+website: "${data.website}"
+summary: "${data.summary}"
+published: false
+featured: false
+specialties:
+${data.specialties.map(s => `  - "${s}"`).join('\n')}
+tags:
+${data.tags.map(t => `  - "${t}"`).join('\n')}
+locations:
+  hq: "${data.hq}"
+  regions:
+${data.regions.map(r => `    - "${r}"`).join('\n')}
+contacts:
+  - name: "${data.contactName}"
+    email: "${data.contactEmail}"${data.contactPhone ? `\n    phone: "${data.contactPhone}"` : ''}
+    role: "Primary Contact"
+metadata:
+  yearsInBusiness: ${data.yearsInBusiness}
+  employeeCount: "${data.employeeCount}"
+  certifications:
+${data.certifications.map(c => `    - "${c}"`).join('\n')}
+  applicationDate: "${new Date().toISOString()}"
+seo_title: "${data.name} - HERA Partner"
+seo_description: "${data.summary.substring(0, 160)}..."
+---
+
+# ${data.name}
+
+${data.summary}
+
+## Why Partner with HERA?
+
+${data.partnershipReason}
+
+## Specialties
+
+${data.specialties.map(s => `- ${s}`).join('\n')}
+
+## Contact Information
+
+- **Primary Contact**: ${data.contactName}
+- **Email**: ${data.contactEmail}${data.contactPhone ? `\n- **Phone**: ${data.contactPhone}` : ''}
+- **Website**: [${data.website}](${data.website})
+
+## Company Details
+
+- **Headquarters**: ${data.hq}
+- **Regions Served**: ${data.regions.length > 0 ? data.regions.join(', ') : 'To be determined'}
+- **Years in Business**: ${data.yearsInBusiness}
+- **Employee Count**: ${data.employeeCount}
+${data.certifications.length > 0 ? `- **Certifications**: ${data.certifications.join(', ')}` : ''}
+
+---
+
+*This partner application was submitted on ${new Date().toLocaleDateString()} and is pending review.*
+`
+}
+
+/**
+ * Create a GitHub Pull Request for the partner application
+ */
+async function createPartnerPR(data: z.infer<typeof PartnerApplicationSchema>) {
+  if (!GITHUB_TOKEN) {
+    throw new Error('GitHub token not configured')
+  }
+
+  const octokit = new Octokit({ auth: GITHUB_TOKEN })
+  const slug = generateSlug(data.name)
+  const branchName = `partner-application/${slug}`
+  const fileName = `content/partners/${slug}.mdx`
+  const markdownContent = generatePartnerMarkdown(data)
+
+  try {
+    // Get the main branch reference
+    const { data: mainBranch } = await octokit.rest.git.getRef({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      ref: `heads/${BASE_BRANCH}`
     })
-    return true
-  }
 
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return false // Rate limit exceeded
-  }
+    // Create a new branch for the partner application
+    await octokit.rest.git.createRef({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      ref: `refs/heads/${branchName}`,
+      sha: mainBranch.object.sha
+    })
 
-  // Increment count
-  entry.count++
-  return true
+    // Create the partner file
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      path: fileName,
+      message: `feat(partners): Add ${data.name} partner application
+
+- Company: ${data.name}
+- Contact: ${data.contactName} <${data.contactEmail}>
+- Website: ${data.website}
+- Specialties: ${data.specialties.join(', ')}
+
+🤖 Generated automatically from partner application form`,
+      content: Buffer.from(markdownContent, 'utf8').toString('base64'),
+      branch: branchName
+    })
+
+    // Create the Pull Request
+    const { data: pr } = await octokit.rest.pulls.create({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      title: `Partner Application: ${data.name}`,
+      head: branchName,
+      base: BASE_BRANCH,
+      body: `## New Partner Application
+
+**Company**: ${data.name}
+**Contact**: ${data.contactName} (${data.contactEmail})
+**Website**: ${data.website}
+**Location**: ${data.hq}
+
+### Summary
+${data.summary}
+
+### Specialties
+${data.specialties.map(s => `- ${s}`).join('\n')}
+
+### Why Partner with HERA?
+${data.partnershipReason}
+
+---
+
+### Review Checklist
+- [ ] Company information verified
+- [ ] Website and contact details checked
+- [ ] Specialties align with HERA ecosystem
+- [ ] Partnership reasoning is compelling
+- [ ] Logo provided (if available)
+- [ ] Ready to publish
+
+### Next Steps
+1. Review the partner information above
+2. Verify company details and website
+3. Check for logo in \`public/images/partners/${slug}.*\`
+4. Update \`published: true\` when ready to go live
+5. Consider setting \`featured: true\` for strategic partners
+
+🤖 This PR was created automatically from the partner application form.`
+    })
+
+    return {
+      success: true,
+      prUrl: pr.html_url,
+      prNumber: pr.number,
+      branch: branchName,
+      fileName
+    }
+
+  } catch (error) {
+    console.error('Failed to create GitHub PR:', error)
+    throw error
+  }
 }
 
+/**
+ * API Route Handler
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    // Honeypot check - if filled, it's likely a bot
-    if (body.honeypot && body.honeypot.length > 0) {
-      // Return 204 No Content silently for bots
-      return new NextResponse(null, { status: 204 })
-    }
+    // Validate the request data
+    const validationResult = PartnerApplicationSchema.safeParse(body)
 
-    // Rate limiting check
-    const clientIP = getClientIP(request)
-    if (!checkRateLimit(clientIP)) {
-      return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 })
-    }
-
-    // Validate the request body
-    const result = PartnerApplicationSchema.safeParse(body)
-
-    if (!result.success) {
+    if (!validationResult.success) {
       return NextResponse.json(
         {
-          ok: false,
-          error: 'validation_failed',
-          details: result.error.issues
+          error: 'Validation failed',
+          details: validationResult.error.format()
         },
         { status: 400 }
       )
     }
 
-    // Clean data (remove honeypot field)
-    const { honeypot, ...cleanData } = result.data
+    const data = validationResult.data
 
-    // TODO: Wire to CRM/lead intake system
-    // Log compact line for monitoring
-    console.log(
-      '[PARTNER_APPLICATION]',
-      JSON.stringify({
-        firmName: cleanData.firmName,
-        contactName: cleanData.contactName,
-        email: cleanData.email,
-        region: cleanData.region,
-        partnerType: cleanData.partnerType,
-        timestamp: new Date().toISOString(),
-        ip: clientIP
-      })
-    )
+    // Create the GitHub PR
+    const result = await createPartnerPR(data)
 
-    // In production, this would:
-    // 1. Save to database with sanitized data
-    // 2. Send notification to partner team
-    // 3. Create lead in CRM system
-    // 4. Send confirmation email to applicant
-    // 5. Track analytics event
+    return NextResponse.json({
+      message: 'Partner application submitted successfully!',
+      ...result
+    })
 
-    return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('[PARTNER_APPLICATION_ERROR]', error)
-    return NextResponse.json({ ok: false, error: 'internal_error' }, { status: 500 })
+    console.error('Partner application error:', error)
+
+    // Handle different error types
+    if (error instanceof Error) {
+      if (error.message.includes('GitHub token')) {
+        return NextResponse.json(
+          { error: 'GitHub integration not configured' },
+          { status: 503 }
+        )
+      }
+
+      if (error.message.includes('Repository not found')) {
+        return NextResponse.json(
+          { error: 'Repository configuration error' },
+          { status: 503 }
+        )
+      }
+    }
+
+    return NextResponse.json(
+      { error: 'Failed to submit partner application' },
+      { status: 500 }
+    )
   }
 }
 
-// Only allow POST method
+// Health check endpoint
 export async function GET() {
-  return NextResponse.json({ ok: false, error: 'method_not_allowed' }, { status: 405 })
-}
-
-export async function PUT() {
-  return NextResponse.json({ ok: false, error: 'method_not_allowed' }, { status: 405 })
-}
-
-export async function DELETE() {
-  return NextResponse.json({ ok: false, error: 'method_not_allowed' }, { status: 405 })
+  return NextResponse.json({
+    status: 'Partner application API is running',
+    hasGitHubToken: !!GITHUB_TOKEN,
+    configuration: {
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      baseBranch: BASE_BRANCH
+    }
+  })
 }

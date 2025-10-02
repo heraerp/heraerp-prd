@@ -48,3 +48,6 @@ railway.env
 # Color guard reports
 color-guard-report.json
 .color-guard-baseline.json
+
+# Contentlayer
+.contentlayer

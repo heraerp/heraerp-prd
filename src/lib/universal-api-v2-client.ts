@@ -1,15 +1,28 @@
 // Universal API v2 Client - RPC-first architecture with Smart Code Engine
 // All calls go through Next routes that already invoke SmartCodeEngine/guardrails.
-export type Json = Record<string, any>
 
-// Dynamic field input types for batch operations
+/**
+ * Get the base URL for API calls
+ * - In browser: uses window.location.origin (works on any port)
+ * - In Node.js/SSR: uses NEXT_PUBLIC_APP_URL or defaults to localhost:3000
+ */
+function getBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    // Browser: use current origin (works on 3000, 3001, 3002, etc.)
+    return window.location.origin
+  }
+  // Server-side: use env variable or default
+  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+}
+
+export type Json = Record<string, any>;
+
+// Dynamic field input types for batch operations (flexible version)
 export type DynamicFieldInput =
-  | { field_name: 'price'; field_type: 'number'; field_value_number: number | null }
-  | { field_name: 'currency'; field_type: 'text'; field_value: string | null }
-  | { field_name: 'qty_on_hand'; field_type: 'number'; field_value_number: number }
-  | { field_name: 'category'; field_type: 'text'; field_value: string | null }
-  | { field_name: 'requires_inventory'; field_type: 'boolean'; field_value_boolean: boolean }
-  | { field_name: 'description'; field_type: 'text'; field_value: string | null }
+  | { field_name: string; field_type: 'number'; field_value_number: number | null }
+  | { field_name: string; field_type: 'text'; field_value: string | null }
+  | { field_name: string; field_type: 'boolean'; field_value_boolean: boolean | null }
+  | { field_name: string; field_type: 'json'; field_value_json: Json | null };
 
 function ok(res: Response) {
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
@@ -18,16 +31,14 @@ function ok(res: Response) {
 
 const h = (orgId: string): HeadersInit => ({ 'x-hera-org': orgId })
 
-export async function getEntities(
-  baseUrl: string,
-  params: {
-    p_organization_id: string
-    p_entity_type?: string
-    p_smart_code?: string
-    p_parent_entity_id?: string
-    p_status?: string
-  }
-) {
+export async function getEntities(baseUrl: string = '', params: {
+  p_organization_id: string;
+  p_entity_type?: string;
+  p_smart_code?: string;
+  p_parent_entity_id?: string;
+  p_status?: string;
+}) {
+  const url = baseUrl || getBaseUrl()
   const qs = new URLSearchParams({
     p_organization_id: params.p_organization_id
   })
@@ -36,7 +47,7 @@ export async function getEntities(
   if (params.p_parent_entity_id) qs.set('p_parent_entity_id', params.p_parent_entity_id)
   if (params.p_status) qs.set('p_status', params.p_status)
 
-  const res = await fetch(`${baseUrl}/api/universal/entities?${qs.toString()}`, {
+  const res = await fetch(`${url}/api/universal/entities?${qs.toString()}`, {
     headers: h(params.p_organization_id),
     credentials: 'include'
   }).then(ok)
@@ -54,45 +65,53 @@ export async function readEntity(orgId: string, entityId: string) {
   return await res.json()
 }
 
-export async function deleteEntity(
-  baseUrl: string,
-  params: {
-    p_organization_id: string
-    p_entity_id: string
-  }
-) {
-  const qs = new URLSearchParams(
-    Object.fromEntries(
-      Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
-    )
-  ).toString()
+export async function deleteEntity(baseUrl: string = '', params: {
+  p_organization_id: string;
+  p_entity_id: string;
+}) {
+  const url = baseUrl || getBaseUrl()
+  const qs = new URLSearchParams({
+    organization_id: params.p_organization_id
+  }).toString();
 
-  const res = await fetch(`${baseUrl}/api/universal/entities/${params.p_entity_id}?${qs}`, {
+  console.log('[deleteEntity] Request:', {
+    url: `${url}/api/universal/entities/${params.p_entity_id}?${qs}`,
+    organizationId: params.p_organization_id,
+    entityId: params.p_entity_id,
+    fullUrl: `${url}/api/universal/entities/${params.p_entity_id}?${qs}`
+  });
+
+  const res = await fetch(`${url}/api/universal/entities/${params.p_entity_id}?${qs}`, {
     method: 'DELETE',
     headers: h(params.p_organization_id),
     credentials: 'include'
   })
   if (!res.ok) {
-    const err = await res.json().catch(() => null)
-    throw new Error(`entity delete failed: ${res.status} ${JSON.stringify(err)}`)
+    const err = await res.json().catch(() => null);
+    console.error('[deleteEntity] Error Response:', {
+      status: res.status,
+      statusText: res.statusText,
+      error: err,
+      fullError: JSON.stringify(err, null, 2)
+    });
+    throw new Error(`entity delete failed: ${res.status} ${JSON.stringify(err)}`);
   }
   return res.json()
 }
 
-export async function upsertEntity(
-  baseUrl: string,
-  body: {
-    p_organization_id: string
-    p_entity_type: string
-    p_entity_name: string
-    p_smart_code: string
-    p_entity_code?: string | null
-    p_entity_description?: string | null
-    p_parent_entity_id?: string | null
-    p_entity_id?: string | null // when updating
-  }
-) {
-  const res = await fetch(`${baseUrl}/api/universal/entities`, {
+export async function upsertEntity(baseUrl: string = '', body: {
+  p_organization_id: string;
+  p_entity_type: string;
+  p_entity_name: string;
+  p_smart_code: string;
+  p_entity_code?: string | null;
+  p_entity_description?: string | null;
+  p_parent_entity_id?: string | null;
+  p_entity_id?: string | null; // when updating
+  p_status?: string | null;
+}) {
+  const url = baseUrl || getBaseUrl()
+  const res = await fetch(`${url}/api/universal/entities`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-hera-org': body.p_organization_id },
     credentials: 'include',
@@ -106,21 +125,19 @@ export async function upsertEntity(
 }
 
 // Dynamic data operations
-export async function getDynamicData(
-  baseUrl: string,
-  params: {
-    p_organization_id: string
-    p_entity_id: string
-    p_field_name?: string // optional filter
-  }
-) {
+export async function getDynamicData(baseUrl: string = '', params: {
+  p_organization_id: string;
+  p_entity_id: string;
+  p_field_name?: string; // optional filter
+}) {
+  const url = baseUrl || getBaseUrl()
   const qs = new URLSearchParams(
     Object.fromEntries(
       Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
     )
   ).toString()
 
-  const res = await fetch(`${baseUrl}/api/universal/dynamic-data?${qs}`, {
+  const res = await fetch(`${url}/api/universal/dynamic-data?${qs}`, {
     headers: { 'x-hera-org': params.p_organization_id },
     credentials: 'include'
   })
@@ -153,16 +170,14 @@ export async function setDynamicData(
   return await res.json()
 }
 
-export async function setDynamicDataBatch(
-  baseUrl: string,
-  params: {
-    p_organization_id: string
-    p_entity_id: string
-    p_smart_code: string // e.g., 'HERA.SALON.PROD.DYN.V1'
-    p_fields: DynamicFieldInput[]
-  }
-) {
-  const res = await fetch(`${baseUrl}/api/universal/dynamic-data/batch`, {
+export async function setDynamicDataBatch(baseUrl: string = '', params: {
+  p_organization_id: string;
+  p_entity_id: string;
+  p_smart_code: string; // e.g., 'HERA.SALON.PROD.DYN.v1'
+  p_fields: DynamicFieldInput[];
+}) {
+  const url = baseUrl || getBaseUrl()
+  const res = await fetch(`${url}/api/universal/dynamic-data/batch`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-hera-org': params.p_organization_id },
     credentials: 'include',
@@ -263,7 +278,7 @@ export async function createRelationship(
     method: 'POST',
     headers: { ...h(orgId), 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ p_organization_id: orgId, ...body })
-  }).then(ok)
-  return await res.json()
+    body: JSON.stringify({ p_organization_id: orgId, ...body }),
+  }).then(ok);
+  return await res.json();
 }

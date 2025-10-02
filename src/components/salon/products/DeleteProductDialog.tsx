@@ -78,7 +78,7 @@ export function DeleteProductDialog({
             </div>
           </div>
 
-          <AlertDialogDescription className="space-y-4" style={{ color: COLORS.lightText }}>
+          <div className="space-y-4" style={{ color: COLORS.lightText }}>
             <div
               className="p-4 rounded-lg border"
               style={{
@@ -178,7 +178,7 @@ export function DeleteProductDialog({
                 historical data while removing it from active use.
               </p>
             </div>
-          </AlertDialogDescription>
+          </div>
         </AlertDialogHeader>
 
         <AlertDialogFooter className="mt-6">

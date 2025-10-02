@@ -1,6 +1,86 @@
-INSERT INTO core_entities (id, organization_id, smart_code, created_at)
+INSERT INTO core_entities (
+  id,
+  organization_id,
+  entity_type,
+  entity_name,
+  entity_code,
+  entity_description,
+  parent_entity_id,
+  smart_code,
+  status,
+  metadata,
+  created_at,
+  updated_at
+)
 VALUES
-  ('${ENTITY_PRODUCT_1}', '${ORG_ID}', 'HERA.RETAIL.CATALOG.PRODUCT.STANDARD.v1', NOW()),
-  ('${ENTITY_CUSTOMER_1}', '${ORG_ID}', 'HERA.RETAIL.CRM.CUSTOMER.CONSUMER.v1', NOW())
+  (
+    '${ENTITY_PRODUCT_1}',
+    '${ORG_ID}',
+    'product',
+    '${PRODUCT_1_NAME}',
+    '${PRODUCT_1_CODE}',
+    '${PRODUCT_1_DESCRIPTION}',
+    NULL,
+    '${PRODUCT_1_SMART_CODE}',
+    'active',
+    '{}'::jsonb,
+    NOW(),
+    NOW()
+  ),
+  (
+    '${ENTITY_CUSTOMER_1}',
+    '${ORG_ID}',
+    'customer',
+    'Demo Retail Customer',
+    'CUST-001',
+    'Seed customer record for POS flows',
+    NULL,
+    'HERA.RETAIL.CRM.CUSTOMER.CONSUMER.v1',
+    'active',
+    '{}'::jsonb,
+    NOW(),
+    NOW()
+  ),
+  (
+    '${ENTITY_PRODUCT_CATEGORY_HAIRCARE}',
+    '${ORG_ID}',
+    'product_category',
+    '${CATEGORY_HAIRCARE_NAME}',
+    '${CATEGORY_HAIRCARE_CODE}',
+    '${CATEGORY_HAIRCARE_DESCRIPTION}',
+    NULL,
+    '${CATEGORY_HAIRCARE_SMART_CODE}',
+    'active',
+    '{}'::jsonb,
+    NOW(),
+    NOW()
+  ),
+  (
+    '${ENTITY_PRODUCT_CATEGORY_STYLING}',
+    '${ORG_ID}',
+    'product_category',
+    '${CATEGORY_STYLING_NAME}',
+    '${CATEGORY_STYLING_CODE}',
+    '${CATEGORY_STYLING_DESCRIPTION}',
+    NULL,
+    '${CATEGORY_STYLING_SMART_CODE}',
+    'active',
+    '{}'::jsonb,
+    NOW(),
+    NOW()
+  ),
+  (
+    '${ENTITY_PRODUCT_CATEGORY_TOOLS}',
+    '${ORG_ID}',
+    'product_category',
+    '${CATEGORY_TOOLS_NAME}',
+    '${CATEGORY_TOOLS_CODE}',
+    '${CATEGORY_TOOLS_DESCRIPTION}',
+    NULL,
+    '${CATEGORY_TOOLS_SMART_CODE}',
+    'active',
+    '{}'::jsonb,
+    NOW(),
+    NOW()
+  )
 ON CONFLICT (id) DO NOTHING;
-

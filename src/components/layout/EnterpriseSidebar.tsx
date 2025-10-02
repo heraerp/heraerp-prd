@@ -89,6 +89,7 @@ const allApps: SidebarItem[] = [
 
   // Operations
   { title: 'Inventory', href: '/inventory', icon: Package, requiresApp: 'inventory' },
+  { title: 'Products → Categories', href: '/product/categories', icon: Package },
   { title: 'CRM', href: '/crm', icon: Users, requiresApp: 'crm' },
   { title: 'HR Management', href: '/hr', icon: Briefcase, requiresApp: 'hr' },
 

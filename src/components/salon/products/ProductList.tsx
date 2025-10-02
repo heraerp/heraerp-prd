@@ -27,6 +27,7 @@ interface ProductListProps {
   products: Product[]
   loading?: boolean
   viewMode?: 'grid' | 'list'
+  currency?: string
   onEdit: (product: Product) => void
   onDelete: (product: Product) => void
   onArchive: (product: Product) => void
@@ -51,6 +52,7 @@ export function ProductList({
   products,
   loading = false,
   viewMode = 'list',
+  currency = 'AED',
   onEdit,
   onDelete,
   onArchive,
@@ -73,6 +75,7 @@ export function ProductList({
           <ProductCard
             key={product.id}
             product={product}
+            currency={currency}
             onEdit={onEdit}
             onDelete={onDelete}
             onArchive={onArchive}
@@ -99,7 +102,8 @@ export function ProductList({
           >
             <TableHead className="!text-[#F5E6C8]">Product</TableHead>
             <TableHead className="!text-[#F5E6C8]">Category</TableHead>
-            <TableHead className="!text-[#F5E6C8]">Price</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Cost Price</TableHead>
+            <TableHead className="!text-[#F5E6C8]">Selling Price</TableHead>
             <TableHead className="!text-[#F5E6C8]">Stock</TableHead>
             <TableHead className="!text-[#F5E6C8]">Value</TableHead>
             <TableHead className="!text-[#F5E6C8]">Status</TableHead>
@@ -161,13 +165,45 @@ export function ProductList({
                 </TableCell>
 
                 <TableCell>
+                  {(() => {
+                    // Try multiple possible locations for cost data
+                    const cost = (product as any).metadata?.cost ||
+                                (product as any).cost ||
+                                ((product as any).metadata && Object.keys((product as any).metadata).length > 0 ?
+                                  Object.entries((product as any).metadata).find(([key]) => key === 'cost')?.[1] : null)
+
+                    console.log('[ProductList] Cost display:', {
+                      productId: product.id,
+                      productName: product.entity_name,
+                      cost,
+                      metadata: (product as any).metadata,
+                      metadataKeys: (product as any).metadata ? Object.keys((product as any).metadata) : []
+                    })
+
+                    if (cost !== null && cost !== undefined && cost !== '') {
+                      return (
+                        <span className="font-semibold" style={{ color: COLORS.lightText }}>
+                          {currency} {parseFloat(String(cost)).toFixed(2)}
+                        </span>
+                      )
+                    }
+
+                    return (
+                      <span className="text-sm" style={{ color: COLORS.lightText }}>
+                        -
+                      </span>
+                    )
+                  })()}
+                </TableCell>
+
+                <TableCell>
                   {product.price ? (
                     <span className="font-semibold" style={{ color: COLORS.gold }}>
-                      AED {product.price.toFixed(2)}
+                      {currency} {product.price.toFixed(2)}
                     </span>
                   ) : (
                     <span className="text-sm" style={{ color: COLORS.lightText }}>
-                      No price
+                      -
                     </span>
                   )}
                 </TableCell>
@@ -185,7 +221,7 @@ export function ProductList({
 
                 <TableCell>
                   <span className="font-semibold" style={{ color: COLORS.champagne }}>
-                    AED {stockValue.toFixed(2)}
+                    {currency} {stockValue.toFixed(2)}
                   </span>
                 </TableCell>
 
@@ -284,7 +320,7 @@ export function ProductList({
           {products.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={8}
+                colSpan={9}
                 className="h-32 text-center"
                 style={{ color: COLORS.lightText, opacity: 0.5 }}
               >
@@ -300,12 +336,14 @@ export function ProductList({
 
 function ProductCard({
   product,
+  currency = 'AED',
   onEdit,
   onDelete,
   onArchive,
   onRestore
 }: {
   product: Product
+  currency?: string
   onEdit: (product: Product) => void
   onDelete: (product: Product) => void
   onArchive: (product: Product) => void
@@ -426,14 +464,22 @@ function ProductCard({
         </Badge>
       )}
 
-      {/* Price and Stock */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      {/* Pricing and Stock */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
           <p className="text-xs" style={{ color: COLORS.lightText }}>
-            Price
+            Cost Price
           </p>
-          <p className="font-semibold" style={{ color: COLORS.gold }}>
-            {product.price ? `AED ${product.price.toFixed(2)}` : 'No price'}
+          <p className="font-semibold text-sm" style={{ color: COLORS.lightText }}>
+            {(product as any).metadata?.cost ? `${currency} ${parseFloat((product as any).metadata.cost).toFixed(2)}` : '-'}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs" style={{ color: COLORS.lightText }}>
+            Selling Price
+          </p>
+          <p className="font-semibold text-sm" style={{ color: COLORS.gold }}>
+            {product.price ? `${currency} ${product.price.toFixed(2)}` : '-'}
           </p>
         </div>
         <div>
@@ -442,11 +488,25 @@ function ProductCard({
           </p>
           <p
             className={cn(
-              'font-semibold',
+              'font-semibold text-sm',
               product.qty_on_hand < 10 ? 'text-red-400' : 'text-green-400'
             )}
           >
             {product.qty_on_hand}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs" style={{ color: COLORS.lightText }}>
+            Margin
+          </p>
+          <p className="font-semibold text-sm" style={{ color: COLORS.champagne }}>
+            {(() => {
+              const cost = parseFloat((product as any).metadata?.cost || '0')
+              const price = product.price || 0
+              if (price === 0) return '0%'
+              const margin = ((price - cost) / price * 100).toFixed(1)
+              return `${margin}%`
+            })()}
           </p>
         </div>
       </div>
@@ -460,7 +520,7 @@ function ProductCard({
           Total Value
         </span>
         <span className="font-semibold" style={{ color: COLORS.champagne }}>
-          AED {stockValue.toFixed(2)}
+          {currency} {stockValue.toFixed(2)}
         </span>
       </div>
 

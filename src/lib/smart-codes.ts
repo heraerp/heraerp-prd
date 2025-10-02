@@ -2,19 +2,19 @@
  * HERA Smart Code Helper Functions
  *
  * Smart Code Format: HERA.{INDUSTRY}.{MODULE}.{TYPE}.{SUBTYPE}.{VERSION}
- * Pattern: ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$
+ * Pattern: ^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.V[0-9]+$
  *
- * IMPORTANT: Version must be lowercase 'v' not uppercase 'V'
+ * IMPORTANT: Version must be uppercase 'V' per HERA DNA Smart Code Guide
  */
 
 /**
- * Ensures a smart code uses the correct format with lowercase version
+ * Ensures a smart code uses the correct format with uppercase version
  * @param code - The smart code to validate/fix
  * @returns The corrected smart code
  */
 export function heraCode(code: string): string {
-  // Ensure the code ends with lowercase .v{number}
-  return code.replace(/\.V(\d+)$/i, '.v$1')
+  // Ensure the code ends with uppercase .V{number}
+  return code.replace(/\.v(\d+)$/i, '.V$1')
 }
 
 /**
@@ -23,7 +23,7 @@ export function heraCode(code: string): string {
  * @returns True if valid, false otherwise
  */
 export function isValidHeraCode(code: string): boolean {
-  const pattern = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.v[0-9]+$/
+  const pattern = /^HERA\.[A-Z0-9]{3,15}(?:\.[A-Z0-9_]{2,30}){3,8}\.V[0-9]+$/
   return pattern.test(code)
 }
 
@@ -31,11 +31,11 @@ export function isValidHeraCode(code: string): boolean {
  * Creates a smart code with proper formatting
  * @param parts - Array of code parts (without HERA prefix and version)
  * @param version - Version number (default: 1)
- * @returns Properly formatted smart code
+ * @returns Properly formatted smart code with uppercase V
  */
 export function createHeraCode(parts: string[], version: number = 1): string {
   const upperParts = parts.map(part => part.toUpperCase().replace(/[^A-Z0-9_]/g, '_'))
-  return `HERA.${upperParts.join('.')}.v${version}`
+  return `HERA.${upperParts.join('.')}.V${version}`
 }
 
 /**
@@ -50,7 +50,8 @@ export function parseHeraCode(code: string): {
   parts: string[]
   version: number
 } | null {
-  const pattern = /^(HERA)\.([A-Z0-9]{3,15})\.([A-Z0-9_]{2,30})((?:\.[A-Z0-9_]{2,30})+)\.v(\d+)$/
+  // Accept both V and v, minimum 6 segments total (3 middle segments minimum)
+  const pattern = /^(HERA)\.([A-Z0-9]{3,15})\.([A-Z0-9_]{2,30})((?:\.[A-Z0-9_]{2,30}){1,5})\.[Vv](\d+)$/
   const match = code.match(pattern)
 
   if (!match) return null

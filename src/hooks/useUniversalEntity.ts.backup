@@ -1,0 +1,297 @@
+'use client'
+
+import { useMemo } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  getEntities,
+  getDynamicData,
+  setDynamicDataBatch,
+  upsertEntity,
+  deleteEntity,
+} from '@/lib/universal-api-v2-client'
+
+interface UniversalEntityOptions {
+  entityType: string
+  organizationId?: string
+  includeArchived?: boolean
+  searchQuery?: string
+  categoryFilter?: string
+  smartCode: string // Smart code for entity creation
+  dynamicFieldSmartCode: string // Smart code for dynamic fields
+}
+
+interface DynamicFieldDefinition {
+  name: string
+  value: any
+  type: 'text' | 'number' | 'boolean' | 'date' | 'json'
+}
+
+/**
+ * Universal hook for managing any entity type with dynamic data
+ *
+ * This hook provides complete CRUD operations for any entity type,
+ * with automatic dynamic data loading and saving.
+ *
+ * @example
+ * // For products
+ * const { entities: products, createEntity, updateEntity, deleteEntity } = useUniversalEntity({
+ *   entityType: 'product',
+ *   organizationId: 'org-123',
+ *   smartCode: 'HERA.SALON.PROD.ENT.RETAIL.V1',
+ *   dynamicFieldSmartCode: 'HERA.SALON.PROD.FIELD.DATA.V1'
+ * })
+ *
+ * // For services
+ * const { entities: services, createEntity, updateEntity } = useUniversalEntity({
+ *   entityType: 'service',
+ *   organizationId: 'org-123',
+ *   smartCode: 'HERA.SALON.SVC.ENT.STANDARD.V1',
+ *   dynamicFieldSmartCode: 'HERA.SALON.SVC.FIELD.DATA.V1'
+ * })
+ */
+export function useUniversalEntity({
+  entityType,
+  organizationId,
+  includeArchived = false,
+  searchQuery = '',
+  categoryFilter = '',
+  smartCode,
+  dynamicFieldSmartCode
+}: UniversalEntityOptions) {
+  const queryClient = useQueryClient()
+
+  // Fetch all entities with dynamic data
+  const { data: entities, isLoading: entitiesLoading, error: fetchError, refetch } = useQuery({
+    queryKey: [entityType, organizationId, { includeArchived }],
+    queryFn: async () => {
+      if (!organizationId) throw new Error('Organization ID required')
+
+      const result = await getEntities('', {
+        p_organization_id: organizationId,
+        p_entity_type: entityType,
+        p_status: includeArchived ? undefined : 'active'
+      })
+
+      const entities = Array.isArray(result) ? result : []
+
+      console.log(`[useUniversalEntity] Fetched ${entityType}s:`, {
+        count: entities.length,
+        organizationId,
+        includeArchived
+      })
+
+      // Fetch dynamic data for each entity
+      const entitiesWithDynamicData = await Promise.all(
+        entities.map(async (entity: any) => {
+          try {
+            const response = await getDynamicData('', {
+              p_organization_id: organizationId,
+              p_entity_id: entity.id
+            })
+
+            const dynamicData = Array.isArray(response?.data) ? response.data :
+                               Array.isArray(response) ? response : []
+
+            // Merge dynamic data into metadata
+            const mergedMetadata = { ...entity.metadata }
+            dynamicData.forEach((field: any) => {
+              const value =
+                field.field_value_text ||
+                field.field_value_number ||
+                field.field_value_boolean ||
+                field.field_value_date ||
+                field.field_value_json
+              mergedMetadata[field.field_name] = value
+            })
+
+            return { ...entity, metadata: mergedMetadata }
+          } catch (error) {
+            console.warn(`[useUniversalEntity] Failed to fetch dynamic data for ${entityType}`, entity.id, error)
+            return entity
+          }
+        })
+      )
+
+      return entitiesWithDynamicData
+    },
+    enabled: !!organizationId
+  })
+
+  const error = fetchError?.message
+
+  // Create entity mutation
+  const createEntityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      if (!organizationId) throw new Error('Organization ID required')
+
+      console.log(`[useUniversalEntity] Creating ${entityType}:`, data)
+
+      const name = data.name || data.entity_name
+      const code = data.code || data.entity_code || ''
+
+      // Create the entity
+      const result = await upsertEntity('', {
+        p_organization_id: organizationId,
+        p_entity_type: entityType,
+        p_entity_name: name,
+        p_entity_code: code,
+        p_smart_code: smartCode,
+        p_entity_description: data.description || null,
+        p_status: data.status || 'active',
+        p_parent_entity_id: null
+      })
+
+      const entityId = result.entity_id || result.data?.entity_id
+
+      // Save dynamic fields if provided
+      if (entityId && data.dynamicFields) {
+        await saveDynamicFields(organizationId, entityId, data.dynamicFields)
+      }
+
+      return result
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [entityType, organizationId] })
+    }
+  })
+
+  // Update entity mutation
+  const updateEntityMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+      if (!organizationId) throw new Error('Organization ID required')
+
+      const name = updates.name || updates.entity_name
+      const code = updates.code || updates.entity_code
+
+      // Update the entity
+      const result = await upsertEntity('', {
+        p_organization_id: organizationId,
+        p_entity_type: entityType,
+        p_entity_name: name,
+        p_entity_code: code,
+        p_smart_code: smartCode,
+        p_entity_description: updates.description || null,
+        p_status: updates.status || 'active',
+        p_entity_id: id
+      })
+
+      // Update dynamic fields if provided
+      if (updates.dynamicFields) {
+        await saveDynamicFields(organizationId, id, updates.dynamicFields)
+      }
+
+      return result
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [entityType, organizationId] })
+    }
+  })
+
+  // Delete entity mutation
+  const deleteEntityMutation = useMutation({
+    mutationFn: async (id: string) => {
+      if (!organizationId) throw new Error('Organization ID required')
+      const result = await deleteEntity('', {
+        p_organization_id: organizationId,
+        p_entity_id: id
+      })
+      return result
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [entityType, organizationId] })
+    }
+  })
+
+  // Helper function to save dynamic fields
+  const saveDynamicFields = async (
+    orgId: string,
+    entityId: string,
+    fields: DynamicFieldDefinition[]
+  ) => {
+    const dynamicFields = fields
+      .filter(f => f.value !== undefined && f.value !== null && f.value !== '')
+      .map(f => {
+        if (f.type === 'number') {
+          return { field_name: f.name, field_type: 'number', field_value_number: Number(f.value) }
+        } else if (f.type === 'boolean') {
+          return { field_name: f.name, field_type: 'boolean', field_value_boolean: Boolean(f.value) }
+        } else if (f.type === 'date') {
+          return { field_name: f.name, field_type: 'date', field_value_date: f.value }
+        } else if (f.type === 'json') {
+          return { field_name: f.name, field_type: 'json', field_value_json: f.value }
+        } else {
+          return { field_name: f.name, field_type: 'text', field_value: String(f.value) }
+        }
+      })
+
+    console.log(`[useUniversalEntity] Saving dynamic fields for ${entityType}:`, {
+      entityId,
+      fieldCount: dynamicFields.length,
+      fields: dynamicFields
+    })
+
+    if (dynamicFields.length > 0) {
+      try {
+        await setDynamicDataBatch('', {
+          p_organization_id: orgId,
+          p_entity_id: entityId,
+          p_smart_code: dynamicFieldSmartCode,
+          p_fields: dynamicFields as any
+        })
+        console.log(`[useUniversalEntity] Dynamic fields saved successfully for ${entityType}`)
+      } catch (error) {
+        console.warn(`[useUniversalEntity] Failed to save dynamic fields for ${entityType}:`, error)
+        throw error
+      }
+    }
+  }
+
+  // Filter entities by search and category
+  const filteredEntities = useMemo(() => {
+    if (!entities) return []
+
+    return entities
+      .filter(entity => {
+        // Filter by status
+        if (!includeArchived && entity.status === 'archived') {
+          return false
+        }
+
+        // Search filter
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase()
+          return (
+            entity.entity_name.toLowerCase().includes(query) ||
+            entity.entity_code?.toLowerCase().includes(query) ||
+            false
+          )
+        }
+
+        return true
+      })
+      .filter(entity => {
+        // Category filter
+        if (categoryFilter) {
+          return entity.metadata?.category === categoryFilter
+        }
+        return true
+      })
+  }, [entities, includeArchived, searchQuery, categoryFilter])
+
+  return {
+    entities: filteredEntities,
+    isLoading: entitiesLoading,
+    error: error,
+    refetch,
+
+    // CRUD operations
+    createEntity: createEntityMutation.mutateAsync,
+    updateEntity: updateEntityMutation.mutateAsync,
+    deleteEntity: deleteEntityMutation.mutateAsync,
+
+    // Loading states
+    isCreating: createEntityMutation.isPending,
+    isUpdating: updateEntityMutation.isPending,
+    isDeleting: deleteEntityMutation.isPending
+  }
+}

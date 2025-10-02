@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ServiceWithDynamicData } from '@/schemas/service'
+import React from 'react'
+import { Service } from '@/types/salon-service'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,28 +20,18 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { formatDistanceToNow } from 'date-fns'
-import {
-  Edit,
-  Trash2,
-  Archive,
-  ArchiveRestore,
-  MoreVertical,
-  Clock,
-  DollarSign,
-  Percent
-} from 'lucide-react'
+import { Edit, Trash2, Archive, ArchiveRestore, MoreVertical, Sparkles, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface ServiceListProps {
-  services: ServiceWithDynamicData[]
+  services: Service[]
   loading?: boolean
-  selectedIds: Set<string>
-  onSelectAll: (checked: boolean) => void
-  onSelectOne: (id: string, checked: boolean) => void
-  onEdit: (service: ServiceWithDynamicData) => void
-  onDelete: (ids: string[]) => void
-  onArchive: (ids: string[]) => void
-  onRestore: (ids: string[]) => void
+  viewMode?: 'grid' | 'list'
+  currency?: string
+  onEdit: (service: Service) => void
+  onDelete: (service: Service) => void
+  onArchive: (service: Service) => void
+  onRestore: (service: Service) => void
 }
 
 const COLORS = {
@@ -52,210 +41,422 @@ const COLORS = {
   goldDark: '#B8860B',
   champagne: '#F5E6C8',
   bronze: '#8C7853',
-  emerald: '#0F6F5C',
-  plum: '#5A2A40',
   rose: '#E8B4B8',
-  lightText: '#E0E0E0'
+  plum: '#B794F4',
+  lightText: '#E0E0E0',
+  charcoalDark: '#0F0F0F',
+  charcoalLight: '#232323'
 }
 
 export function ServiceList({
   services,
-  loading,
-  selectedIds,
-  onSelectAll,
-  onSelectOne,
+  loading = false,
+  viewMode = 'list',
+  currency = 'AED',
   onEdit,
   onDelete,
   onArchive,
   onRestore
 }: ServiceListProps) {
-  const allSelected = services.length > 0 && selectedIds.size === services.length
-  const someSelected = selectedIds.size > 0 && selectedIds.size < services.length
-
-  const formatDuration = (mins?: number) => {
-    if (!mins) return '-'
-    const hours = Math.floor(mins / 60)
-    const minutes = mins % 60
-    if (hours > 0) {
-      return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
-    }
-    return `${minutes}m`
-  }
-
-  const formatPrice = (price?: number, currency = 'AED') => {
-    if (price === undefined) return '-'
-    return new Intl.NumberFormat('en-AE', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(price)
-  }
-
-  const formatCommission = (type?: string, value?: number, currency = 'AED') => {
-    if (!type || value === undefined) return '-'
-    if (type === 'percent') {
-      return `${value}%`
-    }
-    return formatPrice(value, currency)
+  // Format duration display
+  const formatDuration = (minutes?: number) => {
+    if (!minutes) return '-'
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    if (hours > 0 && mins > 0) return `${hours}h ${mins}m`
+    if (hours > 0) return `${hours}h`
+    return `${mins}m`
   }
 
   if (loading) {
     return (
-      <div className="animate-pulse space-y-4">
+      <div className="space-y-2">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 bg-muted rounded-lg" />
+          <div key={i} className="h-16 bg-white/5 rounded-lg animate-pulse" />
         ))}
       </div>
     )
   }
 
-  if (services.length === 0) {
+  if (viewMode === 'grid') {
     return (
-      <div className="text-center py-20">
-        <div className="text-4xl mb-4">✨</div>
-        <h3 className="text-xl font-medium mb-2" style={{ color: COLORS.champagne }}>
-          No services yet
-        </h3>
-        <p style={{ color: COLORS.lightText, opacity: 0.7 }}>
-          Create your first service to start building your catalog
-        </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {services.map(service => (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            currency={currency}
+            formatDuration={formatDuration}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onArchive={onArchive}
+            onRestore={onRestore}
+          />
+        ))}
       </div>
     )
   }
 
   return (
-    <div className="rounded-lg overflow-hidden" style={{ backgroundColor: COLORS.charcoal }}>
+    <div
+      className="rounded-lg overflow-hidden"
+      style={{
+        backgroundColor: COLORS.charcoalLight + '95',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+      }}
+    >
       <Table>
         <TableHeader>
-          <TableRow className="border-b" style={{ borderColor: COLORS.champagne + '44' }}>
-            <TableHead className="w-12">
-              <Checkbox
-                checked={allSelected || someSelected}
-                onCheckedChange={onSelectAll}
-                aria-label="Select all services"
-                className={someSelected && !allSelected ? 'data-[state=checked]:bg-primary/50' : ''}
-              />
-            </TableHead>
+          <TableRow
+            className="border-b hover:bg-transparent"
+            style={{ borderColor: COLORS.bronze + '33' }}
+          >
             <TableHead className="!text-[#F5E6C8]">Service</TableHead>
             <TableHead className="!text-[#F5E6C8]">Category</TableHead>
-            <TableHead className="!text-[#F5E6C8]">
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4 text-[#F5E6C8]" />
-                Duration
-              </div>
-            </TableHead>
+            <TableHead className="!text-[#F5E6C8]">Duration</TableHead>
             <TableHead className="!text-[#F5E6C8]">Price</TableHead>
             <TableHead className="!text-[#F5E6C8]">Status</TableHead>
             <TableHead className="!text-[#F5E6C8]">Updated</TableHead>
-            <TableHead className="w-12"></TableHead>
+            <TableHead className="!text-[#F5E6C8] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {services.map(service => (
-            <TableRow
-              key={service.id}
-              className={cn(
-                'border-b transition-colors',
-                selectedIds.has(service.id) && 'bg-muted/50'
-              )}
-              style={{ borderColor: COLORS.black }}
-            >
-              <TableCell>
-                <Checkbox
-                  checked={selectedIds.has(service.id)}
-                  onCheckedChange={checked => onSelectOne(service.id, checked as boolean)}
-                  aria-label={`Select ${service.name}`}
-                />
-              </TableCell>
-              <TableCell>
-                <div>
-                  <div className="font-medium" style={{ color: COLORS.champagne }}>
-                    {service.name || service.entity_name || service.code || '-'}
-                  </div>
-                  {service.code && (
-                    <div className="text-xs" style={{ color: COLORS.lightText }}>
-                      {service.code}
-                    </div>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell>
-                {service.category || service.metadata?.category ? (
-                  <Badge variant="secondary" className="bg-muted/50 text-muted-foreground">
-                    {service.category || service.metadata?.category}
-                  </Badge>
-                ) : (
-                  <span className="text-muted-foreground">-</span>
+          {services.map((service, index) => {
+            const isArchived = service.status === 'archived'
+
+            return (
+              <TableRow
+                key={service.id}
+                className={cn(
+                  'border-b transition-colors group',
+                  index % 2 === 0 ? 'bg-gray-50/5' : 'bg-transparent',
+                  'hover:bg-cyan-100/10',
+                  isArchived && 'opacity-60'
                 )}
-              </TableCell>
-              <TableCell style={{ color: COLORS.lightText }}>
-                {formatDuration(service.duration_mins || service.metadata?.duration_mins)}
-              </TableCell>
-              <TableCell style={{ color: COLORS.champagne }}>
-                {formatPrice(service.price, service.currency)}
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={service.status === 'active' ? 'default' : 'secondary'}
-                  className={cn(
-                    service.status === 'active'
-                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
-                      : 'bg-muted/20 text-muted-foreground border-muted-foreground/50'
-                  )}
-                >
-                  {service.status}
-                </Badge>
-              </TableCell>
-              <TableCell style={{ color: COLORS.lightText }}>
-                {service.updated_at
-                  ? formatDistanceToNow(new Date(service.updated_at), { addSuffix: true })
-                  : '-'}
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(service)}>
-                      <Edit className="mr-2 h-4 w-4" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onDelete([service.id])}
-                      className="text-red-400"
+                style={{ borderColor: COLORS.bronze + '20' }}
+              >
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{
+                        backgroundColor: COLORS.gold + '20',
+                        border: `1px solid ${COLORS.gold}40`
+                      }}
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    {service.status === 'active' ? (
-                      <DropdownMenuItem
-                        onClick={() => onArchive([service.id])}
-                        className="text-red-400"
+                      <Sparkles className="w-4 h-4" style={{ color: COLORS.gold }} />
+                    </div>
+                    <div>
+                      <p style={{ color: COLORS.champagne }}>{service.entity_name}</p>
+                    </div>
+                  </div>
+                </TableCell>
+
+                <TableCell>
+                  {service.category ? (
+                    <Badge
+                      variant="secondary"
+                      className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                    >
+                      {service.category}
+                    </Badge>
+                  ) : (
+                    <span className="text-sm" style={{ color: COLORS.lightText }}>
+                      No category
+                    </span>
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" style={{ color: COLORS.lightText }} />
+                    <span className="font-semibold" style={{ color: COLORS.lightText }}>
+                      {formatDuration(service.duration_minutes)}
+                    </span>
+                  </div>
+                </TableCell>
+
+                <TableCell>
+                  {service.price ? (
+                    <span className="font-semibold" style={{ color: COLORS.gold }}>
+                      {currency} {service.price.toFixed(2)}
+                    </span>
+                  ) : (
+                    <span className="text-sm" style={{ color: COLORS.lightText }}>
+                      -
+                    </span>
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  {isArchived ? (
+                    <Badge
+                      variant="secondary"
+                      className="bg-gray-500/20 text-muted border-gray-500/30"
+                    >
+                      Archived
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-500/20 text-green-400 border-green-500/30"
+                    >
+                      Active
+                    </Badge>
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  <span className="text-sm" style={{ color: COLORS.lightText, opacity: 0.7 }}>
+                    {service.updated_at
+                      ? formatDistanceToNow(new Date(service.updated_at), { addSuffix: true })
+                      : 'Unknown'}
+                  </span>
+                </TableCell>
+
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <Archive className="mr-2 h-4 w-4" />
-                        Archive
-                      </DropdownMenuItem>
-                    ) : (
+                        <MoreVertical className="h-4 w-4" style={{ color: COLORS.lightText }} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      style={{
+                        backgroundColor: COLORS.charcoal,
+                        border: `1px solid ${COLORS.bronze}33`
+                      }}
+                    >
                       <DropdownMenuItem
-                        onClick={() => onRestore([service.id])}
-                        className="text-green-400"
+                        onClick={() => onEdit(service)}
+                        style={{ color: COLORS.lightText }}
+                        className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
                       >
-                        <ArchiveRestore className="mr-2 h-4 w-4" />
-                        Restore
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
                       </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+
+                      <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+
+                      {isArchived ? (
+                        <DropdownMenuItem
+                          onClick={() => onRestore(service)}
+                          style={{ color: COLORS.lightText }}
+                          className="hover:!bg-green-900/20 hover:!text-green-300"
+                        >
+                          <ArchiveRestore className="mr-2 h-4 w-4" />
+                          Restore
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => onArchive(service)}
+                          style={{ color: COLORS.lightText }}
+                          className="hover:!bg-yellow-900/20 hover:!text-yellow-300"
+                        >
+                          <Archive className="mr-2 h-4 w-4" />
+                          Archive
+                        </DropdownMenuItem>
+                      )}
+
+                      <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+
+                      <DropdownMenuItem
+                        onClick={() => onDelete(service)}
+                        className="hover:!bg-red-900/20 hover:!text-red-300"
+                        style={{ color: '#FF6B6B' }}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            )
+          })}
+
+          {services.length === 0 && (
+            <TableRow>
+              <TableCell
+                colSpan={9}
+                className="h-32 text-center"
+                style={{ color: COLORS.lightText, opacity: 0.5 }}
+              >
+                No services found
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
+    </div>
+  )
+}
+
+function ServiceCard({
+  service,
+  currency = 'AED',
+  formatDuration,
+  onEdit,
+  onDelete,
+  onArchive,
+  onRestore
+}: {
+  service: Service
+  currency?: string
+  formatDuration: (minutes?: number) => string
+  onEdit: (service: Service) => void
+  onDelete: (service: Service) => void
+  onArchive: (service: Service) => void
+  onRestore: (service: Service) => void
+}) {
+  const isArchived = service.status === 'archived'
+
+  return (
+    <div
+      className={cn(
+        'relative p-6 rounded-xl transition-all duration-200',
+        'hover:shadow-xl hover:scale-[1.02]',
+        isArchived && 'opacity-60'
+      )}
+      style={{
+        backgroundColor: COLORS.charcoalLight,
+        border: `1px solid ${COLORS.bronze}20`,
+        boxShadow: `0 4px 12px rgba(0,0,0,0.2)`
+      }}
+    >
+      {/* Status Badge */}
+      {isArchived && (
+        <Badge
+          variant="secondary"
+          className="absolute top-2 right-2 text-xs"
+          style={{
+            backgroundColor: COLORS.bronze + '20',
+            color: COLORS.bronze
+          }}
+        >
+          Archived
+        </Badge>
+      )}
+
+      {/* Icon and Actions */}
+      <div className="flex items-start justify-between mb-4">
+        <div
+          className="w-12 h-12 rounded-lg flex items-center justify-center"
+          style={{
+            backgroundColor: COLORS.gold + '20',
+            border: `1px solid ${COLORS.gold}40`
+          }}
+        >
+          <Sparkles className="w-6 h-6" style={{ color: COLORS.gold }} />
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="p-1 rounded hover:bg-black/20 transition-colors"
+              style={{ color: COLORS.lightText }}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            style={{ backgroundColor: COLORS.charcoal, border: `1px solid ${COLORS.bronze}33` }}
+          >
+            <DropdownMenuItem
+              onClick={() => onEdit(service)}
+              style={{ color: COLORS.lightText }}
+              className="hover:!bg-cyan-900/20 hover:!text-cyan-300"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+
+            {isArchived ? (
+              <DropdownMenuItem
+                onClick={() => onRestore(service)}
+                style={{ color: COLORS.lightText }}
+                className="hover:!bg-green-900/20 hover:!text-green-300"
+              >
+                <ArchiveRestore className="mr-2 h-4 w-4" />
+                Restore
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => onArchive(service)}
+                style={{ color: COLORS.lightText }}
+                className="hover:!bg-yellow-900/20 hover:!text-yellow-300"
+              >
+                <Archive className="mr-2 h-4 w-4" />
+                Archive
+              </DropdownMenuItem>
+            )}
+
+            <DropdownMenuSeparator style={{ backgroundColor: COLORS.bronze + '33' }} />
+
+            <DropdownMenuItem
+              onClick={() => onDelete(service)}
+              className="hover:!bg-red-900/20 hover:!text-red-300"
+              style={{ color: '#FF6B6B' }}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Service Name */}
+      <h3 className="font-semibold text-lg mb-2" style={{ color: COLORS.champagne }}>
+        {service.entity_name}
+      </h3>
+
+      {/* Category */}
+      {service.category && (
+        <Badge
+          variant="secondary"
+          className="mb-3 bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+        >
+          {service.category}
+        </Badge>
+      )}
+
+      {/* Duration Display */}
+      <div className="flex items-center gap-2 mb-4">
+        <Clock className="w-4 h-4" style={{ color: COLORS.gold }} />
+        <span className="text-sm font-medium" style={{ color: COLORS.champagne }}>
+          {formatDuration(service.duration_minutes)}
+        </span>
+      </div>
+
+      {/* Pricing */}
+      <div className="mb-4">
+        <p className="text-xs" style={{ color: COLORS.lightText }}>
+          Price
+        </p>
+        <p className="font-semibold text-lg" style={{ color: COLORS.gold }}>
+          {service.price ? `${currency} ${service.price.toFixed(2)}` : '-'}
+        </p>
+      </div>
+
+      {/* Booking Required Badge */}
+      {service.requires_booking && (
+        <div className="mb-4">
+          <Badge
+            variant="secondary"
+            className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-xs"
+          >
+            Booking Required
+          </Badge>
+        </div>
+      )}
     </div>
   )
 }

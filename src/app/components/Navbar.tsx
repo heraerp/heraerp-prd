@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
-import ThemeToggle from '@/app/components/ThemeToggle'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 type NavItem = { href: string; label: string }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: '/solutions', label: 'Solutions' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/partners', label: 'Partners' },
-  { href: '/docs', label: 'Docs' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' }
-]
+  { href: "/solutions", label: "Solutions" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/partners", label: "Partners" },
+  { href: "/docs", label: "Docs" },
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
+];
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -62,8 +62,7 @@ export default function Navbar() {
 
       <div className="mx-auto mt-4 w-[94%] max-w-7xl">
         <div
-          role="navigation"
-          aria-label="Primary"
+          role="navigation" aria-label="Primary"
           className="relative flex items-center justify-between rounded-2xl backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-gray-700/50 shadow-2xl shadow-black/5 px-6 py-3 md:px-8"
         >
           {/* Enhanced Brand */}
@@ -89,13 +88,13 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={[
-                  'group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+                  "group relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2",
                   isActive(item.href)
-                    ? 'bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-indigo-200/50 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 shadow-lg shadow-indigo-500/10'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-800/40 hover:backdrop-blur-sm hover:text-indigo-600 dark:hover:text-indigo-400 border border-transparent hover:border-white/30 dark:hover:border-gray-700/30 hover:shadow-md'
-                ].join(' ')}
-                aria-current={isActive(item.href) ? 'page' : undefined}
+                    ? "bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-indigo-200/50 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 shadow-lg shadow-indigo-500/10"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-800/40 hover:backdrop-blur-sm hover:text-indigo-600 dark:hover:text-indigo-400 border border-transparent hover:border-white/30 dark:hover:border-gray-700/30 hover:shadow-md",
+                ].join(" ")}
+                aria-current={isActive(item.href) ? "page" : undefined}
               >
                 <span className="relative z-10">{item.label}</span>
                 {/* Subtle hover glow */}
@@ -104,22 +103,17 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Enhanced Sign In */}
+          {/* Enhanced Book a Demo */}
           <div className="hidden md:flex items-center">
             <Link
-              href="/auth/login"
+              href="/book-a-meeting"
               className="group relative px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 overflow-hidden border border-indigo-200/50 dark:border-indigo-700/50 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm text-indigo-700 dark:text-indigo-300 hover:bg-white/80 dark:hover:bg-gray-800/80 hover:shadow-lg hover:shadow-indigo-500/20 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                Sign In
+                Book a Demo
               </span>
               {/* Subtle shine effect */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -156,12 +150,12 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     className={[
-                      'px-5 py-3.5 rounded-xl text-base font-medium transition-all duration-300',
+                      "px-5 py-3.5 rounded-xl text-base font-medium transition-all duration-300",
                       isActive(item.href)
-                        ? 'bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-indigo-200/50 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 shadow-md'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/50 hover:backdrop-blur-sm hover:text-indigo-600 dark:hover:text-indigo-400 border border-transparent hover:border-white/30 dark:hover:border-gray-700/30'
-                    ].join(' ')}
-                    aria-current={isActive(item.href) ? 'page' : undefined}
+                        ? "bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-indigo-200/50 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 shadow-md"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/50 hover:backdrop-blur-sm hover:text-indigo-600 dark:hover:text-indigo-400 border border-transparent hover:border-white/30 dark:hover:border-gray-700/30",
+                    ].join(" ")}
+                    aria-current={isActive(item.href) ? "page" : undefined}
                     onClick={() => setOpen(false)}
                   >
                     {item.label}
@@ -169,19 +163,14 @@ export default function Navbar() {
                 ))}
                 <div className="mt-4 pt-4 border-t border-white/20 dark:border-gray-700/50">
                   <Link
-                    href="/auth/login"
+                    href="/book-a-meeting"
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-base font-semibold transition-all duration-300 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-indigo-200/50 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 hover:bg-white/90 dark:hover:bg-gray-800/90 shadow-md hover:shadow-lg"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Sign In
+                    Book a Demo
                   </Link>
                 </div>
               </div>

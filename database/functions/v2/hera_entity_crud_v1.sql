@@ -47,6 +47,9 @@ BEGIN
         );
     END IF;
 
+    -- Initialize v_entity_id to NULL
+    v_entity_id := NULL;
+
     -- Check if updating existing entity
     IF p_entity_id IS NOT NULL THEN
         SELECT * INTO v_existing_entity
@@ -63,19 +66,17 @@ BEGIN
                 'error', 'Entity not found or access denied'
             );
         END IF;
-    ELSE
+    ELSIF p_entity_code IS NOT NULL THEN
         -- Check for existing entity by entity_code if provided
-        IF p_entity_code IS NOT NULL THEN
-            SELECT * INTO v_existing_entity
-            FROM core_entities
-            WHERE organization_id = p_org_id
-              AND entity_type = p_entity_type
-              AND entity_code = p_entity_code;
+        SELECT * INTO v_existing_entity
+        FROM core_entities
+        WHERE organization_id = p_org_id
+          AND entity_type = p_entity_type
+          AND entity_code = p_entity_code;
 
-            IF FOUND THEN
-                v_entity_id := v_existing_entity.id;
-                v_is_update := TRUE;
-            END IF;
+        IF FOUND THEN
+            v_entity_id := v_existing_entity.id;
+            v_is_update := TRUE;
         END IF;
     END IF;
 
