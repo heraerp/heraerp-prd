@@ -252,8 +252,14 @@ export default function JewelryAIPage() {
       const role = localStorage.getItem('jewelryRole')
 
       if (!orgId || !role) {
-        // Redirect to demo if no organization context
-        window.location.href = '/jewelry/demo'
+        // Set demo data for production showcase
+        const DEMO_ORG_ID = 'f8d2c5e7-9a4b-6c8d-0e1f-2a3b4c5d6e7f'
+        localStorage.setItem('organizationId', DEMO_ORG_ID)
+        localStorage.setItem('jewelryRole', 'owner')
+        
+        setOrganizationId(DEMO_ORG_ID)
+        setJewelryRole('owner')
+        setOrgLoading(false)
         return
       }
 
@@ -570,6 +576,19 @@ export default function JewelryAIPage() {
 
       <div className="relative z-10">
         <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
+          {/* ✅ Demo Notice */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-center mb-4"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/10 border border-gold-500/30 rounded-full">
+              <Brain className="h-4 w-4 text-gold-400" />
+              <span className="text-gold-400 text-sm font-medium">Live Demo - HERA Jewelry AI Intelligence</span>
+            </div>
+          </motion.div>
+
           {/* ✅ Enterprise Header with proper contrast */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
