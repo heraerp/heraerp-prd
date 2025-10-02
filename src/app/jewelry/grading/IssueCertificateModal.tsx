@@ -19,7 +19,11 @@ export default function IssueCertificateModal({
   open,
   onClose,
   jobId
-}: { open: boolean; onClose: () => void; jobId: string }) {
+}: {
+  open: boolean
+  onClose: () => void
+  jobId: string
+}) {
   const { toast } = useToast()
   const certHook = useUniversalEntity({
     entity_type: CERTIFICATE_PRESET.entity_type,
@@ -34,7 +38,11 @@ export default function IssueCertificateModal({
     filters: { include_dynamic: true, limit: 1 }
   })
 
-  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof schema>>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: { issue_date: new Date() as any }
   })
@@ -46,10 +54,26 @@ export default function IssueCertificateModal({
         entity_name: `CERT ${v.cert_number}`,
         smart_code: 'HERA.JEWELRY.CERT.ENTITY.DOCUMENT.v1',
         dynamic_fields: {
-          cert_number: { value: v.cert_number, type: 'text', smart_code: 'HERA.JEWELRY.CERT.DYN.NUMBER.v1' },
+          cert_number: {
+            value: v.cert_number,
+            type: 'text',
+            smart_code: 'HERA.JEWELRY.CERT.DYN.NUMBER.v1'
+          },
           issuer: { value: v.issuer, type: 'text', smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUER.v1' },
-          issue_date: { value: v.issue_date.toISOString(), type: 'date', smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUE_DATE.v1' },
-          ...(v.pdf_url ? { pdf_url: { value: v.pdf_url, type: 'text', smart_code: 'HERA.JEWELRY.CERT.DYN.PDF_URL.v1' } } : {})
+          issue_date: {
+            value: v.issue_date.toISOString(),
+            type: 'date',
+            smart_code: 'HERA.JEWELRY.CERT.DYN.ISSUE_DATE.v1'
+          },
+          ...(v.pdf_url
+            ? {
+                pdf_url: {
+                  value: v.pdf_url,
+                  type: 'text',
+                  smart_code: 'HERA.JEWELRY.CERT.DYN.PDF_URL.v1'
+                }
+              }
+            : {})
         }
       })
       const certId: string | undefined = res?.id || res?.data?.id
@@ -60,7 +84,11 @@ export default function IssueCertificateModal({
       toast({ title: 'Certificate issued', description: `Certificate ${v.cert_number} linked` })
       onClose()
     } catch (e: any) {
-      toast({ title: 'Issue failed', description: e?.message || 'Unable to issue certificate', variant: 'destructive' })
+      toast({
+        title: 'Issue failed',
+        description: e?.message || 'Unable to issue certificate',
+        variant: 'destructive'
+      })
     }
   }
 
@@ -73,7 +101,9 @@ export default function IssueCertificateModal({
           <div>
             <label>Certificate #</label>
             <input {...register('cert_number')} className="w-full rounded-xl p-2 bg-white/10" />
-            {errors.cert_number && <p className="text-red-400 text-sm">{errors.cert_number.message}</p>}
+            {errors.cert_number && (
+              <p className="text-red-400 text-sm">{errors.cert_number.message}</p>
+            )}
           </div>
           <div>
             <label>Issuer</label>
@@ -82,8 +112,14 @@ export default function IssueCertificateModal({
           </div>
           <div>
             <label>Issue Date</label>
-            <input type="date" {...register('issue_date')} className="w-full rounded-xl p-2 bg-white/10" />
-            {errors.issue_date && <p className="text-red-400 text-sm">{errors.issue_date.message as any}</p>}
+            <input
+              type="date"
+              {...register('issue_date')}
+              className="w-full rounded-xl p-2 bg-white/10"
+            />
+            {errors.issue_date && (
+              <p className="text-red-400 text-sm">{errors.issue_date.message as any}</p>
+            )}
           </div>
           <div>
             <label>PDF URL (optional)</label>
@@ -92,8 +128,15 @@ export default function IssueCertificateModal({
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4">
-            <button type="button" onClick={onClose} className="px-3 py-2 rounded-xl bg-white/10">Cancel</button>
-            <button disabled={certHook.isCreating} className="px-4 py-2 rounded-xl jewelry-btn-primary">Issue</button>
+            <button type="button" onClick={onClose} className="px-3 py-2 rounded-xl bg-white/10">
+              Cancel
+            </button>
+            <button
+              disabled={certHook.isCreating}
+              className="px-4 py-2 rounded-xl jewelry-btn-primary"
+            >
+              Issue
+            </button>
           </div>
         </form>
       </div>

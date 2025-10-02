@@ -12,12 +12,12 @@ type Mode = 'create' | 'edit'
 
 const schema = z.object({
   entity_name: z.string().min(1, 'Name is required'),
-  status: z.enum(['pipeline','in_progress','graded','pending_review']).default('pipeline'),
-  priority: z.enum(['low','normal','urgent']).default('normal'),
+  status: z.enum(['pipeline', 'in_progress', 'graded', 'pending_review']).default('pipeline'),
+  priority: z.enum(['low', 'normal', 'urgent']).default('normal'),
   carat: z.coerce.number().min(0).optional(),
-  cut: z.enum(['EX','VG','G','F']).optional(),
-  color: z.enum(['D','E','F','G','H','I','J']).optional(),
-  clarity: z.enum(['IF','VVS1','VVS2','VS1','VS2','SI1','SI2','I1']).optional(),
+  cut: z.enum(['EX', 'VG', 'G', 'F']).optional(),
+  color: z.enum(['D', 'E', 'F', 'G', 'H', 'I', 'J']).optional(),
+  clarity: z.enum(['IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'SI1', 'SI2', 'I1']).optional(),
   measurements: z.string().optional(),
   itemId: z.string().uuid().optional(),
   graderId: z.string().uuid().optional()
@@ -38,17 +38,26 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
     filters: { include_dynamic: true, limit: 1 }
   })
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<z.infer<typeof schema>>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       entity_name: entity?.entity_name ?? '',
       status: entity?.dynamic_fields?.status?.value ?? entity?.dynamic_fields?.status ?? 'pipeline',
-      priority: entity?.dynamic_fields?.priority?.value ?? entity?.dynamic_fields?.priority ?? 'normal',
-      carat: Number(entity?.dynamic_fields?.carat?.value ?? entity?.dynamic_fields?.carat ?? 0) || undefined,
+      priority:
+        entity?.dynamic_fields?.priority?.value ?? entity?.dynamic_fields?.priority ?? 'normal',
+      carat:
+        Number(entity?.dynamic_fields?.carat?.value ?? entity?.dynamic_fields?.carat ?? 0) ||
+        undefined,
       cut: entity?.dynamic_fields?.cut?.value ?? entity?.dynamic_fields?.cut,
       color: entity?.dynamic_fields?.color?.value ?? entity?.dynamic_fields?.color,
       clarity: entity?.dynamic_fields?.clarity?.value ?? entity?.dynamic_fields?.clarity,
-      measurements: entity?.dynamic_fields?.measurements?.value ?? entity?.dynamic_fields?.measurements
+      measurements:
+        entity?.dynamic_fields?.measurements?.value ?? entity?.dynamic_fields?.measurements
     }
   })
 
@@ -57,12 +66,16 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
     reset({
       entity_name: entity?.entity_name ?? '',
       status: entity?.dynamic_fields?.status?.value ?? entity?.dynamic_fields?.status ?? 'pipeline',
-      priority: entity?.dynamic_fields?.priority?.value ?? entity?.dynamic_fields?.priority ?? 'normal',
-      carat: Number(entity?.dynamic_fields?.carat?.value ?? entity?.dynamic_fields?.carat ?? 0) || undefined,
+      priority:
+        entity?.dynamic_fields?.priority?.value ?? entity?.dynamic_fields?.priority ?? 'normal',
+      carat:
+        Number(entity?.dynamic_fields?.carat?.value ?? entity?.dynamic_fields?.carat ?? 0) ||
+        undefined,
       cut: entity?.dynamic_fields?.cut?.value ?? entity?.dynamic_fields?.cut,
       color: entity?.dynamic_fields?.color?.value ?? entity?.dynamic_fields?.color,
       clarity: entity?.dynamic_fields?.clarity?.value ?? entity?.dynamic_fields?.clarity,
-      measurements: entity?.dynamic_fields?.measurements?.value ?? entity?.dynamic_fields?.measurements
+      measurements:
+        entity?.dynamic_fields?.measurements?.value ?? entity?.dynamic_fields?.measurements
     })
   }, [open, entity, reset])
 
@@ -77,15 +90,65 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
         entity_name: values.entity_name,
         smart_code: 'HERA.JEWELRY.GRADING.ENTITY.JOB.v1',
         dynamic_fields: {
-          status: { value: values.status, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.STATUS.v1' },
-          priority: { value: values.priority, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.PRIORITY.v1' },
-          ...(values.carat != null ? { carat: { value: values.carat, type: 'number', smart_code: 'HERA.JEWELRY.GRADING.DYN.CARAT.v1' } } : {}),
-          ...(values.cut ? { cut: { value: values.cut, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.CUT.v1' } } : {}),
-          ...(values.color ? { color: { value: values.color, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.COLOR.v1' } } : {}),
-          ...(values.clarity ? { clarity: { value: values.clarity, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.CLARITY.v1' } } : {}),
-          ...(values.measurements ? { measurements: { value: values.measurements, type: 'text', smart_code: 'HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.v1' } } : {})
+          status: {
+            value: values.status,
+            type: 'text',
+            smart_code: 'HERA.JEWELRY.GRADING.DYN.STATUS.v1'
+          },
+          priority: {
+            value: values.priority,
+            type: 'text',
+            smart_code: 'HERA.JEWELRY.GRADING.DYN.PRIORITY.v1'
+          },
+          ...(values.carat != null
+            ? {
+                carat: {
+                  value: values.carat,
+                  type: 'number',
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CARAT.v1'
+                }
+              }
+            : {}),
+          ...(values.cut
+            ? {
+                cut: {
+                  value: values.cut,
+                  type: 'text',
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CUT.v1'
+                }
+              }
+            : {}),
+          ...(values.color
+            ? {
+                color: {
+                  value: values.color,
+                  type: 'text',
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.COLOR.v1'
+                }
+              }
+            : {}),
+          ...(values.clarity
+            ? {
+                clarity: {
+                  value: values.clarity,
+                  type: 'text',
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.CLARITY.v1'
+                }
+              }
+            : {}),
+          ...(values.measurements
+            ? {
+                measurements: {
+                  value: values.measurements,
+                  type: 'text',
+                  smart_code: 'HERA.JEWELRY.GRADING.DYN.MEASUREMENTS.v1'
+                }
+              }
+            : {})
         },
-        metadata: Object.keys(relationships_patch).length ? { relationships: relationships_patch } : undefined
+        metadata: Object.keys(relationships_patch).length
+          ? { relationships: relationships_patch }
+          : undefined
       })
     } else if (entity?.id || entity?.entity_id) {
       await update({
@@ -119,7 +182,9 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
           <div>
             <label className="jewelry-text-high-contrast">Name</label>
             <input {...register('entity_name')} className="w-full rounded-xl p-2 bg-white/10" />
-            {errors.entity_name && <p className="text-red-400 text-sm">{errors.entity_name.message}</p>}
+            {errors.entity_name && (
+              <p className="text-red-400 text-sm">{errors.entity_name.message}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -145,7 +210,12 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
           <div className="grid grid-cols-4 gap-3">
             <div>
               <label>Carat</label>
-              <input type="number" step="0.01" {...register('carat')} className="w-full rounded-xl p-2 bg-white/10" />
+              <input
+                type="number"
+                step="0.01"
+                {...register('carat')}
+                className="w-full rounded-xl p-2 bg-white/10"
+              />
             </div>
             <div>
               <label>Cut</label>
@@ -160,16 +230,20 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
             <div>
               <label>Color</label>
               <select {...register('color')} className="w-full rounded-xl p-2 bg-white/10">
-                {['','D','E','F','G','H','I','J'].map(c => (
-                  <option key={c} value={c}>{c || '—'}</option>
+                {['', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map(c => (
+                  <option key={c} value={c}>
+                    {c || '—'}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
               <label>Clarity</label>
               <select {...register('clarity')} className="w-full rounded-xl p-2 bg-white/10">
-                {['','IF','VVS1','VVS2','VS1','VS2','SI1','SI2','I1'].map(c => (
-                  <option key={c} value={c}>{c || '—'}</option>
+                {['', 'IF', 'VVS1', 'VVS2', 'VS1', 'VS2', 'SI1', 'SI2', 'I1'].map(c => (
+                  <option key={c} value={c}>
+                    {c || '—'}
+                  </option>
                 ))}
               </select>
             </div>
@@ -184,17 +258,30 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label>Item ID (OF_ITEM)</label>
-              <input {...register('itemId')} className="w-full rounded-xl p-2 bg-white/10" placeholder="UUID" />
+              <input
+                {...register('itemId')}
+                className="w-full rounded-xl p-2 bg-white/10"
+                placeholder="UUID"
+              />
             </div>
             <div>
               <label>Grader ID (ASSIGNED_TO)</label>
-              <input {...register('graderId')} className="w-full rounded-xl p-2 bg-white/10" placeholder="UUID" />
+              <input
+                {...register('graderId')}
+                className="w-full rounded-xl p-2 bg-white/10"
+                placeholder="UUID"
+              />
             </div>
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4">
-            <button type="button" onClick={onClose} className="px-3 py-2 rounded-xl bg-white/10">Cancel</button>
-            <button disabled={isCreating || isUpdating} className="px-4 py-2 rounded-xl jewelry-btn-primary">
+            <button type="button" onClick={onClose} className="px-3 py-2 rounded-xl bg-white/10">
+              Cancel
+            </button>
+            <button
+              disabled={isCreating || isUpdating}
+              className="px-4 py-2 rounded-xl jewelry-btn-primary"
+            >
               {mode === 'create' ? 'Create' : 'Save'}
             </button>
           </div>
@@ -203,4 +290,3 @@ export default function GradingJobModal({ open, mode, onClose, entity }: Grading
     </div>
   )
 }
-

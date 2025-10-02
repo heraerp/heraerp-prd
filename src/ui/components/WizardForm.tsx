@@ -1,51 +1,58 @@
 // src/ui/components/WizardForm.tsx
-'use client';
-import React from 'react';
-import { useFormSpec, HeraField } from '../hooks/useFormSpec';
-import { useCreateTransaction } from '../hooks/useHera';
-import { LinesEditor, TxnLine } from './LinesEditor';
+'use client'
+import React from 'react'
+import { useFormSpec, HeraField } from '../hooks/useFormSpec'
+import { useCreateTransaction } from '../hooks/useHera'
+import { LinesEditor, TxnLine } from './LinesEditor'
 
 type WizardState = {
-  header: Record<string, any>;
-  meta: Record<string, any>;
-  lines: TxnLine[];
-};
+  header: Record<string, any>
+  meta: Record<string, any>
+  lines: TxnLine[]
+}
 
-export function WizardForm({ smartCode, transactionType }: { smartCode: string; transactionType?: string }) {
-  const { data: spec, isLoading } = useFormSpec(smartCode);
-  const { mutateAsync: createTxn, isPending } = useCreateTransaction();
-  const [stepIdx, setStepIdx] = React.useState(0);
+export function WizardForm({
+  smartCode,
+  transactionType
+}: {
+  smartCode: string
+  transactionType?: string
+}) {
+  const { data: spec, isLoading } = useFormSpec(smartCode)
+  const { mutateAsync: createTxn, isPending } = useCreateTransaction()
+  const [stepIdx, setStepIdx] = React.useState(0)
 
   const [state, setState] = React.useState<WizardState>({
     header: spec?.defaults ?? {
-      p_transaction_date: new Date().toISOString(),
+      p_transaction_date: new Date().toISOString()
     },
     meta: {},
-    lines: [],
-  });
+    lines: []
+  })
 
   React.useEffect(() => {
     if (spec?.defaults) {
-      setState((s) => ({ ...s, header: { ...spec.defaults, ...s.header } }));
+      setState(s => ({ ...s, header: { ...spec.defaults, ...s.header } }))
     }
-  }, [spec?.defaults]);
+  }, [spec?.defaults])
 
-  if (isLoading || !spec) return <div className="p-6">Loading form…</div>;
+  if (isLoading || !spec) return <div className="p-6">Loading form…</div>
 
-  const step = spec.steps[stepIdx];
+  const step = spec.steps[stepIdx]
 
-  const next = () => setStepIdx((i) => Math.min(i + 1, spec.steps.length - 1));
-  const prev = () => setStepIdx((i) => Math.max(i - 1, 0));
+  const next = () => setStepIdx(i => Math.min(i + 1, spec.steps.length - 1))
+  const prev = () => setStepIdx(i => Math.max(i - 1, 0))
 
   async function submit() {
     const body = buildTransactionBody({
       smartCode: spec.smart_code,
-      transactionType: transactionType ?? spec.transaction_type ?? inferTxnTypeFromSmartCode(spec.smart_code),
+      transactionType:
+        transactionType ?? spec.transaction_type ?? inferTxnTypeFromSmartCode(spec.smart_code),
       header: state.header,
-      lines: state.lines,
-    });
+      lines: state.lines
+    })
 
-    await createTxn(body); // posts to /transactions (your existing hook)
+    await createTxn(body) // posts to /transactions (your existing hook)
   }
 
   return (
@@ -72,15 +79,15 @@ export function WizardForm({ smartCode, transactionType }: { smartCode: string; 
         <StepFields
           fields={step.fields}
           header={state.header}
-          setHeader={(patch) => setState((s) => ({ ...s, header: { ...s.header, ...patch } }))}
+          setHeader={patch => setState(s => ({ ...s, header: { ...s.header, ...patch } }))}
           meta={state.meta}
-          setMeta={(patch) => setState((s) => ({ ...s, meta: { ...s.meta, ...patch } }))}
+          setMeta={patch => setState(s => ({ ...s, meta: { ...s.meta, ...patch } }))}
         />
-        {step.fields.some((f) => f.section === 'line') && (
+        {step.fields.some(f => f.section === 'line') && (
           <div className="mt-4">
             <LinesEditor
               value={state.lines}
-              onChange={(lines) => setState((s) => ({ ...s, lines }))}
+              onChange={lines => setState(s => ({ ...s, lines }))}
               headerSmartCode={spec.smart_code}
             />
           </div>
@@ -89,7 +96,12 @@ export function WizardForm({ smartCode, transactionType }: { smartCode: string; 
 
       {/* Nav / Submit */}
       <div className="flex justify-between">
-        <button type="button" onClick={prev} disabled={stepIdx === 0} className="rounded-xl border px-4 py-2 text-sm">
+        <button
+          type="button"
+          onClick={prev}
+          disabled={stepIdx === 0}
+          className="rounded-xl border px-4 py-2 text-sm"
+        >
           Back
         </button>
         {stepIdx < spec.steps.length - 1 ? (
@@ -108,7 +120,7 @@ export function WizardForm({ smartCode, transactionType }: { smartCode: string; 
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function StepFields({
@@ -116,104 +128,130 @@ function StepFields({
   header,
   setHeader,
   meta,
-  setMeta,
+  setMeta
 }: {
-  fields: HeraField[];
-  header: Record<string, any>;
-  setHeader: (patch: Record<string, any>) => void;
-  meta: Record<string, any>;
-  setMeta: (patch: Record<string, any>) => void;
+  fields: HeraField[]
+  header: Record<string, any>
+  setHeader: (patch: Record<string, any>) => void
+  meta: Record<string, any>
+  setMeta: (patch: Record<string, any>) => void
 }) {
-  const hdrFields = fields.filter((f) => (f as any).section !== 'line'); // render all non-line inputs here
+  const hdrFields = fields.filter(f => (f as any).section !== 'line') // render all non-line inputs here
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {hdrFields.map((f) => {
-        const value = f.section === 'meta' ? meta[f.name] : header[f.name];
+      {hdrFields.map(f => {
+        const value = f.section === 'meta' ? meta[f.name] : header[f.name]
         const set = (v: any) =>
-          f.section === 'meta' ? setMeta({ [f.name]: v }) : setHeader({ [f.name]: v });
+          f.section === 'meta' ? setMeta({ [f.name]: v }) : setHeader({ [f.name]: v })
 
         switch (f.type) {
           case 'text':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <input
-                className="w-full rounded-lg border px-3 py-2"
-                placeholder={f.placeholder}
-                value={value ?? ''}
-                onChange={(e) => set(e.target.value)}
-              />
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <input
+                  className="w-full rounded-lg border px-3 py-2"
+                  placeholder={f.placeholder}
+                  value={value ?? ''}
+                  onChange={e => set(e.target.value)}
+                />
+              </Field>
+            )
           case 'textarea':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <textarea
-                className="w-full rounded-lg border px-3 py-2"
-                placeholder={f.placeholder}
-                value={value ?? ''}
-                onChange={(e) => set(e.target.value)}
-              />
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <textarea
+                  className="w-full rounded-lg border px-3 py-2"
+                  placeholder={f.placeholder}
+                  value={value ?? ''}
+                  onChange={e => set(e.target.value)}
+                />
+              </Field>
+            )
           case 'number':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <input
-                type="number"
-                className="w-full rounded-lg border px-3 py-2"
-                value={value ?? ''}
-                onChange={(e) => set(parseFloat(e.target.value || '0'))}
-              />
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <input
+                  type="number"
+                  className="w-full rounded-lg border px-3 py-2"
+                  value={value ?? ''}
+                  onChange={e => set(parseFloat(e.target.value || '0'))}
+                />
+              </Field>
+            )
           case 'date':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <input
-                type="date"
-                className="w-full rounded-lg border px-3 py-2"
-                value={value ? String(value).slice(0, 10) : ''}
-                onChange={(e) => set(e.target.value ? new Date(e.target.value).toISOString() : undefined)}
-              />
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <input
+                  type="date"
+                  className="w-full rounded-lg border px-3 py-2"
+                  value={value ? String(value).slice(0, 10) : ''}
+                  onChange={e =>
+                    set(e.target.value ? new Date(e.target.value).toISOString() : undefined)
+                  }
+                />
+              </Field>
+            )
           case 'boolean':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <select
-                className="w-full rounded-lg border px-3 py-2"
-                value={value ?? ''}
-                onChange={(e) => set(e.target.value === '' ? undefined : e.target.value === 'true')}
-              >
-                <option value="">—</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <select
+                  className="w-full rounded-lg border px-3 py-2"
+                  value={value ?? ''}
+                  onChange={e => set(e.target.value === '' ? undefined : e.target.value === 'true')}
+                >
+                  <option value="">—</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </Field>
+            )
           case 'select':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <select
-                className="w-full rounded-lg border px-3 py-2"
-                value={value ?? ''}
-                onChange={(e) => set(e.target.value || undefined)}
-              >
-                <option value="">—</option>
-                {f.options?.map((o) => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <select
+                  className="w-full rounded-lg border px-3 py-2"
+                  value={value ?? ''}
+                  onChange={e => set(e.target.value || undefined)}
+                >
+                  <option value="">—</option>
+                  {f.options?.map(o => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )
           case 'currency':
-            return <Field key={f.name} label={f.label} required={f.required}>
-              <input
-                className="w-full rounded-lg border px-3 py-2 uppercase"
-                maxLength={3}
-                value={(value ?? '').toString().toUpperCase()}
-                onChange={(e) => set(e.target.value.toUpperCase())}
-                placeholder="USD"
-              />
-            </Field>;
+            return (
+              <Field key={f.name} label={f.label} required={f.required}>
+                <input
+                  className="w-full rounded-lg border px-3 py-2 uppercase"
+                  maxLength={3}
+                  value={(value ?? '').toString().toUpperCase()}
+                  onChange={e => set(e.target.value.toUpperCase())}
+                  placeholder="USD"
+                />
+              </Field>
+            )
           default:
-            return null;
+            return null
         }
       })}
     </div>
-  );
+  )
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  children
+}: {
+  label: string
+  required?: boolean
+  children: React.ReactNode
+}) {
   return (
     <label className="block">
       <div className="mb-1 text-xs text-gray-600">
@@ -221,7 +259,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
       </div>
       {children}
     </label>
-  );
+  )
 }
 
 // —— payload builder (maps wizard state → TransactionCreateBody)
@@ -229,14 +267,14 @@ function buildTransactionBody({
   smartCode,
   transactionType,
   header,
-  lines,
+  lines
 }: {
-  smartCode: string;
-  transactionType: string;
-  header: Record<string, any>;
-  lines: TxnLine[];
+  smartCode: string
+  transactionType: string
+  header: Record<string, any>
+  lines: TxnLine[]
 }) {
-  const total = (lines ?? []).reduce((sum, l) => sum + (Number(l.line_amount) || 0), 0);
+  const total = (lines ?? []).reduce((sum, l) => sum + (Number(l.line_amount) || 0), 0)
 
   return {
     transaction_type: transactionType,
@@ -252,7 +290,7 @@ function buildTransactionBody({
     exchange_rate_type: header.p_exchange_rate_type,
     status: 'pending',
     metadata: header.p_metadata ?? {},
-    line_items: (lines ?? []).map((l) => ({
+    line_items: (lines ?? []).map(l => ({
       line_number: l.line_number,
       line_type: l.line_type,
       smart_code: l.smart_code ?? smartCode, // safe default
@@ -264,14 +302,14 @@ function buildTransactionBody({
       account_id: l.account_id,
       tax_code: l.tax_code,
       tax_amount: l.tax_amount,
-      discount_amount: l.discount_amount,
-    })),
-  };
+      discount_amount: l.discount_amount
+    }))
+  }
 }
 
 function inferTxnTypeFromSmartCode(smartCode: string) {
   // e.g. HERA.RETAIL.SALES.TXN.SORDER.V1 -> TXN.SORDER
-  const parts = smartCode.split('.');
-  const i = parts.findIndex((p) => p === 'TXN');
-  return i >= 0 && parts[i + 1] ? parts[i + 1].toLowerCase() : 'generic';
+  const parts = smartCode.split('.')
+  const i = parts.findIndex(p => p === 'TXN')
+  return i >= 0 && parts[i + 1] ? parts[i + 1].toLowerCase() : 'generic'
 }

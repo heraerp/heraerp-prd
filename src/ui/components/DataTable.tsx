@@ -1,22 +1,27 @@
 // src/ui/components/DataTable.tsx
-import React from 'react';
+import React from 'react'
 
-type Col<T> = { key: keyof T | string; header: string; width?: string; render?: (row: T) => React.ReactNode };
+type Col<T> = {
+  key: keyof T | string
+  header: string
+  width?: string
+  render?: (row: T) => React.ReactNode
+}
 export function DataTable<T extends { id?: string | number }>({
   rows,
   columns,
   loading,
   onRowClick,
-  empty = 'No data',
+  empty = 'No data'
 }: {
-  rows: T[] | undefined;
-  columns: Col<T>[];
-  loading?: boolean;
-  onRowClick?: (row: T) => void;
-  empty?: string;
+  rows: T[] | undefined
+  columns: Col<T>[]
+  loading?: boolean
+  onRowClick?: (row: T) => void
+  empty?: string
 }) {
-  if (loading) return <div className="p-6 text-sm text-gray-500">Loading…</div>;
-  if (!rows || rows.length === 0) return <div className="p-6 text-sm text-gray-500">{empty}</div>;
+  if (loading) return <div className="p-6 text-sm text-gray-500">Loading…</div>
+  if (!rows || rows.length === 0) return <div className="p-6 text-sm text-gray-500">{empty}</div>
 
   return (
     <div className="overflow-auto rounded-xl border border-gray-200">
@@ -24,7 +29,11 @@ export function DataTable<T extends { id?: string | number }>({
         <thead className="bg-gray-50">
           <tr>
             {columns.map((c, i) => (
-              <th key={i} className="px-4 py-3 text-left font-medium text-gray-600" style={{ width: c.width }}>
+              <th
+                key={i}
+                className="px-4 py-3 text-left font-medium text-gray-600"
+                style={{ width: c.width }}
+              >
                 {c.header}
               </th>
             ))}
@@ -47,5 +56,5 @@ export function DataTable<T extends { id?: string | number }>({
         </tbody>
       </table>
     </div>
-  );
+  )
 }
