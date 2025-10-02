@@ -1,0 +1,153 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": "in_stock",
+      "name": "status",
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.STATUS.v1",
+      "type": "text",
+      "ui": {
+        "label": "Status",
+        "optionsQueryKey": "jewelry-status-options",
+        "widget": "select"
+      }
+    },
+    {
+      "defaultValue": 0,
+      "name": "stone_weight",
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.STONE_WEIGHT.v1",
+      "type": "number",
+      "ui": {
+        "decimals": 3,
+        "helpText": "Weight of stones only",
+        "label": "Stone Weight (g)",
+        "placeholder": "0.4"
+      }
+    },
+    {
+      "defaultValue": 1,
+      "name": "quantity",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.QUANTITY.v1",
+      "type": "number",
+      "ui": {
+        "helpText": "Items in stock",
+        "label": "Quantity",
+        "min": 0,
+        "placeholder": "1"
+      }
+    },
+    {
+      "name": "description",
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.DESCRIPTION.v1",
+      "type": "text",
+      "ui": {
+        "label": "Description",
+        "placeholder": "Detailed item description...",
+        "widget": "textarea"
+      }
+    },
+    {
+      "name": "gross_weight",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.GROSS_WEIGHT.v1",
+      "type": "number",
+      "ui": {
+        "decimals": 3,
+        "helpText": "Total weight including stones",
+        "label": "Gross Weight (g)",
+        "placeholder": "5.2"
+      }
+    },
+    {
+      "name": "location",
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.LOCATION.v1",
+      "type": "text",
+      "ui": {
+        "helpText": "Storage location in store",
+        "label": "Location",
+        "placeholder": "Vault A-1"
+      }
+    },
+    {
+      "name": "net_weight",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.NET_WEIGHT.v1",
+      "type": "number",
+      "ui": {
+        "decimals": 3,
+        "helpText": "Metal weight only (gross - stone)",
+        "label": "Net Weight (g)",
+        "placeholder": "4.8"
+      }
+    },
+    {
+      "name": "purity",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.PURITY.v1",
+      "type": "number",
+      "ui": {
+        "helpText": "Gold purity in karats (10, 14, 18, 22, 24)",
+        "label": "Purity (Karat)",
+        "max": 24,
+        "min": 10,
+        "placeholder": "18"
+      }
+    },
+    {
+      "name": "sku",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.SKU.v1",
+      "type": "text",
+      "ui": {
+        "helpText": "Unique stock keeping unit identifier",
+        "label": "SKU",
+        "placeholder": "e.g., DSR-001"
+      }
+    },
+    {
+      "name": "unit_price",
+      "required": true,
+      "smart_code": "HERA.JEWELRY.ITEM.DYN.UNIT_PRICE.v1",
+      "type": "number",
+      "ui": {
+        "decimals": 2,
+        "helpText": "Selling price per item",
+        "label": "Unit Price ($)",
+        "placeholder": "12500"
+      }
+    }
+  ],
+  "entity_type": "JEWELRY_ITEM",
+  "labels": {
+    "plural": "Jewelry Items",
+    "singular": "Jewelry Item"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.ITEM.REL.HAS_CATEGORY.v1",
+      "type": "HAS_CATEGORY",
+      "ui": {
+        "label": "Category",
+        "optionsQueryKey": "jewelry-categories",
+        "widget": "select"
+      }
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.ITEM.REL.SUPPLIED_BY.v1",
+      "type": "SUPPLIED_BY",
+      "ui": {
+        "label": "Supplier",
+        "optionsQueryKey": "jewelry-suppliers",
+        "widget": "select"
+      }
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { writeFileSync, mkdirSync } from 'fs'
 import { join } from 'path'
 import { entityPresets } from '../src/hooks/entityPresets'
 
-const outDir = join(process.cwd(), 'scripts', '__snapshots__')
+const outDir = process.env['SNAPSHOT_OUTPUT_DIR'] || join(process.cwd(), 'snapshots', 'presets')
 mkdirSync(outDir, { recursive: true })
 
 function normalize(obj: any): any {
@@ -36,7 +36,7 @@ let count = 0
 for (const [key, preset] of Object.entries(entityPresets)) {
   try {
     const normalized = normalize(preset)
-    const file = join(outDir, `${key}.snapshot.json`)
+    const file = join(outDir, `${key}.json`)
     writeFileSync(file, JSON.stringify(normalized, null, 2) + '\n')
     console.log(`✅ ${key} → ${file}`)
     count++

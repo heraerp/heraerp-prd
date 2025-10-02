@@ -1,0 +1,67 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0,
+      "name": "hour_rate",
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.RATE.HOUR.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": 0.5,
+      "name": "commission_rate",
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.COMMISSION.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "email",
+      "required": true,
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.EMAIL.v1",
+      "type": "text"
+    },
+    {
+      "name": "hire_date",
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.HIRE_DATE.v1",
+      "type": "date"
+    },
+    {
+      "name": "phone",
+      "required": true,
+      "smart_code": "HERA.SALON.EMPLOYEE.DYN.PHONE.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "EMPLOYEE",
+  "labels": {
+    "plural": "Employees",
+    "singular": "Employee"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.HCM.EMPLOYMENT.REL.HAS_ROLE.v1",
+      "type": "HAS_ROLE"
+    },
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.EMPLOYEE.REL.CAN_PERFORM.v1",
+      "type": "CAN_PERFORM"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.HCM.EMPLOYMENT.REL.REPORTS_TO.v1",
+      "type": "REPORTS_TO"
+    }
+  ]
+}

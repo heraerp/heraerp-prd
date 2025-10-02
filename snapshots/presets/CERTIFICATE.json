@@ -1,0 +1,36 @@
+{
+  "dynamicFields": [
+    {
+      "name": "cert_number",
+      "smart_code": "HERA.JEWELRY.CERT.DYN.NUMBER.v1",
+      "type": "text"
+    },
+    {
+      "name": "issue_date",
+      "smart_code": "HERA.JEWELRY.CERT.DYN.ISSUE_DATE.v1",
+      "type": "date"
+    },
+    {
+      "name": "issuer",
+      "smart_code": "HERA.JEWELRY.CERT.DYN.ISSUER.v1",
+      "type": "text"
+    },
+    {
+      "name": "pdf_url",
+      "smart_code": "HERA.JEWELRY.CERT.DYN.PDF_URL.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "CERTIFICATE",
+  "labels": {
+    "plural": "Certificates",
+    "singular": "Certificate"
+  },
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.JEWELRY.CERT.REL.FOR_JOB.v1",
+      "type": "FOR_JOB"
+    }
+  ]
+}

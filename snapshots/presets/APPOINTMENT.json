@@ -1,0 +1,51 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": "scheduled",
+      "name": "status",
+      "smart_code": "HERA.SALON.APPT.DYN.STATUS.v1",
+      "type": "text"
+    },
+    {
+      "defaultValue": false,
+      "name": "reminder_sent",
+      "smart_code": "HERA.SALON.APPT.DYN.REMINDER.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "end_time",
+      "required": true,
+      "smart_code": "HERA.SALON.APPT.DYN.END.v1",
+      "type": "date"
+    },
+    {
+      "name": "notes",
+      "smart_code": "HERA.SALON.APPT.DYN.NOTES.v1",
+      "type": "text"
+    },
+    {
+      "name": "start_time",
+      "required": true,
+      "smart_code": "HERA.SALON.APPT.DYN.START.v1",
+      "type": "date"
+    }
+  ],
+  "entity_type": "APPOINTMENT",
+  "relationships": [
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.APPT.REL.INCLUDES_SERVICE.v1",
+      "type": "INCLUDES_SERVICE"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.APPT.REL.FOR_CUSTOMER.v1",
+      "type": "FOR_CUSTOMER"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.APPT.REL.WITH_EMPLOYEE.v1",
+      "type": "WITH_EMPLOYEE"
+    }
+  ]
+}

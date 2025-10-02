@@ -1,0 +1,44 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0,
+      "name": "display_order",
+      "smart_code": "HERA.SALON.CATEGORY.DYN.ORDER.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.SALON.CATEGORY.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "color",
+      "smart_code": "HERA.SALON.CATEGORY.DYN.COLOR.v1",
+      "type": "text"
+    },
+    {
+      "name": "icon",
+      "smart_code": "HERA.SALON.CATEGORY.DYN.ICON.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "CATEGORY",
+  "labels": {
+    "plural": "Categories",
+    "singular": "Category"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.CATEGORY.REL.PARENT.v1",
+      "type": "PARENT_CATEGORY"
+    }
+  ]
+}

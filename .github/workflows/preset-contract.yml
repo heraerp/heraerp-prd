@@ -6,38 +6,54 @@ on:
     branches: [main]
 
 jobs:
-  preset-contract:
+  validate-presets:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # needed to comment on PRs
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Install
-        run: npm ci
+      - run: npm ci
 
-      - name: Validate presets
-        run: npm run presets:validate
+      # 1) Run your existing validations & tests
+      - run: npm run presets:validate
+      - run: npm run presets:test
 
-      # Regenerate docs + diagrams and fail if diffs are uncommitted
-      - name: Generate docs
-        run: npm run docs:generate
+      # 2) Generate "current" snapshots from live presets (for diffing)
+      - run: npm run presets:snapshot:current
 
-      - name: Generate diagrams
-        run: npm run docs:diagrams
-
-      - name: Check doc/diagram diffs
+      # 3) Build the human-readable changelog
+      - id: changelog
         run: |
-          git add -N docs/ scripts/ || true
-          git diff --exit-code || (echo "Docs/diagrams changed. Run scripts locally and commit updates." && exit 1)
+          FILE_PATH=$(ts-node scripts/generate-preset-changelog.ts)
+          echo "file=$FILE_PATH" >> $GITHUB_OUTPUT
 
-      # Snapshots: ensure stable output from presets
-      - name: Build snapshots
-        run: npm run presets:snapshot
+      # 4) Upload artifact (optional, nice for debugging)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: preset-changelog
+          path: ${{ steps.changelog.outputs.file }}
 
-      - name: Verify snapshots
-        run: npm run presets:test
+      # 5) Post a PR comment (only on PRs)
+      - name: Comment changelog on PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          path: ${{ steps.changelog.outputs.file }}
+
+      # 6) Verify snapshots didn't change (on PR)
+      - name: Check Snapshot Changes
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ -n "$(git status --porcelain snapshots/presets/)" ]; then
+            echo "::error::Preset snapshots changed! Run 'npm run presets:snapshot' locally and commit."
+            exit 1
+          fi

@@ -1,0 +1,46 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": "NET30",
+      "name": "payment_terms",
+      "smart_code": "HERA.SALON.VENDOR.DYN.PAYMENT_TERMS.v1",
+      "type": "text"
+    },
+    {
+      "defaultValue": 0,
+      "name": "credit_limit",
+      "smart_code": "HERA.SALON.VENDOR.DYN.CREDIT_LIMIT.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.SALON.VENDOR.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "email",
+      "smart_code": "HERA.SALON.VENDOR.DYN.EMAIL.v1",
+      "type": "text"
+    },
+    {
+      "name": "phone",
+      "required": true,
+      "smart_code": "HERA.SALON.VENDOR.DYN.PHONE.v1",
+      "type": "text"
+    },
+    {
+      "name": "website",
+      "smart_code": "HERA.SALON.VENDOR.DYN.WEBSITE.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "VENDOR",
+  "relationships": [
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.VENDOR.REL.SUPPLIES_CATEGORY.v1",
+      "type": "SUPPLIES_CATEGORY"
+    }
+  ]
+}

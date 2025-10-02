@@ -1,0 +1,23 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": [],
+      "name": "permissions",
+      "smart_code": "HERA.HCM.ROLE.DYN.PERMISSIONS.v1",
+      "type": "json"
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.HCM.ROLE.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "description",
+      "smart_code": "HERA.HCM.ROLE.DYN.DESCRIPTION.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "ROLE",
+  "relationships": []
+}

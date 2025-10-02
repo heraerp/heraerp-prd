@@ -1,0 +1,85 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0,
+      "name": "stock_quantity",
+      "smart_code": "HERA.SALON.PRODUCT.DYN.STOCK.QTY.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": 10,
+      "name": "reorder_level",
+      "smart_code": "HERA.SALON.PRODUCT.DYN.REORDER.LEVEL.v1",
+      "type": "number"
+    },
+    {
+      "name": "barcode",
+      "smart_code": "HERA.SALON.PRODUCT.DYN.BARCODE.v1",
+      "type": "text"
+    },
+    {
+      "name": "price_cost",
+      "required": true,
+      "smart_code": "HERA.SALON.PRODUCT.DYN.PRICE.COST.v1",
+      "type": "number",
+      "ui": {
+        "helpText": "Purchase cost from supplier",
+        "label": "Cost Price (AED)",
+        "placeholder": "0.00",
+        "roles": [
+          "manager",
+          "owner"
+        ]
+      }
+    },
+    {
+      "name": "price_market",
+      "required": true,
+      "smart_code": "HERA.SALON.PRODUCT.DYN.PRICE.MARKET.v1",
+      "type": "number",
+      "ui": {
+        "helpText": "Selling price for customers",
+        "label": "Market Price (AED)",
+        "placeholder": "0.00"
+      }
+    },
+    {
+      "name": "size",
+      "smart_code": "HERA.SALON.PRODUCT.DYN.SIZE.v1",
+      "type": "text"
+    },
+    {
+      "name": "sku",
+      "smart_code": "HERA.SALON.PRODUCT.DYN.SKU.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "PRODUCT",
+  "labels": {
+    "plural": "Products",
+    "singular": "Product"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.PRODUCT.REL.SUPPLIED_BY.v1",
+      "type": "SUPPLIED_BY"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.PRODUCT.REL.HAS_BRAND.v1",
+      "type": "HAS_BRAND"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.PRODUCT.REL.HAS_CATEGORY.v1",
+      "type": "HAS_CATEGORY"
+    }
+  ]
+}

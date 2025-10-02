@@ -1,0 +1,28 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.SALON.BRAND.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "logo_url",
+      "smart_code": "HERA.SALON.BRAND.DYN.LOGO.v1",
+      "type": "text"
+    },
+    {
+      "name": "website",
+      "smart_code": "HERA.SALON.BRAND.DYN.WEBSITE.v1",
+      "type": "text"
+    }
+  ],
+  "entity_type": "BRAND",
+  "relationships": [
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.BRAND.REL.OWNED_BY.v1",
+      "type": "OWNED_BY_VENDOR"
+    }
+  ]
+}

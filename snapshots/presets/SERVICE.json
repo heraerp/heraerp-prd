@@ -1,0 +1,61 @@
+{
+  "dynamicFields": [
+    {
+      "defaultValue": 0.5,
+      "name": "commission_rate",
+      "smart_code": "HERA.SALON.SERVICE.DYN.COMMISSION.v1",
+      "type": "number"
+    },
+    {
+      "defaultValue": true,
+      "name": "active",
+      "smart_code": "HERA.SALON.SERVICE.DYN.ACTIVE.v1",
+      "type": "boolean"
+    },
+    {
+      "name": "description",
+      "smart_code": "HERA.SALON.SERVICE.DYN.DESCRIPTION.v1",
+      "type": "text"
+    },
+    {
+      "name": "duration_min",
+      "required": true,
+      "smart_code": "HERA.SALON.SERVICE.DYN.DURATION.MIN.v1",
+      "type": "number"
+    },
+    {
+      "name": "price_market",
+      "required": true,
+      "smart_code": "HERA.SALON.SERVICE.DYN.PRICE.MARKET.v1",
+      "type": "number"
+    }
+  ],
+  "entity_type": "SERVICE",
+  "labels": {
+    "plural": "Services",
+    "singular": "Service"
+  },
+  "permissions": {
+    "create": "[Function: create]",
+    "delete": "[Function: delete]",
+    "edit": "[Function: edit]",
+    "view": "[Function: view]"
+  },
+  "relationships": [
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.SERVICE.REL.PERFORMED_BY_ROLE.v1",
+      "type": "PERFORMED_BY_ROLE"
+    },
+    {
+      "cardinality": "many",
+      "smart_code": "HERA.SALON.SERVICE.REL.REQUIRES_PRODUCT.v1",
+      "type": "REQUIRES_PRODUCT"
+    },
+    {
+      "cardinality": "one",
+      "smart_code": "HERA.SALON.SERVICE.REL.HAS_CATEGORY.v1",
+      "type": "HAS_CATEGORY"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ function normalize(obj: any): any {
 describe('Preset snapshots', () => {
   for (const [key, preset] of Object.entries(entityPresets)) {
     it(`matches snapshot: ${key}`, () => {
-      const path = join(process.cwd(), 'scripts', '__snapshots__', `${key}.snapshot.json`)
+      const path = join(process.cwd(), 'snapshots', 'presets', `${key}.json`)
       
       let expected
       try {
