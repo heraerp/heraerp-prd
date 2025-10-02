@@ -624,7 +624,7 @@ export default function JewelryAIPage() {
                       : 'bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100'
                   }`}
                 >
-                  <tab.icon size={16} className={activeTab === tab.key ? 'text-gold-400' : ''} />
+                  <tab.icon size={16} className={activeTab === tab.key ? 'text-gold-400' : 'text-gray-400'} />
                   <span>{tab.label}</span>
                 </button>
               ))}
@@ -716,10 +716,10 @@ export default function JewelryAIPage() {
                     </h3>
                     <button
                       onClick={() => setActiveTab('recommendations')}
-                      className="bg-muted/50 border border-border !text-muted-foreground hover:bg-muted hover:!text-foreground flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                      className="bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
                     >
                       <Eye className="text-gold-400" size={14} />
-                      <span className="text-sm">View All</span>
+                      <span className="text-sm !text-gray-400 dark:!text-gray-400 hover:!text-gray-100">View All</span>
                     </button>
                   </div>
 
@@ -784,10 +784,10 @@ export default function JewelryAIPage() {
                     {['owner', 'manager'].includes(jewelryRole || '') && (
                       <button
                         onClick={() => setActiveTab('models')}
-                        className="bg-muted/50 border border-border !text-muted-foreground hover:bg-muted hover:!text-foreground flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
+                        className="bg-white/5 border border-white/10 !text-gray-400 dark:!text-gray-400 hover:bg-white/10 hover:!text-gray-100 dark:hover:!text-gray-100 flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200"
                       >
                         <Settings className="text-gold-400" size={14} />
-                        <span className="text-sm">Manage</span>
+                        <span className="text-sm !text-gray-400 dark:!text-gray-400 hover:!text-gray-100">Manage</span>
                       </button>
                     )}
                   </div>
