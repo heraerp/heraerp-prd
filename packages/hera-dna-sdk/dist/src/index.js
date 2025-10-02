@@ -18,12 +18,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.narrowTransactionType = exports.narrowEntityType = exports.assertSacredTable = exports.assertOrganizationId = exports.assertSmartCode = exports.assertDNA = exports.isCoreRelationship = exports.isCoreDynamicData = exports.isUniversalTransaction = exports.isCoreEntity = exports.isTransactionId = exports.isEntityId = exports.OrganizationIdSchema = exports.SmartCodeSchema = exports.UniversalTransactionSchema = exports.CoreEntitySchema = exports.ORGANIZATION_ID_REGEX = exports.SMART_CODE_PATTERN = exports.buildSmartCode = exports.validateTransactionId = exports.validateEntityId = exports.createTransactionId = exports.createEntityId = exports.createOrganizationId = exports.createSmartCode = exports.MODULE_TYPES = exports.INDUSTRY_TYPES = exports.OrganizationIsolationError = exports.DNAViolationError = exports.SACRED_TABLES = void 0;
+exports.narrowTransactionType = exports.narrowEntityType = exports.assertSacredTable = exports.assertOrganizationId = exports.assertSmartCode = exports.assertDNA = exports.isCoreRelationship = exports.isCoreDynamicData = exports.isUniversalTransaction = exports.isCoreEntity = exports.isTransactionId = exports.isEntityId = exports.OrganizationIdSchema = exports.SmartCodeSchema = exports.UniversalTransactionSchema = exports.CoreEntitySchema = exports.ORGANIZATION_ID_REGEX = exports.SMART_CODE_PATTERN = exports.buildSmartCode = exports.validateTransactionId = exports.validateEntityId = exports.createTransactionId = exports.createEntityId = exports.createOrganizationId = exports.createSmartCode = exports.MODULE_TYPES = exports.INDUSTRY_TYPES = exports.SACRED_TABLES = void 0;
+// export type { DNAViolationError, OrganizationIsolationError } from './guardrails'; // File doesn't exist
 // Re-export specific items to avoid conflicts
 var types_1 = require("./types");
+// Constants and non-type exports
 Object.defineProperty(exports, "SACRED_TABLES", { enumerable: true, get: function () { return types_1.SACRED_TABLES; } });
-Object.defineProperty(exports, "DNAViolationError", { enumerable: true, get: function () { return types_1.DNAViolationError; } });
-Object.defineProperty(exports, "OrganizationIsolationError", { enumerable: true, get: function () { return types_1.OrganizationIsolationError; } });
 Object.defineProperty(exports, "INDUSTRY_TYPES", { enumerable: true, get: function () { return types_1.INDUSTRY_TYPES; } });
 Object.defineProperty(exports, "MODULE_TYPES", { enumerable: true, get: function () { return types_1.MODULE_TYPES; } });
 // Functions

@@ -6,7 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RELATIONSHIP_TYPES = exports.TRANSACTION_TYPES = exports.ENTITY_TYPES = exports.ORGANIZATION_ID_REGEX = exports.SMART_CODE_REGEX = void 0;
 // Export smart code regex pattern
-exports.SMART_CODE_REGEX = /^HERA\.[A-Z0-9]{2,15}(?:\.[A-Z0-9_]{2,30}){2,8}\.v[0-9]+$/;
+exports.SMART_CODE_REGEX = /^HERA\.[A-Z0-9]{2,15}(?:\.[A-Z0-9_]{2,30}){2,8}\.[vV][0-9]+$/;
 // Export organization ID regex pattern  
 exports.ORGANIZATION_ID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // Export entity types

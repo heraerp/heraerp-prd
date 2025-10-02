@@ -21,6 +21,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+      - run: npm run packages:build
 
       # 1) Run your existing validations & tests
       - run: npm run presets:validate

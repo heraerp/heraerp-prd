@@ -1,0 +1,24 @@
+{
+  "name": "@hera/entities-core",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./presets": "./dist/presets/index.js",
+    "./overlay": "./dist/overlay.js",
+    "./mixins": "./dist/mixins.js",
+    "./smartcode": "./dist/smartcode.js",
+    "./types": "./dist/types.d.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "zod": "^3.23.8",
+    "rimraf": "^6.0.1"
+  }
+}

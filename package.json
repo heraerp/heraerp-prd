@@ -2,6 +2,9 @@
   "name": "heraerp",
   "version": "1.2.2",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "node": ">=20.9.0 <21",
     "npm": ">=9.0.0"
@@ -25,10 +28,13 @@
     "docs:global-graph": "npx tsx scripts/generate-global-graph.ts",
     "docs:all-diagrams": "npm run docs:diagrams && npm run docs:global-graph",
     "presets:validate": "tsx scripts/validate-presets.ts",
+    "presets:validate:modular": "tsx scripts/validate-modular-presets.ts",
     "presets:snapshot": "tsx scripts/generate-preset-snapshots.ts",
     "presets:snapshot:current": "tsx scripts/generate-preset-snapshots-ci.ts",
     "presets:test": "vitest run -c scripts/vitest.preset.contract.ts",
     "docs:changelog": "tsx scripts/generate-preset-changelog.ts",
+    "packages:build": "npm run build -ws",
+    "packages:clean": "npm run clean -ws",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
     "postbuild": "node scripts/verify-next-build.js",
     "build:analyze": "ANALYZE=true npm run build",
